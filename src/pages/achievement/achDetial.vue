@@ -281,7 +281,7 @@
                   width="200">
                     <template slot-scope="scope">
                       <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
-                        <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
+                        <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
                         <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
                         </el-popover>
                       </div>
@@ -327,7 +327,7 @@
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
-                    <el-tooltip class="item" effect="dark" :content="scope.row.auditRemarks" placement="top-start">
+                    <el-tooltip class="item" width="200" effect="dark" :content="scope.row.auditRemarks" placement="top-start">
                       <p class="dot">{{scope.row.auditRemarks}}</p>
                   </el-tooltip>
                   </div>

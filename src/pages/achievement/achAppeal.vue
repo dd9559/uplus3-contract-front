@@ -195,14 +195,14 @@
                 <div  v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
                   <el-popover
                       placement="right"
-                      width="400"
+                      max-width="200"
                       trigger="hover">
-                      <span style="margin-right:10px"  v-for="(item,index) in item2.voucherUrl">
+                      <span style="margin:20px"  v-for="(item,index) in item2.voucherUrl">
                           <span>
                             <span
                           class="link"
                           slot="reference"
-                          @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</span>
+                          @click.stop="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</span>
                         </span>
                       </span>
                       <span class="link"
@@ -260,6 +260,7 @@
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
+                {{scope.row.auditIds}}
                 <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1"
                 style="cursor:pointer;">审核</span>
                 <span v-else>-</span>

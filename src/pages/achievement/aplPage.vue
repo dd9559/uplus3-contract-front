@@ -658,7 +658,7 @@
                 >
                 <template slot-scope="scope">
                       <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
-                        <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
+                        <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
                         <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
                         </el-popover>
                       </div>
@@ -695,7 +695,7 @@
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditStatus">
-                      {{scope.row.auditStatus.label}}
+                      {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
                   </div>
                   <div v-else>-</div>                                     
                 </template>

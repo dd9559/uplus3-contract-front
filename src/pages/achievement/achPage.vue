@@ -649,7 +649,7 @@
                 >
                 <template slot-scope="scope">
                       <div>
-                        <el-popover trigger="hover" width="100" :content="scope.row.appealContent" placement="top">
+                        <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
                         <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
                         </el-popover>
                       </div>

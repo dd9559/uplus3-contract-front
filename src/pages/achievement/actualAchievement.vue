@@ -829,16 +829,20 @@ export default {
       ],
       aplStatuArr: [
         {
-          key: 0,
-          value: "全部"
+          key: -1,
+          value: "未申诉"
         },
         {
-          key: 1,
+          key: 0,
           value: "已处理"
         },
         {
-          key: 2,
+          key: 1,
           value: "未处理"
+        },
+        {
+          key: 2,
+          value: "全部"
         }
       ],
       //权限配置
