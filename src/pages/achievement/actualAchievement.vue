@@ -220,6 +220,14 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="申诉状态" align="center" min-width="80">
+            <template slot-scope="scope">
+              <p v-if="scope.row.appealStatus.value==-1" class="blue" style="cursor:text">未申诉</p>
+              <p v-if="scope.row.appealStatus.value==0" class="blue" style="cursor:text">已处理</p>
+              <p v-if="scope.row.appealStatus.value==1" class="green">未处理</p>
+            </template>
+          </el-table-column>
+
           <el-table-column label="合同类型" align="center" min-width="60">
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
@@ -391,24 +399,27 @@
                 </div>
 
                 <div v-if="scope.row.achievementState==0" class="check-btn">
-                  <span
-                    @click.stop="chehui(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-retreat'].state"
-                  >撤回</span>
-                  <span
-                    @click.stop="shenSu(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
-                  <span
-                    @click.stop="checkAch(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="userInfo&&userInfo.empId==scope.row.auditId"
-                  >审核</span>
-                  <span
+                  <div v-if="power['sign-yj-rev-retreat'].state||power['sign-yj-rev-appeal'].state||(userInfo&&userInfo.empId==scope.row.auditId)">
+                      <span
+                        @click.stop="chehui(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="power['sign-yj-rev-retreat'].state"
+                      >撤回</span>
+                      <span
+                        @click.stop="shenSu(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="power['sign-yj-rev-appeal'].state"
+                      >申诉</span>
+                      <span
+                        @click.stop="checkAch(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="userInfo&&userInfo.empId==scope.row.auditId"
+                      >审核</span>
+                  </div>
+                 <span v-else>-</span>
+                  <!-- <span
                     v-if="userInfo&&userInfo.empId!=scope.row.auditId&&scope.row.arraignmentId!=userInfo.empId"
-                  >-</span>
+                  >-</span> -->
                 </div>
               </div>
               <div v-else>
@@ -695,7 +706,7 @@
                 <span >申诉凭证：</span>
                 <div>
                   <fileUp @getUrl='getAdd' :scane="uploadScane" :more=true :rules="mbrules" id='pinzheng' class='fileup'>选择文件</fileUp>
-                  <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">上传成功！</span>
+                  <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">{{this.SSuForm.pinzheng.length}}个上传成功！</span>
                 </div>
               </div>
               <div slot="footer" class="dialog-footer">
@@ -1037,8 +1048,10 @@ export default {
         this.people=res.data.data.allRole
         this.depName=res.data.data.depName
         this.empNames=res.data.data.empNames
+        
         // debugger
         this.SSuForm.empNames=res.data.data.empNames[0].empId
+        this.auditName=res.data.data.empNames[0].name
       }
       })
       this.isSS=true

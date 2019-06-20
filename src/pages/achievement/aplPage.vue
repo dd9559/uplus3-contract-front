@@ -630,6 +630,14 @@
               </el-table-column>
 
                 <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
                   label="申诉角色"
                 >
                 <template slot-scope="scope">
@@ -641,6 +649,7 @@
                       <p>{{item}}</p>
                     </div>
                   </div>
+                  
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -657,33 +666,7 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="申诉时间"
-                >
-                <template slot-scope="scope">
-                  {{scope.row.appealTime|formatDate}}
-                </template>
-              </el-table-column>
-
                <el-table-column
-                  label="申诉状态"
-                >
-                <template slot-scope="scope">
-                  {{scope.row.auditStatus.label}}
-                </template>
-              </el-table-column>
-
-                <el-table-column
-                  label="审核人名称"
-                >
-                <template slot-scope="scope">
-                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
-                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
-                  </div>
-                  <div v-else>-</div>
-                </template>
-                </el-table-column>
-                <el-table-column
                   label="申诉凭证"
                 >
                 <template slot-scope="scope">
@@ -693,8 +676,32 @@
                 </template>
                 </el-table-column>
 
+               
+
                 <el-table-column
-                  label="审核信息"
+                  label="审核人"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+                
+                <el-table-column
+                  label="审核状态(时间)"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditStatus">
+                      {{scope.row.auditStatus.label}}
+                  </div>
+                  <div v-else>-</div>                                     
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="审核备注"
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
@@ -705,10 +712,10 @@
               </el-table-column>
 
                 <el-table-column
-                  label="申诉"
+                  label="操作"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus.value==0">
+                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
                     <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
                   </div>
                   <div v-else>-</div>
@@ -943,7 +950,7 @@
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                 </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="nopass" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
+                <el-button @click="nopass" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
                 <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
             </div>
         </el-dialog>
@@ -1025,6 +1032,7 @@
         state2:'',
         aplDialog:false,
         shenname:[],
+        auditIds:''
       };
     },
     components:{
@@ -1055,6 +1063,7 @@
         if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               this.shensuArr=res.data.data.appeals
+              this.auditIds=res.data.data.auditIds
               for(let i=0;i<this.shensuArr.length;i++){
                 this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
               }

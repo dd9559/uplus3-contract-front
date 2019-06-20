@@ -702,10 +702,10 @@
               </el-table-column>
 
                 <el-table-column
-                  label="申诉"
+                  label="操作"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus.value==0">
+                  <div v-if="scope.row.auditStatus.value==0&&auditIds==1">
                     <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
                   </div>
                   <div v-else>-</div>
@@ -951,7 +951,7 @@
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                 </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="nopass" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
+                <el-button @click="nopass" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
                 <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
             </div>
         </el-dialog>
@@ -1028,7 +1028,8 @@
         achIndex:'',
         achObj:'',
         contractId2:'',
-        state2:''
+        state2:'',
+        auditIds:''
       };
     },
     components:{
@@ -2019,6 +2020,7 @@
             if (res.status === 200) {
               this.houseArr = res.data.data.houseAgents;
               var houseArr2 = res.data.data.houseAgents;
+              this.auditIds=res.data.data.auditIds,
               this.shensuArr= res.data.data.appeals
               for(let i=0;i<this.shensuArr.length;i++){
                 this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))

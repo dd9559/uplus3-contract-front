@@ -25,6 +25,7 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            @change="test"
           ></el-date-picker>
         </el-form-item>
 
@@ -119,8 +120,11 @@
 
           <el-table-column label="申诉状态" align="center" min-width="80">
             <template slot-scope="scope">
-              <p v-if="scope.row.type==1" class="green">已处理</p>
-              <p v-if="scope.row.type==2" class="orange">未处理</p>
+              <div v-if="scope.row.appealStatus">
+                <p v-if="scope.row.appealStatus.value==0" class="green">已处理</p>
+                <p v-if="scope.row.appealStatus.value==1" class="orange">未处理</p>
+              </div>
+              <div v-else>-</div>
             </template>
           </el-table-column>
 
@@ -186,37 +190,55 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉状态" align="center" min-width="60">
+          <el-table-column label="申诉凭证" align="center" min-width="100">
+            <template slot-scope="scope">
+              <div  v-for="item2 in scope.row.achievementAppeals">
+                <div  v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
+                  <el-popover
+                      placement="right"
+                      width="400"
+                      trigger="hover">
+                      <span style="margin-right:10px"  v-for="(item,index) in item2.voucherUrl">
+                          <span>
+                            <span
+                          class="link"
+                          slot="reference"
+                          @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</span>
+                        </span>
+                      </span>
+                      <span class="link"
+                      slot="reference">附件</span>
+                  </el-popover>
+                </div>
+                <div v-else>-</div>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="审核人" align="center" min-width="120">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.achievementAppeals">
+                <p>{{item.auditDepName}}-{{item.auditName}}</p>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="审核状态(时间)" align="center" min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="item.auditStatus">
-                  <p v-if="item.auditStatus.value==0">未审核</p>
-                  <p v-if="item.auditStatus.value==1">通过</p>
-                  <p v-if="item.auditStatus.value==2">驳回</p>
+                  <p v-if="item.auditStatus.value==0">未审</p>
+                  <p v-if="item.auditStatus.value==1">通过 {{item.auditTime|formatDate}}</p>
+                  <p v-if="item.auditStatus.value==2">驳回 {{item.auditTime|formatDate}}</p>
                 </div>
                 <div v-else>-</div>
               </div>
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉凭证" align="center" min-width="100">
-            <template slot-scope="scope">
-              <div v-for="item2 in scope.row.achievementAppeals">
-                <div v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
-                  <span v-for="(item,index) in item2.voucherUrl">
-                    <span
-                      style="margin-right:10px"
-                      class="link"
-                      @click="previewPhoto(item2.voucherUrl,index)"
-                    >附件{{index+1}}</span>
-                  </span>
-                </div>
-                <div v-else>-</div>
-              </div>
-            </template>
-          </el-table-column>
+          
 
-          <el-table-column label="审核信息" align="center" min-width="200">
+          <el-table-column label="审核备注" align="center" min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="item.auditRemarks.length>0">
@@ -234,19 +256,14 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="审核人名称" align="center" min-width="120">
-            <template slot-scope="scope">
-              <div v-for="item in scope.row.achievementAppeals">
-                <p>{{item.auditDepName}}-{{item.auditName}}</p>
-              </div>
-            </template>
-          </el-table-column>
+          
 
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
-                <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
-                <!-- v-if="userInfo&&userInfo.empId==scope.row.auditId" -->
+                <span @click.stop="checkAch(scope.row,scope.$index)" 
+                style="cursor:pointer;">审核</span>
+                <!-- <span v-else>-</span>v-if="scope.row.auditIds==1" -->
               </div>
             </template>
           </el-table-column>
@@ -432,7 +449,7 @@ export default {
           ? [session.startTime, session.endTime]
           : [];
         this.propForm.search = session.keyword;
-        this.propForm.appealType = session.appealType;
+        this.propForm.appealType = session.appealStatus;
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
         this.propForm.empName = session.empName;
@@ -545,6 +562,9 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
+    test(val){
+debugger
+    },
     getPicture(item) {
       return this.$tool.cutFilePath(item);
     },
@@ -645,19 +665,24 @@ export default {
     aplquery(type) {
       this.propForm.dateMo = "";
       if (type == 1) {
+        let today=this.$tool.dateFormat(Date.now())
+        this.propForm.dateMo=[today,today]
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType: this.propForm.appealType,
+          appealStatus: this.propForm.appealType,
           timestate: 1
         };
       } else if (type == 2) {
+        let today2=this.$tool.dateFormat(Date.now())
+        let three2=this.$tool.dateFormat((Date.now()-259200000))
+        this.propForm.dateMo=[three2,today2]
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType: this.propForm.appealType,
+          appealStatus: this.propForm.appealType,
           timestate: 2
         };
       }
@@ -675,14 +700,14 @@ export default {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType: this.propForm.appealType
+          appealStatus: this.propForm.appealType
         };
       } else {
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType: this.propForm.appealType
+          appealStatus: this.propForm.appealType
         };
       }
       // this.ajaxParam.pageNum = 1;

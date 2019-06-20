@@ -348,7 +348,7 @@
                   label="操作"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0">
+                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
                     <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
                   </div>
                   <div v-else>-</div>
@@ -415,7 +415,7 @@
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                 </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="nopass" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
+                <el-button @click="nopass" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
                 <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
             </div>
         </el-dialog>
@@ -428,6 +428,7 @@ export default{
     mixins: [MIXINS],
     data() {
       return {
+        auditIds:'',
         aplremark:'',
         inputMax:200,
         aplman:'',
@@ -470,6 +471,7 @@ export default{
       this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
+            this.auditIds==data.data.auditIds
             this.shensuArr=data.data.appeals
             for(let i=0;i<this.shensuArr.length;i++){
                 this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
@@ -565,6 +567,10 @@ export default{
 }
 </script>
 <style scoped lang="less">
+      .color-red {
+        background-color: #f56c6c;
+        margin-left: 20px;
+      }
     .preview{
       z-index:2220!important
     }
