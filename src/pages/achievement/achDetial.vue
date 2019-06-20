@@ -255,7 +255,10 @@
                   label="申诉人"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                  <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
+                      {{scope.row.appealDepName}}-{{scope.row.appealName}}
+                  </div>
+                  <div v-else>-</div>
                 </template>
               </el-table-column>
 
@@ -295,7 +298,7 @@
               </el-table-column>
 
                <el-table-column
-                  label="申诉状态"
+                  label="审核状态"
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditStatus">
@@ -342,7 +345,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="申诉"
+                  label="操作"
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0">
@@ -459,10 +462,12 @@ export default{
       this.aId=this.$route.query.aId
       this.contractId2=this.$route.query.contractId2
       //合同边和获取业绩详情
-      let param = { contCode: this.contCode, entrance: this.entrance,aId:this.aId };
-      this.$ajax
-        .get("/api/achievement/getAchDetails", param)
-        .then(res => {
+     this.getData()
+    },
+    methods: {
+      getData(){
+         let param = { contCode: this.contCode, entrance: this.entrance,aId:this.aId };
+      this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
             this.shensuArr=data.data.appeals
@@ -477,12 +482,12 @@ export default{
             }else{
               this.checkArr = [];
             }
-
             this.comm = data.data.comm;
           }
-        });
-    },
-    methods: {
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+      },
       itemht(row){
         this.aplman=row.appealName
         this.aplrole=row.roles
@@ -504,6 +509,7 @@ export default{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
+            this.getData()
           }
         }).catch(err=>{
            this.$message({message:err})
@@ -518,10 +524,12 @@ export default{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
+            this.getData()
           }
         }).catch(err=>{
           this.$message({message:err})
         })
+
       },
       getPicture(item){
         return this.$tool.cutFilePath(item)

@@ -622,7 +622,10 @@
                   label="申诉人"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                  <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
+                      {{scope.row.appealDepName}}-{{scope.row.appealName}}
+                  </div>
+                  <div v-else>-</div>
                 </template>
               </el-table-column>
 
@@ -671,8 +674,14 @@
 
                 <el-table-column
                   label="审核人名称"
-                  prop="appealContent"
                 >
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                      {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                    </div>
+                    <div v-else>-</div>
+                  </template>
+                </el-table-column>
                 </el-table-column>
                 <el-table-column
                   label="申诉凭证"
@@ -1064,7 +1073,10 @@
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
+            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
           }
+        }).catch(err=>{
+           this.$message({ message: err, type: "error" })
         })
       },
       pass(){
@@ -1076,8 +1088,11 @@
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
+            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
           }
-        })
+        }).catch((err=>{
+          this.$message({ message: err, type: "error" })
+        }))
       },
       unique(arr1) {
           const res = new Map();

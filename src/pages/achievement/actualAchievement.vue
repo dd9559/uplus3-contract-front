@@ -327,9 +327,9 @@
               <p v-else>-</p>
               <el-button
                 type="text"
-                @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)"
-                v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
-              >{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+                @click="choseCheckPerson(scope.row,userInfo&&userInfo.empId===scope.row.auditId?2:1)"
+                v-if="((userInfo&&userInfo.empId==scope.row.preAuditId)||scope.row.auditId===userInfo.empId)&&scope.row.achievementState==0"
+              >{{userInfo&&userInfo.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
             </template>
           </el-table-column>
 
@@ -343,7 +343,7 @@
                 type="text"
                 style="color:red"
                 @click="choseCheckPerson(scope.row,3)"
-                v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
+                v-if="(userInfo&&scope.row.auditId===userInfo.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
               >设置审核人</el-button>
             </template>
           </el-table-column>
@@ -368,7 +368,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.finalAuditorId===userMsg.empId)"
+                    v-if="power['sign-yj-rev-fs'].state&&(userInfo&&scope.row.finalAuditorId===userInfo.empId)"
                   >反审核</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
@@ -404,10 +404,10 @@
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="userMsg&&userMsg.empId==scope.row.auditId"
+                    v-if="userInfo&&userInfo.empId==scope.row.auditId"
                   >审核</span>
                   <span
-                    v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId"
+                    v-if="userInfo&&userInfo.empId!=scope.row.auditId&&scope.row.arraignmentId!=userInfo.empId"
                   >-</span>
                 </div>
               </div>
@@ -668,7 +668,7 @@
             <div class="ssu">
               <p>合同编号：{{htbh}}</p>
               <p>签约时间：{{qysj}}</p>
-              <p v-if="userMsg">申诉人：{{userMsg.name}}</p>
+              <p v-if="userInfo">申诉人：{{userInfo.name}}</p>
             </div>
             <div class="role">
               <span class="point">申诉角色：</span>
@@ -882,7 +882,6 @@ export default {
     
   },
   mounted() {
-    this.userMsg = this.userInfo
     this.ajaxParam = {
       pageNum: this.currentPage,
       pageSize: this.pageSize
@@ -956,6 +955,7 @@ export default {
         return this.getUser.user
       },
       validInput() {
+        // debugger
         return this.SSuForm.remark.length
         }
       },

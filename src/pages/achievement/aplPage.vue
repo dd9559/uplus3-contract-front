@@ -623,7 +623,7 @@
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
-                    {{scope.row.auditDepName}}-{{scope.row.appealName}}
+                    {{scope.row.appealDepName}}-{{scope.row.appealName}}
                   </div>
                   <div v-else>-</div>
                 </template>

@@ -28,7 +28,6 @@
           ></el-date-picker>
         </el-form-item>
 
-
         <el-form-item label="申诉状态" prop="appealType">
           <el-select v-model="propForm.appealType" class="w120" :clearable="true">
             <el-option
@@ -39,7 +38,6 @@
             ></el-option>
           </el-select>
         </el-form-item>
-
       </el-form>
     </ScreeningTop>
 
@@ -51,7 +49,7 @@
         <div class="tool-left">
           <!-- <h4 class="f14">
             <i class="iconfont icon-tubiao-11"></i>数据列表
-          </h4> -->
+          </h4>-->
           <!-- <ul>
             <li>
               <span>
@@ -80,7 +78,7 @@
                 <b class="orange">{{countData[0] ?countData[0] :'0'}}元</b>
               </span>
             </li>
-          </ul> -->
+          </ul>-->
         </div>
       </div>
       <!-- 头部 end -->
@@ -128,119 +126,128 @@
 
           <el-table-column label="申诉人" align="center" min-width="120">
             <template slot-scope="scope">
-                <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.appealDepName}}-{{item.appealName}}</p>
-                </div>
+              <div v-for="item in scope.row.achievementAppeals">
+                <p>{{item.appealDepName}}-{{item.appealName}}</p>
+              </div>
             </template>
           </el-table-column>
 
           <el-table-column prop="date" label="申诉时间" align="center" min-width="90">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.appealTime|formatDate}}</p>
+                <p>{{item.appealTime|formatDate}}</p>
               </div>
             </template>
           </el-table-column>
 
           <el-table-column label="申诉角色" align="center" min-width="100">
             <template slot-scope="scope">
-                <div v-for="item in scope.row.achievementAppeals">
-                    <div v-if="!item.roles||item.roles.length==0">-</div>
-                    <div v-else>
-                       <!-- {{item.roles.join(',')}} -->
-                        <el-tooltip class="item" effect="dark" :content="item.roles.join(',')" placement="top-start">
-                          <p class="dot">{{item.roles.join(',')}}</p>
-                        </el-tooltip>
-                      
-                      <!-- <div  v-for="item in item.roles">
+              <div v-for="item in scope.row.achievementAppeals">
+                <div v-if="!item.roles||item.roles.length==0">-</div>
+                <div v-else>
+                  <!-- {{item.roles.join(',')}} -->
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="item.roles.join(',')"
+                    placement="top-start"
+                  >
+                    <p class="dot">{{item.roles.join(',')}}</p>
+                  </el-tooltip>
+
+                  <!-- <div  v-for="item in item.roles">
                       <span>{{item}}</span>
-                      </div> -->
-                    </div>
+                  </div>-->
                 </div>
+              </div>
             </template>
           </el-table-column>
 
           <el-table-column label="申诉内容" align="center" min-width="200">
             <template slot-scope="scope">
-                <div v-for="item in scope.row.achievementAppeals">
-                  <div v-if="item.appealContent.length>10">
-                      <el-popover trigger="hover" width="100" :content="item.appealContent" placement="top">
-                      <p class="dot" slot="reference">{{item.appealContent}}</p>
+              <div v-for="item in scope.row.achievementAppeals">
+                <div v-if="item.appealContent.length>10">
+                  <el-popover
+                    trigger="hover"
+                    width="100"
+                    :content="item.appealContent"
+                    placement="top"
+                  >
+                    <p class="dot" slot="reference">{{item.appealContent}}</p>
                   </el-popover>
-                  </div>
-                  <div v-else-if="item.appealContent.length>0">
-                      <p>{{item.appealContent}}</p>
-                  </div>
-                  <div v-else>
-                      <p>-</p>
-                  </div>
                 </div>
+                <div v-else-if="item.appealContent.length>0">
+                  <p>{{item.appealContent}}</p>
+                </div>
+                <div v-else>
+                  <p>-</p>
+                </div>
+              </div>
             </template>
           </el-table-column>
 
-          
-
           <el-table-column label="申诉状态" align="center" min-width="60">
             <template slot-scope="scope">
-              
-                <div v-for="item in scope.row.achievementAppeals">
-                  <div v-if="item.auditStatus">
-                    <p v-if="item.auditStatus.value==0">未审核</p>
-                    <p v-if="item.auditStatus.value==1">通过</p>
-                    <p v-if="item.auditStatus.value==2">驳回</p>
-                  </div>
-                  <div v-else>-</div>
+              <div v-for="item in scope.row.achievementAppeals">
+                <div v-if="item.auditStatus">
+                  <p v-if="item.auditStatus.value==0">未审核</p>
+                  <p v-if="item.auditStatus.value==1">通过</p>
+                  <p v-if="item.auditStatus.value==2">驳回</p>
                 </div>
+                <div v-else>-</div>
+              </div>
             </template>
           </el-table-column>
 
           <el-table-column label="申诉凭证" align="center" min-width="100">
             <template slot-scope="scope">
-                <div v-for="item2 in scope.row.achievementAppeals">
-                  <div v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
-                    <span v-for="(item,index) in item2.voucherUrl">
-                        <span style="margin-right:10px" class="link" @click="previewPhoto(item2.voucherUrl,index)">附件{{index+1}}</span>
-                    </span>
-                  </div>
-                  <div v-else>
-                    -
-                  </div>
-                  
+              <div v-for="item2 in scope.row.achievementAppeals">
+                <div v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
+                  <span v-for="(item,index) in item2.voucherUrl">
+                    <span
+                      style="margin-right:10px"
+                      class="link"
+                      @click="previewPhoto(item2.voucherUrl,index)"
+                    >附件{{index+1}}</span>
+                  </span>
                 </div>
+                <div v-else>-</div>
+              </div>
             </template>
           </el-table-column>
 
           <el-table-column label="审核信息" align="center" min-width="200">
             <template slot-scope="scope">
-                <div v-for="item in scope.row.achievementAppeals">
-                  <div v-if="item.auditRemarks.length>0">
-                    <el-tooltip class="item" effect="dark" :content="item.auditRemarks" placement="top-start">
-                      <p class="dot">{{item.auditRemarks}}</p>
-                    </el-tooltip>
-                  </div>
-                  <div v-else>-</div>
+              <div v-for="item in scope.row.achievementAppeals">
+                <div v-if="item.auditRemarks.length>0">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="item.auditRemarks"
+                    placement="top-start"
+                  >
+                    <p class="dot">{{item.auditRemarks}}</p>
+                  </el-tooltip>
                 </div>
+                <div v-else>-</div>
+              </div>
             </template>
           </el-table-column>
 
-           <el-table-column label="审核人名称" align="center" min-width="120">
+          <el-table-column label="审核人名称" align="center" min-width="120">
             <template slot-scope="scope">
-                <div v-for="item in scope.row.achievementAppeals">
-                  <p>{{item.auditDepName}}-{{item.auditName}}</p>
-                </div>
+              <div v-for="item in scope.row.achievementAppeals">
+                <p>{{item.auditDepName}}-{{item.auditName}}</p>
+              </div>
             </template>
           </el-table-column>
 
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
-                <div v-if="scope.row.type==0"  class="check-btn">
-                  <span
-                    @click.stop="checkAch(scope.row,scope.$index)"
-                    
-                    style="cursor:pointer;"
-                  >审核</span>
-                  <!-- v-if="userMsg&&userMsg.empId==scope.row.auditId" -->
-                </div>
+              <div v-if="scope.row.type==0" class="check-btn">
+                <span @click.stop="checkAch(scope.row,scope.$index)" style="cursor:pointer;">审核</span>
+                <!-- v-if="userInfo&&userInfo.empId==scope.row.auditId" -->
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -255,7 +262,6 @@
           v-if="total!=0"
         ></el-pagination>
       </div>
-
     </div>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <!-- 选择审核人弹框 -->
@@ -284,14 +290,14 @@ export default {
   name: "actualAchievement",
   data() {
     return {
-      imgList:[],
-      uploadScane:{path:'shensu',id:''},//上传场景值
-      people:[],
-      htbh:'',
-      qysj:'',
-      inputMax:200,
-      isSS:false,
-      mbrules:['jpg','png','doc','docx','pdf','jpeg','xlsx','xls'],
+      imgList: [],
+      uploadScane: { path: "shensu", id: "" }, //上传场景值
+      people: [],
+      htbh: "",
+      qysj: "",
+      inputMax: 200,
+      isSS: false,
+      mbrules: ["jpg", "png", "doc", "docx", "pdf", "jpeg", "xlsx", "xls"],
       selectAchList: [], //应收列表数组
       countData: [], //数据统计数组
       houseArr: [], //应收详情房源数组
@@ -301,16 +307,16 @@ export default {
       depUser: "",
       users: [],
       dialogVisible: false, //详情弹框
-      SSuForm:{
-        role:[],
-        remark:'',
-        pinzheng:'',
+      SSuForm: {
+        role: [],
+        remark: "",
+        pinzheng: ""
       },
       // 筛选条件
       propForm: {
-        appealType:'',
+        appealType: "",
         dateMo: "",
-        search: "",
+        search: ""
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -352,7 +358,7 @@ export default {
         {
           key: 2,
           value: "未处理"
-        },
+        }
       ],
       //权限配置
       power: {
@@ -395,10 +401,8 @@ export default {
       }
     };
   },
-  created(){
-  },
+  created() {},
   mounted() {
-    this.userMsg=this.userInfo
     this.ajaxParam = {
       pageNum: this.currentPage,
       pageSize: this.pageSize
@@ -407,14 +411,22 @@ export default {
       let res = this.getDataList;
       if (res && res.route === this.$route.path) {
         this.selectAchList = res.data.list;
-        for(let i=0;i<this.selectAchList.length;i++){
-              for(let j=0;j<this.selectAchList[i].achievementAppeals.length;j++){
-                // for(let k=0;k<_that.selectAchList[i].achievementAppeals[j].)
-                this.selectAchList[i].achievementAppeals[j].voucherUrl=this.getPicture(JSON.parse(this.selectAchList[i].achievementAppeals[j].voucherUrl))
-              }
-            }
+        for (let i = 0; i < this.selectAchList.length; i++) {
+          for (
+            let j = 0;
+            j < this.selectAchList[i].achievementAppeals.length;
+            j++
+          ) {
+            // for(let k=0;k<_that.selectAchList[i].achievementAppeals[j].)
+            this.selectAchList[i].achievementAppeals[
+              j
+            ].voucherUrl = this.getPicture(
+              JSON.parse(this.selectAchList[i].achievementAppeals[j].voucherUrl)
+            );
+          }
+        }
         this.total = res.data.total;
-        
+
         let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
         this.propForm.dateMo = session.startTime
           ? [session.startTime, session.endTime]
@@ -423,7 +435,7 @@ export default {
         this.propForm.appealType = session.appealType;
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
-        this.propForm.empName=session.empName
+        this.propForm.empName = session.empName;
         // if(this.propForm.dealAgentId){
         //     this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.empName})
         //     this.EmployeList.unshift({
@@ -432,8 +444,7 @@ export default {
         //     })
         //     this.getEmploye(this.propForm.dealAgentStoreId)
         //   }
-         
-        
+
         this.$nextTick(() => {
           this.loading = false;
         });
@@ -447,13 +458,13 @@ export default {
     this.remoteMethod();
   },
   computed: {
-    userInfo(){
-        return this.getUser.user
-      },
-        validInput() {
-            return this.SSuForm.remark.length
-        }
+    userInfo() {
+      return this.getUser
     },
+    validInput() {
+      return this.SSuForm.remark.length
+    }
+  },
   components: {
     achDialog,
     MIXINS,
@@ -466,15 +477,15 @@ export default {
     }
   },
   methods: {
-    submitForm(){
-      let param={
-          contractCode:this.htbh,
-          dealTime:this.qysj,
-          appealRole:this.SSuForm.role.join(','),
-          appealContent:this.SSuForm.remark,
-          voucherUrl:this.SSuForm.pinzheng.path,
-      }
-      this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
+    submitForm() {
+      let param = {
+        contractCode: this.htbh,
+        dealTime: this.qysj,
+        appealRole: this.SSuForm.role.join(","),
+        appealContent: this.SSuForm.remark,
+        voucherUrl: this.SSuForm.pinzheng.path
+      };
+      this.$ajax.postJSON("/api/appeal/saveAppealInfo", param, 2).then(res => {
         console.log(res);
         let newPage = this.$router.resolve({
           path: "/achDetial",
@@ -485,16 +496,16 @@ export default {
             contractId2: row.id
           }
         });
-      })
+      });
     },
-    getAdd(obj){
-      this.SSuForm.pinzheng=obj.param[0]
-      },
-    shenSu(row,index){
-      this.uploadScane.id=row.code
-      this.htbh=row.code
-      this.qysj=this.$tool.dateFormat(row.signDate)
-      this.isSS=true
+    getAdd(obj) {
+      this.SSuForm.pinzheng = obj.param[0];
+    },
+    shenSu(row, index) {
+      this.uploadScane.id = row.code;
+      this.htbh = row.code;
+      this.qysj = this.$tool.dateFormat(row.signDate);
+      this.isSS = true;
     },
     mul: function(arg1, arg2) {
       var m = 0,
@@ -534,22 +545,34 @@ export default {
       /*this.DepList=payload.list
       this.propForm.department=payload.depName*/
     },
-    getPicture(item){
-        return this.$tool.cutFilePath(item)
+    getPicture(item) {
+      return this.$tool.cutFilePath(item);
     },
-    getData(ajaxParam,typeshow,param) {
-      if(typeshow!=1&&param==2){
-        this.currentPage=1
+    getData(ajaxParam, typeshow, param) {
+      if (typeshow != 1 && param == 2) {
+        this.currentPage = 1;
       }
       this.loading = true;
       let _that = this;
-      this.$ajax.get("/api/appeal/getAppealList", ajaxParam).then(res => {
+      this.$ajax
+        .get("/api/appeal/getAppealList", ajaxParam)
+        .then(res => {
           let data = res.data;
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
-            for(let i=0;i<_that.selectAchList.length;i++){
-              for(let j=0;j<_that.selectAchList[i].achievementAppeals.length;j++){
-                _that.selectAchList[i].achievementAppeals[j].voucherUrl=this.getPicture(JSON.parse(_that.selectAchList[i].achievementAppeals[j].voucherUrl))
+            for (let i = 0; i < _that.selectAchList.length; i++) {
+              for (
+                let j = 0;
+                j < _that.selectAchList[i].achievementAppeals.length;
+                j++
+              ) {
+                _that.selectAchList[i].achievementAppeals[
+                  j
+                ].voucherUrl = this.getPicture(
+                  JSON.parse(
+                    _that.selectAchList[i].achievementAppeals[j].voucherUrl
+                  )
+                );
               }
             }
             _that.total = data.data.total;
@@ -557,15 +580,15 @@ export default {
               this.loading = false;
             });
           }
-        }).catch(error => {
+        })
+        .catch(error => {
           this.$message({ message: error });
           this.$nextTick(() => {
             this.loading = false;
           });
-        })
-       
+        });
     },
-    
+
     closeDialog() {
       this.dialogVisible = false;
     },
@@ -619,26 +642,26 @@ export default {
       });
       window.open(newPage.href, "_blank");
     },
-    aplquery(type){
-      this.propForm.dateMo=''
-      if(type==1){
+    aplquery(type) {
+      this.propForm.dateMo = "";
+      if (type == 1) {
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType:this.propForm.appealType,
-          timestate:1
-        }
-      }else if(type==2){
-        this.ajaxParam={
-           keyword: this.propForm.search, //关键字
+          appealType: this.propForm.appealType,
+          timestate: 1
+        };
+      } else if (type == 2) {
+        this.ajaxParam = {
+          keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType:this.propForm.appealType,
-          timestate:2
-        }
+          appealType: this.propForm.appealType,
+          timestate: 2
+        };
       }
-        
+
       // this.ajaxParam.pageNum = 1;
       // this.currentPage = 1;
       let param = JSON.parse(JSON.stringify(this.ajaxParam));
@@ -652,14 +675,14 @@ export default {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType:this.propForm.appealType
+          appealType: this.propForm.appealType
         };
       } else {
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealType:this.propForm.appealType
+          appealType: this.propForm.appealType
         };
       }
       // this.ajaxParam.pageNum = 1;
@@ -672,11 +695,11 @@ export default {
         JSON.stringify({
           path: "/achAppeal",
           url: "/appeal/getAppealList",
-          query: Object.assign({},param,{empName:this.dep.empName}),
+          query: Object.assign({}, param, { empName: this.dep.empName }),
           methods: "get"
         })
       );
-      this.getData(this.ajaxParam,typeshow,2);
+      this.getData(this.ajaxParam, typeshow, 2);
     },
     resetFormFn() {
       this.ajaxParam = {
@@ -696,9 +719,9 @@ export default {
       this.currentPage = 1;
       this.propForm = {
         department: "", //部门
-        dealAgentStoreId: '',
-        dealAgentId: '',
-        empName:'',
+        dealAgentStoreId: "",
+        dealAgentId: "",
+        empName: "",
         departmentDetail: "", //部门详情（员工）
         contractType: "", //合同类型
         divideType: "", //分成类型
@@ -842,12 +865,12 @@ export default {
   .check-btn span {
     color: #478de3;
   }
-  .dot{
-    text-overflow:ellipsis;
+  .dot {
+    text-overflow: ellipsis;
     white-space: nowrap;
-    overflow:hidden
+    overflow: hidden;
   }
-  .sustip{
+  .sustip {
     position: relative;
     line-height: auto;
     top: 12px;
@@ -856,15 +879,15 @@ export default {
     font-size: 12px;
     color: darkseagreen;
   }
-  .fileup{
-            width:86px;
-            height:32px;
-            line-height: 32px;
-            background:rgba(71,141,227,1);
-            margin-top: 10px;
-            color: white;
-            text-align: center !important
-    }
+  .fileup {
+    width: 86px;
+    height: 32px;
+    line-height: 32px;
+    background: rgba(71, 141, 227, 1);
+    margin-top: 10px;
+    color: white;
+    text-align: center !important;
+  }
   .check-btn span:first-of-type {
     margin-right: 8px;
   }
@@ -878,14 +901,14 @@ export default {
     color: #54d384;
   }
   .text-absolute {
-      position: absolute;
-      right: 15px;
-      color: #D6D6D6;
-      bottom: 0;
-    }
-    .role{
-      margin-bottom: 10px;
-    }
+    position: absolute;
+    right: 15px;
+    color: #d6d6d6;
+    bottom: 0;
+  }
+  .role {
+    margin-bottom: 10px;
+  }
   // 改变头部面包屑样式
   .head {
     .head-left {
@@ -1135,19 +1158,18 @@ export default {
     padding: 0 !important;
   }
 }
-.ssu{
+.ssu {
   display: flex;
-  p{
+  p {
     display: flex;
     align-items: center;
     margin-right: 30px;
     height: 37px;
-    span{
+    span {
       min-width: 70px;
       margin-right: 8px;
     }
   }
-    
 }
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
@@ -1187,30 +1209,30 @@ export default {
 .width425 {
   width: 425px !important;
 }
-  .name-wrapper {
-    min-width: 80px;
-    max-height: 65px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: normal;
-    word-break: break-all;
-    word-wrap:break-word;
-  }
-  .isFlex{
-    display: flex;
-    align-items: center;
-  }
-  .link{
-    color: #478de3;
-    cursor:pointer
-  }
-  .shensulink{
-    font-size:14px;
-    color:#478de3;
-    margin-right:8px;
-    position:relative;
-    top:6px;
-  }
+.name-wrapper {
+  min-width: 80px;
+  max-height: 65px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.isFlex {
+  display: flex;
+  align-items: center;
+}
+.link {
+  color: #478de3;
+  cursor: pointer;
+}
+.shensulink {
+  font-size: 14px;
+  color: #478de3;
+  margin-right: 8px;
+  position: relative;
+  top: 6px;
+}
 </style>
