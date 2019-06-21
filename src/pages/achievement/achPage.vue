@@ -1691,8 +1691,15 @@
           this.$message.error("请完善信息");
         }
       },
+      trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            },
       //弹框驳回操作
       rejectAch() {
+        if(this.trim(this.remark).length==0){
+          this.$message.error("请填写驳回信息！");
+          return false;
+        }
         if (this.houseArr.length == 0 && this.clientArr.length != 0) {
           this.$message.error("房源至少保留一人");
           return false;

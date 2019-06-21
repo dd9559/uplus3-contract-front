@@ -675,7 +675,7 @@
       </el-dialog>
     </div>
       <!-- 申诉弹窗 -->
-      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
             <div class="ssu">
               <p><span class="jianju">合同编号：</span>{{htbh}}</p>
               <p>签约时间：{{qysj}}</p>
@@ -1002,6 +1002,16 @@ export default {
     }
   },
   methods: {
+    close2(){
+          this.yjId=''
+          this.SSuForm.role=[]
+          this.SSuForm.remark=''
+          this.SSuForm.pinzheng==[]
+          this.depName=''
+          this.SSuForm.empNames=''
+          this.auditName=''
+          this.roleName=''
+    },
     cutfile(index){
       this.SSuForm.pinzheng.splice(index,1)
 
