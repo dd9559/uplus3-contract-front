@@ -66,6 +66,7 @@
             <div class="ach-divide-list">
               <el-table
                 :data="houseArr"
+                class="sushen"
                  style="width:100%"
               >
                 <!-- 角色类型 不可输入-->
@@ -623,9 +624,17 @@
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
-                      {{scope.row.appealDepName}}-{{scope.row.appealName}}
+                    {{scope.row.appealDepName}}-{{scope.row.appealName}}
                   </div>
                   <div v-else>-</div>
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
                 </template>
               </el-table-column>
 
@@ -641,6 +650,7 @@
                           <p class="dot">{{scope.row.roles.join(',')}}</p>
                     </el-tooltip>
                   </div>
+                  
                 </template>
                 </el-table-column>
                 <el-table-column
@@ -648,42 +658,16 @@
                   width="200"
                 >
                 <template slot-scope="scope">
-                      <div>
+                      <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
                         <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
-                        <p slot="reference">{{scope.row.appealContent.slice(0,10)}}</p>
+                        <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
                         </el-popover>
                       </div>
+                      <div v-else>-</div>
                   </template>
                 </el-table-column>
-
-                <el-table-column
-                  label="申诉时间"
-                >
-                <template slot-scope="scope">
-                  {{scope.row.appealTime|formatDate}}
-                </template>
-              </el-table-column>
 
                <el-table-column
-                  label="申诉状态"
-                >
-                <template slot-scope="scope">
-                  {{scope.row.auditStatus.label}}
-                </template>
-              </el-table-column>
-
-                <el-table-column
-                  label="审核人名称"
-                >
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
-                      {{scope.row.auditDepName}}-{{scope.row.auditName}}
-                    </div>
-                    <div v-else>-</div>
-                  </template>
-                </el-table-column>
-                </el-table-column>
-                <el-table-column
                   label="申诉凭证"
                 >
                 <template slot-scope="scope">
@@ -697,10 +681,38 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="审核信息"
+                  label="审核人"
                 >
                 <template slot-scope="scope">
-                  {{scope.row.auditRemarks}}
+                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+                
+                <el-table-column
+                  label="审核状态(时间)"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditStatus">
+                      {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
+                  </div>
+                  <div v-else>-</div>                                     
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="审核备注"
+                >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.auditRemarks">
+                      <el-popover trigger="hover" width="200" :content="scope.row.auditRemarks" placement="top">
+                            <p class="dot" slot="reference">{{scope.row.auditRemarks}}</p>
+                      </el-popover>
+                    </div>
+                    <div v-else>-</div>
+                  
                 </template>
               </el-table-column>
 
@@ -708,7 +720,7 @@
                   label="操作"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus.value==0&&auditIds==1">
+                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
                     <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
                   </div>
                   <div v-else>-</div>
@@ -928,7 +940,7 @@
             </el-table>
         </el-dialog>
       
-      <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+      <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
                      <span>{{aplman}}</span>
@@ -970,6 +982,8 @@
     name: "achDialog",
     data() {
       return {
+        aplremark:'',
+        inputMax:200,
         aplid:'',
         aplman:'',
         aplrole:'',
@@ -1056,6 +1070,9 @@
     //   achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
     // },
     methods: {
+      close(){
+        this.aplremark=''
+      },
       itemht(row){
         this.aplman=row.appealName
         this.aplrole=row.roles
@@ -2148,6 +2165,9 @@
       }
     },
     computed:{
+        validInput() {
+                return this.aplremark.length
+        },
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
@@ -2527,6 +2547,9 @@
     /* Internet Explorer 10+ */
     color: #ccc!important;
   }
+  /deep/ .sushen tr td  .cell{
+        line-height: 30px;
+   }
   .recordtable{
     min-height: 200px;
   }
@@ -2548,4 +2571,15 @@
           border: 1px solid #DDD;
           }
       }
+      .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      overflow:hidden
+      }
+      .text-absolute {
+      position: absolute;
+      right: 4px;
+      color: #D6D6D6;
+      bottom: 0;
+    }      
 </style>

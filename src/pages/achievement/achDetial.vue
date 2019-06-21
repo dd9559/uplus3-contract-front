@@ -249,6 +249,7 @@
         <div class="ach-divide-list">
              <el-table
                 :data="shensuArr"
+                class="sushen"
                 style="width: 100%"
               >
               <el-table-column
@@ -256,9 +257,17 @@
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
-                      {{scope.row.appealDepName}}-{{scope.row.appealName}}
+                    {{scope.row.appealDepName}}-{{scope.row.appealName}}
                   </div>
                   <div v-else>-</div>
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
                 </template>
               </el-table-column>
 
@@ -274,12 +283,14 @@
                           <p class="dot">{{scope.row.roles.join(',')}}</p>
                     </el-tooltip>
                   </div>
+                  
                 </template>
                 </el-table-column>
                 <el-table-column
                   label="申诉内容"
-                  width="200">
-                    <template slot-scope="scope">
+                  width="200"
+                >
+                <template slot-scope="scope">
                       <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
                         <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
                         <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
@@ -289,56 +300,21 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="申诉时间"
-                >
-                <template slot-scope="scope">
-                  {{scope.row.appealTime|formatDate}}
-                </template>
-              </el-table-column>
-
                <el-table-column
-                  label="审核状态"
-                >
-                <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus">
-                      {{scope.row.auditStatus.label}}
-                  </div>
-                  <div v-else>-</div>
-                </template>
-              </el-table-column>
-
-                <el-table-column
                   label="申诉凭证"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.voucherUrl&&scope.row.voucherUrl.length>0">
+                    <div v-if="scope.row.voucherUrl&&scope.row.voucherUrl.length>0">
                       <div  v-for="(item,index) in scope.row.voucherUrl">
                       <p class="link" @click="previewPhoto(scope.row.voucherUrl,index)">附件{{index+1}}</p>
                     </div>
                   </div>
                   <div v-else>-</div>
-                    
                 </template>
                 </el-table-column>
 
                 <el-table-column
-                  label="审核信息"
-                >
-                <template slot-scope="scope">
-                  <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
-                    <el-tooltip class="item" width="200" effect="dark" :content="scope.row.auditRemarks" placement="top-start">
-                      <p class="dot">{{scope.row.auditRemarks}}</p>
-                  </el-tooltip>
-                  </div>
-                  <div v-else>
-                    -
-                  </div>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                  label="审核人名称"
+                  label="审核人"
                 >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
@@ -347,6 +323,31 @@
                   <div v-else>-</div>
                 </template>
                 </el-table-column>
+                
+                <el-table-column
+                  label="审核状态(时间)"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditStatus">
+                      {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
+                  </div>
+                  <div v-else>-</div>                                     
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="审核备注"
+                >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.auditRemarks">
+                      <el-popover trigger="hover" width="200" :content="scope.row.auditRemarks" placement="top">
+                            <p class="dot" slot="reference">{{scope.row.auditRemarks}}</p>
+                      </el-popover>
+                    </div>
+                    <div v-else>-</div>
+                  
+                </template>
+              </el-table-column>
 
                 <el-table-column
                   label="操作"
@@ -389,7 +390,7 @@
             </el-table>
         </el-dialog>
 
-        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
                      <span>{{aplman}}</span>
@@ -475,7 +476,7 @@ export default{
       this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
-            this.auditIds==data.data.auditIds
+            this.auditIds=data.data.auditIds
             this.shensuArr=data.data.appeals
             for(let i=0;i<this.shensuArr.length;i++){
                 this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
@@ -493,6 +494,9 @@ export default{
         }).catch(err=>{
           this.$message({message:err})
         })
+      },
+      close(){
+        this.aplremark=''
       },
       itemht(row){
         this.aplman=row.appealName
@@ -574,6 +578,9 @@ export default{
       .color-red {
         background-color: #f56c6c;
         margin-left: 20px;
+      }
+      /deep/ .sushen tr td  .cell{
+        line-height: 30px;
       }
     .preview{
       z-index:2220!important

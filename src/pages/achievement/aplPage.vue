@@ -616,6 +616,7 @@
            <div class="ach-divide-list" style="margin-bottom:20px">
              <el-table
                 :data="shensuArr"
+                class="sushen"
                 style="width: 100%"
               >
               <el-table-column
@@ -705,10 +706,13 @@
                   label="审核备注"
                 >
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditRemarks&&scope.row.auditRemarks.length>0">
-                      {{scope.row.auditRemarks}}
-                  </div>
-                  <div v-else>-</div>
+                    <div v-if="scope.row.auditRemarks">
+                      <el-popover trigger="hover" width="200" :content="scope.row.auditRemarks" placement="top">
+                            <p class="dot" slot="reference">{{scope.row.auditRemarks}}</p>
+                      </el-popover>
+                    </div>
+                    <div v-else>-</div>
+                  
                 </template>
               </el-table-column>
 
@@ -733,21 +737,7 @@
             v-if="dialogType==0"
             style="height:100px;padding-bottom: 30px;width:100%"
           >
-            <div class="text-layout-out">
-              <p class="text-layout">
-                <label>备注：</label>
-                <el-input
-                  type="textarea"
-                  :rows="2"
-                  placeholder="请输入内容,最多输入200字"
-                  class="f_l"
-                  v-model="remark"
-                  resize="none"
-                  maxlength=200
-                ></el-input>
-                <!-- <span class="textLength">{{remark.length}}/200</span> -->
-              </p>
-            </div>
+            
             <div class="footer-btn-layout f_r">
               <el-button
                 type="primary"
@@ -922,7 +912,7 @@
             </el-table>
         </el-dialog>
 
-        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
                      <span>{{aplman}}</span>
@@ -1774,6 +1764,9 @@
           this.$message.error("请完善信息");
         }
       },
+      close(){
+        this.aplremark=''
+      },
       // 反审核，编辑的保存
       keepAch(type, status,editStr) {
         if (this.houseArr.length == 0 && this.clientArr.length != 0) {
@@ -2460,5 +2453,8 @@
           color:#ACA899;
           border: 1px solid #DDD;
           }
+      }
+      /deep/ .sushen tr td  .cell{
+        line-height: 30px;
       }
 </style>
