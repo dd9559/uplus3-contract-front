@@ -1068,8 +1068,11 @@
             }
           })
       },
+      trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            },
       nopass(){
-        if(this.aplremark==""){
+        if(this.trim(this.aplremark).length==0){
           this.$message({message:"请填写备注信息！"})
           return
         }
