@@ -240,16 +240,11 @@
           <el-table-column label="审核备注" align="center" min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
-                <div v-if="item.auditRemarks.length>0">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="item.auditRemarks"
-                    placement="top-start"
-                  >
-                    <p class="dot">{{item.auditRemarks}}</p>
-                  </el-tooltip>
-                </div>
+                  <div v-if="item.auditRemarks.length>0">
+                      <el-popover trigger="hover" width="200" :content="item.auditRemarks" placement="top">
+                            <p class="dot" slot="reference">{{item.auditRemarks}}</p>
+                      </el-popover>
+                  </div>
                 <div v-else>-</div>
               </div>
             </template>
@@ -820,6 +815,7 @@ export default {
     },
     skipContDel(value) {
       //进入合同详情
+      debugger
       if (this.power["sign-com-htdetail"].state) {
         let param = {
           code: value.code
@@ -1255,5 +1251,8 @@ export default {
   margin-right: 8px;
   position: relative;
   top: 6px;
+}
+/deep/ .el-tooltip__popper{
+  width:300px!important
 }
 </style>

@@ -675,14 +675,14 @@
       </el-dialog>
     </div>
       <!-- 申诉弹窗 -->
-      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
             <div class="ssu">
-              <p>合同编号：{{htbh}}</p>
+              <p><span class="jianju">合同编号：</span>{{htbh}}</p>
               <p>签约时间：{{qysj}}</p>
               <p v-if="userInfo">申诉人：{{userInfo.name}}</p>
             </div>
             <div class="role">
-              <span class="point">申诉角色：</span>
+              <span class="point jianju">申诉角色：</span>
               <el-select v-model="SSuForm.role" placeholder="请选择" multiple 
               class="width300"
               :class="{'width425':SSuForm.role.length>3}"
@@ -691,26 +691,26 @@
               </el-select>
             </div>
             <div class="role">
-              <span class="point" style="margin-right:17px">审核人：</span>{{depName}}
-              <el-select v-model="SSuForm.empNames" style="margin-right:19px" placeholder="请选择"  
+              <span class="point jianju" style="margin-right:25px;">审核人：</span>{{depName}}
+              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" placeholder="请选择"  
               :clearable="true" @change="getName">
                     <el-option v-for="item in this.empNames" :key="item.empId" :label="item.name"  :value="item.empId"></el-option>
               </el-select>
             </div>
              <div class="input-group" style="align-items: normal;position:relative">
-                    <span class="point" style="min-width:78px">申诉内容：</span>
+                    <span class="point jianju" style="min-width:78px">申诉内容：</span>
                     <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
               </div>
               <div class="input-group">
-                <span >申诉凭证：</span>
+                <span class="jianju">申诉凭证：</span>
                 <div>
                   <fileUp @getUrl='getAdd' :scane="uploadScane" :more=true :rules="mbrules" id='pinzheng' class='fileup'>选择文件</fileUp>
                   <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">{{this.SSuForm.pinzheng.length}}个上传成功！</span>
                 </div>
               </div>
               <div slot="footer" class="dialog-footer">
-                <el-button @click="submitForm" type="primary" class="confirmBtn" v-dbClick>确 定</el-button>
+                <el-button @click="submitForm" type="primary" size="small" round class="paper-btn paper-btn-blue" v-dbClick>确 定</el-button>
               </div>
       </el-dialog>
     <!-- 选择审核人弹框 -->
@@ -1430,6 +1430,7 @@ export default {
                   "actualAchievement"
                 )
               );
+              debugger
               this.$router.push({
                 path: "/contractDetails",
                 query: {
@@ -1481,6 +1482,16 @@ export default {
   .check-btn span {
     color: #478de3;
   }
+  // .paper-btn{
+  //   background-color: @color-blue;
+  //   border-color: @color-blue;
+  // }
+  .jianju{
+    text-align: right;
+    width: 80px;
+    display: inline-block;
+    margin-right: 15px;
+  }
   .sustip{
     position: relative;
     line-height: auto;
@@ -1491,7 +1502,7 @@ export default {
     color: darkseagreen;
   }
   .fileup{
-            width:86px;
+            width:80px;
             height:32px;
             line-height: 32px;
             background:rgba(71,141,227,1);

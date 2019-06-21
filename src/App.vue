@@ -86,6 +86,9 @@
     -webkit-appearance: none !important;
     margin: 0;
   }
+   .el-dialog__header{
+    border:1px solid #e8eaf6!important;
+  }
 
   .input-group {
     display: flex;
