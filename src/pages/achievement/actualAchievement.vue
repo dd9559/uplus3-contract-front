@@ -1006,7 +1006,7 @@ export default {
           this.yjId=''
           this.SSuForm.role=[]
           this.SSuForm.remark=''
-          this.SSuForm.pinzheng==[]
+          this.SSuForm.pinzheng=[]
           this.depName=''
           this.SSuForm.empNames=''
           this.auditName=''
