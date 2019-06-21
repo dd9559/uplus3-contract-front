@@ -702,11 +702,24 @@
                     <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
                      <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
               </div>
-              <div class="input-group">
+              <div class="input-group" style="align-items: normal">
                 <span class="jianju">申诉凭证：</span>
                 <div>
                   <fileUp @getUrl='getAdd' :scane="uploadScane" :more=true :rules="mbrules" id='pinzheng' class='fileup'>选择文件</fileUp>
-                  <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">{{this.SSuForm.pinzheng.length}}个上传成功！</span>
+                  <!-- <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">{{this.SSuForm.pinzheng.length}}个上传成功！</span> -->
+                  <div class="sustip" v-show="SSuForm.pinzheng&&SSuForm.pinzheng.length!=0">
+                    <!-- {{this.SSuForm.pinzheng}} -->
+                    <span style="margin-right:20px"   v-for="(item,index) in SSuForm.pinzheng">
+                          <span class="closepre">
+                            <span
+                          class="link"
+                          slot="reference"
+                          @click.stop="previewPhoto(SSuForm.pinzheng,index)">附件{{index+1}}
+                            </span>
+                            <i class="el-icon-close" @click="cutfile(index)"></i>
+                        </span>
+                    </span>
+                  </div>
                 </div>
               </div>
               <div slot="footer" class="dialog-footer">
@@ -725,6 +738,7 @@
       :showLabel="checkPerson.label"
       :page="checkPerson.page"
     ></checkPerson>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -739,6 +753,8 @@ export default {
   name: "actualAchievement",
   data() {
     return {
+      pinzheng2:[],
+      imgList:[],
       roleName:'',
       auditName:'',
       depName:'',
@@ -986,6 +1002,10 @@ export default {
     }
   },
   methods: {
+    cutfile(index){
+      this.SSuForm.pinzheng.splice(index,1)
+
+    },
     getName(val){
       for(let i=0;i<this.empNames.length;i++){
         if(val==this.empNames[i].empId){
@@ -1007,11 +1027,16 @@ export default {
         this.$message('审核人不能为空！')
         return
       }
+      let arr2=[]
+      let arr=JSON.parse(JSON.stringify(this.SSuForm.pinzheng))
+       for(let i=0;i<arr.length;i++){
+        arr2.push(arr[i].path+'?'+arr[i].name)
+      }
       let param={
           achievementId :this.yjId,
           appealRole:this.SSuForm.role.join(','),
           appealContent:this.SSuForm.remark,
-          voucherUrl:this.SSuForm.pinzheng,
+          voucherUrl:arr2,
           auditDepName:this.depName,
           auditId:this.SSuForm.empNames,
           auditName:this.auditName,
@@ -1038,9 +1063,16 @@ export default {
         }
     },
     getAdd(obj){
-      for(let i=0;i<obj.param.length;i++){
-        this.SSuForm.pinzheng.push(obj.param[i].path+'?'+obj.param[i].name)
-      }
+      // this.files=obj
+      // for(let i=0;i<obj.param.length;i++){
+      //   this.SSuForm.pinzheng.push(obj.param[i].path+'?'+obj.param[i].name)
+      // }
+      // this.imgList=this.$tool.cutFilePath(this.files)
+      
+      this.SSuForm.pinzheng=this.SSuForm.pinzheng.concat(obj.param)
+      },
+    getPicture(item){
+        return this.$tool.cutFilePath(item)
       },
     shenSu(row,index){
       this.uploadScane.id=row.code
@@ -1482,6 +1514,28 @@ export default {
   .check-btn span {
     color: #478de3;
   }
+  .closepre{
+    width:50px;
+    display:inline-block;
+    position:relative;
+    i{
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        background-color: #9B9B9B;
+        position: absolute;
+        border-radius: 50%;
+        font-size: 12px;
+        color: #fff;
+        top: 2px;
+        right:0;
+        display: none;
+        cursor: pointer;
+    }
+    &:hover i{
+        display:block
+    }
+  }
   // .paper-btn{
   //   background-color: @color-blue;
   //   border-color: @color-blue;
@@ -1494,8 +1548,8 @@ export default {
   }
   .sustip{
     position: relative;
-    line-height: auto;
-    top: 12px;
+    line-height: 40px;
+    width:470px;
     font-style: italic;
     padding-left: 0;
     font-size: 12px;
@@ -1506,12 +1560,14 @@ export default {
             height:32px;
             line-height: 32px;
             background:rgba(71,141,227,1);
-            margin-top: 10px;
             color: white;
             text-align: center !important
     }
   .check-btn span:first-of-type {
     margin-right: 8px;
+  }
+  .link{
+
   }
   .blue {
     color: #478de3;
@@ -1812,6 +1868,9 @@ export default {
   text-align: right !important;
   // padding-bottom: 50px;
   // padding-top: 50px;
+}
+.preview{
+  z-index:2220!important
 }
 .name-wrapper {
   display: flex;

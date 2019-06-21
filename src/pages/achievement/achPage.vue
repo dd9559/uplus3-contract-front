@@ -1665,6 +1665,7 @@
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
+                this.codeBaseInfo(this.code, 1,null,"getEditInfo");
                 this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
               }
             }).catch(error => {
@@ -1874,6 +1875,7 @@
               }
               if (type == 2 && status == 1) {
                 if(this.state2===1){
+                  this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
                   var paperBtn2=document.getElementById('savebtn2')
                   paperBtn2.disabled=true
                   paperBtn2.classList.remove('color-blue')

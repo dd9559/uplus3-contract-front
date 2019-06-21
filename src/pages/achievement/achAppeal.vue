@@ -325,7 +325,7 @@ export default {
       },
       // 筛选条件
       propForm: {
-        appealType: "",
+        appealType: 2,
         dateMo: "",
         search: ""
       },
@@ -663,7 +663,7 @@ export default {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           appealStatus: this.propForm.appealType,
-          timestate: 1
+          timeType: 1
         };
       } else if (type == 2) {
         let today2=this.$tool.dateFormat(Date.now())
@@ -674,7 +674,7 @@ export default {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
           appealStatus: this.propForm.appealType,
-          timestate: 2
+          timeType: 2
         };
       }
 
