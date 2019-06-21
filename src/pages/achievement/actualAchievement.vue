@@ -1014,12 +1014,15 @@ export default {
         }
       }
     },
+    trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            },
     submitForm(){
       if(this.SSuForm.role.length==0){
         this.$message('申诉角色不能为空！')
         return
       }
-      if(this.SSuForm.remark==''){
+      if(this.trim(this.SSuForm.remark)){
         this.$message('申诉内容不能为空！')
         return
       }
