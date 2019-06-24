@@ -255,7 +255,7 @@
           <el-table-column label="操作" align="center" min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
-                <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1"
+                <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1&&scope.row.appealStatus.value==0"
                 style="cursor:pointer;">审核</span>
                 <span v-else>-</span>
               </div>
