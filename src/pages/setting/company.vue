@@ -485,8 +485,8 @@
         homeStoreName:''
       }
     },
-    created() {
-      this.searchForm.cityId = parseInt(localStorage.getItem('initId'))
+    mounted() {
+      this.searchForm.cityId = this.cityInfo.user.cityId
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data.list
@@ -722,7 +722,7 @@
         this.initFormList()
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
-        this.companyForm.cityName = localStorage.getItem('cityName')
+        this.companyForm.cityName = this.cityInfo.user.cityName
         this.clearStore()
       },
       //切换到直营属性时,自动带出证件信息
@@ -1139,6 +1139,11 @@
     filters: {
       formatBankCard(val) {
         return val.replace(/[\s]/g, '').replace(/(\d{4})(?=\d)/g, "$1 ")
+      }
+    },
+    computed: {
+      cityInfo(){
+        return this.getUser
       }
     }
 }

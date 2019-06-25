@@ -100,6 +100,17 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="申诉状态" prop="appealType">
+          <el-select v-model="propForm.appealType" class="w120" :clearable="true">
+            <el-option
+              v-for="item in aplStatuArr"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="合作方式" prop="contractType">
           <el-select v-model="propForm.joinMethods" class="w120" :clearable="true">
             <el-option
@@ -206,6 +217,14 @@
               <p v-if="scope.row.achievementState==0" class="blue" style="cursor:text">审核中</p>
               <p v-if="scope.row.achievementState==1" class="green">已通过</p>
               <p v-if="scope.row.achievementState==2" class="orange">已驳回</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="申诉状态" align="center" min-width="80">
+            <template slot-scope="scope">
+              <p v-if="scope.row.appealStatus.value==-1" class="blue" style="cursor:text">未申诉</p>
+              <p v-if="scope.row.appealStatus.value==0" class="blue" style="cursor:text">已处理</p>
+              <p v-if="scope.row.appealStatus.value==1" class="green">未处理</p>
             </template>
           </el-table-column>
 
@@ -316,9 +335,9 @@
               <p v-else>-</p>
               <el-button
                 type="text"
-                @click="choseCheckPerson(scope.row,userMsg&&userMsg.empId===scope.row.auditId?2:1)"
-                v-if="((userMsg&&userMsg.empId==scope.row.preAuditId)||scope.row.auditId===userMsg.empId)&&scope.row.achievementState==0"
-              >{{userMsg&&userMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+                @click="choseCheckPerson(scope.row,userInfo&&userInfo.empId===scope.row.auditId?2:1)"
+                v-if="((userInfo&&userInfo.empId==scope.row.preAuditId)||scope.row.auditId===userInfo.empId)&&scope.row.achievementState==0"
+              >{{userInfo&&userInfo.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
             </template>
           </el-table-column>
 
@@ -332,7 +351,7 @@
                 type="text"
                 style="color:red"
                 @click="choseCheckPerson(scope.row,3)"
-                v-if="(userMsg&&scope.row.auditId===userMsg.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
+                v-if="(userInfo&&scope.row.auditId===userInfo.empId&&(scope.row.nextAuditId!==0))&&scope.row.achievementState==0"
               >设置审核人</el-button>
             </template>
           </el-table-column>
@@ -345,17 +364,25 @@
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
-                  >编辑</span>
-                  <span style="cursor:pointer;" v-else>-</span>
+                  >确认业绩</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-appeal'].state"
+                  >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==1" class="check-btn">
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-fs'].state&&(userMsg&&scope.row.finalAuditorId===userMsg.empId)"
+                    v-if="power['sign-yj-rev-fs'].state&&(userInfo&&scope.row.finalAuditorId===userInfo.empId)"
                   >反审核</span>
-                  <span style="cursor:pointer;" v-else>-</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-appeal'].state"
+                  >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
@@ -363,24 +390,36 @@
                     @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
-                  >编辑</span>
-                  <span style="cursor:pointer;" v-else>-</span>
+                  >确认业绩</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-appeal'].state"
+                  >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==0" class="check-btn">
-                  <span
-                    @click.stop="chehui(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-retreat'].state"
-                  >撤回</span>
-                  <span
-                    @click.stop="checkAch(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="userMsg&&userMsg.empId==scope.row.auditId"
-                  >审核</span>
-                  <span
-                    v-if="userMsg&&userMsg.empId!=scope.row.auditId&&scope.row.arraignmentId!=userMsg.empId"
-                  >-</span>
+                  <div v-if="power['sign-yj-rev-retreat'].state||power['sign-yj-rev-appeal'].state||(userInfo&&userInfo.empId==scope.row.auditId)">
+                      <span
+                        @click.stop="chehui(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="power['sign-yj-rev-retreat'].state"
+                      >撤回</span>
+                      <span
+                        @click.stop="shenSu(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="power['sign-yj-rev-appeal'].state"
+                      >申诉</span>
+                      <span
+                        @click.stop="checkAch(scope.row,scope.$index)"
+                        style="cursor:pointer;"
+                        v-if="userInfo&&userInfo.empId==scope.row.auditId"
+                      >审核</span>
+                  </div>
+                 <span v-else>-</span>
+                  <!-- <span
+                    v-if="userInfo&&userInfo.empId!=scope.row.auditId&&scope.row.arraignmentId!=userInfo.empId"
+                  >-</span> -->
                 </div>
               </div>
               <div v-else>
@@ -635,7 +674,58 @@
         </span>
       </el-dialog>
     </div>
-
+      <!-- 申诉弹窗 -->
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+            <div class="ssu">
+              <p><span class="jianju">合同编号：</span>{{htbh}}</p>
+              <p>签约时间：{{qysj}}</p>
+              <p v-if="userInfo">申诉人：{{userInfo.name}}</p>
+            </div>
+            <div class="role">
+              <span class="point jianju">申诉角色：</span>
+              <el-select v-model="SSuForm.role" placeholder="请选择" multiple 
+              class="width300"
+              :class="{'width425':SSuForm.role.length>3}"
+              :clearable="true">
+                    <el-option v-for="item in people" :key="item.code" :label="item.description"  :value="item.code"></el-option>
+              </el-select>
+            </div>
+            <div class="role">
+              <span class="point jianju" style="margin-right:25px;">审核人：</span>{{depName}}
+              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" placeholder="请选择"  
+               @change="getName">
+                    <el-option v-for="item in this.empNames" :key="item.empId" :label="item.name"  :value="item.empId"></el-option>
+              </el-select>
+            </div>
+             <div class="input-group" style="align-items: normal;position:relative">
+                    <span class="point jianju" style="min-width:78px">申诉内容：</span>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="SSuForm.remark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+              </div>
+              <div class="input-group" style="align-items: normal">
+                <span class="jianju">申诉凭证：</span>
+                <div>
+                  <fileUp @getUrl='getAdd' :scane="uploadScane" :more=true :rules="mbrules" id='pinzheng' class='fileup'>选择文件</fileUp>
+                  <!-- <span class="sustip" v-show="this.SSuForm.pinzheng.length!=0">{{this.SSuForm.pinzheng.length}}个上传成功！</span> -->
+                  <div class="sustip" v-show="SSuForm.pinzheng&&SSuForm.pinzheng.length!=0">
+                    <!-- {{this.SSuForm.pinzheng}} -->
+                    <span style="margin-right:20px"   v-for="(item,index) in SSuForm.pinzheng">
+                          <span class="closepre">
+                            <span
+                          class="link"
+                          slot="reference"
+                          @click.stop="previewPhoto(SSuForm.pinzheng,index)">附件{{index+1}}
+                            </span>
+                            <i class="el-icon-close" @click="cutfile(index)"></i>
+                        </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="submitForm" type="primary" size="small" round class="paper-btn paper-btn-blue" v-dbClick>确 定</el-button>
+              </div>
+      </el-dialog>
     <!-- 选择审核人弹框 -->
     <checkPerson
       :show="checkPerson.state"
@@ -648,6 +738,7 @@
       :showLabel="checkPerson.label"
       :page="checkPerson.page"
     ></checkPerson>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -662,6 +753,19 @@ export default {
   name: "actualAchievement",
   data() {
     return {
+      pinzheng2:[],
+      imgList:[],
+      roleName:'',
+      auditName:'',
+      depName:'',
+      uploadScane:{path:'shensu',id:''},//上传场景值
+      people:[],
+      htbh:'',
+      yjId:'',
+      qysj:'',
+      inputMax:200,
+      isSS:false,
+      mbrules:['jpg','png','doc','docx','pdf','jpeg','xlsx','xls'],
       selectAchList: [], //应收列表数组
       countData: [], //数据统计数组
       houseArr: [], //应收详情房源数组
@@ -670,7 +774,15 @@ export default {
       departs: [], //部门
       depUser: "",
       users: [],
+      empNames:[],
       dialogVisible: false, //详情弹框
+      SSuForm:{
+        role:[],
+        remark:'',
+        empNames:'',
+        auditName:'',
+        pinzheng:[],
+      },
       // 筛选条件
       propForm: {
         department: "", //部门
@@ -680,6 +792,7 @@ export default {
         contractType: "", //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
+        appealType:'', //申诉状态
         dateMo: "",
         search: "",
         joinMethods: "" //合作方式
@@ -730,8 +843,30 @@ export default {
           value: "已驳回"
         }
       ],
+      aplStatuArr: [
+        {
+          key: -1,
+          value: "未申诉"
+        },
+        {
+          key: 0,
+          value: "已处理"
+        },
+        {
+          key: 1,
+          value: "未处理"
+        },
+        {
+          key: 2,
+          value: "全部"
+        }
+      ],
       //权限配置
       power: {
+        "sign-yj-rev-appeal": {
+          state: false,
+          name: "申诉"
+        },
         "sign-yj-rev-query": {
           state: false,
           name: "查询"
@@ -772,8 +907,10 @@ export default {
     };
   },
   created(){
-    this.getAdmin(); //获取当前登录人信息
-    this.userMsg=this.getUser.user
+    
+    
+
+    
   },
   mounted() {
     this.ajaxParam = {
@@ -803,6 +940,7 @@ export default {
         this.propForm.achType = session.achievementStatus;
         this.propForm.dealAgentStoreId=session.dealAgentStoreId
         this.propForm.dealAgentId=session.dealAgentId
+        this.propForm.appealType=session.appealStatus
         this.propForm.dateMo = session.startTime
           ? [session.startTime, session.endTime]
           : [];
@@ -843,6 +981,15 @@ export default {
     //部门初始化
     this.remoteMethod();
   },
+  computed: {
+      userInfo(){
+        return this.getUser.user
+      },
+      validInput() {
+        // debugger
+        return this.SSuForm.remark.length
+        }
+      },
   components: {
     achDialog,
     MIXINS,
@@ -855,6 +1002,109 @@ export default {
     }
   },
   methods: {
+    close2(){
+          this.yjId=''
+          this.SSuForm.role=[]
+          this.SSuForm.remark=''
+          this.SSuForm.pinzheng=[]
+          this.depName=''
+          this.SSuForm.empNames=''
+          this.auditName=''
+          this.roleName=''
+    },
+    cutfile(index){
+      this.SSuForm.pinzheng.splice(index,1)
+
+    },
+    getName(val){
+      for(let i=0;i<this.empNames.length;i++){
+        if(val==this.empNames[i].empId){
+            this.auditName=this.empNames[i].name
+            this.roleName=this.empNames[i].roleName
+        }
+      }
+    },
+    trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            },
+    submitForm(){
+      if(this.SSuForm.role.length==0){
+        this.$message('申诉角色不能为空！')
+        return
+      }
+      if(this.trim(this.SSuForm.remark).length==0){
+        this.$message('申诉内容不能为空！')
+        return
+      }
+      if(this.auditName==''){
+        this.$message('审核人不能为空！')
+        return
+      }
+      let arr2=[]
+      let arr=JSON.parse(JSON.stringify(this.SSuForm.pinzheng))
+       for(let i=0;i<arr.length;i++){
+        arr2.push(arr[i].path+'?'+arr[i].name)
+      }
+      let param={
+          achievementId :this.yjId,
+          appealRole:this.SSuForm.role.join(','),
+          appealContent:this.SSuForm.remark,
+          voucherUrl:arr2,
+          auditDepName:this.depName,
+          auditId:this.SSuForm.empNames,
+          auditName:this.auditName,
+          auditPostionName:this.roleName,
+      }
+      if(this.power['sign-yj-rev-appeal'].state){
+        this.$ajax.postJSON('/api/appeal/saveAppealInfo',param,2).then(res=>{
+          if(res.status==200){
+              this.isSS=false
+              this.yjId=''
+              this.SSuForm.role=[]
+              this.SSuForm.remark=''
+              this.SSuForm.pinzheng=[]
+              this.SSuForm.empNames=''
+              this.auditName=''
+              this.roleName=''
+              this.$message({message: '提交成功！'})
+          }
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+       }else{
+              this.noPower(this.power['sign-yj-rev-appeal'].name)
+        }
+    },
+    getAdd(obj){
+      // this.files=obj
+      // for(let i=0;i<obj.param.length;i++){
+      //   this.SSuForm.pinzheng.push(obj.param[i].path+'?'+obj.param[i].name)
+      // }
+      // this.imgList=this.$tool.cutFilePath(this.files)
+      
+      this.SSuForm.pinzheng=this.SSuForm.pinzheng.concat(obj.param)
+      },
+    getPicture(item){
+        return this.$tool.cutFilePath(item)
+      },
+    shenSu(row,index){
+      this.uploadScane.id=row.code
+      this.htbh=row.code
+      this.yjId=row.aId
+      this.qysj=this.$tool.dateFormat(row.signDate)
+      this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
+      if(res.data.status==200){
+        this.people=res.data.data.allRole
+        this.depName=res.data.data.depName
+        this.empNames=res.data.data.empNames
+        
+        // debugger
+        this.SSuForm.empNames=res.data.data.empNames[0].empId
+        this.auditName=res.data.data.empNames[0].name
+      }
+      })
+      this.isSS=true
+    },
     mul: function(arg1, arg2) {
       var m = 0,
         s1 = arg1.toString(),
@@ -1069,6 +1319,7 @@ export default {
               : this.propForm.contractType.join(","), //合同类型
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
+          appealStatus:this.propForm.appealType,
           startTime: this.propForm.dateMo[0], //开始时间
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
@@ -1087,6 +1338,7 @@ export default {
               : this.propForm.contractType.join(","), //合同类型
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
+          appealStatus:this.propForm.appealType,
           keyword: this.propForm.search, //关键字
           department:this.propForm.department,
           pageNum: this.currentPage,
@@ -1223,6 +1475,7 @@ export default {
                   "actualAchievement"
                 )
               );
+              debugger
               this.$router.push({
                 path: "/contractDetails",
                 query: {
@@ -1274,8 +1527,60 @@ export default {
   .check-btn span {
     color: #478de3;
   }
+  .closepre{
+    width:50px;
+    display:inline-block;
+    position:relative;
+    i{
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        background-color: #9B9B9B;
+        position: absolute;
+        border-radius: 50%;
+        font-size: 12px;
+        color: #fff;
+        top: 2px;
+        right:0;
+        display: none;
+        cursor: pointer;
+    }
+    &:hover i{
+        display:block
+    }
+  }
+  // .paper-btn{
+  //   background-color: @color-blue;
+  //   border-color: @color-blue;
+  // }
+  .jianju{
+    text-align: right;
+    width: 80px;
+    display: inline-block;
+    margin-right: 15px;
+  }
+  .sustip{
+    position: relative;
+    line-height: 40px;
+    width:470px;
+    font-style: italic;
+    padding-left: 0;
+    font-size: 12px;
+    color: darkseagreen;
+  }
+  .fileup{
+            width:80px;
+            height:32px;
+            line-height: 32px;
+            background:rgba(71,141,227,1);
+            color: white;
+            text-align: center !important
+    }
   .check-btn span:first-of-type {
     margin-right: 8px;
+  }
+  .link{
+
   }
   .blue {
     color: #478de3;
@@ -1286,6 +1591,15 @@ export default {
   .green {
     color: #54d384;
   }
+  .text-absolute {
+      position: absolute;
+      right: 15px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
+    .role{
+      margin-bottom: 10px;
+    }
   // 改变头部面包屑样式
   .head {
     .head-left {
@@ -1509,6 +1823,12 @@ export default {
   }
 }
 
+.point::before{
+    content:'*';
+    color:red;
+    position:relative;
+    top:3
+  }
 /deep/ tr.el-table__row {
   overflow: scroll !important;
 }
@@ -1535,7 +1855,20 @@ export default {
     padding: 0 !important;
   }
 }
-
+.ssu{
+  display: flex;
+  p{
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    height: 37px;
+    span{
+      min-width: 78px;
+      margin-right: 8px;
+    }
+  }
+    
+}
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
   max-height: 500px;
@@ -1548,6 +1881,9 @@ export default {
   text-align: right !important;
   // padding-bottom: 50px;
   // padding-top: 50px;
+}
+.preview{
+  z-index:2220!important
 }
 .name-wrapper {
   display: flex;
@@ -1567,5 +1903,11 @@ export default {
 }
 .width325 {
   width: 325px !important;
+}
+.width300 {
+  width: 300px !important;
+}
+.width425 {
+  width: 425px !important;
 }
 </style>

@@ -44,7 +44,7 @@ import {mapMutations} from 'vuex'
     methods: {
       // 点击查询
       queryFn() {
-        this.$emit('propQueryFn')
+          this.$emit('propQueryFn')
       },
       // 点击重置
       resetFormFn() {

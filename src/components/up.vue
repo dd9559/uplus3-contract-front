@@ -275,6 +275,9 @@
           case 'fk':
             path = `contract/${this.scane.id}/caiwu/${this.scane.path}`
             break;
+          case 'yj':
+            path = `contract/${this.scane.id}/yj/${this.scane.path}`
+            break;
           case 'setting':
             path = `${this.scane.path}`
             break;

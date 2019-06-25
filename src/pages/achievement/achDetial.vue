@@ -221,42 +221,10 @@
             >
             </el-table-column>
 
-
-           <!-- 节点名称（新增）-->
-            <!-- <el-table-column
-              prop="updateByName"
-              label="节点名称"
-              width="130"
-            >
-            </el-table-column> -->
-
-            <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
             <el-table-column
               prop="createDepName"
               label="操作"
             >
-              <!-- <template slot-scope="scope">
-                <div>
-                  <div v-if="scope.row.contType==0">
-                    <p class="blue">提交审核</p>
-                  </div>
-                  <div v-if="scope.row.contType==-1">
-                    <p class="blue">待提审</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==1">
-                    <p class="green">审核通过</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==2">
-                    <p class="orange">已驳回</p>
-                  </div>
-                 <div v-else-if="scope.row.contType==3">
-                    <p class="orange">撤销</p>
-                  </div>
-                  <div v-else>
-                    <p>-</p>
-                  </div>
-                </div>
-              </template> -->
             </el-table-column>
 
             <!-- remark -->
@@ -273,9 +241,128 @@
               </template>
             </el-table-column>
           </el-table>
+
         </div>
+
+        <h1 class="f14">申诉信息</h1>
+
+        <div class="ach-divide-list">
+             <el-table
+                :data="shensuArr"
+                class="sushen"
+                style="width: 100%"
+              >
+              <el-table-column
+                  label="申诉人"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.appealName&&scope.row.appealName.length>0">
+                    {{scope.row.appealDepName}}-{{scope.row.appealName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉时间"
+                >
+                <template slot-scope="scope">
+                  {{scope.row.appealTime|formatDate}}
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="申诉角色"
+                >
+                <template slot-scope="scope">
+                  <div v-if="!scope.row.roles||scope.row.roles.length==0">
+                    <div>--</div>
+                  </div>
+                  <div v-else>
+                    <el-tooltip class="item" effect="dark" :content="scope.row.roles.join(',')" placement="top-start">
+                          <p class="dot">{{scope.row.roles.join(',')}}</p>
+                    </el-tooltip>
+                  </div>
+                  
+                </template>
+                </el-table-column>
+                <el-table-column
+                  label="申诉内容"
+                  width="200"
+                >
+                <template slot-scope="scope">
+                      <div v-if="scope.row.appealContent&&scope.row.appealContent.length>0">
+                        <el-popover trigger="hover" width="200" :content="scope.row.appealContent" placement="top">
+                        <p class="dot" slot="reference">{{scope.row.appealContent}}</p>
+                        </el-popover>
+                      </div>
+                      <div v-else>-</div>
+                  </template>
+                </el-table-column>
+
+               <el-table-column
+                  label="申诉凭证"
+                >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.voucherUrl&&scope.row.voucherUrl.length>0">
+                      <div  v-for="(item,index) in scope.row.voucherUrl">
+                      <p class="link" @click="previewPhoto(scope.row.voucherUrl,index)">附件{{index+1}}</p>
+                    </div>
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="审核人"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditName&&scope.row.auditName.length>0">
+                    {{scope.row.auditDepName}}-{{scope.row.auditName}}
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+                
+                <el-table-column
+                  label="审核状态(时间)"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditStatus">
+                      {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
+                  </div>
+                  <div v-else>-</div>                                     
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="审核备注"
+                >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.auditRemarks">
+                      <el-popover trigger="hover" width="200" :content="scope.row.auditRemarks" placement="top">
+                            <p class="dot" slot="reference">{{scope.row.auditRemarks}}</p>
+                      </el-popover>
+                    </div>
+                    <div v-else>-</div>
+                  
+                </template>
+              </el-table-column>
+
+                <el-table-column
+                  label="操作"
+                >
+                <template slot-scope="scope">
+                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
+                    <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
+                  </div>
+                  <div v-else>-</div>
+                </template>
+                </el-table-column>
+            </el-table>
+           </div>
       </div>
-      <div class="ach-footer"></div>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
       <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
             <el-table :data="recordData" class="recordtable">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
@@ -290,6 +377,7 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
+        
         <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
@@ -301,13 +389,61 @@
               <el-table-column prop="Remarks" label="备注" ></el-table-column>
             </el-table>
         </el-dialog>
+
+        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
+                 <div class="input-group" style="position:relative">
+                    <label>申诉人：</label>
+                     <span>{{aplman}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>审核角色：</label>
+                     <span v-if="aplrole">{{aplrole.join('，')}}</span>
+                     <span v-else>-</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>申诉内容：</label>
+                     <span>{{aplcontent}}</span>
+                </div>
+                <div class="input-group" style="position:relative">
+                    <label>附件信息：</label>
+                    <div v-if="aplurl&&aplurl.length>0">
+                      <span  v-for="(item,index) in aplurl">
+                      <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
+                    </span>
+                    </div>
+                    <div v-else>暂无</div>
+                    
+                </div>
+                 <div class="input-group" style="position:relative;">
+                    <label>备注：</label>
+                    <el-input type="textarea" :rows="4" resize='none' v-model="aplremark" placeholder="无备注内容" :maxlength="inputMax"></el-input>
+                     <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+                </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="nopass" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
+                <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
            
 <script>
+  import { MIXINS } from "@/assets/js/mixins";
 export default{
+    mixins: [MIXINS],
     data() {
       return {
+        auditIds:'',
+        aplremark:'',
+        inputMax:200,
+        aplman:'',
+        aplrole:'',
+        aplcontent:'',
+        aplurl:[],
+        aplid:'',
+        aplDialog:false,
+        imgList:[],
+        shensuArr:[],
         AMData:[],
         AMShow:false,
         recordData:[],
@@ -332,12 +468,19 @@ export default{
       this.aId=this.$route.query.aId
       this.contractId2=this.$route.query.contractId2
       //合同边和获取业绩详情
-      let param = { contCode: this.contCode, entrance: this.entrance,aId:this.aId };
-      this.$ajax
-        .get("/api/achievement/getAchDetails", param)
-        .then(res => {
+     this.getData()
+    },
+    methods: {
+      getData(){
+         let param = { contCode: this.contCode, entrance: this.entrance,aId:this.aId };
+      this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
+            this.auditIds=data.data.auditIds
+            this.shensuArr=data.data.appeals
+            for(let i=0;i<this.shensuArr.length;i++){
+                this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
+              }
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             if(data.data.achievements){
@@ -346,12 +489,64 @@ export default{
             }else{
               this.checkArr = [];
             }
-
             this.comm = data.data.comm;
           }
-        });
-    },
-    methods: {
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+      },
+      close(){
+        this.aplremark=''
+      },
+      itemht(row){
+        this.aplman=row.appealName
+        this.aplrole=row.roles
+        this.aplcontent=row.appealContent
+        this.aplurl=row.voucherUrl
+        this.aplid=row.id
+        this.aplDialog=true
+      },
+      trim(str){  
+                 return str.replace(/(^\s*)|(\s*$)/g, "")
+            },
+      nopass(){
+        if(this.trim(this.aplremark).length==0){
+          this.$message({message:"请填写备注信息！"})
+          return
+        }
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+            this.getData()
+          }
+        }).catch(err=>{
+           this.$message({message:err})
+        })
+      },
+      pass(){
+        let param={
+          id:this.aplid,
+          examineRemark:this.aplremark
+        }
+        this.$ajax.post('/api/appeal/appealAdopt',param,2).then(res=>{
+          if(res.status==200){
+            this.$message({ message: "操作成功", type: "success" })
+            this.aplDialog=false
+            this.getData()
+          }
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+
+      },
+      getPicture(item){
+        return this.$tool.cutFilePath(item)
+      },
       ammanger(){
         let param={
           contId: this.contractId2,
@@ -374,10 +569,40 @@ export default{
           }
         })
       },
-    }
+    },
+    computed:{
+        validInput() {
+                return this.aplremark.length
+            }
+        }
 }
 </script>
 <style scoped lang="less">
+      .color-red {
+        background-color: #f56c6c;
+        margin-left: 20px;
+      }
+      /deep/ .sushen tr td  .cell{
+        line-height: 30px;
+      }
+    .preview{
+      z-index:2220!important
+    }
+     .link{
+          color: #478de3;
+          cursor:pointer
+     }
+     .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      overflow:hidden
+      }
+     .text-absolute {
+      position: absolute;
+      right: 4px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
     .ach-header {
       min-height: 70px;
       min-width: 100%;

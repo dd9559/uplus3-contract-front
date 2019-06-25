@@ -7,7 +7,7 @@
           <div class="ach-header">
             <h1
               v-if="dialogType==0"
-            >业绩审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
+            >业绩申诉审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
             <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
             <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
             <h1
@@ -66,7 +66,6 @@
             <div class="ach-divide-list">
               <el-table
                 :data="houseArr"
-                class="sushen"
                  style="width:100%"
               >
                 <!-- 角色类型 不可输入-->
@@ -609,14 +608,15 @@
             
            </div>
 
-           <div class="house-divide top20">
+           <div class="house-divide top20" style="height:38px">
              <div class="house-left f_l">
                 <h1 class="f14">申诉信息</h1>
               </div>
            </div>
-            <div class="ach-divide-list" style="margin-bottom:20px">
+           <div class="ach-divide-list" style="margin-bottom:20px">
              <el-table
                 :data="shensuArr"
+                class="sushen"
                 style="width: 100%"
               >
               <el-table-column
@@ -727,46 +727,25 @@
                 </template>
                 </el-table-column>
             </el-table>
-            <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
            </div>
+           
           </div>
-
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
           <!-- 业绩审核底部 -->
           <div
             class="ach-footer"
             v-if="dialogType==0"
             style="height:100px;padding-bottom: 30px;width:100%"
           >
-            <div class="text-layout-out">
-              <p class="text-layout">
-                <label>备注：</label>
-                <el-input
-                  type="textarea"
-                  :rows="2"
-                  placeholder="请输入内容,最多输入200字"
-                  class="f_l"
-                  v-model="remark"
-                  resize="none"
-                  maxlength=200
-                ></el-input>
-                <!-- <span class="textLength">{{remark.length}}/200</span> -->
-              </p>
-            </div>
+            
             <div class="footer-btn-layout f_r">
-              <el-button
-                type="primary"
-                round
-                @click="rejectAch"
-                class="color-red"
-                id="savebtn3"
-              >驳回</el-button>
               <el-button
                 type="primary"
                 round
                 @click="passAch"
                 class="color-green"
                 id="savebtn"
-              >通过</el-button>
+              >确定</el-button>
             </div>
           </div>
 
@@ -826,13 +805,6 @@
             style="height:70px;padding-bottom: 30px;width:100%"
           >
             <div class="footer-btn-layout f_r">
-              <!-- <el-button
-                type="primary"
-                round
-                @click=" keepAchDivide(2)"
-                class="color-white"
-                v-dbClick
-              >保存</el-button> -->
               <el-button
                 type="primary"
                 round
@@ -939,8 +911,8 @@
               <el-table-column prop="Remarks" label="备注" ></el-table-column>
             </el-table>
         </el-dialog>
-      
-      <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
+
+        <el-dialog title="审核" :visible.sync="aplDialog" width="740px" @close="close" :closeOnClickModal="$tool.closeOnClickModal">
                  <div class="input-group" style="position:relative">
                     <label>申诉人：</label>
                      <span>{{aplman}}</span>
@@ -956,9 +928,12 @@
                 </div>
                 <div class="input-group" style="position:relative">
                     <label>附件信息：</label>
-                    <div v-for="(item,index) in aplurl">
+                    <div v-if="aplurl&&aplurl.length>0">
+                      <span  v-for="(item,index) in aplurl">
                       <span class="link"  @click="previewPhoto(aplurl,index)" style="margin-right:20px">附件{{index+1}}</span>
+                    </span>
                     </div>
+                    <div v-else>暂无</div>
                 </div>
                  <div class="input-group" style="position:relative;">
                     <label>备注：</label>
@@ -970,6 +945,7 @@
                 <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
             </div>
         </el-dialog>
+      
     </div>
   </div>
 </template>
@@ -982,21 +958,20 @@
     name: "achDialog",
     data() {
       return {
-        aplremark:'',
-        inputMax:200,
         aplid:'',
         aplman:'',
         aplrole:'',
         aplcontent:'',
         aplurl:[],
-        aplDialog:false,
         imgList:[],
+        inputMax:200,
+        aplremark:'',
+        shensuArr:[],
         AMData:[],
         AMShow:false,
         recordData:[],
         recordShow:false,
         shows:true,
-        shensuArr:[],
         houseArr: [], //房源列表
         clientArr: [], //客源列表
         mansList: [], //人员列表
@@ -1046,6 +1021,8 @@
         achObj:'',
         contractId2:'',
         state2:'',
+        aplDialog:false,
+        shenname:[],
         auditIds:''
       };
     },
@@ -1059,27 +1036,37 @@
       this.achIndex=this.$route.query.achIndex
       this.achObj=JSON.parse(this.$route.query.achObj)
       this.contractId2=this.$route.query.contractId
+      this.getDictionary()
+      this.$ajax.get("/api/role/types").then(res => {
+          console.log(res.status);
+          if (res.status === 200) {
+            // console.log(res.data.data[0]);
+            this.roleType0 = res.data.data[1]; //房源角色类型
+            this.roleType1 = res.data.data[2]; //客源角色类型
+          }
+        });
       
+      this.getData()
     },
-    // props: {
-    //   shows: Boolean,
-    //   dialogType: Number, //弹框类型
-    //   contractCode: String, //合同编号
-    //   aId: Number, //业绩Id
-    //   achIndex: Number, //当前索引
-    //   achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
-    // },
     methods: {
-      close(){
-        this.aplremark=''
-      },
-      itemht(row){
-        this.aplman=row.appealName
-        this.aplrole=row.roles
-        this.aplcontent=row.appealContent
-        this.aplurl=row.voucherUrl
-        this.aplid=row.id
-        this.aplDialog=true
+      getData(){
+        this.$ajax.get('/api/appeal/getExamineInfo',{aId:this.aId}).then(res=>{
+        if (res.status === 200) {
+              this.houseArr = res.data.data.houseAgents;
+              this.shensuArr=res.data.data.appeals
+              this.auditIds=res.data.data.auditIds
+              for(let i=0;i<this.shensuArr.length;i++){
+                this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
+              }
+              var houseArr2 = res.data.data.houseAgents;
+              this.clientArr = res.data.data.customerAgents;
+              this.comm = res.data.data.comm;
+              if (res.data.data.examineDate) {
+                this.examineDate = res.data.data.examineDate;
+              }
+              this.loading=false;
+            }
+          })
       },
       trim(str){  
                  return str.replace(/(^\s*)|(\s*$)/g, "")
@@ -1089,6 +1076,7 @@
           this.$message({message:"请填写备注信息！"})
           return
         }
+        
         let param={
           id:this.aplid,
           examineRemark:this.aplremark
@@ -1096,11 +1084,12 @@
         this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
+            this.aplremark=''
             this.aplDialog=false
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+             this.getData()
           }
         }).catch(err=>{
-           this.$message({ message: err, type: "error" })
+          this.$message({message:err})
         })
       },
       pass(){
@@ -1111,12 +1100,24 @@
         this.$ajax.post('/api/appeal/appealAdopt',param,2).then(res=>{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
+            this.aplremark=''
             this.aplDialog=false
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+            this.getData()
           }
-        }).catch((err=>{
-          this.$message({ message: err, type: "error" })
-        }))
+        }).catch(err=>{
+          this.$message({message:err})
+        })
+      },
+      getPicture(item){
+        return this.$tool.cutFilePath(item)
+      },
+      itemht(row){
+        this.aplman=row.appealName
+        this.aplrole=row.roles
+        this.aplcontent=row.appealContent
+        this.aplurl=row.voucherUrl
+        this.aplid=row.id
+        this.aplDialog=true
       },
       unique(arr1) {
           const res = new Map();
@@ -1369,7 +1370,6 @@
               }else if(roleId==1){
                 this.amaldars = res.data.data.list;
               }else if(roleId==0){
-                // debugger
                 this.managers = res.data.data.list;
               }
               this.loading1 = false;
@@ -1444,7 +1444,6 @@
       changeAmaldar(val, index, type1){
         if(val){
           let idName=val.split("-");
-          console.log(idName);
           if (type1 == 0) {
             this.houseArr[index].amaldarId = idName[0];
             this.houseArr[index].amaldar = idName[1];
@@ -1641,7 +1640,6 @@
           }
         }
         //flag=true代表信息都填完整，flag=false代表还有信息没有填
-        // debugger;
         // console.log(sumFlag);
 
         if (flag && sumFlag) {
@@ -1654,22 +1652,14 @@
             contractId: this.achObj.contractId
           };
           this.$ajax
-            .postJSON("/api/achievement/examineAdopt", param)
+            .postJSON("/api/appeal/saveAgents", param)
             .then(res => {
               if (res.data.status == 200) {
-                var paperBtn3=document.getElementById('savebtn3')
-                  paperBtn3.disabled=true
-                  paperBtn3.classList.remove('color-red')
-                  paperBtn3.classList.add('grey')
-              var paperBtn=document.getElementById('savebtn')
-                paperBtn.disabled=true
-                paperBtn.classList.remove('color-green')
-                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
-                this.codeBaseInfo(this.code, 1,null,"getEditInfo");
                 this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
+                this.getData()
               }
             }).catch(error => {
             if(error.message==='下一节点审批人不存在'){
@@ -1691,15 +1681,8 @@
           this.$message.error("请完善信息");
         }
       },
-      trim(str){  
-                 return str.replace(/(^\s*)|(\s*$)/g, "")
-            },
       //弹框驳回操作
       rejectAch() {
-        if(this.trim(this.remark).length==0){
-          this.$message.error("请填写驳回信息！");
-          return false;
-        }
         if (this.houseArr.length == 0 && this.clientArr.length != 0) {
           this.$message.error("房源至少保留一人");
           return false;
@@ -1767,14 +1750,6 @@
             .then(res => {
               console.log(res.data.status)
               if (res.data.status == 200) {
-                 var paperBtn3=document.getElementById('savebtn3')
-                  paperBtn3.disabled=true
-                  paperBtn3.classList.remove('color-red')
-                  paperBtn3.classList.add('grey')
-              var paperBtn=document.getElementById('savebtn')
-                paperBtn.disabled=true
-                paperBtn.classList.remove('color-green')
-                paperBtn.classList.add('grey')
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
@@ -1791,6 +1766,9 @@
         } else {
           this.$message.error("请完善信息");
         }
+      },
+      close(){
+        this.aplremark=''
       },
       // 反审核，编辑的保存
       keepAch(type, status,editStr) {
@@ -1848,7 +1826,6 @@
             sumFlag = false;
           }
         }
-        //  debugger;
         // console.log(sumFlag);
         if (flag && sumFlag) {
           this.loading=true;
@@ -1885,7 +1862,6 @@
               }
               if (type == 2 && status == 1) {
                 if(this.state2===1){
-                  this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
                   var paperBtn2=document.getElementById('savebtn2')
                   paperBtn2.disabled=true
                   paperBtn2.classList.remove('color-blue')
@@ -2040,62 +2016,6 @@
         this.addManList = val;
         this.addArr.push(val);
       },
-      getPicture(item){
-        return this.$tool.cutFilePath(item)
-      },
-      // 审核，反审核，编辑点进去的房源，客源
-      codeBaseInfo(contCode, entrance, aId,infoType) {
-        let param = { contCode: contCode, entrance: entrance, aId: this.aId };
-        this.$ajax
-          .get("/api/achievement/"+infoType, param)
-          .then(res => {
-            if (res.status === 200) {
-              this.houseArr = res.data.data.houseAgents;
-              var houseArr2 = res.data.data.houseAgents;
-              this.auditIds=res.data.data.auditIds,
-              this.shensuArr= res.data.data.appeals
-              for(let i=0;i<this.shensuArr.length;i++){
-                this.shensuArr[i].voucherUrl=this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
-              }
-              console.log(this.houseArr,'houseArr');
-              this.clientArr = res.data.data.customerAgents;
-              // debugger
-              this.comm = res.data.data.comm;
-              this.state2=res.data.data.state;
-              if(this.state2===0){
-                if(infoType=='getEditInfo'){
-                  var paperBtn2=document.getElementById('savebtn2')
-                  paperBtn2.disabled=true
-                  paperBtn2.classList.remove('color-blue')
-                  paperBtn2.classList.add('grey')
-                }else if(infoType=='getExamineInfo'){
-                  var paperBtn=document.getElementById('savebtn')
-                  paperBtn.disabled=true
-                  paperBtn.classList.remove('color-green')
-                  paperBtn.classList.add('grey')
-                  var paperBtn3=document.getElementById('savebtn3')
-                  paperBtn3.disabled=true
-                  paperBtn3.classList.remove('color-red')
-                  paperBtn3.classList.add('grey')
-                }
-              }
-              if (res.data.data.examineDate) {
-                this.examineDate = res.data.data.examineDate;
-              }
-              //  this.$emit("opens");
-              this.loading=false;
-            }
-          });
-        // 角色类型
-        this.$ajax.get("/api/role/types").then(res => {
-          console.log(res.status);
-          if (res.status === 200) {
-            // console.log(res.data.data[0]);
-            this.roleType0 = res.data.data[1]; //房源角色类型
-            this.roleType1 = res.data.data[2]; //客源角色类型
-          }
-        });
-      },
       // 相关人员确定按钮
       manSure(type) {
         let addhouseArr = [];
@@ -2179,7 +2099,7 @@
     computed:{
         validInput() {
                 return this.aplremark.length
-        },
+            },
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
@@ -2195,73 +2115,24 @@
               return sum
         }
     }, 
-    watch: {
-      contractCode(val) {
-        // 字典初始化
-        this.getDictionary();
-        this.remark = "";
-        this.loading=true;
-        if (val) {
-          this.code = val;
-          if (this.dialogType == 0) {  // 审核
-            this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
-          }
-          else if (this.dialogType == 1) {//编辑
-            this.addArr = [];
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
-          }
-
-          else if (this.dialogType == 2) {//反审核
-            this.addArr = [];
-            this.codeBaseInfo(this.code, 2,null,"getBackExamineInfo");
-          } else if (this.dialogType == 3) {  // 业绩录入分成
-            this.comm = this.achObj.comm;     //合同详情传过来的可分配业绩
-            // 角色类型
-            this.$ajax.get("/api/role/types").then(res => {
-              console.log(res.status);
-              if (res.status === 200) {
-                // console.log(res.data.data[0]);
-                this.roleType0 = res.data.data[1]; //房源角色类型
-                this.roleType1 = res.data.data[2]; //客源角色类型
-              }
-            });
-            let param = {
-              contCode: this.contractCode
-            };
-            this.$ajax.get("/api/achievement/getContAgents", param).then(res => {
-              let data = res.data;
-              if (data.status === 200) {
-                if (data.data.customerAgents) {
-                  this.clientArr = data.data.customerAgents;
-                }
-                if (data.data.houseAgents) {
-                  this.houseArr = data.data.houseAgents;
-                }
-                // this.$emit("opens");
-                this. $nextTick(()=>{
-                  this.loading=false;
-                })
-                if (data.data.aId) {
-                  this.backAId = data.data.aId;
-                }
-              }
-            });
-          }
-        }
-      },
-      // houseArr(val){
-      //   // alert(1)
-      // }
-    }
+    
   };
 </script>
 
 <style lang="less" scoped>
   // 相关人员弹框
-  .link{
-          color: #478de3;
-          cursor:pointer
+   .link{
+    color: #478de3;
+    cursor:pointer
   }
+  .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      overflow:hidden
+      }
+  .preview{
+      z-index:2220!important
+    }
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;
@@ -2466,7 +2337,7 @@
           position: relative;
           .el-textarea {
             position: absolute;
-            left: 70px;
+            left: 43px;
             top: 0;
             padding-bottom: 80px;
             width: 60%;
@@ -2542,6 +2413,12 @@
     // padding-left: 10px;
     font-size: 12px !important;
   }
+  .text-absolute {
+      position: absolute;
+      right: 4px;
+      color: #D6D6D6;
+      bottom: 0;
+    }
 
   /deep/ input::-webkit-input-placeholder {
     /* WebKit browsers */
@@ -2559,9 +2436,6 @@
     /* Internet Explorer 10+ */
     color: #ccc!important;
   }
-  /deep/ .sushen tr td  .cell{
-        line-height: 30px;
-   }
   .recordtable{
     min-height: 200px;
   }
@@ -2583,15 +2457,7 @@
           border: 1px solid #DDD;
           }
       }
-      .dot{
-      text-overflow:ellipsis;
-      white-space: nowrap;
-      overflow:hidden
+      /deep/ .sushen tr td  .cell{
+        line-height: 30px;
       }
-      .text-absolute {
-      position: absolute;
-      right: 4px;
-      color: #D6D6D6;
-      bottom: 0;
-    }      
 </style>

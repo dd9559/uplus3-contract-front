@@ -90,6 +90,11 @@ let TOOL = {
           path: "receivableAchievement",
           code: "sign-yj-rec-query"
         },
+        {
+          name: "业绩申诉审核",
+          path: "achAppeal",
+          code: "sign-yj-appeal-query"
+        },
         // {
         //   name:'门店实收',
         //   path:'storeReceive',
