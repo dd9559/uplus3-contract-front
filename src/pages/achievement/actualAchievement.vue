@@ -1020,6 +1020,7 @@ export default {
       for(let i=0;i<this.empNames.length;i++){
         if(val==this.empNames[i].empId){
             this.auditName=this.empNames[i].name
+            this.depName=this.empNames[i].depName
             this.roleName=this.empNames[i].roleName
         }
       }
@@ -1095,7 +1096,9 @@ export default {
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.people=res.data.data.allRole
-        this.depName=res.data.data.depName
+        // debugger
+        // this.depName=res.data.data.depName
+        this.depName=res.data.data.empNames[0].depName
         this.empNames=res.data.data.empNames
         
         // debugger
