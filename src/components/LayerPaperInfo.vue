@@ -120,7 +120,7 @@
         <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
       </div>
       <div class="paper-ov">
-        <div class="fl"><span class="fb mr-10 ml-28">备注：</span>{{comRules}}</div>
+        <div class="fl"><span class="fb mr-10 ml-28">备注：</span><span>{{comRules}}</span></div>
       </div>
       <div class="pr">
         <div class="paper-ov3">
@@ -421,6 +421,7 @@
 
   .paper-ul {
     // display: flex;
+    padding: 0;
     padding-top: 10px;
     border-bottom: 1px solid #E5E5E5;
     overflow: hidden;
@@ -430,6 +431,7 @@
     float: left;
     width: 23%;
     margin-bottom: 10px;
+    list-style: none;
   }
 
   .paper-ul .w1{
@@ -555,10 +557,10 @@
     left: 190px;
     bottom: -50px;
     // line-height: 130px;
-    // text-align: center;
-    display: flex;
+    text-align: center;
+    /*display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;*/
     >img{
       // vertical-align:middle;
       max-width: 120px;

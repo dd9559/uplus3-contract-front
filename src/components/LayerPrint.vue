@@ -38,10 +38,11 @@
       getStyle(printI) {
         var str = "",
           styles1 = document.querySelectorAll("style");
-        for (var i = 0; i < styles1.length; i++) {
+        /*for (var i = 0; i < styles1.length; i++) {
           str += styles1[i].outerHTML;
-        }
-        str += `<style>header, footer {display: none;}</style>`;
+        }*/
+        str+=styles1[styles1.length-1].outerHTML//页面生成的最后一个style为当前页面的
+        str += `<style>header, footer {display: none;}body{font-family: SimHei;}</style>`;
         printI.contentDocument.head.innerHTML = str;
 
         // 添加link引入
