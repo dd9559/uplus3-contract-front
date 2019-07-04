@@ -20,6 +20,15 @@
     width: 100%;
     height: 100%;
   }
+  /*本地打印票据iframe样式*/
+  #printf {
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    visibility: hidden;
+  }
 
   html,
   body {

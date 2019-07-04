@@ -46,29 +46,56 @@
             </li>
           </ul>
         </div>
-        <div class="paper-top" v-if="!paperType"></div>
-        <LayerPrint ref="easyPrint">
-          <LayerPaperInfo
-            :number="paperInfoData.contCode"
-            :name="paperInfoData.payerName"
-            :collectionTime="paperInfoData.paymentTime"
-            :invoiceTime="paperInfoData.createTime"
-            :paper="paperInfoData.billCode"
-            :project="getPro"
-            :hide="paperInfoData.hide"
-            :address="paperInfoData.address"
-            :money="paperInfoData.amount"
-            :moneyZh="paperInfoData.amountZh"
-            :create="paperInfoData.createByName"
-            :rules="paperInfoData.remark"
-            :imgSrc="imgUrl"
-            :time="paperInfoData.printDate"
-            :num="paperInfoData.printCount?paperInfoData.printCount.KHL:0"
-            :methodAndAmount="paperInfoData.methodAndAmount"
-            :storesName="paperInfoData.storeName"
-            :printType="printType"
-            :paperFail="paperFail"
-            :payerType="paperInfoData.payerType"></LayerPaperInfo>
+        <!--<div class="paper-top" v-if="!paperType"></div>-->
+        <LayerPrint ref="easyPrint" :morePaper="opera2batch">
+          <template v-if="!opera2batch">
+            <LayerPaperInfo
+              :number="paperInfoData.contCode"
+              :name="paperInfoData.payerName"
+              :collectionTime="paperInfoData.paymentTime"
+              :invoiceTime="paperInfoData.createTime"
+              :paper="paperInfoData.billCode"
+              :project="getPro"
+              :hide="paperInfoData.hide"
+              :address="paperInfoData.address"
+              :money="paperInfoData.amount"
+              :moneyZh="paperInfoData.amountZh"
+              :create="paperInfoData.createByName"
+              :rules="paperInfoData.remark"
+              :imgSrc="imgUrl"
+              :time="paperInfoData.printDate"
+              :num="paperInfoData.printCount?(getPrint==='all'?`${paperInfoData.printCount.KHL},${paperInfoData.printCount.JZL}`:getPrint==='client'?paperInfoData.printCount.KHL:paperInfoData.printCount.JZL):0"
+              :methodAndAmount="paperInfoData.methodAndAmount"
+              :storesName="paperInfoData.storeName"
+              :printType="printType"
+              :paperFail="paperFail"
+              :payerType="paperInfoData.payerType"></LayerPaperInfo>
+          </template>
+          <template v-else>
+            <LayerPaperInfo
+              v-for="(item,index) in paperList_jzl"
+              :key="item.id"
+              :number="item.contCode"
+              :name="item.payerName"
+              :collectionTime="item.paymentTime"
+              :invoiceTime="item.createTime"
+              :paper="item.billCode"
+              :project="item.type"
+              :hide="item.hide"
+              :address="item.address"
+              :money="item.amount"
+              :moneyZh="item.amountZh"
+              :create="item.createByName"
+              :rules="item.remark"
+              :imgSrc="imgUrlList[index]"
+              :time="item.printDate"
+              :num="item.printCount?(getPrint==='client'?item.printCount.KHL:item.printCount.JZL):0"
+              :methodAndAmount="item.methodAndAmount"
+              :storesName="item.storeName"
+              :printType="printType"
+              :paperFail="paperFail"
+              :payerType="item.payerType"></LayerPaperInfo>
+          </template>
         </LayerPrint>
         <!-- :imgSrc="paperInfoData.signImg" -->
       </div>
@@ -102,22 +129,35 @@
         dictionary: {
           '542': '',
         },
-        FooterShow: false,
+        FooterShow: false,//详情底部操作按钮栏是否显示
         ID: '',
         paperShow: false,
-        paperType: false, //false预览 true开票
+        paperType: false, //false详情打印 true开票
         paperInfoData: {}, //票据对象
         moneyTypes: [], //临时存放勾选的款类
         activeType: 0, //当前预览项
         imgUrl: '',
+        imgUrlList:[],//批量打印记账联时签章图片集合
         stateBoll: false,
         layerLoading: '',
         paperFail:false,//票据详情作废icon是否显示
+        opera2batch:false,//是否批量打印记账联
+        paperList_jzl:[],//批量记账联数组集合
+        paperList_jzl_common:[],//批量记账联数组集合code字段抽取
       }
     },
     methods: {
       // 图片请求
-      getImgFn(url) {
+      getImgFn(url,batch=false) {
+        if(batch){
+          this.$ajax.put('/api/load/generateAccessURLBatch',{urls:url},2).then(res=>{
+            res=res.data
+            if(res.status===200){
+              this.imgUrlList=[].concat(res.data)
+            }
+          })
+          return
+        }
         if (!!url) {
           url = url.split('?')[0];
           this.$ajax.get('/api/load/generateAccessURL', {
@@ -136,10 +176,15 @@
       propCloseFn() {
         this.$tool.clearForm(this.layer)
         this.paperShow = false
+        this.opera2batch=false
+        this.moneyTypes=[]
+        this.paperList_jzl=[]
+        this.paperList_jzl_common=[]
+        this.$emit('closePrintModel')
       },
       /**
        * 票据详情
-       * @param row
+       * id票据id
        */
       getPaperDetails: function (id) {
         this.$ajax.get(`/api/bills/details`, {
@@ -210,16 +255,16 @@
       },
       // 票据详情 打印
       printPaper() {
-        // if(!this.showBtn){
-        //     this.noPower(this.power['sign-cw-bill-invoice'].name);
-        //     return false
-        // }
         this.layerLoading = Loading.service({});
         let obj = {}
         if (!this.paperType) {
           obj = {
             code: this.paperInfoData.billCode,
             isPrint: true
+          }
+          if(this.opera2batch){
+            delete obj.code
+            obj.codes=this.paperList_jzl_common.join(',')
           }
         } else {
           let type = this.moneyTypes[this.activeType]
@@ -237,13 +282,16 @@
           }
         }
         obj.printType=this.getPrint === 'client' ? 1 : 2
-        if (!this.paperInfoData.signImg) {
-          this.layerLoading.close();
-          this.$message.error('请先设置财务专用电子签章');
-          return false
-        }
+        if(this.opera2batch){
 
-        this.$ajax.post(this.getPrint==='client'?'/api/bills/print':'/api/bills/printTally', obj).then(res => {
+        }else{
+          if (!this.paperInfoData.signImg) {
+            this.layerLoading.close();
+            this.$message.error('请先设置财务专用电子签章');
+            return false
+          }
+        }
+        this.$ajax.post(this.getPrint==='client'?'/api/bills/print':this.opera2batch?'/api/bills/batchPrintTally':'/api/bills/printTally', obj).then(res => {
           res = res.data
           if (res.status === 200) {
             let obj = {};
@@ -265,29 +313,6 @@
               });
 
             })
-          }
-        }).catch(err => {
-          this.$message.error(err)
-          this.layerLoading.close();
-        })
-      },
-      printPaperFn() {
-        // this.$refs.easyPrint.print();
-        // return false
-        if (!this.paperInfoData.signImg) {
-          this.$message.error('请先设置财务专用电子签章');
-          return false
-        }
-        this.layerLoading = Loading.service({});
-        this.$ajax.post('/api/bills/print', {
-          code: this.paperInfoData.billCode,
-          isPrint: true,
-        }).then(res => {
-          res = res.data
-          this.layerLoading.close();
-          if (res.status === 200) {
-            this.$emit("emitPaperSet");
-            // this.$refs.pdfPrint.print();
           }
         }).catch(err => {
           this.$message.error(err)
@@ -330,11 +355,40 @@
         this.paperFail = this.stateBoll//票据状态4已作废时，显示icon
         this.pdfUrl = "";
         this.ID = id
+        //判断是开票或票据详情预览
         if (bool) {
           this.paperList();
         } else {
           this.getPaperDetails(id);
         }
+      },
+      //批量打印记账联
+      batchOperation:function (id) {
+        this.opera2batch=true
+        this.$ajax.get('/api/bills/batchDetails',{id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.paperShow=true
+            this.FooterShow=true
+            this.paperList_jzl=[].concat(res.data)
+            let arr=[]
+            this.paperList_jzl.forEach(item=>{
+              let {billCode}=item
+              arr.push(item.signImg.split('?')[0])
+              this.paperList_jzl_common.push(billCode)
+              let hide=false
+              if(item.isHiddenAddress){
+                hide=true
+              }
+              item.hide=hide
+            })
+            this.getImgFn(arr.join(','),true)
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
+        })
       }
     },
     components: {
@@ -384,9 +438,9 @@
             return item
           }
         })
-        if (tips > -1) {
+        if (tips > -1) {//开票时，款类取勾选项
           return types[tips].name
-        } else {
+        } else {//详情时取票据详情对象的type字段
           return this.paperInfoData.type
         }
       },
@@ -405,6 +459,11 @@
 <style lang="less" scoped>
   @import "~@/assets/common.less";
 
+  .layer-paper{
+    /deep/.el-dialog{
+      margin-top: 50px !important;
+    }
+  }
   // 按钮
   .paper-btn {
     width: 100px;
