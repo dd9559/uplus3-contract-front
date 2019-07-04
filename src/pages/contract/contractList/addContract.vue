@@ -13,6 +13,9 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
+          <el-form-item label="合同编号：" class="width-250 form-label" style="width:300px;" v-if="isOffline===1">
+            <input style="width:200px;" type="text" v-model="contractForm.code" placeholder="请输入" class="dealPrice">
+          </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -363,6 +366,9 @@ const rule = {
   // transFlowCode: {
   //   name: "交易流程",
   // },
+  code:{
+    name:"合同编号"
+  },
   houseinfoCode: {
     name: "房源"
   },
@@ -443,6 +449,7 @@ export default {
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
+      isOffline:'',
       dictionary: {
         //数据字典
         "514": "", //产权状态
@@ -521,6 +528,7 @@ export default {
       this.getContractDetail();
     }else{
       this.contractForm.type = Number(this.$route.query.type);
+      this.isOffline = parseInt(this.$route.query.isOffline)
       if (this.$route.query.operateType) {
         this.type = parseInt(this.$route.query.operateType);
         if (this.type == 2) {
@@ -757,14 +765,20 @@ export default {
       //   this.hintText='确定保存合同？'
       // }
       //验证合同信息
-      if(this.contractForm.type!==1){
-        delete rule_.transFlowCode
+      // if(this.contractForm.type!==1){
+      //   delete rule_.transFlowCode
+      // }
+      if(this.isOffline!==1){
+        delete rule_.code
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
       }
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
+      }
+      if(!this.contractForm.code){
+        this.contractForm.code=''
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
@@ -1305,23 +1319,38 @@ export default {
           haveExamine:this.haveExamine
         };
       }
+      if(this.isOffline===1){
+        param.recordType=2
+      }else{
+        param.recordType=1
+      }
       if(this.type===1){//新增
         var url = '/api/contract/addContract';
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            this.hidBtn=1
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"创建成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractList"
+              });
+            }else{
+              let contractMsg = res.data
+              this.hidBtn=1
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
+            
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"){
             this.canClick=true
           }
           this.$message({
@@ -1341,6 +1370,7 @@ export default {
           delete param.leaseCont.updateTime;
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
+          delete param.leaseCont.recordType
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -1352,6 +1382,7 @@ export default {
           delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
           delete param.saleCont.achievementState;
+          delete param.saleCont.recordType
         }
         var url = '/api/contract/updateContract';
         // let page = window.open('','_blank');
@@ -1359,13 +1390,24 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"保存成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractList"
+              });
+            }else{
+              let contractMsg = res.data
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
           }
+            
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
@@ -1959,7 +2001,9 @@ export default {
       });
     },
     cutNumber(val){
-      if(val==="dealPrice"){
+      if(val==="contCode"){//合同编号
+
+      }else if(val==="dealPrice"){
         this.$nextTick(()=>{
           this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
         })

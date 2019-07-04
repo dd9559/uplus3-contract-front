@@ -138,10 +138,20 @@
           </el-dropdown>
           <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
             <el-button round type="primary" size="small">
-              创建正式合同<i class="el-icon-arrow-down el-icon--right"></i>
+              创建线上合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
+                {{item.value}}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
+            <el-button round type="primary" size="small">
+              录入线下合同<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in dictionary['65']" :key="item.key" :command="item.key+'offline'">
                 {{item.value}}
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -310,8 +320,8 @@
         <el-table-column align="center" label="操作" min-width="120">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&scope.row.contState.value>1" @click="upload(scope.row)">上传</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</el-button>
+              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button>
               <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
@@ -441,6 +451,7 @@ export default {
         "538": "", //用途
         "507": "",
         "11": "",//后期状态
+        "65":"",//线下合同类型
       },
       loading:false,
       //部门选择列表
@@ -834,43 +845,49 @@ export default {
     },
     //新增合同
     toAddcontract(command) {
-        let param = {
-          type:command
-        };
-        this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            localStorage.removeItem('backMsg')
-            this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            if (command === 1 || command === 2 || command === 3) {
-              this.$router.push({
-                path: "/addContract",
-                query: {
-                  type: command,
-                  operateType:1
-                }
-              });
-            } else if (command === 4 || command === 5) {
-              this.$router.push({
-                path: "/newIntention",
-                query: {
-                  contType: command,
-                  operateType:1
-                }
-              });
-            }
-          }else{
-            this.$message({
-              message:'该类型合同模板未上传,请上传后再创建',
-              type: "warning"
-            })
-          }
-        }).catch(error => {
-            this.$message({
-              message: '该类型合同模板未上传,请上传后再创建',
-              type: "warning"
+      let isOffline = 0;
+      if(typeof(command)==="string"){
+        isOffline=1;
+        command=Number(command.replace("offline",""))
+      }
+      let param = {
+        type:command
+      };
+      this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          localStorage.removeItem('backMsg')
+          this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+          if (command === 1 || command === 2 || command === 3) {
+            this.$router.push({
+              path: "/addContract",
+              query: {
+                type: command,
+                operateType:1,
+                isOffline:isOffline
+              }
             });
+          } else if (command === 4 || command === 5) {
+            this.$router.push({
+              path: "/newIntention",
+              query: {
+                contType: command,
+                operateType:1
+              }
+            });
+          }
+        }else{
+          this.$message({
+            message:'该类型合同模板未上传,请上传后再创建',
+            type: "warning"
+          })
+        }
+      }).catch(error => {
+          this.$message({
+            message: '该类型合同模板未上传,请上传后再创建',
+            type: "warning"
           });
+        });
     },
     //合同预览
     goPreview(item) {

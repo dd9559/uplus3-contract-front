@@ -269,23 +269,23 @@
               <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
             </div>
             <div v-if="contractDetail.contChangeState.value!=2">
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.laterStageState.value===1))" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&((contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=3))" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
             </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
-              <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
+              <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -442,7 +442,7 @@
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
-        <el-tab-pane label="审核记录" name="fifth">
+        <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
           <div class="record" v-if="power['sign-com-htdetail'].state">
             <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
               <el-table-column label="时间">
@@ -486,7 +486,7 @@
     </div>
     <div class="uploadBtn">
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">上传</el-button>  <!-- 合同主体上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -887,6 +887,7 @@ export default {
         },
         otherCooperationInfo: {},
         contState: {},
+        recordType:{},
         toExamineState: {},
         laterStageState:{},
         contChangeState:{},
@@ -1122,7 +1123,7 @@ export default {
       console.log(tab.name);
       this.name=tab.name;
       if(tab.name==="second"){
-        if(this.contractDetail.contState.value<2){
+        if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
           this.$message({
             message:'合同未签章,不允许上传合同主体',
             type:'warning'
@@ -1256,7 +1257,8 @@ export default {
         query: {
           id: this.contractDetail.id,
           operateType: 2,
-          type: this.contType
+          type: this.contType,
+          isOffline:this.contractDetail.recordType.value===2?1:2
         }
       });
     },
