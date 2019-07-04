@@ -244,7 +244,7 @@
 
         let paperPrintTimes = numArr.map((item,index)=>{
           let str = `打印日期:${this.$tool.dateFormat(this.time)}`
-          return `第${Number(item)+1}次打印，重复无效，${str}`
+          return Number(item)+1>1?`第${Number(item)+1}次打印，重复无效，${str}`:''
         })
         return paperPrintTimes
       },
