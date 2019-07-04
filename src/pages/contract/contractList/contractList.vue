@@ -146,7 +146,7 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
+          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-addoffline'].state">
             <el-button round type="primary" size="small">
               录入线下合同<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
@@ -536,6 +536,10 @@ export default {
         'sign-ht-info-add': {
           state: false,
           name: '创建正式合同'
+        },
+        'sign-ht-info-addoffline': {
+          state: false,
+          name: '创建线下合同'
         },
         'sign-ht-info-view': {
           state: false,

@@ -273,7 +273,7 @@
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.laterStageState.value===1))" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&((contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=3))" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
@@ -477,7 +477,7 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round v-if="power['sign-com-bill'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
+      <el-button round v-if="power['sign-ht-info-edit'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
@@ -1001,6 +1001,10 @@ export default {
         'sign-ht-info-edit': {
           state: false,
           name: '编辑'
+        },
+        'sign-ht-info-addoffline': {
+          state: false,
+          name: '创建线下合同'
         },
         'sign-ht-xq-void': {
           state: false,

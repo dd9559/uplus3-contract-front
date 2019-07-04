@@ -14,7 +14,7 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="合同编号：" class="width-250 form-label" style="width:300px;" v-if="isOffline===1">
-            <input style="width:200px;" type="text" v-model="contractForm.code" placeholder="请输入" class="dealPrice">
+            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
@@ -777,6 +777,9 @@ export default {
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
       }
+      if(this.contractForm.code){
+        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"")
+      }
       if(!this.contractForm.code){
         this.contractForm.code=''
       }
@@ -1326,6 +1329,9 @@ export default {
       }
       if(this.type===1){//新增
         var url = '/api/contract/addContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
@@ -1385,6 +1391,9 @@ export default {
           delete param.saleCont.recordType
         }
         var url = '/api/contract/updateContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
