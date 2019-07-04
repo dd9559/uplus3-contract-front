@@ -271,7 +271,7 @@
             <div v-if="contractDetail.contChangeState.value!=2">
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.laterStageState.value===1))" @click="invalid">撤单</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
               <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
@@ -566,6 +566,14 @@
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
+    <!-- 线下合同提示上传资料库弹窗 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <span class="contDataTag">请上传资料库~</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogSuccess=false">暂不完善</el-button>
+        <el-button type="primary" @click="toUpload">完善资料库</el-button>
+      </span>
+    </el-dialog>
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
@@ -1072,14 +1080,15 @@ export default {
       buyerInfo: [],
       buyerFirst: {},
       sellerInfo: [],
-      sellerFirst: {}
+      sellerFirst: {},
+      dialogSuccess:false,//提示上传资料库
     };
   },
   created() {
     this.contType = this.$route.query.contType.toString();
     this.id = parseInt(this.$route.query.id);
     this.waterId = Number(this.$route.query.id)
-    this.contCode = this.$route.query.code;
+    // this.contCode = this.$route.query.code;
     //默认显示 成交报告 判断
     if(this.contType === '2' || this.contType === '3') {
       this.activeName = "deal-report"
@@ -1088,6 +1097,9 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
       this.name="third";
+    }else if(this.$route.query.type === "contBody"){
+      this.activeName = "second";
+      this.name="second";
     }
     this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
@@ -1512,6 +1524,7 @@ export default {
         if (res.status === 200) {
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
+          this.contCode=res.data.code
           //成交报告
           this.buyerInfo = []
           this.sellerInfo = []
@@ -1675,6 +1688,9 @@ export default {
               message:'上传成功',
               type:'success'
             })
+            if(this.contractDetail.recordType.value===2){
+              this.dialogSuccess=true
+            }
           }
         })
       }else{
@@ -1683,6 +1699,12 @@ export default {
           type:'warning'
         })
       }
+    },
+    //前往资料库
+    toUpload(){
+      this.activeName = "third";
+      this.name="third";
+      this.dialogSuccess=false
     },
     //获取合同资料库类型列表
     getContDataType() {
@@ -2012,7 +2034,11 @@ export default {
 .icon-loading:before {
     content: "\e62b" !important;
 }
-
+.contDataTag{
+    display:block;
+    text-align:center;
+    padding: 20px 0;
+  }
 .view-container {
   position: relative;
   .mainContent{

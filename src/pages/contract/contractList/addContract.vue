@@ -1342,7 +1342,12 @@ export default {
                 type: "success"
               })
               this.$router.push({
-                path: "/contractList"
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
               });
             }else{
               let contractMsg = res.data
@@ -1405,7 +1410,12 @@ export default {
                 type: "success"
               })
               this.$router.push({
-                path: "/contractList"
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
               });
             }else{
               let contractMsg = res.data

@@ -801,7 +801,7 @@ export default {
             path: "/contractDetails",
             query: {
               id: value.id,//合同id
-              code: value.code,//合同编号
+              // code: value.code,//合同编号
               contType: value.contType.value//合同类型
             }
           });
