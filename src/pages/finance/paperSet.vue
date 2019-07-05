@@ -514,6 +514,8 @@
         //     this.noPower(this.power['sign-cw-bill-query'].name);
         //     return false
         // }
+        this.$refs.tableCom.clearSelection();
+        this.contId_str=''
         if(type==='search'){
           this.pageNum=1
         }
