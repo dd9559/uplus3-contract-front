@@ -708,8 +708,8 @@
       },
       //关闭票据详情弹窗
       closePrintModel(){
-        this.$refs.tableCom.clearSelection();
-        this.contId_str=''
+        // this.$refs.tableCom.clearSelection();
+        // this.contId_str=''
       },
       // 部门第二版 选择部门
       depHandleClick(data) {
