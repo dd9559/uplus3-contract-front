@@ -1688,7 +1688,7 @@ export default {
               message:'上传成功',
               type:'success'
             })
-            if(this.contractDetail.recordType.value===2){
+            if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1){
               this.dialogSuccess=true
             }
           }
