@@ -180,7 +180,7 @@
         this.moneyTypes=[]
         this.paperList_jzl=[]
         this.paperList_jzl_common=[]
-        this.$emit('closePrintModel')
+        // this.$emit('closePrintModel')
       },
       /**
        * 票据详情
