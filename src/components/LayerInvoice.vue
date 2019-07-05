@@ -364,10 +364,10 @@
       },
       //批量打印记账联
       batchOperation:function (id) {
-        this.opera2batch=true
         this.$ajax.get('/api/bills/batchDetails',{id}).then(res=>{
           res=res.data
           if(res.status===200){
+            this.opera2batch=true
             this.paperShow=true
             this.FooterShow=true
             this.paperList_jzl=[].concat(res.data)
@@ -385,9 +385,21 @@
             this.getImgFn(arr.join(','),true)
           }
         }).catch(error=>{
-          this.$message({
-            message:error
-          })
+          // debugger
+          if(error.includes('服务端操作失败')){
+            this.$message({
+              message:error
+            })
+          }else{
+            let codes=[]
+            let msg=JSON.parse(error)
+            msg.forEach(item=>{
+              codes.push(item.code)
+            })
+            this.$message({
+              message:`票据${codes.join('，')}的门店签章获取失败`
+            })
+          }
         })
       }
     },
