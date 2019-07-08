@@ -1361,7 +1361,7 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"&&error!=="合同编号不符合规范！"){
             this.canClick=true
           }
           this.$message({
@@ -2077,7 +2077,8 @@ export default {
       }
     },
     inputCode(){
-      let addrReg=/\\|\/|\@|\#|\%|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\\(\)\-\_]/g
       this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
     },
     closeCheckPerson(){
