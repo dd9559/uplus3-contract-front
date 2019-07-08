@@ -2077,7 +2077,8 @@ export default {
       }
     },
     inputCode(){
-      let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\\(\)\-\_]/g
       this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
     },
     closeCheckPerson(){
