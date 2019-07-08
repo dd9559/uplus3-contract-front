@@ -514,6 +514,8 @@
         //     this.noPower(this.power['sign-cw-bill-query'].name);
         //     return false
         // }
+        this.$refs.tableCom.clearSelection();
+        this.contId_str=''
         if(type==='search'){
           this.pageNum=1
         }
@@ -708,8 +710,8 @@
       },
       //关闭票据详情弹窗
       closePrintModel(){
-        this.$refs.tableCom.clearSelection();
-        this.contId_str=''
+        // this.$refs.tableCom.clearSelection();
+        // this.contId_str=''
       },
       // 部门第二版 选择部门
       depHandleClick(data) {
