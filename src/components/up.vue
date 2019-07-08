@@ -247,6 +247,10 @@
       up: function () {
         // console.log(uploader)
         let path = ''
+        if(this.scane.id){
+          let addrReg=/\\|\/|\@|\#|\%|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+          this.scane.id=this.scane.id.replace(addrReg,'')
+        }
         switch (this.scane.path) {
           case 'ziliaoku':
             path = `contract/${this.scane.id}/${this.scane.path}`
