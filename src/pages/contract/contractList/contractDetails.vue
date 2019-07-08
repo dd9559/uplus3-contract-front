@@ -982,11 +982,11 @@ export default {
       isReady:false,
       dataScane:{
         path:"ziliaoku",
-        id:this.$route.query.code
+        id:''
       },
       uploadScane:{
         path:"zhuti",
-        id:this.$route.query.code
+        id:''
       },
       //权限
       power: {
@@ -1525,6 +1525,8 @@ export default {
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
           this.contCode=res.data.code
+          this.dataScane.id=res.data.code
+          this.uploadScane.id=res.data.code
           //成交报告
           this.buyerInfo = []
           this.sellerInfo = []
