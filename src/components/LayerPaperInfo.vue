@@ -445,18 +445,19 @@
 
   .paper-ul > li {
     float: left;
-    width: 23%;
+    /*width: 23%;*/
     margin-bottom: 10px;
+    margin-right: 20px;
     list-style: none;
   }
 
   .paper-ul .w1 {
-    width: 27%;
+    /*width: 27%;*/
   }
 
   .paper-ul .w2 {
-    width: 27%;
-    text-align: right;
+    /*width: 27%;*/
+    /*text-align: right;*/
   }
 
   .paper-small-tit {
