@@ -1606,7 +1606,7 @@ export default {
     //业绩分成
     getAchievement() {
       let param = {
-        contCode: this.contCode
+        contId: this.id
       };
       this.$ajax.get("/api/achievement/getContDetailsAgents", param).then(res => {
         res = res.data;
