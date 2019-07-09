@@ -1794,6 +1794,9 @@ export default {
     //关闭房源客源弹窗
     closeHouseGuest(value) {
       if (value) {
+        if(this.choseHcode&&this.choseHcode!==value.selectCode){
+          this.contractForm.propertyRightAddr=''
+        }
         if (value.dialogType === "house") {
           this.isShowDialog = false;
           this.getHousedetail(value.selectCode);
