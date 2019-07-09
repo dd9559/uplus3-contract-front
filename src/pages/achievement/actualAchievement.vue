@@ -1096,12 +1096,10 @@ export default {
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.people=res.data.data.allRole
-        // debugger
         // this.depName=res.data.data.depName
         this.depName=res.data.data.empNames[0].depName
         this.empNames=res.data.data.empNames
         
-        // debugger
         this.SSuForm.empNames=res.data.data.empNames[0].empId
         this.auditName=res.data.data.empNames[0].name
       }
@@ -1478,7 +1476,6 @@ export default {
                   "actualAchievement"
                 )
               );
-              debugger
               this.$router.push({
                 path: "/contractDetails",
                 query: {

@@ -1474,7 +1474,7 @@
         this.showTips1 = true;
         this.loading3=true;
         let param = {
-          contCode: this.contractCode
+          contId: this.contractId2
         };
         this.$ajax.get("/api/achievement/"+fieldStr, param).then(res => {
           let data = res.data;
@@ -2045,7 +2045,7 @@
       },
       // 审核，反审核，编辑点进去的房源，客源
       codeBaseInfo(contCode, entrance, aId,infoType) {
-        let param = { contCode: contCode, entrance: entrance, aId: this.aId };
+        let param = { contId: contCode, entrance: entrance, aId: this.aId };
         this.$ajax
           .get("/api/achievement/"+infoType, param)
           .then(res => {
@@ -2203,17 +2203,18 @@
         this.loading=true;
         if (val) {
           this.code = val;
+          debugger
           if (this.dialogType == 0) {  // 审核
-            this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getExamineInfo");
           }
           else if (this.dialogType == 1) {//编辑
             this.addArr = [];
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getEditInfo");
           }
 
           else if (this.dialogType == 2) {//反审核
             this.addArr = [];
-            this.codeBaseInfo(this.code, 2,null,"getBackExamineInfo");
+            this.codeBaseInfo(this.contractId2, 2,null,"getBackExamineInfo");
           } else if (this.dialogType == 3) {  // 业绩录入分成
             this.comm = this.achObj.comm;     //合同详情传过来的可分配业绩
             // 角色类型
