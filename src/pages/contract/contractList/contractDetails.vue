@@ -11,10 +11,11 @@
               <div class="title">合同信息</div>
               <div class="content">
                 <div class="one_">
-                  <p>
+                  <p style="position:relative;">
+                    <span class="tag">合同编号：</span>
                     <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="bottom">
                       <div class="contractDetailCode">
-                        <p>{{contractDetail.code}}</p>
+                        {{contractDetail.code}}
                       </div>
                     </el-tooltip>
                     <!-- <span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span> -->
@@ -2044,19 +2045,23 @@ export default {
     content: "\e62b" !important;
 }
 .contractDetailCode{
-  width: 250px;
+  position: absolute;
+  left: 100px;
+  top:50%;
+  transform: translateY(-50%);
+  width: 150px;
   display: inline-block;
   box-sizing: border-box;
-  padding-left: 30px;
+  // padding-left: 30px;
   color: @color-blue;
   font-weight: bold;
-  p{
-    display: inline-block;
-    width: 240px;
+  // p{
+    // display: inline-block;
+    // width: 140px;
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
-  }
+  // }
 }
 .contDataTag{
     display:block;
