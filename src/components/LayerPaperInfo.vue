@@ -243,7 +243,7 @@
         let numArr=this.num.toString().split(',')//当客户联、记账联都显示是，数组第一个元素为客户联打印次数，第二个为记账联的
 
         let paperPrintTimes = numArr.map((item,index)=>{
-          let str = `打印日期:${this.$tool.dateFormat(this.time)}`
+          let str = `打印日期:${this.comInvoiceTime}`
           return Number(item)+1>1?`第${Number(item)+1}次打印，重复无效，${str}`:''
         })
         return paperPrintTimes
@@ -261,11 +261,13 @@
         return this.defaultFn(this.collectionTime);
       },
       comInvoiceTime() {
-        let t = `${this.invoiceTime}`;
+        /*let t = `${this.invoiceTime}`;
         if (!!t) {
           t = t.replace(/-/g, "/");
         }
-        return this.defaultFn(t);
+        return this.defaultFn(t);*/
+        let date=new Date()
+        return this.$tool.dateFormat(date)
       },
       comPaper() {
         return this.defaultFn(this.paper);
@@ -443,18 +445,19 @@
 
   .paper-ul > li {
     float: left;
-    width: 23%;
+    /*width: 23%;*/
     margin-bottom: 10px;
+    margin-right: 20px;
     list-style: none;
   }
 
   .paper-ul .w1 {
-    width: 27%;
+    /*width: 27%;*/
   }
 
   .paper-ul .w2 {
-    width: 27%;
-    text-align: right;
+    /*width: 27%;*/
+    /*text-align: right;*/
   }
 
   .paper-small-tit {

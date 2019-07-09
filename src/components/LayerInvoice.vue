@@ -603,7 +603,7 @@
     > ul {
       &:first-of-type {
         > li {
-          margin-bottom: 20px;
+          /*margin-bottom: 10px;*/
           display: flex;
           // align-items: center;
 
@@ -612,12 +612,24 @@
             margin-top: 7px;
           }
 
-          &:first-of-type,
+          /*&:first-of-type,
           &:nth-of-type(2) {
             > p {
               &:first-of-type {
-                width: 200px;
+                !*width: 200px;*!
+                margin-right: 20px;
               }
+            }
+          }*/
+          &:first-of-type{
+            display: block;
+            overflow: hidden;
+          }
+          >p{
+            float: left;
+            margin: 0 10px 10px 0;
+            &:last-of-type{
+              margin-right: 0px;
             }
           }
 
