@@ -269,23 +269,23 @@
               <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
             </div>
             <div v-if="contractDetail.contChangeState.value!=2">
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&contractDetail.contState.value!=3&&contractDetail.contState.value!=0" @click="invalid">撤单</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state" @click="goPreview">预览</el-button>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
             </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <ul class="ulData">
               <!-- <li v-if="contractDetail.contState.value>1&&contractDetail.contChangeState.value!=2"> -->
-              <li v-if="power['sign-ht-xq-main-add'].state&&contractDetail.contState.value>1">
+              <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -442,7 +442,7 @@
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
-        <el-tab-pane label="审核记录" name="fifth">
+        <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
           <div class="record" v-if="power['sign-com-htdetail'].state">
             <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
               <el-table-column label="时间">
@@ -477,7 +477,7 @@
     <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
-      <el-button round v-if="power['sign-com-bill'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
+      <el-button round v-if="power['sign-ht-info-edit'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
       <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
@@ -486,7 +486,7 @@
     </div>
     <div class="uploadBtn">
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  <!-- 合同主体上传 -->
+      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">上传</el-button>  <!-- 合同主体上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -566,6 +566,14 @@
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
+    <!-- 线下合同提示上传资料库弹窗 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <span class="contDataTag">请上传资料库~</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogSuccess=false">暂不完善</el-button>
+        <el-button type="primary" @click="toUpload">完善资料库</el-button>
+      </span>
+    </el-dialog>
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
@@ -887,6 +895,7 @@ export default {
         },
         otherCooperationInfo: {},
         contState: {},
+        recordType:{},
         toExamineState: {},
         laterStageState:{},
         contChangeState:{},
@@ -973,11 +982,11 @@ export default {
       isReady:false,
       dataScane:{
         path:"ziliaoku",
-        id:this.$route.query.code
+        id:''
       },
       uploadScane:{
         path:"zhuti",
-        id:this.$route.query.code
+        id:''
       },
       //权限
       power: {
@@ -1000,6 +1009,10 @@ export default {
         'sign-ht-info-edit': {
           state: false,
           name: '编辑'
+        },
+        'sign-ht-info-addoffline': {
+          state: false,
+          name: '创建线下合同'
         },
         'sign-ht-xq-void': {
           state: false,
@@ -1067,14 +1080,15 @@ export default {
       buyerInfo: [],
       buyerFirst: {},
       sellerInfo: [],
-      sellerFirst: {}
+      sellerFirst: {},
+      dialogSuccess:false,//提示上传资料库
     };
   },
   created() {
     this.contType = this.$route.query.contType.toString();
     this.id = parseInt(this.$route.query.id);
     this.waterId = Number(this.$route.query.id)
-    this.contCode = this.$route.query.code;
+    // this.contCode = this.$route.query.code;
     //默认显示 成交报告 判断
     if(this.contType === '2' || this.contType === '3') {
       this.activeName = "deal-report"
@@ -1083,6 +1097,9 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
       this.name="third";
+    }else if(this.$route.query.type === "contBody"){
+      this.activeName = "second";
+      this.name="second";
     }
     this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
@@ -1122,7 +1139,7 @@ export default {
       console.log(tab.name);
       this.name=tab.name;
       if(tab.name==="second"){
-        if(this.contractDetail.contState.value<2){
+        if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
           this.$message({
             message:'合同未签章,不允许上传合同主体',
             type:'warning'
@@ -1256,7 +1273,8 @@ export default {
         query: {
           id: this.contractDetail.id,
           operateType: 2,
-          type: this.contType
+          type: this.contType,
+          isOffline:this.contractDetail.recordType.value===2?1:2
         }
       });
     },
@@ -1506,6 +1524,9 @@ export default {
         if (res.status === 200) {
           this.contractDetail = res.data;
           this.recordId = res.data.recordId;
+          this.contCode=res.data.code
+          this.dataScane.id=res.data.code
+          this.uploadScane.id=res.data.code
           //成交报告
           this.buyerInfo = []
           this.sellerInfo = []
@@ -1669,6 +1690,9 @@ export default {
               message:'上传成功',
               type:'success'
             })
+            if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1){
+              this.dialogSuccess=true
+            }
           }
         })
       }else{
@@ -1677,6 +1701,12 @@ export default {
           type:'warning'
         })
       }
+    },
+    //前往资料库
+    toUpload(){
+      this.activeName = "third";
+      this.name="third";
+      this.dialogSuccess=false
     },
     //获取合同资料库类型列表
     getContDataType() {
@@ -2006,7 +2036,11 @@ export default {
 .icon-loading:before {
     content: "\e62b" !important;
 }
-
+.contDataTag{
+    display:block;
+    text-align:center;
+    padding: 20px 0;
+  }
 .view-container {
   position: relative;
   .mainContent{

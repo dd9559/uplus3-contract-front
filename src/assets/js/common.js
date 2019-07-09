@@ -28,16 +28,6 @@ let TOOL = {
           name: "结算审核",
           path: "settleCheck",
           code: "sign-ht-js-query"
-        },
-        {
-          name: '分账记录',
-          path: 'routingRecord',
-          code: 'sign-ht-fz-query'
-        },
-        {
-          name: "打款记录",
-          path: "debitRecord",
-          code: "sign-ht-dk-query"
         }
       ]
     },
@@ -71,6 +61,16 @@ let TOOL = {
           name: "票据管理",
           path: "paperSet",
           code: "sign-cw-bill-query"
+        },
+        {
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
+        },
+        {
+          name: "打款记录",
+          path: "debitRecord",
+          code: "sign-ht-dk-query"
         }
       ]
     },

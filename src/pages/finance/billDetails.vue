@@ -430,6 +430,12 @@
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
             }
+            if(res.data.inAccountType&&(res.data.inAccountType===3)&&param.type===1&&res.data.billPath&&res.data.billPath.length>0){
+              this.files = [].concat({
+                path:res.data.billPath,
+                name:'pos小票'
+              })
+            }
             this.checkPerson.code=res.data.payCode
             this.getCheckData()
           }

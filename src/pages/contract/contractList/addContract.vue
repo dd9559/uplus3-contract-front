@@ -13,6 +13,9 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
+          <el-form-item label="合同编号：" class="width-250 form-label" style="width:300px;" v-if="isOffline===1">
+            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" @input="inputCode" placeholder="请输入" class="dealPrice">
+          </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -252,7 +255,7 @@
           <ul class="parameter">
             <li v-for="(item,index) in parameterList" :key="index"> -->
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
-              
+
               <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                 <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
               </el-tooltip>
@@ -350,7 +353,7 @@
     <a id="add" href="" v-show="false" target="_blank"></a>
   </div>
 </template>
-           
+
 <script>
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
@@ -363,6 +366,9 @@ const rule = {
   // transFlowCode: {
   //   name: "交易流程",
   // },
+  code:{
+    name:"合同编号"
+  },
   houseinfoCode: {
     name: "房源"
   },
@@ -443,6 +449,7 @@ export default {
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
+      isOffline:'',
       dictionary: {
         //数据字典
         "514": "", //产权状态
@@ -521,6 +528,7 @@ export default {
       this.getContractDetail();
     }else{
       this.contractForm.type = Number(this.$route.query.type);
+      this.isOffline = parseInt(this.$route.query.isOffline)
       if (this.$route.query.operateType) {
         this.type = parseInt(this.$route.query.operateType);
         if (this.type == 2) {
@@ -549,7 +557,7 @@ export default {
         this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
       this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
@@ -695,7 +703,7 @@ export default {
           }
         }
       }
-      
+
     },
     //手机号验证
     verifyMobile(item,index,type) {
@@ -757,14 +765,23 @@ export default {
       //   this.hintText='确定保存合同？'
       // }
       //验证合同信息
-      if(this.contractForm.type!==1){
-        delete rule_.transFlowCode
+      // if(this.contractForm.type!==1){
+      //   delete rule_.transFlowCode
+      // }
+      if(this.isOffline!==1){
+        delete rule_.code
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
       }
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
+      }
+      if(this.contractForm.code){
+        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"")
+      }
+      if(!this.contractForm.code){
+        this.contractForm.code=''
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
@@ -808,7 +825,7 @@ export default {
                                 if(!element.propertyRightRatio){
                                   element.propertyRightRatio="0"
                                 }
-                              }      
+                              }
                               if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                 if (element.encryptionCode.replace(/\s/g,"")) {
                                   // if(this.contractForm.type===1){
@@ -923,7 +940,7 @@ export default {
                                       if(!element.propertyRightRatio){
                                         element.propertyRightRatio="0"
                                       }
-                                    }      
+                                    }
                                   if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                     if (element.encryptionCode.replace(/\s/g,"")) {
                                       if(this.contractForm.type===1){
@@ -1305,23 +1322,46 @@ export default {
           haveExamine:this.haveExamine
         };
       }
+      if(this.isOffline===1){
+        param.recordType=2
+      }else{
+        param.recordType=1
+      }
       if(this.type===1){//新增
         var url = '/api/contract/addContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            this.hidBtn=1
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"创建成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
+              });
+            }else{
+              let contractMsg = res.data
+              this.hidBtn=1
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
+
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"&&error!=="合同编号不符合规范！"){
             this.canClick=true
           }
           this.$message({
@@ -1341,6 +1381,7 @@ export default {
           delete param.leaseCont.updateTime;
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
+          delete param.leaseCont.recordType
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -1352,20 +1393,40 @@ export default {
           delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
           delete param.saleCont.achievementState;
+          delete param.saleCont.recordType
         }
         var url = '/api/contract/updateContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"保存成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
+              });
+            }else{
+              let contractMsg = res.data
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
           }
+
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
@@ -1574,7 +1635,7 @@ export default {
     //       delete param.saleCont.subscriptionTerm;
     //       delete param.saleCont.updateTime;
     //       delete param.saleCont.distributableAchievement;
-    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
+    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");
     //     }
 
     //     this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
@@ -1774,7 +1835,7 @@ export default {
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data;  
+          res=res.data;
           if(res.status===200){
             if(res.data){
               this.contractForm.houseInfo.ShopOwnerName=res.data.name;
@@ -1836,7 +1897,7 @@ export default {
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data;  
+          res=res.data;
           if(res.status===200){
             if(res.data){
               this.contractForm.guestInfo.ShopOwnerName=res.data.name;
@@ -1890,7 +1951,7 @@ export default {
         this.contractForm.guestInfo.ShopOwnerName='';
         this.contractForm.guestInfo.ShopOwnerMobile='';
       }
-      
+
     },
     //获取合同信息
     getContractDetail() {
@@ -1959,7 +2020,9 @@ export default {
       });
     },
     cutNumber(val){
-      if(val==="dealPrice"){
+      if(val==="contCode"){//合同编号
+
+      }else if(val==="dealPrice"){
         this.$nextTick(()=>{
           this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
         })
@@ -2013,20 +2076,25 @@ export default {
         this.contractForm.otherCooperationInfo.name=this.$tool.textInput(this.contractForm.otherCooperationInfo.name)
       }
     },
+    inputCode(){
+      // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
+      this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
+    },
     closeCheckPerson(){
       checkPerson.state=false;
       this.$router.push('/contractList');
     },
-    //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。  
+    //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
     isIdCardNo(num) {
       num = num.toUpperCase();
-      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。            
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
       if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
           // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
           return false;
       }
-      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
-      //下面分别分析出生日期和校验位 
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+      //下面分别分析出生日期和校验位
       var len, re;
       len = num.length;
       if (len == 15) {
@@ -2035,15 +2103,15 @@ export default {
           //检查生日日期是否正确
           var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //将15位身份证转成18位 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。          
+              //将15位身份证转成18位
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
               var nTemp = 0, i;
@@ -2058,11 +2126,11 @@ export default {
       if (len == 18) {
           re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
           var arrSplit = num.match(re);
-          //检查生日日期是否正确 
+          //检查生日日期是否正确
           var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert(dtmBirth.getYear());
@@ -2070,8 +2138,8 @@ export default {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //检验18位身份证的校验码是否正确。 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+              //检验18位身份证的校验码是否正确。
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               // var valnum;
               // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
@@ -2326,7 +2394,7 @@ export default {
           color: #606266;
           text-overflow:ellipsis;
           white-space:nowrap;
-          overflow:hidden; 
+          overflow:hidden;
           display: inline-block;
         }
         > .colon{
