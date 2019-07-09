@@ -11,7 +11,14 @@
               <div class="title">合同信息</div>
               <div class="content">
                 <div class="one_">
-                  <p><span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span></p>
+                  <p>
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="bottom">
+                      <div class="contractDetailCode">
+                        <p>{{contractDetail.code}}</p>
+                      </div>
+                    </el-tooltip>
+                    <!-- <span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span> -->
+                  </p>
                   <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>
@@ -2035,6 +2042,21 @@ export default {
 @import "~@/assets/common.less";
 .icon-loading:before {
     content: "\e62b" !important;
+}
+.contractDetailCode{
+  width: 250px;
+  display: inline-block;
+  box-sizing: border-box;
+  padding-left: 30px;
+  color: @color-blue;
+  font-weight: bold;
+  p{
+    display: inline-block;
+    width: 240px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
 }
 .contDataTag{
     display:block;
