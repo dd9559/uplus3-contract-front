@@ -850,12 +850,15 @@ export default {
     //新增合同
     toAddcontract(command) {
       let isOffline = 0;
+      let recordType=1;
       if(typeof(command)==="string"){
         isOffline=1;
+        recordType=2;
         command=Number(command.replace("offline",""))
       }
       let param = {
-        type:command
+        type:command,
+        recordType:recordType
       };
       this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
         res=res.data;
