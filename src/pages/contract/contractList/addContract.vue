@@ -13,7 +13,7 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
-          <el-form-item label="合同编号：" class="width-250 form-label" style="width:300px;" v-if="isOffline===1">
+          <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
             <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" @input="inputCode" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
