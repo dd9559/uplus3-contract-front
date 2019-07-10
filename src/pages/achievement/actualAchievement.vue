@@ -1068,6 +1068,7 @@ export default {
               this.auditName=''
               this.roleName=''
               this.$message({message: '提交成功！'})
+              this.getData(this.ajaxParam);
           }
         }).catch(err=>{
           this.$message({message:err})
