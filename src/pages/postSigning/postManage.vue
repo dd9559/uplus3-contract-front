@@ -400,7 +400,7 @@
                         label="操作"
                         min-width="120px"
                         align="center">
-                            <template slot-scope="scope">
+                            <template slot-scope="scope" v-if="layerShowData.statusChange.value!=2">
                                 <template v-if="scope.row.stepState.value === OPERATION.start">
                                     <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                                 </template>

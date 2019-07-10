@@ -255,6 +255,7 @@ export default {
       dialogSure: false,
       dialogSuccess:false,
       type: 1,
+      isOffline:'',
       //编辑时的合同id
       id: "",
       //创建合同成功后的id
@@ -824,13 +825,17 @@ export default {
 
               }]
           },
-          type: this.type
+          type: this.type,
+          recordType:this.isOffline===1?2:1
         };
 
-
+        var url = '/api/contract/addContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
 
         this.$ajax
-          .postJSON("/api/contract/addContract", param)
+          .postJSON(url, param)
           .then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
@@ -893,7 +898,8 @@ export default {
 
         let param = {
           igdCont: this.contractForm,
-          type: this.type
+          type: this.type,
+          recordType:this.isOffline===1?2:1
         };
         param.igdCont.contPersons[0].encryptionMobile = param.igdCont.contPersons[0].mobile;
         param.igdCont.contPersons[1].encryptionMobile = param.igdCont.contPersons[1].mobile;
@@ -955,13 +961,17 @@ export default {
           delete param.igdCont.contPersons[1].updateTime;
 
           delete param.igdCont.achievementState;
+          delete param.igdCont.recordType
         }
 
 
-
+        var url = '/api/contract/updateContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
 
         this.$ajax
-          .postJSON("/api/contract/updateContract", param)
+          .postJSON(url, param)
           .then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
@@ -1078,7 +1088,7 @@ export default {
       // this.remoteMethod()
       // this.getShopList();
       this.contractForm.type = this.$route.query.contType //区分合同类型
-
+      this.isOffline = parseInt(this.$route.query.isOffline)
       //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
       if (this.$route.query.operateType) {
           this.type = parseInt(this.$route.query.operateType)

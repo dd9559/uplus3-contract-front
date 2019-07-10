@@ -876,7 +876,8 @@ export default {
               path: "/newIntention",
               query: {
                 contType: command,
-                operateType:1
+                operateType:1,
+                isOffline:isOffline
               }
             });
           }

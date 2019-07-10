@@ -346,7 +346,8 @@ export default {
                     contType: e.value,
                     id: this.$route.query.id,
                     operateType: 2,
-                    formDetail: true
+                    formDetail: true,
+                    isOffline:this.detailData.recordType.value===2?1:2
                 }
             })
         },
