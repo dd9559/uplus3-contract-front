@@ -96,7 +96,7 @@
                 addForm:{
                     parentId:'',
                     name:'',
-                    accountType:4,
+                    accountType:1,
                     remark:''
                 },//权限配置
                 power: {
@@ -152,7 +152,7 @@
                 if(type==1){
                     this.title=`新增【${this.bigName}】小类`,
                     this.addForm.name=''
-                    this.addForm.accountType=4
+                    this.addForm.accountType=1
                     this.addForm.remark=''
                     this.addForm.parentId=this.bigId
                 }else if(type==2){
