@@ -767,7 +767,7 @@ export default {
           // if(res.data.cityId===1&&(res.data.contType.value===2||res.data.contType.value===3)){
 
             //1 武汉  2 合肥  11 襄阳
-          if((res.data.cityId===1||res.data.cityId===11)&&(res.data.contType.value===2)){
+          if((res.data.cityId===1||res.data.cityId===11||res.data.cityId===2)&&(res.data.contType.value===2)){
             this.isShowType=true;
             //买卖
             this.business=res.data.imgAddress.business;
