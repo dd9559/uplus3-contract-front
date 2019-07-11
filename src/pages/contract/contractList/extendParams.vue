@@ -139,7 +139,7 @@ export default {
 			spinner: 'el-icon-loading',
 			background: 'rgba(0, 0, 0, 0.5)'
 		});
-		this.getAdmin();//获取当前登录人信息
+		// this.getAdmin();//获取当前登录人信息
     // http://localhost:8080/api/contract/showHtml?id=327&type=residence
 		this.clientHeight();
 		this.Msg = JSON.parse(sessionStorage.getItem("contractMsg"));
@@ -554,7 +554,7 @@ export default {
 			if(this.Msg.isWuHanMM){
 				iframe2.onload=function(){
 					that.iframe2State=true
-					if(that.userMsg.cityId===1){//武汉
+					if(that.getUserMsg.cityId===1){//武汉
 						// console.log('wh')
 						let nav = [
 							{title:"第一条、房屋基本情况",id:"one"},
@@ -574,7 +574,7 @@ export default {
 							{title:"第十五条、生效要件",id:"fifteen"},
 						]
 						that.navTag=[].concat(nav)
-					}else if(that.userMsg.cityId===11){//襄阳
+					}else if(that.getUserMsg.cityId===11){//襄阳
 						// console.log('xy')
 						let nav = [
 							{title:"第一条、房屋基本情况",id:"one"},
@@ -636,7 +636,10 @@ export default {
 	computed:{
 		iframeState:function(val){
 			return this.iframe1State&&this.iframe2State
-		}
+		},
+		getUserMsg(){
+      return this.getUser.user
+    }
 	},
 	watch:{
 		iframeState:function(val){
