@@ -314,14 +314,14 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <el-dialog title="" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="warning-box">
         <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
         <ul>
-          <li v-for="item in ownerList" :key="item.encryptionCode">
+          <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
             {{item.name}}：{{item.encryptionCode}}
           </li>
-          <li v-for="item in guestList" :key="item.encryptionCode">
+          <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
             {{item.name}}：{{item.encryptionCode}}
           </li>
         </ul>
@@ -1034,7 +1034,7 @@ export default {
                             let businessList = [];
 
                             ownerArr.forEach(element => {
-                              if(element.cardType===1||this.contractForm.type!==1){
+                              if(element.cardType===1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
@@ -1047,7 +1047,7 @@ export default {
                             });
 
                             guestArr.forEach(element => {
-                              if(element.cardType===1||this.contractForm.type!==1){
+                              if(element.cardType===1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
@@ -2199,6 +2199,11 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.personalMsg{
+  /deep/.el-dialog__header{
+    border: none !important;
+  }
+}
 .warning-box{
   margin: -4px 0 18px 28px;
   p{
