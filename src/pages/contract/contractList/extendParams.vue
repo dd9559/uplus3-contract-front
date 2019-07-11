@@ -593,6 +593,19 @@ export default {
 							{title:"第十四条、生效要件",id:"fourteen"},
 						]
 						that.navTag=[].concat(nav)
+					}else{
+						iframe2.onload=function(e){
+							that.isSave(2)
+							let iframeBox=this.contentDocument
+							let p_titleList=Array.from(iframeBox.querySelectorAll('.navTitle'))
+							let nav = []
+							p_titleList.forEach(element => {
+								let val = element.innerHTML
+								let id = element.id
+								nav.push({title:val,id:id})
+							});
+							that.navTag=[].concat(nav)
+						}
 					}
 				}
 				iframe1.onload=function(){
