@@ -171,11 +171,11 @@ let TOOL = {
           path: "commission",
           code: "sign-set-sxf"
         },
-        /*{
+        {
           name: "业绩申诉有效时间",
           path: "aplTime",
           code: "sign-set-vtime"
-        },*/
+        },
       ]
     }
   ], //侧边栏导航

@@ -11,6 +11,7 @@ const contraPreview = () => import('@/pages/setting/contraPreview')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
+const aplTime = () => import('@/pages/setting/aplTime')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
@@ -109,6 +110,14 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "款类设置"]
+          }
+        },
+        {
+          path: "aplTime",
+          component: aplTime,
+          meta: {
+            root: true,
+            list: ["设置", "业绩申诉有效时间"]
           }
         },
         {
