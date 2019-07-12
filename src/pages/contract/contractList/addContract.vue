@@ -72,8 +72,11 @@
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
-           <el-form-item label="产权地址：" class="form-label" style="width:805px;text-align:right">
-             <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input>
+           <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
+             <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
+             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
+             <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
+             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" /> 
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -515,7 +518,10 @@ export default {
           state: false,
           name: '编辑资料库'
         },
-      }
+      },
+      rightAddrCity:'',
+      rightAddrArea:'',
+      rightAddrDetail:''
     };
   },
   created() {
@@ -786,10 +792,11 @@ export default {
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-              this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
-              let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
-              this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
-              if (this.contractForm.propertyRightAddr) {
+              // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+              // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+              // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
+              if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
+                this.contractForm.propertyRightAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
                 // if(this.contractForm.propertyCard){
                 //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                 // }
@@ -1254,7 +1261,7 @@ export default {
                 }
                 }else{
                   this.$message({
-                    message:'房源信息-产权地址不能为空',
+                    message:'房源信息-产权地址未填写完整',
                     type: "warning"
                   })
                 }
@@ -1968,6 +1975,29 @@ export default {
           this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
+          let rightAddress = res.data.propertyRightAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.rightAddrDetail=rightAddress
+          }
+          
           // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
@@ -2068,6 +2098,16 @@ export default {
         this.guestList[index].propertyRightRatio=this.$tool.cutFloat({val:this.guestList[index].propertyRightRatio,max:100})
       }else if(type==='owner'){
         this.ownerList[index].propertyRightRatio=this.$tool.cutFloat({val:this.ownerList[index].propertyRightRatio,max:100})
+      }
+    },
+    cutAddress(type){
+      let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      if(type==="city"){
+        this.rightAddrCity=this.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","")
+      }else if(type==="area"){
+        this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","")
+      }else{
+        this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
       }
     },
     inputOnly(index,type){
