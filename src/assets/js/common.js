@@ -170,6 +170,11 @@ let TOOL = {
           name: "低佣比例设置",
           path: "lowCommission",
           code: "sign-set-verify"
+        },
+        {
+          name: "手续费设置",
+          path: "commission",
+          code: "sign-set-sxf"
         }
       ]
     }
