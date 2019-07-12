@@ -160,6 +160,11 @@ let TOOL = {
           name: "审核流程",
           path: "approvalProcess",
           code: "sign-set-verify"
+        },
+        {
+          name: "手续费设置",
+          path: "commission",
+          code: "sign-set-sxf"
         }
       ]
     }
