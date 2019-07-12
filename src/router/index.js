@@ -12,6 +12,7 @@ const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
 const operationLog = () => import('@/pages/setting/operationLog')
+const aplTime = () => import('@/pages/setting/aplTime')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 
 //票据管理
@@ -30,6 +31,8 @@ const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
 const aplPage = () => import('@/pages/achievement/aplPage')
+const storePage = () => import('@/pages/achievement/storePage')
+
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -117,6 +120,14 @@ export default new Router({
           }
         },
         {
+          path: "aplTime",
+          component: aplTime,
+          meta: {
+            root: true,
+            list: ["设置", "业绩申诉有效时间"]
+          }
+        },
+        {
           path: "approvalProcess",
           component: approvalProcess,
           meta: {
@@ -170,6 +181,10 @@ export default new Router({
           component: achDetial,
         },
         {
+          path: "storePage",
+          component: storePage,
+        },
+        {
           path: "receivableAchievement",
           component: receivableAchievement,
           meta: {
@@ -183,7 +198,7 @@ export default new Router({
           component: storeReceive,
           meta: {
             root: true,
-            list: ["业绩", "门店实收"]
+            list: ["业绩", "业绩报表"]
           }
         },
         // 业绩板块 end

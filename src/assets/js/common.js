@@ -95,11 +95,11 @@ let TOOL = {
           path: "achAppeal",
           code: "sign-yj-appeal-query"
         },
-        // {
-        //   name:'门店实收',
-        //   path:'storeReceive',
-        //   code: "sign-yj-rec-query"
-        // }
+        {
+          name:'业绩报表',
+          path:'storeReceive',
+          code: "sign-yj-rec-query"
+        }
       ]
     },
     {
@@ -149,6 +149,11 @@ let TOOL = {
         {
           name: "款类设置",
           path: "moneyType",
+          code: "sign-set-kl-query"
+        },
+        {
+          name: "业绩申诉有效时间",
+          path: "aplTime",
           code: "sign-set-kl-query"
         },
         {
