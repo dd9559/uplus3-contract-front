@@ -95,11 +95,11 @@ let TOOL = {
           path: "achAppeal",
           code: "sign-yj-appeal-query"
         },
-        // {
-        //   name:'门店实收',
-        //   path:'storeReceive',
-        //   code: "sign-yj-rec-query"
-        // }
+        {
+          name:'业绩报表',
+          path:'storeReceive',
+          code: "sign-yj-rec-query"
+        }
       ]
     },
     {
@@ -152,6 +152,11 @@ let TOOL = {
           code: "sign-set-kl-query"
         },
         {
+          name: "业绩申诉有效时间",
+          path: "aplTime",
+          code: "sign-set-kl-query"
+        },
+        {
           name: "操作日志",
           path: "operationLog",
           code: "sign-set-log-query"
@@ -164,7 +169,12 @@ let TOOL = {
         {
           name: "低佣比例设置",
           path: "lowCommission",
-          code: "sign-set-dybl"
+          code: "sign-set-verify"
+        },
+        {
+          name: "手续费设置",
+          path: "commission",
+          code: "sign-set-sxf"
         }
       ]
     }

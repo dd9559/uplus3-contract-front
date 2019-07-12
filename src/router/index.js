@@ -14,6 +14,8 @@ const moneyType = () => import('@/pages/setting/moneyType')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
+const commission = () => import('@/pages/setting/commission')
+const commissionDialog = () => import('@/pages/setting/commissionDialog')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -131,6 +133,21 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "低佣比例设置"]
+          }
+        },
+        {
+          path: "commission",
+          component: commission,
+          meta: {
+            root: true,
+            list: ["设置", "手续费设置"]
+          }
+        },
+        {
+          path: "commissionDialog",
+          component: commissionDialog,
+          meta: {
+            getParent: true
           }
         },
         //设置模块 end

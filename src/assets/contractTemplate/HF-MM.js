@@ -591,20 +591,20 @@ for(let readonlyItem in msg){
 contractConfig.checkboxListener(function(obj,index){
   let tagName = obj.currentTarget.getAttribute('checkmodel')
   if(tagName){
-    var tagNameList=[]
+    var tagNameList=[]//同类勾选框下的所以子项
     for(var i in Obj[tagName]) {
         tagNameList=tagNameList.concat(Obj[tagName][i])
     }
     cleanInput(tagNameList)
-    let checkDom=Obj[tagName][obj.currentTarget.getAttribute('extendparam')]
-    let bool = obj.currentTarget.querySelector('p').getAttribute('checked')
+    let checkDom=Obj[tagName][obj.currentTarget.getAttribute('extendparam')]//当前勾选下的所有子项
+    let bool = obj.currentTarget.querySelector('p').getAttribute('checked')//判断勾选框是否被勾选
     let arr = []
     let removeArr = ['val30','val38','val39','val40','val45','val46','val47','val48','val49','val50','val51','val52','val61','val62','val63','val64']
     if(checkDom&&checkDom.length>0){
-      checkDom.forEach(function(item){
+      checkDom.forEach(function(item){//清除当前勾选框下自选不可编辑的状态
         let dom = document.querySelector(`*[extendparam=${item}]`)
         if(removeArr.includes(item)){
-          dom.removeAttribute('readonly')
+          (item!=='val49'&&item!=='val48')&&dom.removeAttribute('readonly')
           dom.removeAttribute('disabled')
           dom.removeAttribute('systemParam')
         }
