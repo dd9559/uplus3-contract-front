@@ -98,7 +98,7 @@ let TOOL = {
         {
           name:'业绩报表',
           path:'storeReceive',
-          code: "sign-yj-rec-query"
+          code: "sign-yj-report-query"
         }
       ]
     },
@@ -169,7 +169,7 @@ let TOOL = {
         {
           name: "低佣比例设置",
           path: "lowCommission",
-          code: "sign-set-verify"
+          code: "sign-set-dybl"
         },
         {
           name: "手续费设置",
