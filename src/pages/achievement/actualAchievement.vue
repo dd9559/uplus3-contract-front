@@ -1070,8 +1070,21 @@ export default {
               this.$message({message: '提交成功！'})
               this.getData(this.ajaxParam);
           }
-        }).catch(err=>{
-          this.$message({message:err})
+        }).catch(error=>{
+          if(error.message==='下一节点审批人不存在'){
+              this.checkPerson.flowType=2;
+              this.checkPerson.code= this.yjId;
+              this.checkPerson.state=true
+              this.checkPerson.type=error.data.type;
+
+            }else{
+              this.$message({
+                message:error,
+                type: "error"
+              })
+            }
+            this.isSS=false
+            this.getData(this.ajaxParam);
         })
        }else{
               this.noPower(this.power['sign-yj-rev-appeal'].name)

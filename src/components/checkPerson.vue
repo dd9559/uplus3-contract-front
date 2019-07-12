@@ -136,10 +136,10 @@
       searchDep:function (val,init=false) {
         this.inputEmp=false
         let param={
-          keyword:!val?'':val,
-          type:this.type===3?1:0,
-          bizCode:this.bizCode,
-          flowType:this.flowType
+          keyword:!val?'':val, //部门名称关键字
+          type:this.type===3?1:0, //当前节点/下一节点
+          bizCode:this.bizCode, //业务编码
+          flowType:this.flowType  //流程类型
         }
         this.$ajax.get('/api/machine/selectDept',param).then(res=>{
           res=res.data
