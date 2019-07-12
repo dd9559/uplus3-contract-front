@@ -13,9 +13,20 @@
             <p><label>合同编号:</label><span>{{paperInfoData.contCode}}</span></p>
             <p><label>物业地址:</label><span>{{paperInfoData.address}}</span></p>
           </li>
-          <li>
+          <li class="tips-second">
             <p><label>合计金额:</label><span>{{paperInfoData.proceedsAmount}}元</span></p>
-            <p><label>交款单位:</label><span>{{paperInfoData.payerName}}</span></p>
+            <p>
+              <label>交款单位:</label>
+              <el-select size="small" class="w200" v-model="form.payerType" placeholder="请选择" @change="getOption">
+                <el-option
+                  v-for="item in dropdown"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.payerName" @input="form.payerName=$tool.textInput(form.payerName)" v-if="form.inputInfo">
+            </p>
           </li>
           <li v-for="(item,index) in moneyTypes" :key="index">
             <label class="checkbox-info iconfont" :class="[item.check?'active':'']"
@@ -121,6 +132,10 @@
       printType: {
         type: String,
         default: 'client'
+      },
+      contId:{
+        type:[Number,String],
+        default:''
       }
     },
     mixins: [MIXINS],
@@ -130,7 +145,7 @@
           '542': '',
         },
         FooterShow: false,//详情底部操作按钮栏是否显示
-        ID: '',
+        ID: '',//contId
         paperShow: false,
         paperType: false, //false详情打印 true开票
         paperInfoData: {}, //票据对象
@@ -144,6 +159,12 @@
         opera2batch:false,//是否批量打印记账联
         paperList_jzl:[],//批量记账联数组集合
         paperList_jzl_common:[],//批量记账联数组集合code字段抽取
+        form:{
+          payerType:'',
+          payerName:'',
+          inputInfo:false
+        },//交款单位
+        dropdown:[],//交款单位下拉
       }
     },
     methods: {
@@ -180,7 +201,38 @@
         this.moneyTypes=[]
         this.paperList_jzl=[]
         this.paperList_jzl_common=[]
+        this.form=Object.assign({},{
+          payerType:'',
+          payerName:'',
+          inputInfo:false
+        })
         // this.$emit('closePrintModel')
+      },
+      /**
+       * 获取交款单位下拉框数据
+       */
+      getDropdown: function () {
+        let param = {
+          contId: this.getContId
+        }
+        this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.dropdown = res.data
+          }
+        })
+      },
+      getOption:function (tip) {
+        this.form.inputInfo=false
+        this.dropdown.find(item=>{
+          if(item.value===tip){
+            this.form.payerName=item.custName
+            tip===3&&(this.form.inputInfo=true)
+          }
+        })
+        /*this.paperInfoData=Object.assign({},this.paperInfoData,{
+          payerName:this.form.payerName,
+          payerType:this.form.payerType===1?'客户':this.form.payerType===2?'业主':'其他'})*/
       },
       /**
        * 票据详情
@@ -222,6 +274,10 @@
           this.$message.error('无法开票');
           return false
         }
+        if(!this.form.payerName){
+          this.$message.error('请选择或输入交款单位');
+          return false
+        }
         if (!this.moneyTypes[this.activeType].project) {
           this.$message.error('请选择开票项目');
           return false
@@ -249,12 +305,18 @@
           }
         })
         this.paperInfoData = Object.assign({}, this.paperInfoData, obj, {
-          createTime: this.$tool.dateFormat(new Date())
+          createTime: this.$tool.dateFormat(new Date()),
+          payerName:this.form.payerName,
+          payerType:this.form.payerType===1?'客户':this.form.payerType===2?'业主':'其他'
         })
         // this.printPaper();
       },
       // 票据详情 打印
       printPaper() {
+        if(!this.form.payerName){
+          this.$message.error('请选择或输入交款单位');
+          return false
+        }
         this.layerLoading = Loading.service({});
         let obj = {}
         if (!this.paperType) {
@@ -279,6 +341,8 @@
             isHiddenAddress: bool,
             billType: type.project,
             isPrint: true,
+            payerType:this.form.payerType,
+            payerName:this.form.payerName
           }
         }
         obj.printType=this.getPrint === 'client' ? 1 : 2
@@ -358,6 +422,7 @@
         //判断是开票或票据详情预览
         if (bool) {
           this.paperList();
+          this.contId&&this.getDropdown()
         } else {
           this.getPaperDetails(id);
         }
@@ -385,7 +450,6 @@
             this.getImgFn(arr.join(','),true)
           }
         }).catch(error=>{
-          // debugger
           if(error.includes('服务端操作失败')){
             this.$message({
               message:error
@@ -445,7 +509,6 @@
           },
         ]
         let tips = types.findIndex(item => {
-          // debugger
           if (this.moneyTypes.length > 0 && item.list.includes(this.moneyTypes[this.activeType].project)) {
             return item
           }
@@ -458,11 +521,19 @@
       },
       getPrint: function () {
         return this.printType
+      },
+      getContId:function () {
+        return this.contId
       }
     },
     watch: {
       paperInfoData(n, old) {
         this.getImgFn(n.signImg)
+      },
+      getContId:function (val) {
+        if(this.paperType){
+          this.getDropdown()
+        }
       }
     }
   }
@@ -470,6 +541,12 @@
 
 <style lang="less" scoped>
   @import "~@/assets/common.less";
+  input[size='small']{
+    height: 32px;
+  }
+  input.person{
+    margin-left: @margin-10;
+  }
 
   .layer-paper{
     /deep/.el-dialog{
@@ -605,8 +682,13 @@
         > li {
           /*margin-bottom: 10px;*/
           display: flex;
-          // align-items: center;
-
+          /*align-items: center;*/
+          &.tips-second{
+            align-items: center;
+            >p:first-of-type{
+              margin-top: -4px;
+            }
+          }
           > label {
             margin-right: 10px;
             margin-top: 7px;

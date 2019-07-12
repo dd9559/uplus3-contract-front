@@ -60,6 +60,16 @@
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
+                <el-form-item
+                    label="产权地址区域"
+                    prop="areaName">
+                        <el-select v-model="propForm.areaName" class="w134">
+                        <el-option v-for="(item,i) in rules.areaName"
+                        :key="'areaName'+i"
+                        :label="item"
+                        :value="item"></el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -86,6 +96,10 @@
                 <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" align="center" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" align="center" min-width="260">
+                </el-table-column>
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" align="center" min-width="120">
+                </el-table-column>
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" align="center" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" align="center" min-width="90">
                 </el-table-column>
@@ -273,6 +287,7 @@
                     late: '',
                     dateMo: '',
                     depAttr:'',
+                    areaName:''
                 },
                 // 筛选选项
                 rules: {
@@ -296,7 +311,8 @@
                         label: '全部',
                         key: ''
                     }],
-                    depAttr:[]
+                    depAttr:[],
+                    areaName:[]
                 },
                 // 搜索变量
                 employees: {
@@ -383,6 +399,18 @@
             },
         },
         methods: {
+            // 产权地址下拉数据
+            getAreaList:function () {
+                this.$ajax.get('/api/organize/currentdep/areaname')
+                .then(res =>{
+                    res = res.data
+                    if(res.status === 200){
+                        this.rules.areaName = res.data
+                    }
+                }).catch(err=>{
+                    this.errMeFn(err);
+                })
+            },
             titleFn(val){
                 let arr = this.dictionary['520'];
                 for(let i=0;i<arr.length;i++){
@@ -910,6 +938,7 @@
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
                     depAttr:this.propForm.depAttr,
+                    areaName:this.propForm.areaName
                 }
 
                 //点击查询时，缓存筛选条件
@@ -997,6 +1026,8 @@
                 this.remoteMethod();
                 // 后期状态
                 this.getLateState();
+                // 产权地址区域
+                this.getAreaList()
                 let res=this.getDataList
                 if(res&&(res.route===this.$route.path)){
                     this.tableData.list = res.data.list
@@ -1014,6 +1045,7 @@
                         late: query.statusLaterStage,
                         dateMo: query.signDateSta?[query.signDateSta,query.signDateEnd]:'',
                         depAttr:query.depAttr,
+                        areaName:query.areaName
                     }
                     if(this.propForm.regionName){
                         this.dep=Object.assign({},this.dep,{id:this.propForm.region,empId:this.propForm.regionName,empName:query.empName})
