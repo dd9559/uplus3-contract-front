@@ -160,6 +160,11 @@ let TOOL = {
           name: "审核流程",
           path: "approvalProcess",
           code: "sign-set-verify"
+        },
+        {
+          name: "低佣比例设置",
+          path: "lowCommission",
+          code: "sign-set-verify"
         }
       ]
     }
