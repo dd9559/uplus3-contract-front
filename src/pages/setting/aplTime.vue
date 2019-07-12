@@ -98,7 +98,7 @@
     </el-dialog>
         <el-form :inline="true" size="medium">
         <el-form-item label="体系：" >
-          <el-select v-model="formSys" placeholder="请选择体系" :clearable="true">
+          <el-select v-model="formSys" :disabled="title=='编辑'?true:false" placeholder="请选择体系" :clearable="true">
             <el-option v-for="item in dictionary['638']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
         </el-form-item>
@@ -160,7 +160,7 @@
     },
     created(){
       this.getDictionary()
-      let param={
+      var param={
         cityId:this.cityInfo2.user.cityId,
         systemTag:this.searchForm.sysid,
         settingTimeStart:this.searchForm.dateMo?this.searchForm.dateMo[0]:'',
@@ -169,7 +169,21 @@
         updateTimeEnd:this.searchForm.dateMoTwo?this.searchForm.dateMoTwo[1]:'',
 
       }
-      this.getData(param)
+            let res=this.getDataList
+            if(res&&(res.route===this.$route.path)){
+                this.tableData=res.data
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery')).query
+                this.searchForm.sysid=session.systemTag,
+                this.searchForm.dateMo=session.settingTimeStart
+                ? [session.settingTimeStart, session.settingTimeEnd]
+                : [];
+                this.searchForm.dateMoTwo=session.updateTimeStart
+                ? [session.updateTimeStart, session.updateTimeEnd]
+                : [];
+            }else{
+                this.getData(param)
+            }
+      
     },
     mounted() {
     },
@@ -206,6 +220,7 @@
         this.innerVisible=true
       },
       addSys(){
+        this.title='新增'
         this.AEdialog=true
         this.formSys=''
           this.apltime=''
@@ -283,6 +298,12 @@
         updateTimeEnd:this.searchForm.dateMoTwo?this.searchForm.dateMoTwo[1]:'',
 
       }
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/aplTime',
+                        url:'/appealsetting/operateQry',
+                        query:Object.assign({},param,{empName:this.dep.empName}),
+                        methods:"get"
+        }))
       this.getData(param)
       },
       resetFormFn() {
