@@ -152,11 +152,6 @@ let TOOL = {
           code: "sign-set-kl-query"
         },
         {
-          name: "业绩申诉有效时间",
-          path: "aplTime",
-          code: "sign-set-kl-query"
-        },
-        {
           name: "操作日志",
           path: "operationLog",
           code: "sign-set-log-query"
@@ -175,7 +170,12 @@ let TOOL = {
           name: "手续费设置",
           path: "commission",
           code: "sign-set-sxf"
-        }
+        },
+        /*{
+          name: "业绩申诉有效时间",
+          path: "aplTime",
+          code: "sign-set-vtime"
+        },*/
       ]
     }
   ], //侧边栏导航
