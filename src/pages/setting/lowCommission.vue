@@ -162,7 +162,28 @@ export default{
   },
   created(){
     this.getDictionary();//字典
-    this.getList();//列表
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.path)){
+      this.tableData = res.data
+      // this.total = res.data.count
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.searchForm = Object.assign({},this.contractForm,session.query)
+      // this.contractForm.systemType=Number(this.contractForm.systemType)
+      delete this.searchForm.settingTimeStart
+      delete this.searchForm.settingTimeEnd
+      delete this.searchForm.updateTimeStart
+      delete this.searchForm.updateTimeEnd
+      if(session.query.settingTimeStart){
+        this.setSignDate[0]=session.query.settingTimeStart
+        this.setSignDate[1]=session.query.settingTimeEnd
+      }
+      if(session.query.updateTimeStart){
+        this.editSignDate[0]=session.query.updateTimeStart
+        this.editSignDate[1]=session.query.updateTimeEnd
+      }
+    }else{
+      this.getList();//列表
+    }
   },
   methods:{
     //查询
