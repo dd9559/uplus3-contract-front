@@ -675,11 +675,11 @@
       </el-dialog>
     </div>
       <!-- 申诉弹窗 -->
-      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="1000px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
             <div class="ssu">
-              <p><span class="jianju">合同编号：</span>{{htbh}}</p>
-              <p>签约时间：{{qysj}}</p>
-              <p v-if="userInfo">申诉人：{{userInfo.name}}</p>
+              <p class="dot" ><span class="jianju">合同编号：</span>{{htbh}}</p>
+              <p style="width:300px">签约时间：{{qysj}}</p>
+              <p style="width:300px" v-if="userInfo">申诉人：{{userInfo.name}}</p>
             </div>
             <div class="role">
               <span class="point jianju">申诉角色：</span>
@@ -1595,6 +1595,10 @@ export default {
   }
   .link{
 
+  }
+  .dot{
+    text-overflow:ellipsis;
+      white-space: nowrap;
   }
   .blue {
     color: #478de3;
