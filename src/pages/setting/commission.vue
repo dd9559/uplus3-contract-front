@@ -47,7 +47,9 @@
             ref="tableCom"
             :max-height="tableNumberCom">
                 <el-table-column align="center" label="体系" prop="systemTag">
-                    <template slot-scope="scope">{{toTextFn(scope.row.systemTag)}}</template>
+                    <template slot-scope="scope">
+                        <span v-for="item in dictionary['638']" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" label="收佣手续费" width="350">
                     <template slot-scope="scope">
@@ -116,15 +118,6 @@
             }
         },
         methods: {
-            toTextFn(t) {
-                let text
-                this.dictionary['638'].find(item => {
-                    if(item.key === t){
-                        text = item.value
-                    }
-                })
-                return text
-            },
             addSignFn(n,i) {
                 return `${n}${i}%`
             },

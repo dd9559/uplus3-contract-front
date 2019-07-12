@@ -44,7 +44,7 @@
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="体系"  width="90">
           <template slot-scope="scope">
-            <span>{{toTextFn(scope.row.systemTag)}}</span>
+            <span v-for="item in dictionary['638']" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="业绩申诉有效时间">
@@ -195,15 +195,6 @@
           this.$message({message:err})
         })
       },
-      toTextFn(t) {
-                let text
-                this.dictionary['638'].find(item => {
-                    if(item.key === t){
-                        text = item.value
-                    }
-                })
-                return text
-            },
       outercli(){
           if(this.formSys==''){
           this.$message({message:'体系不能为空'})
