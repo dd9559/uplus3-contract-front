@@ -164,7 +164,7 @@ let TOOL = {
         {
           name: "低佣比例设置",
           path: "lowCommission",
-          code: "sign-set-verify"
+          code: "sign-set-dybl"
         }
       ]
     }
