@@ -302,7 +302,7 @@
       </el-table>
     </el-dialog>
     <!--  :showBtn="comPrint" -->
-    <layer-invoice ref="layerInvoice" :printType="printType" @closePrintModel="closePrintModel" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :printType="printType" :contId="activeRow.contId" @closePrintModel="closePrintModel" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
