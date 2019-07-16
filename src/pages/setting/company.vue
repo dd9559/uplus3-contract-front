@@ -485,7 +485,7 @@
       }
     },
     mounted() {
-      this.searchForm.cityId = this.cityInfo.user.cityId
+      this.searchForm.cityId = this.cityInfo.cityId
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data.list
@@ -706,7 +706,7 @@
         this.initFormList()
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
-        this.companyForm.cityName = this.cityInfo.user.cityName
+        this.companyForm.cityName = this.cityInfo.cityName
         this.clearStore('init')
       },
       // 重置表单
@@ -1107,7 +1107,7 @@
     },
     computed: {
       cityInfo(){
-        return this.getUser
+        return this.getUser.user
       }
     }
 }

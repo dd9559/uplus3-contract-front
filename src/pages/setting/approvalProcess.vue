@@ -284,7 +284,7 @@
             }
         },
         mounted() {
-            this.searchForm.cityId = this.cityInfo.user.cityId
+            this.searchForm.cityId = this.cityInfo.cityId
             // this.getCityList()
             this.getDictionary()
             let res=this.getDataList
@@ -414,7 +414,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = this.cityInfo.user.cityName
+                    this.aduitForm.cityId = this.cityInfo.cityName
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false
@@ -857,7 +857,7 @@
         },
         computed: {
             cityInfo(){
-                return this.getUser
+                return this.getUser.user
             }
         }
     }

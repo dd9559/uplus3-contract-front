@@ -55,7 +55,7 @@
       transactionContract
     },
     mounted() {
-      this.cityId = this.cityInfo.user.cityId
+      this.cityId = this.cityInfo.cityId
       // this.$ajax.get('/api/organize/cities').then(res => {
       //   res = res.data
       //   if(res.status === 200) {
@@ -77,7 +77,7 @@
     },
     computed: {
       cityInfo(){
-        return this.getUser
+        return this.getUser.user
       }
     }
   };

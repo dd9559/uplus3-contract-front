@@ -215,7 +215,7 @@
                     }
                 ]
                 let param = {
-                    cityId: this.userInfo.user.cityId,
+                    cityId: this.userInfo.cityId,
                     systemTag: this.commissionForm.systemTag,
                     commissionFee: arr1,
                     sepaFee: arr2
@@ -249,7 +249,7 @@
         },
         computed: {
             userInfo(){
-                return this.getUser
+                return this.getUser.user
             }
         }
     }

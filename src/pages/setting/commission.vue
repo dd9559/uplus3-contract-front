@@ -129,7 +129,7 @@
                 let bool1 = this.settingTime!=null&&this.settingTime.length
                 let bool2 = this.updateTime!=null&&this.updateTime.length
                 let param = {
-                    cityId: this.userInfo.user.cityId,
+                    cityId: this.userInfo.cityId,
                     systemTag: this.systemTag,
                     settingTimeStart: bool1 ? this.settingTime[0] : '',
                     settingTimeEnd: bool1 ? this.settingTime[1] : '',
@@ -182,7 +182,7 @@
         },
         computed: {
             userInfo(){
-                return this.getUser
+                return this.getUser.user
             }
         }
     }
