@@ -444,7 +444,6 @@
         documentCard: {}, //营业执照信息
         companyBankList: [], //银行账户集合
         delIds: [],
-        directInfo: {}, //直营属性证件信息
         fourthStoreNoEdit: false,
         dialogViewVisible: false, //查看弹出框
         creditCodeShow: false,
@@ -509,17 +508,19 @@
       }else{
         this.getCompanyList()
       }
-      this.selectDirectInfo()
-      this.initFormList()
       this.getDictionary()
       this.getStoreList(1)
       this.getBanks()
     },
     methods: {
-      clearStore() {
+      // 重置门店列表数据
+      clearStore(type) {
         this.storeList = []
         this.storePage = 1
         this.getStoreList(2)
+        if(!type){
+          this.clearFn()
+        }
       },
       showView1(bol) {
         if(!bol&&this.searchForm.storeId){
@@ -572,9 +573,7 @@
           this.getStoreList(2,++this.storePage,this.temKey)
         }
       },
-      /**
-       * 获取银行列表
-       */
+      // 获取银行列表
       getBanks:function () {
         this.$ajax.get('/api/system/selectBankName').then(res=>{
           res=res.data
@@ -582,7 +581,7 @@
             this.adminBanks=res.data
           }
         }).catch(error=>{
-
+          this.$message({message:error})
         })
       },
       // 初始化表单 数组集合
@@ -591,9 +590,7 @@
         this.documentCard = JSON.parse(JSON.stringify(obj2))
         this.companyBankList = JSON.parse(JSON.stringify(arr))
       },
-      /**
-       * 获取公司设置列表
-       */
+      // 获取公司设置列表
       getCompanyList: function (type="init") {
         let param = {
           pageSize: this.pageSize,
@@ -623,6 +620,7 @@
             this.$message({message:error})
         })
       },
+      // 获取门店
       getStoreList(val,page=1,keyword='') {
         this.temKey = keyword
         this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
@@ -648,14 +646,10 @@
           this.$message({message:error})
         })
       },
+      // 门店选择
       storeSelect(val) {
         if(!val) {
-          this.companyForm.cooperationMode = ""
-          this.cooModeChange(2)
-          this.companyForm.name = ""
-          this.companyForm.franchiseRatio = ""
-          this.companyForm.contractSign = ""
-          this.companyForm.financialSign = ""
+          this.clearFn()
           return
         }
         this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
@@ -672,21 +666,16 @@
               this.companyForm.level = obj.level
               if(obj.cooperationMode) {
                 this.companyForm.cooperationMode = obj.cooperationMode.label
-                this.cooModeChange(obj.cooperationMode.value)
               }
-              this.fourthStoreNoEdit = false  
+              this.fourthStoreNoEdit = false
+              this.clearFn('init')
             } else {
               this.$message({message:"四级门店不能录入公司信息",type:"warning"})
               this.companyForm.storeId = ""
-              this.companyForm.cooperationMode = ""
-              this.cooModeChange(2)
               this.fourthStoreNoEdit = true
               this.clearStore()
+              this.clearFn()
             }
-            this.companyForm.name = ""
-            this.companyForm.franchiseRatio = ""
-            this.companyForm.contractSign = ""
-            this.companyForm.financialSign = ""
           } else {
             this.noticeShow = true
             setTimeout(() => {
@@ -694,12 +683,7 @@
             }, 2000)
             if(this.companyFormTitle === "添加企业信息") {
               this.companyForm.storeId = ""
-              this.companyForm.cooperationMode = ""
-              this.companyForm.franchiseRatio = ""
-              this.companyForm.name = ""
-              this.companyForm.contractSign = ""
-              this.companyForm.financialSign = ""
-              this.cooModeChange(2)
+              this.clearFn()
               this.fourthStoreNoEdit = false
               this.clearStore()
             }
@@ -723,47 +707,26 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = this.cityInfo.user.cityName
-        this.clearStore()
+        this.clearStore('init')
       },
-      //切换到直营属性时,自动带出证件信息
-      selectDirectInfo() {
-        this.$ajax.get('/api/setting/company/selectDirectInfo').then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.directInfo = res.data
-          }
-        }).catch(error => {
-            this.$message({message:error})
-        })
-      },
-      //合作方式选择
-      cooModeChange(val) {
-        if(val === 1) {
-          this.companyForm.lepName = this.directInfo.lepName
-          this.companyForm.lepDocumentType = this.directInfo.lepDocumentType.value
-          this.companyForm.lepDocumentCard = this.directInfo.lepDocumentCard
-          this.companyForm.lepPhone = this.directInfo.lepPhone
-          this.companyForm.documentType = this.directInfo.documentType.value
-          if(this.companyForm.documentType === 2) {
-            this.icRegisterShow = true
-            this.creditCodeShow = false
-          } else {
-            this.creditCodeShow = true
-            this.icRegisterShow = false
-          }
-          this.documentCard = this.directInfo.documentCard
-          this.companyBankList = [...this.directInfo.companyBankList]
-        } else {
-          this.companyForm.lepName = ""
-          this.companyForm.lepDocumentType = ""
-          this.companyForm.lepDocumentCard = ""
-          this.companyForm.lepPhone = ""
-          this.companyForm.documentType = ""
-          this.icRegisterShow = false
-          this.creditCodeShow = false
-          this.documentCard = JSON.parse(JSON.stringify(obj2))
-          this.companyBankList = JSON.parse(JSON.stringify(arr))
+      // 重置表单
+      clearFn(type) {
+        if(!type){
+          this.companyForm.cooperationMode = ""
         }
+        this.companyForm.franchiseRatio = ""
+        this.companyForm.name = ""
+        this.companyForm.lepName = ""
+        this.companyForm.lepDocumentType = ""
+        this.companyForm.lepDocumentCard = ""
+        this.companyForm.lepPhone = ""
+        this.companyForm.documentType = ""
+        this.companyForm.contractSign = ""
+        this.companyForm.financialSign = ""
+        this.icRegisterShow = false
+        this.creditCodeShow = false
+        this.documentCard = JSON.parse(JSON.stringify(obj2))
+        this.companyBankList = JSON.parse(JSON.stringify(arr))
       },
       //企业证件选择
       documentTypeChange(val) {
@@ -775,6 +738,7 @@
           this.creditCodeShow = true
         }
       },
+      // 添加银行账户
       addRow() {
         let row = {
           bankName: '',
@@ -785,12 +749,14 @@
         }
         this.companyBankList.push(row)
       },
+      // 删除银行账户
       removeRow(index) {
         if(this.companyBankList[index].id) {
           this.delIds.push(JSON.stringify(this.companyBankList[index].id))
         }
         this.companyBankList.splice(index,1)
       },
+      // 电子签章上传成功 获取存储路径和文件名称
       upload(obj) {
         if(obj.btnId === "imgcontract") {
           this.companyForm.contractSign = obj.param[0].path+`?${obj.param[0].name}`
@@ -800,6 +766,7 @@
           this.financialName = obj.param[0].name
         }
       },
+      // 删除电子签章
       delStamp(type) {
         type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
@@ -814,12 +781,6 @@
                 return false
               }
             }
-            // else if(val&&type===2) {
-            //   if(!checkPassPort(val)) {
-            //     this.$message({message:'护照格式不正确',type:'warning'})
-            //     return false
-            //   }
-            // }
             else if(val&&type===3) {
               if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
                 this.$message({message:'港澳通行证格式不正确',type:'warning'})
@@ -862,7 +823,7 @@
                         bankList[i].bankBranchName = ""
                       } else if(bankList[i].type === 1 && bankList[i].bankBranchName) {
                         if(!isHaveChinese(bankList[i].bankBranchName)) {
-                          that_.$message({message:"支行名称必须带有中文"})
+                          that_.$message({message:"支行名称必须带有中文",type:"warning"})
                           break
                         }
                       }
@@ -898,7 +859,7 @@
                       that_.$message({message: "银行不能为空"})
                     }
                   } else {
-                    that_.$message({message: "请输入正确的银行卡号"})
+                    that_.$message({message: "请输入正确的银行卡号",type:'warning'})
                   }
                 } else {
                   that_.$message({message: "银行卡号不能为空"})
@@ -1066,10 +1027,12 @@
         this.pageNum = val
         this.getCompanyList('pagination')
       },
+      // 查询
       queryFn() {
         this.pageNum = 1
         this.getCompanyList('search')
       },
+      // 筛选条件重置
       resetFormFn() {
         this.searchForm.storeId = ""
         this.searchForm.cooperationMode = ""
@@ -1132,6 +1095,7 @@
           this.companyForm.franchiseRatio=this.$tool.cutFloat({val:this.companyForm.franchiseRatio,max:100})
         })
       },
+      // 证件类型改变 清除证件号信息
       idTypeChange() {
         this.companyForm.lepDocumentCard = ""
       }
@@ -1216,7 +1180,6 @@
     > p {
       font-size: 14px;
       font-weight: bold;
-      // margin-bottom: @margin-10;
       color:rgba(35,50,65,1);
     }
     .tip {
@@ -1303,7 +1266,6 @@
       }
       .el-table__row {
         .el-form-item {
-          // display: flex;
           margin-bottom: 0;
           /deep/ .el-form-item__label{
             padding: 0;
