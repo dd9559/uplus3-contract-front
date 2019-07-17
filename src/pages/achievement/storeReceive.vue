@@ -584,7 +584,7 @@ export default {
   }
   .blue {
     color: #478de3;
-    text-decoration: underline
+    // text-decoration: underline
   }
   .orange {
     color: #f56c6c;
