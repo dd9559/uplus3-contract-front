@@ -89,7 +89,7 @@
       <div class="inner">
         <p>确认保存新的业绩申诉有效时间？</p>
         <p>新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
-        <p style="color:red;margin-top:5px">当前业绩申诉有效时间为24小时</p>
+        <p style="margin-top:5px">当前业绩申诉有效时间为24小时</p>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="innerVisible = false" round>取 消</el-button>
