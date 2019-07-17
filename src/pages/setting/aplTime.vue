@@ -89,7 +89,7 @@
       <div class="inner">
         <p>确认保存新的业绩申诉有效时间？</p>
         <p>新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
-        <p style="color:red;margin-top:10px">当前业绩申诉有效时间为24小时</p>
+        <p style="color:red;margin-top:5px">当前业绩申诉有效时间为24小时</p>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="innerVisible = false" round>取 消</el-button>
@@ -161,7 +161,7 @@
     created(){
       this.getDictionary()
       var param={
-        cityId:this.cityInfo2.user.cityId,
+        cityId:this.cityInfo2.cityId,
         systemTag:this.searchForm.sysid,
         settingTimeStart:this.searchForm.dateMo?this.searchForm.dateMo[0]:'',
         settingTimeEnd:this.searchForm.dateMo?this.searchForm.dateMo[1]:'',
@@ -227,7 +227,7 @@
       adclick(){
 
             var param={
-            cityId:this.cityInfo2.user.cityId,
+            cityId:this.cityInfo2.cityId,
             systemTag:this.formSys,
             effectTime:this.apltime,
             timeUnit:this.timeUnit
@@ -247,7 +247,7 @@
             this.innerVisible=false
             this.$message({message:'操作成功'})
             let param={
-              cityId:this.cityInfo2.user.cityId,
+              cityId:this.cityInfo2.cityId,
               systemTag:this.searchForm.sysid,
               settingTimeStart:this.searchForm.dateMo?this.searchForm.dateMo[0]:'',
               settingTimeEnd:this.searchForm.dateMo?this.searchForm.dateMo[1]:'',
@@ -282,7 +282,7 @@
       },
       queryFn() {
         let param={
-        cityId:this.cityInfo2.user.cityId,
+        cityId:this.cityInfo2.cityId,
         systemTag:this.searchForm.sysid,
         settingTimeStart:this.searchForm.dateMo?this.searchForm.dateMo[0]:'',
         settingTimeEnd:this.searchForm.dateMo?this.searchForm.dateMo[1]:'',
@@ -311,7 +311,7 @@
     },
     computed: {
       cityInfo2(){
-        return this.getUser
+        return this.getUser.user
       }
     }
 }
@@ -719,12 +719,12 @@
 }
 .inner{
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   color: #606266;
   p:first-child{
-    font-size: 24px;
+    font-size: 16px;
     color: #000;
-    margin-bottom: 16px;
+    margin-bottom: 5px;
   }
 }
 .aeform /deep/ .el-icon-info{
