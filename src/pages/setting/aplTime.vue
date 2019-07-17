@@ -81,7 +81,7 @@
     </div>
     <el-dialog :title="title+'业绩申诉有效时间'" class="aeform" :visible.sync="AEdialog" :closeOnClickModal="$tool.closeOnClickModal">
       <el-dialog
-      width="60%"
+      width="460px"
       title="确认保存"
       :closeOnClickModal="$tool.closeOnClickModal"
       :visible.sync="innerVisible"
@@ -89,7 +89,7 @@
       <div class="inner">
         <p>确认保存新的业绩申诉有效时间？</p>
         <p>新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
-        <p>当前业绩申诉有效时间为24小时</p>
+        <p style="color:red">当前业绩申诉有效时间为24小时</p>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="innerVisible = false" round>取 消</el-button>
