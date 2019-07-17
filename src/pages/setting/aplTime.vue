@@ -243,9 +243,7 @@
             timeUnit:this.timeUnit
           }
           }
-          this.formSys=''
-          this.apltime=''
-          this.timeUnit=''
+         
           // this.AEdialog=true
           // this.formSys=row.systemTag
           // this.apltime=row.effectTime
@@ -256,6 +254,9 @@
           if(res.status==200){
             this.AEdialog=false
             this.innerVisible=false
+            this.formSys=''
+            this.apltime=''
+            this.timeUnit=''
             this.$message({message:'操作成功'})
             let param={
               cityId:this.cityInfo2.cityId,
