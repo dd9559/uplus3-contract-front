@@ -34,6 +34,7 @@ const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
 const aplPage = () => import('@/pages/achievement/aplPage')
+const storePage = () => import('@/pages/achievement/storePage')
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -199,6 +200,10 @@ export default new Router({
         {
           path: "aplPage",
           component: aplPage,
+        },
+        {
+          path: "storePage",
+          component: storePage,
         },
         {
           path: "achDetial",
