@@ -1118,8 +1118,8 @@ export default {
         this.isSS=true
       } 
       }).catch(err=>{
-        if(err=='301'){
-        this.$message({message:'您的业绩申诉有效时间已结束，无法进行申诉喔'})
+        if(err.status==300){
+        this.$message({message:err.message})
         }
       })
     },
