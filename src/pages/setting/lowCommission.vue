@@ -50,7 +50,7 @@
         </el-table-column>
         <el-table-column align="center" label="低佣比例" min-width="50">
           <template slot-scope="scope">
-            <p v-for="item in scope.row.list" :key="item.id">{{item.comPercentMin}} %</p>
+            <p v-for="item in scope.row.list" :key="item.id"><span v-if="item.judgeType===1" style="font-size:16px;">≤ </span><span v-if="item.judgeType===2" style="font-size:16px;">= </span><span v-if="item.judgeType===3" style="font-size:16px;">≥ </span>{{item.comPercentMin}} %</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="设置时间" min-width="50">
