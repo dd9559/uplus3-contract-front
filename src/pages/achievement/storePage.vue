@@ -9,7 +9,7 @@
                               type="primary"
                               size="medium"
                               @click="getExcel"
-                              style="padding:9px 15px;min-width: 80px;"
+                              style="padding:9px 10px;margin-right:10px;min-width: 80px;"
                             >导出</el-button>     
 
           </div>
@@ -122,7 +122,8 @@
                                :current-page="pageNum"
                                :page-size="pageSize"
                                layout="total, prev, pager, next, jumper"
-                               :total="total">
+                               :total="total"
+                               v-if="total!=0">
                             </el-pagination> 
                       </div>
     </div>
@@ -280,7 +281,7 @@ export default {
   .data-list {
     width: 100%;
     /deep/ .el-table {
-      // font-size: 14px !important;
+       padding: 0 10px;
       td,
       th {
         padding: 24px 0;
