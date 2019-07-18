@@ -223,7 +223,7 @@ export default new Router({
           component: storeReceive,
           meta: {
             root: true,
-            list: ["业绩", "门店实收"]
+            list: ["业绩", "业绩报表"]
           }
         },
         // 业绩板块 end
