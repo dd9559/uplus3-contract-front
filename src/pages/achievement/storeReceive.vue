@@ -49,8 +49,8 @@
                       <div class="data-head">
                            <div class="data-head-left">
                             <div class="head-left">
-                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">副总汇总</el-button>
-                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">总监汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">总监汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">副总汇总</el-button>
                             <el-button type="primary" size="small" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">店长汇总</el-button>
                              <el-button type="primary" size="small" :class="[activeItem===4?'active':'']" :disabled="this.steps[3]==0?true:false" @click="intodetial(4)">单组汇总</el-button>
                             </div>
@@ -89,7 +89,7 @@
                             @row-dblclick="dialogVisible = true"
                             >
                                <el-table-column
-                                 :label="this.level==1?'副总':this.level==2?'总监':this.level==3?'店长':'组长'"
+                                 :label="this.level==1?'总监':this.level==2?'副总':this.level==3?'店长':'组长'"
                                  width="80"
                                  >
                                   <template slot-scope="scope">
