@@ -267,7 +267,7 @@ export default {
       pageSize:10,
       pageNum:1,
       loading:true,
-      activeItem:1,
+      activeItem:'',
     };
   },
   created() {
