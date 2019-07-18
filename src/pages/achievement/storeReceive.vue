@@ -289,8 +289,12 @@ export default {
                 break
               }
             }
-            this.level=res.data.data.achievementForms.list[0].depLevel
-            this.tableData =res.data.data.achievementForms.list
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
             this.total=res.data.data.achievementForms.total
             this.loading=false
          
@@ -310,7 +314,19 @@ export default {
           endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
           depLevel:type
         }
-        this.getData(param)
+      this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+            this.steps=res.data.data.levels
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
+            this.total=res.data.data.achievementForms.total
+            this.loading=false
+      }).catch(err=>{
+        this.$message({message:err})
+      })
     },
 
     getExcel(){
