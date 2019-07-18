@@ -283,6 +283,12 @@ export default {
     getData(param){
       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
             this.steps=res.data.data.levels
+            for(let i=0;i<this.steps.length;i++){
+              if(this.steps[i]>0){
+                this.activeItem=i+1
+                break
+              }
+            }
             this.level=res.data.data.achievementForms.list[0].depLevel
             this.tableData =res.data.data.achievementForms.list
             this.total=res.data.data.achievementForms.total
