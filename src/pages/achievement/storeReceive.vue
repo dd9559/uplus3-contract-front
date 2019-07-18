@@ -409,6 +409,7 @@ export default {
   }
   .blue {
     color: #478de3;
+    cursor: pointer;
     // text-decoration: underline
   }
   .orange {
