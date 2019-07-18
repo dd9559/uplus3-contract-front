@@ -1110,15 +1110,18 @@ export default {
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.people=res.data.data.allRole
-        // this.depName=res.data.data.depName
         this.depName=res.data.data.empNames[0].depName
         this.empNames=res.data.data.empNames
         
         this.SSuForm.empNames=res.data.data.empNames[0].empId
         this.auditName=res.data.data.empNames[0].name
-      }
+        this.isSS=true
+      } 
+      }).catch(err=>{
+        if(err.status==300){
+        this.$message({message:err.message})
+        }
       })
-      this.isSS=true
     },
     mul: function(arg1, arg2) {
       var m = 0,

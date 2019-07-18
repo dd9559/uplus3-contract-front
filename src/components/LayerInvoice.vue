@@ -313,13 +313,13 @@
       },
       // 票据详情 打印
       printPaper() {
-        if(!this.form.payerName){
+        if(this.paperType&&!this.form.payerName){//开票时判断是否选择单位
           this.$message.error('请选择或输入交款单位');
           return false
         }
         this.layerLoading = Loading.service({});
         let obj = {}
-        if (!this.paperType) {
+        if (!this.paperType) {//详情打印
           obj = {
             code: this.paperInfoData.billCode,
             isPrint: true
@@ -328,7 +328,7 @@
             delete obj.code
             obj.codes=this.paperList_jzl_common.join(',')
           }
-        } else {
+        } else {//开票打印
           let type = this.moneyTypes[this.activeType]
           let bool = 0;
           if (type.addressHidden) {

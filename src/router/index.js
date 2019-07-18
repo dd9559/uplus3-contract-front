@@ -34,6 +34,7 @@ const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
 const aplPage = () => import('@/pages/achievement/aplPage')
+const storePage = () => import('@/pages/achievement/storePage')
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -201,6 +202,10 @@ export default new Router({
           component: aplPage,
         },
         {
+          path: "storePage",
+          component: storePage,
+        },
+        {
           path: "achDetial",
           component: achDetial,
         },
@@ -218,7 +223,7 @@ export default new Router({
           component: storeReceive,
           meta: {
             root: true,
-            list: ["业绩", "门店实收"]
+            list: ["业绩", "业绩报表"]
           }
         },
         // 业绩板块 end

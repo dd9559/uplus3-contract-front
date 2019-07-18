@@ -89,7 +89,7 @@
       <div class="inner">
         <p>确认保存新的业绩申诉有效时间？</p>
         <p>新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
-        <p style="margin-top:5px">当前业绩申诉有效时间为24小时</p>
+        <p v-if="title=='编辑'" style="margin-top:5px">当前业绩申诉有效时间为{{apltime}}{{timeUnit==1?'小时':'天'}}</p>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="innerVisible = false" round>取 消</el-button>
@@ -103,7 +103,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="业绩申诉有效时间：" >
-          <el-input v-model="apltime" @input.native="numberFn"></el-input>
+          <el-input v-model="apltime" @keyup.native="numberFn"></el-input>
           <el-select v-model="timeUnit" placeholder="请选择" style="margin-left:20px">
             <el-option v-for="item in dictionary['656']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>
@@ -147,6 +147,7 @@
         tableData: [], //公司设置列表
         pageSize: 10,
         pageNum: 1,
+        id:'',
         // count: 0,
         dictionary: {
           '638':'',
@@ -200,7 +201,7 @@
           this.$message({message:'体系不能为空'})
           return
         }
-        if(this.apltime==''){
+        if(this.apltime===''){
           this.$message({message:'业绩申诉有效时间不能为空'})
           return
         }
@@ -220,26 +221,29 @@
       adclick2(row){
           this.AEdialog=true
           this.title='编辑'
+          this.id=row.id
           this.formSys=row.systemTag
           this.apltime=row.effectTime
           this.timeUnit=row.timeUnit
       },
       adclick(){
-
+          if(this.title=='编辑'){
             var param={
             cityId:this.cityInfo2.cityId,
             systemTag:this.formSys,
-            effectTime:this.apltime,
+            effectTime:Number(this.apltime),
+            id:this.id,
             timeUnit:this.timeUnit
           }
-          this.formSys=''
-          this.apltime=''
-          this.timeUnit=''
-          // this.AEdialog=true
-          // this.formSys=row.systemTag
-          // this.apltime=row.effectTime
-          // this.timeUnit=row.timeUnit
-     
+          }else{
+            var param={
+            cityId:this.cityInfo2.cityId,
+            systemTag:this.formSys,
+            effectTime:Number(this.apltime),
+            timeUnit:this.timeUnit
+          }
+          }
+         
 
         this.$ajax.postJSON('/api/appealsetting/operate',param).then(res=>{
           if(res.status==200){
@@ -263,7 +267,7 @@
       },
       numberFn(){
         this.apltime=this.$tool.numberInput(this.apltime)
-        this.apltime=Number(this.apltime)
+        // this.apltime=Number(this.apltime)
       },
       //关闭模态窗
       handleClose(done) {
