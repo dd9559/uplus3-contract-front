@@ -291,6 +291,7 @@ export default {
             }
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
               this.tableData =res.data.data.achievementForms.list
             }else{
               this.tableData=[]
@@ -318,6 +319,7 @@ export default {
             this.steps=res.data.data.levels
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
               this.tableData =res.data.data.achievementForms.list
             }else{
               this.tableData=[]
