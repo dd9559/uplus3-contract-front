@@ -56,7 +56,7 @@
                                  label="客源方门店"
                                  width="130">
                                   <template slot-scope="scope">
-                                          {{scope.row.houseInfo}}}
+                                          {{scope.row.houseInfo}}
                                   </template>
                                </el-table-column>  
 
