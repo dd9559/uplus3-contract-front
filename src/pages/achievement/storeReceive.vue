@@ -48,27 +48,29 @@
                       <!-- 头部 -->
                       <div class="data-head">
                            <div class="data-head-left">
-                              <b class="iconfont icon-tubiao-11" style="color:#55657A;font-weight:normal;"></b> 
-                              <span>
-                                  {{storeTitle}}实收业绩汇总
-                              </span>
+                            <div class="head-left">
+                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">副总汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">总监汇总</el-button>
+                            <el-button type="primary" size="small" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">店长汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===4?'active':'']" :disabled="this.steps[3]==0?true:false" @click="intodetial(4)">单组汇总</el-button>
+                            </div>
                               <el-button
                               class="f_r"
                               round
                               type="primary"
                               size="medium"
                               @click="getExcel"
-                              style="padding:9px 15px;min-width: 80px;margin-top:15px"
+                              style="padding:9px 15px;min-width: 80px;"
                               >导出</el-button>     
                            </div> 
                           <!-- 面包屑 -->
                     
-                          <div class="head-left">
-                             <el-button type="primary" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">副总汇总</el-button>
-                             <el-button type="primary" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">总监汇总</el-button>
-                            <el-button type="primary" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">店长汇总</el-button>
-                             <el-button type="primary" :class="[activeItem===4?'active':'']" :disabled="this.steps[3]==0?true:false" @click="intodetial(4)">单组汇总</el-button>
-                          </div>
+                          <!-- <div class="head-left">
+                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">副总汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">总监汇总</el-button>
+                            <el-button type="primary" size="small" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">店长汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===4?'active':'']" :disabled="this.steps[3]==0?true:false" @click="intodetial(4)">单组汇总</el-button>
+                          </div> -->
                           <!--面包屑 end-->   
                                        
                       </div>
@@ -225,7 +227,8 @@
                                @current-change="handleCurrentChange"
                                :current-page.sync="pageNum"
                                layout="total, prev, pager, next, jumper"
-                               :total="total">
+                               :total="total"
+                               v-if="total!=0">
                             </el-pagination>
                       </div>
                       
@@ -246,190 +249,12 @@ export default {
   data() {
     return {
       filterShow: true,
-      testData0: {
-        title: "全公司",
-        currentPart: "",
-        nextPart: "区总",
-        testArr: [
-          {
-            partName: "testData0汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "周松1",
-            id: 0
-          },
-          {
-            partName: "testData0汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "周松1",
-            id: 1
-          },
-          {
-            partName: "testData0汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "周松1",
-            id: 2
-          },
-          {
-            partName: "testData0汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "周松1",
-            id: 3
-          }
-        ]
-      },
-      testData1: {
-        title: "汉口大区",
-        currentPart: "副总",
-        nextPart: "总监",
-        testArr: [
-          {
-            partName: "testData1汉口大区",
-            num1: 100,
-            num2: 7000000,
-            name: "秦星星1",
-            id: 0
-          },
-          {
-            partName: "testData1汉口大区",
-            num1: 100,
-            num2: 7000000,
-            name: "秦星星1",
-            id: 1
-          },
-          {
-            partName: "testData1汉口大区",
-            num1: 100,
-            num2: 7000000,
-            name: "王五",
-            id: 2
-          },
-          {
-            partName: "testData1汉口大区",
-            num1: 100,
-            num2: 7000000,
-            name: "李六",
-            id: 3
-          }
-        ]
-      },
-      testData2: {
-        title: "万松园片区",
-        currentPart: "店长",
-        nextPart: "门店明细",
-        testArr: [
-          {
-            partName: "testData2汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "王大大",
-            id: 0
-          },
-          {
-            partName: "testData2汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "王大大",
-            id: 1
-          },
-          {
-            partName: "testData2汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "王大大",
-            id: 2
-          },
-          {
-            partName: "testData2汉口大区",
-            num1: 200,
-            num2: 6000000,
-            name: "王大大",
-            id: 3
-          }
-        ]
-      },
       tableData: [],
-      tableData1: [
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        },
-        {
-          name:
-            "合同编号：YQYD001163房源编号：YQYD001163-姓名客源编号：YQYD001163-姓名",
-          statu: 0,
-          type: "租赁",
-          address: "安居苑10栋3单元1102",
-          man: "当代一店-夏雨天",
-          date: "2018/6/28",
-          type1: 3000000,
-          man1: "当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天当代一店-夏雨天",
-          type2: "房源维护人主客方",
-          radio: "20%-80%",
-          amout: "400-500"
-        }
-      ],
       propForm: {
         department: "", //部门
         dateMo: "" ,//时间
         depId:''
       },
-
       total: 0,
       brandShow: false,
       brandArr: [],
@@ -653,37 +478,22 @@ export default {
   .data-layout {
     // height: 1000px;
     margin-top: 20px;
-    padding: 20px;
-    padding-top: 0;
+    padding:0 10px;
     background-color: #fff;
     /deep/ .el-table__header th {
       background-color: #eef2fb;
     }
     .data-head {
-      height: 105px;
+      // height: 100px;
       background-color: #fff;
       .data-head-left {
         position: relative;
-        b {
-          position: absolute;
-          width: 16px;
-          height: 16px;
-          left: 0px;
-          top: 59%;
-          // margin-top: -8px;
-        }
-        span:first-of-type {
-          color: #233241;
-          display: inline-block;
-          margin-top: 30px;
-          font-size: 18px;
-          margin-left: 28px;
-          line-height: 0px;
-        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center
       }
       .data-head-right {
         font-size: 14px;
-        margin-top: 35px;
         margin-left: 15px;
         span {
           color: #6c7986;
@@ -697,15 +507,14 @@ export default {
   }
 
   .head-left {
-    padding-left: 45px;
     margin-top: 10px;
     margin-bottom: 10px;
     .el-button{
-      width:100px;
       display: inline-block;
-      // background: grey;
+      background: white;
       text-align: center;
-      color: #fff;
+      color: #909399;
+      border: solid 1px #909399;
       &.active {
         color: #fff;
         background: #478de3;
