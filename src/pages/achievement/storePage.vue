@@ -77,7 +77,7 @@
 
                                <el-table-column
                                   prop="ratio"
-                                 label="分成比例"
+                                 label="分成比例（%）"
                                  width="80">
                                </el-table-column>
 
