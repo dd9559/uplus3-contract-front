@@ -165,6 +165,7 @@ export default {
     };
   },
   created() {
+    this.setPath(this.$tool.getRouter(['业绩','业绩报表','业绩明细'],'storeReceive'))
     this.depId=this.$route.query.depId
     this.startTime=this.$route.query.startTime
     this.endTime=this.$route.query.endTime

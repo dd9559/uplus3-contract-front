@@ -281,6 +281,7 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
       }
+
     this.getData(param)
     
     // this.storeTitle = this.testData0.title;
