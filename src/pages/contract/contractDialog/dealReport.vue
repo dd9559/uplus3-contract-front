@@ -215,7 +215,7 @@
             </div>
         </div>
         <div slot="footer" class="dialog-footer">
-            <el-button class="confirmBtn" @click="saveFn" v-if="saveBtnShow">保存</el-button>
+            <el-button type="primary" class="confirmBtn" @click="saveFn" v-if="saveBtnShow">保 存</el-button>
         </div>
     </div>
 </template>
@@ -971,7 +971,6 @@ export default {
     width: 100px;
     height: 38px;
     border-radius: 18px;
-    background-color: #478DE3;
     color: #fff;
 }
 </style>

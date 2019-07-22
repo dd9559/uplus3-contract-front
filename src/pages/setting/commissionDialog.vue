@@ -78,10 +78,12 @@
             <el-button type="primary" @click="saveFn" round>保 存</el-button>
         </div>
         <!-- 确认保存弹窗 -->
-        <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="460px" :visible.sync="saveDialog">
+        <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
             <div class="save-txt">
-                <p>确认保存新的手续费设置？</p>
+                <p style="margin-bottom:10px;">确认保存新的手续费设置？</p>
                 <p class="color-red">新的手续费率会覆盖原来的手续费率</p>
+                <p>当前收佣手续费率 储蓄卡{{commissionForm.cash}}% 信用卡{{commissionForm.credit}}% 微信{{commissionForm.wechat}}% 支付宝{{commissionForm.aliPay}}%</p>
+                <p>当前分账/付款手续费 对公{{commissionForm.public}}元/笔 对私{{commissionForm.private}}元/笔</p>
             </div>
             <div class="save-btn">
                 <el-button plain @click="saveDialog=false" round>取 消</el-button>
@@ -111,10 +113,10 @@
             name: '收佣支付宝手续费率'
         },
         public: {
-            name: '分账对公账户手续费金额'
+            name: '分账/付款对公账户手续费金额'
         },
         private: {
-            name: '分账对私账户手续费金额'
+            name: '分账/付款对私账户手续费金额'
         }
     }
     export default {

@@ -124,7 +124,7 @@
     <el-dialog title="确认保存" :visible.sync="dialogSave" class="personalMsg" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="warning-box">
         <p>确认保存新的低佣比例设置？</p>
-        <p>新的低佣比例值会覆盖原来的低佣比例值</p>
+        <p class="p_red">新的低佣比例值会覆盖原来的低佣比例值</p>
         <p>当前设置低佣比例区间为：</p>
         <ul>
           <li v-for="(item,index) in ratioList" :key="index">
@@ -146,8 +146,8 @@
         </el-table> -->
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogSave = false" size="small">取消</el-button>
-        <el-button type="primary" size="small" @click="addEdit">确认</el-button>
+        <el-button round @click="dialogSave = false" size="small">取消</el-button>
+        <el-button round type="primary" size="small" @click="addEdit">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -555,6 +555,9 @@ export default{
       font-size: 16px;
       font-weight: bold;
     }
+  }
+  .p_red{
+    color: red;
   }
   ul{
     margin-top: 10px;

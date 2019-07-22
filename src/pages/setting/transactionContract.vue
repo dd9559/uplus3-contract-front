@@ -38,7 +38,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="modal-footer">
-                <el-button @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
+                <el-button type="primary" @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -178,12 +178,6 @@ export default {
         }).catch(error => {
             this.$message({message:error})
         })
-    }
-  },
-  watch: {
-    "cityId": function(newVal,oldVal) {
-      this.getData()
-      this.contractForm.cityId = newVal
     }
   },
   filters: {
