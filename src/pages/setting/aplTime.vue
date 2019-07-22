@@ -39,7 +39,7 @@
     <div class="company-list">
       <p >
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-        <el-button @click="addSys" icon="el-icon-plus">新增业绩申诉有效时间</el-button>
+        <el-button @click="addSys" type="primary" icon="el-icon-plus">新增业绩申诉有效时间</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="体系"  width="90">
@@ -88,7 +88,7 @@
       append-to-body>
       <div class="inner">
         <p>确认保存新的业绩申诉有效时间？</p>
-        <p>新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
+        <p class="p_red">新的业绩申诉有效时间会覆盖原来的业绩申诉有效时间</p>
         <p v-if="title=='编辑'" style="margin-top:5px">当前业绩申诉有效时间为{{apltime}}{{timeUnit==1?'小时':'天'}}</p>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -336,6 +336,7 @@
       }
     }
   }
+  
   .w140 {
     .el-input {
       width: 140px;
@@ -367,7 +368,6 @@
       border-radius:18px;
       display: flex;
       justify-content: center;
-      background-color: #478DE3;
       color: #fff;
     }
   }
@@ -433,6 +433,7 @@
           .store-name {
             margin-left: -12px;
           }
+
           .id-card {
             margin-left: 42px;
           }
@@ -704,6 +705,9 @@
       border-radius:18px;
     }
   }
+}
+.p_red{
+  color: red;
 }
 /deep/ .el-dialog__header {
   border-bottom: 1px solid rgba(237,236,240,1);

@@ -281,16 +281,22 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
       }
+        debugger
 
-    this.getData(param)
+        var date=new Date();
+        date=date.setDate(1);
+        date=this.$tool.dateFormat(date)
+        var date2=this.$tool.dateFormat(Date.now())
+        this.propForm.dateMo=[date,date2]
+        this.getData(param)
     
     // this.storeTitle = this.testData0.title;
   },
   methods: {
     getData(param){
       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
-            this.steps=res.data.data.levels
-            for(let i=0;i<this.steps.length;i++){
+        if(res.data.data.achievementForms!=0){
+           for(let i=0;i<this.steps.length;i++){
               if(this.steps[i]>0){
                 this.activeItem=i+1
                 break
@@ -305,8 +311,11 @@ export default {
             }
             this.total=res.data.data.achievementForms.total
             this.loading=false
-         
-        
+        }else{
+          this.tableData=[]
+          this.loading=false
+        }
+           
       }).catch(err=>{
         this.$message({message:err})
       })
@@ -325,6 +334,7 @@ export default {
           depLevel:type
         }
       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+        if(res.data.data.achievementForms!=0){
             this.steps=res.data.data.levels
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
@@ -335,6 +345,10 @@ export default {
             }
             this.total=res.data.data.achievementForms.total
             this.loading=false
+            }else{
+               this.tableData=[]
+               this.loading=false
+            }
       }).catch(err=>{
         this.$message({message:err})
       })
@@ -359,6 +373,7 @@ export default {
         depLevel:this.dpart
       }
        this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+         if(res.data.data.achievementForms!=0){
             this.steps=res.data.data.levels
             for(let i=0;i<this.steps.length;i++){
               if(this.steps[i]>0){
@@ -375,7 +390,10 @@ export default {
             }
             this.total=res.data.data.achievementForms.total
             this.loading=false
-         
+         }else{
+           this.tableData=[]
+           this.loading=false
+         }
         
       }).catch(err=>{
         this.$message({message:err})
