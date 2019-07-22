@@ -49,9 +49,9 @@
                       <div class="data-head">
                            <div class="data-head-left">
                             <div class="head-left">
-                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">副总汇总</el-button>
-                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">总监汇总</el-button>
-                            <el-button type="primary" size="small" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">店长汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']" :disabled="this.steps[0]==0?true:false" @click.native="intodetial(1)">大区汇总</el-button>
+                             <el-button type="primary" size="small" :class="[activeItem===2?'active':'']" :disabled="this.steps[1]==0?true:false" @click="intodetial(2)">片区汇总</el-button>
+                            <el-button type="primary" size="small" :class="[activeItem===3?'active':'']" :disabled="this.steps[2]==0?true:false" @click="intodetial(3)">门店汇总</el-button>
                              <el-button type="primary" size="small" :class="[activeItem===4?'active':'']" :disabled="this.steps[3]==0?true:false" @click="intodetial(4)">单组汇总</el-button>
                             </div>
                               <el-button
@@ -86,10 +86,11 @@
                              v-loading="loading"
                             :max-height="tableNumberCom"
                             style="width: 100%"
+                            border
                             @row-dblclick="dialogVisible = true"
                             >
                                <el-table-column
-                                 :label="this.level==1?'副总':this.level==2?'总监':this.level==3?'店长':'组长'"
+                                 :label="this.level==1?'大区':this.level==2?'片区':this.level==3?'店长':'组长'"
                                  width="80"
                                  >
                                   <template slot-scope="scope">
@@ -108,22 +109,27 @@
                                        <el-table-column
                                          prop="leaseAmount"
                                          label="租赁"
-                                         width="100">
+                                         width="70">
                                        </el-table-column>
                                        <el-table-column
                                          prop="lowCommissionAmount"
                                          label="低佣买卖"
-                                         width="100">
+                                         width="70">
                                        </el-table-column>
                                        <el-table-column
                                          prop="secondAmount"
                                          label="二手买卖"
-                                         width="100">
+                                         width="70">
                                        </el-table-column>
                                         <el-table-column
                                          prop="agencyAmount"
                                          label="代办"
-                                         width="100">
+                                         width="70">
+                                       </el-table-column>
+                                       <el-table-column
+                                         prop="dealTotal"
+                                         label="合计"
+                                         width="70">
                                        </el-table-column>
                               </el-table-column>
                               
@@ -131,27 +137,27 @@
                                        <el-table-column
                                          prop="leaseActual"
                                          label="租赁"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="lowActual"
                                          label="低佣买卖"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="secondActual"
                                          label="二手买卖"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                         <el-table-column
                                          prop="agencyActual"
                                          label="代办"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="totalActual"
                                          label="合计"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                               </el-table-column>
                              
@@ -159,27 +165,27 @@
                                        <el-table-column
                                          prop="leaseShould"
                                          label="租赁"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="lowShould"
                                          label="低佣买卖"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="secondShould"
                                          label="二手买卖"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                         <el-table-column
                                          prop="agencyShould"
                                          label="代办"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                                        <el-table-column
                                          prop="totalShould"
                                          label="合计"
-                                         width="100">
+                                         width="120">
                                        </el-table-column>
                               </el-table-column>
                               
@@ -267,7 +273,7 @@ export default {
       pageSize:10,
       pageNum:1,
       loading:true,
-      activeItem:1,
+      activeItem:'',
     };
   },
   created() {
@@ -275,6 +281,7 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
       }
+
     this.getData(param)
     
     // this.storeTitle = this.testData0.title;
@@ -289,8 +296,13 @@ export default {
                 break
               }
             }
-            this.level=res.data.data.achievementForms.list[0].depLevel
-            this.tableData =res.data.data.achievementForms.list
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
             this.total=res.data.data.achievementForms.total
             this.loading=false
          
@@ -302,6 +314,8 @@ export default {
     intodetial(type){
           this.activeItem=type
           this.dpart=type
+          this.propForm.depId=''
+           this.propForm.department=''
           this.pageNum=1
           let param={
           pageSize:this.pageSize,
@@ -310,7 +324,20 @@ export default {
           endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
           depLevel:type
         }
-        this.getData(param)
+      this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+            this.steps=res.data.data.levels
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
+            this.total=res.data.data.achievementForms.total
+            this.loading=false
+      }).catch(err=>{
+        this.$message({message:err})
+      })
     },
 
     getExcel(){
@@ -328,9 +355,31 @@ export default {
         pageNum:this.pageNum,
         startTime:this.propForm.dateMo?this.propForm.dateMo[0]:'', //开始时间
         endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
-        depId:this.propForm.depId
+        depId:this.propForm.depId,
+        depLevel:this.dpart
       }
-      this.getData(param)
+       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+            this.steps=res.data.data.levels
+            for(let i=0;i<this.steps.length;i++){
+              if(this.steps[i]>0){
+                this.activeItem=i+1
+                break
+              }
+            }
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
+            this.total=res.data.data.achievementForms.total
+            this.loading=false
+         
+        
+      }).catch(err=>{
+        this.$message({message:err})
+      })
       
     },
     resetFormFn(){
@@ -376,7 +425,9 @@ export default {
        let newPage = this.$router.resolve({
         path: "/storePage",
         query: {
-          depId:row.depId
+          depId:row.depId,
+          startTime:this.propForm.dateMo?this.propForm.dateMo[0]:'', //开始时间
+          endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
         }
       });
       window.open(newPage.href, "_blank");
@@ -553,6 +604,9 @@ export default {
   /deep/ .el-input__suffix {
     right: 12px;
   }
-  
+  /deep/ .el-table--border th{
+    border-bottom: 2px solid #dadde4;
+    border-right: 2px solid #dadde4;
+  }
 }
 </style>

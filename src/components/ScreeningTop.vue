@@ -136,12 +136,12 @@ import {mapMutations} from 'vuex'
     text-align: center;
   }
 
-  .paper-btn-blue {
+  /*.paper-btn-blue {
     background-color: @color-blue;
     border-color: @color-blue;
     &:hover{
         background-color: #68A0E6;
     }
-  }
+  }*/
 
 </style>

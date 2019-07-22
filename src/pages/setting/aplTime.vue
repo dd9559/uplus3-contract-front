@@ -115,7 +115,7 @@
       <p style="color:red">注：设置新的业绩申诉有效时间成功后，原来的业绩申诉有效时间被替换。</p>
       <div slot="footer" class="dialog-footer">
         <el-button @click="AEdialog = false" round>取 消</el-button>
-        <el-button type="primary" @click="outercli" round>确 定</el-button>
+        <el-button type="primary" @click="outercli" round>保 存</el-button>
       </div>
     </el-dialog>
   </div>

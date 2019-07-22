@@ -77,7 +77,7 @@
 
                                <el-table-column
                                   prop="ratio"
-                                 label="分成比例"
+                                 label="分成比例（%）"
                                  width="80">
                                </el-table-column>
 
@@ -154,6 +154,8 @@ export default {
       partStep: "副总",
       pageSize:10,
       pageNum:1,
+      startTime:'',
+      endTime:'',
       power:{
         "sign-com-htdetail": {
           state: false,
@@ -163,11 +165,19 @@ export default {
     };
   },
   created() {
+    this.setPath(this.$tool.getRouter(['业绩','业绩报表','业绩明细'],'storeReceive'))
     this.depId=this.$route.query.depId
-    let param={
+    this.startTime=this.$route.query.startTime
+    this.endTime=this.$route.query.endTime
+    var param={
         pageSize:this.pageSize,
         pageNum:this.pageNum,
-        subDepIds:this.depId
+        subDepIds:this.depId,
+        // startTime:this.startTime,
+        // endTime:this.endTime
+      }
+      if(this.startTime!=''){
+         param=Object.assign({},param,{startTime:this.startTime,endTime:this.endTime})
       }
     this.getData(param)
     
