@@ -79,7 +79,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
+        <el-button type="primary" @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
       </div>
     </el-dialog>
     <!-- 添加和编辑交易步骤 -->
@@ -139,7 +139,7 @@
         </template>
       </div>
       <div slot="footer" class="modal-footer">
-        <el-button @click="confirmForm" class="confirmBtn" v-dbClick>确 定</el-button>
+        <el-button type="primary" @click="confirmForm" class="confirmBtn" v-dbClick>确 定</el-button>
       </div>
     </el-dialog> 
   </div>
@@ -572,17 +572,6 @@
         return this.stepBusiness.name.length
       }
     },
-    watch: {
-      "cityId": function(newVal,oldVal) {
-        this.getData()
-        this.addForm.cityId = newVal
-        this.stepBusiness.stepsTypeId = ""
-        this.stepBusiness.stepsTypeName = ""
-        this.stepBusiness.name = ""
-        this.stepBusiness.planDays = ""
-        delete this.stepBusiness.id
-      }
-    },
     filters: {
       getValue(val) {
         for(var i = 0; i < infoType.length; i++) {
@@ -629,7 +618,6 @@
         width: 121px;
         height: 32px;
         padding: 5px 10px;
-        background: rgba(71, 141, 227, 1);
         border-radius: 18px;
       }
     }
@@ -664,7 +652,6 @@
         width: 121px;
         height: 32px;
         padding: 5px 10px;
-        background: rgba(71, 141, 227, 1);
         border-radius: 18px;
       }
     }
