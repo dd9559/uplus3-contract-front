@@ -67,7 +67,7 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="submitForm" type="primary" class="confirmBtn" v-dbClick>确 定</el-button>
+                <el-button @click="submitForm" type="primary" round class="confirmBtn" v-dbClick>确 定</el-button>
             </div>
         </el-dialog>
     </div>

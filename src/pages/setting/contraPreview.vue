@@ -799,7 +799,7 @@ export default{
 .paper-btn{
     width:100px;
     height:36px;
-    background:rgba(71,141,227,1);
+    background:#409EFF;
     border-radius:18px;
 }
 .bodycontainer{
