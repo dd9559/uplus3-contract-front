@@ -121,7 +121,7 @@
       </span>
     </el-dialog>
     <!-- 保存比例确认框 -->
-    <el-dialog title="确认保存" :visible.sync="dialogSave" class="personalMsg" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="确认保存" :visible.sync="dialogSave" class="ratioMsg" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="warning-box">
         <p>确认保存新的低佣比例设置？</p>
         <p class="p_red">新的低佣比例值会覆盖原来的低佣比例值</p>
@@ -146,8 +146,8 @@
         </el-table> -->
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button round @click="dialogSave = false" size="small">取消</el-button>
-        <el-button round type="primary" size="small" @click="addEdit">确认</el-button>
+        <el-button round @click="dialogSave = false">取消</el-button>
+        <el-button round type="primary" @click="addEdit">确认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -518,6 +518,15 @@ export default{
 /deep/ .el-table th {
   background: @bg-th;
 }
+/deep/.top_border{
+  border-top: 1px solid black;
+}
+.ratioMsg{
+  /deep/.el-dialog__footer{
+    padding-bottom: 10px;
+    border-top: 1px solid #e8eaf6;
+  }
+}
 .percent{
   position: relative;
   &::before{
@@ -547,6 +556,7 @@ export default{
   }
 } 
 .warning-box{
+  padding-bottom: 10px;
   >p{
     font-size: 14px;
     text-align: center;
