@@ -281,8 +281,6 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
       }
-        debugger
-
         var date=new Date();
         date=date.setDate(1);
         date=this.$tool.dateFormat(date)
@@ -593,7 +591,8 @@ export default {
       border: solid 1px #909399;
       &.active {
         color: #fff;
-        background: #478de3;
+        background-color: #409EFF;
+        border-color: #409EFF
       }
     }
     

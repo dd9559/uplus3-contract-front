@@ -721,9 +721,13 @@
 }
 /deep/ .el-dialog__body {
   padding: 26px;
+  border-bottom: 1px solid #EDECF0;
 }
 .aeform /deep/ .el-form-item__content{
   display: flex;
+}
+/deep/ .el-dialog__footer{
+  padding: 10px;
 }
 .inner{
   text-align: center;
