@@ -298,6 +298,7 @@ export default {
            for(let i=0;i<this.steps.length;i++){
               if(this.steps[i]>0){
                 this.activeItem=i+1
+                this.dpart=i+1
                 break
               }
             }
