@@ -228,11 +228,14 @@ export default {
     },
 
     getExcel(){
-        let param={
+        var param={
         // pageSize:this.pageSize,
         // pageNum:this.pageNum,
         subDepIds:this.depId,
         depLevel:5
+      }
+      if(this.startTime!=''){
+         param=Object.assign({},param,{startTime:this.startTime,endTime:this.endTime})
       }
       this.excelCreate("/input/performanceExcel", param);
     },
