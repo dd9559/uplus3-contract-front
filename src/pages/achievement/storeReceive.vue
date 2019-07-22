@@ -294,6 +294,7 @@ export default {
     getData(param){
       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
         if(res.data.data.achievementForms!=0){
+          this.steps=res.data.data.levels
            for(let i=0;i<this.steps.length;i++){
               if(this.steps[i]>0){
                 this.activeItem=i+1
