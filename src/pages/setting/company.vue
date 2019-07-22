@@ -1156,7 +1156,7 @@
     > .el-button {
       width:100px;
       padding: 9px 15px;
-      border-radius:18px;
+      border-radius:20px;
       display: flex;
       justify-content: center;
       color: #fff;
@@ -1486,11 +1486,9 @@
     }
   }
   .dialog-footer {
-    height: 36px;
     .el-button {
       width:100px;
-      height:36px;
-      border-radius:18px;
+      border-radius:20px;
     }
   }
 }
