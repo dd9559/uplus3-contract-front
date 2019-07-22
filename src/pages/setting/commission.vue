@@ -38,7 +38,7 @@
         <div class="table-box">
             <p v-if="power['sign-set-sxf'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <el-button icon="el-icon-plus" @click="openFn(1)" round>新增手续费</el-button>
+                <el-button icon="el-icon-plus" @click="openFn(1)" round type="primary">新增手续费</el-button>
             </p>
             <el-table
             :data="list"
@@ -218,7 +218,6 @@
                 padding: 9px 15px;
                 display: flex;
                 justify-content: center;
-                background-color: #478DE3;
                 color: #fff;
             }
         }

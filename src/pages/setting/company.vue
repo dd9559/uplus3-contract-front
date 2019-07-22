@@ -48,7 +48,7 @@
     <div class="company-list">
       <p v-if="power['sign-set-gs'].state">
         <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-        <el-button @click="addCompany" icon="el-icon-plus">公司信息</el-button>
+        <el-button @click="addCompany" icon="el-icon-plus" type="primary">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="城市" prop="cityName" width="90">
@@ -1159,7 +1159,6 @@
       border-radius:18px;
       display: flex;
       justify-content: center;
-      background-color: #478DE3;
       color: #fff;
     }
   }

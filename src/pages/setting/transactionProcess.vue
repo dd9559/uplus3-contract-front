@@ -26,7 +26,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="submitForm" class="confirmBtn" v-dbClick>确定</el-button>
+            <el-button type="primary" @click="submitForm" class="confirmBtn" v-dbClick>确 定</el-button>
           </div>
         </el-dialog>
         <!-- 交易流程管理 弹出框 -->
@@ -57,8 +57,8 @@
             </el-table>
           </div>
           <div slot="footer" class="dialog-footer">
-              <el-button @click="addBtn" class="addBtn">添加</el-button>
-              <el-button class="confirmBtn" @click="confirmSteps('flow')" v-dbClick>确定</el-button>
+              <el-button plain @click="addBtn" class="addBtn">添 加</el-button>
+              <el-button type="primary" class="confirmBtn" @click="confirmSteps('flow')" v-dbClick>确 定</el-button>
           </div>
         </el-dialog>
         <!-- 添加流程步骤 弹出框 -->
@@ -80,7 +80,7 @@
             </el-table-column>
           </el-table>
           <div slot="footer" class="dialog-footer">
-              <el-button class="confirmBtn" @click="confirmSteps('steps')">确定</el-button>
+              <el-button type="primary" class="confirmBtn" @click="confirmSteps('steps')">确 定</el-button>
           </div>
         </el-dialog>
     </div>
@@ -410,23 +410,6 @@
               }
             })
           }
-          // if(arr.length) {
-          //   var num = 0
-          //   for(var i = 0; i < arr.length; i++) {
-          //     if(arr[i].settlePercent) {
-          //       num = arr[i].settlePercent
-          //     }
-          //   }
-          //   if(!/^\d+(\.\d{0,2})?$/.test(num)||!/\d$/.test(num)) {
-          //     this.$message({message:"结算百分比输入格式不正确",type:'warning'})
-          //     return false
-          //   }
-          //   num = Number(num)
-          //   if(num > 100) {
-          //     this.$message({message:"结算百分比不能超过100%",type:'warning'})
-          //     return false
-          //   }
-          // }
 
           let param = {
             transFlowId: this.currentFlowId,
@@ -505,12 +488,6 @@
     computed: {
       validInput() {
         return this.addForm.name.length
-      }
-    },
-    watch: {
-      "cityId": function(newVal,oldVal) {
-        this.getData()
-        this.getTypeSteps()
       }
     }
   };
