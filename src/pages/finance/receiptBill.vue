@@ -3,6 +3,19 @@
     <p class="f14 txt-title">收款信息</p>
     <ul class="bill-form">
       <li>
+        <div class="input-group">
+          <label class="form-label no-width f14 margin-bottom-base">收款方式:</label>
+          <p class="block-receipt-type">
+            <el-button size="small" class="btn-info" :type="!billStatus?'primary':''" @click="checkReceiptType(1)">线上收款</el-button>
+            <el-button size="small" class="btn-info" :type="billStatus?'primary':''" @click="checkReceiptType(2)">线下收款</el-button>
+            <el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
+              <i class="iconfont icon-wenhao"></i>
+            </el-tooltip>
+          </p>
+          <p class="warning-text" v-if="billStatus">注：线下收款不参与线上结算</p>
+        </div>
+      </li>
+      <li>
         <div class="input-group col">
           <div class="flex-box tool-tip">
             <label class="form-label no-width f14 margin-bottom-base">
@@ -435,7 +448,7 @@
           name:''
         },
         inputPerson:false,//是否显示第三方输入框
-        billStatus:false,//线上或线下
+        billStatus:false,//线上或线下,false=线上，true=线下
         form: {
           contId: '',
           remark: '',
@@ -506,6 +519,7 @@
           content:{}
         },//合同是否第一次创建
         uploadScane:{path:'sk',id:''},//上传场景值
+        hasChose_receiptType:false,//合同是否第一次选择过收款方式
       }
     },
     mounted() {
@@ -516,6 +530,7 @@
       this.getDropdown()
       // this.getReceiptman()
       // this.getAdmin()
+      this.getFirstTime_receipt(this.$route.query.contId)
       this.addInit(this.$route.query.contId)
       let type = this.$route.query.edit
       let inAccount = this.$route.query.type
@@ -536,6 +551,19 @@
       }
     },
     methods: {
+      //判断用户该合同是否已经选择过收款方式
+      getFirstTime_receipt:function (id) {
+        this.$ajax.get('/api/payInfo/checkPayAccountType',{contId:id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(res.data){
+              this.billStatus=res.data.value===3?false:true
+              this.hasChose_receiptType=true
+            }
+          }
+        })
+      },
+      //判断用户该合同是否第一次选择收款人部门
       addInit:function (id) {
         this.$ajax.get('/api/payInfo/toInsert',{contId:id}).then(res=>{
           res=res.data
@@ -763,9 +791,11 @@
         })
       },
       goResult: function () {
+        debugger
         // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)
+        param.payAccountType=this.billStatus?4:3
 
         //支付信息列表更新
         let newPayList = this.payList.map(item=>{
@@ -1105,12 +1135,24 @@
           }
         })
       },
+      //选择收款类型操作
+      checkReceiptType:function (type) {
+        if(this.hasChose_receiptType){
+          this.$message({
+            message:'已经选择过收款方式'
+          })
+          return
+        }
+        this.billStatus=false//线下收款
+        type!==1&&(this.billStatus=true)
+      },
       getCell:function (label) {
-        if(label.accountType.value===3){
+        debugger
+        /*if(label.accountType.value===3){
           this.billStatus=false
         }else {
           this.billStatus=true
-        }
+        }*/
         this.showAmount=label.pName==='代收代付'?false:true
         this.form.moneyType=label.key
         this.form.moneyTypePid = label.pId
@@ -1611,5 +1653,15 @@
         margin-top: @margin-15;
       }
     }
+  }
+  p.block-receipt-type{
+    display: inline-block;
+    .icon-wenhao{
+      margin-left: 10px;
+    }
+  }
+  p.warning-text{
+    color: red;
+    margin: 10px auto 0 6px;
   }
 </style>

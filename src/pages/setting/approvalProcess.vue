@@ -34,7 +34,7 @@
         <div class="aduit-list">
             <p v-if="power['sign-set-verify'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <el-button @click="operation('添加',1)">添加</el-button>
+                <el-button @click="operation('添加',1)" type="primary">添加</el-button>
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
@@ -181,7 +181,7 @@
                 </div>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="isSave" v-dbClick>保存</el-button>
+                <el-button @click="isSave" v-dbClick type="primary">保 存</el-button>
             </div>
         </el-dialog>
     </div>
@@ -284,7 +284,7 @@
             }
         },
         mounted() {
-            this.searchForm.cityId = this.cityInfo.user.cityId
+            this.searchForm.cityId = this.cityInfo.cityId
             // this.getCityList()
             this.getDictionary()
             let res=this.getDataList
@@ -414,7 +414,7 @@
                 this.aduitTitle = title
                 if(type === 1) {
                     this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = this.cityInfo.user.cityName
+                    this.aduitForm.cityId = this.cityInfo.cityName
                     this.isAudit = ""
                     this.tempAudit = ""
                     this.editDisabled = false
@@ -857,7 +857,7 @@
         },
         computed: {
             cityInfo(){
-                return this.getUser
+                return this.getUser.user
             }
         }
     }
@@ -901,7 +901,6 @@
       height:32px;
       padding: 4px 0;
       border-radius:18px;
-      background-color: #478DE3;
       color: #fff;
     }
   }
@@ -1093,7 +1092,6 @@
         width: 100px;
         height: 38px;
         border-radius: 19px;
-        background-color: #478DE3;
         color: #fff;
     }
 }

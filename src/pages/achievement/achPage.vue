@@ -1093,11 +1093,11 @@
           id:this.aplid,
           examineRemark:this.aplremark
         }
-        this.$ajax.post('/api/appeal/appealReject  ',param,2).then(res=>{
+        this.$ajax.post('/api/appeal/appealReject',param,2).then(res=>{
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getEditInfo");
           }
         }).catch(err=>{
            this.$message({ message: err, type: "error" })
@@ -1112,7 +1112,7 @@
           if(res.status==200){
             this.$message({ message: "操作成功", type: "success" })
             this.aplDialog=false
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getEditInfo");
           }
         }).catch((err=>{
           this.$message({ message: err, type: "error" })
@@ -1474,7 +1474,7 @@
         this.showTips1 = true;
         this.loading3=true;
         let param = {
-          contCode: this.contractCode
+          contId: this.contractId2
         };
         this.$ajax.get("/api/achievement/"+fieldStr, param).then(res => {
           let data = res.data;
@@ -1668,7 +1668,7 @@
                 this.$emit("close");
                 this.loading=false;
                 this.$message({ message: "操作成功", type: "success" });
-                this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+                this.codeBaseInfo(this.contractId2, 1,null,"getEditInfo");
                 this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
               }
             }).catch(error => {
@@ -1885,7 +1885,7 @@
               }
               if (type == 2 && status == 1) {
                 if(this.state2===1){
-                  this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
+                  this.codeBaseInfo(this.contractId2, 1,null,"getExamineInfo");
                   var paperBtn2=document.getElementById('savebtn2')
                   paperBtn2.disabled=true
                   paperBtn2.classList.remove('color-blue')
@@ -2043,9 +2043,15 @@
       getPicture(item){
         return this.$tool.cutFilePath(item)
       },
+      
       // 审核，反审核，编辑点进去的房源，客源
       codeBaseInfo(contCode, entrance, aId,infoType) {
-        let param = { contCode: contCode, entrance: entrance, aId: this.aId };
+        if(infoType=='getExamineInfo'||infoType=='getEditInfo'||infoType=='getBackExamineInfo'){
+          var param = { contId: contCode, entrance: entrance, aId: this.aId };
+        }else{
+          var param = { contCode: contCode, entrance: entrance, aId: this.aId };
+        }
+        
         this.$ajax
           .get("/api/achievement/"+infoType, param)
           .then(res => {
@@ -2064,8 +2070,11 @@
               this.state2=res.data.data.state;
               if(this.state2===0){
                 if(infoType=='getEditInfo'){
+                  if(document.getElementById('savebtn2')){
                   var paperBtn2=document.getElementById('savebtn2')
                   paperBtn2.disabled=true
+
+                  }
                   paperBtn2.classList.remove('color-blue')
                   paperBtn2.classList.add('grey')
                 }else if(infoType=='getExamineInfo'){
@@ -2204,16 +2213,16 @@
         if (val) {
           this.code = val;
           if (this.dialogType == 0) {  // 审核
-            this.codeBaseInfo(this.code, 1,null,"getExamineInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getExamineInfo");
           }
           else if (this.dialogType == 1) {//编辑
             this.addArr = [];
-            this.codeBaseInfo(this.code, 1,null,"getEditInfo");
+            this.codeBaseInfo(this.contractId2, 1,null,"getEditInfo");
           }
 
           else if (this.dialogType == 2) {//反审核
             this.addArr = [];
-            this.codeBaseInfo(this.code, 2,null,"getBackExamineInfo");
+            this.codeBaseInfo(this.contractId2, 2,null,"getBackExamineInfo");
           } else if (this.dialogType == 3) {  // 业绩录入分成
             this.comm = this.achObj.comm;     //合同详情传过来的可分配业绩
             // 角色类型
@@ -2262,6 +2271,9 @@
           color: #478de3;
           cursor:pointer
   }
+  .preview{
+      z-index:2220!important
+    }
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;

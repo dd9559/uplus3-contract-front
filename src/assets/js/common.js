@@ -28,16 +28,6 @@ let TOOL = {
           name: "结算审核",
           path: "settleCheck",
           code: "sign-ht-js-query"
-        },
-        {
-          name: '分账记录',
-          path: 'routingRecord',
-          code: 'sign-ht-fz-query'
-        },
-        {
-          name: "打款记录",
-          path: "debitRecord",
-          code: "sign-ht-dk-query"
         }
       ]
     },
@@ -71,6 +61,16 @@ let TOOL = {
           name: "票据管理",
           path: "paperSet",
           code: "sign-cw-bill-query"
+        },
+        {
+          name: '分账记录',
+          path: 'routingRecord',
+          code: 'sign-ht-fz-query'
+        },
+        {
+          name: "打款记录",
+          path: "debitRecord",
+          code: "sign-ht-dk-query"
         }
       ]
     },
@@ -95,11 +95,11 @@ let TOOL = {
           path: "achAppeal",
           code: "sign-yj-appeal-query"
         },
-        // {
-        //   name:'门店实收',
-        //   path:'storeReceive',
-        //   code: "sign-yj-rec-query"
-        // }
+        {
+          name:'业绩报表',
+          path:'storeReceive',
+          code: "sign-yj-report-query"
+        }
       ]
     },
     {
@@ -160,7 +160,22 @@ let TOOL = {
           name: "审核流程",
           path: "approvalProcess",
           code: "sign-set-verify"
-        }
+        },
+        {
+          name: "低佣比例设置",
+          path: "lowCommission",
+          code: "sign-set-dybl"
+        },
+        {
+          name: "手续费设置",
+          path: "commission",
+          code: "sign-set-sxf"
+        },
+        {
+          name: "业绩申诉有效时间",
+          path: "aplTime",
+          code: "sign-set-vtime"
+        },
       ]
     }
   ], //侧边栏导航

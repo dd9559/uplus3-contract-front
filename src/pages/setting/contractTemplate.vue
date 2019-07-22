@@ -476,7 +476,7 @@
             width:86px;
             height:32px;
             line-height: 32px;
-            background:rgba(71,141,227,1);
+            background-color:#409EFF;
             border-radius:16px;
             color: white;
             text-align: center !important
@@ -502,7 +502,7 @@
             width:86px;
             height:32px;
             line-height: 7px;
-            background:rgba(71,141,227,1);
+            background:#409EFF;
             border-radius:16px;
             color: white;
             text-align: center;

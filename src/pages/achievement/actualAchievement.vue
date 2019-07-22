@@ -675,11 +675,11 @@
       </el-dialog>
     </div>
       <!-- 申诉弹窗 -->
-      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="600px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
+      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" @close="close2" width="1000px" height="450px" class="ssdialog"  title="申诉" :visible.sync="isSS">
             <div class="ssu">
-              <p><span class="jianju">合同编号：</span>{{htbh}}</p>
-              <p>签约时间：{{qysj}}</p>
-              <p v-if="userInfo">申诉人：{{userInfo.name}}</p>
+              <p class="dot" ><span class="jianju">合同编号：</span>{{htbh}}</p>
+              <p style="width:300px">签约时间：{{qysj}}</p>
+              <p style="width:300px" v-if="userInfo">申诉人：{{userInfo.name}}</p>
             </div>
             <div class="role">
               <span class="point jianju">申诉角色：</span>
@@ -1068,9 +1068,23 @@ export default {
               this.auditName=''
               this.roleName=''
               this.$message({message: '提交成功！'})
+              this.getData(this.ajaxParam);
           }
-        }).catch(err=>{
-          this.$message({message:err})
+        }).catch(error=>{
+          if(error.message==='下一节点审批人不存在'){
+              this.checkPerson.flowType=2;
+              this.checkPerson.code= this.yjId;
+              this.checkPerson.state=true
+              this.checkPerson.type=error.data.type;
+
+            }else{
+              this.$message({
+                message:error,
+                type: "error"
+              })
+            }
+            this.isSS=false
+            this.getData(this.ajaxParam);
         })
        }else{
               this.noPower(this.power['sign-yj-rev-appeal'].name)
@@ -1096,17 +1110,18 @@ export default {
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.people=res.data.data.allRole
-        // debugger
-        // this.depName=res.data.data.depName
         this.depName=res.data.data.empNames[0].depName
         this.empNames=res.data.data.empNames
         
-        // debugger
         this.SSuForm.empNames=res.data.data.empNames[0].empId
         this.auditName=res.data.data.empNames[0].name
-      }
+        this.isSS=true
+      } 
+      }).catch(err=>{
+        if(err.status==300){
+        this.$message({message:err.message})
+        }
       })
-      this.isSS=true
     },
     mul: function(arg1, arg2) {
       var m = 0,
@@ -1478,7 +1493,6 @@ export default {
                   "actualAchievement"
                 )
               );
-              debugger
               this.$router.push({
                 path: "/contractDetails",
                 query: {
@@ -1584,6 +1598,10 @@ export default {
   }
   .link{
 
+  }
+  .dot{
+    text-overflow:ellipsis;
+      white-space: nowrap;
   }
   .blue {
     color: #478de3;

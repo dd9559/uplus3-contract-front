@@ -11,8 +11,12 @@ const contraPreview = () => import('@/pages/setting/contraPreview')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
+const aplTime = () => import('@/pages/setting/aplTime')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
+const lowCommission = () => import('@/pages/setting/lowCommission')
+const commission = () => import('@/pages/setting/commission')
+const commissionDialog = () => import('@/pages/setting/commissionDialog')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -30,6 +34,7 @@ const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
 const aplPage = () => import('@/pages/achievement/aplPage')
+const storePage = () => import('@/pages/achievement/storePage')
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -109,6 +114,14 @@ export default new Router({
           }
         },
         {
+          path: "aplTime",
+          component: aplTime,
+          meta: {
+            root: true,
+            list: ["设置", "业绩申诉有效时间"]
+          }
+        },
+        {
           path: "operationLog",
           component: operationLog,
           meta: {
@@ -122,6 +135,29 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "审核流程"]
+          }
+        },
+        {
+          path: "lowCommission",
+          component: lowCommission,
+          meta: {
+            root: true,
+            list: ["设置", "低佣比例设置"]
+          }
+        },
+        {
+          path: "commission",
+          component: commission,
+          meta: {
+            root: true,
+            list: ["设置", "手续费设置"]
+          }
+        },
+        {
+          path: "commissionDialog",
+          component: commissionDialog,
+          meta: {
+            getParent: true
           }
         },
         //设置模块 end
@@ -166,6 +202,10 @@ export default new Router({
           component: aplPage,
         },
         {
+          path: "storePage",
+          component: storePage,
+        },
+        {
           path: "achDetial",
           component: achDetial,
         },
@@ -183,7 +223,7 @@ export default new Router({
           component: storeReceive,
           meta: {
             root: true,
-            list: ["业绩", "门店实收"]
+            list: ["业绩", "业绩报表"]
           }
         },
         // 业绩板块 end

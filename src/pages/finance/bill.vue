@@ -204,7 +204,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" min-width="80" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" min-width="60" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
@@ -303,7 +303,7 @@
       </el-pagination>
     </div>-->
     <!-- 票据编号弹层 -->
-    <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :contId="activeRow.contId" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
     <el-dialog
       title="作废"
@@ -398,6 +398,7 @@
         paperInfoData: {},//票据对象
         moneyTypes: [],//临时存放勾选的款类
         activeType: 0,//当前预览项
+        activeRow:{},//当前操作项
         //作废
         layer: {
           show: false,
@@ -633,12 +634,14 @@
               id: row.id,
               tab: row.type === 1 ? '收款信息' : '付款信息',
               power: this.getUser.user.empId===row.auditBy,
-              bill: this.power['sign-cw-bill-invoice'].state
+              bill: this.power['sign-cw-bill-invoice'].state,
+              contId: row.contId
             }
           })
         // }
       },
       btnOpera: function (row, type) {
+        this.activeRow=Object.assign({},row)
         if (type === 1) {
           this.setPath(this.getPath.concat({name: row.type === 1 ? '编辑收款' : '编辑付款'}))
           this.$router.push({
@@ -657,6 +660,7 @@
           this.layer.content = [].concat(row)
         } else if (type === 3) {
           this.$refs.layerInvoice.show(row.id, true)
+          // this.$refs.layerInvoice.contId=row.contId
         }else if (type === 4) {
           this.$refs.layerInvoice.show(row.billId)
         }

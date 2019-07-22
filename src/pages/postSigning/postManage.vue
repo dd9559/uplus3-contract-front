@@ -199,6 +199,16 @@
                             :value="item.key"></el-option>
                         </el-select>
                 </el-form-item>
+                <el-form-item
+                    label="产权地址区域"
+                    prop="areaName">
+                        <el-select v-model="propForm.areaName" class="w134">
+                        <el-option v-for="(item,i) in rules.areaName"
+                        :key="'areaName'+i"
+                        :label="item"
+                        :value="item"></el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -233,6 +243,10 @@
                 <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" align="center" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" align="center" min-width="200">
+                </el-table-column>
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" align="center" min-width="120">
+                </el-table-column>
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" align="center" min-width="120">
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" align="center" min-width="60">
                 </el-table-column>
@@ -400,7 +414,7 @@
                         label="操作"
                         min-width="120px"
                         align="center">
-                            <template slot-scope="scope">
+                            <template slot-scope="scope" v-if="layerShowData.statusChange.value!=2">
                                 <template v-if="scope.row.stepState.value === OPERATION.start">
                                     <el-button class="blue" type="text" @click="operationFn(scope.row.id)">查看</el-button>
                                 </template>
@@ -803,6 +817,7 @@
                     departmentS:'',
                     departmentMo:'',
                     depAttr:'',
+                    areaName:''
                 },
                 // 筛选下拉
                 rules:{
@@ -867,7 +882,8 @@
                         name: "全部",
                         empId: ""
                     }],
-                    depAttr:[]
+                    depAttr:[],
+                    areaName:[]
                 },
                 // 列表数据
                 tableData:{},
@@ -996,6 +1012,18 @@
             },
         },
         methods:{
+            // 产权地址下拉数据
+            getAreaList:function () {
+                this.$ajax.get('/api/organize/currentdep/areaname')
+                .then(res =>{
+                    res = res.data
+                    if(res.status === 200){
+                        this.rules.areaName = res.data
+                    }
+                }).catch(err=>{
+                    this.errMeFn(err);
+                })
+            },
             // 导出excel
             getExcel:function () {
                 this.pageNum = 1;
@@ -1669,6 +1697,9 @@
                         transAtepsAttach.splice(-2,2);
                         transAtepsAttach.map(e=>{
                             if(e.type === STEPSINPUT.start || e.type === STEPSINPUT.time || e.type === STEPSINPUT.textarea || e.type === STEPSINPUT.num){
+                                if(e.type === STEPSINPUT.time) {
+                                    e.val = this.dateFormat(e.val)
+                                }
                                 e.value = e.val;
                             }else{
                                 if(e.val.length === 0){
@@ -1845,6 +1876,7 @@
                     receiveTimeStar,
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
+                    areaName:this.propForm.areaName
                 }
 
                 //点击查询时，缓存筛选条件
@@ -2033,6 +2065,8 @@
                 this.getTradingSteps();
                 // 枚举数据查询
                 this.getDictionary();
+                // 产权地址区域
+                this.getAreaList()
                 let res=this.getDataList
                 if(res&&(res.route===this.$route.path)){
                     this.tableData.list = res.data.list
@@ -2057,6 +2091,7 @@
                         departmentS:query.depName,
                         departmentMo:query.dealAgentId,
                         depAttr:query.depAttr,
+                        areaName:query.areaName
                     }
                     if(this.propForm.departmentMo){
                         this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})

@@ -13,6 +13,9 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
+          <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
+            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" @input="inputCode" placeholder="请输入" class="dealPrice">
+          </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
             <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
@@ -69,8 +72,11 @@
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
           <br>
-           <el-form-item label="产权地址：" class="form-label" style="width:805px;text-align:right">
-             <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input>
+           <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
+             <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
+             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
+             <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
+             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" /> 
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -252,7 +258,7 @@
           <ul class="parameter">
             <li v-for="(item,index) in parameterList" :key="index"> -->
               <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
-              
+
               <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                 <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
               </el-tooltip>
@@ -311,14 +317,14 @@
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
     </houseGuest>
     <!-- 保存合同确认框 -->
-    <el-dialog title="" :visible.sync="dialogSave" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="warning-box">
         <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
         <ul>
-          <li v-for="item in ownerList" :key="item.encryptionCode">
+          <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
             {{item.name}}：{{item.encryptionCode}}
           </li>
-          <li v-for="item in guestList" :key="item.encryptionCode">
+          <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
             {{item.name}}：{{item.encryptionCode}}
           </li>
         </ul>
@@ -350,7 +356,7 @@
     <a id="add" href="" v-show="false" target="_blank"></a>
   </div>
 </template>
-           
+
 <script>
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
@@ -363,6 +369,9 @@ const rule = {
   // transFlowCode: {
   //   name: "交易流程",
   // },
+  code:{
+    name:"合同编号"
+  },
   houseinfoCode: {
     name: "房源"
   },
@@ -443,6 +452,7 @@ export default {
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
+      isOffline:'',
       dictionary: {
         //数据字典
         "514": "", //产权状态
@@ -508,7 +518,10 @@ export default {
           state: false,
           name: '编辑资料库'
         },
-      }
+      },
+      rightAddrCity:'',
+      rightAddrArea:'',
+      rightAddrDetail:''
     };
   },
   created() {
@@ -521,6 +534,7 @@ export default {
       this.getContractDetail();
     }else{
       this.contractForm.type = Number(this.$route.query.type);
+      this.isOffline = parseInt(this.$route.query.isOffline)
       if (this.$route.query.operateType) {
         this.type = parseInt(this.$route.query.operateType);
         if (this.type == 2) {
@@ -549,7 +563,7 @@ export default {
         this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {        
+    clientHeight() {
       this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
@@ -695,7 +709,7 @@ export default {
           }
         }
       }
-      
+
     },
     //手机号验证
     verifyMobile(item,index,type) {
@@ -757,8 +771,11 @@ export default {
       //   this.hintText='确定保存合同？'
       // }
       //验证合同信息
-      if(this.contractForm.type!==1){
-        delete rule_.transFlowCode
+      // if(this.contractForm.type!==1){
+      //   delete rule_.transFlowCode
+      // }
+      if(this.isOffline!==1){
+        delete rule_.code
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
@@ -766,13 +783,20 @@ export default {
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
       }
+      if(this.contractForm.code){
+        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"")
+      }
+      if(!this.contractForm.code){
+        this.contractForm.code=''
+      }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
             // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-              this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
-              let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
-              this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
-              if (this.contractForm.propertyRightAddr) {
+              // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+              // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+              // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
+              if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
+                this.contractForm.propertyRightAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
                 // if(this.contractForm.propertyCard){
                 //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                 // }
@@ -808,7 +832,7 @@ export default {
                                 if(!element.propertyRightRatio){
                                   element.propertyRightRatio="0"
                                 }
-                              }      
+                              }
                               if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                 if (element.encryptionCode.replace(/\s/g,"")) {
                                   // if(this.contractForm.type===1){
@@ -923,7 +947,7 @@ export default {
                                       if(!element.propertyRightRatio){
                                         element.propertyRightRatio="0"
                                       }
-                                    }      
+                                    }
                                   if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==='0'||this.contractForm.type===1) {
                                     if (element.encryptionCode.replace(/\s/g,"")) {
                                       if(this.contractForm.type===1){
@@ -1017,7 +1041,7 @@ export default {
                             let businessList = [];
 
                             ownerArr.forEach(element => {
-                              if(element.cardType===1||this.contractForm.type!==1){
+                              if(element.cardType===1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
@@ -1030,7 +1054,7 @@ export default {
                             });
 
                             guestArr.forEach(element => {
-                              if(element.cardType===1||this.contractForm.type!==1){
+                              if(element.cardType===1){
                                 IdCardList.push(element.encryptionCode);
                               }
                               if(element.cardType===2){
@@ -1237,7 +1261,7 @@ export default {
                 }
                 }else{
                   this.$message({
-                    message:'房源信息-产权地址不能为空',
+                    message:'房源信息-产权地址未填写完整',
                     type: "warning"
                   })
                 }
@@ -1305,23 +1329,46 @@ export default {
           haveExamine:this.haveExamine
         };
       }
+      if(this.isOffline===1){
+        param.recordType=2
+      }else{
+        param.recordType=1
+      }
       if(this.type===1){//新增
         var url = '/api/contract/addContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            this.hidBtn=1
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"创建成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
+              });
+            }else{
+              let contractMsg = res.data
+              this.hidBtn=1
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
+
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"&&error!=="合同编号不符合规范！"){
             this.canClick=true
           }
           this.$message({
@@ -1341,6 +1388,7 @@ export default {
           delete param.leaseCont.updateTime;
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
+          delete param.leaseCont.recordType
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -1352,20 +1400,40 @@ export default {
           delete param.saleCont.updateTime;
           delete param.saleCont.distributableAchievement;
           delete param.saleCont.achievementState;
+          delete param.saleCont.recordType
         }
         var url = '/api/contract/updateContract';
+        if(this.isOffline===1){
+          url = '/api/contract/addLocalContract'
+        }
         // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            let contractMsg = res.data
-            sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(this.isOffline===1){
+              this.$message({
+                message:"保存成功",
+                type: "success"
+              })
+              this.$router.push({
+                path: "/contractDetails",
+                query:{
+                  id:res.data.id,
+                  contType:this.contractForm.type,
+                  type:"contBody"
+                }
+              });
+            }else{
+              let contractMsg = res.data
+              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
           }
+
         }).catch(error => {
           this.fullscreenLoading=false;
           this.$message({
@@ -1574,7 +1642,7 @@ export default {
     //       delete param.saleCont.subscriptionTerm;
     //       delete param.saleCont.updateTime;
     //       delete param.saleCont.distributableAchievement;
-    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");  
+    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");
     //     }
 
     //     this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
@@ -1734,6 +1802,9 @@ export default {
     closeHouseGuest(value) {
       if (value) {
         if (value.dialogType === "house") {
+          if(this.choseHcode&&this.choseHcode!==value.selectCode){
+            this.contractForm.propertyRightAddr=''
+          }
           this.isShowDialog = false;
           this.getHousedetail(value.selectCode);
           this.choseHcode=value.selectCode;
@@ -1774,7 +1845,7 @@ export default {
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data;  
+          res=res.data;
           if(res.status===200){
             if(res.data){
               this.contractForm.houseInfo.ShopOwnerName=res.data.name;
@@ -1836,7 +1907,7 @@ export default {
           type:1
         };
         this.$ajax.get('/api/organize/dep/manager', param1).then(res=>{
-          res=res.data;  
+          res=res.data;
           if(res.status===200){
             if(res.data){
               this.contractForm.guestInfo.ShopOwnerName=res.data.name;
@@ -1890,7 +1961,7 @@ export default {
         this.contractForm.guestInfo.ShopOwnerName='';
         this.contractForm.guestInfo.ShopOwnerMobile='';
       }
-      
+
     },
     //获取合同信息
     getContractDetail() {
@@ -1904,6 +1975,29 @@ export default {
           this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
+          let rightAddress = res.data.propertyRightAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.rightAddrDetail=rightAddress
+          }
+          
           // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
@@ -1959,7 +2053,9 @@ export default {
       });
     },
     cutNumber(val){
-      if(val==="dealPrice"){
+      if(val==="contCode"){//合同编号
+
+      }else if(val==="dealPrice"){
         this.$nextTick(()=>{
           this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
         })
@@ -2004,6 +2100,16 @@ export default {
         this.ownerList[index].propertyRightRatio=this.$tool.cutFloat({val:this.ownerList[index].propertyRightRatio,max:100})
       }
     },
+    cutAddress(type){
+      let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      if(type==="city"){
+        this.rightAddrCity=this.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","")
+      }else if(type==="area"){
+        this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","")
+      }else{
+        this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
+      }
+    },
     inputOnly(index,type){
       if(type==='owner'){
         this.ownerList[index].name=this.$tool.textInput(this.ownerList[index].name)
@@ -2013,20 +2119,28 @@ export default {
         this.contractForm.otherCooperationInfo.name=this.$tool.textInput(this.contractForm.otherCooperationInfo.name)
       }
     },
+    inputCode(){
+      // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
+      if(this.contractForm.code){
+        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
+      }
+     
+    },
     closeCheckPerson(){
       checkPerson.state=false;
       this.$router.push('/contractList');
     },
-    //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。  
+    //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
     isIdCardNo(num) {
       num = num.toUpperCase();
-      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。            
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
       if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
           // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
           return false;
       }
-      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
-      //下面分别分析出生日期和校验位 
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+      //下面分别分析出生日期和校验位
       var len, re;
       len = num.length;
       if (len == 15) {
@@ -2035,15 +2149,15 @@ export default {
           //检查生日日期是否正确
           var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //将15位身份证转成18位 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。          
+              //将15位身份证转成18位
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
               var nTemp = 0, i;
@@ -2058,11 +2172,11 @@ export default {
       if (len == 18) {
           re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
           var arrSplit = num.match(re);
-          //检查生日日期是否正确 
+          //检查生日日期是否正确
           var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
           var bGoodDay;
-          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) 
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) 
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
                       && (dtmBirth.getDate() == Number(arrSplit[4]));
           if (!bGoodDay) {
               // alert(dtmBirth.getYear());
@@ -2070,8 +2184,8 @@ export default {
               // alert('输入的身份证号里出生日期不对！');
               return false;
           } else {
-              //检验18位身份证的校验码是否正确。 
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。 
+              //检验18位身份证的校验码是否正确。
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
               // var valnum;
               // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
               // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
@@ -2125,6 +2239,11 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.personalMsg{
+  /deep/.el-dialog__header{
+    border: none !important;
+  }
+}
 .warning-box{
   margin: -4px 0 18px 28px;
   p{
@@ -2326,7 +2445,7 @@ export default {
           color: #606266;
           text-overflow:ellipsis;
           white-space:nowrap;
-          overflow:hidden; 
+          overflow:hidden;
           display: inline-block;
         }
         > .colon{

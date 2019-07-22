@@ -1,13 +1,17 @@
 <template>
-  <div>
-    <div id="printHtml">
-      <slot></slot>
-    </div>
+  <div id="printHtml" :class="{'paper-more':morePaper}">
+    <slot></slot>
   </div>
 </template>
 
 <script>
   export default {
+    props: {
+      morePaper: {//是否批量打印记账联
+        type: Boolean,
+        default: false
+      }
+    },
     methods: {
       print(printCallBack) {
         var printhtml = document.getElementById("printHtml").innerHTML;
@@ -38,10 +42,11 @@
       getStyle(printI) {
         var str = "",
           styles1 = document.querySelectorAll("style");
-        for (var i = 0; i < styles1.length; i++) {
+        /*for (var i = 0; i < styles1.length; i++) {
           str += styles1[i].outerHTML;
-        }
-        str += `<style>header, footer {display: none;}</style>`;
+        }*/
+        str += styles1[styles1.length - 1].outerHTML//页面生成的最后一个style为当前页面的
+        str += `<style>header, footer {display: none;}body{font-family: SimHei;}</style>`;
         printI.contentDocument.head.innerHTML = str;
 
         // 添加link引入
@@ -55,7 +60,7 @@
             link.setAttribute("type", styles[i].type)
           } else {
             link.setAttribute("type", 'text/css')
-          };
+          }
           // link.setAttribute("href", `${styles[i].href}?time=${new Date().getTime()}`);
           link.setAttribute("href", styles[i].href);
           link.setAttribute('media', 'all');
@@ -112,13 +117,11 @@
             window.location.hostname !== document.domain &&
             navigator.userAgent.match(/msie/i)
           ) {
-
             printI.src =
               'javascript:document.write("<head><script>document.domain=\\"' +
               document.domain +
               '\\";</s' +
               'cript></head><body></body>")';
-
           }
           printI.onload = () => {
             this.getStyle(printI);
@@ -134,17 +137,15 @@
       this.init();
     },
   };
-
 </script>
 
-<style>
-  #printf {
-    width: 100px;
-    height: 100px;
-    position: fixed;
-    top: -100px;
-    left: -100px;
-    z-index: 0;
+<style lang="less" scoped>
+  #printHtml {
+    padding-top: 20px;
   }
 
+  .paper-more {
+    max-height: 480px;
+    overflow-y: auto;
+  }
 </style>

@@ -472,7 +472,7 @@ export default{
     },
     methods: {
       getData(){
-         let param = { contCode: this.contCode, entrance: this.entrance,aId:this.aId };
+         let param = { contId: this.contractId2, entrance: this.entrance,aId:this.aId };
       this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {

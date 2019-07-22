@@ -151,7 +151,10 @@
               </template>
             </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
-            <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
+            <!--<el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>-->
+            <el-table-column align="center" label="手续费（元）">
+              <template slot-scope="scope">{{billMsg.systemFee?billMsg.systemFee:'--'}}</template>
+            </el-table-column>
           </el-table>
         </li>
         <li v-if="activeItem==='付款信息'">
@@ -287,7 +290,7 @@
   </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice ref="layerInvoice" :printType="printType" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :printType="printType" :contId="$route.query.contId" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
@@ -429,6 +432,12 @@
             this.billMsg = Object.assign({}, res.data)
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+            }
+            if(res.data.inAccountType&&(res.data.inAccountType===3)&&param.type===1&&res.data.billPath&&res.data.billPath.length>0){
+              this.files = [].concat({
+                path:res.data.billPath,
+                name:'pos小票'
+              })
             }
             this.checkPerson.code=res.data.payCode
             this.getCheckData()

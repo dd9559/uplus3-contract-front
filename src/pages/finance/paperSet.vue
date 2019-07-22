@@ -105,11 +105,13 @@
     </ScreeningTop>
     <!-- 列表 -->
     <div class="paper-table-box">
-      <div class="paper-set-tit">
-        <!-- <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div> -->
+      <div class="paper-set-tit" v-if="power['sign-cw-bill-mulprinttally'].state">
+         <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div>
+        <p><el-button class="btn-info" round type="primary" size="small" @click="printPapers">批量打印记账联</el-button></p>
       </div>
-      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" class="paper-table"
+      <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" @select="getColumns" @select-all="getColumns" class="paper-table"
                 v-loading="loadingList">
+        <el-table-column type="selection" align="center" fixed v-if="power['sign-cw-bill-mulprinttally'].state"></el-table-column>
         <el-table-column align="center" label="序号" min-width="60">
           <template slot-scope="scope">
             <p class="tc">{{scope.$index + 1}}</p>
@@ -300,7 +302,7 @@
       </el-table>
     </el-dialog>
     <!--  :showBtn="comPrint" -->
-    <layer-invoice ref="layerInvoice" :printType="printType" @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <layer-invoice ref="layerInvoice" :printType="printType" :contId="activeRow.contId" @closePrintModel="closePrintModel" @emitPaperSet="emitPaperSetFn"></layer-invoice>
   </div>
 </template>
 
@@ -404,10 +406,15 @@
             name: '收款详情',
             state: false
           },
+          'sign-cw-bill-mulprinttally':{
+            name:'批量打印记账联',
+            state: false
+          }
         },
         printType: 'all',//开票类型，客户联还是记账联
         printDetails: false,//打印详情弹窗状态
         printRecordList: [],//打印记录
+        contId_str:'',//批量打印记账联的合同contId字符串
       }
     },
     computed: {
@@ -448,6 +455,42 @@
       }
     },
     methods: {
+      //批量打印记账联
+      printPapers:function () {
+        if(!this.power['sign-cw-bill-mulprinttally'].state){
+          this.$message({
+            message:`无${this.power['sign-cw-bill-mulprinttally'].name}权限`
+          })
+          return
+        }
+        this.printType = 'book'
+        if(this.contId_str.length>0){
+          this.$refs.layerInvoice.batchOperation(this.contId_str);
+        }else {
+          this.$message({
+            message:'需要先选中合同喔~'
+          })
+        }
+      },
+      /**
+       * 批量操作票据
+       */
+      getColumns:function (rowMsg,row) {
+        // debugger
+        let arr=[]
+        let rows=[].concat(rowMsg)
+        rows.forEach((item,index)=>{
+          if(item.state&&item.state.value!==2){
+            row&&this.$message({
+              message:`票据${item.state.label}状态，无法打印记账联`
+            })
+            this.$refs.tableCom.toggleRowSelection(item,false)
+          }else {
+            arr.push(item.id)
+          }
+        })
+        this.contId_str=arr.join(',')
+      },
       // 文字处理
       nullFormatFn(val) {
         return this.$tool.nullFormat(val);
@@ -471,6 +514,8 @@
         //     this.noPower(this.power['sign-cw-bill-query'].name);
         //     return false
         // }
+        this.$refs.tableCom.clearSelection();
+        this.contId_str=''
         if(type==='search'){
           this.pageNum=1
         }
@@ -507,6 +552,12 @@
           });
         })
       },
+      /**
+       * 操作按钮公共方法
+       * row当前行信息
+       * type操作类型，1=核销，2=回收，3=作废，4=开票，5=打印
+       * 当type=5时，print用来标识打印类型，client=客户联，book=记账联
+       */
       btnOpera: function (row, type, print = '') {
         this.activeRow = Object.assign({}, row)
         if (type === 4) {
@@ -554,7 +605,7 @@
         }
       },
       getPaperDetails: function (id) {
-        document.getElementById
+        // document.getElementById
         this.$ajax.get(`/api/bills/details`, {
           id
         }).then(res => {
@@ -656,6 +707,11 @@
       emitPaperSetFn() {
         // this.$refs.layerInvoice.propCloseFn();
         this.getData();
+      },
+      //关闭票据详情弹窗
+      closePrintModel(){
+        // this.$refs.tableCom.clearSelection();
+        // this.contId_str=''
       },
       // 部门第二版 选择部门
       depHandleClick(data) {
