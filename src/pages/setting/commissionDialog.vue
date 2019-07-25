@@ -337,7 +337,6 @@
     }
     .el-button {
         min-width:80px;
-        height:36px;
     }
     /deep/ .el-dialog__body{
         padding: 0;

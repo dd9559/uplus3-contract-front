@@ -281,8 +281,6 @@ export default {
         pageSize:this.pageSize,
         pageNum:this.pageNum,
       }
-        debugger
-
         var date=new Date();
         date=date.setDate(1);
         date=this.$tool.dateFormat(date)
@@ -296,14 +294,17 @@ export default {
     getData(param){
       this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
         if(res.data.data.achievementForms!=0){
+          this.steps=res.data.data.levels
            for(let i=0;i<this.steps.length;i++){
               if(this.steps[i]>0){
                 this.activeItem=i+1
+                // this.dpart=i+1
                 break
               }
             }
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
+              this.dpart=res.data.data.achievementForms.list[0].depLevel
               this.activeItem=res.data.data.achievementForms.list[0].depLevel
               this.tableData =res.data.data.achievementForms.list
             }else{
@@ -338,6 +339,7 @@ export default {
             this.steps=res.data.data.levels
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
+              this.dpart=res.data.data.achievementForms.list[0].depLevel
               this.activeItem=res.data.data.achievementForms.list[0].depLevel
               this.tableData =res.data.data.achievementForms.list
             }else{
@@ -383,6 +385,7 @@ export default {
             }
             if(res.data.data.achievementForms.list[0]){
               this.level=res.data.data.achievementForms.list[0].depLevel
+              this.dpart=res.data.data.achievementForms.list[0].depLevel
               this.activeItem=res.data.data.achievementForms.list[0].depLevel
               this.tableData =res.data.data.achievementForms.list
             }else{
@@ -436,7 +439,34 @@ export default {
             endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
             depLevel:this.dpart
         }
-        this.getData(param)
+          this.$ajax.get('/api/achForm/getAchForm',param).then(res=>{
+        if(res.data.data.achievementForms!=0){
+          this.steps=res.data.data.levels
+          //  for(let i=0;i<this.steps.length;i++){
+          //     if(this.steps[i]>0){
+          //       this.activeItem=i+1
+          //       this.dpart=i+1
+          //       break
+          //     }
+          //   }
+            if(res.data.data.achievementForms.list[0]){
+              this.level=res.data.data.achievementForms.list[0].depLevel
+              this.dpart=res.data.data.achievementForms.list[0].depLevel
+              this.activeItem=res.data.data.achievementForms.list[0].depLevel
+              this.tableData =res.data.data.achievementForms.list
+            }else{
+              this.tableData=[]
+            }
+            this.total=res.data.data.achievementForms.total
+            this.loading=false
+        }else{
+          this.tableData=[]
+          this.loading=false
+        }
+           
+      }).catch(err=>{
+        this.$message({message:err})
+      })
     },
     nextStep(row) {
       if(this.level==4){
@@ -453,20 +483,6 @@ export default {
       }else{
         return
       }
-    },
-    askData(id, index) {
-      console.log(id);
-      console.log(index);
-      console.log(this.brandArr);
-      this.brandArr.splice(index+1, this.brandArr.length - index - 1);
-      var param={
-          pageSize:this.pageSize,
-          pageNum:this.pageNum,
-          startTime:this.propForm.dateMo?this.propForm.dateMo[0]:'', //开始时间
-          endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
-          subDepIds:id
-        }
-        this.getData(param)
     },
   }
 };
@@ -593,7 +609,8 @@ export default {
       border: solid 1px #909399;
       &.active {
         color: #fff;
-        background: #478de3;
+        background-color: #409EFF;
+        border-color: #409EFF
       }
     }
     

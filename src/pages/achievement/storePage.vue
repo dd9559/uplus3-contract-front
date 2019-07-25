@@ -226,23 +226,16 @@ export default {
         this.noPower("合同详情查看");
       }
     },
-    queryFn() {
-      let param={
-        pageSize:this.pageSize,
-        pageNum:this.pageNum,
-        startTime:this.propForm.dateMo?this.propForm.dateMo[0]:'', //开始时间
-        endTime:this.propForm.dateMo?this.propForm.dateMo[1]:'', //结束时间
-        depId:this.propForm.depId
-      }
-      this.getData(param)
-      
-    },
+
     getExcel(){
-        let param={
+        var param={
         // pageSize:this.pageSize,
         // pageNum:this.pageNum,
         subDepIds:this.depId,
         depLevel:5
+      }
+      if(this.startTime!=''){
+         param=Object.assign({},param,{startTime:this.startTime,endTime:this.endTime})
       }
       this.excelCreate("/input/performanceExcel", param);
     },
@@ -275,11 +268,16 @@ export default {
     },
     handleCurrentChange(val) {
         this.pageNum=val
-        let param={
-            pageSize:this.pageSize,
-            pageNum:this.pageNum,
-            subDepIds:this.depId
-        }
+        var param={
+        pageSize:this.pageSize,
+        pageNum:this.pageNum,
+        subDepIds:this.depId,
+        // startTime:this.startTime,
+        // endTime:this.endTime
+      }
+      if(this.startTime!=''){
+         param=Object.assign({},param,{startTime:this.startTime,endTime:this.endTime})
+      }
         this.getData(param)
     },
     

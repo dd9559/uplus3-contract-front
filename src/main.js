@@ -21,20 +21,20 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
-Vue.prototype.$ajax=api   //axios请求封装
-Vue.prototype.$tool=TOOL  //工具方法封装
-Vue.prototype.$routerObj=router
+Vue.prototype.$ajax = api   //axios请求封装
+Vue.prototype.$tool = TOOL  //工具方法封装
+Vue.prototype.$routerObj = router
 
 Vue.filter("formatDate", TOOL.dateFormat);
 Vue.filter("formatTime", TOOL.timeFormat);
 Vue.filter("formatNull", TOOL.nullFormat);
 Vue.filter("formatChinese", TOOL.toChineseNumber)
 
-Vue.component("ScreeningTop",ScreeningTop);
-Vue.component("fileUp",fileUp)
-Vue.component("uploadCell",uploadCell)
-Vue.component("preview",preview)
-Vue.component("selectTree",selectTree)
+Vue.component("ScreeningTop", ScreeningTop);
+Vue.component("fileUp", fileUp)
+Vue.component("uploadCell", uploadCell)
+Vue.component("preview", preview)
+Vue.component("selectTree", selectTree)
 Vue.component("scrollBar", scrollBar)
 
 Vue.directive('focus', {
@@ -49,7 +49,7 @@ Vue.directive('loadmore', {
     // 获取element-ui定义好的scroll盒子
     const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap');
 
-    SELECTWRAP_DOM.addEventListener('scroll', function() {
+    SELECTWRAP_DOM.addEventListener('scroll', function () {
 
       /*
       * scrollHeight 获取元素内容高度(只读)
@@ -60,9 +60,9 @@ Vue.directive('loadmore', {
       */
       const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight;
 
-      if(CONDITION) {
+      if (CONDITION) {
         let param = []
-        for(let item in binding.modifiers){
+        for (let item in binding.modifiers) {
           param.push(item)
         }
         binding.value(...new Set(param));
@@ -85,106 +85,111 @@ Vue.directive("dbClick", {
   }
 });
 
-router.beforeEach((to,from,next)=>{
-  let promiseArr=[]
+router.beforeEach((to, from, next) => {
+  let promiseArr = []
   let pathList = localStorage.getItem('router')
-  store.commit('setPath',pathList?JSON.parse(pathList):[])
+  store.commit('setPath', pathList ? JSON.parse(pathList) : [])
 
-  // let userMsg = localStorage.getItem('userMsg')
+  // let userMsg = null
+  // (sessionStorage.getItem('userMsg'))&&(userMsg=JSON.parse(sessionStorage.getItem('userMsg')))
   // console.log(store.state.user)
-  if(!store.state.user&&to.path!=='/login'){
+  //vuex状态管理和本地缓存配合--全局管理用户信息
+  if (!store.state.user && to.path !== '/login') {
     // debugger
-    api.get('/api/me').then(res=>{
-      res=res.data
-      if(res.status===200){
-        store.commit('setUser',res.data)
-      }
-    }).catch(error=>{
+    if (sessionStorage.getItem('userMsg')) {//本地有缓存信息时，刷新页面初始化状态从缓存中直接读取（可以解决重新请求用户信息接口的延迟问题）
+      store.commit('setUser', JSON.parse(sessionStorage.getItem('userMsg')))
+    } else {//防止极端用户清除本地缓存后刷新页面，这时初始化状态的值只能重新请求接口，且setState时一定要做缓存
+      api.get('/api/me').then(res => {
+        res = res.data
+        if (res.status === 200) {
+          store.commit('setUser', res.data)
+        }
+      }).catch(error => {
 
-    })
+      })
+    }
   }
-  let sessionQuery=Object.create(null)
-  sessionStorage.getItem('sessionQuery')&&(sessionQuery=JSON.parse(sessionStorage.getItem('sessionQuery')))
+  let sessionQuery = Object.create(null)
+  sessionStorage.getItem('sessionQuery') && (sessionQuery = JSON.parse(sessionStorage.getItem('sessionQuery')))
   // debugger
-  promiseArr.push(new Promise((resolve,reject)=>{
+  promiseArr.push(new Promise((resolve, reject) => {
     // debugger
-    if(sessionQuery&&(to.fullPath===sessionQuery.path)&&(from.fullPath===sessionQuery.nxetPage)){
-      if(sessionQuery.methods==='get'||!sessionQuery.methods){
-        api.get(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
-          res=res.data
-          if(res.status===200){
+    if (sessionQuery && (to.fullPath === sessionQuery.path) && (from.fullPath === sessionQuery.nxetPage)) {
+      if (sessionQuery.methods === 'get' || !sessionQuery.methods) {
+        api.get(`/api${sessionQuery.url}`, sessionQuery.query).then(res => {
+          res = res.data
+          if (res.status === 200) {
             // debugger
-            store.commit('setDataList',{
-              route:sessionQuery.path,
-              data:res.data
+            store.commit('setDataList', {
+              route: sessionQuery.path,
+              data: res.data
             })
             resolve()
           }
-        }).catch(error=>{
+        }).catch(error => {
           reject()
         })
-      }else if(sessionQuery.methods==='postJSON'){
-        api.postJSON(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
-          res=res.data
-          if(res.status===200){
+      } else if (sessionQuery.methods === 'postJSON') {
+        api.postJSON(`/api${sessionQuery.url}`, sessionQuery.query).then(res => {
+          res = res.data
+          if (res.status === 200) {
             // debugger
-            store.commit('setDataList',{
-              route:sessionQuery.path,
-              data:res.data
+            store.commit('setDataList', {
+              route: sessionQuery.path,
+              data: res.data
             })
             resolve()
           }
-        }).catch(error=>{
+        }).catch(error => {
           reject()
         })
-      }else if(sessionQuery.methods==='put'){
-        api.put(`/api${sessionQuery.url}`,sessionQuery.query).then(res=>{
-          res=res.data
-          if(res.status===200){
+      } else if (sessionQuery.methods === 'put') {
+        api.put(`/api${sessionQuery.url}`, sessionQuery.query).then(res => {
+          res = res.data
+          if (res.status === 200) {
             // debugger
-            store.commit('setDataList',{
-              route:sessionQuery.path,
-              data:res.data
+            store.commit('setDataList', {
+              route: sessionQuery.path,
+              data: res.data
             })
             resolve()
           }
-        }).catch(error=>{
+        }).catch(error => {
           reject()
         })
       }
-    }else{
+    } else {
       reject()
     }
   }))
 
-  promiseArr.push(new Promise((resolve,reject)=>{
+  promiseArr.push(new Promise((resolve, reject) => {
     // debugger
-    if(to.matched.some(record=>record.meta.root)){
-      if(to.path==='/moneyCheck'){
-        to.meta.list=parseInt(to.query.type)===1?['财务','收款审核']:['财务','付款审核']
+    if (to.matched.some(record => record.meta.root)) {
+      if (to.path === '/moneyCheck') {
+        to.meta.list = parseInt(to.query.type) === 1 ? ['财务', '收款审核'] : ['财务', '付款审核']
       }
-      let arr = TOOL.getRouter(to.meta.list,to.fullPath)
-      store.commit('setPath',arr)
+      let arr = TOOL.getRouter(to.meta.list, to.fullPath)
+      store.commit('setPath', arr)
     }
     resolve()
   }))
 
   Promise.all(promiseArr).then(function () {
     next()
-  }).catch(function(){
+  }).catch(function () {
     //判断是否从缓存页面跳转到其他页面，是则存储目标页为nxetPage，否则清空缓存数据
-    if(sessionQuery&&(from.fullPath===sessionQuery.path)){
-      Object.assign(sessionQuery,{nxetPage:to.fullPath})
-      sessionStorage.setItem('sessionQuery',JSON.stringify(sessionQuery))
-    }else{
-      Object.assign(sessionQuery,{nxetPage:''})
+    if (sessionQuery && (from.fullPath === sessionQuery.path)) {
+      Object.assign(sessionQuery, {nxetPage: to.fullPath})
+      sessionStorage.setItem('sessionQuery', JSON.stringify(sessionQuery))
+    } else {
+      Object.assign(sessionQuery, {nxetPage: ''})
       sessionStorage.removeItem('sessionQuery')
     }
-    store.commit('setDataList',null)
+    store.commit('setDataList', null)
     next()
   })
 })
-
 
 
 /* eslint-disable no-new */
@@ -192,7 +197,7 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: { App },
+  components: {App},
   template: '<App/>'
 })
 
