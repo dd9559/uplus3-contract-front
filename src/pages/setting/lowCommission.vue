@@ -463,6 +463,7 @@ export default{
     // 关闭弹窗
     closeDialog(){
       this.dialogRatio=false;
+      this.dialogTitle='新增低佣比例'
       this.forbid=false
       this.systemType='';
       this.ratioList=[];
