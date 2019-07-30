@@ -550,7 +550,7 @@
   }
   .print-waring{
     float: left;
-    padding: 20px 0 0 70px;
+    padding: 15px 0 0 70px;
     color: red;
   }
 
