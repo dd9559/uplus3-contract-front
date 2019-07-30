@@ -111,6 +111,7 @@
         <!-- :imgSrc="paperInfoData.signImg" -->
       </div>
       <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
+      <p class="print-waring" v-if="FooterShow&&printType!=='all'">温馨提示：打印时，请选择谷歌浏览器</p>
     </div>
     <p slot="footer" v-show="FooterShow&&printType!=='all'">
       <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
@@ -546,6 +547,11 @@
   }
   input.person{
     margin-left: @margin-10;
+  }
+  .print-waring{
+    float: left;
+    padding: 20px 0 0 70px;
+    color: red;
   }
 
   .layer-paper{
