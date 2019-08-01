@@ -10,6 +10,7 @@ let errorMsg = {
 let times = 0
 
 axios.defaults.headers.common['Cache-Control']='no-cache'
+// axios.defaults.withCredentials=true
 axios.interceptors.request.use((request)=>{
   if(window.navigator.onLine===false){
     Vue.prototype.$message('网络未正常连接')
@@ -27,7 +28,7 @@ axios.interceptors.response.use((response)=>{
     times++
     if(times===1&&Vue.prototype.$routerObj.currentRoute.path!=='/login'){
       Vue.prototype.$message('请到U+客户端登录')
-      console.log(times,Vue.prototype.$routerObj,Vue.prototype.$routerObj.currentRoute.path)
+      // console.log(times,Vue.prototype.$routerObj,Vue.prototype.$routerObj.currentRoute.path)
       Vue.prototype.$routerObj.push({
         path:'login'
       })
