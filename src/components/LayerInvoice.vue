@@ -64,7 +64,7 @@
               :number="paperInfoData.contCode"
               :name="paperInfoData.payerName"
               :collectionTime="paperInfoData.paymentTime"
-              :invoiceTime="paperInfoData.createTime"
+              :invoiceTime="paperInfoData.lastPrintTime?getPrint==='all'?`${paperInfoData.lastPrintTime.KHL},${paperInfoData.lastPrintTime.JZL}`:'':''"
               :paper="paperInfoData.billCode"
               :project="getPro"
               :hide="paperInfoData.hide"
