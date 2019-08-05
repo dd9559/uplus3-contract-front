@@ -859,7 +859,7 @@
                         value: ""
                     }],
                     range:[{
-                            value: "全部（不包含本角色负责的合同条件）",
+                            value: "全部",
                             key: ""
                         }],
                     termination:[{
@@ -2038,7 +2038,7 @@
                         },...newData[6]];
                 // 数据范围
                 this.rules.range = [{
-                            value: "全部（不包含本角色负责的合同条件）",
+                            value: "全部",
                             key: ""
                         },...newData[48]];
                 // 合作方式
