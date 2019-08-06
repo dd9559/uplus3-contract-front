@@ -1761,26 +1761,71 @@ export default {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
-          this.guestList=[];
-          this.guestList_=[];
           this.$set(this.contractForm.guestInfo,'paymentMethod',1)
           // this.contractForm.guestInfo.paymentMethod=1
-          let element = {
-            name: guestMsg.OwnerInfo.CustName,
-            mobile: guestMsg.OwnerInfo.CustMobile,
-            type: 2,
-            relation: guestMsg.OwnerInfo.CustRelation,
-            encryptionCode:'',
-            cardType:'',
-            propertyRightRatio:'',
-            isEncryption:true
+          // if(houseMsg.OwnerInfoList.length>0){
+          //   this.ownerList=[];
+          //   this.ownerList_=[];
+          //   houseMsg.OwnerInfoList.forEach(element => {
+          //     element.type=1;
+          //     element.encryptionCode='';
+          //     element.propertyRightRatio='';
+          //     element.name=element.OwnerName;
+          //     element.mobile=element.OwnerMobile;
+          //     element.relation=element.Relation;
+          //     element.cardType='';
+          //     element.isEncryption=true;
+          //     delete element.OwnerName
+          //     delete element.OwnerMobile
+          //     delete element.Relation
+          //     let obj = Object.assign({}, element);
+          //     obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          //     this.ownerList.push(obj);
+          //     let obj_ = Object.assign({}, element);
+          //     obj_.encryptionMobile=obj_.mobile;
+          //     this.ownerList_.push(obj_);
+          //   });
+          // }
+          if(guestMsg.OwnerInfo.length>0){
+            this.guestList=[];
+            this.guestList_=[];
+            guestMsg.OwnerInfo.forEach(element => {
+              element.type=2;
+              element.encryptionCode='';
+              element.propertyRightRatio='';
+              element.name=element.CustName;
+              element.mobile=element.CustMobile;
+              element.relation=element.CustRelation;
+              element.cardType='';
+              element.isEncryption=true;
+              delete element.CustName
+              delete element.CustMobile
+              delete element.CustRelation
+              let obj = Object.assign({}, element);
+              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.guestList.push(obj);
+              let obj_ = Object.assign({}, element);
+              obj_.encryptionMobile=obj_.mobile;
+              this.guestList_.push(obj_);
+            });
           }
-          let obj = Object.assign({}, element);
-          obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
-          this.guestList.push(obj);
-          let obj_ = Object.assign({}, element);
-          obj_.encryptionMobile=obj_.mobile;
-          this.guestList_.push(obj_);
+        }
+          // let element = {
+          //   name: guestMsg.OwnerInfo.CustName,
+          //   mobile: guestMsg.OwnerInfo.CustMobile,
+          //   type: 2,
+          //   relation: guestMsg.OwnerInfo.CustRelation,
+          //   encryptionCode:'',
+          //   cardType:'',
+          //   propertyRightRatio:'',
+          //   isEncryption:true
+          // }
+          // let obj = Object.assign({}, element);
+          // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          // this.guestList.push(obj);
+          // let obj_ = Object.assign({}, element);
+          // obj_.encryptionMobile=obj_.mobile;
+          // this.guestList_.push(obj_);
 
           // this.guestList.push({
           //   name: guestMsg.OwnerInfo.CustName,
@@ -1790,7 +1835,7 @@ export default {
           //   identifyCode:'',
           //   propertyRightRatio:''
           // })
-        }
+        // }
       }).catch(error=>{
         this.$message({
           message:error,
