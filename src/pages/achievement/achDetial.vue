@@ -68,6 +68,7 @@
             <el-table-column
               prop="level4"
               label="单组"
+              v-if="$route.query.version=='0'"
             >
             </el-table-column>
             <!-- level3 -->
@@ -81,6 +82,7 @@
             <el-table-column
               prop="amaldar"
               label="总监"
+              :formatter="nullFormatter"
             >
             </el-table-column>
 
@@ -88,6 +90,7 @@
             <el-table-column
               prop="manager"
               label="副总"
+              :formatter="nullFormatter"
             > 
             </el-table-column>
             <el-table-column
@@ -162,6 +165,7 @@
             <el-table-column
               prop="level4"
               label="单组"
+              v-if="$route.query.version=='0'"
             >
             </el-table-column>
             <!-- level3 -->
@@ -175,6 +179,7 @@
             <el-table-column
               prop="amaldar"
               label="总监"
+              :formatter="nullFormatter"
             >
             </el-table-column>
 
@@ -182,6 +187,7 @@
             <el-table-column
               prop="manager"
               label="副总"
+              :formatter="nullFormatter"
             >
             </el-table-column>
             <el-table-column
@@ -428,9 +434,10 @@
 </template>
            
 <script>
+  import { FILTER } from "@/assets/js/filter"
   import { MIXINS } from "@/assets/js/mixins";
 export default{
-    mixins: [MIXINS],
+    mixins: [FILTER,MIXINS],
     data() {
       return {
         auditIds:'',

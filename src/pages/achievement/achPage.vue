@@ -211,6 +211,7 @@
                 <el-table-column
                   label="单组"
                   width="155"
+                  v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -501,6 +502,7 @@
                 <el-table-column
                   label="单组"
                   width="155"
+                  v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -836,7 +838,7 @@
               <el-button
                 type="primary"
                 round
-                @click=" keepAchDivide(1)"
+                @click="keepAchDivide(1)"
                 class="color-blue"
                 v-dbClick
               >保存并提审</el-button>
@@ -1622,19 +1624,35 @@
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1646,6 +1664,13 @@
 
         if (flag && sumFlag) {
           this.loading=true;
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {
             id: this.aId,
             remark: this.remark,
@@ -1735,19 +1760,35 @@
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1755,6 +1796,13 @@
         }
         if (flag && sumFlag && this.remark != "") {
           this.loading=true;
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {
             id: this.aId,
             remark: this.remark,
@@ -1830,19 +1878,35 @@
           sumFlag = false;
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1852,7 +1916,13 @@
         // console.log(sumFlag);
         if (flag && sumFlag) {
           this.loading=true;
-          console.log(this.examineDate);
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {};
           if (type == 1) {
             param = {
