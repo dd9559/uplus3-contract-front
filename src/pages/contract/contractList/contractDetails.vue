@@ -2070,6 +2070,7 @@ export default {
   }
 .view-container {
   position: relative;
+  min-height: 100%;
   .mainContent{
     /deep/.el-tabs{
       .el-tabs__header {
@@ -2377,9 +2378,11 @@ export default {
     }
   }
   .uploadBtn{
-    position: fixed;
-    bottom: 12px;
-    left: 100px;
+    position: absolute;
+    /*bottom: 12px;
+    left: 100px;*/
+    left: 20px;
+    bottom: 20px;
   }
   .download,
   .upload {
