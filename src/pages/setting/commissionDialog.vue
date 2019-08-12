@@ -125,10 +125,6 @@
             return {
                 clientHei: document.documentElement.clientHeight, //窗体高度
                 saveDialog: false,
-                // 枚举数据
-                dictionary:{
-                    '638':'体系'
-                },
                 commissionForm: {
                     systemTag: '',
                     cash: '',
@@ -138,7 +134,8 @@
                     public: '',
                     private: ''
                 },
-                rowId: 0
+                rowId: 0,
+                systemTagList: []
             }
         },
         created(){
