@@ -28,6 +28,7 @@ const MIXINS = {
       employeTotal:0,
       tableBoxCom:null,
       tableNumberCom:null,
+      systemTagList: []
     }
   },
   watch:{
@@ -94,6 +95,17 @@ const MIXINS = {
           this.userMsg = res.data.user;
           localStorage.setItem('initId',res.data.user.cityId)
           localStorage.setItem('cityName',res.data.user.cityName)
+        }
+      })
+    },
+    /**
+     * 获取体系
+     */
+    getSystemTag:function () {
+      this.$ajax.get('/api/organize/getSystemTagByCityId').then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.systemTagList = res.data
         }
       })
     },

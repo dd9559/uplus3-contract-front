@@ -5,7 +5,7 @@
                 <div>
                     <label>体系</label>
                     <el-select size="small" class="w300" v-model="systemTag">
-                        <el-option v-for="item in dictionary['638']" :key="item.id" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div>
@@ -48,7 +48,7 @@
             :max-height="tableNumberCom">
                 <el-table-column align="center" label="体系" prop="systemTag">
                     <template slot-scope="scope">
-                        <span v-for="item in dictionary['638']" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+                        <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="收佣手续费" width="350">
@@ -89,10 +89,6 @@
                 settingTime: [],
                 updateTime: [],
                 list: [],
-                // 枚举数据
-                dictionary:{
-                    '638':'体系'
-                },
                 power: {
                     'sign-set-sxf': {
                         name: '查询',
@@ -102,8 +98,8 @@
             }
         },
         created() {
-            // 枚举数据查询
-            this.getDictionary()
+            // 获取体系
+            this.getSystemTag()
             let res = this.getDataList
             if(res&&(res.route === this.$route.path)){
                 this.list = res.data
@@ -162,7 +158,8 @@
                 this.$router.push({
                     path: 'commissionDialog',
                     query: {
-                        type
+                        type,
+                        arr: this.systemTagList
                     }
                 })
                 if(type===2){
