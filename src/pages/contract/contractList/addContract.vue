@@ -351,6 +351,13 @@
         <el-button type="primary" @click="toUpload">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 单公司提示框 -->
+    <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="toH5">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <a id="add" href="" v-show="false" target="_blank"></a>
@@ -521,7 +528,9 @@ export default {
       },
       rightAddrCity:'',
       rightAddrArea:'',
-      rightAddrDetail:''
+      rightAddrDetail:'',
+      singleCompany:false,//单公司提示框
+      singleCompanyName:'',
     };
   },
   created() {
@@ -1360,9 +1369,15 @@ export default {
               let contractMsg = res.data
               this.hidBtn=1
               sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(contractMsg.singleCompany){
+                this.singleCompany=true
+                this.singleCompanyName=contractMsg.singleCompany
+              }else{
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
+              
             }
 
           }
@@ -1427,10 +1442,14 @@ export default {
             }else{
               let contractMsg = res.data
               sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(contractMsg.singleCompany){
+                this.singleCompany=true
+                this.singleCompanyName=contractMsg.singleCompany
+              }else{
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
             }
           }
 
@@ -1442,104 +1461,13 @@ export default {
           })
         })
       }
-
-
-      // if(this.type===1){//新增
-      //   if(this.haveExamine===1){//新增并提审
-      //     var url = '/api/contract/addContractAudit';
-      //   }else{
-      //     var url = '/api/contract/addContract';
-      //   }
-      //   this.$ajax.postJSON(url, param).then(res => {
-      //     res = res.data;
-      //     if (res.status === 200) {
-      //       this.fullscreenLoading=false;
-      //       this.dialogSave=false;
-      //       this.detailCode=res.data.code;
-      //       this.detailId=res.data.id;
-      //       if(res.data.isHaveNextAudit===1){
-      //         this.checkPerson.code=res.data.code;
-      //         this.checkPerson.state=true;
-      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
-      //         this.checkPerson.label=true;
-      //       }else{
-      //         this.$message({
-      //           message: "操作成功",
-      //           type: "success"
-      //         });
-      //         this.dialogSuccess=true;
-      //       }
-      //     }
-      //   }).catch(error => {
-      //     this.fullscreenLoading=false;
-      //     this.$message({
-      //       message:error,
-      //       type: "error"
-      //     })
-      //   })
-      // }else if(this.type===2){//编辑
-        // if(this.contractForm.type===1){
-          // delete param.leaseCont.contChangeState;
-          // delete param.leaseCont.contState;
-          // delete param.leaseCont.contType;
-          // delete param.leaseCont.laterStageState;
-          // delete param.leaseCont.toExamineState;
-          // delete param.leaseCont.previewImg;
-          // delete param.leaseCont.subscriptionTerm;
-          // delete param.leaseCont.updateTime;
-          // delete param.leaseCont.distributableAchievement;
-          // delete param.leaseCont.achievementState;
-        // }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
-        //   delete param.saleCont.contChangeState;
-        //   delete param.saleCont.contState;
-        //   delete param.saleCont.contType;
-        //   delete param.saleCont.laterStageState;
-        //   delete param.saleCont.toExamineState;
-        //   delete param.saleCont.previewImg;
-        //   delete param.saleCont.subscriptionTerm;
-        //   delete param.saleCont.updateTime;
-        //   delete param.saleCont.distributableAchievement;
-        //   delete param.saleCont.achievementState;
-        // }
-
-      //   if(this.haveExamine===1){//编辑并提审
-      //     var url = '/api/contract/updateContractAudit';
-      //   }else{
-      //     var url = '/api/contract/updateContract';
-      //   }
-      //   this.$ajax.postJSON(url, param).then(res => {
-      //     res = res.data;
-      //     if (res.status === 200) {
-      //       this.fullscreenLoading=false;
-      //       this.dialogSave=false;
-      //       this.detailCode=res.data.code;
-      //       this.detailId=res.data.id;
-      //       //1 下一节点没有审批人 2 有
-      //       if(res.data.isHaveNextAudit===1){
-      //         this.checkPerson.code=res.data.code;
-      //         this.checkPerson.state=true;
-      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
-      //         this.checkPerson.label=true;
-      //       }else{
-      //         this.$message({
-      //           message: "操作成功",
-      //           type: "success"
-      //         });
-      //         if(this.type===2&&this.contractForm.isHaveData){
-      //            this.$router.push('/contractList');
-      //         }else{
-      //           this.dialogSuccess=true;
-      //         }
-      //       }
-      //     }
-      //   }).catch(error => {
-      //     this.fullscreenLoading=false;
-      //     this.$message({
-      //       message:error,
-      //       type: "error"
-      //     })
-      //   })
-      // }
+    },
+    //跳转H5页面
+    toH5(){
+      this.singleCompany=false
+      this.$router.push({
+        path: "/extendParams"
+      });
     },
     //创建成功提示
     toUpload(value){//上传合同资料库
@@ -2288,6 +2216,10 @@ export default {
   /deep/.el-dialog__header{
     border: none !important;
   }
+}
+.singleCompany{
+  // text-align: center;
+  padding: 20px 0 10px 10px;
 }
 .warning-box{
   margin: -4px 0 18px 28px;
