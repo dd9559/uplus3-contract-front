@@ -168,7 +168,7 @@
             </el-table-column>
             <el-table-column :label="priceType" min-width="60" >
               <template slot-scope="scope">
-                <span v-if="scope.row.PriceMin||scope.row.PriceMax">{{scope.row.PriceMin}}{{scope.row.PriceMax?"-"+ scope.row.PriceMax:""}}{{scope.row.Trade==='求租'?'元':'万元'}}{{scope.row.PriceMax?"":"以上"}}</span>
+                <span v-if="scope.row.PriceMin||scope.row.PriceMax">{{scope.row.PriceMin}}{{Number(scope.row.PriceMax)?"-"+ scope.row.PriceMax:""}}{{scope.row.Trade==='求租'?'元':'万元'}}{{Number(scope.row.PriceMax)?"":"以上"}}</span>
                 <span v-else>--</span>
               </template>
             </el-table-column>
