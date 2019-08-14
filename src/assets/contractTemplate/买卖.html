@@ -80,11 +80,15 @@
         margin: 10px 0;
       }
       .cw_message{
-        /* display: none; */
-        padding-top: 10px;
-        padding-left:30px;
-        padding: 10px 30px;
-        /* font-size: 18px; */
+        padding: 5px 30px;
+      }
+      .cw_message>ul:nth-child(-n+5){
+        margin-bottom: 5px;
+      }
+      .cw_message>ul>li{
+        display: inline-block;
+        min-width: 240px;
+        line-height: 1.5;
       }
       .cw_agreement{
         text-indent: 32px;
@@ -328,12 +332,30 @@
         <p>2、签订本合同前，出卖人应当向买受人出示房屋所有权证、土地使用权证及其他有关证书和证明文件。</p>
         <p>3、出卖人承诺对本合同房屋信息的真实性承担法律责任。买受人对本合同房屋及房屋权属资料已实际验看过，并对相关情况已充分了解，自愿购买</p>
         <div class="cw_message">
-          <p><span class="fontBold">房屋出卖人：</span><span systemparam="ownerName" tag="input-auto" class="txt-size"></span></p>
-          <p><span class="fontBold">共有权人：</span><span systemparam="ownerNames" tag="input-auto" class="txt-size"></span></p>
-          <p><span class="fontBold">代理人：</span><input tag="input" type="text" class="text-limit" style="width:610px" extendParam="val3"/></p>
-          <p><span class="fontBold">房屋买受人：</span><span systemparam="guestName" tag="input-auto" class="txt-size"></span></p>
-          <p><span class="fontBold">共同买受人：</span><span systemparam="guestNames" tag="input-auto" class="txt-size"></span></p>
-          <p><span class="fontBold">代理人：</span><input tag="input" type="text" class="text-limit" style="width:610px" extendParam="val6"/></p>
+          <ul>
+            <li><span>房屋出卖人：</span><span systemparam="ownerName" tag="input-auto" class="txt-size"></span></li>
+            <li><span>证件号码：</span><span systemparam="ownerID" tag="input-auto"></span></li>
+          </ul>
+          <ul>
+            <li><span>共有权人：</span><span systemparam="ownerNames" tag="input-auto" class="txt-size"></span></li>
+            <li><span>证件号码：</span><span systemparam="ownerIDs" tag="input-auto"></span></li>
+          </ul>
+          <ul>
+            <li><span>代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val3"></span></li>
+            <li><span>证件号码：</span><span tag="input-auto" class="text-limit input-before" extendParam="val4"></span></li>
+          </ul>
+          <ul>
+            <li><span>房屋买受人：</span><span systemparam="guestName" tag="input-auto" class="txt-size"></span></li>
+            <li><span>证件号码：</span><span systemparam="guestID" tag="input-auto"></span></li>
+          </ul>
+          <ul>
+            <li><span>共同买受人：</span><span systemparam="guestNames" tag="input-auto" class="txt-size"></span></li>
+            <li><span>证件号码：</span><span systemparam="guestIDs" tag="input-auto"></span></li>
+          </ul>
+          <ul>
+            <li><span>代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val6"></span></li>
+            <li><span>证件号码：</span><span tag="input-auto" class="text-limit input-before" extendParam="val5"></span></li>
+          </ul>
         </div>
         <div class="cw_agreement">
           <p>根据《中华人民共和国合同法》、《中华人民共和国城市房地产管理法》、《中华人民共和国物权法》及其他有关法律、法规的规定，买卖双方在平等、自愿、协商一致的基础上就存量房屋买卖事宜达成如下协议：</p>
