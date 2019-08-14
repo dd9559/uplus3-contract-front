@@ -59,9 +59,10 @@
         classN: 'dropdown-item',
         callBack: function(bindElem, dateObj) {
             // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
-            if(bindElem.tagName.toLowerCase()==='input'){
-                bindElem.value=dateObj.value
-                bindElem.setAttribute('value',bindElem.value)
+            if(bindElem.tagName.toLowerCase()==='span'){
+                bindElem.innerHTML = dateObj.value
+                bindElem.classList.remove('input-select')
+                bindElem.classList.remove('input-before')
             }
         }
     })
@@ -148,6 +149,13 @@
                     }else{
                         element.innerHTML = msg['ownerName']
                     }
+                }else if(readonlyItem==='ownerID'){
+                    if(msg['ownerIDs']){
+                        let names = msg['ownerID']+'、'+msg['ownerIDs']
+                        element.innerHTML = names
+                    }else{
+                        element.innerHTML = msg['ownerID']
+                    }
                 }else if(readonlyItem==='guestName'){
                     if(msg['guestNames']){
                         let names = msg['guestName']+'、'+msg['guestNames']
@@ -156,6 +164,15 @@
                     }else{
                         // element.setAttribute('value', msg['guestName'])
                         element.innerHTML = msg['guestName']
+                    }
+                }else if(readonlyItem==='guestID'){
+                    if(msg['guestIDs']){
+                        let names = msg['guestID']+'、'+msg['guestIDs']
+                        // element.setAttribute('value', names)
+                        element.innerHTML = names
+                    }else{
+                        // element.setAttribute('value', msg['guestID'])
+                        element.innerHTML = msg['guestID']
                     }
                 }else if(readonlyItem==='propertyAddr'||readonlyItem==='ownerCommissionUpper'||readonlyItem==='custCommissionUpper'){
                     if(element.getAttribute("extendParam")==="val4"){
