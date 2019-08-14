@@ -133,7 +133,7 @@
         }
         if(readonlyItem==="companyNames"){
             if(msg[readonlyItem].length>0){
-                let companyName = document.querySelector(`input[extendParam="val3"]`)
+                let companyName = document.querySelector(`*[extendParam="val3"]`)
                 let companyNameTxt = msg[readonlyItem].join(',')
                 companyName.setAttribute('list',companyNameTxt)
             }
