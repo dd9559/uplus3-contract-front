@@ -21,8 +21,12 @@
         for(let item in Obj1){
         let classList = Array.from(document.querySelector(`*[extendparam=${item}]`).classList)
         if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
-            Obj1[item]=document.querySelector(`input[extendparam=${item}]`).value
-            document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
+            if(item==='val3'){
+                Obj1[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
+            }else{
+                Obj1[item]=document.querySelector(`input[extendparam=${item}]`).value
+            }
+            document.querySelector(`*[extendparam=${item}]`).classList.remove('BODERRED')
         }else{
             Obj1[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
             document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
