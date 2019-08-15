@@ -3,7 +3,7 @@
         <div class="com-box" :style="{ height: clientHeight() }">
         <div class="mark-red">
             <label>体系：</label>
-            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled="$route.query.type===2">
+            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled="$route.query.type==2">
                 <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
         </div>
@@ -95,6 +95,7 @@
 
 <script>
     import {FILTER} from "@/assets/js/filter";
+    import {MIXINS} from "@/assets/js/mixins";
     const RULE = {
         systemTag: {
             name: '体系'
@@ -120,7 +121,7 @@
     }
     export default {
         name: "commissionDialog",
-        mixins: [FILTER],
+        mixins: [FILTER,MIXINS],
         data() {
             return {
                 clientHei: document.documentElement.clientHeight, //窗体高度
@@ -134,13 +135,13 @@
                     public: '',
                     private: ''
                 },
-                rowId: 0,
-                systemTagList: []
+                rowId: 0
             }
         },
         created(){
             let type = this.$route.query.type
-            this.systemTagList = this.$route.query.arr
+            // 获取体系
+            this.getSystemTag()
             if(type==1) {
                 this.$tool.clearForm(this.commissionForm)
             }else if(type==2){

@@ -791,7 +791,6 @@
         })
       },
       goResult: function () {
-        debugger
         // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)
@@ -825,7 +824,7 @@
             payTotal+=parseFloat(item.amount)
             arr.push(this.$tool.checkForm(item,payRule))
           })
-          if(!cardListStatus){
+          if(!cardListStatus&&this.cardList[0].bankName){
             //刷卡资料验证
             this.cardList.forEach(item=>{
               cardTotal+=parseFloat(item.amount)
@@ -838,7 +837,7 @@
               this.$message({
                 message:'收款金额=支付总金额'
               })
-            }else if(parseFloat(checkTotal.toFixed(2))!==parseFloat(cardTotal.toFixed(2))){
+            }else if(parseFloat(checkTotal.toFixed(2))!==parseFloat(cardTotal.toFixed(2))&&this.cardList[0].bankName){
               this.$message({
                 message:'刷卡资料补充输入总金额=POS刷卡金额+转账金额'
               })

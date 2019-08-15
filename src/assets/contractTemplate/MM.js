@@ -775,11 +775,13 @@
         companyName.setAttribute('list',companyNameTxt)
       }
     }
+
+    let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square']
     if(onlyReadDom.length>0){
       onlyReadDom.forEach((element,index) => {
         if(readonlyItem==='signDate'){
            element.setAttribute('value', arr[index])
-        }else if(readonlyItem==='propertyAddr'||readonlyItem==='square'||readonlyItem==='dealPriceUpper'||readonlyItem==='ownerName'||readonlyItem==='ownerNames'||readonlyItem==='guestName'||readonlyItem==='guestNames'){
+        }else if(readonlyArr.includes(readonlyItem)){
             if(element.getAttribute("extendParam")==="val7"){
                 let value = msg["propertyAddr"]
                 if(value.substring(0,3)==="武汉市"){

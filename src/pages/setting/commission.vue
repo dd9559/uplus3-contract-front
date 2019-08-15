@@ -158,8 +158,7 @@
                 this.$router.push({
                     path: 'commissionDialog',
                     query: {
-                        type,
-                        arr: this.systemTagList
+                        type
                     }
                 })
                 if(type===2){
