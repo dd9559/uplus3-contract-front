@@ -539,6 +539,9 @@
                     if (res.status === 200) {
                         let arr = [...res.data];
                         arr.map(e => {
+                            if(e.roleId == 0) {
+                                e.roleId = ""
+                            }
                             e.rules = [{
                                 name: e.personLiableName,
                                 empId: e.personLiableCode,
