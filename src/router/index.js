@@ -217,7 +217,6 @@ export default new Router({
             list: ["业绩", "结算业绩"]
           }
         },
-        
         {
           path: "storeReceive",
           component: storeReceive,
@@ -251,10 +250,6 @@ export default new Router({
           //   list: ['合同', '新增合同']
           // }
         },
-        // {
-        //   path: "editIntention",
-        //   component: editIntention
-        // },
         {
           path: "detailIntention",
           component: detailIntention
@@ -279,10 +274,6 @@ export default new Router({
             list: ["合同", "结算审核"]
           }
         },
-        // {
-        //   path: "layerAudit",
-        //   component: layerAudit
-        // },
         {
           path: "payBill",
           component: payBill,
@@ -362,28 +353,13 @@ export default new Router({
           path: "contractPreview",
           component: contractPreview
         },
-        //调佣申请弹层（最后需要删掉）
-        // {
-        //   path: "layerAudit",
-        //   component: layerAudit
-        // },
-        //结算申请弹层（最后需要删掉）
-        // {
-        //   path: "layerSettle",
-        //   component: layerSettle
-        // },
-        //变更/解约弹层（最后需要删掉）
-        // {
-        //   path: "changeCancel",
-        //   component: changeCancel
-        // },
         //分账记录
         {
           path: "routingRecord",
           component: routingRecord,
           meta: {
             root: true,
-            list: ["合同", "分账记录"]
+            list: ["财务", "分账记录"]
           }
         },
         //打款记录
@@ -392,7 +368,7 @@ export default new Router({
           component: debitRecord,
           meta: {
             root: true,
-            list: ["合同", "打款记录"]
+            list: ["财务", "打款记录"]
           }
         },
         //合同审核
@@ -408,226 +384,6 @@ export default new Router({
           path: "login",
           component: Login
         },
-
-        {
-          path: "contraPreview",
-          component: contraPreview
-        },
-        {
-          path: "postProcess",
-          component: postProcess,
-          meta: {
-            root: true,
-            list: ['设置', '后期流程设置']
-          }
-        },
-        {
-          path: "company",
-          component: Company,
-          meta: {
-            root: true,
-            list: ['设置', '公司设置']
-          }
-        },
-        {
-          path: "moneyType",
-          component: moneyType,
-          meta: {
-            root: true,
-            list: ['设置', '款类设置']
-          }
-        },
-        {
-          path: "operationLog",
-          component: operationLog,
-          meta: {
-            root: true,
-            list: ['设置', '操作日志']
-          }
-        },
-        {
-          path: "approvalProcess",
-          component: approvalProcess,
-          meta: {
-            root: true,
-            list: ['设置', '审核流程']
-          }
-        },
-        //设置模块 end
-        {
-          path: "actualHarvest",
-          component: actualHarvest,
-          meta: {
-            root: true,
-            list: ['财务', '应收实收']
-          }
-        },
-        {
-          path: "moneyCheck",
-          component: moneyCheck,
-          meta: {
-            root: true,
-          }
-        },
-        {
-          path: "Bill",
-          component: Bill,
-          meta: {
-            root: true,
-            list: ['财务', '收付款单']
-          }
-        },
-        {
-          path: "billDetails",
-          component: billDetails,
-          meta: {
-            getParent: true
-          }
-        },
-        // 合同——合同列表——新增意向金
-        {
-          path: "newIntention",
-          component: newIntention,
-          // meta: {
-          //   root: true,
-          //   list: ['合同', '新增合同']
-          // }
-        },
-        // {
-        //   path: "editIntention",
-        //   component: editIntention
-        // },
-        {
-          path: "detailIntention",
-          component: detailIntention,
-          // meta: {
-          //   root: true,
-          //   list: ['合同', '合同列表', '合同详情']
-          // }
-        },
-        {
-          path: "adjustCheck",
-          component: adjustCheck,
-          meta: {
-            root: true,
-            list: ['合同', '调佣审核']
-          }
-        },
-        {
-          path: "settleCheck",
-          component: settleCheck,
-          meta: {
-            root: true,
-            list: ['合同', '结算审核']
-          }
-        },
-        // {
-        //   path: "layerAudit",
-        //   component: layerAudit
-        // },
-        {
-          path: "payBill",
-          component: payBill,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "payResult",
-          component: payResult
-        },
-        {
-          path: "receiptBill",
-          component: receiptBill,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "receiptResult",
-          component: receiptResult
-        },
-        {
-          path: "contractList",
-          component: contractList,
-          meta: {
-            root: true,
-            list: ['合同', '合同列表']
-          }
-        },
-        // 票据管理
-        {
-          path: "paperSet",
-          component: paperSet,
-          meta: {
-            root: true,
-            list: ['财务', '票据管理']
-          }
-        },
-        // 签后
-        {
-          path: "postReceive",
-          component: postReceive,
-          meta: {
-            root: true,
-            list: ['签后', '后期接收']
-          }
-        },
-        {
-          path: "postManage",
-          component: postManage,
-          meta: {
-            root: true,
-            list: ['签后', '后期管理']
-          }
-        },
-        {
-          path: "postMonitor",
-          component: postMonitor,
-          meta: {
-            root: true,
-            list: ['签后', '后期监控']
-          }
-        },
-        //新增合同
-        {
-          path: "addContract",
-          component: addContract
-        },
-        //合同详情
-        {
-          path: "contractDetails",
-          component: contractDetails
-        },
-        //合同预览
-        {
-          path: "contractPreview",
-          component: contractPreview
-        },
-        //调佣申请弹层（最后需要删掉）
-        // {
-        //   path: "layerAudit",
-        //   component: layerAudit
-        // },
-        //结算申请弹层（最后需要删掉）
-        // {
-        //   path: "layerSettle",
-        //   component: layerSettle
-        // },
-        //变更/解约弹层（最后需要删掉）
-        // {
-        //   path: "changeCancel",
-        //   component: changeCancel
-        // },
-        //分账记录
-        {
-          path: "routingRecord",
-          component: routingRecord,
-          meta: {
-            root: true,
-            list: ['合同', '分账记录']
-          }
-        },
         //分账/打款详情
         {
           path: "routingRemitDetail",
@@ -637,19 +393,6 @@ export default new Router({
         {
           path: "extendParams",
           component: extendParams
-        },
-        //合同审核
-        {
-          path: "contractCheck",
-          component: contractCheck,
-          meta: {
-            root: true,
-            list: ['合同', '合同审核']
-          }
-        },
-        {
-          path: 'login',
-          component: Login
         },
         {
           path: 'iframe',
