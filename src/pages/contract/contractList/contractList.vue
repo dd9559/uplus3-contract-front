@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/房源编号/客源编号" placement="top">
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/纸质合同编号/房源编号/客源编号" placement="top">
             <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -31,6 +31,18 @@
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="签约方式">
+          <el-select v-model="contractForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="成交报告">
+          <el-select v-model="contractForm.reportRecord" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option label="已录" value="1"></el-option>
+            <el-option label="未录" value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="用途">
@@ -187,6 +199,7 @@
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
+                <li v-if="scope.row.recordType.value===2">纸质合同编号：<span>{{scope.row.pCode}}</span></li>
                 <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
                 <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
@@ -194,6 +207,8 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType.label" min-width="50">
+        </el-table-column>
+        <el-table-column align="center" label="签约方式" prop="recordType.label" min-width="50">
         </el-table-column>
         <el-table-column align="center" label="物业地址" prop="propertyAddr" min-width="160">
         </el-table-column>
@@ -203,7 +218,7 @@
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="佣金比例(%)" min-width="90">
+        <el-table-column align="center" label="佣金比例(%)" min-width="60">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value===2||scope.row.contType.value===3">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
             <span v-else>-</span>
@@ -235,7 +250,7 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同状态" min-width="80">
+        <el-table-column align="center" label="合同状态" min-width="70">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
               <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
@@ -452,6 +467,7 @@ export default {
         "507": "",
         "11": "",//后期状态
         "65":"",//线下合同类型
+        "64":"",//签约方式  线上线下
       },
       loading:false,
       //部门选择列表

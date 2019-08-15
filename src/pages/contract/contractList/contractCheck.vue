@@ -171,6 +171,12 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="审核时间" min-width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.auditTime">{{Number(scope.row.auditTime)|formatTime}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="当前审核人" min-width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
