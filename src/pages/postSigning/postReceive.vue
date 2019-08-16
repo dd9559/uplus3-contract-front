@@ -52,7 +52,8 @@
                     prop="depAttr">
                         <el-select
                         v-model="propForm.depAttr"
-                        class="w100">
+                        class="w100"
+                        :clearable="true">
                             <el-option
                             v-for="item in rules.depAttr"
                             :key="'depAttr'+item.key"
@@ -63,7 +64,7 @@
                 <el-form-item
                     label="产权地址区域"
                     prop="areaName">
-                        <el-select v-model="propForm.areaName" class="w134">
+                        <el-select v-model="propForm.areaName" class="w134" :clearable="true">
                         <el-option v-for="(item,i) in rules.areaName"
                         :key="'areaName'+i"
                         :label="item"
