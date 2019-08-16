@@ -359,7 +359,7 @@
       name: "合作方式"
     },
     franchiseRatio: {
-      name: "门店特许费比例"
+      name: "平台费比例"
     },
     name: {
       name: "门店名称"
