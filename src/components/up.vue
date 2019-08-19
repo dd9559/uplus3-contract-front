@@ -223,7 +223,7 @@
           var g = d[index + 1];
           var b = d[index + 2];
 
-          if (Math.sqrt(
+          /*if (Math.sqrt(
               (r - rgba[0]) * (r - rgba[0]) +
               (g - rgba[1]) * (g - rgba[1]) +
               (b - rgba[2]) * (b - rgba[2])) <= 50
@@ -237,7 +237,10 @@
             d[index + 1] = g;
             d[index + 2] = b;
             // imgDataResult.data[index + 3] = imgData.data[index + 3];
-          }
+          }*/
+          const color = Math.floor((62 / 100) * 255);//数值62为默认阈值
+          // 色值在color-255之间都认为是白色，设置为透明
+          if([r,g,b].every(v => v < 256 && v > color)) d[index+3] = 0
         }
         return imgData
       },

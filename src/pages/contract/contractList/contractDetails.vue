@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" @changeBtnStatus="BtnShowFn"></dealReport>
+          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
@@ -1085,6 +1085,7 @@ export default {
       saveBtnShow: false,
       editBtnShow: false,
       reportBtnShow: false,
+      reportFlowShow: false,
       buyerInfo: [],
       buyerFirst: {},
       sellerInfo: [],
@@ -1128,6 +1129,12 @@ export default {
     editFn() {
       this.saveBtnShow = !this.saveBtnShow
       this.editBtnShow = !this.editBtnShow
+      let state = this.contractDetail.laterStageState.value
+      if(state == 1 || state == 2 || state == 4) {
+        this.reportFlowShow = false
+      } else {
+        this.reportFlowShow = true
+      }
     },
     BtnShowFn() {
       this.saveBtnShow = false
