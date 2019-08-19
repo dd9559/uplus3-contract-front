@@ -956,8 +956,8 @@
           <!-- 选择审核人弹框 -->
           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" v-if="checkPerson.state" @submit="personChose"></checkPerson>
         </div>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
-            <el-table :data="recordData" class="recordtable">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
+            <el-table :data="recordData" class="recordtable" border max-height="300">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
               <el-table-column prop="FinalPriceBefore" label="底价（修改前）" ></el-table-column>
               <el-table-column prop="TotalPriceAfter" label="总价（修改后）" ></el-table-column>
@@ -970,8 +970,8 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
-            <el-table :data="AMData" class="recordtable">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
+            <el-table :data="AMData" class="recordtable" border max-height="300">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
               <el-table-column prop="EmpName" label="经纪人" ></el-table-column>
@@ -2696,8 +2696,16 @@
   /deep/ .sushen tr td  .cell{
         line-height: 30px;
    }
+   .record-table-dialog {
+     /deep/ .el-dialog__body {
+       padding: 10px 20px;
+     }
+   }
   .recordtable{
-    min-height: 200px;
+    // min-height: 200px;
+    /deep/ th {
+      background-color: #eef2fb;
+    }
   }
   // .dialog1 /deep/ input, .el-input__inner{
   //   font-size: 10px !important;

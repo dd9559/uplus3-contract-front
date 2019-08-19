@@ -369,8 +369,8 @@
            </div>
       </div>
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-      <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
-            <el-table :data="recordData" class="recordtable">
+      <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
+            <el-table :data="recordData" class="recordtable" border max-height="300">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
               <el-table-column prop="FinalPriceBefore" label="底价（修改前）" ></el-table-column>
               <el-table-column prop="TotalPriceAfter" label="总价（修改后）" ></el-table-column>
@@ -384,8 +384,8 @@
             </el-table>
         </el-dialog>
         
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
-            <el-table :data="AMData" class="recordtable">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
+            <el-table :data="AMData" class="recordtable" border max-height="300">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
               <el-table-column prop="EmpName" label="经纪人" ></el-table-column>
@@ -668,4 +668,15 @@ export default{
       }
       
     }        
+    .record-table-dialog {
+     /deep/ .el-dialog__body {
+       padding: 10px 20px;
+     }
+   }
+   .recordtable{
+    // min-height: 200px;
+    /deep/ th {
+      background-color: #eef2fb;
+    }
+  }
 </style>
