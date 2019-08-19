@@ -959,9 +959,9 @@
         <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
             <el-table :data="recordData" class="recordtable" border max-height="300">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
-              <el-table-column prop="FinalPriceBefore" label="底价（修改前）" ></el-table-column>
+              <el-table-column prop="FinalPriceBefore" label="底价（修改前）" v-if="$route.query.version=='0'"></el-table-column>
               <el-table-column prop="TotalPriceAfter" label="总价（修改后）" ></el-table-column>
-              <el-table-column prop="FinalPriceAfter" label="底价（修改后）" ></el-table-column>
+              <el-table-column prop="FinalPriceAfter" label="底价（修改后）" v-if="$route.query.version=='0'"></el-table-column>
               <el-table-column  label="成交价格误差（%）" width="140" >
                 <template slot-scope="scope">
                   {{scope.row.PriceDifferential}}
