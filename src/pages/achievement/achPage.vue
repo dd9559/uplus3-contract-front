@@ -2023,6 +2023,12 @@
               this.checkPerson.code= this.aId;
               this.checkPerson.state=true
               this.checkPerson.type=1;
+              this.codeBaseInfo(this.contractId2, 1,null,"getExamineInfo");
+              var paperBtn2=document.getElementById('savebtn2')
+              paperBtn2.disabled=true
+              paperBtn2.classList.remove('color-blue')
+              paperBtn2.classList.add('grey')
+              this.$emit("saveData", this.achIndex, resultArr, 0);
             }else{
               this.$message({
                 message:error,
