@@ -353,7 +353,7 @@
                 <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >师徒管理关系</el-button>
               </div>
             </div>
 
@@ -900,7 +900,7 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
+        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
@@ -1196,7 +1196,8 @@
             keyword: queryString,
             pageNum:1,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1218,7 +1219,8 @@
             keyword: queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1362,7 +1364,8 @@
               "keyword": queryString,
               pageNum:1,
               pageSize:100,
-              leave:true
+              leave:true,
+              systemtag: this.userInfo.systemtag
             };
             this.$ajax.get("/api/organize/employees/pages", param).then(res => {
               if(roleId==2){
@@ -1386,7 +1389,8 @@
             "keyword": queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             if(roleId==2){
@@ -2113,6 +2117,9 @@
               sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
             })
               return sum
+        },
+        userInfo() {
+          return this.getUser.user
         }
     }, 
     

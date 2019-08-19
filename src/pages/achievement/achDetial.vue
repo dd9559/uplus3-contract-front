@@ -108,7 +108,7 @@
           <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >师徒管理关系</el-button>
         </h1>
         <div class="ach-divide-list">
           <el-table
@@ -384,7 +384,7 @@
             </el-table>
         </el-dialog>
         
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
+        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>

@@ -107,7 +107,6 @@
                 <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
                 <el-table-column
                   label="经纪人"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -135,7 +134,7 @@
                 <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
                 <el-table-column
                   label="在职状况"
-                  width="100"
+                  width="110"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -155,9 +154,13 @@
                 <!-- 门店，可输入，可下拉 -->
                 <el-table-column
                   label="门店"
-                  width="150"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level3"
+                    placement="top">
                     <el-select
                       v-model="scope.row.level3"
                       filterable
@@ -170,19 +173,19 @@
                       @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
                     >
                       <el-option
-                        v-for="item in level3s"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id+'-'+item.name"
-                      ></el-option>
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name">
+                      </el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -210,7 +213,6 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="155"
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
@@ -238,7 +240,6 @@
                 <!-- 区经，可输入，可下拉   changeAmaldar-->
                 <el-table-column
                   label="总监"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -266,7 +267,6 @@
                 <!-- 区总，可输入，可下拉 changeManager-->
                 <el-table-column
                   label="副总"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -355,7 +355,7 @@
                 <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >师徒管理关系</el-button>
               </div>
             </div>
 
@@ -400,7 +400,6 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -427,7 +426,7 @@
 
                 <el-table-column
                   label="在职状况"
-                  width="100"
+                  width="110"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -447,9 +446,13 @@
                 <!-- 门店，可输入，可下拉 -->
                 <el-table-column
                   label="门店"
-                  width="150"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level3"
+                    placement="top">
                     <el-select
                       v-model="scope.row.level3"
                       filterable
@@ -468,13 +471,13 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -501,7 +504,6 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="155"
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
@@ -529,7 +531,6 @@
                 <!-- 区经，可输入，可下拉 -->
                 <el-table-column
                   label="总监"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -557,7 +558,6 @@
                 <!-- 区总，可输入，可下拉 -->
                 <el-table-column
                   label="副总"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -930,7 +930,7 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
+        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
@@ -1197,7 +1197,8 @@
             keyword: queryString,
             pageNum:1,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1219,7 +1220,8 @@
             keyword: queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1363,7 +1365,8 @@
               "keyword": queryString,
               pageNum:1,
               pageSize:100,
-              leave:true
+              leave:true,
+              systemtag: this.userInfo.systemtag
             };
             this.$ajax.get("/api/organize/employees/pages", param).then(res => {
               if(roleId==2){
@@ -1388,7 +1391,8 @@
             "keyword": queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             if(roleId==2){
@@ -2272,6 +2276,9 @@
               sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
             })
               return sum
+        },
+        userInfo() {
+          return this.getUser.user
         }
     }, 
     watch: {
@@ -2404,6 +2411,11 @@
       
       /deep/ .el-input__suffix {
         right: 21px;
+      }
+      /deep/ .el-icon-circle-close {
+        position: absolute;
+        right: -15px;
+        top: 0;
       }
       .close-btn{
         position: absolute;
