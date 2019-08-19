@@ -157,6 +157,7 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip
+                    v-if="scope.row.level3"
                     class="item"
                     effect="dark"
                     :content="scope.row.level3"
@@ -180,6 +181,25 @@
                       </el-option>
                     </el-select>
                     </el-tooltip>
+                    <el-select
+                      v-else
+                      v-model="scope.row.level3"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :loading="loading1"
+                      :remote-method="getLevel(3)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
+                    >
+                      <el-option
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name">
+                      </el-option>
+                    </el-select>
                   </template>
                 </el-table-column>
 
@@ -449,6 +469,7 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip
+                    v-if="scope.row.level3"
                     class="item"
                     effect="dark"
                     :content="scope.row.level3"
@@ -472,6 +493,25 @@
                       ></el-option>
                     </el-select>
                     </el-tooltip>
+                    <el-select
+                      v-else
+                      v-model="scope.row.level3"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :loading="loading1"
+                      :remote-method="getLevel(3)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                    >
+                      <el-option
+                        v-for="item in level3s"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+'-'+item.name"
+                      ></el-option>
+                    </el-select>
                   </template>
                 </el-table-column>
 
