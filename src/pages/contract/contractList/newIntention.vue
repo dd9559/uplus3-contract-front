@@ -930,7 +930,7 @@ export default {
         param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
         param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
         if (this.type== 2) {
-          delete param.igdCont.code;
+          // delete param.igdCont.code;
           delete param.igdCont.contType;
           delete param.igdCont.recordName;
           delete param.igdCont.recordDept;
