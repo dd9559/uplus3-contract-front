@@ -17,7 +17,7 @@
                                     <div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
                                     <div class="div2"><span>认购总价：</span>{{detailData.subscriptionPrice | nullData}}元</div>
                                     <div v-if="this.detailData.contType.value == 4"><span>意向金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
-                                    <div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}万元</span><span class="chinesemoney yellow">{{detailData.dealPrice*10000 | moneyFormat}}</span></div>
+                                    <div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice*10000 | moneyFormat}}</span></div>
                                 </li>
                             </ul>
                         </ul>
@@ -31,22 +31,22 @@
                                 </li>
                                 <li>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
-                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}万元</div>
+                                    <div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
                                     <div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
                                     <div class="div1"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
                                     <div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
-                                    
+
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
-                                <li>   
+                                <li>
                                     <div class="div1"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
                                     <div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
-                                    
+
                                 </li>
                                 <li>
                                     <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
-                                    <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>                                 
+                                    <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
                                     <div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
                                 </li>
                             </ul>
@@ -57,7 +57,7 @@
                                 <li>
                                     <div class="div1"><span>客源编号：</span><em class="blue">{{detailData.guestinfoCode | nullData}}</em></div>
                                     <div><span>成交经纪人：</span>{{detailData.dealAgentStoreName + '-' + detailData.dealAgentName | nullData}}</div>
-                                    
+
                                 </li>
                                 <li>
                                     <div class="div1"><span>客户姓名：</span>{{custInfo[0].name | nullData}}</div>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="fixed">
                         <div class="form-btn">
-                            <div class="btnbox"> 
+                            <div class="btnbox">
                                 <div class="fl">
                                     <ul>
                                         <li>录入时间：<span>{{detailData.createTime | getDate}}</span></li>
@@ -81,9 +81,9 @@
                                         <li>最后修改：<span>{{detailData.updateTime | getDate}}</span></li>
                                     </ul>
                                 </div>
-                                <div class="fr">                  
+                                <div class="fr">
                                     <el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-info-view'].state">预 览</el-button>
-                                    <el-button type="primary" round class="mr30 btn2" v-if="power['sign-ht-info-edit'].state" @click="onEdit(detailData.contType)">编 辑</el-button>                  
+                                    <el-button type="primary" round class="mr30 btn2" v-if="power['sign-ht-info-edit'].state" @click="onEdit(detailData.contType)">编 辑</el-button>
                                 </div>
                             </div>
                         </div>
@@ -129,13 +129,13 @@
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                             <div class="namePath" @click="previewPhoto(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
-                                                <p>{{item_.name}}</p>                                              
+                                                <p>{{item_.name}}</p>
                                             </div>
                                         </el-tooltip>
                                         <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                                     </li>
                                 </ul>
-                            </div>                           
+                            </div>
                         </div>
 
                         <!-- 客户 -->
@@ -150,19 +150,19 @@
                                             <p>点击上传</p>
                                         </file-up>
                                     </li>
-                                    
+
                                         <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                                             <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                                 <div class="namePath" @click="previewPhoto(item.value,index_)">
-                                                    <upload-cell :type="item_.fileType"></upload-cell>                                               
-                                                    <p>{{item_.name}}</p>   
+                                                    <upload-cell :type="item_.fileType"></upload-cell>
+                                                    <p>{{item_.name}}</p>
                                                 </div>
                                             </el-tooltip>
-                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>                                          
+                                            <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                                         </li>
-                                    
+
                                 </ul>
-                            </div>                                                     
+                            </div>
                         </div>
 
                         <!-- 其他 -->
@@ -181,36 +181,36 @@
                                         <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                                             <div class="namePath" @click="previewPhoto(item.value,index_)">
                                                 <upload-cell :type="item_.fileType"></upload-cell>
-                                                <p>{{item_.name}}</p>    
-                                            </div>                                         
+                                                <p>{{item_.name}}</p>
+                                            </div>
                                         </el-tooltip>
                                         <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                                     </li>
                                 </ul>
-                            </div>                           
-                            
+                            </div>
+
                         </div>
 
                     </div>
-                 
+
                 </el-tab-pane>
             </el-tabs>
-            
+
             <!-- 上传按钮 -->
             <div class="functionTable">
-                
-                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 --> 
+
+                <el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 -->
                 <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data'].state">上传</el-button>  <!-- 资料库上传 -->
-                
+
             </div>
-            
+
             <!-- 图片放大 -->
              <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
         </div>
-       
-            
+
+
     </div>
-    
+
 </template>
 
 <script>
@@ -231,13 +231,13 @@ export default {
             // code:'',
             scaneZhuti:{
                 path:'zhuti',
-                id: this.code  
+                id: this.code
             },
             scaneData: {
                 path:"ziliaoku",
                 id: this.code
             },
-            
+
             detailData: {
                 // code:'',
                 signDate:'',
@@ -259,20 +259,20 @@ export default {
                         }
                     }
                 ],
-                
+
             },
             ownerInfo:[
                 {
                     name: '',
                     mobile: '',
-                    identifyCode: '', 
+                    identifyCode: '',
                 }
             ],
             custInfo: [
                 {
                     name: '',
                     mobile: '',
-                    identifyCode: '', 
+                    identifyCode: '',
                 }
             ],
 
@@ -322,7 +322,7 @@ export default {
         },
 
         // 控制弹框body内容高度，超过显示滚动条
-        clientHeight() {        
+        clientHeight() {
             return this.clientHei - 285 + 'px'
         },
 
@@ -396,7 +396,7 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.buyerList.push(item);
-                    
+
                 }else if(element.type==="2"){
                     let item={};
                     item.value=[];
@@ -404,7 +404,7 @@ export default {
                     item.title=element.name;
                     item.isrequire=element.isNecessary;
                     this.sellerList.push(item);
-                    
+
                 }else if(element.type==="3"){
                     let item={};
                     item.value=[];
@@ -413,7 +413,7 @@ export default {
                     item.isrequire=element.isNecessary;
                     this.otherList.push(item);
                     console.log(this.otherList)
-                    
+
                 }
             });
             }
@@ -468,7 +468,7 @@ export default {
             });
         },
 
-        
+
 
         //上传资料库
         uploading(msg){
@@ -485,11 +485,11 @@ export default {
                     });
                     break
                 }else if(uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-               
+
                     arr_.push(uploadContData[i]);
                     isOk = true;
                 }else if(!uploadContData[i].isrequire&&uploadContData[i].value.length>0){
-                
+
                     arr_.push(uploadContData[i]);
                      isOk = true;
                 }else{
@@ -582,8 +582,8 @@ export default {
             }
         }
         },
-            
-        
+
+
 
          //获取合同主体信息（已上传后，拿到返回的文件路径）
         getContractBody(){
@@ -633,14 +633,14 @@ export default {
                 datas:this.uploadList
                 }
                 this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
-                  
+
                     if(res.data.status===200){
                         this.getContractBody();
                         this.$message({
                             message:'上传成功'
                         })
                     }else if(res.data.status===500){
-                        
+
                         this.$message.error(res.data.message)
                     }
                 }).catch((error)=>{
@@ -655,7 +655,7 @@ export default {
             }
         },
 
-        
+
          //显示删除按钮
         moveIn(value){
             this.isDelete=value
@@ -670,14 +670,14 @@ export default {
         // 查询
         getDetail() {
           let param = {
-            id: this.$route.query.id                        
+            id: this.$route.query.id
           }
-          //根据合同ID查询详细信息 
-          this.$ajax         
+          //根据合同ID查询详细信息
+          this.$ajax
           .get("/api/contract/detail", param)
           .then(res => {
-           
-          
+
+
             if (res.data.status === 200) {
                 this.detailData = res.data.data
                 this.code = res.data.data.code
@@ -701,7 +701,7 @@ export default {
                     this.getContractBody();//获取合同主体
                 }
             }
-            
+
           })
           .catch((error)=>{
                 this.$message({
@@ -709,7 +709,7 @@ export default {
                 })
             })
       },
-       
+
     },
 
     filters: {
@@ -718,7 +718,7 @@ export default {
         },
 
         subStrFn(val) {
-           return val.substr(0, 10)       
+           return val.substr(0, 10)
         },
 
         nullData(val) {
@@ -750,7 +750,7 @@ export default {
          _this.clientHei = document.documentElement.clientHeight;
        }
     },
-    
+
 }
 </script>
 
@@ -777,7 +777,7 @@ export default {
     .deleteShow{
         display: block !important;
     }
-    
+
     .detailbox{
         padding: 20px 0 0px;
         border-radius: 4px;
@@ -822,14 +822,14 @@ export default {
             }
             .ul1{
                     display: flex;
-                    align-items: top; 
+                    align-items: top;
                     clear: both;
                     border-bottom: 1px solid #EDECF0;
                     margin:10px 0 30px 0;
-                    padding-bottom: 10px;     
+                    padding-bottom: 10px;
                 }
             ul{
-                                      
+
                 li{
                     margin-right: 100px;
                     div{
@@ -856,7 +856,7 @@ export default {
                     overflow: hidden;
                     border-bottom: 1px solid #EDECF0;
                     margin:10px 0 30px 0;
-                    padding-bottom: 10px;   
+                    padding-bottom: 10px;
                     .ul3{
                         float: left;
                         overflow: hidden;
@@ -883,13 +883,13 @@ export default {
                             }
                         }
                     }
-                    
+
                     li.tabs-title{
                         margin-right: 30px;
                         margin-bottom: 20px;
                         float: left;
                     }
-                    
+
                 }
             }
         }
@@ -907,7 +907,7 @@ export default {
                 bottom: 0;
                 display: flex;
                 justify-content: space-between;
-                align-items: center; 
+                align-items: center;
                 .el-button.is-round{
                     padding: 11px 23px;
                     width: 100px;
@@ -916,10 +916,10 @@ export default {
                     background-color: #EAEFF5;
                     color: #32485F;
                     border: 1px solid #EAEFF5;
-                } 
+                }
                 .btn2{
                     background-color: #478DE3;
-                } 
+                }
             }
             .fl{
                 overflow: hidden;
@@ -948,9 +948,9 @@ export default {
         .contractSubject {
             padding: 40px;
         }
-        
+
         .third-tab{
-           padding: 20px 30px 30px 30px; 
+           padding: 20px 30px 30px 30px;
         }
         .classify{
             margin-bottom: 30px;
@@ -960,7 +960,7 @@ export default {
             .ht-title{
                 color: #32485F;
                 font-size: 16px;
-                margin-bottom: 15px;               
+                margin-bottom: 15px;
             }
             .small-col{
                 margin-bottom: 20px;
@@ -971,12 +971,12 @@ export default {
                     margin-bottom: 15px;
                     i{
                         color: #FF3E3E;
-                        
+
                     }
                 }
-                
+
             }
-            
+
         }
         .ulData{
             display: flex;
@@ -1032,10 +1032,10 @@ export default {
             white-space: nowrap;
             }
         }
-        
+
     }
 }
-    
+
 </style>
 
 
