@@ -15,6 +15,10 @@
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
                                 <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
                             </el-form-item>
+                            <el-form-item label="纸质合同编号：" prop="code"  v-if="isOffline===1">
+                                <el-input v-model="contractForm.code" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('code',0)" >
+                                </el-input>
+                            </el-form-item>
                             <br>
                             <el-form-item label="认购期限：" prop="subscriptionTerm">
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
@@ -344,7 +348,14 @@ export default {
         subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
         dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
 
-
+        code:[
+            {
+              type: "string",
+              required: true, 
+              message: "请输入纸质合同编号",
+              trigger:'change' 
+            }
+        ],
 
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger:'change'}
@@ -425,6 +436,12 @@ export default {
       else if(val == "name") {
         this.$nextTick(() => {
          this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
+        })
+      }
+      else if(val=="code"){
+        this.$nextTick(() => {
+            let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
+            this.contractForm.code = this.contractForm.code.toString().replace(/\s/g,"").replace(addrReg,'')
         })
       }
     },
@@ -793,6 +810,7 @@ export default {
         let param = {
           igdCont: {
             type: this.contractForm.type,
+            code: this.contractForm.code,
             signDate: this.contractForm.signDate,
             houseinfoCode: this.contractForm.houseinfoCode,
             guestinfoCode: this.contractForm.guestinfoCode,
@@ -834,19 +852,25 @@ export default {
           url = '/api/contract/addLocalContract'
         }
 
-        this.$ajax
-          .postJSON(url, param)
-          .then(res => {
+        this.$ajax.postJSON(url, param).then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
             if (res.data.status === 200) {
-              let contractMsg = res.data.data
-              this.hidBtn=1
-              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(this.isOffline===1){
+                this.$message({
+                  message:"创建成功",
+                  type: "success"
+                })
+                this.$router.push('/contractList');
+              }else{
+                let contractMsg = res.data.data
+                this.hidBtn=1
+                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
@@ -970,19 +994,26 @@ export default {
           url = '/api/contract/addLocalContract'
         }
 
-        this.$ajax
-          .postJSON(url, param)
-          .then(res => {
+        this.$ajax.postJSON(url, param).then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
 
             if (res.data.status === 200) {
-              let contractMsg = res.data.data
-              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(this.isOffline===1){
+                this.$message({
+                  message:"编辑成功",
+                  type: "success"
+                })
+                this.$router.push('/contractList');
+              }else{
+                let contractMsg = res.data.data
+                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
+              
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
