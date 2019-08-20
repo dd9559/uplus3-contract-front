@@ -76,7 +76,7 @@
                 {{scope.row.Price}} {{scope.row.TradeInt===3?'元':'万元'}}
               </template>
             </el-table-column>
-            <el-table-column prop="DecorateType" label="装修" width="60"></el-table-column>
+            <el-table-column prop="DecorateType" label="装修" width="60" :formatter="nullFormatter"></el-table-column>
             <el-table-column prop="Emp1" label="维护人" ></el-table-column>
           </el-table>
           <el-pagination
@@ -100,7 +100,7 @@
           <div>
             <el-form-item label="交易:">
               <el-select
-                style="width:150px" 
+                style="width:150px"
                 v-model="guestType"
                 placeholder=""
                 :disabled="contractType!=''"
@@ -270,11 +270,13 @@
     </el-dialog>
   </div>
 </template>
-           
+
 <script>
 import { MIXINS } from "@/assets/js/mixins";
+import {FILTER} from "@/assets/js/filter";
+
 export default {
-  mixins: [MIXINS],
+  mixins: [MIXINS,FILTER],
   props: {
     dialogVisible: {
       type: Boolean,
@@ -371,7 +373,7 @@ export default {
       this.getGuestList();
       this.selectCode=this.choseGcode;
     }
-    
+
   },
   methods: {
     close() {
@@ -683,7 +685,7 @@ export default {
     // text-overflow:ellipsis;
     text-overflow:ellipsis;
     white-space:nowrap;
-    overflow:hidden; 
+    overflow:hidden;
   }
   .search_btn {
     padding: 8px 15px;
