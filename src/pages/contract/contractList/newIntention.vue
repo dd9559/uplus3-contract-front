@@ -38,8 +38,9 @@
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
-                                    <i slot="suffix" class="yuan">万元</i>
-                                    <template slot="append">{{contractForm.dealPrice*10000 | moneyFormat}}</template>
+                                    <!-- <i slot="suffix" class="yuan">万元</i> -->
+                                    <i slot="suffix" class="yuan">元</i>
+                                    <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -66,8 +67,9 @@
 
                             <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
                                 <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
-                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
+                                    <!-- <i slot="suffix" class="yuan">元/月</i> -->
                                 </el-input>
                             </el-form-item>
 
@@ -622,6 +624,9 @@ export default {
             console.log(houseMsg);
             this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
             this.contractForm.houseInfo = houseMsg;
+            if(houseMsg.TradeInt===2){
+              this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
+            }
 
           }
         })
