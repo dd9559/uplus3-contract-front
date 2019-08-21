@@ -26,7 +26,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
@@ -199,7 +199,7 @@
         </el-table-column>
         <el-table-column align="center" label="成交总价" prop="dealPrice" min-width="90">
           <template slot-scope="scope">
-            <span>{{scope.row.dealPrice}}{{scope.row.contType.value===5?' 万元':' 元'}}</span>
+            <span>{{scope.row.dealPrice}}元</span>
             <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
           </template>
         </el-table-column>
@@ -928,7 +928,7 @@ export default {
     //调佣弹窗
     toLayerAudit(item) {
       let param = {
-        contractCode: item.code            
+        contractCode: item.code
       }
       this.$ajax.get("/api/commission/detail", param).then(res => {
         let data = res.data;
@@ -1253,7 +1253,7 @@ export default {
       // this.$ajax.postJSON("/api/input/contractExcel", param).then(res => {
       //   res = res.data;
       //   if (res.status === 200) {
-          
+
       //   }
       // });
     }

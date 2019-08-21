@@ -36,16 +36,16 @@
           } catch (e) {
             f.contentWindow.print();
           }
-          printCallBack();
+          printCallBack&&printCallBack();
         }, 100)
       },
       getStyle(printI) {
         var str = "",
           styles1 = document.querySelectorAll("style");
-        /*for (var i = 0; i < styles1.length; i++) {
+        for (var i = 0; i < styles1.length; i++) {
           str += styles1[i].outerHTML;
-        }*/
-        str += styles1[styles1.length - 1].outerHTML//页面生成的最后一个style为当前页面的
+        }
+        // str += styles1[styles1.length - 1].outerHTML//页面生成的最后一个style为当前页面的
         str += `<style>header, footer {display: none;}body{font-family: SimHei;}</style>`;
         printI.contentDocument.head.innerHTML = str;
 
