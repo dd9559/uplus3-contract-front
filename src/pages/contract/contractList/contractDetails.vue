@@ -1116,7 +1116,7 @@ export default {
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     // this.getExtendParams();//获取扩展参数
-    this.getRecordList();//电话录音
+    // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
   },
   beforeRouteEnter(to,from,next){
@@ -1162,6 +1162,8 @@ export default {
         }
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
+      }else if(tab.name==="fourth"){
+        this.getRecordList();//电话录音
       }
     },
     //打电话
