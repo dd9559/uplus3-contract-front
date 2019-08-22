@@ -149,6 +149,17 @@
             </el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>签约方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['64']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" ref="box">
@@ -163,7 +174,10 @@
               付款<span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额<span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
             </li>
             <li>
-              账户余额：<span>{{tableTotal.balance|zeroFormatter}}</span>元
+              账户余额：<span>{{tableTotal.balance|zeroFormatter}}</span>元；
+            </li>
+            <li>
+              刷卡手续费总计：<span>{{tableTotal.sumFees|zeroFormatter}}</span>元；
             </li>
           </ul>
         </div>
@@ -386,7 +400,8 @@
           '507': '',
           '542': '',
           '57': '',
-          '53': ''
+          '53': '',
+          '64': '',
         },
         drop_MoneyType: [],
         //分页
@@ -459,7 +474,7 @@
         if(res&&(res.route===this.$route.path)){
           this.list = res.data.page.list
           this.total = res.data.page.total
-          this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+          this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance},{sumFees:res.data.fees&&res.data.fees.sumFees})
           let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
           this.searchForm = Object.assign({},this.searchForm,session.query,{contType:session.query.contTypes.length>0?session.query.contTypes.split(','):[]})
           // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
@@ -601,7 +616,7 @@
           if (res.status === 200) {
             this.list = res.data.page.list
             this.total = res.data.page.total
-            this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance})
+            this.tableTotal = Object.assign({}, res.data.payMentDataList, res.data.paymentDataList, {balance: res.data.balance},{sumFees:res.data.fees&&res.data.fees.sumFees})
           }
         }).catch(error => {
           console.log(error)
