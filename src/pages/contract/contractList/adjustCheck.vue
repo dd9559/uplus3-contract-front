@@ -5,7 +5,7 @@
     <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini" ref="adjustCheckForm">
         <el-form-item label="关键字">
-          <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
+          <el-tooltip effect="dark" content="合同编号/纸质合同编号/房源编号/客源编号" placement="top">
             <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -61,6 +61,12 @@
             <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="签约方式">
+          <el-select v-model="adjustForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
 
 
       </el-form>
@@ -85,6 +91,8 @@
 
           </template>
 
+        </el-table-column>
+        <el-table-column align="center" label="签约方式" prop="recordType.label" min-width="50">
         </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter" align="center" min-width="90" prop="dealPrice">
           <template slot-scope="scope">
@@ -441,6 +449,7 @@
           depName:'',
           depId: '',
           empId: '',
+          recordType: '',//2.3.1新加
           // getDepName: [{
           //   name: "全部",
           //   id: ""
@@ -458,7 +467,8 @@
           "10": "", //合同类型
           "17": "", //审核状态
           "507": "", // 成交总价单位
-          "53": "" // 合作方式
+          "53": "", // 合作方式
+          "64": '', //签约方式
         },
 
         layerAudit:{

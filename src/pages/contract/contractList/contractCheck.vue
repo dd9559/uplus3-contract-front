@@ -79,6 +79,10 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         <!-- </span> -->
       <!-- </p> -->
+      <div class="listTitle">
+        <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
+        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
+      </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column align="center" label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
@@ -240,6 +244,7 @@ import changeCancel from "../contractDialog/changeCancel";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
+let printParam={}
 
 export default {
   mixins: [MIXINS],
@@ -309,6 +314,10 @@ export default {
         'sign-com-cust': {
           state: false,
           name: '客源详情'
+        },
+        "sign-ht-info-export": {
+          state: false,
+          name: ''
         }
       }
     }
@@ -353,6 +362,9 @@ export default {
     }
   },
   methods:{
+    getExcel:function () {
+      this.excelCreate('/input/contractAuditExcel',printParam)
+    },
     //获取合同列表
     getContractList(type="init") {
       let param = {
@@ -374,7 +386,7 @@ export default {
         param.contTypes=''
       }
       // delete param.depName
-      //console.log(param)
+      // console.log(param)
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/contractCheck',
@@ -383,7 +395,8 @@ export default {
           methods:"postJSON"
         }))
       }
-      
+      printParam=Object.assign({},param)
+
       this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -595,6 +608,15 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.listTitle{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  .float-right{
+    float: right;
+  }
+}
 
 .width300{
   width: 325px !important;
@@ -625,7 +647,7 @@ export default {
 .contract-list {
   // padding-top: 10px;
   background-color: #fff;
-  padding: 10px 10px 0 10px;
+  padding: 8px 10px 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {

@@ -47,7 +47,7 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('house')" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
@@ -76,7 +76,7 @@
              <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
              <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
              <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
-             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" /> 
+             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" />
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -171,7 +171,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
@@ -359,11 +359,11 @@
       </span>
     </el-dialog>
     <!-- 分成人信息弹窗 -->
-    <el-dialog title="提示" :visible.sync="agentsDialog" width="600px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="提示" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="agentsDialog">
         <p>当前房源分成人</p>
         <ul>
-          <li v-for="(item, index) in agentsList" :key="index"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
+          <li v-for="(item, index) in agentsList" :key="index" :title="`${item.roleText} ${item.empName}·${item.deptName}`"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
         </ul>
       </div>
     </el-dialog>
@@ -468,7 +468,7 @@ export default {
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
-      isOffline:'',
+      isOffline:'',//判断创建合同为0=线上，1=线下
       dictionary: {
         //数据字典
         "514": "", //产权状态
@@ -542,6 +542,7 @@ export default {
       singleCompanyName:'',
       agentsDialog:false,
       agentsList:[],//分成人列表
+      sourceBtnCheck:true,//房客源是否可选择
     };
   },
   created() {
@@ -1388,7 +1389,7 @@ export default {
                   path: "/extendParams"
                 });
               }
-              
+
             }
 
           }
@@ -1636,7 +1637,7 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
-      console.log("房源");
+      // console.log("房源");
       let param = {
         houseId: id
       };
@@ -1680,6 +1681,7 @@ export default {
           //   name: houseMsg.HouseStoreName,
           //   id: houseMsg.HouseStoreCode
           // });
+          //获取房源分成人--新增xu
           let param = {
             id:houseMsg.PropertyCode,
             type:1
@@ -1695,7 +1697,7 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
-      console.log("客源");
+      // console.log("客源");
       let param = {
         customerId: id
       };
@@ -1753,6 +1755,7 @@ export default {
               this.guestList_.push(obj_);
             });
           }
+          //获取客源分成人
           let param = {
             id:guestMsg.InquiryCode,
             type:2
@@ -1804,7 +1807,7 @@ export default {
     },
     //关闭房源客源弹窗
     closeHouseGuest(value) {
-      if (value) {
+      if (value) {//判断是否点击的确认按钮
         if (value.dialogType === "house") {
           if(this.choseHcode&&this.choseHcode!==value.selectCode){
             this.contractForm.propertyRightAddr=''
@@ -1979,6 +1982,7 @@ export default {
           this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
+          this.sourceBtnCheck=(res.data.contState.value===3)?false:true
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
           let index2 = rightAddress.indexOf('区')
@@ -2001,7 +2005,7 @@ export default {
           }else{
             this.rightAddrDetail=rightAddress
           }
-          
+
           // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
@@ -2129,7 +2133,7 @@ export default {
       if(this.contractForm.code){
         this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
       }
-     
+
     },
     closeCheckPerson(){
       checkPerson.state=false;
@@ -2254,7 +2258,7 @@ export default {
 }
 .agentsDialog{
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 10px 20px;
   p{
     text-align: center;
     font-size: 16px;
@@ -2262,10 +2266,17 @@ export default {
     margin-bottom: 10px;
   }
   >ul{
-    background-color: #ccc;
+    background-color: #e8e8e8;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     >li{
-      display: inline-block;
-      width: 50%;
+      flex-basis: 46%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
       span{
         padding-right: 10px;
       }

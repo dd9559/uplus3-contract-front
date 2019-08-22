@@ -26,7 +26,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        
+
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
@@ -290,6 +290,7 @@
             <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="成交报告" min-width="80" prop="laterStageState.label"></el-table-column>
         <el-table-column align="center" label="后期状态" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1">
@@ -944,7 +945,7 @@ export default {
     //调佣弹窗
     toLayerAudit(item) {
       let param = {
-        contractCode: item.code            
+        contractCode: item.code
       }
       this.$ajax.get("/api/commission/detail", param).then(res => {
         let data = res.data;
@@ -1269,7 +1270,7 @@ export default {
       // this.$ajax.postJSON("/api/input/contractExcel", param).then(res => {
       //   res = res.data;
       //   if (res.status === 200) {
-          
+
       //   }
       // });
     }
