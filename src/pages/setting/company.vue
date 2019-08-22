@@ -113,7 +113,7 @@
     :close-on-press-escape="$tool.closeOnClickModal"
     :title="companyFormTitle"
     :visible.sync="AddEditVisible"
-    width="1180px"
+    width="1000px"
     :before-close="handleClose"
     class="dialog-info">
       <el-form :model="companyForm" label-position='right'>
@@ -140,14 +140,14 @@
               </el-form-item>
             </div>
             <div class="item item-display">
-              <el-form-item label="门店特许费比例: " class="allow">
-                <el-input v-model="companyForm.franchiseRatio" size="mini"  :disabled="fourthStoreNoEdit" @input="cutNumber('franchiseRatio')"></el-input>%
+              <el-form-item label="平台费比例: " class="allow">
+                <el-input v-model="companyForm.franchiseRatio" size="mini" :clearable="true" :disabled="fourthStoreNoEdit" @input="cutNumber('franchiseRatio')"></el-input>%
               </el-form-item>
               <el-form-item label="门店名称: " class="store-name">
-                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" maxlength="50" :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
+                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" maxlength="50" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
               </el-form-item>
               <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :disabled="fourthStoreNoEdit" @input="inputOnly(999,'lepName')"></el-input>
+                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(999,'lepName')"></el-input>
               </el-form-item>
             </div>
             <div class="item item-display">
@@ -157,10 +157,10 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" :maxlength="companyForm.lepDocumentType===1?18:companyForm.lepDocumentType===2?9:11" v-model.trim="companyForm.lepDocumentCard" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
+                <el-input size="mini" :maxlength="companyForm.lepDocumentType===1?18:companyForm.lepDocumentType===2?9:companyForm.lepDocumentType===3?11:18" v-model.trim="companyForm.lepDocumentCard" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
               </el-form-item>
-              <el-form-item label="法人手机号码: ">
-                <el-input size="mini" oninput="if(value.length>11)value=value.slice(0,11)" v-model="companyForm.lepPhone" :disabled="fourthStoreNoEdit" @keyup.native="getInt(2)"></el-input>
+              <el-form-item label="法人手机号码: " class="mobile">
+                <el-input size="mini" maxlength="11" v-model="companyForm.lepPhone" :clearable="true" :disabled="fourthStoreNoEdit" @keyup.native="getInt(2)"></el-input>
               </el-form-item>
             </div>
             <div class="item">
@@ -170,18 +170,18 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="统一社会信用代码: " v-if="creditCodeShow" class="tongyi">
-                <el-input size="mini" v-model.trim="documentCard.creditCode" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.creditCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
-                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :disabled="fourthStoreNoEdit" @input="inputOnly(2,'icRegisterCode')"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(2,'icRegisterCode')"></el-input>
               </el-form-item>
               <el-form-item label="组织机构代码: " v-if="icRegisterShow" class="zuzhi">
-                <el-input size="mini" v-model.trim="documentCard.organizationCode" :disabled="fourthStoreNoEdit" @input="inputOnly(3,'organizationCode')"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.organizationCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(3,'organizationCode')"></el-input>
               </el-form-item>
             </div>
             <div class="item shuiwu">
               <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :disabled="fourthStoreNoEdit" @input="inputOnly(4,'taxRegisterCode')"></el-input>
+                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(4,'taxRegisterCode')"></el-input>
               </el-form-item>
             </div>
             <div class="tip tip-top">
@@ -198,55 +198,42 @@
         </div>
         <div class="company-info">
           <p>添加企业银行账户</p>
-          <div class="info-content">
-            <el-table style="width: 100%" :data="companyBankList" class="addBankRow">
-              <el-table-column align="center" label="" width="170">
-                <template slot-scope="scope">
-                  <el-form-item label="账户类型: ">
-                    <el-select size="small" v-model="companyBankList[scope.$index].type" class="property" :disabled="fourthStoreNoEdit">
-                      <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="" width="260">
-                <template slot-scope="scope">
-                  <el-form-item label="开户名: ">
-                    <el-input size="small" class="card-owner" maxlength="30" v-model.trim="companyBankList[scope.$index].bankAccountName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankAccountName')"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="" width="238">
-                <template slot-scope="scope">
-                  <el-form-item label="银行卡号: ">
-                    <el-input size="small" oninput="if(value.length>20)value=value.slice(0,20)" v-model="companyBankList[scope.$index].bankCard" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,scope.$index)"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="" width="215">
-                <template slot-scope="scope">
-                  <el-form-item label="银行: ">
-                    <el-select size="small" v-model="companyBankList[scope.$index].bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item">
-                      <el-option v-for="item in adminBanks" :key="item.id" :label="item.bankName" :value="item.bankId"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column align="center" label="" width="192">
-                <template slot-scope="scope" v-if="companyBankList[scope.$index].type===1">
-                  <el-form-item label="支行: ">
-                    <el-input size="small" class="bank-branch" v-model.trim="companyBankList[scope.$index].bankBranchName" :disabled="fourthStoreNoEdit" @input="inputOnly(scope.$index,'bankBranchName')"></el-input>
-                  </el-form-item>
-                </template>
-              </el-table-column>
-              <el-table-column label="" width="64">
-                <template slot-scope="scope">
-                  <span @click="addRow" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-plus"></i></span>
-                  <span @click="removeRow(scope.$index)" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-minus"></i></span>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
+          <ul class="info-content">
+            <li v-for="(item,index) in companyBankList" :key="index" class="addBankRow">
+              <div class="row-item">
+                <div>
+                  <label>账户类型: </label>
+                  <el-select size="small" v-model="item.type" class="property" :disabled="fourthStoreNoEdit">
+                    <el-option v-for="m in bankType" :key="m.value" :label="m.label" :value="m.value"></el-option>
+                  </el-select>
+                </div>
+                <div>
+                  <label>开户名: </label>
+                  <el-input size="small" class="card-owner" maxlength="30" v-model.trim="item.bankAccountName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(index,'bankAccountName')"></el-input>
+                </div>
+                <div>
+                  <label>银行卡号: </label>
+                  <el-input size="small" maxlength="20" v-model="item.bankCard" :clearable="true" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,index)"></el-input>
+                </div>
+              </div>
+              <div class="row-item">
+                <div>
+                  <label>银行: </label>
+                  <el-select size="small" v-model="item.bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item">
+                    <el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="m.bankId"></el-option>
+                  </el-select>
+                </div>
+                <div v-if="item.type===1" class="zhi-hang">
+                  <label>支行: </label>
+                  <el-input size="small" class="bank-branch" v-model.trim="item.bankBranchName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(index,'bankBranchName')"></el-input>
+                </div>
+              </div>
+              <div class="button-box">
+                <span @click="addRow" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-plus"></i></span>
+                <span @click="removeRow(index)" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-minus"></i></span>
+              </div>
+            </li>
+          </ul>
         </div>
         <div class="company-info">
           <p>添加电子签章</p>
@@ -322,7 +309,7 @@
         <span>法人信息</span>
         <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
         <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span class="card-no">证件号: {{ companyForm.lepDocumentCard }}</span></p>
-        <p><span>门店特许费比例: {{companyForm.franchiseRatio}}%</span></p>
+        <p><span>平台费比例: {{companyForm.franchiseRatio}}%</span></p>
       </div>
       <div>
         <span>营业执照信息</span>
@@ -372,7 +359,7 @@
       name: "合作方式"
     },
     franchiseRatio: {
-      name: "门店特许费比例"
+      name: "平台费比例"
     },
     name: {
       name: "门店名称"
@@ -999,7 +986,7 @@
         this.companyForm = newForm
         this.getStoreRadio(type)
       },
-      // 获取门店特许费比例值
+      // 获取平台费比例值
       getStoreRadio(type) {
         this.$ajax.get('/api/setting/company/updateShowFee',
           {storeId:type==='init'?this.companyForm.storeId:this.companyForm.storeName}
@@ -1060,11 +1047,11 @@
       },
       getInt(num,index) {
         if(num===1) {
-          this.searchForm.bankCard = this.searchForm.bankCard.replace(/[^\?\d]/g,'')
+          this.searchForm.bankCard = this.$tool.numberInput(this.searchForm.bankCard)
         } else if(num===2) {
-          this.companyForm.lepPhone = this.companyForm.lepPhone.replace(/[^\?\d]/g,'')
+          this.companyForm.lepPhone = this.$tool.numberInput(this.companyForm.lepPhone)
         } else if(num===3) {
-          this.companyBankList[index].bankCard = this.companyBankList[index].bankCard.replace(/[^\?\d]/g,'')
+          this.companyBankList[index].bankCard = this.$tool.numberInput(this.companyBankList[index].bankCard)
         }
       },
       inputOnly(index,type){
@@ -1184,7 +1171,7 @@
 }
 .dialog-info {
   .company-info {
-    padding: 10px 20px;
+    padding: 5px 20px 10px;
     /deep/ .el-form-item__label::before {
       content: "*";
       color: red;
@@ -1213,12 +1200,12 @@
       .info-content {
         > .item {
           display: flex;
-          &-display {
-            justify-content: space-between;
-          }
           > .el-form-item {
             display: flex;
             margin-bottom: 0;
+            &:nth-child(-n+2) {
+              margin-right: 60px;
+            }
             /deep/ .el-input {
               width: 200px;
               .el-input__inner {
@@ -1233,23 +1220,26 @@
           }
           .allow {
             /deep/ .el-input {
-              width: 158px;
+              width: 186px;
             }
           }
           .store-name {
             margin-left: -12px;
           }
           .id-card {
-            margin-left: 42px;
+            margin-left: 14px;
+          }
+          .mobile {
+            margin-left: -28px;
           }
           .tongyi {
-            margin-left: 97px;
+            margin-left: -56px;
           }
           .gongshang {
-            margin-left: 139px;
+            margin-left: -14px;
           }
           .zuzhi {
-            margin-left: 124px;
+            margin-left: -28px;
           }
         }
       }
@@ -1276,18 +1266,47 @@
     }
     &:nth-child(2) {
       border-top: 1px solid #edecf0;
-      /deep/ .el-table__header-wrapper {
-        display: none;
-      }
-      .el-table__row {
-        .el-form-item {
-          margin-bottom: 0;
-          /deep/ .el-form-item__label{
-            padding: 0;
+      .addBankRow {
+        position: relative;
+        .row-item {
+          display: flex;
+          margin-top: 10px;
+          >div label {
+            margin-right: 8px;
+            &::before {
+              content: "*";
+              color: red;
+              position: relative;
+              top: 3px;
+              margin-right: 1px;
+            }
+          }
+          >div:nth-child(-n+2) {
+            margin-right: 20px;
+          }
+          &:nth-child(2) {
+            padding-left: 28px;
           }
         }
-      }
-      .addBankRow {
+        &:first-child {
+          .button-box span:last-child {
+            visibility: hidden;
+          }
+        }
+        /deep/ .el-select, .el-input {
+          width: 200px;
+        }
+        .zhi-hang {
+          margin-left: 14px;
+          /deep/ .el-input {
+            width: 499px;
+          }
+        }
+        .button-box {
+          position: absolute;
+          right: 25px;
+          top: 25px;
+        }
         .button {
           display: inline-block;
           padding: 0;
@@ -1306,47 +1325,11 @@
         .direct-sale {
           display: none;
         }
-        /deep/ .el-input {
-          width: 168px;
-        }
-        /deep/ .card-owner {
-          width: 200px;
-        }
-        /deep/ .bank-branch {
-          width: 150px!important;
-        }
-        /deep/ .property {
-          .el-input {
-            width: 95px!important;
-            height: 32px;
-          }
-        }
-        /deep/ .bank-item {
-          .el-input {
-            height: 32px;
-          }
-        }
-        &.el-table {
-          tr:first-child td:last-child {
-            span:last-child {
-              display: none;
-            }
-          }
-          /deep/ .cell {
-            padding: 0;
-          }
-        }
       }
-      /deep/ .el-table::before {
-        display: none;
-      }
-      /deep/ .el-table--enable-row-hover .el-table__body tr:hover>td {
-        background-color: #fff!important;
-      }
-      /deep/ .el-table td { border: 0; padding: 0; }
     }
     &:last-child {
       border-top: 1px solid #edecf0;
+      border-bottom: 1px solid #edecf0;
       > div {
         display: flex;
         margin-bottom: @margin-10;
@@ -1512,7 +1495,7 @@
   border-bottom: 1px solid rgba(237,236,240,1);
 }
 /deep/ .el-dialog__footer {
-  padding-top: 0;
+  padding-top: 10px;
   padding-bottom: 10px;
 }
 /deep/ .el-table th {

@@ -358,6 +358,15 @@
         <el-button type="primary" @click="toH5">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分成人信息弹窗 -->
+    <el-dialog title="提示" :visible.sync="agentsDialog" width="600px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="agentsDialog">
+        <p>当前房源分成人</p>
+        <ul>
+          <li v-for="(item, index) in agentsList" :key="index"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
+        </ul>
+      </div>
+    </el-dialog>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <a id="add" href="" v-show="false" target="_blank"></a>
@@ -531,6 +540,8 @@ export default {
       rightAddrDetail:'',
       singleCompany:false,//单公司提示框
       singleCompanyName:'',
+      agentsDialog:false,
+      agentsList:[],//分成人列表
     };
   },
   created() {
@@ -1669,6 +1680,11 @@ export default {
           //   name: houseMsg.HouseStoreName,
           //   id: houseMsg.HouseStoreCode
           // });
+          let param = {
+            id:houseMsg.PropertyCode,
+            type:1
+          }
+          this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1737,6 +1753,11 @@ export default {
               this.guestList_.push(obj_);
             });
           }
+          let param = {
+            id:guestMsg.InquiryCode,
+            type:2
+          }
+          this.getAgentMsg(param)
         }
           // let element = {
           //   name: guestMsg.OwnerInfo.CustName,
@@ -1770,6 +1791,16 @@ export default {
           type: "error"
         })
       });
+    },
+    //获取分成人信息
+    getAgentMsg(param){
+      this.$ajax.get("/api/contract/getAgents",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.agentsList=res.data
+          this.agentsDialog=true
+        }
+      })
     },
     //关闭房源客源弹窗
     closeHouseGuest(value) {
@@ -2220,6 +2251,26 @@ export default {
 .singleCompany{
   // text-align: center;
   padding: 20px 0 10px 10px;
+}
+.agentsDialog{
+  box-sizing: border-box;
+  padding: 10px;
+  p{
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  >ul{
+    background-color: #ccc;
+    >li{
+      display: inline-block;
+      width: 50%;
+      span{
+        padding-right: 10px;
+      }
+    }
+  }
 }
 .warning-box{
   margin: -4px 0 18px 28px;
