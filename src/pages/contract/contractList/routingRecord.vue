@@ -61,12 +61,23 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="签约方式">
+          <el-select v-model="searchForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
       <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
+        <el-table-column align="center" label="签约方式">
+          <template slot-scope="scope">
+            <span>{{scope.row.recordType|recordFormatter}}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="分账门店" prop="outStoreName">
         </el-table-column>
         <el-table-column align="center" label="分账门店账户" prop="outBankCard">
@@ -173,7 +184,8 @@ export default {
         outStoreId:'',//分账门店id
         outStoreAttr:'',//分账门店属性
         inStoreId:'',//收款门店id
-        inStoreAttr:''//收款门店属性
+        inStoreAttr:'',//收款门店属性
+        recordType:'',//分账类型
       },
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
@@ -202,6 +214,7 @@ export default {
       dictionary: {
         //数据字典
         "53": "", //合作方式
+        "64": "",
       },
       dialogReceipt:false,
       receiptData:{},
@@ -669,6 +682,15 @@ export default {
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         return time_.substr(0, 10)
+      }
+    },
+    recordFormatter:function (val) {
+      if(val===1){
+        return '线上'
+      }else if(val===2){
+        return '线下'
+      }else {
+        return '--'
       }
     }
   }

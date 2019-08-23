@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" @changeBtnStatus="BtnShowFn"></dealReport>
+          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
@@ -247,7 +247,7 @@
                     <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                     <el-table-column prop="level3" label="门店"></el-table-column>
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
-                    <el-table-column prop="level4" label="单组"></el-table-column>
+                    <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
                     <el-table-column prop="amaldar" label="总监"></el-table-column>
                     <el-table-column prop="manager" label="副总"></el-table-column>
                   </el-table>
@@ -262,7 +262,7 @@
                     <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
                     <el-table-column prop="level3" label="门店"></el-table-column>
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
-                    <el-table-column prop="level4" label="单组"></el-table-column>
+                    <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
                     <el-table-column prop="amaldar" label="总监"></el-table-column>
                     <el-table-column prop="manager" label="副总"></el-table-column>
                   </el-table>
@@ -1085,6 +1085,7 @@ export default {
       saveBtnShow: false,
       editBtnShow: false,
       reportBtnShow: false,
+      reportFlowShow: false,
       buyerInfo: [],
       buyerFirst: {},
       sellerInfo: [],
@@ -1115,7 +1116,7 @@ export default {
     this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     // this.getExtendParams();//获取扩展参数
-    this.getRecordList();//电话录音
+    // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
   },
   beforeRouteEnter(to,from,next){
@@ -1128,6 +1129,12 @@ export default {
     editFn() {
       this.saveBtnShow = !this.saveBtnShow
       this.editBtnShow = !this.editBtnShow
+      let state = this.contractDetail.laterStageState.value
+      if(state == 1 || state == 2 || state == 4) {
+        this.reportFlowShow = false
+      } else {
+        this.reportFlowShow = true
+      }
     },
     BtnShowFn() {
       this.saveBtnShow = false
@@ -1155,6 +1162,8 @@ export default {
         }
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
+      }else if(tab.name==="fourth"){
+        this.getRecordList();//电话录音
       }
     },
     //打电话

@@ -121,7 +121,7 @@
                         </p>
                         <p style="margin:0 10px;">
                             <span class="mark">交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowName" :disabled="transFlowEdit" class="liucheng" @change="transFlowSelect">
+                            <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </p>
@@ -253,7 +253,8 @@ export default {
     props: {
         id: Number,
         contType: String,
-        saveBtnShow: Boolean
+        saveBtnShow: Boolean,
+        reportFlowShow: Boolean
     },
     data() {
         return {
@@ -342,7 +343,6 @@ export default {
                 cardType: ""
             },
             sellerArr: [],
-            transFlowEdit: false,
             noStageBank: true
         }
     },
@@ -367,7 +367,6 @@ export default {
                     this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
-                    this.transFlowEdit = res.data.dealReport ? true : false
                     if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = res.data.guestInfo.GuestStoreName
@@ -575,7 +574,6 @@ export default {
                         message: "保存成功",
                         type: "success"
                     })
-                    this.transFlowEdit = true
                     this.$emit("changeBtnStatus")
                 }
             }).catch(error => {
@@ -586,76 +584,26 @@ export default {
             })
         },
         cutNumber(val) {
-            if(val==="landUseArea"){
-                this.$nextTick(()=>{
-                    this.report.landUseArea=this.$tool.cutFloat({val:this.report.landUseArea,max:999999999.99})
-                })
-            } else if(val==="payTaxation") {
-                this.$nextTick(()=>{
-                    this.report.payTaxation=this.$tool.cutFloat({val:this.report.payTaxation,max:999999999.99})
-                })
-            } else if(val==="evaluationValue") {
-                this.$nextTick(()=>{
-                    this.report.evaluationValue=this.$tool.cutFloat({val:this.report.evaluationValue,max:999999999.99})
-                })
-            } else if(val==="loanAmount") {
-                this.$nextTick(()=>{
-                    this.report.loanAmount=this.$tool.cutFloat({val:this.report.loanAmount,max:999999999.99})
-                })
-            } else if(val==="loanTerm") {
-                this.$nextTick(()=>{
-                    this.report.loanTerm=this.$tool.cutFloat({val:this.report.loanTerm,max:999999999.99})
-                })
-            }
+            this.$nextTick(() =>{
+                this.report[val] = this.$tool.cutFloat({val:this.report[val],max:999999999.99})
+            })
         },
         inputOnly(val) {
             if(val === 'ownershipNumber') {
                 this.$nextTick(()=>{
                    this.report.ownershipNumber = this.report.ownershipNumber.replace(/[^\-\/\(\)\（\）\s\d\a-zA-Z\u4E00-\u9FA5]/g, "")
                 })
-            } else if(val === 'buyerAgentName') {
+            }else if(val === 'buildingStructure') {
                 this.$nextTick(()=>{
-                   this.report.buyerAgentName = this.$tool.textInput(this.report.buyerAgentName) 
+                    this.report.buildingStructure = this.$tool.textInput(this.report.buildingStructure,3) 
                 })
-            } else if(val === 'sellerAgentName') {
+            }else if(val === 'guestShopOwnerMobile'||val === 'houseShopOwnerMobile'||val === 'buyerAgentMobile'||val === 'sellerAgentMobile') {
                 this.$nextTick(()=>{
-                   this.report.sellerAgentName = this.$tool.textInput(this.report.sellerAgentName) 
+                   this.report[val] = this.$tool.numberInput(this.report[val]) 
                 })
-            } else if(val === 'guestShopOwnerName') {
+            }else {
                 this.$nextTick(()=>{
-                   this.report.guestShopOwnerName = this.$tool.textInput(this.report.guestShopOwnerName) 
-                })
-            } else if(val === 'guestStoreName') {
-                this.$nextTick(()=>{
-                   this.report.guestStoreName = this.$tool.textInput(this.report.guestStoreName) 
-                })
-            } else if(val === 'houseShopOwnerName') {
-                this.$nextTick(()=>{
-                   this.report.houseShopOwnerName = this.$tool.textInput(this.report.houseShopOwnerName) 
-                })
-            } else if(val === 'houseStoreName') {
-                this.$nextTick(()=>{
-                   this.report.houseStoreName = this.$tool.textInput(this.report.houseStoreName) 
-                })
-            } else if(val === 'buildingStructure') {
-                this.$nextTick(()=>{
-                   this.report.buildingStructure = this.$tool.textInput(this.report.buildingStructure,3) 
-                })
-            } else if(val === 'guestShopOwnerMobile') {
-                this.$nextTick(()=>{
-                   this.report.guestShopOwnerMobile = this.$tool.numberInput(this.report.guestShopOwnerMobile) 
-                })
-            } else if(val === 'houseShopOwnerMobile') {
-                this.$nextTick(()=>{
-                   this.report.houseShopOwnerMobile = this.$tool.numberInput(this.report.houseShopOwnerMobile) 
-                })
-            } else if(val === 'buyerAgentMobile') {
-                this.$nextTick(()=>{
-                   this.report.buyerAgentMobile = this.$tool.numberInput(this.report.buyerAgentMobile) 
-                })
-            } else if(val === 'sellerAgentMobile') {
-                this.$nextTick(()=>{
-                   this.report.sellerAgentMobile = this.$tool.numberInput(this.report.sellerAgentMobile) 
+                    this.report[val] = this.$tool.textInput(this.report[val])
                 })
             }
         }

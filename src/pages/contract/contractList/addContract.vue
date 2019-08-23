@@ -1639,7 +1639,8 @@ export default {
     getHousedetail(id) {
       // console.log("房源");
       let param = {
-        houseId: id
+        houseId: id,
+        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
         res = res.data;
@@ -1651,7 +1652,14 @@ export default {
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
             // this.contractForm.timeUnit=2;
-            this.$set(this.contractForm,'timeUnit',1);
+            // 1 月 2 季度 4 年
+            let unit
+            if(houseMsg.PriceUnitNameEnum){
+              unit = houseMsg.PriceUnitNameEnum
+            }else{
+              unit = 1
+            }
+            this.$set(this.contractForm,'timeUnit',unit);
           }
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
@@ -1699,7 +1707,8 @@ export default {
     getGuestDetail(id) {
       // console.log("客源");
       let param = {
-        customerId: id
+        customerId: id,
+        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
         res = res.data;
