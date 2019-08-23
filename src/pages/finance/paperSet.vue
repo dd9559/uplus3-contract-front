@@ -3,7 +3,7 @@
     <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="keyword">
-          <el-tooltip content="开票人员/合同编号/票据编号/物业地址" placement="top">
+          <el-tooltip content="开票人员/合同编号/纸质合同编号/票据编号/物业地址" placement="top">
             <el-input class="w200" v-model="propForm.keyword" placeholder="请输入" clearable></el-input>
           </el-tooltip>
         </el-form-item>
@@ -101,6 +101,32 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="签约方式"
+          prop="state">
+          <el-select
+            v-model="propForm.recordType"
+            class="w180">
+            <el-option
+              v-for="item in dictionary['64']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="收款方式"
+          prop="state">
+          <el-select
+            v-model="propForm.payway"
+            class="w180">
+            <el-option
+              v-for="item in dictionary['69']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -132,6 +158,8 @@
             <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsCode}}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="160">
+        </el-table-column>
         <el-table-column prop="address" label="物业地址" align="center" min-width="160">
         </el-table-column>
         <el-table-column prop="cName" label="客户姓名" align="center" min-width="80">
@@ -143,6 +171,8 @@
             <p>{{nullFormatFn(scope.row.payeeStoreName)}}</p>
             <p>{{nullFormatFn(scope.row.payeeName)}}</p>
           </template>
+        </el-table-column>
+        <el-table-column prop="payway.label" label="收款方式" align="center" min-width="160">
         </el-table-column>
         <el-table-column label="开票人员" align="center" min-width="120">
           <template slot-scope="scope">
@@ -331,6 +361,8 @@
           dateType: 1,
           timeRange: '',
           cooperation: '',
+          recordType: '',
+          payway: '',
         },
         // 筛选下拉
         rules: {
@@ -351,6 +383,8 @@
         dictionary: {
           '33': '',
           '53': '合作方式',
+          '64': '',
+          '69': '',
         },
         dictionaryData: [],
         // 作废弹层输入框

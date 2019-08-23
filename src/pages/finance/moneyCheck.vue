@@ -4,7 +4,7 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-tooltip :content="activeView===1?'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收款ID':'合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/付款ID'" placement="top">
+          <el-tooltip :content="`合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/${activeView===1?'收款ID':'付款ID'}`" placement="top">
             <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
           </el-tooltip>
         </div>
@@ -131,6 +131,17 @@
           <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
             <el-option
               v-for="item in dictionary['53']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>签约方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['64']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -340,7 +351,8 @@
           '60': '',
           '61': '',
           '62': '',
-          '53': ''
+          '53': '',
+          '64': '',
         },
         drop_MoneyType:[],
         //分页

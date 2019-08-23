@@ -3,7 +3,7 @@
     <div class="paper-info-child">
       <div v-if="printType!=='book'" class="paper-border">
         <div class="paper-tit">专用收款收据</div>
-        <div class="paper-number">交款单位：{{comName}}<span class="red">{{comText[0]}}</span></div>
+        <div class="paper-number"><span>交款单位：{{comName}}</span><span>收款方式：{{comPayway}}</span><span class="red">{{comText[0]}}</span></div>
         <ul class="paper-ul">
           <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
           <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
@@ -73,7 +73,7 @@
       <div class="paper-dashed" v-if="printType==='all'"></div>
       <div v-if="printType!=='client'" class="paper-border">
         <div class="paper-tit">专用收款收据</div>
-        <div class="paper-number">交款单位：{{comName}}<span class="red">{{printType==='all'?comText[1]:comText[0]}}</span></div>
+        <div class="paper-number"><span>交款单位：{{comName}}</span><span>收款方式：{{comPayway}}</span><span class="red">{{printType==='all'?comText[1]:comText[0]}}</span></div>
         <ul class="paper-ul">
           <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
           <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
@@ -236,6 +236,10 @@
       paperFail: {//票据预览时，是否显示作废标记
         type: Boolean,
         default: false
+      },
+      payway: {//收款方式
+        type: String,
+        default: ''
       }
     },
     computed: {
@@ -319,6 +323,9 @@
         } else {
           return this.methodAndAmount
         }
+      },
+      comPayway:function () {
+        return this.payway
       }
     },
     methods: {
@@ -438,6 +445,11 @@
     padding-top: 10px;
     // text-align: center;
     font-weight: 400;
+    >span{
+      &:first-of-type{
+        margin-right: 30px;
+      }
+    }
   }
 
   .paper-ul {

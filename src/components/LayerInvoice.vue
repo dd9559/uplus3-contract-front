@@ -80,6 +80,7 @@
               :storesName="paperInfoData.storeName"
               :printType="printType"
               :paperFail="paperFail"
+              :payway="paperInfoData.payway&&paperInfoData.payway.label"
               :payerType="paperInfoData.payerType"></LayerPaperInfo>
           </template>
           <template v-else>
@@ -105,6 +106,7 @@
               :storesName="item.storeName"
               :printType="printType"
               :paperFail="paperFail"
+              :payway="item.payway&&item.payway.label"
               :payerType="item.payerType"></LayerPaperInfo>
           </template>
         </LayerPrint>
