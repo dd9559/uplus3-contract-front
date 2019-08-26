@@ -172,6 +172,7 @@
         <el-table-column align="center" min-width="120" label="物业地址" prop="address"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" min-width="60" label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="60" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" min-width="80" label="收付方式">
           <template slot-scope="scope">

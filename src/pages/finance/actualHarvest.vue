@@ -127,6 +127,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="collectionType">
           <template slot-scope="scope">
             佣金
