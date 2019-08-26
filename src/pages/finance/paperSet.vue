@@ -158,6 +158,8 @@
             <span class="blue" @click="cellOpera('bill',scope.row)">{{scope.row.proceedsCode}}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="paperCode" label="纸质合同编号" align="center" min-width="160" :formatter="nullFormatter">
+        </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="160" :formatter="nullFormatter">
         </el-table-column>
         <el-table-column prop="address" label="物业地址" align="center" min-width="160">

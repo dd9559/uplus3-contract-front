@@ -139,7 +139,7 @@
         </div>
         <div class="input-group">
           <label>签约方式:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
+          <el-select :clearable="true" size="small" v-model="searchForm.recordType" placeholder="请选择">
             <el-option
               v-for="item in dictionary['64']"
               :key="item.key"
@@ -164,6 +164,7 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
+              <li v-if="scope.row.recordType.value===2">纸质合同编号:<span>{{scope.row.paperCode|getLabel}}</span></li>
               <li>房源:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
@@ -336,7 +337,8 @@
           keyword: '',
           timeRange:'',
           payObjType:'',
-          cooperation:''
+          cooperation:'',
+          recordType:'',
         },
         list: [],
         dictionary: {
