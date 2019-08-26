@@ -950,7 +950,7 @@
                 //监听listen属性，判断是否有输入类型限制
                 let spanAttr=tip.target.getAttribute('listen')
                 if(spanAttr==='number'){
-                    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+                    ev.target.value=ev.target.value.replace(/[^\d\/]/g, "")
                 }
                 if(spanAttr==='chinese'){
                     ev.target.value=ev.target.value.replace(/[^\d]/g, "")
