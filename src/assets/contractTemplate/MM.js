@@ -953,7 +953,7 @@
                     ev.target.value=ev.target.value.replace(/[^\d\/]/g, "")
                 }
                 if(spanAttr==='chinese'){
-                    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+                    ev.target.value=ev.target.value.replace(/[^\d\/]/g, "")
                     if(ev.target.value.length>0){
                       if(ev.target.value == '/') {
                         tip.target.innerHTML=ev.target.value
