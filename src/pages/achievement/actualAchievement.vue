@@ -3,7 +3,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="search">
-          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+          <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
             <el-input
               class="w200"
               v-model="propForm.search"
@@ -121,6 +121,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="签约方式">
+          <el-select v-model="propForm.recordType" class="w120" :clearable="true">
+            <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
 
@@ -198,6 +209,10 @@
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span>
               </p>
+              <p v-if="scope.row.recordType.value===2">
+                纸质合同编号:
+                <span>{{scope.row.pCode}}</span>
+              </p>
               <p>
                 房源：
                 <span>{{scope.row.houseinfoCode}}</span>
@@ -208,6 +223,13 @@
                 <span>{{scope.row.guestinfoCode}}</span>
                 {{scope.row.customerName}}
               </p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="成交经纪人" align="center" min-width="120">
+            <template slot-scope="scope">
+              <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
+              <p v-else>暂无</p>
             </template>
           </el-table-column>
 
@@ -234,14 +256,9 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
 
-          <el-table-column label="成交经纪人" align="center" min-width="120">
-            <template slot-scope="scope">
-              <p v-if="scope.row.dealName">{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
-              <p v-else>暂无</p>
-            </template>
-          </el-table-column>
+          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
 
           <el-table-column prop="date" label="签约日期" align="center" min-width="90">
             <template slot-scope="scope">
@@ -297,14 +314,14 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="特许费比例（%）" align="center" min-width="60">
+          <el-table-column label="平台费比例（%）" align="center" min-width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>
               </div>
               <div v-else>
                 <div v-for="item in scope.row.distributions">
-                  <p>{{item.platformFeeRatio}}%</p>
+                  <p>{{platformFeeFn(item.platformFeeRatio)}}</p>
                 </div>
               </div>
             </template>
@@ -313,7 +330,7 @@
           <el-table-column align="center" min-width="90">
             <template slot="header" slot-scope="scope">
               应收分成金额（元）
-              <el-tooltip content="应收分成金额=个人应收佣金-特许费（未减去收款手续费）" placement="top">
+              <el-tooltip content="应收分成金额=个人应收佣金-平台费（未减去收款手续费）" placement="top">
                 <i class="el-icon-info"></i>
               </el-tooltip>
             </template>
@@ -322,7 +339,7 @@
                 <div>--</div>
               </div>
               <div v-else>
-                <p v-for="item in scope.row.distributions">{{item.aMoney}}</p>
+                <p v-for="item in scope.row.distributions">{{aMoneyFn(item.aMoney)}}</p>
               </div>
             </template>
           </el-table-column>
@@ -795,7 +812,8 @@ export default {
         appealType:'', //申诉状态
         dateMo: "",
         search: "",
-        joinMethods: "" //合作方式
+        joinMethods: "", //合作方式
+        recordType: "" //签约方式2.3.1新加
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -805,7 +823,8 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "53": "" //合作方式
+        "53": "", //合作方式
+        "64": "" //签约方式
       },
       beginData: false,
       currentPage: 1,
@@ -950,6 +969,7 @@ export default {
         this.propForm.empName=session.empName
         this.propForm.department=session.department
         this.propForm.joinMethods = session.joinMethods;
+        this.propForm.recordType = session.recordType
         if (this.propForm.contractType[0] != "") {
           for (let i = 0; i < this.propForm.contractType.length; i++) {
             this.propForm.contractType[i] = Number(
@@ -1002,6 +1022,20 @@ export default {
     }
   },
   methods: {
+    platformFeeFn(p) {
+      if(p) {
+        return `${p}%`
+      }else {
+        return '-'
+      }
+    },
+    aMoneyFn(m) {
+      if(m) {
+        return `${m}`
+      }else {
+        return '-'
+      }
+    },
     close2(){
           this.yjId=''
           this.SSuForm.role=[]
@@ -1345,7 +1379,8 @@ export default {
           pageNum: this.currentPage,
           department:this.propForm.department,
           pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods
+          joinMethods: this.propForm.joinMethods,
+          recordType: this.propForm.recordType
         };
       } else {
         this.ajaxParam = {
@@ -1362,7 +1397,8 @@ export default {
           department:this.propForm.department,
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods
+          joinMethods: this.propForm.joinMethods,
+          recordType: this.propForm.recordType
         };
       }
       // this.ajaxParam.pageNum = 1;
@@ -1392,6 +1428,7 @@ export default {
         endTime: "", //结束时间
         keyword: "", //关键字
         joinMethods: "",
+        recordType: "",
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
@@ -1408,7 +1445,8 @@ export default {
         achType: "", //业绩类型
         dateMo: "",
         search: "",
-        joinMethods: ""
+        joinMethods: "",
+        recordType: ""
       };
       this.EmployeList = [];
     },
