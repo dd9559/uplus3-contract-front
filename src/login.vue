@@ -19,27 +19,22 @@
     created(){
       let param=this.$route.query
       // this.setPath([])
-      for (let item in param){
-        if(item==='empcode'){
-          param[item]=parseInt(param[item])
+      if(param.newToken){
+        document.cookie = `ERP-Test=${this.$route.query.newToken}`;
+      }else if(param.empcode) {
+        for (let item in param){
+          if(item==='empcode'){
+            param[item]=parseInt(param[item])
+          }
         }
+        this.code=Object.assign({},param)
       }
-      this.code=Object.assign({},param)
-      if(Object.keys(this.code).length===3){
-        this.login('info')
-      }else {
-        this.show=true
-      }
+      // console.log(this.code,param)
+      this.login()
     },
     methods:{
-      login:function (type) {
-        let param={}
-        if(type==='info'){
-          param = this.code
-        }else {
-          param.empcode=this.userId
-        }
-        this.$ajax.post('/api/verify',param).then(res=>{
+      login:function () {
+        this.$ajax.post('/api/verify',this.code).then(res=>{
           res=res.data
           if(res.status===200){
             this.$ajax.get('/api/me',{time:new Date()}).then(res=>{

@@ -351,6 +351,13 @@
         <el-button type="primary" @click="toUpload">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 单公司提示框 -->
+    <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="toH5">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <a id="add" href="" v-show="false" target="_blank"></a>
@@ -521,7 +528,9 @@ export default {
       },
       rightAddrCity:'',
       rightAddrArea:'',
-      rightAddrDetail:''
+      rightAddrDetail:'',
+      singleCompany:false,//单公司提示框
+      singleCompanyName:'',
     };
   },
   created() {
@@ -1360,9 +1369,15 @@ export default {
               let contractMsg = res.data
               this.hidBtn=1
               sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(contractMsg.singleCompany){
+                this.singleCompany=true
+                this.singleCompanyName=contractMsg.singleCompany
+              }else{
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
+              
             }
 
           }
@@ -1427,10 +1442,14 @@ export default {
             }else{
               let contractMsg = res.data
               sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(contractMsg.singleCompany){
+                this.singleCompany=true
+                this.singleCompanyName=contractMsg.singleCompany
+              }else{
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
             }
           }
 
@@ -1442,104 +1461,13 @@ export default {
           })
         })
       }
-
-
-      // if(this.type===1){//新增
-      //   if(this.haveExamine===1){//新增并提审
-      //     var url = '/api/contract/addContractAudit';
-      //   }else{
-      //     var url = '/api/contract/addContract';
-      //   }
-      //   this.$ajax.postJSON(url, param).then(res => {
-      //     res = res.data;
-      //     if (res.status === 200) {
-      //       this.fullscreenLoading=false;
-      //       this.dialogSave=false;
-      //       this.detailCode=res.data.code;
-      //       this.detailId=res.data.id;
-      //       if(res.data.isHaveNextAudit===1){
-      //         this.checkPerson.code=res.data.code;
-      //         this.checkPerson.state=true;
-      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
-      //         this.checkPerson.label=true;
-      //       }else{
-      //         this.$message({
-      //           message: "操作成功",
-      //           type: "success"
-      //         });
-      //         this.dialogSuccess=true;
-      //       }
-      //     }
-      //   }).catch(error => {
-      //     this.fullscreenLoading=false;
-      //     this.$message({
-      //       message:error,
-      //       type: "error"
-      //     })
-      //   })
-      // }else if(this.type===2){//编辑
-        // if(this.contractForm.type===1){
-          // delete param.leaseCont.contChangeState;
-          // delete param.leaseCont.contState;
-          // delete param.leaseCont.contType;
-          // delete param.leaseCont.laterStageState;
-          // delete param.leaseCont.toExamineState;
-          // delete param.leaseCont.previewImg;
-          // delete param.leaseCont.subscriptionTerm;
-          // delete param.leaseCont.updateTime;
-          // delete param.leaseCont.distributableAchievement;
-          // delete param.leaseCont.achievementState;
-        // }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
-        //   delete param.saleCont.contChangeState;
-        //   delete param.saleCont.contState;
-        //   delete param.saleCont.contType;
-        //   delete param.saleCont.laterStageState;
-        //   delete param.saleCont.toExamineState;
-        //   delete param.saleCont.previewImg;
-        //   delete param.saleCont.subscriptionTerm;
-        //   delete param.saleCont.updateTime;
-        //   delete param.saleCont.distributableAchievement;
-        //   delete param.saleCont.achievementState;
-        // }
-
-      //   if(this.haveExamine===1){//编辑并提审
-      //     var url = '/api/contract/updateContractAudit';
-      //   }else{
-      //     var url = '/api/contract/updateContract';
-      //   }
-      //   this.$ajax.postJSON(url, param).then(res => {
-      //     res = res.data;
-      //     if (res.status === 200) {
-      //       this.fullscreenLoading=false;
-      //       this.dialogSave=false;
-      //       this.detailCode=res.data.code;
-      //       this.detailId=res.data.id;
-      //       //1 下一节点没有审批人 2 有
-      //       if(res.data.isHaveNextAudit===1){
-      //         this.checkPerson.code=res.data.code;
-      //         this.checkPerson.state=true;
-      //         // this.checkPerson.type=res.data.auditType===0?"set":"init";
-      //         this.checkPerson.label=true;
-      //       }else{
-      //         this.$message({
-      //           message: "操作成功",
-      //           type: "success"
-      //         });
-      //         if(this.type===2&&this.contractForm.isHaveData){
-      //            this.$router.push('/contractList');
-      //         }else{
-      //           this.dialogSuccess=true;
-      //         }
-      //       }
-      //     }
-      //   }).catch(error => {
-      //     this.fullscreenLoading=false;
-      //     this.$message({
-      //       message:error,
-      //       type: "error"
-      //     })
-      //   })
-      // }
+    },
+    //跳转H5页面
+    toH5(){
+      this.singleCompany=false
+      this.$router.push({
+        path: "/extendParams"
+      });
     },
     //创建成功提示
     toUpload(value){//上传合同资料库
@@ -1699,7 +1627,8 @@ export default {
     getHousedetail(id) {
       console.log("房源");
       let param = {
-        houseId: id
+        houseId: id,
+        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
         res = res.data;
@@ -1711,7 +1640,14 @@ export default {
           }else{
             this.contractForm.dealPrice = houseMsg.ListingPrice;
             // this.contractForm.timeUnit=2;
-            this.$set(this.contractForm,'timeUnit',1);
+            // 1 月 2 季度 4 年
+            let unit
+            if(houseMsg.PriceUnitNameEnum){
+              unit = houseMsg.PriceUnitNameEnum
+            }else{
+              unit = 1
+            }
+            this.$set(this.contractForm,'timeUnit',unit);
           }
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.OwnerInfoList.length>0){
@@ -1753,7 +1689,8 @@ export default {
     getGuestDetail(id) {
       console.log("客源");
       let param = {
-        customerId: id
+        customerId: id,
+        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
         res = res.data;
@@ -1761,26 +1698,71 @@ export default {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
-          this.guestList=[];
-          this.guestList_=[];
           this.$set(this.contractForm.guestInfo,'paymentMethod',1)
           // this.contractForm.guestInfo.paymentMethod=1
-          let element = {
-            name: guestMsg.OwnerInfo.CustName,
-            mobile: guestMsg.OwnerInfo.CustMobile,
-            type: 2,
-            relation: guestMsg.OwnerInfo.CustRelation,
-            encryptionCode:'',
-            cardType:'',
-            propertyRightRatio:'',
-            isEncryption:true
+          // if(houseMsg.OwnerInfoList.length>0){
+          //   this.ownerList=[];
+          //   this.ownerList_=[];
+          //   houseMsg.OwnerInfoList.forEach(element => {
+          //     element.type=1;
+          //     element.encryptionCode='';
+          //     element.propertyRightRatio='';
+          //     element.name=element.OwnerName;
+          //     element.mobile=element.OwnerMobile;
+          //     element.relation=element.Relation;
+          //     element.cardType='';
+          //     element.isEncryption=true;
+          //     delete element.OwnerName
+          //     delete element.OwnerMobile
+          //     delete element.Relation
+          //     let obj = Object.assign({}, element);
+          //     obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          //     this.ownerList.push(obj);
+          //     let obj_ = Object.assign({}, element);
+          //     obj_.encryptionMobile=obj_.mobile;
+          //     this.ownerList_.push(obj_);
+          //   });
+          // }
+          if(guestMsg.OwnerInfo.length>0){
+            this.guestList=[];
+            this.guestList_=[];
+            guestMsg.OwnerInfo.forEach(element => {
+              element.type=2;
+              element.encryptionCode='';
+              element.propertyRightRatio='';
+              element.name=element.CustName;
+              element.mobile=element.CustMobile;
+              element.relation=element.CustRelation;
+              element.cardType='';
+              element.isEncryption=true;
+              delete element.CustName
+              delete element.CustMobile
+              delete element.CustRelation
+              let obj = Object.assign({}, element);
+              obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.guestList.push(obj);
+              let obj_ = Object.assign({}, element);
+              obj_.encryptionMobile=obj_.mobile;
+              this.guestList_.push(obj_);
+            });
           }
-          let obj = Object.assign({}, element);
-          obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
-          this.guestList.push(obj);
-          let obj_ = Object.assign({}, element);
-          obj_.encryptionMobile=obj_.mobile;
-          this.guestList_.push(obj_);
+        }
+          // let element = {
+          //   name: guestMsg.OwnerInfo.CustName,
+          //   mobile: guestMsg.OwnerInfo.CustMobile,
+          //   type: 2,
+          //   relation: guestMsg.OwnerInfo.CustRelation,
+          //   encryptionCode:'',
+          //   cardType:'',
+          //   propertyRightRatio:'',
+          //   isEncryption:true
+          // }
+          // let obj = Object.assign({}, element);
+          // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+          // this.guestList.push(obj);
+          // let obj_ = Object.assign({}, element);
+          // obj_.encryptionMobile=obj_.mobile;
+          // this.guestList_.push(obj_);
 
           // this.guestList.push({
           //   name: guestMsg.OwnerInfo.CustName,
@@ -1790,7 +1772,7 @@ export default {
           //   identifyCode:'',
           //   propertyRightRatio:''
           // })
-        }
+        // }
       }).catch(error=>{
         this.$message({
           message:error,
@@ -2101,11 +2083,11 @@ export default {
       }
     },
     cutAddress(type){
-      let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
       if(type==="city"){
-        this.rightAddrCity=this.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","")
+        this.rightAddrCity=this.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","").replace(/\//g,'')
       }else if(type==="area"){
-        this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","")
+        this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace(/\//g,'')
       }else{
         this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
       }
@@ -2243,6 +2225,10 @@ export default {
   /deep/.el-dialog__header{
     border: none !important;
   }
+}
+.singleCompany{
+  // text-align: center;
+  padding: 20px 0 10px 10px;
 }
 .warning-box{
   margin: -4px 0 18px 28px;

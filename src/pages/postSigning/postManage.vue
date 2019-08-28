@@ -191,7 +191,8 @@
                     prop="depAttr">
                         <el-select
                         v-model="propForm.depAttr"
-                        class="w100">
+                        class="w100"
+                        :clearable="true">
                             <el-option
                             v-for="item in rules.depAttr"
                             :key="'depAttr'+item.key"
@@ -202,7 +203,7 @@
                 <el-form-item
                     label="产权地址区域"
                     prop="areaName">
-                        <el-select v-model="propForm.areaName" class="w134">
+                        <el-select v-model="propForm.areaName" class="w134" :clearable="true">
                         <el-option v-for="(item,i) in rules.areaName"
                         :key="'areaName'+i"
                         :label="item"
@@ -859,7 +860,7 @@
                         value: ""
                     }],
                     range:[{
-                            value: "全部（不包含本角色负责的合同条件）",
+                            value: "全部",
                             key: ""
                         }],
                     termination:[{
@@ -2038,7 +2039,7 @@
                         },...newData[6]];
                 // 数据范围
                 this.rules.range = [{
-                            value: "全部（不包含本角色负责的合同条件）",
+                            value: "全部",
                             key: ""
                         },...newData[48]];
                 // 合作方式

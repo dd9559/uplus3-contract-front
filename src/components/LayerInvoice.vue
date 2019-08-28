@@ -64,7 +64,7 @@
               :number="paperInfoData.contCode"
               :name="paperInfoData.payerName"
               :collectionTime="paperInfoData.paymentTime"
-              :invoiceTime="paperInfoData.createTime"
+              :invoiceTime="paperInfoData.lastPrintTime?getPrint==='all'?`${paperInfoData.lastPrintTime.KHL},${paperInfoData.lastPrintTime.JZL}`:'':''"
               :paper="paperInfoData.billCode"
               :project="getPro"
               :hide="paperInfoData.hide"
@@ -72,7 +72,7 @@
               :money="paperInfoData.amount"
               :moneyZh="paperInfoData.amountZh"
               :create="paperInfoData.createByName"
-              :rules="paperInfoData.remark"
+              :rules="getPro"
               :imgSrc="imgUrl"
               :time="paperInfoData.printDate"
               :num="paperInfoData.printCount?(getPrint==='all'?`${paperInfoData.printCount.KHL},${paperInfoData.printCount.JZL}`:getPrint==='client'?paperInfoData.printCount.KHL:paperInfoData.printCount.JZL):0"
@@ -97,7 +97,7 @@
               :money="item.amount"
               :moneyZh="item.amountZh"
               :create="item.createByName"
-              :rules="item.remark"
+              :rules="item.type"
               :imgSrc="imgUrlList[index]"
               :time="item.printDate"
               :num="item.printCount?(getPrint==='client'?item.printCount.KHL:item.printCount.JZL):0"
@@ -111,6 +111,7 @@
         <!-- :imgSrc="paperInfoData.signImg" -->
       </div>
       <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
+      <p class="print-waring" v-if="FooterShow&&printType!=='all'">温馨提示：打印时，请选择谷歌浏览器</p>
     </div>
     <p slot="footer" v-show="FooterShow&&printType!=='all'">
       <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
@@ -546,6 +547,11 @@
   }
   input.person{
     margin-left: @margin-10;
+  }
+  .print-waring{
+    float: left;
+    padding: 15px 0 0 70px;
+    color: red;
   }
 
   .layer-paper{

@@ -791,7 +791,6 @@
         })
       },
       goResult: function () {
-        debugger
         // console.log(this.getUser)
         // let RULE = this.activeType===1?rule:otherRule
         let param = Object.assign({admin:this.activeAdmin}, this.form)

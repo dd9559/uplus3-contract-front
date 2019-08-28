@@ -107,7 +107,6 @@
                 <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
                 <el-table-column
                   label="经纪人"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -135,7 +134,7 @@
                 <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
                 <el-table-column
                   label="在职状况"
-                  width="100"
+                  width="110"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -155,9 +154,14 @@
                 <!-- 门店，可输入，可下拉 -->
                 <el-table-column
                   label="门店"
-                  width="150"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    v-if="scope.row.level3"
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level3"
+                    placement="top">
                     <el-select
                       v-model="scope.row.level3"
                       filterable
@@ -170,11 +174,31 @@
                       @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
                     >
                       <el-option
-                        v-for="item in level3s"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id+'-'+item.name"
-                      ></el-option>
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name">
+                      </el-option>
+                    </el-select>
+                    </el-tooltip>
+                    <el-select
+                      v-else
+                      v-model="scope.row.level3"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :loading="loading1"
+                      :remote-method="getLevel(3)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,0,0)"
+                    >
+                      <el-option
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name">
+                      </el-option>
                     </el-select>
                   </template>
                 </el-table-column>
@@ -182,7 +206,6 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -210,7 +233,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="155"
+                  v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -237,7 +260,6 @@
                 <!-- 区经，可输入，可下拉   changeAmaldar-->
                 <el-table-column
                   label="总监"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -265,7 +287,6 @@
                 <!-- 区总，可输入，可下拉 changeManager-->
                 <el-table-column
                   label="副总"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -354,7 +375,7 @@
                 <el-button
                   type="primary"
                   @click="ammanger"
-                >AM管理关系</el-button>
+                >{{$route.query.version=='0'?'AM管理关系':'师徒管理关系'}}</el-button>
               </div>
             </div>
 
@@ -399,7 +420,6 @@
 
                 <el-table-column
                   label="经纪人"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -426,7 +446,7 @@
 
                 <el-table-column
                   label="在职状况"
-                  width="100"
+                  width="110"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -446,10 +466,35 @@
                 <!-- 门店，可输入，可下拉 -->
                 <el-table-column
                   label="门店"
-                  width="150"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    v-if="scope.row.level3"
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level3"
+                    placement="top">
                     <el-select
+                      v-model="scope.row.level3"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :loading="loading1"
+                      :remote-method="getLevel(3)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                    >
+                      <el-option
+                        v-for="item in level3s"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                    </el-tooltip>
+                    <el-select
+                      v-else
                       v-model="scope.row.level3"
                       filterable
                       remote
@@ -473,7 +518,6 @@
                 <!-- 店长，可输入，可下拉 -->
                 <el-table-column
                   label="店长"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -500,7 +544,7 @@
                 <!-- 单组，可输入，可下拉 -->
                 <el-table-column
                   label="单组"
-                  width="155"
+                  v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -527,7 +571,6 @@
                 <!-- 区经，可输入，可下拉 -->
                 <el-table-column
                   label="总监"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -555,7 +598,6 @@
                 <!-- 区总，可输入，可下拉 -->
                 <el-table-column
                   label="副总"
-                  width="125"
                 >
                   <template slot-scope="scope">
                     <el-select
@@ -836,7 +878,7 @@
               <el-button
                 type="primary"
                 round
-                @click=" keepAchDivide(1)"
+                @click="keepAchDivide(1)"
                 class="color-blue"
                 v-dbClick
               >保存并提审</el-button>
@@ -914,12 +956,12 @@
           <!-- 选择审核人弹框 -->
           <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" v-if="checkPerson.state" @submit="personChose"></checkPerson>
         </div>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
-            <el-table :data="recordData" class="recordtable">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
+            <el-table :data="recordData" class="recordtable" border max-height="300">
               <el-table-column prop="TotalPriceBefore" label="总价（修改前）" ></el-table-column>
-              <el-table-column prop="FinalPriceBefore" label="底价（修改前）" ></el-table-column>
+              <el-table-column prop="FinalPriceBefore" label="底价（修改前）" v-if="$route.query.version=='0'"></el-table-column>
               <el-table-column prop="TotalPriceAfter" label="总价（修改后）" ></el-table-column>
-              <el-table-column prop="FinalPriceAfter" label="底价（修改后）" ></el-table-column>
+              <el-table-column prop="FinalPriceAfter" label="底价（修改后）" v-if="$route.query.version=='0'"></el-table-column>
               <el-table-column  label="成交价格误差（%）" width="140" >
                 <template slot-scope="scope">
                   {{scope.row.PriceDifferential}}
@@ -928,8 +970,8 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="AM管理关系" :visible.sync="AMShow">
-            <el-table :data="AMData" class="recordtable">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px" :title="$route.query.version=='0'?'AM管理关系':'师徒管理关系'" :visible.sync="AMShow">
+            <el-table :data="AMData" class="recordtable" border max-height="300">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>
               <el-table-column prop="EmpName" label="经纪人" ></el-table-column>
@@ -1195,7 +1237,8 @@
             keyword: queryString,
             pageNum:1,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1217,7 +1260,8 @@
             keyword: queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             console.log(res.status);
@@ -1361,7 +1405,8 @@
               "keyword": queryString,
               pageNum:1,
               pageSize:100,
-              leave:true
+              leave:true,
+              systemtag: this.userInfo.systemtag
             };
             this.$ajax.get("/api/organize/employees/pages", param).then(res => {
               if(roleId==2){
@@ -1386,7 +1431,8 @@
             "keyword": queryString,
             pageNum:page,
             pageSize:100,
-            leave:true
+            leave:true,
+            systemtag: this.userInfo.systemtag
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             if(roleId==2){
@@ -1622,19 +1668,35 @@
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1646,6 +1708,13 @@
 
         if (flag && sumFlag) {
           this.loading=true;
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {
             id: this.aId,
             remark: this.remark,
@@ -1735,19 +1804,35 @@
         let resultArr = this.houseArr.concat(this.clientArr);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1755,6 +1840,13 @@
         }
         if (flag && sumFlag && this.remark != "") {
           this.loading=true;
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {
             id: this.aId,
             remark: this.remark,
@@ -1830,19 +1922,35 @@
           sumFlag = false;
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
+          if (this.$route.query.version == '0') {
+            // 旧版本 总监 副总 必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === "" ||
+              resultArr[i].level4 === "" ||
+              resultArr[i].amaldar === "" ||
+              resultArr[i].manager === ""
+            ) {
+              flag = false;
+            }
+          } else {
+            // 新版本 总监 副总 非必填
+            if(
+              resultArr[i].roleType === "" ||
+              resultArr[i].ratio === "" ||
+              resultArr[i].assignor === "" ||
+              resultArr[i].isJob === "" ||
+              resultArr[i].level3 === "" ||
+              resultArr[i].shopkeeper === ""
+            ) {
+              flag = false;
+            }
+          }
+          if (sum == 100) {
             sumFlag = true;
           } else {
             sumFlag = false;
@@ -1852,7 +1960,13 @@
         // console.log(sumFlag);
         if (flag && sumFlag) {
           this.loading=true;
-          console.log(this.examineDate);
+          // 新版本时参数添加level4和storefront4Id字段
+          if(this.$route.query.version == '1') {
+            resultArr.forEach(item => {
+              item.level4 = item.level3
+              item.storefront4Id = item.storefront3Id
+            })
+          }
           let param = {};
           if (type == 1) {
             param = {
@@ -1909,6 +2023,12 @@
               this.checkPerson.code= this.aId;
               this.checkPerson.state=true
               this.checkPerson.type=1;
+              this.codeBaseInfo(this.contractId2, 1,null,"getExamineInfo");
+              var paperBtn2=document.getElementById('savebtn2')
+              paperBtn2.disabled=true
+              paperBtn2.classList.remove('color-blue')
+              paperBtn2.classList.add('grey')
+              this.$emit("saveData", this.achIndex, resultArr, 0);
             }else{
               this.$message({
                 message:error,
@@ -2202,6 +2322,9 @@
               sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
             })
               return sum
+        },
+        userInfo() {
+          return this.getUser.user
         }
     }, 
     watch: {
@@ -2334,6 +2457,11 @@
       
       /deep/ .el-input__suffix {
         right: 21px;
+      }
+      /deep/ .el-icon-circle-close {
+        position: absolute;
+        right: -15px;
+        top: 0;
       }
       .close-btn{
         position: absolute;
@@ -2574,8 +2702,16 @@
   /deep/ .sushen tr td  .cell{
         line-height: 30px;
    }
+   .record-table-dialog {
+     /deep/ .el-dialog__body {
+       padding: 10px 20px;
+     }
+   }
   .recordtable{
-    min-height: 200px;
+    // min-height: 200px;
+    /deep/ th {
+      background-color: #eef2fb;
+    }
   }
   // .dialog1 /deep/ input, .el-input__inner{
   //   font-size: 10px !important;

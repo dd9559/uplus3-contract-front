@@ -7,7 +7,7 @@
         <ul class="paper-ul">
           <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
           <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
-          <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
+          <li><span class="cl-1 mr-10">开票日期：</span>{{printType==='all'?$tool.dateFormat(invoiceTime.split(',')[0]):comInvoiceTime}}</li>
           <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
         </ul>
         <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
@@ -77,7 +77,7 @@
         <ul class="paper-ul">
           <li class="w1"><span class="cl-1 mr-10">合同编号：</span>{{comNumber}}</li>
           <li><span class="cl-1 mr-10">收款日期：</span>{{comCollectionTime}}</li>
-          <li><span class="cl-1 mr-10">开票日期：</span>{{comInvoiceTime}}</li>
+          <li><span class="cl-1 mr-10">开票日期：</span>{{printType==='all'?!invoiceTime.split(',')[1]?'--':$tool.dateFormat(invoiceTime.split(',')[1]):comInvoiceTime}}</li>
           <li class="w2"><span class="cl-1 mr-10">票据编号：</span>{{comPaper}}</li>
         </ul>
         <div class="paper-small-tit">收款项目明细<span class="paper-nomal">门店名称：{{comStoresName}}</span></div>
@@ -241,10 +241,15 @@
     computed: {
       comText() {
         let numArr=this.num.toString().split(',')//当客户联、记账联都显示是，数组第一个元素为客户联打印次数，第二个为记账联的
+        let timeCode=this.invoiceTime.split(',')
 
         let paperPrintTimes = numArr.map((item,index)=>{
           let str = `打印日期:${this.comInvoiceTime}`
-          return Number(item)+1>1?`第${Number(item)+1}次打印，重复无效，${str}`:''
+          if(this.printType==='all'){
+            return Number(item)>1?`第${Number(item)}次打印，重复无效，${this.$tool.dateFormat(timeCode[index])}`:''
+          }else {
+            return Number(item)+1>1?`第${Number(item)+1}次打印，重复无效，${str}`:''
+          }
         })
         return paperPrintTimes
       },

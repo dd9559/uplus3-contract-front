@@ -28,6 +28,7 @@ const MIXINS = {
       employeTotal:0,
       tableBoxCom:null,
       tableNumberCom:null,
+      systemTagList: []
     }
   },
   watch:{
@@ -94,6 +95,17 @@ const MIXINS = {
           this.userMsg = res.data.user;
           localStorage.setItem('initId',res.data.user.cityId)
           localStorage.setItem('cityName',res.data.user.cityName)
+        }
+      })
+    },
+    /**
+     * 获取体系
+     */
+    getSystemTag:function () {
+      this.$ajax.get('/api/organize/getSystemTagByCityId').then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.systemTagList = res.data
         }
       })
     },
@@ -327,6 +339,21 @@ const MIXINS = {
      */
     havePower:function (url) {
       console.log('test')
+    },
+    //解决浮点数乘法计算精度问题
+    multiply : function (arg1, arg2) {
+      var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+      try {
+        m += s1.split(".")[1].length;
+      }
+      catch (e) {
+      }
+      try {
+        m += s2.split(".")[1].length;
+      }
+      catch (e) {
+      }
+      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     },
     //动态高度获取
     comHeightFn(){

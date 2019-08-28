@@ -92,7 +92,7 @@
         <el-table-column align="center" label="操作" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&scope.row.level!==4">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&editBtnShow(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -450,9 +450,9 @@
         icRegisterShow: false,
         noticeShow: false,
         dictionary: {
-          '38':'',
-          '39':'',
-          '40':''
+          '38':'企业证件',
+          '39':'合作方式',
+          '40':'证件类型'
         },
         contractName: "",
         financialName: "",
@@ -476,12 +476,14 @@
         },
         storeNoChange: false, //门店选择不可编辑
         adminBanks:[],
+        // 筛选条件的门店
         homeStorePage:1,
         homeStoreTotal:0,
+        homeStoreName:'',
+        // 添加公司信息的门店
         storePage:1,
         storeTotal:0,
-        temKey: "",
-        homeStoreName:''
+        temKey: "" //门店搜索值
       }
     },
     mounted() {
@@ -506,13 +508,30 @@
         delete this.searchForm.pageSize
         this.pageNum = session.query.pageNum
       }else{
+        // 列表查询
         this.getCompanyList()
       }
+      // 枚举数据
       this.getDictionary()
       this.getStoreList(1)
+      // 银行列表
       this.getBanks()
     },
     methods: {
+      // 编辑按钮 显示隐藏
+      editBtnShow(row) {
+        if(row.version === 1) {
+          // 旧版本四级门店不可编辑
+          if(row.level != 4) {
+            return true
+          } else {
+            return false
+          }
+        } else {
+          // 新版本
+          return true
+        }
+      },
       // 重置门店列表数据
       clearStore(type) {
         this.storeList = []
@@ -522,6 +541,7 @@
           this.clearFn()
         }
       },
+      // 门店下拉框出现/隐藏时触发
       showView1(bol) {
         if(!bol&&this.searchForm.storeId){
           this.homeStoreList.find(item=>{
@@ -544,6 +564,7 @@
           this.clearStore()
         }
       },
+      // 远程搜索
       remoteMethod1(query) {
         setTimeout(() => {
           this.homeStoreList = []
@@ -627,9 +648,11 @@
           res = res.data
           if(res.status === 200) {
             if(val === 2) {
+              // 添加公司信息的门店列表
               this.storeList = this.storeList.concat(res.data.list)
               this.storeTotal = res.data.total
             } else {
+              // 筛选条件的门店列表
               let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
               if(session){
                 res.data.list.some((item,index)=>{
@@ -652,45 +675,35 @@
           this.clearFn()
           return
         }
-        this.$ajax.get('/api/setting/company/checkStore', { storeId: val }).then(res => {
-          res = res.data
-          if(res.status === 200 && !res.message) {
-            let obj
-            this.storeList.find(item => {
-              if(val === item.id) {
-                obj = item
-              }
-            })
-            if(obj.isCheck) {
-              this.companyForm.storeName = obj.name
-              this.companyForm.level = obj.level
-              if(obj.cooperationMode) {
-                this.companyForm.cooperationMode = obj.cooperationMode.label
-              }
-              this.fourthStoreNoEdit = false
-              this.clearFn('init')
-            } else {
-              this.$message({message:"四级门店不能录入公司信息",type:"warning"})
-              this.companyForm.storeId = ""
-              this.fourthStoreNoEdit = true
-              this.clearStore()
-              this.clearFn()
-            }
-          } else {
-            this.noticeShow = true
-            setTimeout(() => {
-              this.noticeShow = false
-            }, 2000)
-            if(this.companyFormTitle === "添加企业信息") {
-              this.companyForm.storeId = ""
-              this.clearFn()
-              this.fourthStoreNoEdit = false
-              this.clearStore()
-            }
+        let obj
+        this.storeList.find(item => {
+          if(val === item.id) {
+            obj = item
           }
-        }).catch(error => {
-          console.log(error);
         })
+        // 每个门店有个check字段,旧版本check值有1 2 3,新版本只有1和2; 值为1 可录入; 值为2 已录入过; 值为3 四级门店不能录入公司信息
+        if(obj.check === 1) {
+          this.companyForm.storeName = obj.name
+          this.companyForm.level = obj.level ? obj.level : ''
+          if(obj.cooperationMode) {
+            this.companyForm.cooperationMode = obj.cooperationMode.label
+          }
+          this.fourthStoreNoEdit = false
+          this.clearFn('init')
+        } else if(obj.check === 2) {
+          this.noticeShow = true
+          setTimeout(() => {
+            this.noticeShow = false
+          }, 2000)
+          this.companyForm.storeId = ""
+          this.fourthStoreNoEdit = false
+          this.clearStore()
+        } else {
+          this.$message({message:"四级门店不能录入公司信息",type:"warning"})
+          this.companyForm.storeId = ""
+          this.fourthStoreNoEdit = true
+          this.clearStore()
+        }
       },
       //关闭模态窗
       handleClose(done) {
@@ -904,20 +917,16 @@
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
             if(this.companyFormTitle === "添加企业信息") {
-              if(this.power['sign-set-gs'].state) {
-                this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
-                  res = res.data
-                  if(res.status === 200) {
-                    this.AddEditVisible = false
-                    this.$message(res.message)
-                    this.getCompanyList()
-                  }
-                }).catch(error => {
-                    this.$message({message:error})
-                })
-              } else {
-                this.noPower(this.power['sign-set-gs'].name)
-              }
+              this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
+                res = res.data
+                if(res.status === 200) {
+                  this.AddEditVisible = false
+                  this.$message(res.message)
+                  this.getCompanyList()
+                }
+              }).catch(error => {
+                  this.$message({message:error})
+              })
             } else {
               let obj = {
                 delIds: this.delIds
@@ -988,18 +997,25 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        this.$ajax.get('/api/setting/company/updateShowFee',{storeId:type==='init'?this.companyForm.storeId:this.companyForm.storeName}).then(res => {
+        this.getStoreRadio(type)
+      },
+      // 获取门店特许费比例值
+      getStoreRadio(type) {
+        this.$ajax.get('/api/setting/company/updateShowFee',
+          {storeId:type==='init'?this.companyForm.storeId:this.companyForm.storeName}
+        ).then(res => {
           res = res.data
           if(res.status === 200) {
             this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
           }
         }).catch(error => {
           this.$message({
-              message: error,
-              type: "error"
+            message: error,
+            type: "error"
           })
         })
       },
+      // 合同章 财务章 点击预览
       getPicture(type) {
         this.imgList = []
         let pic1 = this.companyForm.contractSign

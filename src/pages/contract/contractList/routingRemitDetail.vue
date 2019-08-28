@@ -128,10 +128,10 @@
         :total="total">
       </el-pagination>
     </div> -->
-    
+
   </div>
 </template>
-           
+
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 
@@ -164,9 +164,9 @@ export default {
     this.type = parseInt(this.$route.query.type);
     this.getDictionary();//字典
     if(this.type===1){
-      this.setPath(this.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+      this.setPath(this.$tool.getRouter(['财务','分账记录','分账明细'],'routingRecord'));
     }else if(this.type===2){
-      this.setPath(this.$tool.getRouter(['合同','打款记录','打款明细'],'debitRecord'));
+      this.setPath(this.$tool.getRouter(['财务','打款记录','打款明细'],'debitRecord'));
     }
     this.getAccountList(this.ids);
   },
@@ -174,10 +174,10 @@ export default {
     next(em=>{
       if(from.path==='/contractDetails'){
         if(em.type===1){
-          em.setPath(em.$tool.getRouter(['合同','分账记录','分账明细'],'routingRecord'));
+          em.setPath(em.$tool.getRouter(['财务','分账记录','分账明细'],'routingRecord'));
         }else if(em.type===2){
-          em.setPath(em.$tool.getRouter(['合同','打款记录','打款明细'],'debitRecord'));
-        } 
+          em.setPath(em.$tool.getRouter(['财务','打款记录','打款明细'],'debitRecord'));
+        }
       }
     })
   },
@@ -185,7 +185,7 @@ export default {
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','分账记录','合同详情'],'routingRecord'));
+        // this.setPath(this.$tool.getRouter(['合同','分账记录','合同详情'],'routingRecord'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",

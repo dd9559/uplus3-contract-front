@@ -3,8 +3,8 @@
         <div class="com-box" :style="{ height: clientHeight() }">
         <div class="mark-red">
             <label>体系：</label>
-            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled="$route.query.type===2">
-                <el-option v-for="item in dictionary['638']" :key="item.id" :label="item.value" :value="item.key"></el-option>
+            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled=systemNoEdit>
+                <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
         </div>
         <div>
@@ -121,15 +121,11 @@
     }
     export default {
         name: "commissionDialog",
-        mixins: [MIXINS, FILTER],
+        mixins: [FILTER,MIXINS],
         data() {
             return {
                 clientHei: document.documentElement.clientHeight, //窗体高度
                 saveDialog: false,
-                // 枚举数据
-                dictionary:{
-                    '638':'体系'
-                },
                 commissionForm: {
                     systemTag: '',
                     cash: '',
@@ -139,16 +135,19 @@
                     public: '',
                     private: ''
                 },
-                rowId: 0
+                rowId: 0,
+                systemNoEdit: false,
+                systemTagList: []
             }
         },
         created(){
-            // 枚举数据查询
-            this.getDictionary()
             let type = this.$route.query.type
+            // 获取体系
+            this.getSystemTag()
             if(type==1) {
                 this.$tool.clearForm(this.commissionForm)
             }else if(type==2){
+                this.systemNoEdit = true
                 let rowInfo = JSON.parse(localStorage.getItem('row'))
                 this.rowId = rowInfo.id
                 this.commissionForm = {

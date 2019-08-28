@@ -47,7 +47,7 @@
                     <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
                     <el-table-column align="center" label="流程类型" prop="type">
                         <template slot-scope="scope">
-                            <span>{{scope.row.type|getTypeName}}</span>
+                            <span v-for="item in dictionary['573']" :key="item.key" v-if="item.key===scope.row.type">{{item.value}}</span>                            
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="分支条件" prop="branchCondition">
@@ -128,7 +128,7 @@
                                <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
                                 <el-select size="small" class="w152" v-model="item.type">
                                     <el-option label="请选择审批人类型" value=""></el-option>
-                                    <el-option v-for="item in dictionary['37']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                    <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
                                     <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
@@ -190,7 +190,6 @@
 <script>
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
-    let flowType = ["付款审核","收款审核","应收业绩审核","合同审核","调佣审核","结算审核"]
     let arr = [
         {
             name: "提审人",
@@ -252,9 +251,8 @@
                 isAudit: "",
                 nodeList: [],
                 dictionary: {
-                    '37':'',
-                    '39':'',
-                    '573':'',
+                    '39':'', //合作方式
+                    '573':'', //流程类型
                     '580':'',
                     '586':'',
                     '597':'',
@@ -262,6 +260,7 @@
                     '601':'',
                     '603':''
                 },
+                aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
                 pageNum: 1,
                 total: 0,
@@ -285,7 +284,6 @@
         },
         mounted() {
             this.searchForm.cityId = this.cityInfo.cityId
-            // this.getCityList()
             this.getDictionary()
             let res=this.getDataList
             if(res&&(res.route===this.$route.path)){
@@ -297,10 +295,15 @@
                 this.getData()
             }
             this.remoteMethod()
+            this.getAduitType()
             this.getDeps()
-            this.getRoles()
+            // 登录城市为温州时不请求角色数据
+            if(this.searchForm.cityId != 16) {
+               this.getRoles() 
+            }
         },
         methods: {
+            // 分支节点选择
             aduitChange(val) {
                 if(this.aduitTitle === "添加") {
                     if(val === "1") {
@@ -343,14 +346,18 @@
                     this.$message({message:error})
                 })
             },
-            getCityList() {
-                this.$ajax.get('/api/organize/cities').then(res => {
+            // 审批人类型
+            getAduitType() {
+                this.$ajax.get('/api/auditflow/getApprovalType').then(res => {
                     res = res.data
                     if(res.status === 200) {
-                        this.cityList = res.data
+                        this.aduitTypeArr = res.data.children
                     }
+                }).catch(error => {
+                    this.$message({message:error})
                 })
             },
+            // 部门数据
             getDeps() {
                 this.$ajax.get('/api/organize/deps').then(res => {
                     res = res.data
@@ -359,6 +366,7 @@
                     }
                 })
             },
+            // 角色数据
             getRoles() {
                 this.$ajax.get('/api/roles').then(res => {
                     res = res.data
@@ -376,6 +384,7 @@
             getNodeIndex(index) {
                 this.nodeIndex = index
             },
+            // 下拉加载更多人员
             moreEmploye1() {
                 if(this.nodeList[this.nodeIndex].employeList.length>=this.nodeList[this.nodeIndex].employeeTotal){
                     return
@@ -383,6 +392,7 @@
                     this.depHandleClick(this.nodeList[this.nodeIndex].currentDep,this.nodeIndex,++this.nodeList[this.nodeIndex].employeePage)
                 }
             },
+            // 审批人类型为人员时 选中部门后 人员列表请求
             depHandleClick(data,index,page=1) {
                 if(this.dep.id&&this.dep.id!==data.depId){
                     this.nodeList[index].employeList = []
@@ -524,6 +534,7 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
+            // 选中默认审核人
             defaultChoice(index,e,curItem) {
                 let allChoice = this.$refs.curChoice[index].children
                 for(var i = 0; i < allChoice.length; i++) {
@@ -537,6 +548,7 @@
                 curNodeChoice[e].isDefault = 1
                 this.nodeList[index].lastChoice = curItem
             },
+            // 删除审核人
             delChoice(index,choiceArr,m) {
                 if(choiceArr[m].type === 0) {
                     for(var i = 0; i < this.nodeList[index].personArr.length; i++) {
@@ -836,15 +848,6 @@
             handleCurrentChange(val) {
                 this.pageNum = val
                 this.getData()
-            }
-        },
-        filters: {
-            getTypeName(val) {
-                for(var i = 0; i < flowType.length; i++) {
-                    if(val === i) {
-                        return flowType[i]
-                    }
-                }
             }
         },
         watch: {

@@ -15,6 +15,10 @@
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
                                 <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
                             </el-form-item>
+                            <el-form-item label="纸质合同编号：" prop="code"  v-if="isOffline===1">
+                                <el-input v-model="contractForm.code" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('code',0)" >
+                                </el-input>
+                            </el-form-item>
                             <br>
                             <el-form-item label="认购期限：" prop="subscriptionTerm">
                                 <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
@@ -34,8 +38,9 @@
 
                             <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
                                 <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
-                                    <i slot="suffix" class="yuan">万元</i>
-                                    <template slot="append">{{contractForm.dealPrice*10000 | moneyFormat}}</template>
+                                    <!-- <i slot="suffix" class="yuan">万元</i> -->
+                                    <i slot="suffix" class="yuan">元</i>
+                                    <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                                 </el-input>
                             </el-form-item>
                         </div>
@@ -62,13 +67,14 @@
 
                             <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
                                 <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
-                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">万元</i>
+                                    <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">元</i>
                                     <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
+                                    <!-- <i slot="suffix" class="yuan">元/月</i> -->
                                 </el-input>
                             </el-form-item>
 
                             <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
-                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">                                    
+                                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">
                                 </el-input>
                             </el-form-item>
 
@@ -81,12 +87,12 @@
                                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
                                     <el-input v-model="contractForm.contPersons[0].mobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                                 </el-form-item>
-                                
+
                                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
                                   <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
-                                </el-form-item>                               
+                                </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
                                     <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
@@ -141,7 +147,7 @@
                                   <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
                                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                   </el-select>
-                                </el-form-item>                               
+                                </el-form-item>
 
                                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
                                     <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
@@ -241,7 +247,7 @@ export default {
 
 
     //身份证号验证规则
-    
+
 
 
 
@@ -263,7 +269,7 @@ export default {
        dictionary: {
           //数据字典
           "633": "", //证件类型
-       
+
         },
       contractForm: {
         type: '',
@@ -298,7 +304,7 @@ export default {
             encryptionCode: "",
             identifyCode: '',
             cardType:'',
-            
+
             type: 1
             // relation: ''
           },
@@ -344,7 +350,14 @@ export default {
         subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
         dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
 
-
+        code:[
+            {
+              type: "string",
+              required: true,
+              message: "请输入纸质合同编号",
+              trigger:'change'
+            }
+        ],
 
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger:'change'}
@@ -402,12 +415,12 @@ export default {
        this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{identifyCode:''}))
      })
     },
-   
-    changeCardType(val){      
-        this.$nextTick(() => {    
+
+    changeCardType(val){
+        this.$nextTick(() => {
           this.clearIdentify(val)
           this.$refs.contractForm.validateField('contPersons[' + val + '].identifyCode');
-        })      
+        })
     },
 
     cutInfo(val,index){
@@ -427,36 +440,42 @@ export default {
          this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
         })
       }
+      else if(val=="code"){
+        this.$nextTick(() => {
+            let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
+            this.contractForm.code = this.contractForm.code.toString().replace(/\s/g,"").replace(addrReg,'')
+        })
+      }
     },
 
-  
+
 
     housePrice (rule, value, callback) {
-      let myprice = /(^[1-9][0-9]{0,8}(['万元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['万元']{2}|['元/月']{3})$)/;
+      let myprice = /(^[1-9][0-9]{0,8}(['元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['元']{2}|['元/月']{3})$)/;
       if(value){
         if (!myprice.test(value)) {
-          callback(new Error("提示：输入总价在0-999999999.99之间，不能等于0。必须带上单位，出租类型单位为'元/月',出售类型单位为'万元'，例子：'3000元/月'或者'300万元'，小数点只保留后两位。"));
-        } 
+          callback(new Error("提示：输入总价在0-999999999.99之间，不能等于0。必须带上单位，出租类型单位为'元/月',出售类型单位为'元'，例子：'3000元/月'或者'300元'，小数点只保留后两位。"));
+        }
         else if(parseFloat(value) <= 0 || parseFloat(value) > 999999999.99){
           callback(new Error("输入总价在0-999999999.99之间，不能等于0"));
         }
         else {
           callback();
-        }  
+        }
       }else{
         callback();
       }
-      
+
     },
 
     idCard (rule, value, callback) {
 
       let passport = /[^\s*]/
-      if(!this.contractForm.contPersons[0].cardType){        
+      if(!this.contractForm.contPersons[0].cardType){
           callback(new Error("请先选择证件类型"));
-      }else if(this.contractForm.contPersons[0].cardType == 1){   
+      }else if(this.contractForm.contPersons[0].cardType == 1){
         if (!value || value == '') {
-          
+
            return callback(new Error("请输入证件号"));
         } else if (!this.isIdCardNo(value)) {
           // debugger
@@ -465,14 +484,14 @@ export default {
           callback();
         }
       }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3){
-        if (!value || value == '') {       
+        if (!value || value == '') {
            return callback(new Error("请输入证件号"));
-        } 
+        }
         else if (!passport.test(value)) {
           // debugger
           callback(new Error("请输入正确格式的证件号"));
-        } 
-        else{         
+        }
+        else{
           callback()
         }
       }
@@ -480,9 +499,9 @@ export default {
 
     idCard1 (rule, value, callback) {
       let passport = /[^\s*]/
-      if(!this.contractForm.contPersons[1].cardType){        
+      if(!this.contractForm.contPersons[1].cardType){
           callback(new Error("请先选择证件类型"));
-      }else if(this.contractForm.contPersons[1].cardType == 1){   
+      }else if(this.contractForm.contPersons[1].cardType == 1){
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
         } else if (!this.isIdCardNo(value)) {
@@ -494,27 +513,27 @@ export default {
       }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3){
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
-        } 
+        }
         else if (!passport.test(value)) {
           // debugger
           callback(new Error("请输入正确格式的证件号"));
-        } 
-        else{         
+        }
+        else{
           callback()
         }
       }
     },
-   
+
 
     telPhone (rule, value, callback) {
-      
+
       let myreg = /^[1][0-9]{10}$/;
       let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
       // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
 
         if (!value) {
             return callback(new Error("请输入电话号码"));
-            
+
         }else{
             if (!myreg.test(value)&&!myreg_.test(value)) {
               callback(new Error("请输入正确电话号码"));
@@ -522,7 +541,7 @@ export default {
               callback();
             }
         }
-            
+
         // }else if(this.type==2){
         //     if (!myreg.test(value)&&!myreg_.test(value)) {
         //       callback(new Error("请输入正确电话号码"));
@@ -532,14 +551,14 @@ export default {
         // }
     },
 
-    
+
     nameExp (rule, value, callback) {
-      
+
       let namereg = /^[a-zA-Z\u4e00-\u9fa5]*$/;
 
         if (!value || value == '') {
             return callback(new Error("请输入姓名"));
-            
+
         }else if (!namereg.test(value)) {
                 callback(new Error("只能输入大小写字母和汉字"));
         } else {
@@ -556,7 +575,7 @@ export default {
             max: 999999999.99
           });
         });
-      } 
+      }
       else if (val === "dealPrice") {
         this.$nextTick(() => {
           this.contractForm.dealPrice = this.$tool.cutFloat({
@@ -572,7 +591,7 @@ export default {
             max: 999999999.99
           });
         });
-      }  
+      }
     },
 
 
@@ -605,6 +624,9 @@ export default {
             console.log(houseMsg);
             this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
             this.contractForm.houseInfo = houseMsg;
+            if(houseMsg.TradeInt===2){
+              this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
+            }
 
           }
         })
@@ -641,8 +663,8 @@ export default {
               if(this.contractForm.guestinfoCode !==''){
                 this.$refs.contractForm.validateField('guestinfoCode');
                 this.$refs.contractForm.validateField('contPersons[1].mobile');
-                this.$refs.contractForm.validateField('contPersons[1].name');             
-              }        
+                this.$refs.contractForm.validateField('contPersons[1].name');
+              }
             })
 
             // this.contractForm.custrelation = guestMsg.OwnerInfo.CustRelation;
@@ -793,6 +815,7 @@ export default {
         let param = {
           igdCont: {
             type: this.contractForm.type,
+            code: this.contractForm.code,
             signDate: this.contractForm.signDate,
             houseinfoCode: this.contractForm.houseinfoCode,
             guestinfoCode: this.contractForm.guestinfoCode,
@@ -834,19 +857,25 @@ export default {
           url = '/api/contract/addLocalContract'
         }
 
-        this.$ajax
-          .postJSON(url, param)
-          .then(res => {
+        this.$ajax.postJSON(url, param).then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
             if (res.data.status === 200) {
-              let contractMsg = res.data.data
-              this.hidBtn=1
-              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(this.isOffline===1){
+                this.$message({
+                  message:"创建成功",
+                  type: "success"
+                })
+                this.$router.push('/contractList');
+              }else{
+                let contractMsg = res.data.data
+                this.hidBtn=1
+                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);
@@ -906,7 +935,7 @@ export default {
         param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
         param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
         if (this.type== 2) {
-          delete param.igdCont.code;
+          // delete param.igdCont.code;
           delete param.igdCont.contType;
           delete param.igdCont.recordName;
           delete param.igdCont.recordDept;
@@ -970,19 +999,26 @@ export default {
           url = '/api/contract/addLocalContract'
         }
 
-        this.$ajax
-          .postJSON(url, param)
-          .then(res => {
+        this.$ajax.postJSON(url, param).then(res => {
             this.fullscreenLoading=false
             let tips = res.data.message;
 
             if (res.data.status === 200) {
-              let contractMsg = res.data.data
-              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
-              this.$router.push({
-                path: "/extendParams"
-              });
+              if(this.isOffline===1){
+                this.$message({
+                  message:"编辑成功",
+                  type: "success"
+                })
+                this.$router.push('/contractList');
+              }else{
+                let contractMsg = res.data.data
+                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+                this.$router.push({
+                  path: "/extendParams"
+                });
+              }
+
             } else {
               this.fullscreenLoading=false
               this.$message.error(tips);

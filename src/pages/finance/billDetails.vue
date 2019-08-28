@@ -594,6 +594,7 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  @import "~@/assets/less/lsx.less";
 
   .input-group {
     align-items: flex-start;
