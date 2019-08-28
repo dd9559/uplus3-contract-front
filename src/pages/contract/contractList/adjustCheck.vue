@@ -67,8 +67,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-
-
       </el-form>
     </ScreeningTop>
 
