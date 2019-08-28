@@ -441,6 +441,8 @@
                   val127:''
                 }
                 break
+              case 'd':
+                break
               default:
                 errorArr2.push({
                   type:'input',
@@ -563,7 +565,7 @@
                       prohibit(inputbox[i],['a','b'],'diya')
                   }
                   if(attr==='delivery'){
-                      prohibit(inputbox[i],['a','b','c'],'delivery')
+                      prohibit(inputbox[i],['a','b','c','d'],'delivery')
                   }
                   if(attr==='reject'){
                       prohibit(inputbox[i],['a','b','c'],'reject')
