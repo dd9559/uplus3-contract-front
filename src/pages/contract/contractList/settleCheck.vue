@@ -84,7 +84,7 @@
             <!-- <div class="blue curPointer" @click="goContractDetail(scope.row)">合同：{{scope.row.code}}</div>
             <div class="blue curPointer" @click="goContractDetail(scope.row)">纸质合同编号：{{scope.row.pCode}}</div> -->
             <p @click="goContractDetail(scope.row)" style="text-align:left;">合同：<span class="blue curPointer">{{scope.row.code}}</span></p>
-            <p v-if="scope.row.recordType.value===2" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
+            <p v-if="scope.row.recordType.value===2&&scope.row.pCode" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center" min-width="60">
