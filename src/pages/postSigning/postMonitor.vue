@@ -4,7 +4,7 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-tooltip content="合同编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+                    <el-tooltip content="合同编号/纸质合同编号/物业地址/业主/客户/房产证号/手机号" placement="top">
                         <el-input class="w200" v-model="propForm.search" placeholder="请输入" clearable></el-input>
                     </el-tooltip>
                 </el-form-item>
@@ -125,6 +125,16 @@
                         :value="item"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="签约方式">
+                    <el-select v-model="propForm.recordType" class="w120" :clearable="true">
+                        <el-option
+                        v-for="item in dictionary['64']"
+                        :key="item.key"
+                        :label="item.value"
+                        :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -144,11 +154,19 @@
             element-loading-text="正在加载中"
             @row-dblclick="tradingStepsFn"
             class="paper-table">
-                <el-table-column label="合同编号" align="center" min-width="120">
+                <el-table-column label="合同信息" align="left" min-width="150">
                     <template slot-scope="scope">
-                        <span class="blue" @click="contractFn(scope.row)">{{scope.row.code}}</span>
+                        <p>
+                            合同:
+                            <span class="blue" @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.code}}</span>
+                        </p>
+                        <ul v-if="scope.row.recordType.value===2">
+                            <li>纸质合同编号:</li>
+                            <li>{{scope.row.pCode}}</li>
+                        </ul>
                     </template>
                 </el-table-column>
+                <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
                 <el-table-column label="接收日期" align="center" min-width="90">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.receiveTime)}}
@@ -249,6 +267,7 @@
                 dictionary:{
                     '13':'收佣状态',
                     '53':'合作方式',
+                    '64':'签约方式'
                 },
                 // 筛选条件
                 propForm: {
@@ -261,7 +280,8 @@
                     late: '',
                     lateName: 3,
                     depAttr:'',
-                    areaName:''
+                    areaName:'',
+                    recordType:''
                 },
                 // 筛选选项
                 rules: {
@@ -378,7 +398,8 @@
                 this.$refs.propForm.resetFields();
                 // this.pageNum=1;
                 // this.getListData();
-              this.EmployeList = []
+                this.EmployeList = []
+                this.propForm.recordType = ''
             },
             // 查询
             queryFn() {
@@ -471,7 +492,8 @@
                     receiveTimeStar,
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
-                    areaName:this.propForm.areaName
+                    areaName:this.propForm.areaName,
+                    recordType:this.propForm.recordType
                 }
 
                 //点击查询时，缓存筛选条件
@@ -584,7 +606,8 @@
                         late: query.stepInstanceCode,
                         lateName: query.stepState,
                         depAttr:query.depAttr,
-                        areaName:query.areaName
+                        areaName:query.areaName,
+                        recordType:query.recordType
                     }
                     if(this.propForm.departmentMo){
                         this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})
