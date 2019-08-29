@@ -375,7 +375,7 @@
                 <el-button
                   type="primary"
                   @click="ammanger"
-                >师徒管理关系</el-button>
+                >{{$route.query.version=='0'?'AM管理关系':'师徒管理关系'}}</el-button>
               </div>
             </div>
 
@@ -970,7 +970,7 @@
               <el-table-column prop="ModificationTime" label="修改时间" width="135"></el-table-column>
             </el-table>
         </el-dialog>
-        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="师徒管理关系" :visible.sync="AMShow">
+        <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px" :title="$route.query.version=='0'?'AM管理关系':'师徒管理关系'" :visible.sync="AMShow">
             <el-table :data="AMData" class="recordtable" border max-height="300">
               <el-table-column prop="ManagerName" label="M经理" ></el-table-column>
               <el-table-column prop="ManagerLevel" label="M经理职级" ></el-table-column>

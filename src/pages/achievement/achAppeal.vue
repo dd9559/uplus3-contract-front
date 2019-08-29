@@ -3,7 +3,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="search">
-          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+          <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
             <el-input
               class="w200"
               v-model="propForm.search"
@@ -36,6 +36,17 @@
               :label="item.value"
               :value="item.key"
             ></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="签约方式">
+          <el-select v-model="propForm.recordType" class="w120" :clearable="true">
+            <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -104,6 +115,10 @@
                   style="cursor:pointer;"
                 >{{scope.row.code}}</span>
               </p>
+              <p v-if="scope.row.recordType.value===2">
+                纸质合同编号:
+                <span>{{scope.row.pCode}}</span>
+              </p>
               <p>
                 房源：
                 <span>{{scope.row.houseinfoCode}}</span>
@@ -116,6 +131,8 @@
               </p>
             </template>
           </el-table-column>
+
+          <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
 
           <el-table-column label="申诉状态" align="center" min-width="80">
             <template slot-scope="scope">
@@ -327,7 +344,8 @@ export default {
       propForm: {
         appealType: 2,
         dateMo: "",
-        search: ""
+        search: "",
+        recordType: ""
       },
       shows: false,
       dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -337,7 +355,8 @@ export default {
         //数据字典
         "10": "", //合同类型
         "21": "", //分成状态
-        "53": "" //合作方式
+        "53": "", //合作方式
+        "64": "" //签约方式
       },
       beginData: false,
       currentPage: 1,
@@ -447,6 +466,7 @@ export default {
         this.currentPage = session.pageNum;
         this.pageSize = session.pageSize;
         this.propForm.empName = session.empName;
+        this.propForm.recordType = session.recordType
         // if(this.propForm.dealAgentId){
         //     this.dep=Object.assign({},this.dep,{id:this.propForm.dealAgentStoreId,empId:this.propForm.dealAgentId,empName:this.propForm.empName})
         //     this.EmployeList.unshift({
@@ -648,7 +668,8 @@ export default {
           contCode: row.code,
           entrance: 3,
           aId: row.aId,
-          contractId2: row.id
+          contractId2: row.id,
+          version: this.selectAchList[0].version
         }
       });
       window.open(newPage.href, "_blank");
@@ -691,14 +712,16 @@ export default {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealStatus: this.propForm.appealType
+          appealStatus: this.propForm.appealType,
+          recordType: this.propForm.recordType
         };
       } else {
         this.ajaxParam = {
           keyword: this.propForm.search, //关键字
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          appealStatus: this.propForm.appealType
+          appealStatus: this.propForm.appealType,
+          recordType: this.propForm.recordType
         };
       }
       // this.ajaxParam.pageNum = 1;
@@ -728,6 +751,7 @@ export default {
         endTime: "", //结束时间
         keyword: "", //关键字
         joinMethods: "",
+        recordType: "",
         pageNum: this.currentPage,
         pageSize: this.pageSize
       };
@@ -744,7 +768,8 @@ export default {
         achType: "", //业绩类型
         dateMo: "",
         search: "",
-        joinMethods: ""
+        joinMethods: "",
+        recordType: ""
       };
       this.EmployeList = [];
     },
@@ -757,7 +782,8 @@ export default {
           dialogType: 0,
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
-          contractId: value.id
+          contractId: value.id,
+          version: this.selectAchList[0].version
         }
       });
       window.open(newPage.href, "_blank");
