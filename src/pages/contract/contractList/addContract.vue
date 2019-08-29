@@ -2144,8 +2144,8 @@ export default {
     inputCode(){
       // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
       let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
-      if(this.contractForm.code){
-        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
+      if(this.contractForm.pCode){
+        this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
       }
 
     },
