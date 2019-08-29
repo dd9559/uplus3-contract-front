@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="合作方式">
-          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.recordType" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
@@ -74,9 +74,11 @@
     <div class="contract-list">
       <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同编号" align="center" min-width="120" fixed :formatter="nullFormatter">
+        <el-table-column label="合同信息" align="center" min-width="120" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
-            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div>
+            <!-- <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div> -->
+            <p @click="goContractDetail(scope.row)" style="text-align:left;">合同：<span class="blue curPointer">{{scope.row.contractCode}}</span></p>
+            <p v-if="scope.row.recordType&&scope.row.recordType===2&&scope.row.pCode" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
         <el-table-column label="合同类型" :formatter="nullFormatter" min-width="60" align="center">
@@ -86,11 +88,12 @@
             <p v-if="scope.row.tradeType === 3">代办</p>
             <p v-if="scope.row.tradeType === 4">意向</p>
             <p v-if="scope.row.tradeType === 5">定金</p>
-
           </template>
-
         </el-table-column>
-        <el-table-column align="center" label="签约方式" prop="recordType.label" min-width="50">
+        <el-table-column align="center" label="签约方式" min-width="40">
+          <template slot-scope="scope">
+            {{scope.row.recordType===2?'线下':'线上'}}
+          </template>
         </el-table-column>
         <el-table-column label="成交总价" :formatter="nullFormatter" align="center" min-width="90" prop="dealPrice">
           <template slot-scope="scope">
@@ -719,7 +722,8 @@
               // contractType: this.adjustForm.tradeType,
               depAttr: this.adjustForm.depAttr,
               checkState: this.adjustForm.checkState,
-              keyword: this.adjustForm.keyword
+              keyword: this.adjustForm.keyword,
+              recordType: this.adjustForm.recordType,
             }
             if(this.adjustForm.contractTypes.length>0){
               param.contractTypes=this.adjustForm.contractTypes.join(',')

@@ -81,10 +81,8 @@
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同信息" align="center" min-width="140" fixed>
           <template slot-scope="scope">
-            <!-- <div class="blue curPointer" @click="goContractDetail(scope.row)">合同：{{scope.row.code}}</div>
-            <div class="blue curPointer" @click="goContractDetail(scope.row)">纸质合同编号：{{scope.row.pCode}}</div> -->
             <p @click="goContractDetail(scope.row)" style="text-align:left;">合同：<span class="blue curPointer">{{scope.row.code}}</span></p>
-            <p v-if="scope.row.recordType.value===2&&scope.row.pCode" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
+            <p v-if="scope.row.recordType&&scope.row.recordType.value===2&&scope.row.pCode" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center" min-width="60">
@@ -723,7 +721,8 @@
               dealAgentStoreId: this.adjustForm.dealAgentStoreId, 
               depName:this.adjustForm.depName,   //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.dealAgentId,    //this.Form.getAgentName.empId,
-              keyword: this.adjustForm.keyword
+              keyword: this.adjustForm.keyword,
+              recordType:this.adjustForm.recordType
 
             },
             pageNum: this.pageNum,
