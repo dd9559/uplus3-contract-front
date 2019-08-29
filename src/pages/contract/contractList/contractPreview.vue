@@ -47,7 +47,7 @@
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
       </div>
@@ -580,30 +580,44 @@ export default {
     },
     //通过驳回
     toChecked(param){
-      this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+      let param_ = {
+        id:this.id
+      }
+       //验证此合同是否正在编辑
+      this.$ajax.get("/api/contract/audit",param_).then(res=>{
         res=res.data
         if(res.status===200){
-          this.dialogCheck=false;
-          this.isSignature=true;
-          this.getContImg();
-          this.$message({
-            message:'审核成功',
-            type:'success'
-          })
-        }
-      }).catch(error => {
-          if(error.message==='下一节点审批人不存在'){
-            this.checkPerson.code=this.code;
-            this.checkPerson.state=true;
-            this.checkPerson.type=3;
-            // this.checkPerson.type=error.data.type===1?'set':'init';
-            this.checkPerson.label=true;
-          }else{
-            this.$message({
-              message:error,
-              type: "error"
+          this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+            res=res.data
+            if(res.status===200){
+              this.dialogCheck=false;
+              this.isSignature=true;
+              this.getContImg();
+              this.$message({
+                message:'审核成功',
+                type:'success'
+              })
+            }
+          }).catch(error => {
+              if(error.message==='下一节点审批人不存在'){
+                this.checkPerson.code=this.code;
+                this.checkPerson.state=true;
+                this.checkPerson.type=3;
+                // this.checkPerson.type=error.data.type===1?'set':'init';
+                this.checkPerson.label=true;
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
             })
-          }
+        }
+      }).catch(error =>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
         })
     },
     //签章
@@ -676,6 +690,25 @@ export default {
           this.pdfUrl = res.data.url;
         }
       })
+    },
+    //审核弹窗
+    toCheck(){
+      let param = {
+        id:this.id
+      }
+      //验证此合同是否正在编辑
+      this.$ajax.get("/api/contract/audit",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.dialogCheck = true
+        }
+      }).catch(error =>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      
     },
     checked(num) {
       //驳回/风险单
@@ -814,6 +847,15 @@ export default {
     },
     //编辑
     toEdit(){
+      //锁定合同
+      if(this.contState===1&&this.examineState===0){
+        let param = {
+          id:this.id
+        }
+        this.$ajax.put("/api/contract/lock",param,2).then(res=>{
+
+        })
+      }
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
         this.$router.replace({

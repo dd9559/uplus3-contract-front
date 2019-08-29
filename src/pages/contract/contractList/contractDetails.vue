@@ -1290,6 +1290,15 @@ export default {
     },
     // 合同编辑
     goEdit() {
+      //锁定合同
+      if(this.contractDetail.contState.value===1&&this.contractDetail.toExamineState.value===0){
+        let param = {
+          id:this.contractDetail.id
+        }
+        this.$ajax.put("/api/contract/lock",param).then(res=>{
+
+        })
+      }
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       this.$router.push({
         path: "/addContract",
