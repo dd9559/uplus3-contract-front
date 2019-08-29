@@ -81,7 +81,7 @@
       <!-- </p> -->
       <div class="listTitle">
         <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
-        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
+        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-htsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column align="center" label="合同信息" min-width="200" fixed>
@@ -315,10 +315,10 @@ export default {
           state: false,
           name: '客源详情'
         },
-        "sign-ht-info-export": {
+        "sign-ht-htsh-export": {
           state: false,
-          name: ''
-        }
+          name: '导出'
+        },
       }
     }
   },
