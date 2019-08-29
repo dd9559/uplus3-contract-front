@@ -4,7 +4,7 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
                 <el-form-item label="关键字" prop="search">
-                    <el-tooltip content="合同编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+                    <el-tooltip content="合同编号/纸质合同编号/物业地址/业主/客户/房产证号/手机号" placement="top">
                         <el-input class="w200" v-model="propForm.search" placeholder="请输入" clearable></el-input>
                     </el-tooltip>
                 </el-form-item>
@@ -210,6 +210,16 @@
                         :value="item"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="签约方式">
+                    <el-select v-model="propForm.recordType" class="w120" :clearable="true">
+                        <el-option
+                        v-for="item in dictionary['64']"
+                        :key="item.key"
+                        :label="item.value"
+                        :value="item.key">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </ScreeningTop>
         <!-- 列表 -->
@@ -229,11 +239,19 @@
             element-loading-text="正在加载中"
             @cell-dblclick="dblclickFn"
             class="paper-table">
-                <el-table-column :formatter="nullFormatterData" prop="code" label="合同编号" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="code" label="合同信息" align="left" min-width="150">
                     <template slot-scope="scope">
-                        <span class="blue" @click="contractFn(scope.row)" >{{scope.row.code}}</span>
+                        <p>
+                            合同:
+                            <span class="blue" @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.code}}</span>
+                        </p>
+                        <ul v-if="scope.row.recordType.value===2">
+                            <li>纸质合同编号:</li>
+                            <li>{{scope.row.pCode}}</li>
+                        </ul>
                     </template>
                 </el-table-column>
+                <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="statusLaterStage.label" label="后期状态" align="center" min-width="60">
                 </el-table-column>
                 <el-table-column label="变更/解约" align="center" min-width="60">
@@ -798,6 +816,7 @@
                     '53':'合作方式',
                     '561':'步骤附属信息类型',
                     '570':'是否必填',
+                    '64':'签约方式'
                 },
                 // 筛选结果
                 propForm:{
@@ -818,7 +837,8 @@
                     departmentS:'',
                     departmentMo:'',
                     depAttr:'',
-                    areaName:''
+                    areaName:'',
+                    recordType:''
                 },
                 // 筛选下拉
                 rules:{
@@ -1112,7 +1132,8 @@
                 this.$refs.propForm.resetFields()
                 // this.pageNum = 1;
                 // this.getData();
-              this.EmployeList = []
+                this.EmployeList = []
+                this.propForm.recordType = ''
             },
             // 查询
             queryFn() {
@@ -1877,7 +1898,8 @@
                     receiveTimeStar,
                     keyword:this.propForm.search,
                     depAttr:this.propForm.depAttr,
-                    areaName:this.propForm.areaName
+                    areaName:this.propForm.areaName,
+                    recordType:this.propForm.recordType
                 }
 
                 //点击查询时，缓存筛选条件
@@ -2092,7 +2114,8 @@
                         departmentS:query.depName,
                         departmentMo:query.dealAgentId,
                         depAttr:query.depAttr,
-                        areaName:query.areaName
+                        areaName:query.areaName,
+                        recordType:query.recordType
                     }
                     if(this.propForm.departmentMo){
                         this.dep=Object.assign({},this.dep,{id:this.propForm.department,empId:this.propForm.departmentMo,empName:query.empName})

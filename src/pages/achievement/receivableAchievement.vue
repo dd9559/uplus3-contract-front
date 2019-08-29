@@ -5,7 +5,7 @@
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
 
         <el-form-item label="关键字" prop="search">
-        <el-tooltip content="合同编号/房源编号/客源编号/物业地址" placement="top">
+        <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址" placement="top">
           <el-input
             class="w200"
             v-model="propForm.search"
@@ -81,6 +81,17 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="签约方式">
+          <el-select v-model="propForm.recordType" class="w120" :clearable="true">
+            <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 筛选条件 end -->
@@ -129,23 +140,18 @@
       <div class="data-list" v-loading="loading">
         <el-table :data="receivableList" style="width: 100%" @row-dblclick="dialogVisible = true"  ref="tableCom" :max-height="tableNumberCom" border>
           <!-- code -->
-          <el-table-column label="合同信息" align="center" min-width="120">
+          <el-table-column label="合同信息" min-width="120">
             <template slot-scope="scope">
               <p>
-                <span class="blue" @click="skipContDel(scope.row)"  style="cursor:pointer;">{{scope.row.code}}</span>
+                合同:
+                <span class="blue" @click="skipContDel(scope.row)" style="cursor:pointer;">{{scope.row.code}}</span>
               </p>
+              <ul v-if="scope.row.recordType.value===2">
+                <li>纸质合同编号:</li>
+                <li>{{scope.row.pCode}}</li>
+              </ul>
             </template>
           </el-table-column>
-
-          <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
-          <el-table-column label="合同类型" align="center" min-width="60">
-            <template slot-scope="scope">
-              <p>{{scope.row.contType.label}}</p>
-            </template>
-          </el-table-column>
-
-          <!-- propertyAddr -->
-          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
 
           <!-- dealStorefront   dealName -->
           <el-table-column prop="man" label="成交经纪人" align="center" min-width="120">
@@ -158,6 +164,18 @@
               </div>
             </template>
           </el-table-column>
+
+          <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
+          <el-table-column label="合同类型" align="center" min-width="60">
+            <template slot-scope="scope">
+              <p>{{scope.row.contType.label}}</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
+
+          <!-- propertyAddr -->
+          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
 
           <!-- signDate -->
           <el-table-column prop="date" label="签约日期" align="center" min-width="90">
@@ -187,9 +205,11 @@
 
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）" align="center" min-width="80"></el-table-column>
 
-          <el-table-column prop="agentPlatformFee" label="特许服务费（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="agentPlatformFee" label="平台费（元）" align="center" min-width="80"></el-table-column>
 
-          <el-table-column prop="agentReceipts" label="实收分成金额（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="receivableComm" label="实收金额（元）" align="center" min-width="80"></el-table-column>
+
+          <el-table-column prop="agentReceipts" label="分账金额（元）" align="center" min-width="80"></el-table-column>
         </el-table>
          <el-pagination
              @size-change="handleSizeChange"
@@ -234,12 +254,14 @@ export default {
         search: "" ,//关键字
         timeType:0,
         joinMethods:"",//合作方式
-        empName:''
+        empName:'',
+        recordType: "" //签约方式
       },
       dictionary: {
         //数据字典
         "10": "", //合同类型
-        "53":""  //合作方式
+        "53":"",  //合作方式
+        "64": "" //签约方式
       },
       pageSize: 10,
       currentPage: 1,
@@ -319,6 +341,7 @@ export default {
          this.pageSize=session.pageSize
          this.propForm.timeType=session.timeType
          this.propForm.joinMethods=session.joinMethods
+         this.propForm.recordType=session.recordType
         // this.propForm = Object.assign({},this.ajaxParam,session.query)
         this. $nextTick(()=>{
                this.loading=false;
@@ -411,7 +434,8 @@ export default {
           department:this.propForm.department,
           pageSize: this.pageSize,
           timeType:this.propForm.timeType,
-          joinMethods:this.propForm.joinMethods//合作方式
+          joinMethods:this.propForm.joinMethods,//合作方式
+          recordType:this.propForm.recordType
         };
       } else {
         this.ajaxParam = {
@@ -422,7 +446,8 @@ export default {
           pageNum: this.currentPage,
           department:this.propForm.department,
           pageSize: this.pageSize,
-          joinMethods:this.propForm.joinMethods//合作方式
+          joinMethods:this.propForm.joinMethods,//合作方式
+          recordType:this.propForm.recordType
         };
       }
       // this.ajaxParam.pageNum = 1;
@@ -445,7 +470,8 @@ export default {
         endTime: "", //结束时间
         keyword: "" ,//关键字
         timeType:0,
-        joinMethods:""//合作方式
+        joinMethods:"",//合作方式
+        recordType:""
       };
       this.ajaxParam.pageNum = 1;
       this.currentPage = 1;
@@ -458,7 +484,8 @@ export default {
         dateMo: "",
         search: "",
         timeType:0,
-        joinMethods:""
+        joinMethods:"",
+        recordType:""
       };
       this.EmployeList=[]
     },
