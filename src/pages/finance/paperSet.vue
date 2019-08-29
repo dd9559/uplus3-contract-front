@@ -174,7 +174,7 @@
             <p>{{nullFormatFn(scope.row.payeeName)}}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="payway.label" label="收款方式" align="center" min-width="160">
+        <el-table-column prop="payway.label" label="收款方式" align="center" min-width="160" :formatter="nullFormatter">
         </el-table-column>
         <el-table-column label="开票人员" align="center" min-width="120">
           <template slot-scope="scope">
