@@ -66,6 +66,8 @@
 		<!-- 打印 -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
 		<div class="printMaskLayer" v-if="haveUrl"></div>
+		<!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -81,11 +83,13 @@ import {MIXINS_DB} from "../mixins/DB.js";
 import {MIXINS_YX} from "../mixins/YX.js";
 import {MIXINS_DJ} from "../mixins/DJ.js";
 import PdfPrint from '@/components/PdfPrint';
+import checkPerson from '@/components/checkPerson';
 
 export default {
 	mixins: [MIXINS,MIXINS_MM,MIXINS_JJ,MIXINS_ZL,MIXINS_DB,MIXINS_YX,MIXINS_DJ],
 	components: {
-    PdfPrint
+		PdfPrint,
+		checkPerson
   },
   data(){
     return{
@@ -128,7 +132,14 @@ export default {
 			pdfUrl:'',
 			haveUrl:false,
 			http:'',
-			navTag:""
+			navTag:"",
+			checkPerson: {
+        state:false,
+        type:1,
+        code:'',
+        flowType:3,
+        label:false
+      },
     }
   },
   created(){
@@ -442,6 +453,8 @@ export default {
 					htmlTxt2 = `<!DOCTYPE html><html lang="en">${iframebox2.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 					if(this.Msg.isWuHanMM){
 						param = {
+							cityId:this.Msg.cityId,
+							bizCode:this.Msg.code,
 							id:this.Msg.id,
 							html:{
 								residence:htmlTxt1,
@@ -450,6 +463,8 @@ export default {
 						}
 					}else{
 						param = {
+							cityId:this.Msg.cityId,
+							bizCode:this.Msg.code,
 							id:this.Msg.id,
 							html:{
 								address:htmlTxt2
@@ -459,6 +474,8 @@ export default {
 				}else{
 					htmlTxt1 = `<!DOCTYPE html><html lang="en">${iframebox1.contentWindow.document.getElementsByTagName('html')[0].innerHTML}</html>`
 					param = {
+						cityId:this.Msg.cityId,
+						bizCode:this.Msg.code,
 						id:this.Msg.id,
 						html:{
 							address:htmlTxt1
@@ -497,7 +514,7 @@ export default {
 		},
 		//确定提审
 		toSubmit(){
-			// this.fullscreenLoading=true
+			debugger
 			loading=this.$loading({
 					lock: true,
 					text: 'Loading',
@@ -507,7 +524,6 @@ export default {
 			this.$ajax.postJSON('/api/contract/updateContractAudit', this.param).then(res => {
 				res=res.data
 				if(res.status===200){
-					// this.fullscreenLoading=false
 					loading.close()
 					this.dialogSub=false
 					this.$message({
@@ -521,14 +537,32 @@ export default {
 					}
 				}
 			}).catch(error=>{
-				// this.fullscreenLoading=false
 				loading.close()
-				this.$message({
-					message:error,
-					type:'error'
-				})
+				if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.code=this.Msg.code;
+            this.checkPerson.state=true;
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+				// this.$message({
+				// 	message:error,
+				// 	type:'error'
+				// })
 			})
 		},
+		//关闭设置审核人弹窗
+		closeCheckPerson(){
+			this.checkPerson.state=false;
+			if(this.Msg.isHaveData){
+				this.$router.push('/contractList');
+			}else{
+				this.dialogSuccess=true
+			}
+    },
 		//打印草签合同
 		toPrint(){
 			this.isSave(4)

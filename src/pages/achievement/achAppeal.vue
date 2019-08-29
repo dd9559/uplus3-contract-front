@@ -668,7 +668,8 @@ export default {
           contCode: row.code,
           entrance: 3,
           aId: row.aId,
-          contractId2: row.id
+          contractId2: row.id,
+          version: this.selectAchList[0].version
         }
       });
       window.open(newPage.href, "_blank");
@@ -781,7 +782,8 @@ export default {
           dialogType: 0,
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
-          contractId: value.id
+          contractId: value.id,
+          version: this.selectAchList[0].version
         }
       });
       window.open(newPage.href, "_blank");
