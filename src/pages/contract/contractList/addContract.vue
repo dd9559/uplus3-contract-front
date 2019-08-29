@@ -67,7 +67,8 @@
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
             <span class="propertyAddress" v-if="contractForm.houseinfoCode">
               <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
-              {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}}
+              <!-- {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}} -->
+              {{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}
             </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
@@ -1662,6 +1663,10 @@ export default {
             this.$set(this.contractForm,'timeUnit',unit);
           }
           this.contractForm.houseInfo = houseMsg;
+          //重新选择房源时清空产权地址
+          this.rightAddrCity='';
+          this.rightAddrArea='';
+          this.rightAddrDetail='';
           if(houseMsg.OwnerInfoList.length>0){
             this.ownerList=[];
             this.ownerList_=[];
