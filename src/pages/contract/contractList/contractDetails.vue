@@ -20,6 +20,15 @@
                     </el-tooltip>
                     <!-- <span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span> -->
                   </p>
+                  <p style="position:relative;" v-if="contractDetail.recordType.value===2">
+                    <span class="tag">纸质合同编号：</span>
+                    <!-- <span class="text">{{contractDetail.pCode}}</span> -->
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="bottom">
+                      <div class="contractDetailCode">
+                        {{contractDetail.pCode}}
+                      </div>
+                    </el-tooltip>
+                  </p>
                   <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>

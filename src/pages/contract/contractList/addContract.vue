@@ -14,7 +14,7 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
-            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" @input="inputCode" placeholder="请输入" class="dealPrice">
+            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
@@ -386,8 +386,8 @@ const rule = {
   // transFlowCode: {
   //   name: "交易流程",
   // },
-  code:{
-    name:"合同编号"
+  pCode:{
+    name:"纸质合同编号"
   },
   houseinfoCode: {
     name: "房源"
@@ -797,7 +797,7 @@ export default {
       //   delete rule_.transFlowCode
       // }
       if(this.isOffline!==1){
-        delete rule_.code
+        delete rule_.pCode
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
@@ -805,11 +805,11 @@ export default {
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
       }
-      if(this.contractForm.code){
-        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"")
+      if(this.contractForm.pCode){
+        this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"")
       }
-      if(!this.contractForm.code){
-        this.contractForm.code=''
+      if(!this.contractForm.pCode){
+        this.contractForm.pCode=''
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
