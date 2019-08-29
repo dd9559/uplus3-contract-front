@@ -1,5 +1,6 @@
 <template>
   <div class="view-container" ref="tableComView">
+    <span>test</span>
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
