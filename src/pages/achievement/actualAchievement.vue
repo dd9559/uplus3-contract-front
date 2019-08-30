@@ -1023,7 +1023,7 @@ export default {
   },
   methods: {
     platformFeeFn(p) {
-      if(p) {
+      if(p||p==0) {
         return `${p}%`
       }else {
         return '-'
