@@ -301,11 +301,12 @@
         return this.defaultFn(this.create)
       },
       comRules() {
-        if (this.rules == o.a || this.rules == o.b) {
+        /*if (this.rules == o.a || this.rules == o.b) {
           return '买卖'
         } else {
           return this.defaultFn(this.rules)
-        }
+        }*/
+        return this.defaultFn(this.rules)
       },
       comPayerType() {
         return this.defaultFn(this.payerType)
