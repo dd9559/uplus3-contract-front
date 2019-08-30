@@ -1304,7 +1304,7 @@ export default {
         let param = {
           id:this.contractDetail.id
         }
-        this.$ajax.put("/api/contract/lock",param).then(res=>{
+        this.$ajax.put("/api/contract/lock",param,2).then(res=>{
 
         })
       }
