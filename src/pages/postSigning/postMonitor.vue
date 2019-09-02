@@ -160,10 +160,10 @@
                             合同:
                             <span class="blue" @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.code}}</span>
                         </p>
-                        <ul v-if="scope.row.recordType.value===2">
-                            <li>纸质合同编号:</li>
-                            <li>{{scope.row.pCode}}</li>
-                        </ul>
+                        <p v-if="scope.row.recordType.value===2">
+                            纸质合同编号:
+                            <span @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.pCode}}</span>
+                        </p>
                     </template>
                 </el-table-column>
                 <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
