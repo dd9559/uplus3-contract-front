@@ -2293,6 +2293,9 @@ export default {
       cursor: pointer;
       line-height: 1.6;
       span{
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 50px;
         padding-right: 10px;
       }
     }
