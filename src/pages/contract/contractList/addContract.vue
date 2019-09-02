@@ -360,7 +360,7 @@
       </span>
     </el-dialog>
     <!-- 分成人信息弹窗 -->
-    <el-dialog title="当前房源分成人" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog :title="dialogType==='house'?'当前房源分成人':'当前客源分成人'" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="agentsDialog">
         <!-- <p>当前房源分成人</p> -->
         <ul>
