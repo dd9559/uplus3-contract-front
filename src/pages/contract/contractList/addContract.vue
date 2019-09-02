@@ -2291,6 +2291,7 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
+      line-height: 1.6;
       span{
         padding-right: 10px;
       }
