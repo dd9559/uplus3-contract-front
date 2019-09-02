@@ -211,7 +211,10 @@
               </p>
               <p v-if="scope.row.recordType.value===2">
                 纸质合同编号:
-                <span>{{scope.row.pCode}}</span>
+                <span
+                @click="skipContDel(scope.row)"
+                style="cursor:pointer;"
+                >{{scope.row.pCode}}</span>
               </p>
               <p>
                 房源：
