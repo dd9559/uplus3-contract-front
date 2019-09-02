@@ -253,7 +253,8 @@
         <el-table-column align="center" label="合同状态" min-width="70">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">
-              <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
+              <span>{{scope.row.contState.label}}</span>
+              <!-- <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
               <el-popover trigger="hover" placement="top" v-else>
                 <div style="width:160px">
                   {{scope.row.delReason}}
@@ -261,7 +262,7 @@
                 <div slot="reference" class="name-wrapper">
                   {{scope.row.contState.label}}
                 </div>
-              </el-popover>
+              </el-popover> -->
             </span>
             <span v-else>-</span>
           </template>
