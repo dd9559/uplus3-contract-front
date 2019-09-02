@@ -360,9 +360,9 @@
       </span>
     </el-dialog>
     <!-- 分成人信息弹窗 -->
-    <el-dialog title="提示" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="当前房源分成人" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="agentsDialog">
-        <p>当前房源分成人</p>
+        <!-- <p>当前房源分成人</p> -->
         <ul>
           <li v-for="(item, index) in agentsList" :key="index" :title="`${item.roleText} ${item.empName}·${item.deptName}`"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
         </ul>
@@ -2272,7 +2272,7 @@ export default {
 }
 .agentsDialog{
   box-sizing: border-box;
-  padding: 10px 10px 20px;
+  padding: 10px 10px 10px;
   p{
     text-align: center;
     font-size: 16px;
@@ -2297,6 +2297,7 @@ export default {
         display: inline-block;
         min-width: 50px;
         padding-right: 10px;
+        font-weight: bold;
       }
     }
   }
