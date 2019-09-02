@@ -81,8 +81,8 @@
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同信息" align="center" min-width="140" fixed>
           <template slot-scope="scope">
-            <p @click="goContractDetail(scope.row)" style="text-align:left;">合同：<span class="blue curPointer">{{scope.row.code}}</span></p>
-            <p v-if="scope.row.recordType&&scope.row.recordType.value===2&&scope.row.pCode" @click="goContractDetail(scope.row)" style="text-align:left;">纸质合同编号：<span class="blue curPointer">{{scope.row.pCode}}</span></p>
+            <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</span></p>
+            <p v-if="scope.row.recordType&&scope.row.recordType.value===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center" min-width="60">
