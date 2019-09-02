@@ -1153,12 +1153,26 @@
       //选择收款类型操作
       checkReceiptType:function (type) {
         if(this.hasChose_receiptType.state){
+          let msg=''
+          switch (this.hasChose_receiptType.version){
+            case 1:
+              msg='请先作废之前的收款方式，作废后可重新选择其他收款方式~'
+              break;
+            case 2:
+              msg='因您的第一笔实收是线上收款，请根据第一笔实收的收款方式继续收款~'
+              break;
+            case 3:
+              msg='因您的第一笔实收是线下收款，请根据第一笔实收的收款方式继续收款~'
+              break;
+            default:
+              msg='结果异常'
+          }
           this.$message({
-            message:this.hasChose_receiptType.version===1?'请先作废之前的收款方式，作废后可重新选择其他收款方式~':'因您的线上第一笔实收是线上收款，请根据第一笔实收的收款方式继续收款~'
+            message:msg
           })
           return
         }
-        this.billStatus=false//线下收款
+        this.billStatus=false//线上收款
         type!==1&&(this.billStatus=true)
       },
       getCell:function (label) {

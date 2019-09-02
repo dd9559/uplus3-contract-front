@@ -159,6 +159,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="paperCode" label="纸质合同编号" align="center" min-width="160" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span style="cursor: pointer;" @click="cellOpera('contract',scope.row)">{{scope.row.paperCode}}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="160" :formatter="nullFormatter">
         </el-table-column>

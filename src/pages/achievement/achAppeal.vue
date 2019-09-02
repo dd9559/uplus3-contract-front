@@ -117,7 +117,10 @@
               </p>
               <p v-if="scope.row.recordType.value===2">
                 纸质合同编号:
-                <span>{{scope.row.pCode}}</span>
+                <span
+                @click="skipContDel(scope.row)"
+                style="cursor:pointer;"
+                >{{scope.row.pCode}}</span>
               </p>
               <p>
                 房源：
@@ -841,7 +844,6 @@ export default {
     },
     skipContDel(value) {
       //进入合同详情
-      debugger
       if (this.power["sign-com-htdetail"].state) {
         let param = {
           code: value.code
