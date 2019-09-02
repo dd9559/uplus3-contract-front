@@ -121,7 +121,7 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
-              <li v-if="scope.row.recordType.value===2">纸质合同编号:<span>{{scope.row.pCode|getLabel}}</span></li>
+              <li v-if="scope.row.recordType.value===2">纸质合同编号:<span style="cursor: pointer;" @click="toLink(scope.row,'cont')">{{scope.row.pCode|getLabel}}</span></li>
               <li>房源:<span>{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
               <li>客源:<span>{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
