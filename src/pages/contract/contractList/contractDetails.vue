@@ -20,6 +20,15 @@
                     </el-tooltip>
                     <!-- <span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span> -->
                   </p>
+                  <p style="position:relative;" v-if="contractDetail.recordType.value===2">
+                    <span class="tag">纸质合同编号：</span>
+                    <!-- <span class="text">{{contractDetail.pCode}}</span> -->
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="bottom">
+                      <div class="contractDetailCode">
+                        {{contractDetail.pCode}}
+                      </div>
+                    </el-tooltip>
+                  </p>
                   <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>
@@ -277,11 +286,18 @@
               <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
             </div>
             <div v-if="contractDetail.contChangeState.value!=2">
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
+              <!-- <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.contState.value!=3&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
               <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button> -->
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
+              <!-- <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.recordType.value===1&&contractDetail.contState.value===2)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.contState.value!=3&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button> -->
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(contractDetail.recordType.value===1&&contractDetail.contState.value===2)" @click="invalid">撤单</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
+              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
@@ -525,20 +541,20 @@
     </el-dialog> -->
 
     <!-- 合同撤单弹窗 -->
-    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="400px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p class="form-label">合同撤单原因</p>
-        <div class="reason">
+        <p class="invalid">是否确认撤单！</p>
+        <!-- <div class="reason">
           <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:590px;overflow-y:hidden" maxlength="100"></el-input>
           <span class="invalidReasonLength">{{invalidReason.length}}/100</span>
           <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同{{contractDetail.toExamineState.value===1?'已审核通过':'正在审核中'}}，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
-        </div>
+        </div> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
-        <el-button round type="primary" @click="setInvalid">保存</el-button>
+        <el-button round type="primary" @click="setInvalid">确定</el-button>
       </span>
     </el-dialog>
     <!-- 回访录音添加备注弹窗 -->
@@ -1284,6 +1300,15 @@ export default {
     },
     // 合同编辑
     goEdit() {
+      //锁定合同
+      if((this.contractDetail.contState.value===1&&this.contractDetail.toExamineState.value===0)||this.contractDetail.contState.value===2){
+        let param = {
+          id:this.contractDetail.id
+        }
+        this.$ajax.put("/api/contract/lock",param,2).then(res=>{
+
+        })
+      }
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       this.$router.push({
         path: "/addContract",
@@ -1955,41 +1980,60 @@ export default {
       this.dialogInvalid=true;
     },
     setInvalid(){
-      if(this.invalidReason.length>0){
-        this.invalidReason=this.invalidReason.replace(/\s/g,"");
-        if(this.invalidReason.length>0){
-          let param = {
-            id: this.id,
-            reason: this.invalidReason
-          };
-          this.$ajax.post('/api/contract/invalid', param).then(res=>{
-            res=res.data;
-            if(res.status===200){
-              this.getContractDetail();
-              this.dialogInvalid=false;
-              this.$message({
-                message:'操作成功',
-                type:'success'
-              })
-            }
-          }).catch(error=>{
-            this.$message({
-              message:error,
-              type: "error"
-            })
-          })
-        }else{
+      let param = {
+        id: this.id
+      };
+      this.$ajax.post('/api/contract/invalid', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.getContractDetail();
+          this.dialogInvalid=false;
           this.$message({
-            message:'请填写撤单原因',
-            type:'warning'
+            message:'操作成功',
+            type:'success'
           })
         }
-      }else{
+      }).catch(error=>{
         this.$message({
-          message:'请填写撤单原因',
-          type:'warning'
+          message:error,
+          type: "error"
         })
-      }
+      })
+      // if(this.invalidReason.length>0){
+      //   this.invalidReason=this.invalidReason.replace(/\s/g,"");
+      //   if(this.invalidReason.length>0){
+      //     let param = {
+      //       id: this.id,
+      //       reason: this.invalidReason
+      //     };
+      //     this.$ajax.post('/api/contract/invalid', param).then(res=>{
+      //       res=res.data;
+      //       if(res.status===200){
+      //         this.getContractDetail();
+      //         this.dialogInvalid=false;
+      //         this.$message({
+      //           message:'操作成功',
+      //           type:'success'
+      //         })
+      //       }
+      //     }).catch(error=>{
+      //       this.$message({
+      //         message:error,
+      //         type: "error"
+      //       })
+      //     })
+      //   }else{
+      //     this.$message({
+      //       message:'请填写撤单原因',
+      //       type:'warning'
+      //     })
+      //   }
+      // }else{
+      //   this.$message({
+      //     message:'请填写撤单原因',
+      //     type:'warning'
+      //   })
+      // }
     },
     //图片预览
     // getPicture(value,index){
@@ -2488,6 +2532,10 @@ export default {
       font-size: 14px;
       width: 90px;
       color: @color-6c;
+    }
+    >.invalid{
+      font-size: 16px;
+      width: 120px;
     }
     > .reason {
       position: relative;

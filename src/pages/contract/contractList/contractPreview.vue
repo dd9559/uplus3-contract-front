@@ -19,10 +19,9 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button>
-        <!-- <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length>1||companySigns.length===1&&!isNewTemplate)" @mouseover="showList" @mouseout="closeList"> -->
+        <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button> -->
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&examineState!=3" @click="toEdit">编辑</el-button>
         <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)" @mouseover="showList" @mouseout="closeList">
-          <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos" @mouseover.native="showList" @mouseout="closeList">签章位置</el-button> -->
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
@@ -33,8 +32,8 @@
             </ul>
           </div>
         </div>
-        <!-- <el-button type="primary" round v-if="examineState===1&&contState===1&&isActive===1" @click="showPos">签章位置</el-button> -->
-        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button>
+        <!-- <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button> -->
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
@@ -48,7 +47,7 @@
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="dialogCheck = true" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
       </div>
@@ -84,21 +83,22 @@
     </div>
 
     <!-- 合同撤单弹窗 -->
-    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="400px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
-        <p class="form-label">合同撤单原因</p>
-        <div class="reason">
+        <p class="invalid">是否确认撤单！</p>
+        <!-- <p class="form-label">合同撤单原因</p> -->
+        <!-- <div class="reason">
           <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:597px" maxlength="100">
           </el-input>
           <span>{{invalidReason.length}}/100</span>
           <p v-if="examineState>-1&&contState!=2"><span>注：</span>您的合同{{examineState===1?'已审核通过':'正在审核中'}}，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="contState===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
           <p v-if="examineState<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
-        </div>
+        </div> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
-        <el-button round type="primary" @click="setInvalid">保存</el-button>
+        <el-button round type="primary" @click="setInvalid">确定</el-button>
       </span>
     </el-dialog>
     <!-- 合同审核弹窗 -->
@@ -580,30 +580,44 @@ export default {
     },
     //通过驳回
     toChecked(param){
-      this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+      let param_ = {
+        id:this.id
+      }
+       //验证此合同是否正在编辑
+      this.$ajax.get("/api/contract/audit",param_).then(res=>{
         res=res.data
         if(res.status===200){
-          this.dialogCheck=false;
-          this.isSignature=true;
-          this.getContImg();
-          this.$message({
-            message:'审核成功',
-            type:'success'
-          })
-        }
-      }).catch(error => {
-          if(error.message==='下一节点审批人不存在'){
-            this.checkPerson.code=this.code;
-            this.checkPerson.state=true;
-            this.checkPerson.type=3;
-            // this.checkPerson.type=error.data.type===1?'set':'init';
-            this.checkPerson.label=true;
-          }else{
-            this.$message({
-              message:error,
-              type: "error"
+          this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+            res=res.data
+            if(res.status===200){
+              this.dialogCheck=false;
+              this.isSignature=true;
+              this.getContImg();
+              this.$message({
+                message:'审核成功',
+                type:'success'
+              })
+            }
+          }).catch(error => {
+              if(error.message==='下一节点审批人不存在'){
+                this.checkPerson.code=this.code;
+                this.checkPerson.state=true;
+                this.checkPerson.type=3;
+                // this.checkPerson.type=error.data.type===1?'set':'init';
+                this.checkPerson.label=true;
+              }else{
+                this.$message({
+                  message:error,
+                  type: "error"
+                })
+              }
             })
-          }
+        }
+      }).catch(error =>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
         })
     },
     //签章
@@ -676,6 +690,25 @@ export default {
           this.pdfUrl = res.data.url;
         }
       })
+    },
+    //审核弹窗
+    toCheck(){
+      let param = {
+        id:this.id
+      }
+      //验证此合同是否正在编辑
+      this.$ajax.get("/api/contract/audit",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.dialogCheck = true
+        }
+      }).catch(error =>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      
     },
     checked(num) {
       //驳回/风险单
@@ -814,6 +847,15 @@ export default {
     },
     //编辑
     toEdit(){
+      //锁定合同
+      if(this.contState===1&&this.examineState===0){
+        let param = {
+          id:this.id
+        }
+        this.$ajax.put("/api/contract/lock",param,2).then(res=>{
+
+        })
+      }
       this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
         this.$router.replace({
@@ -895,41 +937,60 @@ export default {
     },
     //撤单
     setInvalid(){
-      if(this.invalidReason.length>0){
-        this.invalidReason=this.invalidReason.replace(/\s/g,"")
-        if(this.invalidReason.length>0){
-          let param = {
-            id: this.id,
-            reason: this.invalidReason
-          };
-          this.$ajax.post('/api/contract/invalid', param).then(res=>{
-            res=res.data;
-            if(res.status===200){
-              this.getContImg();
-              this.dialogInvalid=false;
-              this.$message({
-                message:'操作成功',
-                type:"success"
-              })
-            }
-          }).catch(error => {
-            this.$message({
-              message:error,
-              type: "error"
-            })
-          })
-        }else{
+      let param = {
+        id: this.id
+      };
+      this.$ajax.post('/api/contract/invalid', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.getContImg();
+          this.dialogInvalid=false;
           this.$message({
-            message:'请填写撤单原因',
-            type:"warning"
+            message:'操作成功',
+            type:'success'
           })
         }
-      }else{
+      }).catch(error=>{
         this.$message({
-          message:'请填写撤单原因',
-          type:"warning"
+          message:error,
+          type: "error"
         })
-      }
+      })
+      // if(this.invalidReason.length>0){
+      //   this.invalidReason=this.invalidReason.replace(/\s/g,"")
+      //   if(this.invalidReason.length>0){
+      //     let param = {
+      //       id: this.id,
+      //       reason: this.invalidReason
+      //     };
+      //     this.$ajax.post('/api/contract/invalid', param).then(res=>{
+      //       res=res.data;
+      //       if(res.status===200){
+      //         this.getContImg();
+      //         this.dialogInvalid=false;
+      //         this.$message({
+      //           message:'操作成功',
+      //           type:"success"
+      //         })
+      //       }
+      //     }).catch(error => {
+      //       this.$message({
+      //         message:error,
+      //         type: "error"
+      //       })
+      //     })
+      //   }else{
+      //     this.$message({
+      //       message:'请填写撤单原因',
+      //       type:"warning"
+      //     })
+      //   }
+      // }else{
+      //   this.$message({
+      //     message:'请填写撤单原因',
+      //     type:"warning"
+      //   })
+      // }
     },
     //合同资料库弹窗
     showContData(){
@@ -1407,6 +1468,10 @@ export default {
       font-size: 14px;
       width: 90px;
       color: @color-6c;
+    }
+    >.invalid{
+      font-size: 16px;
+      width: 120px;
     }
     > .reason {
       position: relative;

@@ -3,7 +3,7 @@
         <div class="com-box" :style="{ height: clientHeight() }">
         <div class="mark-red">
             <label>体系：</label>
-            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled=systemNoEdit>
+            <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled="$route.query.type==2">
                 <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
         </div>
@@ -135,9 +135,7 @@
                     public: '',
                     private: ''
                 },
-                rowId: 0,
-                systemNoEdit: false,
-                systemTagList: []
+                rowId: 0
             }
         },
         created(){
@@ -147,7 +145,6 @@
             if(type==1) {
                 this.$tool.clearForm(this.commissionForm)
             }else if(type==2){
-                this.systemNoEdit = true
                 let rowInfo = JSON.parse(localStorage.getItem('row'))
                 this.rowId = rowInfo.id
                 this.commissionForm = {

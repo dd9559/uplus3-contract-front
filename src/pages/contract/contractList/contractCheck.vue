@@ -79,6 +79,10 @@
           <span class="text">单数：</span> <span class="data">13</span> -->
         <!-- </span> -->
       <!-- </p> -->
+      <div class="listTitle">
+        <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
+        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-htsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
+      </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column align="center" label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
@@ -171,6 +175,12 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="审核时间" min-width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.auditTime">{{Number(scope.row.auditTime)|formatTime}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="当前审核人" min-width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
@@ -204,7 +214,7 @@
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</el-button>
               <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
             <span style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</span>
-            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(scope.row.auditId===getUserMsg.empId))))" @click="goCheck(scope.row)">审核</el-button>
+            <el-button type="text"  v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</el-button>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -234,6 +244,7 @@ import changeCancel from "../contractDialog/changeCancel";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
+let printParam={}
 
 export default {
   mixins: [MIXINS],
@@ -303,7 +314,11 @@ export default {
         'sign-com-cust': {
           state: false,
           name: '客源详情'
-        }
+        },
+        "sign-ht-htsh-export": {
+          state: false,
+          name: '导出'
+        },
       }
     }
   },
@@ -347,6 +362,9 @@ export default {
     }
   },
   methods:{
+    getExcel:function () {
+      this.excelCreate('/input/contractAuditExcel',printParam)
+    },
     //获取合同列表
     getContractList(type="init") {
       let param = {
@@ -368,7 +386,7 @@ export default {
         param.contTypes=''
       }
       // delete param.depName
-      //console.log(param)
+      // console.log(param)
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/contractCheck',
@@ -377,6 +395,7 @@ export default {
           methods:"postJSON"
         }))
       }
+      printParam=Object.assign({},param)
 
       this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
         res = res.data;
@@ -589,6 +608,15 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.listTitle{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  .float-right{
+    float: right;
+  }
+}
 
 .width300{
   width: 325px !important;
@@ -619,7 +647,7 @@ export default {
 .contract-list {
   // padding-top: 10px;
   background-color: #fff;
-  padding: 10px 10px 0 10px;
+  padding: 8px 10px 0 10px;
   border-radius: 2px;
   box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > p {

@@ -15,8 +15,8 @@
                                 <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
                                 <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
                             </el-form-item>
-                            <el-form-item label="纸质合同编号：" prop="code"  v-if="isOffline===1">
-                                <el-input v-model="contractForm.code" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('code',0)" >
+                            <el-form-item label="纸质合同编号：" prop="pCode"  v-if="isOffline===1">
+                                <el-input v-model="contractForm.pCode" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('pCode',0)" >
                                 </el-input>
                             </el-form-item>
                             <br>
@@ -350,7 +350,7 @@ export default {
         subscriptionPrice: [{required: true, validator: checkPrice,trigger:'change' }],
         dealPrice: [{ required: true, validator: checkPrice,trigger:'change' }],
 
-        code:[
+        pCode:[
             {
               type: "string",
               required: true,
@@ -440,10 +440,10 @@ export default {
          this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
         })
       }
-      else if(val=="code"){
+      else if(val=="pCode"){
         this.$nextTick(() => {
             let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
-            this.contractForm.code = this.contractForm.code.toString().replace(/\s/g,"").replace(addrReg,'')
+            this.contractForm.pCode = this.contractForm.pCode.toString().replace(/\s/g,"").replace(addrReg,'')
         })
       }
     },
@@ -815,7 +815,7 @@ export default {
         let param = {
           igdCont: {
             type: this.contractForm.type,
-            code: this.contractForm.code,
+            pCode: this.contractForm.pCode,
             signDate: this.contractForm.signDate,
             houseinfoCode: this.contractForm.houseinfoCode,
             guestinfoCode: this.contractForm.guestinfoCode,
