@@ -1301,7 +1301,7 @@ export default {
     // 合同编辑
     goEdit() {
       //锁定合同
-      if(this.contractDetail.contState.value===1&&this.contractDetail.toExamineState.value===0){
+      if((this.contractDetail.contState.value===1&&this.contractDetail.toExamineState.value===0)||this.contractDetail.contState.value===2){
         let param = {
           id:this.contractDetail.id
         }
