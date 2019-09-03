@@ -5,7 +5,7 @@
     <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="adjustForm" class="adjust-form" size="mini">
         <el-form-item label="关键字">
-          <el-tooltip effect="dark" content="合同编号/房源编号/客源编号" placement="top">
+          <el-tooltip effect="dark" content="合同编号/纸质合同编号/房源编号/客源编号" placement="top">
             <el-input v-model="adjustForm.keyword" style="width:150px" clearable placeholder="请输入"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -34,7 +34,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-
+        <el-form-item label="签约方式">
+          <el-select v-model="adjustForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="部门">
           <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" @clear="clearDepNameFn" :loading="loading" class="width200">
               <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -74,9 +79,10 @@
     <div class="contract-list">
       <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同编号" align="center" min-width="120" fixed>
+        <el-table-column label="合同信息" align="center" min-width="140" fixed>
           <template slot-scope="scope">
-            <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</div>
+            <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.code}}</span></p>
+            <p v-if="scope.row.recordType&&scope.row.recordType.value===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter" align="center" min-width="60">
@@ -90,7 +96,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="成交经纪人" :formatter="nullFormatter" align="center" min-width="120">
+        <el-table-column label="成交经纪人" :formatter="nullFormatter" align="center" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
             <p>{{scope.row.dealAgentName}}</p>
@@ -466,7 +472,8 @@
           "10": "", //合同类型
           "17": "", //审核状态
           "507": "",//成交总价单位
-          "53": "" //合作方式
+          "53": "", //合作方式
+          "64":"",//签约方式  线上线下
         },
         layerAudit:{
           contractType:{
@@ -714,7 +721,8 @@
               dealAgentStoreId: this.adjustForm.dealAgentStoreId, 
               depName:this.adjustForm.depName,   //this.Form.getDepName.id,
               dealAgentId: this.adjustForm.dealAgentId,    //this.Form.getAgentName.empId,
-              keyword: this.adjustForm.keyword
+              keyword: this.adjustForm.keyword,
+              recordType:this.adjustForm.recordType
 
             },
             pageNum: this.pageNum,
