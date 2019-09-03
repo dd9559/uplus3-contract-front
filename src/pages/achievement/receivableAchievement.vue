@@ -148,7 +148,7 @@
               </p>
               <p v-if="scope.row.recordType.value===2">
                 纸质合同编号:
-                <span @click="skipContDel(scope.row)" style="cursor:pointer;">{{scope.row.pCode}}</span>
+                <span class="blue" @click="skipContDel(scope.row)" style="cursor:pointer;">{{scope.row.pCode}}</span>
               </p>
             </template>
           </el-table-column>
