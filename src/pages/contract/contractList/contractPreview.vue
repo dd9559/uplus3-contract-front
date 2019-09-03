@@ -848,7 +848,7 @@ export default {
     //编辑
     toEdit(){
       //锁定合同
-      if(this.contState===1&&this.examineState===0){
+      if((this.contState===1&&this.examineState===0)||this.contState===2){
         let param = {
           id:this.id
         }
