@@ -283,7 +283,15 @@
               </div>
               <div v-else>
                 <div v-for="item in scope.row.distributions">
-                  <p>{{item.level4}}-{{item.assignor}}</p>
+                  <el-tooltip
+                  v-if="(item.level4+item.assignor).length>15"
+                  class="item"
+                  effect="dark"
+                  :content="item.level4+'-'+item.assignor"
+                  placement="top">
+                    <p class="fenc-text">{{item.level4}}-{{item.assignor}}</p>
+                  </el-tooltip>
+                  <p v-else>{{item.level4}}-{{item.assignor}}</p>
                 </div>
               </div>
             </template>
@@ -1796,6 +1804,11 @@ export default {
           background-color: #eef2fb;
         }
       }
+    }
+    .fenc-text {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
   }
 
