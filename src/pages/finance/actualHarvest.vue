@@ -5,7 +5,7 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-tooltip content="合同编号/房源编号/客源编号/物业地址/业主/客户/手机号" placement="top">
+          <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号" placement="top">
             <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
           </el-tooltip>
         </div>
@@ -96,6 +96,17 @@
             </el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>签约方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.recordType" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['64']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" :class="[power['sign-cw-rec-export'].state?'':'other']">
@@ -110,12 +121,14 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
+              <li class="code-paper" v-if="scope.row.recordType.value===2">纸质合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.pCode|getLabel}}</span></li>
               <li>房源:<span>{{scope.row.houseinfoCode}}</span><span>{{scope.row.showOwnerName}}</span></li>
               <li>客源:<span>{{scope.row.guestinfoCode}}</span><span>{{scope.row.showCustName}}</span></li>
             </ul>
           </template>
         </el-table-column>
         <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column align="center" label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="款类" prop="collectionType">
           <template slot-scope="scope">
             佣金
@@ -183,7 +196,8 @@
         dictionary:{
           '10': '',
           '55': '',
-          '53': ''
+          '53': '',
+          '64': '',
         },
         drop_MoneyType:[],
         searchForm: {
@@ -196,7 +210,8 @@
           signTime: '',
           collectionTime: '',
           cooperation: '',
-          keyword: ''
+          keyword: '',
+          recordType: '',
         },
         list: [],
         //分页
@@ -413,7 +428,7 @@
           margin-right: 10px;
         }
       }
-      &:first-of-type{
+      &:first-of-type,&.code-paper{
         > span {
           &:first-of-type {
             color: @color-blue;

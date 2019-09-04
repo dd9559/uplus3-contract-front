@@ -139,12 +139,26 @@ for(let readonlyItem in msg){
                 }else{
                     element.innerHTML = msg['ownerName']
                 }
+            }else if(readonlyItem==='ownerID'){
+                if(msg['ownerIDs']){
+                    let names = msg['ownerID']+'、'+msg['ownerIDs']
+                    element.innerHTML = names
+                }else{
+                    element.innerHTML = msg['ownerID']
+                }
             }else if(readonlyItem==='guestName'){
                 if(msg['guestNames']){
                     let names = msg['guestName']+'、'+msg['guestNames']
                     element.innerHTML = names
                 }else{
                     element.innerHTML = msg['guestName']
+                }
+            }else if(readonlyItem==='guestID'){
+                if(msg['guestIDs']){
+                    let names = msg['guestID']+'、'+msg['guestIDs']
+                    element.innerHTML = names
+                }else{
+                    element.innerHTML = msg['guestID']
                 }
             }else if(readonlyItem==='propertyAddr'){
                 if(element.getAttribute("extendParam")==="val4"){

@@ -2248,12 +2248,12 @@
             for(let i=0;i<this.clientArr.length;i++){
               if(item.roleType==this.clientArr[i].roleType){
                   this.$message.error("角色已经存在，请勿重新添加");
-                  hflag=false
+                  kflag=false
                   return false;
               }
             }
           })
-          if(hflag){
+          if(kflag){
             this.clientArr= this.clientArr.concat(this.addManList); 
           }
         }

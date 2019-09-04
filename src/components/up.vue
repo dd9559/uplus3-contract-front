@@ -79,6 +79,9 @@
           init: {
             FilesAdded: function (up, files) {
               // 选择文件后执行
+              if(up.files.length===0){
+                return
+              }
               loading = that.$loading({
                 lock: true,
                 text: 'Loading',

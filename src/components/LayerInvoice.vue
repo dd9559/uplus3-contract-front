@@ -72,7 +72,7 @@
               :money="paperInfoData.amount"
               :moneyZh="paperInfoData.amountZh"
               :create="paperInfoData.createByName"
-              :rules="getPro"
+              :rules="paperInfoData.remark"
               :imgSrc="imgUrl"
               :time="paperInfoData.printDate"
               :num="paperInfoData.printCount?(getPrint==='all'?`${paperInfoData.printCount.KHL},${paperInfoData.printCount.JZL}`:getPrint==='client'?paperInfoData.printCount.KHL:paperInfoData.printCount.JZL):0"
@@ -80,6 +80,7 @@
               :storesName="paperInfoData.storeName"
               :printType="printType"
               :paperFail="paperFail"
+              :payway="paperInfoData.payway&&paperInfoData.payway.label"
               :payerType="paperInfoData.payerType"></LayerPaperInfo>
           </template>
           <template v-else>
@@ -97,7 +98,7 @@
               :money="item.amount"
               :moneyZh="item.amountZh"
               :create="item.createByName"
-              :rules="item.type"
+              :rules="item.remark"
               :imgSrc="imgUrlList[index]"
               :time="item.printDate"
               :num="item.printCount?(getPrint==='client'?item.printCount.KHL:item.printCount.JZL):0"
@@ -105,6 +106,7 @@
               :storesName="item.storeName"
               :printType="printType"
               :paperFail="paperFail"
+              :payway="item.payway&&item.payway.label"
               :payerType="item.payerType"></LayerPaperInfo>
           </template>
         </LayerPrint>

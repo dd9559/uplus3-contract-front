@@ -14,7 +14,7 @@
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
           <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
-            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.code" @input="inputCode" placeholder="请输入" class="dealPrice">
+            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
@@ -47,7 +47,7 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('house')" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
@@ -67,7 +67,8 @@
           <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
             <span class="propertyAddress" v-if="contractForm.houseinfoCode">
               <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
-              {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}}
+              <!-- {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}} -->
+              {{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}
             </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
@@ -76,7 +77,7 @@
              <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
              <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
              <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
-             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" /> 
+             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" />
           </el-form-item>
           <br>
           <el-form-item label="建筑面积：" class="width-250">
@@ -171,7 +172,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('guest')" v-if="type===1">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
@@ -358,6 +359,15 @@
         <el-button type="primary" @click="toH5">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分成人信息弹窗 -->
+    <el-dialog :title="dialogType==='house'?'当前房源分成人':'当前客源分成人'" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="agentsDialog">
+        <!-- <p>当前房源分成人</p> -->
+        <ul>
+          <li v-for="(item, index) in agentsList" :key="index" :title="`${item.roleText} ${item.empName}·${item.deptName}`"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
+        </ul>
+      </div>
+    </el-dialog>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <a id="add" href="" v-show="false" target="_blank"></a>
@@ -376,8 +386,8 @@ const rule = {
   // transFlowCode: {
   //   name: "交易流程",
   // },
-  code:{
-    name:"合同编号"
+  pCode:{
+    name:"纸质合同编号"
   },
   houseinfoCode: {
     name: "房源"
@@ -459,7 +469,7 @@ export default {
       cooperation: false,
       //操作类型  默认是添加
       type: 1,
-      isOffline:'',
+      isOffline:'',//判断创建合同为0=线上，1=线下
       dictionary: {
         //数据字典
         "514": "", //产权状态
@@ -531,6 +541,9 @@ export default {
       rightAddrDetail:'',
       singleCompany:false,//单公司提示框
       singleCompanyName:'',
+      agentsDialog:false,
+      agentsList:[],//分成人列表
+      sourceBtnCheck:true,//房客源是否可选择
     };
   },
   created() {
@@ -784,7 +797,7 @@ export default {
       //   delete rule_.transFlowCode
       // }
       if(this.isOffline!==1){
-        delete rule_.code
+        delete rule_.pCode
       }
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
@@ -792,11 +805,11 @@ export default {
       if(!this.contractForm.transFlowCode){
         this.contractForm.transFlowCode=''
       }
-      if(this.contractForm.code){
-        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"")
+      if(this.contractForm.pCode){
+        this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"")
       }
-      if(!this.contractForm.code){
-        this.contractForm.code=''
+      if(!this.contractForm.pCode){
+        this.contractForm.pCode=''
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
           if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
@@ -1377,7 +1390,7 @@ export default {
                   path: "/extendParams"
                 });
               }
-              
+
             }
 
           }
@@ -1625,7 +1638,7 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
-      console.log("房源");
+      // console.log("房源");
       let param = {
         houseId: id,
         // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
@@ -1650,6 +1663,10 @@ export default {
             this.$set(this.contractForm,'timeUnit',unit);
           }
           this.contractForm.houseInfo = houseMsg;
+          //重新选择房源时清空产权地址
+          this.rightAddrCity='';
+          this.rightAddrArea='';
+          this.rightAddrDetail='';
           if(houseMsg.OwnerInfoList.length>0){
             this.ownerList=[];
             this.ownerList_=[];
@@ -1677,6 +1694,12 @@ export default {
           //   name: houseMsg.HouseStoreName,
           //   id: houseMsg.HouseStoreCode
           // });
+          //获取房源分成人--新增xu
+          let param = {
+            id:houseMsg.PropertyCode,
+            type:1
+          }
+          this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1687,7 +1710,7 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
-      console.log("客源");
+      // console.log("客源");
       let param = {
         customerId: id,
         // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
@@ -1746,6 +1769,12 @@ export default {
               this.guestList_.push(obj_);
             });
           }
+          //获取客源分成人
+          let param = {
+            id:guestMsg.InquiryCode,
+            type:2
+          }
+          this.getAgentMsg(param)
         }
           // let element = {
           //   name: guestMsg.OwnerInfo.CustName,
@@ -1780,9 +1809,19 @@ export default {
         })
       });
     },
+    //获取分成人信息
+    getAgentMsg(param){
+      this.$ajax.get("/api/contract/getAgents",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.agentsList=res.data
+          this.agentsDialog=true
+        }
+      })
+    },
     //关闭房源客源弹窗
     closeHouseGuest(value) {
-      if (value) {
+      if (value) {//判断是否点击的确认按钮
         if (value.dialogType === "house") {
           if(this.choseHcode&&this.choseHcode!==value.selectCode){
             this.contractForm.propertyRightAddr=''
@@ -1957,6 +1996,7 @@ export default {
           this.recordId = res.data.recordId;
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
+          this.sourceBtnCheck=(res.data.contState.value===3)?false:true
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
           let index2 = rightAddress.indexOf('区')
@@ -1979,7 +2019,7 @@ export default {
           }else{
             this.rightAddrDetail=rightAddress
           }
-          
+
           // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
           // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
           // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
@@ -2104,10 +2144,10 @@ export default {
     inputCode(){
       // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
       let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
-      if(this.contractForm.code){
-        this.contractForm.code=this.contractForm.code.replace(/\s+/g,"").replace(addrReg,'')
+      if(this.contractForm.pCode){
+        this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
       }
-     
+
     },
     closeCheckPerson(){
       checkPerson.state=false;
@@ -2229,6 +2269,38 @@ export default {
 .singleCompany{
   // text-align: center;
   padding: 20px 0 10px 10px;
+}
+.agentsDialog{
+  box-sizing: border-box;
+  padding: 10px 10px 10px;
+  p{
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  >ul{
+    background-color: #e8e8e8;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    >li{
+      flex-basis: 46%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      line-height: 1.6;
+      span{
+        box-sizing: border-box;
+        display: inline-block;
+        min-width: 50px;
+        padding-right: 10px;
+        font-weight: bold;
+      }
+    }
+  }
 }
 .warning-box{
   margin: -4px 0 18px 28px;

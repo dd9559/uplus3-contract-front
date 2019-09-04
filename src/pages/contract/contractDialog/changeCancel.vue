@@ -81,7 +81,7 @@
 				</div>
 				<!-- 上传附件 -->
 				<div class="uploadfile">
-					<div class="uploadtitle form-label">上传解除协议<span><b>注：</b>协议支持所有格式</span></div>
+					<div class="uploadtitle form-label">上传解除协议<span><b>注：</b>协议支持所有格式</span><span class="iconfont" @click="downloadFile"><i class="el-icon-document"></i>下载解约协议</span></div>
 					<div class="uploadbtn">
 						<ul>
 							<li>
@@ -250,6 +250,10 @@ export default {
   },
 
   methods: {
+	  //下载解约协议操作--新增xu
+    downloadFile:function () {
+      this.excelCreate('/contract/getAttachment',{type:2})
+    },
     close() {
       this.$emit("closeChangeCancel");
 		},
@@ -364,7 +368,7 @@ export default {
 						type:'warning'
 					})
 				}
-				
+
 			}else if(this.dialogType==="changeEdit"){
 				//上传合变更协议
 				if(this.textarea.length>0){
@@ -474,6 +478,7 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
+
 #changecancel {
   .mt80 {
     .el-dialog {
@@ -545,6 +550,14 @@ export default {
           span {
             margin-left: 16px;
             color: #8e8e8e;
+            &.iconfont{
+              color: @color-blue;
+              font-size: @size-14;
+              cursor: pointer;
+              >i{
+                font-size: @size-16;
+              }
+            }
             b {
               color: #6c7986;
             }
