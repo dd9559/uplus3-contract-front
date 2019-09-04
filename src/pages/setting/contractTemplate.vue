@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
-    <!-- <el-form ref="form"  label-width="80px">
-      <el-form-item label="城市选择" class="selectCity">
+    <el-form ref="form"  style="padding-left:10px" :inline="true">
+      <el-form-item label="城市选择" class="selectCity" >
         <el-select v-model="selectCity" placeholder="请选择" value-key='label' @change='selCity'>
           <el-option
               v-for="(item) in citys"
@@ -12,10 +12,21 @@
           </el-option>
         </el-select>
       </el-form-item>
-    </el-form> -->
+      <el-form-item label="体系" class="selectCity">
+        <el-select v-model="tixiid" placeholder="请选择" value-key='label' @change='selSys'>
+          <el-option
+              v-for="(item) in tixi"
+              :key="item.value"
+              :label="item.value"
+              :value="item.key"
+              >
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
     <div class="data-list">
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
-        <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column>
+        <!-- <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column> -->
         <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
         <el-table-column align="center" label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
@@ -107,8 +118,10 @@
     data() {
       return {
         rowenableId:'',
-        selectCity: 1,
+        selectCity: '',
         list: [],
+        tixiid:'',
+        tixi:[],
         rowData: [],
         modal: false,
         template: '',//弹窗内容
@@ -133,21 +146,17 @@
       }
     },
     created() {
-      // if(localStorage.getItem('cid')){
-      //   this.selectCity=parseInt(localStorage.getItem('cid'))
-      // }else{
-        if(localStorage.getItem('initId')){
-          this.selectCity=parseInt(localStorage.getItem('initId'))
-        }
-        // this.selectCity=parseInt(this.getUser.user.cityId)
-          this.cityName='武汉'
-      // }
+   
+        // if(localStorage.getItem('initId')){
+        //   this.selectCity=parseInt(localStorage.getItem('initId'))
+        // }
+          // this.cityName='武汉'
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
                     this.citys=res.data.data
           }
       })
-      this.getList()
+      // this.getList()
     },
     methods: {
       rowClick(){
@@ -167,8 +176,18 @@
         }
       },
       selCity(){
-            localStorage.setItem('cid',this.selectCity)
-            this.getList()
+        let param={
+          cityId:this.selectCity
+        }
+        this.tixiid=''
+            this.$ajax.get('/api/organize/getSystemTagByCityId',param).then(res=>{
+                if(res.status==200){
+                    this.tixi=res.data.data
+            }
+          })
+      },
+      selSys(){
+        this.getList()
       },
       popMsg(msg,callback){
         this.$confirm(msg,'提示',{
@@ -185,24 +204,21 @@
        */
       getList: function () {
         let param = {
-          cityId:this.selectCity
+          cityId:this.selectCity,
+          systemTag:this.tixiid
         }
-        // if(this.power['sign-set-ht-query'].state){
-              this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
-              res = res.data
-              if (res.status === 200) {
-                this.list = res.data
-                this.cityName=res.data[0].cityName
-              }
-            }).catch(error => {
-              console.log(error)
-            })
-        // }
-        // else{
-        //   this.noPower(this.power['sign-set-ht-query'].name)
-        // }
-
-      },
+        if(this.tixiid!=''){
+            this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
+                          res = res.data
+                          if (res.status === 200) {
+                            this.list = res.data
+                            this.cityName=res.data[0].cityName
+                          }
+                        }).catch(error => {
+                          console.log(error)
+                        })
+                  }
+        },
       trim(str){
             return str.replace(/(^\s*)|(\s*$)/g, "")
       },
@@ -336,6 +352,13 @@
         }
       }
     },
+    watch:{
+      tixiid(newdata){
+        if(newdata==''){
+          this.list=[]
+        }
+      }
+    }
   }
 </script>
 
@@ -348,6 +371,8 @@
     box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
     border-radius:4px;
     border: 1px solid transparent;
+    align-items: center;
+    display: flex;
     .selectCity {
       padding: 6px 0;
       line-height: 32px;
@@ -358,6 +383,7 @@
         line-height: 32px;
       }
     }
+
     .el-select {
       width: 150px;
       height: 32px;
