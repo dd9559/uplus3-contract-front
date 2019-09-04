@@ -915,8 +915,8 @@ export default {
         }
       }).catch(error => {
           this.$message({
-            message: '该类型合同模板未上传,请上传后再创建',
-            type: "warning"
+            message: error,
+            type: "error"
           });
         });
     },
