@@ -291,7 +291,12 @@
             <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="成交报告" min-width="80" prop="laterStageState.label"></el-table-column>
+        <el-table-column align="center" label="成交报告" min-width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value===2||scope.row.contType.value===3">{{scope.row.dealReportState.label}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="后期状态" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1">
