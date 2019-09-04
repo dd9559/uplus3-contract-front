@@ -1736,6 +1736,11 @@ export default {
               this.dialogSuccess=true
             }
           }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type:'error'
+          })
         })
       }else{
         this.$message({
