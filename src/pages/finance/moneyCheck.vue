@@ -164,7 +164,7 @@
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
-              <li v-if="scope.row.recordType.value===2">纸质合同编号:<span style="cursor: pointer;" @click="toLink(scope.row,'cont')">{{scope.row.paperCode|getLabel}}</span></li>
+              <li class="code-paper" v-if="scope.row.recordType.value===2">纸质合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.paperCode|getLabel}}</span></li>
               <li>房源:<span>{{scope.row.houseCode}}</span><span>{{scope.row.houseOwner}}</span></li>
               <li>客源:<span>{{scope.row.custCode}}</span><span>{{scope.row.custName}}</span></li>
             </ul>
@@ -802,7 +802,7 @@
           margin-right: 10px;
         }
       }
-      &:first-of-type{
+      &:first-of-type,&.code-paper{
         > span {
           &:first-of-type {
             color: @color-blue;
