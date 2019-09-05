@@ -584,15 +584,16 @@
         this.$ajax.get('/api/payInfo/toInsert',{contId:id}).then(res=>{
           res=res.data
           if(res.status===200){
-            if(res.data){
+            this.firstCreate.content = Object.assign({},res.data)
+            if(!res.data.showAccount){
               this.firstCreate.state=false
-              this.firstCreate.content = Object.assign({},res.data)
+
               if(!this.firstCreate.content.showAccount){
                 this.activeAdmin = res.data.account[0].accountId
               }
               this.getEmploye(res.data.storeId)
             }else {
-              console.log(this.getUser)
+              // console.log(this.getUser)
               this.firstCreate.state=true
 
               this.dep.id=this.getUser.user.depId
