@@ -4,40 +4,37 @@
     <ScreeningTop
       @propQueryFn="getData('search')"
       @propResetFormFn="resetFormFn">
-      <div class="filter-item" v-show="filterShow">
-        <!-- 筛选条件 -->
-        <el-form
-          :inline="true"
-          ref="propForm"
-          :model="propForm"
-          class="prop-form"
-          size="small">
+      <el-form
+        :inline="true"
+        ref="propForm"
+        :model="propForm"
+        class="prop-form"
+        size="small">
 
-          <el-form-item
-            label="签约日期"
-            prop="dateMo"
-            class="mr">
-            <el-date-picker
-              v-model="propForm.dateMo"
-              class="w330"
-              type="daterange"
-              range-separator="至"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-          </el-form-item>
-          <!-- 部门 -->
-          <el-form-item label="部门" style="margin-left:20px;">
-            <select-tree
-              :data="DepList"
-              :init="propForm.department"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-            ></select-tree>
-          </el-form-item>
-        </el-form>
-      </div>
+        <el-form-item
+          label="签约日期"
+          prop="dateMo"
+          class="mr">
+          <el-date-picker
+            v-model="propForm.dateMo"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <!-- 部门 -->
+        <!--<el-form-item label="部门" style="margin-left:20px;">
+          <select-tree
+            :data="DepList"
+            :init="propForm.department"
+            @checkCell="depHandleClick"
+            @clear="clearDep"
+          ></select-tree>
+        </el-form-item>-->
+      </el-form>
     </ScreeningTop>
     <!-- 筛选条件 end -->
     <!-- 数据列表 -->
@@ -61,12 +58,15 @@
           </div>-->
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         </div>
-        <el-button class="data-head-right" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button class="data-head-right" round type="primary" size="medium" @click="getExcel(tableShow?'tableDraw_two':'tableDraw_one')"
+                   style="padding:9px 15px;min-width: 80px;">导出
+        </el-button>
       </div>
       <!-- 头部 end -->
       <!-- 表格一 -->
-      <div class="data-list" v-show="tableShow">
+      <div class="data-list" v-if="!tableShow">
         <el-table
+          key="pTable"
           :data="tableData"
           ref="tableCom"
           v-loading="loading"
@@ -74,7 +74,11 @@
           style="width: 100%"
           border>
           <el-table-column label="上级部门" align="center" min-width="80"></el-table-column>
-          <el-table-column label="门店" align="center" width="80"></el-table-column>
+          <el-table-column label="门店" align="center" width="80">
+            <template slot-scope="scope">
+              <span class="cursor-style" @click="toDetails">click</span>
+            </template>
+          </el-table-column>
           <el-table-column label="门店状态" align="center" width="80"></el-table-column>
 
           <el-table-column label="店长" align="center"></el-table-column>
@@ -185,8 +189,6 @@
 
           <el-table-column label="本月合同金额（元）" align="center"></el-table-column>
         </el-table>
-
-
         <!-- 分页 -->
         <el-pagination
           @size-change="handleSizeChange"
@@ -197,6 +199,220 @@
           v-if="total!=0">
         </el-pagination>
       </div>
+      <div class="data-list" v-else>
+        <el-table
+          key="cTable"
+          :data="tableData"
+          ref="tableCom"
+          v-loading="loading"
+          :max-height="tableNumberCom"
+          style="width: 100%"
+          border>
+          <el-table-column label="门店" align="center" width="80"></el-table-column>
+          <el-table-column label="合同内容" align="center">
+            <el-table-column
+              prop="leaseAmount"
+              label="签约日期"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="lowCommissionAmount"
+              label="合同类型"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="secondAmount"
+              label="签约方式"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="合同编号"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="纸质编号"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="合同地址"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="合同成交价（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="合同应收佣金（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="单数" align="center"></el-table-column>
+          <el-table-column label="本店收入" align="center">
+            <el-table-column
+              prop="leaseAmount"
+              label="本店分成比例"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="lowCommissionAmount"
+              label="本店应收佣金（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="secondAmount"
+              label="本月实收佣金（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="经纪人"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="在职状态"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="分成比例"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="本月实收分成金额（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="合作门店收入" align="center">
+            <el-table-column
+              prop="leaseAmount"
+              label="合作门店"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="lowCommissionAmount"
+              label="合作经纪人"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="secondAmount"
+              label="分成比例"
+              align="center"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="agencyAmount"
+              label="本月实收分成金额（元）"
+              align="center"
+              width="70">
+            </el-table-column>
+          </el-table-column>
+        </el-table>
+        <!-- 分页 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page.sync="pageNum"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+          v-if="total!=0">
+        </el-pagination>
+      </div>
+    </div>
+    <div class="print-table">
+      <table id="tableDraw_one" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;">
+        <thead>
+          <tr>
+            <th rowspan="2">上级部门</th>
+            <th rowspan="2">门店</th>
+            <th rowspan="2">门店状态</th>
+            <th rowspan="2">店长</th>
+            <th colspan="4">签约总单数</th>
+            <th colspan="6">本月实收业绩（元）</th>
+            <th colspan="6">本月合同业绩（元）</th>
+            <th rowspan="2">本月实收金额（元）</th>
+            <th rowspan="2">本月合同金额（元）</th>
+          </tr>
+          <tr>
+            <th>租赁</th>
+            <th>买卖</th>
+            <th>低佣</th>
+            <th>代办</th>
+            <th>租赁</th>
+            <th>买卖</th>
+            <th>低佣</th>
+            <th>代办</th>
+            <th>违约金（元）</th>
+            <th>金融收入（元）</th>
+            <th>租赁</th>
+            <th>买卖</th>
+            <th>低佣</th>
+            <th>代办</th>
+            <th>违约金（元）</th>
+            <th>金融收入（元）</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in 10">
+          <td v-for="tip in 22">dd</td>
+        </tr>
+        </tbody>
+      </table>
+      <table id="tableDraw_two" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;">
+        <thead>
+        <tr>
+          <th rowspan="2">门店</th>
+          <th colspan="8">合同内容</th>
+          <th rowspan="2">单数</th>
+          <th colspan="7">本店收入</th>
+          <th colspan="4">合作门店收入</th>
+        </tr>
+        <tr>
+          <th>签约日期</th>
+          <th>合同类型</th>
+          <th>签约方式</th>
+          <th>合同编号</th>
+          <th>纸质编号</th>
+          <th>合同地址</th>
+          <th>合同成交价（元）</th>
+          <th>合同应收佣金（元）</th>
+          <th>本店分成比例</th>
+          <th>本店应收佣金（元）</th>
+          <th>本月实收佣金（元）</th>
+          <th>经纪人</th>
+          <th>在职状态</th>
+          <th>分成比例</th>
+          <th>本月实收分成金额（元）</th>
+          <th>合作门店</th>
+          <th>合作经纪人</th>
+          <th>分成比例</th>
+          <th>本月实收分成金额（元）</th>
+        </tr>
+        </thead>
+      </table>
     </div>
   </div>
 </template>
@@ -209,7 +425,6 @@
     mixins: [MIXINS, FILTER],
     data() {
       return {
-        filterShow: true,
         tableData: [],
         propForm: {
           department: "", //部门
@@ -217,9 +432,7 @@
           depId: ''
         },
         total: 0,
-        brandShow: false,
-        brandArr: [],
-        tableShow: true, //控制门店实收表格，门店明细表格两者显示与隐藏
+        tableShow: false, //列表内容是否为店内合同明细
         storeTitle: "全公司",
         steps: [],
         level: 1,
@@ -238,18 +451,20 @@
       var date2 = this.$tool.dateFormat(Date.now())
       this.propForm.dateMo = [date, date2]
       this.getData()
-
-      // this.storeTitle = this.testData0.title;
+      //路由带参显示店内合同明细表
+      if (this.$route.query.detail) {
+        this.setPath(this.getPath.concat({name: '店内合同明细'}))
+        this.tableShow = true
+      }
     },
     methods: {
-      getData(type='init') {
-        debugger
+      getData(type = 'init') {
         let param = {
           pageSize: this.pageSize,
           pageNum: this.pageNum,
         };
-        if(type!=='init'){
-          param = Object.assign(param,{
+        if (type !== 'init') {
+          param = Object.assign(param, {
             startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
             endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
             depId: this.propForm.depId,
@@ -285,6 +500,16 @@
           this.$message({message: err})
         })
       },
+      //跳转店内合同明细
+      toDetails() {
+        let newPage = this.$router.resolve({
+          path: "/storeReceive",
+          query: {
+            detail: true
+          }
+        });
+        window.open(newPage.href, "_blank");
+      },
       intodetial(type) {
         this.activeItem = type
         this.dpart = type
@@ -300,14 +525,19 @@
         }
       },
       //前端导出
-      getExcel() {
-        let param = {
-          startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
-          endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
-          depLevel: this.dpart,
-          depId: this.propForm.depId
-        }
-        this.excelCreate("/input/performanceExcel", param);
+      getExcel:function (table,name) {
+        var uri = 'data:application/vnd.ms-excel;base64,'
+        var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+        var base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        var format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+        if (!table.nodeType) table = document.getElementById(table)
+        var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }
+
+        var aLink=document.createElement('a')
+        aLink.href = uri + base64(format(template, ctx));
+        aLink.download = `${table==='tableDraw_one'?'业绩报表':'店内合同明细'}.xls`;
+        aLink.click()
       },
       resetFormFn() {
         this.propForm.department = ''
@@ -325,45 +555,11 @@
       },
       //分页
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         this.pageNum = val
-        let param = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
-          endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
-          depLevel: this.dpart
-        }
-        this.$ajax.get('/api/achForm/getAchForm', param).then(res => {
-          if (res.data.data.achievementForms != 0) {
-            this.steps = res.data.data.levels
-            //  for(let i=0;i<this.steps.length;i++){
-            //     if(this.steps[i]>0){
-            //       this.activeItem=i+1
-            //       this.dpart=i+1
-            //       break
-            //     }
-            //   }
-            if (res.data.data.achievementForms.list[0]) {
-              this.level = res.data.data.achievementForms.list[0].depLevel
-              this.dpart = res.data.data.achievementForms.list[0].depLevel
-              this.activeItem = res.data.data.achievementForms.list[0].depLevel
-              this.tableData = res.data.data.achievementForms.list
-            } else {
-              this.tableData = []
-            }
-            this.total = res.data.data.achievementForms.total
-            this.loading = false
-          } else {
-            this.tableData = []
-            this.loading = false
-          }
-
-        }).catch(err => {
-          this.$message({message: err})
-        })
+        this.getData('page')
       },
     }
   };
@@ -371,6 +567,11 @@
 
 <style scoped lang="less">
   @import "~@/assets/less/lsx.less";
+
+  .cursor-style {
+    cursor: pointer;
+    color: @color-blue;
+  }
 
   .layout {
     // background-color: #F2F3F8!important;

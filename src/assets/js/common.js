@@ -95,11 +95,11 @@ let TOOL = {
           path: "achAppeal",
           code: "sign-yj-appeal-query"
         },
-        {
+        /*{
           name:'业绩报表',
           path:'storeReceive',
           code: "sign-yj-report-query"
-        }
+        }*/
       ]
     },
     {
