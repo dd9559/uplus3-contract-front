@@ -29,7 +29,7 @@ const postReceive = () => import('@/pages/postSigning/postReceive')
 //业绩模块
 const actualAchievement = () => import('@/pages/achievement/actualAchievement')
 const receivableAchievement = () => import('@/pages/achievement/receivableAchievement')
-const storeReceive = () => import('./../pages/achievement/storeReceive.vue')
+const storeReceive = () => import('@/pages/achievement/storeReceive.vue')
 const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
