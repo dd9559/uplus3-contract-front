@@ -611,8 +611,9 @@ export default{
                     business:this.mmaiAddress==''?'':this.mmaiAddress.path,
                     residence:this.jjianAddress==''?'':this.jjianAddress.path
                   },
-                  cityId:this.cityId,
-                  type:this.type
+                  id:this.id
+                //   cityId:this.cityId,
+                //   type:this.type
               }
               this.$ajax.get('/api/setting/contractTemplate/checkTemplate',param).then(res=>{
               if(res.status==200){
