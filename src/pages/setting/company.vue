@@ -219,8 +219,8 @@
               <div class="row-item">
                 <div>
                   <label>银行: </label>
-                  <el-select size="small" v-model="item.bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item">
-                    <el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="m.bankId"></el-option>
+                  <el-select size="small" v-model="item.bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item" @change="addBankCode($event,index)">
+                    <el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="m.id"></el-option>
                   </el-select>
                 </div>
                 <div v-if="item.type===1" class="zhi-hang">
@@ -400,7 +400,8 @@
       bankAccountName: '',
       bankCard: '',
       type: 1,
-      bankId: ''
+      bankId: '',
+      bankCode: ''
     }
   ]
   export default {
@@ -745,7 +746,8 @@
           bankAccountName: '',
           bankCard: '',
           type: 1,
-          bankId: ''
+          bankId: '',
+          bankCode: ''
         }
         this.companyBankList.push(row)
       },
@@ -1044,6 +1046,14 @@
         this.searchForm.type = ""
         this.searchTime = []
         this.pageNum = 1
+      },
+      // 获取银行缩写code 如:ICBC
+      addBankCode(e,i) {
+        this.adminBanks.find(item => {
+          if(e === item.id) {
+            this.companyBankList[i].bankCode = item.bankId
+          }
+        })
       },
       getInt(num,index) {
         if(num===1) {

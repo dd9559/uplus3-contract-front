@@ -16,7 +16,7 @@
         <el-select v-model="tixiid" placeholder="请选择" value-key='label' @change='selSys'>
           <el-option
               v-for="(item) in tixi"
-              :key="item.value"
+              :key="item.key"
               :label="item.value"
               :value="item.key"
               >
@@ -146,10 +146,16 @@
       }
     },
     created() {
-   
-        // if(localStorage.getItem('initId')){
-        //   this.selectCity=parseInt(localStorage.getItem('initId'))
-        // }
+        if(localStorage.getItem('cityId')&&localStorage.getItem('tixiId')){
+          this.selectCity=parseInt(localStorage.getItem('cityId'))
+          this.$ajax.get('/api/organize/getSystemTagByCityId',{cityId:this.selectCity}).then(res=>{
+                if(res.status==200){
+                    this.tixi=res.data.data
+            }
+          })
+          this.tixiid=parseInt(localStorage.getItem('tixiId'))
+          this.getList()
+        }
           // this.cityName='武汉'
       this.$ajax.get('/api/organize/cities').then((res)=>{
                 if(res.status==200){
@@ -255,6 +261,8 @@
         if(this.uploadType){
           this.towFlag=1
         }
+        localStorage.setItem('cityId',this.selectCity)
+        localStorage.setItem('tixiId',this.tixiid)
         this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
         this.$router.push({
         path: "/contraPreview",
