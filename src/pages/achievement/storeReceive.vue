@@ -376,8 +376,29 @@
           </tr>
         </thead>
         <tbody>
-        <tr v-for="item in 10">
-          <td v-for="tip in 22">dd</td>
+        <tr v-for="item in tableTotal">
+          <td v-if="rowspan[item]" :rowspan="rowspan[item]">dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td v-if="rowspan[item]" :rowspan="rowspan[item]">dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
+          <td>dd</td>
         </tr>
         </tbody>
       </table>
@@ -442,6 +463,14 @@
         pageNum: 1,
         loading: true,
         activeItem: '',
+        rowspan:{
+          1:3,
+          4:2,
+          6:1,
+          7:3,
+          10:1
+        },//合并行数
+        tabTotal:0,
       };
     },
     created() {
@@ -456,8 +485,35 @@
         this.setPath(this.getPath.concat({name: '店内合同明细'}))
         this.tableShow = true
       }
+      let list=[
+        {id:1,arr:[1,2,48,4]},
+        {id:2,arr:[4,5]},
+        {id:3,arr:[6]},
+        {id:4,arr:[7,8,9,10]}
+      ]
+      this.mergeRow(list,'arr')
     },
     methods: {
+      mergeRow:function (arr,param) {
+        //{1:3,4:2,6:1,7:4}
+        // debugger
+        let cache=Object.create(null)//暂存区，存放最新获取的一组数据
+        let res=Object.create(null)//数组的筛选结果
+        let total=0
+        for(let i=0;i<arr.length;i++){
+          i===0&&(cache[1]=arr[i][param].length)//初始化暂存区
+          res=Object.assign(res,cache)//数组每次循环都将暂存区的数据合并到res
+          total+=arr[i][param].length
+          if(i<arr.length-1){
+            for(let item in cache){
+              cache[Number(item)+cache[item]]=arr[i+1][param].length
+              delete cache[item]
+            }
+          }
+        }
+        this.rowspan=res
+        this.tableTotal=total
+      },
       getData(type = 'init') {
         let param = {
           pageSize: this.pageSize,
