@@ -182,6 +182,7 @@
         }
       },
       selCity(){
+        localStorage.setItem('cityId',this.selectCity)
         let param={
           cityId:this.selectCity
         }
@@ -193,6 +194,7 @@
           })
       },
       selSys(){
+        localStorage.setItem('tixiId',this.tixiid)
         this.getList()
       },
       popMsg(msg,callback){
@@ -261,8 +263,8 @@
         if(this.uploadType){
           this.towFlag=1
         }
-        localStorage.setItem('cityId',this.selectCity)
-        localStorage.setItem('tixiId',this.tixiid)
+        // localStorage.setItem('cityId',this.selectCity)
+        // localStorage.setItem('tixiId',this.tixiid)
         this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
         this.$router.push({
         path: "/contraPreview",
