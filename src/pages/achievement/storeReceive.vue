@@ -2,7 +2,7 @@
   <div class="layout" ref="tableComView" style="background-color: #f5f5f5">
     <!-- 筛选条件  -->
     <ScreeningTop
-      @propQueryFn="getData('search')"
+      @propQueryFn="tableShow?getDetails('search'):getData('search')"
       @propResetFormFn="resetFormFn">
       <el-form
         :inline="true"
@@ -73,121 +73,137 @@
           :max-height="tableNumberCom"
           style="width: 100%"
           border>
-          <el-table-column label="上级部门" align="center" min-width="80"></el-table-column>
+          <el-table-column label="上级部门" align="center" prop="areaName" min-width="80"></el-table-column>
           <el-table-column label="门店" align="center" width="80">
             <template slot-scope="scope">
-              <span class="cursor-style" @click="toDetails">click</span>
+              <span class="cursor-style" @click="toDetails">{{scope.row.depName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="门店状态" align="center" width="80"></el-table-column>
+          <el-table-column label="门店状态" align="center" width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
 
-          <el-table-column label="店长" align="center"></el-table-column>
+          <el-table-column label="店长" align="center" prop="depManagerName" :formatter="nullFormatter"></el-table-column>
           <el-table-column label="签约总单数" align="center">
             <el-table-column
               prop="leaseAmount"
               label="租赁"
               align="center"
-              width="70">
-            </el-table-column>
-            <el-table-column
-              prop="lowCommissionAmount"
-              label="买卖"
-              align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
+              label="买卖"
+              align="center"
+              :formatter="nullFormatter"
+              width="70">
+            </el-table-column>
+            <el-table-column
+              prop="lowAmount"
               label="低佣"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
           </el-table-column>
           <el-table-column label="本月实收业绩（元）" align="center">
             <el-table-column
-              prop="leaseAmount"
+              prop="leaseActual"
               label="租赁"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="lowCommissionAmount"
+              prop="secondActual"
               label="买卖"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="secondAmount"
+              prop="lowActual"
               label="低佣"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="agencyActual"
               label="代办"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="damagesActual"
               label="违约金（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="financialFeeActual"
               label="金融收入（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
           </el-table-column>
           <el-table-column label="本月合同业绩（元）" align="center">
             <el-table-column
-              prop="leaseAmount"
+              prop="leaseShould"
               label="租赁"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="lowCommissionAmount"
+              prop="secondShould"
               label="买卖"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="secondAmount"
+              prop="lowShould"
               label="低佣"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="agencyShould"
               label="代办"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="damagesShould"
               label="违约金（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="financialFeeShould"
               label="金融收入（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
           </el-table-column>
 
-          <el-table-column label="本月实收金额（元）" align="center"></el-table-column>
+          <el-table-column label="本月实收金额（元）" align="center" prop="totalActual"></el-table-column>
 
-          <el-table-column label="本月合同金额（元）" align="center"></el-table-column>
+          <el-table-column label="本月合同金额（元）" align="center" prop="totalShould"></el-table-column>
         </el-table>
         <!-- 分页 -->
         <el-pagination
@@ -208,126 +224,212 @@
           :max-height="tableNumberCom"
           style="width: 100%"
           border>
-          <el-table-column label="门店" align="center" width="80"></el-table-column>
+          <el-table-column label="门店" align="center" width="80">
+            <template slot-scope="scope">
+              <span>{{storeName}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="合同内容" align="center">
             <el-table-column
-              prop="leaseAmount"
               label="签约日期"
               align="center"
               width="70">
+              <template slot-scope="scope"><span v-if="scope.row.contractContent">{{scope.row.contractContent.signDate|formatTime}}</span></template>
             </el-table-column>
             <el-table-column
-              prop="lowCommissionAmount"
+              prop="contractContent.tradeType"
               label="合同类型"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="secondAmount"
+              prop="contractContent.recordType"
               label="签约方式"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="contractContent.code"
               label="合同编号"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="contractContent.pCode"
               label="纸质编号"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="contractContent.propertyAddr"
               label="合同地址"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="contractContent.dealPrice"
               label="合同成交价（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
+              prop="contractContent.receivableCommission"
               label="合同应收佣金（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="单数" align="center"></el-table-column>
+          <el-table-column label="单数" align="center" prop="singleNum" :formatter="nullFormatter"></el-table-column>
           <el-table-column label="本店收入" align="center">
             <el-table-column
-              prop="leaseAmount"
               label="本店分成比例"
               align="center"
               width="70">
+              <template slot-scope="scope">
+                <span v-if="scope.row.localIncome.ratioSum">{{scope.row.localIncome.ratioSum}}%</span>
+                <span class="txt-red" v-else>0.00%</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="lowCommissionAmount"
+              prop="localIncome.receivableSum"
               label="本店应收佣金（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="secondAmount"
+              prop="localIncome.localActual"
               label="本月实收佣金（元）"
               align="center"
+              :formatter="nullFormatter"
               width="70">
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
               label="经纪人"
               align="center"
+              class-name="info-cell"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list">
+                  <li v-for="item in scope.row.localIncome.localAgent">
+                    {{item.level4}}-{{item.assignor}}
+                  </li>
+                  <template v-if="(scope.row.localIncome.localAgent.length<scope.row.cooperateIncome.cooperateAgent.length)">
+                    <li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>
+                  </template>
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
               label="在职状态"
               align="center"
+              class-name="info-cell"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list">
+                  <li v-for="item in scope.row.localIncome.localAgent">
+                    {{item.isJob|getLabel}}
+                  </li>
+                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
+                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <!--</template>-->
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
               label="分成比例"
               align="center"
+              class-name="info-cell"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list">
+                  <li v-for="item in scope.row.localIncome.localAgent">
+                    <span v-if="item.ratio">{{item.ratio}}%</span>
+                    <span class="txt-red" v-else>0.00%</span>
+                  </li>
+                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
+                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <!--</template>-->
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
               label="本月实收分成金额（元）"
               align="center"
+              class-name="info-cell"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list">
+                  <li v-for="item in scope.row.localIncome.localAgent">
+                    {{item.singleActual}}
+                  </li>
+                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
+                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <!--</template>-->
+                </ul>
+              </template>
             </el-table-column>
           </el-table-column>
           <el-table-column label="合作门店收入" align="center">
             <el-table-column
-              prop="leaseAmount"
               label="合作门店"
               align="center"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    {{item.level4}}
+                  </li>
+                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="lowCommissionAmount"
               label="合作经纪人"
               align="center"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    {{item.assignor}}
+                  </li>
+                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="secondAmount"
               label="分成比例"
               align="center"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    <span v-if="item.ratio">{{item.ratio}}%</span>
+                    <span class="txt-red" v-else>0.00%</span>
+                  </li>
+                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                </ul>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="agencyAmount"
               label="本月实收分成金额（元）"
               align="center"
               width="70">
+              <template slot-scope="scope">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    {{item.singleActual}}
+                  </li>
+                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                </ul>
+              </template>
             </el-table-column>
           </el-table-column>
         </el-table>
@@ -343,7 +445,7 @@
       </div>
     </div>
     <div class="print-table">
-      <table id="tableDraw_one" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;">
+      <table id="tableDraw_one" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;" v-if="!tableShow">
         <thead>
           <tr>
             <th rowspan="2">上级部门</th>
@@ -376,33 +478,33 @@
           </tr>
         </thead>
         <tbody>
-        <tr v-for="item in tableTotal">
-          <td v-if="rowspan[item]" :rowspan="rowspan[item]">dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td v-if="rowspan[item]" :rowspan="rowspan[item]">dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
-          <td>dd</td>
+        <tr v-for="item in tableData">
+          <td v-if="rowspan[item]" :rowspan="rowspan[item]">{{item.areaName}}</td>
+          <td>{{item.depName}}</td>
+          <td>{{item.depStatus.label}}</td>
+          <td>{{item.depManagerName}}</td>
+          <td>{{item.leaseAmount}}</td>
+          <td>{{item.secondAmount}}</td>
+          <td>{{item.lowAmount}}</td>
+          <td>{{item.agencyAmount}}</td>
+          <td>{{item.leaseActual}}</td>
+          <td>{{item.secondActual}}</td>
+          <td>{{item.lowActual}}</td>
+          <td>{{item.agencyActual}}</td>
+          <td>{{item.damagesActual}}</td>
+          <td>{{item.financialFeeActual}}</td>
+          <td>{{item.leaseShould}}</td>
+          <td>{{item.secondShould}}</td>
+          <td>{{item.lowShould}}</td>
+          <td>{{item.agencyShould}}</td>
+          <td>{{item.damagesShould}}</td>
+          <td>{{item.financialFeeShould}}</td>
+          <td>{{item.totalActual}}</td>
+          <td>{{item.totalShould}}</td>
         </tr>
         </tbody>
       </table>
-      <table id="tableDraw_two" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;">
+      <table id="tableDraw_two" border="1" cellspacing="0" cellpadding="0" v-else style="width:100%;border: solid;">
         <thead>
         <tr>
           <th rowspan="2">门店</th>
@@ -448,9 +550,7 @@
       return {
         tableData: [],
         propForm: {
-          department: "", //部门
           dateMo: "",//时间
-          depId: ''
         },
         total: 0,
         tableShow: false, //列表内容是否为店内合同明细
@@ -471,6 +571,7 @@
           10:1
         },//合并行数
         tabTotal:0,
+        storeName:'',//合同明细的门店名称
       };
     },
     created() {
@@ -479,11 +580,14 @@
       date = this.$tool.dateFormat(date)
       var date2 = this.$tool.dateFormat(Date.now())
       this.propForm.dateMo = [date, date2]
-      this.getData()
+
       //路由带参显示店内合同明细表
       if (this.$route.query.detail) {
         this.setPath(this.getPath.concat({name: '店内合同明细'}))
         this.tableShow = true
+        this.getDetails()
+      }else {
+        this.getData()
       }
       let list=[
         {id:1,arr:[1,2,48,4]},
@@ -494,6 +598,35 @@
       this.mergeRow(list,'arr')
     },
     methods: {
+      // 获取店内合同明细
+      getDetails:function (type='init') {
+        let param = {
+          pageSize: 3,//定值
+          pageNum: this.pageNum,
+          depIds:625,
+          cityId:1,
+        };
+        if (type !== 'init'||true) {
+          param = Object.assign(param, {
+            startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
+            endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
+          })
+        }
+        this.$ajax.get('/api/achievementSheet/getAchiSheetDetail',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            let cell=res.data[0]
+            this.storeName=cell.storeName
+            this.tableData=[].concat(cell.localContract?cell.localContract:[],cell.noAchievementEmp,cell.totalData)
+            this.total=this.tableData.length
+            this.loading=false
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error
+          })
+        })
+      },
       mergeRow:function (arr,param) {
         //{1:3,4:2,6:1,7:4}
         // debugger
@@ -516,42 +649,22 @@
       },
       getData(type = 'init') {
         let param = {
-          pageSize: this.pageSize,
           pageNum: this.pageNum,
         };
-        if (type !== 'init') {
+        if (type !== 'init'|true) {
           param = Object.assign(param, {
             startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
             endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
-            depId: this.propForm.depId,
-            depLevel: this.dpart
           })
         }
-        this.$ajax.get('/api/achForm/getAchForm', param).then(res => {
-          if (res.data.data.achievementForms != 0) {
-            this.steps = res.data.data.levels
-            for (let i = 0; i < this.steps.length; i++) {
-              if (this.steps[i] > 0) {
-                this.activeItem = i + 1
-                // this.dpart=i+1
-                break
-              }
-            }
-            if (res.data.data.achievementForms.list[0]) {
-              this.level = res.data.data.achievementForms.list[0].depLevel
-              this.dpart = res.data.data.achievementForms.list[0].depLevel
-              this.activeItem = res.data.data.achievementForms.list[0].depLevel
-              this.tableData = res.data.data.achievementForms.list
-            } else {
-              this.tableData = []
-            }
-            this.total = res.data.data.achievementForms.total
-            this.loading = false
-          } else {
-            this.tableData = []
-            this.loading = false
+        this.$ajax.get('/api/achievementSheet/getAchievementDepSumList', param).then(res => {
+          res=res.data
+          if(res.status===200){
+            let cell=res.data.list
+            this.tableData=[].concat(cell[0],cell[1],cell[2])
+            this.total=this.tableData.length
+            this.loading=false
           }
-
         }).catch(err => {
           this.$message({message: err})
         })
@@ -627,6 +740,25 @@
   .cursor-style {
     cursor: pointer;
     color: @color-blue;
+  }
+  .cell-list{
+    margin:0px;
+    padding: 0px;
+    list-style: none;
+    >li{
+      white-space: nowrap;
+      border-bottom: 1px solid;
+      padding: 4px 0px;
+      &:before{
+        content: '';
+        width: 1px;
+        height: 100%;
+        display: inline-block;
+      }
+    }
+  }
+  .txt-red{
+    color: @color-red;
   }
 
   .layout {
