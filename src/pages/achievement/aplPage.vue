@@ -1519,7 +1519,7 @@
         this.showTips1 = true;
         this.loading3=true;
         let param = {
-          contCode: this.contractCode
+          contId: this.contractId2
         };
         this.$ajax.get("/api/achievement/"+fieldStr, param).then(res => {
           let data = res.data;
