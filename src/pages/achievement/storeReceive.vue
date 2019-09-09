@@ -239,7 +239,7 @@
               align="center"
               width="70">
               <template slot-scope="scope">
-                <span v-if="scope.row.contractContent" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.signDate|formatTime}}</span>
+                <span v-if="scope.row.contractContent" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.signDate|formatDate}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -580,7 +580,7 @@
         <tbody>
         <tr v-for="(item,index) in tableData">
           <td :rowspan="rowspan[index+1]" v-if="rowspan[index+1]">{{item.type==='total'?'总计':storeName[index+1]}}</td>
-          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.signDate|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.signDate|formatDate|formatNull}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.tradeType|getLabel}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.recordType|getLabel}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.code|formatNull}}</td>
