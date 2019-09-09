@@ -10,22 +10,28 @@
                     <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
                 </el-select>
             </div> -->
-            <div class="input-group">
-                <label>合作方式</label>
+            <div class="input-search" v-if="version==2">
+                <label class="w-70">合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
-            <div class="input-group">
-                <label>流程名称</label>
+            <div class="input-search" v-else>
+                <label class="mr-20">体系</label>
+                <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
+                    <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                </el-select>
+            </div>
+            <div class="input-search">
+                <label class="w-70">流程名称</label>
                 <el-input size="small" v-model="searchForm.name" :clearable="true" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
             </div>
-            <div class="input-group">
-                <label>流程类型</label>
+            <div class="input-search">
+                <label class="w-70">流程类型</label>
                 <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition">
                     <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
-                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="branch-condition">
+                <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="w200 ml-10">
                     <el-option v-for="item in homeConditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
@@ -44,7 +50,12 @@
                             <span>{{scope.row.cityName}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter"></el-table-column>
+                    <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
+                    <el-table-column align="center" label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
+                        <template slot-scope="scope">
+                            <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column align="center" label="流程类型" prop="type">
                         <template slot-scope="scope">
                             <span v-for="item in dictionary['573']" :key="item.key" v-if="item.key===scope.row.type">{{item.value}}</span>                            
@@ -79,7 +90,7 @@
             </el-pagination>
         </div>
         <!-- 添加 编辑 弹窗 -->
-        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal" :before-close="handleClose">
+        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
                 <div class="row">
                     <div class="aduit-input must">
@@ -89,10 +100,16 @@
                         </el-select> -->
                         <el-input size="small" v-model="aduitForm.cityId" disabled></el-input>
                     </div>
-                    <div class="aduit-input must">
+                    <div class="aduit-input must" v-if="version==2">
                         <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
+                    <div class="aduit-input must" v-else>
+                        <label class="mr-28">体系:</label>
+                        <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
+                            <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                 </div>
@@ -125,9 +142,8 @@
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
-                               <el-input size="small" class="w152" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
-                                <el-select size="small" class="w152" v-model="item.type">
-                                    <el-option label="请选择审批人类型" value=""></el-option>
+                               <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                                <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型">
                                     <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
                                 </el-select>
                                 <div v-if="item.type===0" class="person">
@@ -142,14 +158,31 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <el-select size="small" v-if="item.type===1" class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
-                                    <el-option
-                                    v-for="option in depsList"
-                                    :key="option.id"
-                                    :label="option.name"
-                                    :value="option.id"
-                                    ></el-option>
-                                </el-select>
+                                <div v-if="item.type===1">
+                                    <!-- 3.0环境 -->
+                                    <div class="person" v-if="version==3">
+                                        <el-select size="small" placeholder="请选择部门类型" v-model="item.depID" filterable @change="getDepStr($event,index)">
+                                            <el-option
+                                            v-for="option in depsList"
+                                            :key="option.id"
+                                            :label="option.name"
+                                            :value="option.id"
+                                            ></el-option>
+                                        </el-select>
+                                        <el-select class="person-right" size="small" placeholder="请选择职级类型" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
+                                            <el-option v-for="item in dictionary['659']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <!-- 2.0环境 -->
+                                    <el-select size="small" v-else class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
+                                        <el-option
+                                        v-for="option in depsList"
+                                        :key="option.id"
+                                        :label="option.name"
+                                        :value="option.id"
+                                        ></el-option>
+                                    </el-select>  
+                                </div>
                                 <el-select size="small" v-if="item.type===2" class="other" v-model="item.roleArr" filterable multiple @change="multiSelect(item.type,index)">
                                     <el-option
                                     v-for="option in roleList"
@@ -164,18 +197,18 @@
                                 </div>
                             </div>
                             <div class="default" v-show="item.choice&&item.choice.length>0&&index!==0">
-                                <span>选择默认审核人:</span>
+                                <div class="mo-ren">选择默认审核人:<span v-if="version==3">（温馨提示：建议添加不少于两个审核人）</span></div>
                                 <div class="multiple" ref="curChoice">
                                     <span v-for="(ele,m) in item.choice" :key="m"
                                     @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.temp?ele.temp+'-'+ele.userName:ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
+                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.temp?version==3&&ele.type===1?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="aduit-input">
+                <div class="aduit-input pr-80">
                     <label class="mr-7">流程描述:</label>
                     <el-input type="textarea" maxlength="150" v-model.trim="aduitForm.flowDesc"></el-input>
                 </div>
@@ -220,7 +253,9 @@
             employeList:[],
             employeeTotal:0,
             employeePage:1,
-            currentDep: null
+            currentDep: null,
+            depID: "", //部门类型id
+            depStr: "" //部门类型名称
         }
     ]
 
@@ -234,7 +269,8 @@
                     name: "",
                     deptAttr: "",
                     type: "",
-                    branchCondition: ""
+                    branchCondition: "",
+                    systemTag: ""
                 },
                 tableData: [],
                 cityList: [],
@@ -246,7 +282,8 @@
                     name: "",
                     type: "",
                     branchCondition: "",
-                    flowDesc: ""
+                    flowDesc: "",
+                    systemTag: ""
                 },
                 isAudit: "",
                 nodeList: [],
@@ -258,7 +295,8 @@
                     '597':'',
                     '599':'',
                     '601':'',
-                    '603':''
+                    '603':'',
+                    '659':'职级类型'
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -294,13 +332,13 @@
             }else{
                 this.getData()
             }
+            // 3.0环境获取体系
+            if(this.version == 3) this.getSystemTag()
             this.remoteMethod()
             this.getAduitType()
             this.getDeps()
-            // 登录城市为温州时不请求角色数据
-            if(this.searchForm.cityId != 16) {
-               this.getRoles() 
-            }
+            // 2.0环境且登录城市不是温州才请求角色数据
+            if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
             // 分支节点选择
@@ -414,11 +452,6 @@
                 this.DepList = payload.list
                 this.nodeList[index].depName = payload.depName
             },
-            handleClose(done) {
-                this.nodeList = []
-                this.tempNodeList = []
-                done()
-            },
             operation(title,type,row) {
                 this.aduitDialog = true
                 this.aduitTitle = title
@@ -433,7 +466,8 @@
                     let {...currentRow} = row
                     this.currentFlowId = currentRow.id
                     this.aduitForm.cityId = currentRow.cityName
-                    this.aduitForm.deptAttr = currentRow.deptAttr.value
+                    this.aduitForm.deptAttr = currentRow.deptAttr ? currentRow.deptAttr.value : ""
+                    this.aduitForm.systemTag = currentRow.systemTag ? currentRow.systemTag : ""
                     this.aduitForm.name = currentRow.name
                     this.aduitForm.type = currentRow.type
                     this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
@@ -468,6 +502,8 @@
                             depArr: JSON.parse(editRow[i].depArr),
                             roleArr: JSON.parse(editRow[i].roleArr),
                             choice: JSON.parse(editRow[i].choice),
+                            depID: JSON.parse(editRow[i].choice)[JSON.parse(editRow[i].choice).length - 1].userId,
+                            depStr: JSON.parse(editRow[i].choice)[JSON.parse(editRow[i].choice).length - 1].userName,
                             lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
                             peopleTime: JSON.parse(editRow[i].personArr).length + 1,
                             depsTime: JSON.parse(editRow[i].depArr).length + 1,
@@ -534,6 +570,14 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
+            // 3.0环境获取部门类型名称
+            getDepStr(e,i) {
+                this.depsList.find(item => {
+                    if(e == item.id) {
+                        this.nodeList[i].depStr = item.name
+                    }
+                })
+            },
             // 选中默认审核人
             defaultChoice(index,e,curItem) {
                 let allChoice = this.$refs.curChoice[index].children
@@ -559,12 +603,22 @@
                         }
                     }
                 } else if(choiceArr[m].type === 1) {
-                    for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
-                        if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
-                            this.nodeList[index].depArr.splice(i,1)
-                            this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                            break
-                        }
+                    if(this.version == 2) {
+                        for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
+                            if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
+                                this.nodeList[index].depArr.splice(i,1)
+                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                                break
+                            }
+                        }  
+                    } else {
+                        for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
+                            if(choiceArr[m].positionId === this.nodeList[index].depArr[i]) {
+                                this.nodeList[index].depArr.splice(i,1)
+                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                                break
+                            }
+                        }  
                     }
                 } else if(choiceArr[m].type === 2) {
                     for(var i = 0; i < this.nodeList[index].roleArr.length; i++) {
@@ -621,34 +675,88 @@
                     }
                 } else if(type === 1) {
                     if(this.nodeList[index].depsTime === this.nodeList[index].depArr.length) {
-                        for(var i = 0; i < this.depsList.length; i++) {
-                            if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
-                                this.nodeList[index].choice.push({
-                                    type: 1,
-                                    userName: this.depsList[i].name,
-                                    userId: this.depsList[i].id,
-                                    isDefault: 0,
-                                    temp: ""
-                                })
-                                break
+                        // 2.0环境
+                        if(this.version == 2) {
+                            for(var i = 0; i < this.depsList.length; i++) {
+                                if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
+                                    this.nodeList[index].choice.push({
+                                        type: 1,
+                                        userName: this.depsList[i].name,
+                                        userId: this.depsList[i].id,
+                                        isDefault: 0,
+                                        temp: ""
+                                    })
+                                    break
+                                }
                             }
+                            ++this.nodeList[index].depsTime
+                        } else {
+                            // 3.0环境
+                            let zhijiArr = []
+                            for(var i = 0; i < this.dictionary['659'].length; i++) {
+                                if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.dictionary['659'][i].key) {
+                                    zhijiArr = this.dictionary['659'][i]
+                                    break
+                                }
+                            }
+                            this.$ajax.get('/api/organize/selectEmpByDepAndPosition',
+                            {
+                                depId: this.nodeList[index].depID,
+                                positionId: zhijiArr.key
+                            })
+                            .then(res => {
+                                res = res.data
+                                if(res.status === 200) {
+                                    if(res.data) {
+                                        this.nodeList[index].choice.push({
+                                            type: 1,
+                                            userName: this.nodeList[index].depStr,
+                                            userId: this.nodeList[index].depID,
+                                            isDefault: 0,
+                                            temp: this.nodeList[index].depStr,
+                                            positionId: zhijiArr.key,
+                                            positionName: zhijiArr.value
+                                        })
+                                        ++this.nodeList[index].depsTime
+                                    } else {
+                                        this.$message({message:"该职级下没有人，请选择其他职级"})
+                                        this.nodeList[index].depArr.splice(this.nodeList[index].depArr.length-1,1)
+                                    }
+                                }
+                            })
                         }
-                        ++this.nodeList[index].depsTime
                     } else {
-                        let arr = this.nodeList[index].choice.filter(item => {
-                            return item.type === 1
-                        })
-                        let arr1 = []
-                        arr.forEach(item => {
-                            arr1.push(item.userId)
-                        })
-                        let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
-                        this.nodeList[index].choice.forEach((item,i) => {
-                            if(item.userId === arr2[0]) {
-                                this.nodeList[index].choice.splice(i,1)
-                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                            }
-                        })
+                        if(this.version == 2) {
+                            let arr = this.nodeList[index].choice.filter(item => {
+                                return item.type === 1
+                            })
+                            let arr1 = []
+                            arr.forEach(item => {
+                                arr1.push(item.userId)
+                            })
+                            let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
+                            this.nodeList[index].choice.forEach((item,i) => {
+                                if(item.userId === arr2[0]) {
+                                    this.nodeList[index].choice.splice(i,1)
+                                    this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                                }
+                            })
+                        } else {
+                            let arr = this.nodeList[index].choice.filter(item => {
+                                return item.type === 1
+                            })
+                            let arr1 = []
+                            arr.forEach(item => {
+                                arr1.push(item.positionId)
+                            })
+                            let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
+                            this.nodeList[index].choice.forEach((item,i) => {
+                                if(item.positionId === arr2[0]) {
+                                    this.nodeList[index].choice.splice(i,1)
+                                    this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                                }
+                            })
+                        }
                     }
                 } else if(type === 2) {
                     if(this.nodeList[index].rolesTime === this.nodeList[index].roleArr.length) {
@@ -704,7 +812,9 @@
                     employeList:[],
                     employeeTotal:0,
                     employeePage:1,
-                    currentDep: null
+                    currentDep: null,
+                    depID: "",
+                    depStr: ""
                 }
                 this.nodeList.push(row)
             },
@@ -713,28 +823,34 @@
             },
             isSave() {
                 if(this.aduitForm.cityId) {
-                    if(this.aduitForm.deptAttr) {
-                        if(this.aduitForm.type!=="") {
-                            if(this.aduitForm.branchCondition!=="") {
-                                if(this.aduitForm.name) {
-                                    if(!this.isAudit) {
-                                        this.$message({message:"请选择分支节点"})
-                                        return false
-                                    }
-                                } else {
-                                    this.$message({message:"流程名称不能为空"})
+                    if(this.version == 2) {
+                        if(!this.aduitForm.deptAttr) {
+                            this.$message({message:"合作方式不能为空"})
+                            return
+                        }
+                    } else {
+                        if(!this.aduitForm.systemTag) {
+                            this.$message({message:"体系不能为空"})
+                            return
+                        }
+                    }
+                    if(this.aduitForm.type!=="") {
+                        if(this.aduitForm.branchCondition!=="") {
+                            if(this.aduitForm.name) {
+                                if(!this.isAudit) {
+                                    this.$message({message:"请选择分支节点"})
                                     return false
                                 }
                             } else {
-                                this.$message({message:"分支条件不能为空"})
+                                this.$message({message:"流程名称不能为空"})
                                 return false
                             }
                         } else {
-                            this.$message({message:"流程类型不能为空"})
+                            this.$message({message:"分支条件不能为空"})
                             return false
                         }
                     } else {
-                        this.$message({message:"合作方式不能为空"})
+                        this.$message({message:"流程类型不能为空"})
                         return false
                     }
                 } else {
@@ -759,6 +875,12 @@
                         isOk = false
                         if(item[i].name) {
                             if(item[i].type !== "") {
+                                if(this.version == 3 && item[i].type == 1) {
+                                    if(!item[i].depID) {
+                                        this.$message({message:"请选择部门类型"})
+                                        break
+                                    }
+                                }
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
                                         isOk = true
@@ -767,11 +889,11 @@
                                         break
                                     }
                                 } else {
-                                    this.$message({message:"请设置默认审核人"})
+                                    this.$message({message:"请添加审核人"})
                                     break
                                 }
                             } else {
-                                this.$message({message:"审批人类型不能为空"})
+                                this.$message({message:"请选择审批人类型"})
                                 break
                             }
                         } else {
@@ -789,6 +911,8 @@
                             delete item[i].employeeTotal
                             delete item[i].employeePage
                             delete item[i].currentDep
+                            delete item[i].depID
+                            delete item[i].depStr
                             item[i].type = item[i].lastChoice.type
                             item[i].userName = item[i].lastChoice.userName
                             item[i].userId = item[i].lastChoice.userId
@@ -802,6 +926,7 @@
                 }
                 param = Object.assign({},this.aduitForm,param)
                 param.cityId = this.searchForm.cityId
+
                 const url = "/api/auditflow/operateFlow"
                 if(isOk || this.isAudit === '0') {
                     if(this.aduitTitle === "添加") {
@@ -831,6 +956,7 @@
                 this.getData('search')
             },
             resetFormFn() {
+                this.searchForm.systemTag = ""
                 this.searchForm.deptAttr = ""
                 this.searchForm.name = ""
                 this.searchForm.type = ""
@@ -861,6 +987,10 @@
         computed: {
             cityInfo(){
                 return this.getUser.user
+            },
+            // 获取版本号
+            version(){
+                return this.getUser.version
             }
         }
     }
@@ -872,19 +1002,22 @@
     display: flex;
     flex-wrap: wrap;
     color: #6C7986;
-    .input-group {
+    .input-search {
+        display: flex;
+        align-items: center;
         margin-right: 20px;
+        margin-bottom: 10px;
         label {
             font-size: 14px;
         }
-        /deep/ .el-input {
-            margin-left: -10px;
+        .w-70 {
+            min-width: 70px;
         }
-        .branch-condition {
-            /deep/ .el-input {
-                width: 180px;
-                margin-left: -2px;
-            }
+        .mr-20 {
+            margin-right: 13px;
+        }
+        .ml-10 {
+            margin-left: 10px;
         }
     }
 }
@@ -912,6 +1045,9 @@
     .row {
         display: flex;
         justify-content: space-between;
+        &:nth-child(-n+2) {
+            padding-right: 10px;
+        }
     }
     .aduit-input {
         display: flex;
@@ -919,6 +1055,9 @@
         > label {
             width: 70px;
             line-height: 32px;
+        }
+        .mr-28 {
+            margin-right: -28px;
         }
         .mr-7 {
             margin-left: 6px;
@@ -932,6 +1071,9 @@
             /deep/ .el-textarea__inner {
                 background-color: #ECEFF2;
             }
+        }
+        &.pr-80 {
+            padding-right: 80px;
         }
     }
     .must {
@@ -961,8 +1103,8 @@
                         display: none;
                     }
                 }
-                .w152 {
-                    width: 152px;
+                .w143 {
+                    width: 143px;
                     margin-right: 9px;
                 }
                 .person {
@@ -1007,14 +1149,14 @@
                     }
                 }
                 .default {
-                    display: flex;
-                    margin-top: 10px;
-                    >span {
-                        width: 130px;
+                    >.mo-ren {
+                        padding: 5px 10px;
+                        span {
+                            color: #949494;
+                        }
                     }
                     .multiple {
                         background-color: #fff;
-                        width: 100%;
                         padding: 10px;
                         max-height: 60px;
                         overflow: auto;
