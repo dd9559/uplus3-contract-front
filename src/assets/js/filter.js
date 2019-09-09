@@ -3,7 +3,7 @@ let getVal=function (val) {
   if(type!=='[object Number]'&&!val){
     return '--'
   }else if(type==='[object Object]'){
-    return val.label
+    return getVal(val.label)
   }else {
     return val
   }

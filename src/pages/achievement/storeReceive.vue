@@ -58,7 +58,7 @@
           </div>-->
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         </div>
-        <el-button class="data-head-right" round type="primary" size="medium" @click="getExcel(tableShow?'tableDraw_two':'tableDraw_one')"
+        <el-button class="data-head-right" round type="primary" size="medium" @click="tableShow?getExcel('tableDraw_two','店内合同明细'):getAll()"
                    style="padding:9px 15px;min-width: 80px;">导出
         </el-button>
       </div>
@@ -71,12 +71,13 @@
           ref="tableCom"
           v-loading="loading"
           :max-height="tableNumberCom"
+          :span-method="elTabelMerge"
           style="width: 100%"
           border>
           <el-table-column label="上级部门" align="center" prop="areaName" min-width="80"></el-table-column>
           <el-table-column label="门店" align="center" width="80">
             <template slot-scope="scope">
-              <span class="cursor-style" @click="toDetails">{{scope.row.depName}}</span>
+              <span class="cursor-style" @click="toDetails(scope.row)">{{scope.row.depName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="门店状态" align="center" width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
@@ -210,6 +211,7 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNum"
+          :page-size="3"
           layout="total, prev, pager, next, jumper"
           :total="total"
           v-if="total!=0">
@@ -222,11 +224,13 @@
           ref="tableCom"
           v-loading="loading"
           :max-height="tableNumberCom"
+          :span-method="elTabelMerge"
           style="width: 100%"
           border>
           <el-table-column label="门店" align="center" width="80">
             <template slot-scope="scope">
-              <span>{{storeName}}</span>
+              <span v-if="scope.row.type==='total'">总计</span>
+              <span v-else>{{storeName[scope.$index+1]}}</span>
             </template>
           </el-table-column>
           <el-table-column label="合同内容" align="center">
@@ -234,21 +238,25 @@
               label="签约日期"
               align="center"
               width="70">
-              <template slot-scope="scope"><span v-if="scope.row.contractContent">{{scope.row.contractContent.signDate|formatTime}}</span></template>
+              <template slot-scope="scope">
+                <span v-if="scope.row.contractContent" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.signDate|formatTime}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.tradeType"
               label="合同类型"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.tradeType|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.recordType"
               label="签约方式"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.recordType|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
               prop="contractContent.code"
@@ -256,60 +264,73 @@
               align="center"
               :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.code|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.pCode"
               label="纸质编号"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.pCode|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.propertyAddr"
               label="合同地址"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.propertyAddr|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.dealPrice"
               label="合同成交价（元）"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.dealPrice|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="contractContent.receivableCommission"
               label="合同应收佣金（元）"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.receivableCommission|getLabel}}</span>
+              </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="单数" align="center" prop="singleNum" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="单数" align="center">
+            <template slot-scope="scope">
+              <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.singleNum|getLabel}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="本店收入" align="center">
             <el-table-column
               label="本店分成比例"
               align="center"
               width="70">
               <template slot-scope="scope">
-                <span v-if="scope.row.localIncome.ratioSum">{{scope.row.localIncome.ratioSum}}%</span>
-                <span class="txt-red" v-else>0.00%</span>
+                <span v-if="scope.row.localIncome.ratioSum" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.ratioSum}}%</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-else>0.00%</span>
               </template>
             </el-table-column>
             <el-table-column
-              prop="localIncome.receivableSum"
               label="本店应收佣金（元）"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.receivableSum|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
-              prop="localIncome.localActual"
               label="本月实收佣金（元）"
               align="center"
-              :formatter="nullFormatter"
               width="70">
+              <template slot-scope="scope">
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.localActual|getLabel}}</span>
+              </template>
             </el-table-column>
             <el-table-column
               label="经纪人"
@@ -317,14 +338,15 @@
               class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list">
-                  <li v-for="item in scope.row.localIncome.localAgent">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                  <li :title="item.level4+item.assignor" v-for="item in scope.row.localIncome.localAgent">
                     {{item.level4}}-{{item.assignor}}
                   </li>
-                  <template v-if="(scope.row.localIncome.localAgent.length<scope.row.cooperateIncome.cooperateAgent.length)">
-                    <li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>
+                  <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
                   </template>
                 </ul>
+                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -333,14 +355,15 @@
               class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
                     {{item.isJob|getLabel}}
                   </li>
-                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
-                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
-                  <!--</template>-->
+                  <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -349,15 +372,16 @@
               class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span class="txt-red" v-else>0.00%</span>
+                    <span v-else>0.00%</span>
                   </li>
-                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
-                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
-                  <!--</template>-->
+                  <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -366,14 +390,15 @@
               class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
-                    {{item.singleActual}}
+                    {{item.singleActual|formatNull}}
                   </li>
-                  <!--<template v-if="scope.row.cooperateIncome&&scope.row.localIncome.localAgent">-->
-                    <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
-                  <!--</template>-->
+                  <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -381,54 +406,70 @@
             <el-table-column
               label="合作门店"
               align="center"
+              class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome">
-                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
-                    {{item.level4}}
+                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                  <li :title="item.level4" v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    {{item.level4|formatNull}}
                   </li>
-                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
               </template>
             </el-table-column>
             <el-table-column
               label="合作经纪人"
               align="center"
+              class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome">
-                  <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
-                    {{item.assignor}}
+                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                  <li :title="item.assignor" v-for="item in scope.row.cooperateIncome.cooperateAgent">
+                    {{item.assignor|formatNull}}
                   </li>
-                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
               </template>
             </el-table-column>
             <el-table-column
               label="分成比例"
               align="center"
+              class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span class="txt-red" v-else>0.00%</span>
+                    <span v-else>0.00%</span>
                   </li>
-                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
               </template>
             </el-table-column>
             <el-table-column
               label="本月实收分成金额（元）"
               align="center"
+              class-name="info-cell"
               width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome">
+                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
-                    {{item.singleActual}}
+                    {{item.singleActual|formatNull}}
                   </li>
-                  <!--<li v-for="item in Number((scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length).toString().replace('-',''))"></li>-->
+                  <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
+                    <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
+                  </template>
                 </ul>
+                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -438,13 +479,14 @@
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNum"
+          :page-size="3"
           layout="total, prev, pager, next, jumper"
           :total="total"
           v-if="total!=0">
         </el-pagination>
       </div>
     </div>
-    <div class="print-table">
+    <div class="print-table" style="display: none;">
       <table id="tableDraw_one" border="1" cellspacing="0" cellpadding="0" style="width:100%;border: solid;" v-if="!tableShow">
         <thead>
           <tr>
@@ -478,11 +520,11 @@
           </tr>
         </thead>
         <tbody>
-        <tr v-for="item in tableData">
-          <td v-if="rowspan[item]" :rowspan="rowspan[item]">{{item.areaName}}</td>
+        <tr v-for="(item,index) in reportData">
+          <td v-if="rowspan_report[index+1]" :rowspan="rowspan_report[index+1]">{{item.areaName}}</td>
           <td>{{item.depName}}</td>
-          <td>{{item.depStatus.label}}</td>
-          <td>{{item.depManagerName}}</td>
+          <td>{{item.depStatus|getLabel}}</td>
+          <td>{{item.depManagerName|formatNull}}</td>
           <td>{{item.leaseAmount}}</td>
           <td>{{item.secondAmount}}</td>
           <td>{{item.lowAmount}}</td>
@@ -535,6 +577,101 @@
           <th>本月实收分成金额（元）</th>
         </tr>
         </thead>
+        <tbody>
+        <tr v-for="(item,index) in tableData">
+          <td :rowspan="rowspan[index+1]" v-if="rowspan[index+1]">{{item.type==='total'?'总计':storeName[index+1]}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.signDate|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.tradeType|getLabel}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.recordType|getLabel}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.code|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.pCode|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.propertyAddr|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.dealPrice|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.receivableCommission|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.singleNum|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.ratioSum|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.receivableSum|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.localActual|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.localIncome.localAgent">
+              <span v-if="tip.level4&&tip.assignor">{{tip.level4}}{{tip.assignor}}</span>
+              <span v-else>--</span>
+              <br/>
+            </template>
+            <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
+            </template>
+            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.localIncome.localAgent">
+              {{tip.isJob|getLabel}}<br/>
+            </template>
+            <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
+            </template>
+            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.localIncome.localAgent">
+              <span v-if="tip.ratio">{{tip.ratio}}%</span>
+              <span v-else>--</span>
+              <br/>
+            </template>
+            <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
+            </template>
+            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}"><!--本月实收分成金额-->
+            <template v-for="tip in item.localIncome.localAgent">
+              {{tip.singleActual|formatNull}}<br/>
+            </template>
+            <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
+            </template>
+            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.cooperateIncome.cooperateAgent">
+              {{tip.level4|formatNull}}<br/>
+            </template>
+            <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
+            </template>
+            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.cooperateIncome.cooperateAgent">
+              {{tip.assignor|formatNull}}<br/>
+            </template>
+            <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
+            </template>
+            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.cooperateIncome.cooperateAgent">
+              <span v-if="tip.ratio">{{tip.ratio}}%</span>
+              <span v-else>--</span>
+              <br/>
+            </template>
+            <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
+            </template>
+            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+          </td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
+            <template v-for="tip in item.cooperateIncome.cooperateAgent">
+              {{tip.singleActual|formatNull}}<br/>
+            </template>
+            <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
+              <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
+            </template>
+            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+          </td>
+        </tr>
+        </tbody>
       </table>
     </div>
   </div>
@@ -549,6 +686,7 @@
     data() {
       return {
         tableData: [],
+        reportData: [],//业绩报表所有数据，导出时候用
         propForm: {
           dateMo: "",//时间
         },
@@ -563,15 +701,11 @@
         pageNum: 1,
         loading: true,
         activeItem: '',
-        rowspan:{
-          1:3,
-          4:2,
-          6:1,
-          7:3,
-          10:1
-        },//合并行数
+        rowspan:{},//合并行数
+        rowspan_report:{},
         tabTotal:0,
-        storeName:'',//合同明细的门店名称
+        storeName:{},//合同明细的门店名称
+        depIds:'',//请求合同明细参数
       };
     },
     created() {
@@ -584,6 +718,7 @@
       //路由带参显示店内合同明细表
       if (this.$route.query.detail) {
         this.setPath(this.getPath.concat({name: '店内合同明细'}))
+        this.depIds=this.$route.query.ids
         this.tableShow = true
         this.getDetails()
       }else {
@@ -595,7 +730,7 @@
         {id:3,arr:[6]},
         {id:4,arr:[7,8,9,10]}
       ]
-      this.mergeRow(list,'arr')
+      // this.mergeRow(list,'arr')
     },
     methods: {
       // 获取店内合同明细
@@ -603,7 +738,7 @@
         let param = {
           pageSize: 3,//定值
           pageNum: this.pageNum,
-          depIds:625,
+          depIds:this.depIds,
           cityId:1,
         };
         if (type !== 'init'||true) {
@@ -615,11 +750,34 @@
         this.$ajax.get('/api/achievementSheet/getAchiSheetDetail',param).then(res=>{
           res=res.data
           if(res.status===200){
-            let cell=res.data[0]
-            this.storeName=cell.storeName
-            this.tableData=[].concat(cell.localContract?cell.localContract:[],cell.noAchievementEmp,cell.totalData)
-            this.total=this.tableData.length
+            this.tableData=[]
+            let temporaryArr=[]//临时数组，生成符合mergeRow方法的数据结构
+            let NameList=[]//临时存放门店名称
+            res.data.data.forEach((item,index)=>{
+              let chipArr=[...item.localContract,...item.noAchievementEmp]
+              temporaryArr.push({list:chipArr})
+              temporaryArr.push({list:item.totalData})
+              this.tableData=this.tableData.concat(chipArr,item.totalData)
+
+              NameList.push(item.storeName)
+            })
+            // console.log(temporaryArr)
+            this.total=res.data.total
             this.loading=false
+            this.rowspan=this.mergeRow(temporaryArr,'list')
+
+            let privateObj=JSON.parse(JSON.stringify(this.rowspan))//克隆合并对象
+            let obj={}
+            Object.keys(privateObj).forEach((item,index)=>{
+              if((index+1)%2!==0){//剔除合并对象中的总计项
+                // delete privateObj[item]
+                obj[item]=NameList[index/2]
+              }
+            })
+            /*Object.keys(privateObj).forEach((item,index)=>{
+              obj[item]=this.storeName[index]
+            })*/
+            this.storeName=Object.assign({},obj)
           }
         }).catch(error=>{
           this.$message({
@@ -627,25 +785,52 @@
           })
         })
       },
+      elTabelMerge:function ({ row, column, rowIndex, columnIndex }) {
+        if(columnIndex===0){
+          let loop=1
+          let rowTotal=0
+          for(let item in this.rowspan){
+            rowTotal+=this.rowspan[item]
+            if(rowIndex+1===Number(item)){
+              return [this.rowspan[item],1]
+            }else if(rowIndex+1<=rowTotal){
+              return [0,0]
+            }
+            loop++
+          }
+        }
+      },
       mergeRow:function (arr,param) {
         //{1:3,4:2,6:1,7:4}
-        // debugger
         let cache=Object.create(null)//暂存区，存放最新获取的一组数据
         let res=Object.create(null)//数组的筛选结果
         let total=0
-        for(let i=0;i<arr.length;i++){
-          i===0&&(cache[1]=arr[i][param].length)//初始化暂存区
-          res=Object.assign(res,cache)//数组每次循环都将暂存区的数据合并到res
-          total+=arr[i][param].length
-          if(i<arr.length-1){
-            for(let item in cache){
-              cache[Number(item)+cache[item]]=arr[i+1][param].length
-              delete cache[item]
+        if(param){
+          for(let i=0;i<arr.length;i++){
+            i===0&&(cache[1]=arr[i][param].length)//初始化暂存区
+            res=Object.assign(res,cache)//数组每次循环都将暂存区的数据合并到res
+            total+=arr[i][param].length
+            if(i<arr.length-1){
+              for(let item in cache){
+                cache[Number(item)+cache[item]]=arr[i+1][param].length
+                delete cache[item]
+              }
+            }
+          }
+        }else {
+          for(let i=0;i<arr.length;i++){
+            i===0&&(cache[1]=arr[i].length)//初始化暂存区
+            res=Object.assign(res,cache)//数组每次循环都将暂存区的数据合并到res
+            total+=arr[i].length
+            if(i<arr.length-1){
+              for(let item in cache){
+                cache[Number(item)+cache[item]]=arr[i+1].length
+                delete cache[item]
+              }
             }
           }
         }
-        this.rowspan=res
-        this.tableTotal=total
+        return res
       },
       getData(type = 'init') {
         let param = {
@@ -657,24 +842,58 @@
             endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
           })
         }
+        this.tableData=[]
         this.$ajax.get('/api/achievementSheet/getAchievementDepSumList', param).then(res => {
           res=res.data
           if(res.status===200){
+            // debugger
             let cell=res.data.list
-            this.tableData=[].concat(cell[0],cell[1],cell[2])
-            this.total=this.tableData.length
+            cell.forEach(item=>{
+              this.tableData=this.tableData.concat([...item])
+            })
+            this.total=res.data.count
             this.loading=false
+            this.rowspan = this.mergeRow(cell)
+          }
+        }).catch(err => {
+          this.$message({message: err})
+        })
+      },
+      //业绩报表请求导出所有数据
+      getAll:function () {
+        let param = {
+          pageNum: this.pageNum,
+        };
+        if (true) {
+          param = Object.assign(param, {
+            startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
+            endTime: this.propForm.dateMo ? this.propForm.dateMo[1] : '', //结束时间
+          })
+        }
+        this.reportData=[]
+        this.$ajax.get('/api/achievementSheet/exportAchievementSheet', param).then(res => {
+          res=res.data
+          if(res.status===200){
+            let cell=res.data.list
+            cell.forEach(item=>{
+              this.reportData=this.reportData.concat([...item])
+            })
+            this.rowspan_report=this.mergeRow(cell)
+            this.$nextTick(()=>{//等待页面渲染完成
+              this.getExcel('tableDraw_one','业绩报表')
+            })
           }
         }).catch(err => {
           this.$message({message: err})
         })
       },
       //跳转店内合同明细
-      toDetails() {
+      toDetails(data) {
         let newPage = this.$router.resolve({
           path: "/storeReceive",
           query: {
-            detail: true
+            detail: true,
+            ids:data.depIds.join(',')
           }
         });
         window.open(newPage.href, "_blank");
@@ -705,7 +924,7 @@
 
         var aLink=document.createElement('a')
         aLink.href = uri + base64(format(template, ctx));
-        aLink.download = `${table==='tableDraw_one'?'业绩报表':'店内合同明细'}.xls`;
+        aLink.download = `${name}.xls`;
         aLink.click()
       },
       resetFormFn() {
@@ -728,7 +947,7 @@
       },
       handleCurrentChange(val) {
         this.pageNum = val
-        this.getData('page')
+        this.tableShow?this.getDetails('page'):this.getData('page')
       },
     }
   };
@@ -747,18 +966,30 @@
     list-style: none;
     >li{
       white-space: nowrap;
-      border-bottom: 1px solid;
+      border-bottom: 1px solid #EBEEF5;
       padding: 4px 0px;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       &:before{
         content: '';
         width: 1px;
         height: 100%;
         display: inline-block;
       }
+      &:last-of-type{
+        border-bottom: 0px;
+      }
     }
   }
   .txt-red{
     color: @color-red;
+  }
+  /deep/ .info-cell{
+    padding: 0px !important;
+    .cell{
+      padding: 0px;
+    }
   }
 
   .layout {
