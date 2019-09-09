@@ -13,12 +13,12 @@
         <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
               <el-option
-                v-for="item in deps"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="(item,index) in deps"
+                :key="index"
+                :label="`${item.name}+${item.positionName}`"
+                :value="item.flag">
               </el-option>
             </el-select>
             <el-select :clearable="true" filterable remote :remote-method="searchEmp" class="w140" size="small" v-model="choseItem.empId" placeholder="人员" @visible-change="initEmp"  @change="getOption('emp')">
@@ -77,9 +77,11 @@
         emps:[],
         choseItem:{
           depId:'',
-          empId:''
+          empId:'',
+          grade:'',//职级
         },
         inputEmp:false,//是否手动搜索
+        depsFlag:'',//部门数组唯一标识
       }
     },
     created(){
@@ -158,6 +160,7 @@
           keyword:!val?'':val,
           type:this.type===3?1:0,
           depId:this.choseItem.depId,
+          positionId:this.choseItem.grade,//新加职级
           bizCode:this.bizCode,
           flowType:this.flowType
         }
@@ -194,7 +197,14 @@
           // debugger
           this.choseItem.empId=''
           this.emps = []
-          if(this.choseItem.depId!==''){
+          if(this.depsFlag!==''){
+            this.deps.forEach(item=>{
+              // debugger
+              if(item.flag===this.depsFlag){
+                this.choseItem.depId=item.id
+                this.choseItem.grade=item.positionId
+              }
+            })
             this.searchEmp()
           }
         }else {
@@ -203,6 +213,8 @@
               if(item.empId===this.choseItem.empId){
                 // this.deps=[].concat({name:item.depName,id:item.depId})
                 this.choseItem.depId=item.depId
+                this.choseItem.grade=item.positionId
+                this.depsFlag=`${item.depId}${item.positionId}`
                 this.searchEmp()
                 this.inputEmp=false
               }
