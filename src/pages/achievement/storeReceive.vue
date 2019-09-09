@@ -75,12 +75,12 @@
           style="width: 100%"
           border>
           <el-table-column label="上级部门" align="center" prop="areaName" min-width="80"></el-table-column>
-          <el-table-column label="门店" align="center" width="80">
+          <el-table-column label="门店" align="center" min-width="80">
             <template slot-scope="scope">
               <span class="cursor-style" @click="toDetails(scope.row)">{{scope.row.depName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="门店状态" align="center" width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="门店状态" align="center" min-width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
 
           <el-table-column label="店长" align="center" prop="depManagerName" :formatter="nullFormatter"></el-table-column>
           <el-table-column label="签约总单数" align="center">
@@ -89,28 +89,28 @@
               label="租赁"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
               label="买卖"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowAmount"
               label="低佣"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
           </el-table-column>
           <el-table-column label="本月实收业绩（元）" align="center">
@@ -119,42 +119,42 @@
               label="租赁"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondActual"
               label="买卖"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowActual"
               label="低佣"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyActual"
               label="代办"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="damagesActual"
               label="违约金（元）"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="financialFeeActual"
               label="金融收入（元）"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
           </el-table-column>
           <el-table-column label="本月合同业绩（元）" align="center">
@@ -163,42 +163,42 @@
               label="租赁"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondShould"
               label="买卖"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowShould"
               label="低佣"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyShould"
               label="代办"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="damagesShould"
               label="违约金（元）"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
             <el-table-column
               prop="financialFeeShould"
               label="金融收入（元）"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
             </el-table-column>
           </el-table-column>
 
@@ -227,7 +227,7 @@
           :span-method="elTabelMerge"
           style="width: 100%"
           border>
-          <el-table-column label="门店" align="center" width="80">
+          <el-table-column label="门店" align="center" min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.type==='total'">总计</span>
               <span v-else>{{storeName[scope.$index+1]}}</span>
@@ -237,7 +237,7 @@
             <el-table-column
               label="签约日期"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span v-if="scope.row.contractContent" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.signDate|formatDate}}</span>
               </template>
@@ -245,7 +245,7 @@
             <el-table-column
               label="合同类型"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.tradeType|getLabel}}</span>
               </template>
@@ -253,7 +253,7 @@
             <el-table-column
               label="签约方式"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.recordType|getLabel}}</span>
               </template>
@@ -263,7 +263,7 @@
               label="合同编号"
               align="center"
               :formatter="nullFormatter"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.code|getLabel}}</span>
               </template>
@@ -271,7 +271,7 @@
             <el-table-column
               label="纸质编号"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.pCode|getLabel}}</span>
               </template>
@@ -279,7 +279,7 @@
             <el-table-column
               label="合同地址"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.propertyAddr|getLabel}}</span>
               </template>
@@ -287,7 +287,7 @@
             <el-table-column
               label="合同成交价（元）"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.dealPrice|getLabel}}</span>
               </template>
@@ -295,7 +295,7 @@
             <el-table-column
               label="合同应收佣金（元）"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.receivableCommission|getLabel}}</span>
               </template>
@@ -310,16 +310,16 @@
             <el-table-column
               label="本店分成比例"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span v-if="scope.row.localIncome.ratioSum" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.ratioSum}}%</span>
-                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-else>0.00%</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-else>{{scope.row.type==='total'?'--':'0.00%'}}</span>
               </template>
             </el-table-column>
             <el-table-column
               label="本店应收佣金（元）"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.receivableSum|getLabel}}</span>
               </template>
@@ -327,7 +327,7 @@
             <el-table-column
               label="本月实收佣金（元）"
               align="center"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.localActual|getLabel}}</span>
               </template>
@@ -336,10 +336,10 @@
               label="经纪人"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="140">
               <template slot-scope="scope">
                 <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
-                  <li :title="item.level4+item.assignor" v-for="item in scope.row.localIncome.localAgent">
+                  <li :title="item.level4&&item.assignor?item.level4+item.assignor:''" v-for="item in scope.row.localIncome.localAgent">
                     {{item.level4}}-{{item.assignor}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
@@ -353,7 +353,7 @@
               label="在职状态"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
@@ -370,12 +370,12 @@
               label="分成比例"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span v-else>0.00%</span>
+                    <span v-else>{{scope.row.type==='total'?'--':'0.00%'}}</span>
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
@@ -388,7 +388,7 @@
               label="本月实收分成金额（元）"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
@@ -407,7 +407,7 @@
               label="合作门店"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="120">
               <template slot-scope="scope">
                 <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li :title="item.level4" v-for="item in scope.row.cooperateIncome.cooperateAgent">
@@ -424,7 +424,7 @@
               label="合作经纪人"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="120">
               <template slot-scope="scope">
                 <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li :title="item.assignor" v-for="item in scope.row.cooperateIncome.cooperateAgent">
@@ -441,12 +441,12 @@
               label="分成比例"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span v-else>0.00%</span>
+                    <span v-else>{{scope.row.type==='total'?'--':'0.00%'}}</span>
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
@@ -459,7 +459,7 @@
               label="本月实收分成金额（元）"
               align="center"
               class-name="info-cell"
-              width="70">
+              min-width="70">
               <template slot-scope="scope">
                 <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
@@ -761,7 +761,7 @@
             let NameList=[]//临时存放门店名称
             res.data.data.forEach((item,index)=>{
               let chipArr=[...item.localContract,...item.noAchievementEmp]
-              temporaryArr.push({list:chipArr})
+              chipArr.length>0&&temporaryArr.push({list:chipArr})//防止插入空数组影响mergeRow方法生成合并对象
               temporaryArr.push({list:item.totalData})
               this.tableData=this.tableData.concat(chipArr,item.totalData)
 
