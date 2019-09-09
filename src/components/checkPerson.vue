@@ -13,12 +13,20 @@
         <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" v-if="getUser.version===3" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
                 :label="`${item.name}+${item.positionName}`"
                 :value="item.flag">
+              </el-option>
+            </el-select>
+            <el-select :clearable="true" v-else filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
+              <el-option
+                v-for="item in deps"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
               </el-option>
             </el-select>
             <el-select :clearable="true" filterable remote :remote-method="searchEmp" class="w140" size="small" v-model="choseItem.empId" placeholder="人员" @visible-change="initEmp"  @change="getOption('emp')">
@@ -160,9 +168,11 @@
           keyword:!val?'':val,
           type:this.type===3?1:0,
           depId:this.choseItem.depId,
-          positionId:this.choseItem.grade,//新加职级
           bizCode:this.bizCode,
           flowType:this.flowType
+        }
+        if(this.getUser.version===3){
+          param.positionId=this.choseItem.grade//新加职级
         }
         if(val&&val.length>0){
           this.inputEmp=true
@@ -197,7 +207,7 @@
           // debugger
           this.choseItem.empId=''
           this.emps = []
-          if(this.depsFlag!==''){
+          if(this.depsFlag!==''&&this.getUser.version===3){
             this.deps.forEach(item=>{
               // debugger
               if(item.flag===this.depsFlag){
@@ -205,16 +215,18 @@
                 this.choseItem.grade=item.positionId
               }
             })
-            this.searchEmp()
           }
+          this.searchEmp()
         }else {
           if(this.inputEmp){
             this.emps.find(item=>{
               if(item.empId===this.choseItem.empId){
                 // this.deps=[].concat({name:item.depName,id:item.depId})
                 this.choseItem.depId=item.depId
-                this.choseItem.grade=item.positionId
-                this.depsFlag=`${item.depId}${item.positionId}`
+                if(this.getUser.version===3){
+                  this.choseItem.grade=item.positionId
+                  this.depsFlag=`${item.depId}${item.positionId}`
+                }
                 this.searchEmp()
                 this.inputEmp=false
               }
