@@ -13,7 +13,7 @@
         <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="choseItem.depId" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
               <el-option
                 v-for="item in deps"
                 :key="item.id"
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
   let _depList=[]
   export default {
     name: "check-person",
@@ -210,6 +211,11 @@
         }
       }
     },
+    computed:{
+      ...mapGetters([
+        'getUser',
+      ])
+    }
   }
 </script>
 

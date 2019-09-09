@@ -40,7 +40,7 @@
     <!-- 数据列表 -->
     <div class="data-layout">
       <!-- 头部 -->
-      <div class="data-head">
+      <div class="data-head" v-if="power['sign-yj-report-export'].state">
         <div class="data-head-left">
           <!--<div class="head-left">
             <el-button type="primary" size="small" :class="[activeItem===1?'active':'']"
@@ -706,6 +706,12 @@
         tabTotal:0,
         storeName:{},//合同明细的门店名称
         depIds:'',//请求合同明细参数
+        power:{
+          'sign-yj-report-export': {
+            state: false,
+            name: '导出'
+          },
+        }
       };
     },
     created() {
@@ -889,6 +895,9 @@
       },
       //跳转店内合同明细
       toDetails(data) {
+        if(data.depName==='合计'){
+          return
+        }
         let newPage = this.$router.resolve({
           path: "/storeReceive",
           query: {
@@ -1072,7 +1081,7 @@
     .data-layout {
       // height: 1000px;
       margin-top: 20px;
-      padding: 0 10px;
+      padding: 6px 10px 0px;
       background-color: #fff;
       /deep/ .el-table__header th {
         background-color: #eef2fb;
@@ -1083,7 +1092,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 6px 0px;
+        padding: 0px 0px 6px;
       }
     }
 
