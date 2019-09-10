@@ -554,9 +554,10 @@ let TOOL = {
         }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
     }
   },
-  nullFormat: function (val) {
+  nullFormat: function (val,number) {
+    // debugger
     if (!val && typeof val !== "number") {
-      return "--";
+      return !number?"--":0;
     } else {
       return val;
     }

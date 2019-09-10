@@ -289,7 +289,7 @@
               align="center"
               min-width="70">
               <template slot-scope="scope">
-                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.dealPrice|getLabel}}</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.dealPrice|formatNull(true)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -297,7 +297,7 @@
               align="center"
               min-width="70">
               <template slot-scope="scope">
-                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.receivableCommission|getLabel}}</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.receivableCommission|formatNull(true)}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -321,7 +321,7 @@
               align="center"
               min-width="70">
               <template slot-scope="scope">
-                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.receivableSum|getLabel}}</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.receivableSum|formatNull(true)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -329,7 +329,7 @@
               align="center"
               min-width="70">
               <template slot-scope="scope">
-                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.localActual|getLabel}}</span>
+                <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.localActual|formatNull(true)}}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -392,7 +392,7 @@
               <template slot-scope="scope">
                 <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.localIncome.localAgent">
-                    {{item.singleActual|formatNull}}
+                    {{item.singleActual|formatNull(true)}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
@@ -463,7 +463,7 @@
               <template slot-scope="scope">
                 <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
-                    {{item.singleActual|formatNull}}
+                    {{item.singleActual|formatNull(true)}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
@@ -586,12 +586,12 @@
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.code|formatNull}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.pCode|formatNull}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.propertyAddr|formatNull}}</td>
-          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.dealPrice|formatNull}}</td>
-          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.receivableCommission|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.dealPrice|formatNull(true)}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.contractContent&&item.contractContent.receivableCommission|formatNull(true)}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.singleNum|formatNull}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.ratioSum|formatNull}}</td>
-          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.receivableSum|formatNull}}</td>
-          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.localActual|formatNull}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.receivableSum|formatNull(true)}}</td>
+          <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">{{item.localIncome&&item.localIncome.localActual|formatNull(true)}}</td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.localIncome.localAgent">
               <span v-if="tip.level4&&tip.assignor">{{tip.level4}}{{tip.assignor}}</span>
@@ -625,7 +625,7 @@
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}"><!--本月实收分成金额-->
             <template v-for="tip in item.localIncome.localAgent">
-              {{tip.singleActual|formatNull}}<br/>
+              {{tip.singleActual|formatNull(true)}}<br/>
             </template>
             <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
@@ -663,7 +663,7 @@
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.cooperateIncome.cooperateAgent">
-              {{tip.singleActual|formatNull}}<br/>
+              {{tip.singleActual|formatNull(true)}}<br/>
             </template>
             <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
