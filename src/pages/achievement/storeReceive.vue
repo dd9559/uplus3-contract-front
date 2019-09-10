@@ -715,17 +715,13 @@
       };
     },
     created() {
-      var date = new Date();
-      date = date.setDate(1);
-      date = this.$tool.dateFormat(date)
-      var date2 = this.$tool.dateFormat(Date.now())
-      this.propForm.dateMo = [date, date2]
-
+      this.initTimePicker()
       //路由带参显示店内合同明细表
       if (this.$route.query.detail) {
         this.setPath(this.getPath.concat({name: '店内合同明细'}))
         this.depIds=this.$route.query.ids
         this.tableShow = true
+        this.propForm.dateMo=this.$route.query.time.split(',')
         this.getDetails()
       }else {
         this.getData()
@@ -739,6 +735,14 @@
       // this.mergeRow(list,'arr')
     },
     methods: {
+      //初始化时间控件
+      initTimePicker(){
+        var date = new Date();
+        date = date.setDate(1);
+        date = this.$tool.dateFormat(date)
+        var date2 = this.$tool.dateFormat(Date.now())
+        this.propForm.dateMo = [date, date2]
+      },
       // 获取店内合同明细
       getDetails:function (type='init') {
         let param = {
@@ -842,6 +846,9 @@
         let param = {
           pageNum: this.pageNum,
         };
+        if(!this.propForm.dateMo){
+          this.initTimePicker()
+        }
         if (type !== 'init'|true) {
           param = Object.assign(param, {
             startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
@@ -902,7 +909,8 @@
           path: "/storeReceive",
           query: {
             detail: true,
-            ids:data.depIds.join(',')
+            ids:data.depIds.join(','),
+            time:this.propForm.dateMo.join(',')
           }
         });
         window.open(newPage.href, "_blank");
@@ -939,7 +947,7 @@
       resetFormFn() {
         this.propForm.department = ''
         this.propForm.departmentDetail = ''
-        this.propForm.dateMo = ''
+        this.initTimePicker()
       },
       clearDep: function () {
         this.propForm.department = "";
