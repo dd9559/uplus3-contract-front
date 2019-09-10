@@ -338,15 +338,16 @@
               class-name="info-cell"
               min-width="140">
               <template slot-scope="scope">
-                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-if="scope.row.type!=='total'">
                   <li :title="item.level4&&item.assignor?item.level4+item.assignor:''" v-for="item in scope.row.localIncome.localAgent">
                     {{item.level4}}-{{item.assignor}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -355,15 +356,16 @@
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-if="scope.row.type!=='total'">
                   <li v-for="item in scope.row.localIncome.localAgent">
                     {{item.isJob|getLabel}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -372,16 +374,17 @@
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}" v-if="scope.row.type!=='total'">
                   <li v-for="item in scope.row.localIncome.localAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span v-else>{{scope.row.type==='total'?'--':'0.00%'}}</span>
+                    <span v-else>0.00%</span>
                   </li>
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -397,8 +400,8 @@
                   <template v-if="scope.row.localIncome.localAgent<scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.cooperateIncome.cooperateAgent.length-scope.row.localIncome.localAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="scope.row.type==='total'&&scope.row.localIncome.localAgent&&scope.row.localIncome.localAgent.length===0">--</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -409,15 +412,16 @@
               class-name="info-cell"
               min-width="120">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" v-if="scope.row.type!=='total'" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li :title="item.level4" v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     {{item.level4|formatNull}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -426,15 +430,16 @@
               class-name="info-cell"
               min-width="120">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" v-if="scope.row.type!=='total'" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li :title="item.assignor" v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     {{item.assignor|formatNull}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -443,16 +448,17 @@
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" v-if="scope.row.type!=='total'" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     <span v-if="item.ratio">{{item.ratio}}%</span>
-                    <span v-else>{{scope.row.type==='total'?'--':'0.00%'}}</span>
+                    <span v-else>0.00%</span>
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
+                <span v-else>--</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -461,15 +467,16 @@
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
-                <ul class="cell-list" v-if="scope.row.cooperateIncome" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
+                <ul class="cell-list" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">
                   <li v-for="item in scope.row.cooperateIncome.cooperateAgent">
                     {{item.singleActual|formatNull(true)}}
                   </li>
                   <template v-if="scope.row.localIncome.localAgent>scope.row.cooperateIncome.cooperateAgent">
                     <li v-for="item in (scope.row.localIncome.localAgent.length-scope.row.cooperateIncome.cooperateAgent.length)">--</li>
                   </template>
+                  <li v-if="scope.row.cooperateIncome.cooperateAgent.length===0&&scope.row.localIncome.localAgent.length===0">--</li>
                 </ul>
-                <span v-if="!scope.row.cooperateIncome.cooperateAgent">--</span>
+                <!--<span v-if="!scope.row.cooperateIncome.cooperateAgent">&#45;&#45;</span>-->
               </template>
             </el-table-column>
           </el-table-column>
@@ -601,7 +608,7 @@
             <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
             </template>
-            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.localIncome.localAgent">
@@ -610,7 +617,7 @@
             <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
             </template>
-            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.localIncome.localAgent">
@@ -621,7 +628,7 @@
             <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
             </template>
-            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}"><!--本月实收分成金额-->
             <template v-for="tip in item.localIncome.localAgent">
@@ -630,7 +637,7 @@
             <template v-if="item.localIncome.localAgent<item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.cooperateIncome.cooperateAgent.length-item.localIncome.localAgent.length)">--<br/></span>
             </template>
-            <span v-if="item.type==='total'&&item.localIncome.localAgent&&item.localIncome.localAgent.length===0">--</span>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.cooperateIncome.cooperateAgent">
@@ -639,7 +646,7 @@
             <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
             </template>
-            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.cooperateIncome.cooperateAgent">
@@ -648,7 +655,7 @@
             <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
             </template>
-            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.cooperateIncome.cooperateAgent">
@@ -659,7 +666,7 @@
             <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
             </template>
-            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
           <td :style="{'color':item.type==='noAchievementEmp'?'red':'inherit'}">
             <template v-for="tip in item.cooperateIncome.cooperateAgent">
@@ -668,7 +675,7 @@
             <template v-if="item.localIncome.localAgent>item.cooperateIncome.cooperateAgent">
               <span v-for="tip in (item.localIncome.localAgent.length-item.cooperateIncome.cooperateAgent.length)">--<br/></span>
             </template>
-            <template v-if="!item.cooperateIncome.cooperateAgent">--</template>
+            <span v-if="item.localIncome.localAgent.length===0&&item.cooperateIncome.cooperateAgent.length===0">--</span>
           </td>
         </tr>
         </tbody>
