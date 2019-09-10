@@ -577,6 +577,10 @@
                         this.nodeList[i].depStr = item.name
                     }
                 })
+                this.nodeList[i].depArr = []
+                let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depID)
+                arr.forEach(item => this.nodeList[i].depArr.push(item.positionId))
+                this.nodeList[i].depsTime = arr.length + 1
             },
             // 选中默认审核人
             defaultChoice(index,e,curItem) {
@@ -743,7 +747,7 @@
                             })
                         } else {
                             let arr = this.nodeList[index].choice.filter(item => {
-                                return item.type === 1
+                                return item.type === 1 && item.userId === this.nodeList[index].depID
                             })
                             let arr1 = []
                             arr.forEach(item => {
@@ -751,7 +755,7 @@
                             })
                             let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
                             this.nodeList[index].choice.forEach((item,i) => {
-                                if(item.positionId === arr2[0]) {
+                                if(item.positionId === arr2[0] && item.userId === this.nodeList[index].depID) {
                                     this.nodeList[index].choice.splice(i,1)
                                     this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
                                 }
