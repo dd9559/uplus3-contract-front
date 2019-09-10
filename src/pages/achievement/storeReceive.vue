@@ -77,7 +77,7 @@
           <el-table-column label="上级部门" align="center" prop="areaName" min-width="80"></el-table-column>
           <el-table-column label="门店" align="center" min-width="80">
             <template slot-scope="scope">
-              <span class="cursor-style" @click="toDetails(scope.row)" :class="{'txt-black':scope.row.depName==='合计'}">{{scope.row.depName}}</span>
+              <span @click="toDetails(scope.row)" :class="{'cursor-style':scope.row.depName!=='合计'}">{{scope.row.depName}}</span>
             </template>
           </el-table-column>
           <el-table-column label="门店状态" align="center" min-width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>

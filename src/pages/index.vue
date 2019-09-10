@@ -187,6 +187,9 @@
       },
       toLink:function (item,index) {
         if(index<2){
+          if(item.path.includes('/storeReceive')){//业绩报表特殊路由处理
+            item.path=item.path.split('?')[0]
+          }
           this.$router.push({
             path:item.path
           })
