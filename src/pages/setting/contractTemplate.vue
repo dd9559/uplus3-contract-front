@@ -66,7 +66,7 @@
                    <fileUp id='jjian' :rules="mbrules" :more="false"  :scane="{path:'template'}"  @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
                    <span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span>
                 </p>
-                <span class="wordtip">温馨提示：只支持Word格式</span>
+                <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
               <div v-else>
@@ -74,7 +74,7 @@
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' :scane="{path:'template'}" :more="false"  class='fileup'>模板</fileUp>
                   <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
                 </p>
-                <span class="wordtip">温馨提示：只支持Word格式</span>
+                <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
             </div>
