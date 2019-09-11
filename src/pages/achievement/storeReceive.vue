@@ -18,6 +18,7 @@
           <el-date-picker
             v-model="propForm.dateMo"
             class="w330"
+            @change="clearPicker"
             type="daterange"
             range-separator="至"
             value-format="yyyy-MM-dd"
@@ -113,7 +114,7 @@
               min-width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="本月实收业绩（元）" align="center">
+          <el-table-column label="本月实收佣金（元）" align="center">
             <el-table-column
               prop="leaseActual"
               label="租赁"
@@ -502,7 +503,7 @@
             <th rowspan="2">门店状态</th>
             <th rowspan="2">店长</th>
             <th colspan="4">签约总单数</th>
-            <th colspan="6">本月实收业绩（元）</th>
+            <th colspan="6">本月实收佣金（元）</th>
             <th colspan="6">本月合同业绩（元）</th>
             <th rowspan="2">本月实收金额（元）</th>
             <th rowspan="2">本月合同金额（元）</th>
@@ -742,13 +743,20 @@
       // this.mergeRow(list,'arr')
     },
     methods: {
+      clearPicker(val){
+        if(!val){
+          this.initTimePicker()
+        }
+      },
       //初始化时间控件
       initTimePicker(){
         var date = new Date();
         date = date.setDate(1);
         date = this.$tool.dateFormat(date)
         var date2 = this.$tool.dateFormat(Date.now())
-        this.propForm.dateMo = [date, date2]
+        this.$nextTick(()=>{
+          this.$set(this.propForm,'dateMo',[date, date2])
+        })
       },
       // 获取店内合同明细
       getDetails:function (type='init') {
@@ -853,9 +861,6 @@
         let param = {
           pageNum: this.pageNum,
         };
-        if(!this.propForm.dateMo){
-          this.initTimePicker()
-        }
         if (type !== 'init'|true) {
           param = Object.assign(param, {
             startTime: this.propForm.dateMo ? this.propForm.dateMo[0] : '', //开始时间
