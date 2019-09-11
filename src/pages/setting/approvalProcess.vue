@@ -146,6 +146,7 @@
                                 <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型">
                                     <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
                                 </el-select>
+                                <!-- 人员 -->
                                 <div v-if="item.type===0" class="person">
                                     <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye1" size="small"
@@ -158,10 +159,11 @@
                                         </el-option>
                                     </el-select>
                                 </div>
+                                <!-- 部门 -->
                                 <div v-if="item.type===1">
                                     <!-- 3.0环境 -->
                                     <div class="person" v-if="version==3">
-                                        <el-select size="small" placeholder="请选择部门类型" v-model="item.depID" filterable @change="getDepStr($event,index)">
+                                        <el-select size="small" placeholder="请选择部门" v-model="item.depID" filterable @change="getDepStr($event,index,item.type)">
                                             <el-option
                                             v-for="option in depsList"
                                             :key="option.id"
@@ -183,6 +185,7 @@
                                         ></el-option>
                                     </el-select>  
                                 </div>
+                                <!-- 角色 -->
                                 <el-select size="small" v-if="item.type===2" class="other" v-model="item.roleArr" filterable multiple @change="multiSelect(item.type,index)">
                                     <el-option
                                     v-for="option in roleList"
@@ -191,6 +194,22 @@
                                     :value="option.key"
                                     ></el-option>
                                 </el-select>
+                                <!-- 部门类型 -->
+                                <div v-if="item.type===4&&version==3">
+                                    <div class="person">
+                                        <el-select size="small" placeholder="请选择部门类型" v-model="item.depType" filterable @change="getDepStr($event,index,item.type)">
+                                            <el-option
+                                            v-for="option in dictionary['660']"
+                                            :key="option.key"
+                                            :label="option.value"
+                                            :value="option.key"
+                                            ></el-option>
+                                        </el-select>
+                                        <el-select class="person-right" size="small" placeholder="请选择职级类型" v-model="item.depTypeArr" filterable multiple @change="multiSelect(item.type,index)">
+                                            <el-option v-for="item in dictionary['659']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                                        </el-select>
+                                    </div>
+                                </div>
                                 <div class="row-icon">
                                     <span class="button" @click="addRow"><i class="icon el-icon-plus"></i></span>
                                     <span class="button" @click="removeRow(index)"><i class="icon el-icon-minus"></i></span>
@@ -199,9 +218,13 @@
                             <div class="default" v-show="item.choice&&item.choice.length>0&&index!==0">
                                 <div class="mo-ren">选择默认审核人:<span v-if="version==3">（温馨提示：建议添加不少于两个审核人）</span></div>
                                 <div class="multiple" ref="curChoice">
-                                    <span v-for="(ele,m) in item.choice" :key="m"
-                                    @click="defaultChoice(index,m,ele)" :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===1?"部门":ele.type===2?"角色":"人员"}}-{{ele.temp?version==3&&ele.type===1?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}<i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
+                                    <span
+                                    v-for="(ele,m) in item.choice"
+                                    :key="m"
+                                    @click="defaultChoice(index,m,ele)"
+                                    :class="{'cur-select':ele.isDefault===1}">
+                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":""}}{{ele.temp?version==3&&(ele.type===1||ele.type===4)?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
+                                        <i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
                             </div>
@@ -234,6 +257,7 @@
             depName: "",
             personArr: [],
             depArr: [],
+            depTypeArr: [],
             roleArr: [],
             choice: []
         },
@@ -245,17 +269,21 @@
             depName: "",
             personArr: [],
             depArr: [],
+            depTypeArr: [],
             roleArr: [],
             choice: [],
             peopleTime: 1,
             depsTime: 1,
+            depTypeTime: 1,
             rolesTime: 1,
             employeList:[],
             employeeTotal:0,
             employeePage:1,
             currentDep: null,
-            depID: "", //部门类型id
-            depStr: "" //部门类型名称
+            depID: "", //部门id
+            depStr: "", //部门名称
+            depType: "",
+            depTypeStr: ""
         }
     ]
 
@@ -296,7 +324,8 @@
                     '599':'',
                     '601':'',
                     '603':'',
-                    '659':'职级类型'
+                    '659':'职级类型',
+                    '660':'部门类型'
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -484,6 +513,7 @@
                         editRow[0].choice = JSON.parse(editRow[0].choice)
                         editRow[0].personArr = JSON.parse(editRow[0].personArr)
                         editRow[0].depArr = JSON.parse(editRow[0].depArr)
+                        editRow[0].depTypeArr = editRow[0].depTypeArr?JSON.parse(editRow[0].depTypeArr):[]
                         editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
                         editRow[0].depName = ""
                         editRow[0].userId = ""
@@ -500,13 +530,17 @@
                             depName: "",
                             personArr: JSON.parse(editRow[i].personArr),
                             depArr: JSON.parse(editRow[i].depArr),
+                            depTypeArr: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr):[],
                             roleArr: JSON.parse(editRow[i].roleArr),
                             choice: JSON.parse(editRow[i].choice),
-                            depID: JSON.parse(editRow[i].choice)[JSON.parse(editRow[i].choice).length - 1].userId,
-                            depStr: JSON.parse(editRow[i].choice)[JSON.parse(editRow[i].choice).length - 1].userName,
+                            depID: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[0].userId:'',
+                            depStr: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[0].userName:'',
+                            depType: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[0].userId:'',
+                            depTypeStr: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[0].userName:'',
                             lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
                             peopleTime: JSON.parse(editRow[i].personArr).length + 1,
                             depsTime: JSON.parse(editRow[i].depArr).length + 1,
+                            depTypeTime: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr).length + 1:1,
                             rolesTime: JSON.parse(editRow[i].roleArr).length + 1,
                             employeList:[],
                             employeeTotal:0,
@@ -570,17 +604,29 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val)
             },
-            // 3.0环境获取部门类型名称
-            getDepStr(e,i) {
-                this.depsList.find(item => {
-                    if(e == item.id) {
-                        this.nodeList[i].depStr = item.name
-                    }
-                })
-                this.nodeList[i].depArr = []
-                let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depID)
-                arr.forEach(item => this.nodeList[i].depArr.push(item.positionId))
-                this.nodeList[i].depsTime = arr.length + 1
+            // 3.0环境获取部门类型/部门名称
+            getDepStr(e,i,type) {
+                if(type === 1) {
+                    this.depsList.find(item => {
+                        if(e == item.id) {
+                            this.nodeList[i].depStr = item.name
+                        }
+                    })
+                    this.nodeList[i].depArr = []
+                    let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depID)
+                    arr.forEach(item => this.nodeList[i].depArr.push(item.positionId))
+                    this.nodeList[i].depsTime = arr.length + 1 
+                } else {
+                    this.dictionary['660'].find(item => {
+                        if(e == item.key) {
+                            this.nodeList[i].depTypeStr = item.value
+                        }
+                    })
+                    this.nodeList[i].depTypeArr = []
+                    let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depType)
+                    arr.forEach(item => this.nodeList[i].depTypeArr.push(item.positionId))
+                    this.nodeList[i].depTypeTime = arr.length + 1 
+                }
             },
             // 选中默认审核人
             defaultChoice(index,e,curItem) {
@@ -598,39 +644,28 @@
             },
             // 删除审核人
             delChoice(index,choiceArr,m) {
-                if(choiceArr[m].type === 0) {
-                    for(var i = 0; i < this.nodeList[index].personArr.length; i++) {
-                        if(choiceArr[m].userId === this.nodeList[index].personArr[i]) {
-                            this.nodeList[index].personArr.splice(i,1)
-                            this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
-                            break
-                        }
-                    }
-                } else if(choiceArr[m].type === 1) {
-                    if(this.version == 2) {
-                        for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
-                            if(choiceArr[m].userId === this.nodeList[index].depArr[i]) {
-                                this.nodeList[index].depArr.splice(i,1)
-                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                                break
-                            }
-                        }  
-                    } else {
-                        for(var i = 0; i < this.nodeList[index].depArr.length; i++) {
-                            if(choiceArr[m].positionId === this.nodeList[index].depArr[i]) {
-                                this.nodeList[index].depArr.splice(i,1)
-                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                                break
-                            }
-                        }  
+                let s_arr = 'personArr'
+                let s_id = 'userId'
+                let s_t = 'peopleTime'
+                if(choiceArr[m].type === 1) {
+                    s_arr = 'depArr'
+                    s_t = 'depsTime'
+                    if(this.version == 3) {
+                        s_id = 'positionId'
                     }
                 } else if(choiceArr[m].type === 2) {
-                    for(var i = 0; i < this.nodeList[index].roleArr.length; i++) {
-                        if(choiceArr[m].userId === this.nodeList[index].roleArr[i]) {
-                            this.nodeList[index].roleArr.splice(i,1)
-                            this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
-                            break
-                        }
+                    s_arr = 'roleArr'
+                    s_t = 'rolesTime'
+                } else if(choiceArr[m].type === 4) {
+                    s_arr = 'depTypeArr'
+                    s_t = 'depTypeTime'
+                    s_id = 'positionId'
+                }
+                for(var i = 0; i < this.nodeList[index][s_arr].length; i++) {
+                    if(choiceArr[m][s_id] === this.nodeList[index][s_arr][i]) {
+                        this.nodeList[index][s_arr].splice(i,1)
+                        this.$set(this.nodeList[index],s_t,this.nodeList[index][s_t] - 1)
+                        break
                     }
                 }
                 choiceArr.splice(m,1)
@@ -647,6 +682,7 @@
                     })
                 }
                 if(type === 0) {
+                    // 人员
                     if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
                         for(var i = 0; i < this.nodeList[index].employeList.length; i++) {
                             if(this.nodeList[index].personArr[this.nodeList[index].peopleTime-1] === this.nodeList[index].employeList[i].empId) {
@@ -678,6 +714,7 @@
                         })
                     }
                 } else if(type === 1) {
+                    // 部门
                     if(this.nodeList[index].depsTime === this.nodeList[index].depArr.length) {
                         // 2.0环境
                         if(this.version == 2) {
@@ -696,38 +733,8 @@
                             ++this.nodeList[index].depsTime
                         } else {
                             // 3.0环境
-                            let zhijiArr = []
-                            for(var i = 0; i < this.dictionary['659'].length; i++) {
-                                if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.dictionary['659'][i].key) {
-                                    zhijiArr = this.dictionary['659'][i]
-                                    break
-                                }
-                            }
-                            this.$ajax.get('/api/organize/selectEmpByDepAndPosition',
-                            {
-                                depId: this.nodeList[index].depID,
-                                positionId: zhijiArr.key
-                            })
-                            .then(res => {
-                                res = res.data
-                                if(res.status === 200) {
-                                    if(res.data) {
-                                        this.nodeList[index].choice.push({
-                                            type: 1,
-                                            userName: this.nodeList[index].depStr,
-                                            userId: this.nodeList[index].depID,
-                                            isDefault: 0,
-                                            temp: this.nodeList[index].depStr,
-                                            positionId: zhijiArr.key,
-                                            positionName: zhijiArr.value
-                                        })
-                                        ++this.nodeList[index].depsTime
-                                    } else {
-                                        this.$message({message:"该职级下没有人，请选择其他职级"})
-                                        this.nodeList[index].depArr.splice(this.nodeList[index].depArr.length-1,1)
-                                    }
-                                }
-                            })
+                            let url = "/api/organize/selectEmpByDepAndPosition"
+                            this.checkEmp(url,type,index,'depArr','depsTime','depID','depStr')
                         }
                     } else {
                         if(this.version == 2) {
@@ -763,6 +770,7 @@
                         }
                     }
                 } else if(type === 2) {
+                    // 角色
                     if(this.nodeList[index].rolesTime === this.nodeList[index].roleArr.length) {
                         for(var i = 0; i < this.roleList.length; i++) {
                             if(this.nodeList[index].roleArr[this.nodeList[index].rolesTime-1] === this.roleList[i].key) {
@@ -793,11 +801,70 @@
                             }
                         })
                     }
+                } else if(type === 4) {
+                    // 3.0环境 审批人类型是 部门类型+职级
+                    if(this.nodeList[index].depTypeTime === this.nodeList[index].depTypeArr.length) {
+                        let url = "/api/organize/selectEmpByDepType"
+                        this.checkEmp(url,type,index,'depTypeArr','depTypeTime','depType','depTypeStr')
+                    } else {
+                        let arr = this.nodeList[index].choice.filter(item => {
+                            return item.type === 4 && item.userId === this.nodeList[index].depType
+                        })
+                        let arr1 = []
+                        arr.forEach(item => {
+                            arr1.push(item.positionId)
+                        })
+                        let arr2 = getArrDiff(arr1,this.nodeList[index].depTypeArr)
+                        this.nodeList[index].choice.forEach((item,i) => {
+                            if(item.positionId === arr2[0] && item.userId === this.nodeList[index].depType) {
+                                this.nodeList[index].choice.splice(i,1)
+                                this.$set(this.nodeList[index],'depTypeTime',this.nodeList[index].depTypeTime - 1)
+                            }
+                        })
+                    }
                 }
                 let ar = this.nodeList[index].choice.filter(item => item.isDefault===1)
                 if(ar.length===0) {
                     delete this.nodeList[index].lastChoice
                 }
+            },
+            // 验证职级下是否有人
+            checkEmp(url,type,index,ar,t,id_,s) {
+                let zhijiArr = []
+                for(var i = 0; i < this.dictionary['659'].length; i++) {
+                    if(this.nodeList[index][ar][this.nodeList[index][t]-1] === this.dictionary['659'][i].key) {
+                        zhijiArr = this.dictionary['659'][i]
+                        break
+                    }
+                }
+                let param = {
+                    positionId: zhijiArr.key
+                }
+                if(type === 1) {
+                    param.depId = this.nodeList[index][id_]
+                } else {
+                    param.depTypeId = this.nodeList[index][id_]
+                }
+                this.$ajax.get(url, param).then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        if(res.data) {
+                            this.nodeList[index].choice.push({
+                                type: type===1?1:4,
+                                userName: this.nodeList[index][s],
+                                userId: this.nodeList[index][id_],
+                                isDefault: 0,
+                                temp: this.nodeList[index][s],
+                                positionId: zhijiArr.key,
+                                positionName: zhijiArr.value
+                            })
+                            ++this.nodeList[index][t]
+                        } else {
+                            this.$message({message:"该职级下没有人，请选择其他职级"})
+                            this.nodeList[index][ar].splice(this.nodeList[index][ar].length-1,1)
+                        }
+                    }
+                })
             },
             addRow() {
                 let row = {
@@ -808,17 +875,21 @@
                     depName: "",
                     personArr: [],
                     depArr: [],
+                    depTypeArr: [],
                     roleArr: [],
                     choice: [],
                     peopleTime: 1,
                     depsTime: 1,
+                    depTypeTime: 1,
                     rolesTime: 1,
                     employeList:[],
                     employeeTotal:0,
                     employeePage:1,
                     currentDep: null,
                     depID: "",
-                    depStr: ""
+                    depStr: "",
+                    depType: "",
+                    depTypeStr: ""
                 }
                 this.nodeList.push(row)
             },
@@ -879,10 +950,17 @@
                         isOk = false
                         if(item[i].name) {
                             if(item[i].type !== "") {
-                                if(this.version == 3 && item[i].type == 1) {
-                                    if(!item[i].depID) {
-                                        this.$message({message:"请选择部门类型"})
-                                        break
+                                if(this.version == 3) {
+                                    if(item[i].type == 1) {
+                                        if(!item[i].depID) {
+                                            this.$message({message:"请选择部门"})
+                                            break
+                                        } 
+                                    } else if(item[i].type == 4) {
+                                        if(!item[i].depType) {
+                                            this.$message({message:"请选择部门类型"})
+                                            break
+                                        } 
                                     }
                                 }
                                 if(item[i].choice.length>0) {
@@ -910,6 +988,7 @@
                             delete item[i].depName
                             delete item[i].peopleTime
                             delete item[i].depsTime
+                            delete item[i].depTypeTime
                             delete item[i].rolesTime
                             delete item[i].employeList
                             delete item[i].employeeTotal
@@ -917,6 +996,8 @@
                             delete item[i].currentDep
                             delete item[i].depID
                             delete item[i].depStr
+                            delete item[i].depType
+                            delete item[i].depTypeStr
                             item[i].type = item[i].lastChoice.type
                             item[i].userName = item[i].lastChoice.userName
                             item[i].userId = item[i].lastChoice.userId
@@ -1188,6 +1269,7 @@
                                 font-size: 10px;
                                 color: #fff;
                                 top: -5px;
+                                right: -10px;
                                 display: none;
                                 cursor: pointer;
                             }
