@@ -17,7 +17,7 @@
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
-                :label="`${item.name}+${item.positionName}`"
+                :label="item.positionId===0?item.name:`${item.name}+${item.positionName}`"
                 :value="item.flag">
               </el-option>
             </el-select>
@@ -29,7 +29,7 @@
                 :value="item.id">
               </el-option>
             </el-select>
-            <el-select :clearable="true" filterable remote :remote-method="searchEmp" class="w140" size="small" v-model="choseItem.empId" placeholder="人员" @visible-change="initEmp"  @change="getOption('emp')">
+            <el-select :clearable="true" filterable class="w140" size="small" v-model="choseItem.empId" placeholder="人员"  @change="getOption('emp')">
               <el-option
                 v-for="item in emps"
                 :key="item.empId"
@@ -219,7 +219,8 @@
           this.searchEmp()
         }else {
           if(this.inputEmp){
-            this.emps.find(item=>{
+            //去掉员工带出部门的交互
+            /*this.emps.find(item=>{
               if(item.empId===this.choseItem.empId){
                 // this.deps=[].concat({name:item.depName,id:item.depId})
                 this.choseItem.depId=item.depId
@@ -230,7 +231,7 @@
                 this.searchEmp()
                 this.inputEmp=false
               }
-            })
+            })*/
           }
         }
       }
