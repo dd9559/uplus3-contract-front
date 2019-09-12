@@ -729,7 +729,10 @@
         this.setPath(this.getPath.concat({name: '店内合同明细'}))
         this.depIds=this.$route.query.ids
         this.tableShow = true
-        this.propForm.dateMo=this.$route.query.time.split(',')
+        // this.propForm.dateMo=this.$route.query.time.split(',')
+        this.$nextTick(()=>{
+          this.$set(this.propForm,'dateMo',this.$route.query.time.split(','))
+        })
         this.getDetails()
       }else {
         this.getData()
