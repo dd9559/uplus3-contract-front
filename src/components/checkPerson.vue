@@ -13,7 +13,7 @@
         <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
-            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" v-if="getUser.version===3" :placeholder="getUser.version===2?'部门':'部门+职级'" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
+            <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" v-if="getUser.version===3" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
@@ -182,6 +182,11 @@
           res=res.data
           if(res.status===200){
             this.emps=[].concat(res.data)
+            /*if(res.data.length===0){
+              this.$message({
+                message:'该部门下没有人员'
+              })
+            }*/
           }
         })
       },

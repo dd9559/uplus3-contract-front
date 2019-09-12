@@ -732,8 +732,8 @@
         // this.propForm.dateMo=this.$route.query.time.split(',')
         this.$nextTick(()=>{
           this.$set(this.propForm,'dateMo',this.$route.query.time.split(','))
+          this.getDetails()
         })
-        this.getDetails()
       }else {
         this.getData()
       }
