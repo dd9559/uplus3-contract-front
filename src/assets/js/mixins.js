@@ -102,7 +102,7 @@ const MIXINS = {
      * 获取体系
      */
     getSystemTag:function () {
-      this.$ajax.get('/api/organize/getSystemTagByCityId').then(res=>{
+      this.$ajax.get('/api/organize/getSystemTag').then(res=>{
         res=res.data
         if(res.status===200){
           this.systemTagList = res.data

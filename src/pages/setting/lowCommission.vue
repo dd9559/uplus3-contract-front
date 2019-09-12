@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="体系">
           <el-select v-model="searchForm.systemTag" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -87,7 +87,7 @@
         <div>
           <p class="form-label system">体系：</p>
           <el-select v-model="systemType" size="small" placeholder="全部" :disabled="forbid" :clearable="true" style="width:200px">
-            <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </div>
