@@ -4,7 +4,7 @@
         <div class="mark-red">
             <label>体系：</label>
             <el-select size="small" class="w400" v-model="commissionForm.systemTag" :disabled="$route.query.type==2">
-                <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
         </div>
         <div>

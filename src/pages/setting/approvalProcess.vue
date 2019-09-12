@@ -19,7 +19,7 @@
             <div class="input-search" v-else>
                 <label class="mr-20">体系</label>
                 <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
-                    <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
             <div class="input-search">
@@ -109,7 +109,7 @@
                     <div class="aduit-input must" v-else>
                         <label class="mr-28">体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
-                            <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                 </div>
@@ -850,7 +850,7 @@
                     if(res.status === 200) {
                         if(res.data) {
                             this.nodeList[index].choice.push({
-                                type: type===1?1:4,
+                                type,
                                 userName: this.nodeList[index][s],
                                 userId: this.nodeList[index][id_],
                                 isDefault: 0,

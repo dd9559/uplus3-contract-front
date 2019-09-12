@@ -5,7 +5,7 @@
                 <div>
                     <label>体系</label>
                     <el-select size="small" class="w300" v-model="systemTag">
-                        <el-option v-for="item in systemTagList" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div>
