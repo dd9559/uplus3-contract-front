@@ -203,9 +203,9 @@
             </el-table-column>
           </el-table-column>
 
-          <el-table-column label="本月实收金额（元）" align="center" prop="totalActual"></el-table-column>
+          <el-table-column label="本月实收金额（元）" align="center" prop="totalActual" :formatter="nullFormatter"></el-table-column>
 
-          <el-table-column label="本月合同金额（元）" align="center" prop="totalShould"></el-table-column>
+          <el-table-column label="本月合同金额（元）" align="center" prop="totalShould" :formatter="nullFormatter"></el-table-column>
         </el-table>
         <!-- 分页 -->
         <el-pagination
@@ -533,24 +533,24 @@
           <td>{{item.depName}}</td>
           <td>{{item.depStatus|getLabel}}</td>
           <td>{{item.depManagerName|formatNull}}</td>
-          <td>{{item.leaseAmount}}</td>
-          <td>{{item.secondAmount}}</td>
-          <td>{{item.lowAmount}}</td>
-          <td>{{item.agencyAmount}}</td>
-          <td>{{item.leaseActual}}</td>
-          <td>{{item.secondActual}}</td>
-          <td>{{item.lowActual}}</td>
-          <td>{{item.agencyActual}}</td>
-          <td>{{item.damagesActual}}</td>
-          <td>{{item.financialFeeActual}}</td>
-          <td>{{item.leaseShould}}</td>
-          <td>{{item.secondShould}}</td>
-          <td>{{item.lowShould}}</td>
-          <td>{{item.agencyShould}}</td>
-          <td>{{item.damagesShould}}</td>
-          <td>{{item.financialFeeShould}}</td>
-          <td>{{item.totalActual}}</td>
-          <td>{{item.totalShould}}</td>
+          <td>{{item.leaseAmount|formatNull(true)}}</td>
+          <td>{{item.secondAmount|formatNull(true)}}</td>
+          <td>{{item.lowAmount|formatNull(true)}}</td>
+          <td>{{item.agencyAmount|formatNull(true)}}</td>
+          <td>{{item.leaseActual|formatNull(true)}}</td>
+          <td>{{item.secondActual|formatNull(true)}}</td>
+          <td>{{item.lowActual|formatNull(true)}}</td>
+          <td>{{item.agencyActual|formatNull(true)}}</td>
+          <td>{{item.damagesActual|formatNull}}</td>
+          <td>{{item.financialFeeActual|formatNull}}</td>
+          <td>{{item.leaseShould|formatNull(true)}}</td>
+          <td>{{item.secondShould|formatNull(true)}}</td>
+          <td>{{item.lowShould|formatNull(true)}}</td>
+          <td>{{item.agencyShould|formatNull(true)}}</td>
+          <td>{{item.damagesShould|formatNull}}</td>
+          <td>{{item.financialFeeShould|formatNull}}</td>
+          <td>{{item.totalActual|formatNull(true)}}</td>
+          <td>{{item.totalShould|formatNull(true)}}</td>
         </tr>
         </tbody>
       </table>
