@@ -957,7 +957,9 @@
         var aLink=document.createElement('a')
         aLink.href = uri + base64(format(template, ctx));
         aLink.download = `${name}.xls`;
+        document.body.appendChild(aLink)//兼容Firefox下载，a标签必须插入到DOM中
         aLink.click()
+        aLink.remove()
       },
       resetFormFn() {
         this.propForm.department = ''
