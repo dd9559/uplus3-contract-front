@@ -950,19 +950,19 @@
                         isOk = false
                         if(item[i].name) {
                             if(item[i].type !== "") {
-                                if(this.version == 3) {
-                                    if(item[i].type == 1) {
-                                        if(!item[i].depID) {
-                                            this.$message({message:"请选择部门"})
-                                            break
-                                        } 
-                                    } else if(item[i].type == 4) {
-                                        if(!item[i].depType) {
-                                            this.$message({message:"请选择部门类型"})
-                                            break
-                                        } 
-                                    }
-                                }
+                                // if(this.version == 3) {
+                                //     if(item[i].type == 1) {
+                                //         if(!item[i].depID) {
+                                //             this.$message({message:"请选择部门"})
+                                //             break
+                                //         } 
+                                //     } else if(item[i].type == 4) {
+                                //         if(!item[i].depType) {
+                                //             this.$message({message:"请选择部门类型"})
+                                //             break
+                                //         } 
+                                //     }
+                                // }
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
                                         isOk = true
