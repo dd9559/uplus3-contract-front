@@ -378,6 +378,16 @@ let TOOL = {
           code: "sign-ht-js-query"
         },
         {
+          name: "业绩申诉有效时间",
+          path: "aplTime",
+          code: "sign-set-vtime"
+        },
+        {
+          name: "规则设置",
+          path: "ruleSetting",
+          code: "sign-set-vtime"
+        },
+        {
           name:"金融合同",
           category:"6-4",
           can:true,//是否可见

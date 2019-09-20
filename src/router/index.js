@@ -12,6 +12,7 @@ const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
 const aplTime = () => import('@/pages/setting/aplTime')
+const ruleSetting = () => import('@/pages/setting/ruleSetting')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
@@ -124,6 +125,14 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "业绩申诉有效时间"]
+          }
+        },
+        {
+          path: "ruleSetting",
+          component: ruleSetting,
+          meta: {
+            root: true,
+            list: ["设置", "规则设置"]
           }
         },
         {
