@@ -1112,7 +1112,7 @@
       padding: 6px 10px 0px;
       background-color: #fff;
       /deep/ .el-table__header th {
-        background-color: #eef2fb;
+        border-color: #EBEEF5;
       }
       .data-head {
         // height: 100px;
@@ -1139,35 +1139,6 @@
           border-color: #409EFF
         }
       }
-
-    }
-    // 展示数据
-    .data-list {
-      width: 100%;
-      /deep/ .el-table {
-        // font-size: 14px !important;
-        td,
-        th {
-          padding: 24px 0;
-        }
-        .el-table__header {
-          th {
-            padding: 6px 0;
-            background-color: #eef2fb;
-          }
-        }
-      }
-    }
-
-    /deep/ .el-pagination {
-      text-align: right;
-    }
-    /deep/ .el-input__suffix {
-      right: 12px;
-    }
-    /deep/ .el-table--border th {
-      border-bottom: 2px solid #dadde4;
-      border-right: 2px solid #dadde4;
     }
   }
 </style>
