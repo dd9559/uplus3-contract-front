@@ -204,7 +204,7 @@ export default new Router({
         },
         {
           path: "conAttachment",
-          component: commissionDialog,
+          component: conAttachment,
           meta: {
             getParent: true
           }
