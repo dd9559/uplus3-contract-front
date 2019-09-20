@@ -64,6 +64,10 @@ const contractCheck = () => import("@/pages/contract/contractList/contractCheck"
 const debitRecord = () => import("@/pages/contract/contractList/debitRecord");
 const routingRemitDetail = () => import("@/pages/contract/contractList/routingRemitDetail");
 const extendParams = () => import("@/pages/contract/contractList/extendParams");
+//其他类型合同
+const otherContractList = () => import("@/pages/contract/otherContract/otherContractList")
+const addOtherContract = () => import("@/pages/contract/otherContract/addOtherContract")
+const otherContractDetail = () => import("@/pages/contract/otherContract/otherContractDetail")
 
 const Login = () => import("@/login")
 const iframTest = () => import("@/pages/iframe/iframeTest")
@@ -406,7 +410,26 @@ export default new Router({
         {
           path: 'iframe',
           component: iframTest
-        }
+        },
+        //其他合同列表
+        {
+          path: "otherContractList",
+          component: otherContractList,
+          meta: {
+            root: true,
+            list: ["合同", "合同列表"]
+          }
+        },
+        //新增
+        {
+          path: "addOtherContract",
+          component: addOtherContract,
+        },
+        //详情
+        {
+          path: "otherContractDetail",
+          component: otherContractDetail,
+        },
       ]
     }]
 });

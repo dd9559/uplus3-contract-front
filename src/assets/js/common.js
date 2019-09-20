@@ -182,7 +182,7 @@ let TOOL = {
               name: "合同列表",
               category:"2-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=xf",
               code: "sign-ht-info-query"
             }
           ]
@@ -219,7 +219,7 @@ let TOOL = {
               name: "合同列表",
               category:"3-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=cz",
               code: "sign-ht-info-query"
             }
           ]
@@ -256,7 +256,7 @@ let TOOL = {
               name: "合同列表",
               category:"4-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=jr",
               code: "sign-ht-info-query"
             }
           ]
