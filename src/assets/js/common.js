@@ -176,6 +176,11 @@ let TOOL = {
           path: "aplTime",
           code: "sign-set-vtime"
         },
+        {
+          name: "规则设置",
+          path: "ruleSetting",
+          code: "sign-set-vtime"
+        },
       ]
     }
   ], //侧边栏导航
