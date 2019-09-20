@@ -10,21 +10,27 @@
     <div class="container">
       <div class="slider" :class="[collapse?'':'collapse-on']">
         <el-menu
-          :default-active="activeIndex"
-          :unique-opened="true"
-          class="el-menu-demo"
+          ref="menu"
           :router="true"
-          :collapse="collapse"
+          :unique-opened="true"
           :collapse-transition="false"
+          :collapse="collapse"
           @select="handleSelect"
+          class="el-menu-demo"
           text-color="#333333"
           active-text-color="#478DE3">
-          <el-submenu :index="item.path" :class="[collapse?'collapse-row':'',activeClass===item.id?'active':'']" v-for="item in views" :key="item.id" v-if="item.child.length>0">
+          <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id">
             <template slot="title">
               <i class="iconfont" :class="item.icon"></i>
               <span>{{item.name}}</span>
             </template>
-            <el-menu-item :index="grade.path" v-for="grade in item.child" :key="grade.name">{{grade.name}}</el-menu-item>
+            <template v-if="item.id!==6">
+              <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name" class="second-grade-menu">
+                <template slot="title">{{grade.name}}</template>
+                <el-menu-item v-for="tip in grade.child" :index="tip.path">{{tip.name}}</el-menu-item>
+              </el-submenu>
+            </template>
+            <el-menu-item v-for="grade in item.child" :index="grade.path" v-else>{{grade.name}}</el-menu-item>
           </el-submenu>
         </el-menu>
         <p class="slider-bar-control" @click="toCollapse"></p>
@@ -69,46 +75,40 @@
       return {
         activeIndex: '',
         views:this.$tool.pathList.map(item=>Object.assign({},item)),
-        Index:[],
+        Index:[],//面包屑list
         back:false,
-        collapse:true,
-        activeClass:''
+        collapse:true,//menu是否折叠
+        activeClass:[],//当前选择项的上级id
       }
     },
     created(){
       this.Index=this.getPath
-      this.activeIndex = this.Index.length>2?this.Index[1].path.split('/')[1]:''
-      /*this.$ajax.get('/api/me').then(res=>{
-        res=res.data
-        if(res.status===200){
-          // debugger
-          let arr=res.data.privileges
-          this.$store.commit('setUser',res.data)
-          // console.log(this.$store.state.user.privileges)
-          this.views.forEach((item,index)=>{
-            let sliders=[]
-            item.child.forEach(tip=>{
-              if(arr.indexOf(tip.code)>-1){
-                sliders.push(tip)
-              }
-            })
-            item.child=sliders
-          })
-        }
-      })*/
-      // console.log(this.getUser)
-      let arr=this.getUser?this.getUser.privileges:[]
+      this.activeIndex = JSON.parse(localStorage.getItem('indexPath'))
+      /*let arr=this.getUser?this.getUser.privileges:[]
       this.views.forEach((item,index)=>{
         let sliders=[]
         item.child.forEach(tip=>{
-          if(arr.indexOf(tip.code)>-1){
-            sliders.push(tip)
+          if(!tip['child']){
+            if(!arr.includes(tip.code)){
+              tip.can=false
+            }
+          }else {
+            tip.child.forEach(grade=>{
+              if(!arr.includes(grade.code)){
+                tip.can=false
+              }
+            })
           }
         })
-        item.child=sliders
+        // item.child=sliders
+      })*/
+    },
+    mounted(){
+      this.$nextTick(()=>{
+        // this.$refs.menu.open(this.activeIndex.slice(-2)[0])
       })
     },
-    beforeRouteEnter(to,from,next){
+    /*beforeRouteEnter(to,from,next){
       next(vm=>{
         if(to.path==='/login'){
           vm.Index=[]
@@ -148,7 +148,7 @@
         // this.activeIndex = this.Index[1].path.split('/')[1]
       }
       next()
-    },
+    },*/
     methods: {
       getImg:function (url) {
         return require(`@/assets/img/${url}`)
@@ -169,17 +169,7 @@
         }
       },
       handleSelect(key, keyPath) {
-        let tip = parseInt(keyPath[0])
-        this.activeClass=tip
-        /*this.Index = []
-        keyPath.forEach(item=>{
-          var myRe = new RegExp(`"name":"([^"]*?)","path":"${item.replace('?','\\?')}"`)
-          // console.log(myRe)
-          var myArray = myRe.exec(JSON.stringify(this.views));
-          // console.log(myArray)
-          this.Index.push(myArray[1])
-          this.setPath(this.Index)
-        })*/
+        localStorage.setItem('indexPath',JSON.stringify(keyPath))
       },
       toCollapse:function () {
         this.collapse=!this.collapse
@@ -221,16 +211,22 @@
     watch:{
       getUser:function (val) {
         let arr=val.privileges
-        this.views=this.$tool.pathList.map(item=>Object.assign({},item))
-
         this.views.forEach((item,index)=>{
           let sliders=[]
           item.child.forEach(tip=>{
-            if(arr.indexOf(tip.code)>-1){
-              sliders.push(tip)
+            if(!tip['child']){
+              if(!arr.includes(tip.code)){
+                tip.can=false
+              }
+            }else {
+              tip.child.forEach(grade=>{
+                if(!arr.includes(grade.code)){
+                  tip.can=false
+                }
+              })
             }
           })
-          item.child=sliders
+          // item.child=sliders
         })
       },
       getPath:function(val){
@@ -320,16 +316,26 @@
         position: relative;
         /deep/ .el-menu{
           border: 0px;
+          &-item{
+            padding-left: 20px !important;
+          }
+          &-demo{
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+          }
         }
-        &.collapse-on{
+        &.collapse-on{/*菜单栏展开样式*/
           width:160px;
            .el-submenu{
+             &.second-grade-menu{
+               background-color: @color-E9;
+             }
              /deep/.el-submenu__title{
+               padding-left: 20px !important;
                >i{
                  color: #BBC1CD;
-                 &:first-of-type{
-                   font-size: 22px;
-                 }
+                 font-size: 16px;
                }
             }
           }

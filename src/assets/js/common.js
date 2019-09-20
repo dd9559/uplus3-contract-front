@@ -5,171 +5,377 @@ let TOOL = {
   pathList: [
     {
       id: 1,
-      name: "合同",
-      path: "1",
+      name: "二手房",
+      category: "1",
       icon: "icon-huaban",
-      child: [
+      can:true,//是否可见
+      child:[
         {
-          name: "合同列表",
-          path: "contractList",
-          code: "sign-ht-info-query"
+          name: "合同",
+          category: "1-1",
+          can:true,//是否可见
+          child: [
+            {
+              name: "合同列表",
+              category:"1-1-1",
+              can:true,//是否可见
+              path: "contractList",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "合同审核",
+              category:"1-1-2",
+              can:true,//是否可见
+              path: "contractCheck",
+              code: "sign-ht-htsh-query"
+            },
+            {
+              name: "调佣审核",
+              category:"1-1-3",
+              can:true,//是否可见
+              path: "adjustCheck",
+              code: "sign-ht-maid-query"
+            },
+            {
+              name: "结算审核",
+              category:"1-1-4",
+              can:true,//是否可见
+              path: "settleCheck",
+              code: "sign-ht-js-query"
+            }
+          ]
         },
         {
-          name: "合同审核",
-          path: "contractCheck",
-          code: "sign-ht-htsh-query"
+          name: "财务",
+          category: "1-2",
+          can:true,//是否可见
+          child: [
+            {
+              name: "收付款单",
+              category:"1-2-1",
+              can:true,//是否可见
+              path: "Bill",
+              code: "sign-cw-debt-query"
+            },
+            {
+              name: "收款审核",
+              category:"1-2-2",
+              can:true,//是否可见
+              path: "moneyCheck?type=1",
+              code: "sign-cw-rev-query"
+            },
+            {
+              name: "付款审核",
+              category:"1-2-3",
+              can:true,//是否可见
+              path: "moneyCheck?type=2",
+              code: "sign-cw-pay-query"
+            },
+            {
+              name: "应收实收",
+              category:"1-2-4",
+              can:true,//是否可见
+              path: "actualHarvest",
+              code: "sign-cw-rec-query"
+            },
+            {
+              name: "票据管理",
+              category:"1-2-5",
+              can:true,//是否可见
+              path: "paperSet",
+              code: "sign-cw-bill-query"
+            },
+            {
+              name: '分账记录',
+              category:"1-2-6",
+              can:true,//是否可见
+              path: 'routingRecord',
+              code: 'sign-ht-fz-query'
+            },
+            {
+              name: "打款记录",
+              category:"1-2-7",
+              can:true,//是否可见
+              path: "debitRecord",
+              code: "sign-ht-dk-query"
+            }
+          ]
         },
         {
-          name: "调佣审核",
-          path: "adjustCheck",
-          code: "sign-ht-maid-query"
+          name: "业绩",
+          category: "1-3",
+          can:true,//是否可见
+          child: [
+            {
+              name: "应收业绩",
+              category:"1-3-1",
+              can:true,//是否可见
+              path: "actualAchievement",
+              code: "sign-yj-rev-query"
+            },
+            {
+              name: "结算业绩",
+              category:"1-3-2",
+              can:true,//是否可见
+              path: "receivableAchievement",
+              code: "sign-yj-rec-query"
+            },
+            {
+              name: "业绩申诉审核",
+              category:"1-3-3",
+              can:true,//是否可见
+              path: "achAppeal",
+              code: "sign-yj-appeal-query"
+            },
+            {
+              name:'业绩报表',
+              category:"1-3-4",
+              can:true,//是否可见
+              path:'storeReceive',
+              code: "sign-yj-report-query"
+            }
+          ]
         },
         {
-          name: "结算审核",
-          path: "settleCheck",
-          code: "sign-ht-js-query"
-        }
+          name: "签后",
+          category: "1-4",
+          can:true,//是否可见
+          child: [
+            {
+              name: "后期接收",
+              category:"1-4-1",
+              can:true,//是否可见
+              path: "postReceive",
+              code: "sign-qh-rev-query"
+            },
+            {
+              name: "后期管理",
+              category:"1-4-2",
+              can:true,//是否可见
+              path: "postManage",
+              code: "sign-qh-mgr-query"
+            },
+            {
+              name: "后期监控",
+              category:"1-4-3",
+              can:true,//是否可见
+              path: "postMonitor",
+              code: "sign-qh-cont-query"
+            }
+          ]
+        },
       ]
     },
     {
       id: 2,
-      name: "财务",
-      path: "2",
+      name: "新房",
+      category: "2",
+      can:true,//是否可见
       icon: "icon-huaban1",
-      child: [
+      child:[
         {
-          name: "收付款单",
-          path: "Bill",
-          code: "sign-cw-debt-query"
+          name: "合同",
+          category: "2-1",
+          can:true,//是否可见
+          child: [
+            {
+              name: "合同列表",
+              category:"2-1-1",
+              can:true,//是否可见
+              path: "contractList",
+              code: "sign-ht-info-query"
+            }
+          ]
         },
         {
-          name: "收款审核",
-          path: "moneyCheck?type=1",
-          code: "sign-cw-rev-query"
+          name: "财务",
+          category: "2-2",
+          can:true,//是否可见
+          child: [
+            {
+              name: "收款审核",
+              category:"2-2-1",
+              can:true,//是否可见
+              path: "receiptCheck?type=xf",
+              code: "sign-cw-rev-query"
+            }
+          ]
         },
-        {
-          name: "付款审核",
-          path: "moneyCheck?type=2",
-          code: "sign-cw-pay-query"
-        },
-        {
-          name: "应收实收",
-          path: "actualHarvest",
-          code: "sign-cw-rec-query"
-        },
-        {
-          name: "票据管理",
-          path: "paperSet",
-          code: "sign-cw-bill-query"
-        },
-        {
-          name: '分账记录',
-          path: 'routingRecord',
-          code: 'sign-ht-fz-query'
-        },
-        {
-          name: "打款记录",
-          path: "debitRecord",
-          code: "sign-ht-dk-query"
-        }
       ]
     },
     {
       id: 3,
-      name: "业绩",
-      path: "3",
+      name: "长租",
+      category: "3",
+      can:true,//是否可见
       icon: "icon-huaban4",
-      child: [
+      child:[
         {
-          name: "应收业绩",
-          path: "actualAchievement",
-          code: "sign-yj-rev-query"
+          name: "合同",
+          category: "3-1",
+          can:true,//是否可见
+          child: [
+            {
+              name: "合同列表",
+              category:"3-1-1",
+              can:true,//是否可见
+              path: "contractList",
+              code: "sign-ht-info-query"
+            }
+          ]
         },
         {
-          name: "结算业绩",
-          path: "receivableAchievement",
-          code: "sign-yj-rec-query"
+          name: "财务",
+          category: "3-2",
+          can:true,//是否可见
+          child: [
+            {
+              name: "收款审核",
+              category:"3-2-1",
+              can:true,//是否可见
+              path: "receiptCheck?type=cz",
+              code: "sign-cw-rev-query"
+            }
+          ]
         },
-        {
-          name: "业绩申诉审核",
-          path: "achAppeal",
-          code: "sign-yj-appeal-query"
-        },
-        {
-          name:'业绩报表',
-          path:'storeReceive',
-          code: "sign-yj-report-query"
-        }
       ]
     },
     {
       id: 4,
-      name: "签后",
-      path: "4",
+      name: "金融",
+      category: "4",
+      can:true,//是否可见
       icon: "icon-huaban2",
-      child: [
+      child:[
         {
-          name: "后期接收",
-          path: "postReceive",
-          code: "sign-qh-rev-query"
+          name: "合同",
+          category: "4-1",
+          can:true,//是否可见
+          child: [
+            {
+              name: "合同列表",
+              category:"4-1-1",
+              can:true,//是否可见
+              path: "contractList",
+              code: "sign-ht-info-query"
+            }
+          ]
         },
         {
-          name: "后期管理",
-          path: "postManage",
-          code: "sign-qh-mgr-query"
+          name: "财务",
+          category: "4-2",
+          can:true,//是否可见
+          child: [
+            {
+              name: "收款审核",
+              category:"4-2-1",
+              can:true,//是否可见
+              path: "receiptCheck?type=jr",
+              code: "sign-cw-rev-query"
+            }
+          ]
         },
-        {
-          name: "后期监控",
-          path: "postMonitor",
-          code: "sign-qh-cont-query"
-        }
       ]
     },
     {
       id: 5,
       name: "设置",
-      path: "5",
+      category: "5",
+      can:true,//是否可见
       icon: "icon-huaban3",
       child: [
         {
-          name: "公司设置",
-          path: "company",
-          code: "sign-set-gs"
+          name:"后台设置",
+          category:"5-1",
+          can:true,//是否可见
+          child:[
+            {
+              name: "款类设置",
+              category:"5-1-1",
+              can:true,//是否可见
+              path: "moneyType",
+              code: "sign-set-kl-query"
+            },
+            {
+              name: "手续费设置",
+              category:"5-1-2",
+              can:true,//是否可见
+              path: "commission",
+              code: "sign-set-sxf"
+            },
+            {
+              name: "合同模板设置",
+              category:"5-1-3",
+              can:true,//是否可见
+              path: "contractTemplate",
+              code: "sign-set-ht-query"
+            }
+          ]
         },
         {
-          name: "合同模板设置",
-          path: "contractTemplate",
-          code: "sign-set-ht-query"
+          name:"业务设置",
+          category:"5-2",
+          can:true,//是否可见
+          child:[
+            {
+              name: "公司设置",
+              category:"5-2-1",
+              can:true,//是否可见
+              path: "company",
+              code: "sign-set-gs"
+            },
+            {
+              name: "审核流程",
+              category:"5-2-2",
+              can:true,//是否可见
+              path: "approvalProcess",
+              code: "sign-set-verify"
+            },
+            {
+              name: "规则设置",
+              category:"5-2-3",
+              can:true,//是否可见
+              path: "lowCommission",
+              code: "sign-set-dybl"
+            },
+            {
+              name: "后期流程设置",
+              category:"5-2-4",
+              can:true,//是否可见
+              path: "postProcess",
+              code: "sign-set-hq"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: 6,
+      name: "操作日志",
+      category: "6",
+      can:true,//是否可见
+      icon: "icon-huaban3",
+      child: [
+        {
+          name:"二手房合同",
+          category:"6-1",
+          can:true,//是否可见
+          path: "settleCheck",
+          code: "sign-ht-js-query"
         },
         {
-          name: "后期流程设置",
-          path: "postProcess",
-          code: "sign-set-hq"
+          name:"新房合同",
+          category:"6-2",
+          can:true,//是否可见
+          path: "settleCheck",
+          code: "sign-ht-js-query"
         },
         {
-          name: "款类设置",
-          path: "moneyType",
-          code: "sign-set-kl-query"
-        },
-        {
-          name: "操作日志",
-          path: "operationLog",
-          code: "sign-set-log-query"
-        },
-        {
-          name: "审核流程",
-          path: "approvalProcess",
-          code: "sign-set-verify"
-        },
-        {
-          name: "低佣比例设置",
-          path: "lowCommission",
-          code: "sign-set-dybl"
-        },
-        {
-          name: "手续费设置",
-          path: "commission",
-          code: "sign-set-sxf"
+          name:"长租公寓合同",
+          category:"6-3",
+          can:true,//是否可见
+          path: "settleCheck",
+          code: "sign-ht-js-query"
         },
         {
           name: "业绩申诉有效时间",
@@ -181,6 +387,13 @@ let TOOL = {
           path: "ruleSetting",
           code: "sign-set-vtime"
         },
+        {
+          name:"金融合同",
+          category:"6-4",
+          can:true,//是否可见
+          path: "settleCheck",
+          code: "sign-ht-js-query"
+        }
       ]
     }
   ], //侧边栏导航

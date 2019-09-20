@@ -45,6 +45,7 @@ const payBill = () => import('@/pages/finance/payBill')
 const payResult = () => import('@/pages/finance/payResult')
 const receiptBill = () => import('@/pages/finance/receiptBill')
 const receiptResult = () => import('@/pages/finance/receiptResult')
+const receiptCheck = () => import('@/pages/finance/receiptCheck')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
@@ -183,6 +184,14 @@ export default new Router({
           component: moneyCheck,
           meta: {
             root: true
+          }
+        },
+        {
+          path: "receiptCheck",
+          component: receiptCheck,
+          meta: {
+            root: true,
+            list: ["财务", "收款审核"]
           }
         },
         // 业绩板块

@@ -46,10 +46,18 @@
                   let views=this.$tool.pathList.map(item=>Object.assign({},item))
                   let sliders=[]
 
-                  views.forEach((item,index)=>{
+                  views.forEach((item,index)=>{//获取侧边栏信息中用户可访问的元素
                     item.child.forEach(tip=>{
-                      if(arr.indexOf(tip.code)>-1){
-                        sliders.push(tip)
+                      if(!tip['child']){
+                        if(arr.includes(tip.code)){
+                          sliders.push(tip)
+                        }
+                      }else {
+                        tip.child.forEach(grade=>{
+                          if(arr.includes(grade.code)){
+                            sliders.push(grade)
+                          }
+                        })
                       }
                     })
                   })
