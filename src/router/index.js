@@ -21,6 +21,7 @@ const commissionDialog = () => import('@/pages/setting/commissionDialog')
 const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
 const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
 const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
+const conAttachment = () => import('@/pages/setting/conAttachment')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -196,6 +197,13 @@ export default new Router({
         },
         {
           path: "commissionDialog",
+          component: commissionDialog,
+          meta: {
+            getParent: true
+          }
+        },
+        {
+          path: "conAttachment",
           component: commissionDialog,
           meta: {
             getParent: true
