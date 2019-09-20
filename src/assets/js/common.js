@@ -360,38 +360,28 @@ let TOOL = {
           name:"二手房合同",
           category:"6-1",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog",
           code: "sign-ht-js-query"
         },
         {
           name:"新房合同",
           category:"6-2",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_xf",
           code: "sign-ht-js-query"
         },
         {
           name:"长租公寓合同",
           category:"6-3",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_cz",
           code: "sign-ht-js-query"
-        },
-        {
-          name: "业绩申诉有效时间",
-          path: "aplTime",
-          code: "sign-set-vtime"
-        },
-        {
-          name: "规则设置",
-          path: "ruleSetting",
-          code: "sign-set-vtime"
         },
         {
           name:"金融合同",
           category:"6-4",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_jr",
           code: "sign-ht-js-query"
         }
       ]
