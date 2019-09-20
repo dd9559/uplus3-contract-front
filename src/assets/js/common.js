@@ -163,11 +163,6 @@ let TOOL = {
               code: "sign-qh-cont-query"
             }
           ]
-        },
-        {
-          name: "签后",
-          category: "1-4",
-          can:true,//是否可见
         }
       ]
     },
