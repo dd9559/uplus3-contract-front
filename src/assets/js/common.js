@@ -163,7 +163,7 @@ let TOOL = {
               code: "sign-qh-cont-query"
             }
           ]
-        },
+        }
       ]
     },
     {
@@ -182,7 +182,7 @@ let TOOL = {
               name: "合同列表",
               category:"2-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=xf",
               code: "sign-ht-info-query"
             }
           ]
@@ -219,7 +219,7 @@ let TOOL = {
               name: "合同列表",
               category:"3-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=cz",
               code: "sign-ht-info-query"
             }
           ]
@@ -256,7 +256,7 @@ let TOOL = {
               name: "合同列表",
               category:"4-1-1",
               can:true,//是否可见
-              path: "contractList",
+              path: "otherContractList?type=jr",
               code: "sign-ht-info-query"
             }
           ]
@@ -335,7 +335,7 @@ let TOOL = {
               name: "规则设置",
               category:"5-2-3",
               can:true,//是否可见
-              path: "lowCommission",
+              path: "ruleSetting",
               code: "sign-set-dybl"
             },
             {
@@ -360,28 +360,28 @@ let TOOL = {
           name:"二手房合同",
           category:"6-1",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog",
           code: "sign-ht-js-query"
         },
         {
           name:"新房合同",
           category:"6-2",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_xf",
           code: "sign-ht-js-query"
         },
         {
           name:"长租公寓合同",
           category:"6-3",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_cz",
           code: "sign-ht-js-query"
         },
         {
           name:"金融合同",
           category:"6-4",
           can:true,//是否可见
-          path: "settleCheck",
+          path: "operationLog_jr",
           code: "sign-ht-js-query"
         }
       ]

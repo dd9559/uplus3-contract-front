@@ -12,11 +12,16 @@ const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
 const aplTime = () => import('@/pages/setting/aplTime')
+const ruleSetting = () => import('@/pages/setting/ruleSetting')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
 const commissionDialog = () => import('@/pages/setting/commissionDialog')
+const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
+const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
+const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
+const conAttachment = () => import('@/pages/setting/conAttachment')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -64,6 +69,10 @@ const contractCheck = () => import("@/pages/contract/contractList/contractCheck"
 const debitRecord = () => import("@/pages/contract/contractList/debitRecord");
 const routingRemitDetail = () => import("@/pages/contract/contractList/routingRemitDetail");
 const extendParams = () => import("@/pages/contract/contractList/extendParams");
+//其他类型合同
+const otherContractList = () => import("@/pages/contract/otherContract/otherContractList")
+const addOtherContract = () => import("@/pages/contract/otherContract/addOtherContract")
+const otherContractDetail = () => import("@/pages/contract/otherContract/otherContractDetail")
 
 const Login = () => import("@/login")
 const iframTest = () => import("@/pages/iframe/iframeTest")
@@ -123,11 +132,43 @@ export default new Router({
           }
         },
         {
+          path: "ruleSetting",
+          component: ruleSetting,
+          meta: {
+            root: true,
+            list: ["设置", "规则设置"]
+          }
+        },
+        {
           path: "operationLog",
           component: operationLog,
           meta: {
             root: true,
-            list: ["设置", "操作日志"]
+            list: ["操作日志", "二手房合同"]
+          }
+        },
+        {
+          path: "operationLog_xf",
+          component: operationLog_xf,
+          meta: {
+            root: true,
+            list: ["操作日志", "新房合同"]
+          }
+        },,
+        {
+          path: "operationLog_cz",
+          component: operationLog_cz,
+          meta: {
+            root: true,
+            list: ["操作日志", "长租公寓合同"]
+          }
+        },,
+        {
+          path: "operationLog_jr",
+          component: operationLog_jr,
+          meta: {
+            root: true,
+            list: ["操作日志", "金融合同"]
           }
         },
         {
@@ -157,6 +198,13 @@ export default new Router({
         {
           path: "commissionDialog",
           component: commissionDialog,
+          meta: {
+            getParent: true
+          }
+        },
+        {
+          path: "conAttachment",
+          component: conAttachment,
           meta: {
             getParent: true
           }
@@ -406,7 +454,26 @@ export default new Router({
         {
           path: 'iframe',
           component: iframTest
-        }
+        },
+        //其他合同列表
+        {
+          path: "otherContractList",
+          component: otherContractList,
+          meta: {
+            root: true,
+            list: ["合同", "合同列表"]
+          }
+        },
+        //新增
+        {
+          path: "addOtherContract",
+          component: addOtherContract,
+        },
+        //详情
+        {
+          path: "otherContractDetail",
+          component: otherContractDetail,
+        },
       ]
     }]
 });

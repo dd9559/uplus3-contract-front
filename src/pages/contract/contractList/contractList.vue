@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/纸质合同编号/房源编号/客源编号" placement="top">
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
             <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -237,6 +237,12 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="房客源店长" min-width="120">
+          <template slot-scope="scope">
+            <p>房：{{scope.row.dealAgentStoreName}}</p>
+            <p>客：{{scope.row.dealAgentName}}</p>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="签约日期" min-width="90">
           <template slot-scope="scope">
             <!-- {{scope.row.signDate.substr(0, 10)}} -->
@@ -343,7 +349,7 @@
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</el-button>
-              <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button>
+              <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
               <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
