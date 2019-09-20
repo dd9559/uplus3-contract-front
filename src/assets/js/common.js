@@ -164,6 +164,11 @@ let TOOL = {
             }
           ]
         },
+        {
+          name: "签后",
+          category: "1-4",
+          can:true,//是否可见
+        }
       ]
     },
     {
@@ -335,7 +340,7 @@ let TOOL = {
               name: "规则设置",
               category:"5-2-3",
               can:true,//是否可见
-              path: "lowCommission",
+              path: "ruleSetting",
               code: "sign-set-dybl"
             },
             {
@@ -376,16 +381,6 @@ let TOOL = {
           can:true,//是否可见
           path: "settleCheck",
           code: "sign-ht-js-query"
-        },
-        {
-          name: "业绩申诉有效时间",
-          path: "aplTime",
-          code: "sign-set-vtime"
-        },
-        {
-          name: "规则设置",
-          path: "ruleSetting",
-          code: "sign-set-vtime"
         },
         {
           name:"金融合同",
