@@ -29,7 +29,7 @@
       <div class="houseMsg">
         <p>房源信息</p>
         <div class="form-content">
-          <el-form-item label="产权地址：" class="form-label" style="width:763px;text-align:right">
+          <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
             <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
             <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" />
@@ -55,7 +55,7 @@
           <el-form-item label="客源编号：" class="width-250 form-label">
             <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
           </el-form-item>
-          <span>请选择客源</span>
+          <span class="select">请选择客源</span>
           <br>
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
@@ -88,7 +88,7 @@
       <div class="houseMsg">
         <p>签约信息</p>
         <div class="form-content">
-          <el-form-item label="成交经纪人：" class="form-label" style="width:400px;text-align:right">
+          <el-form-item label="成交经纪人：" class="form-label" style="width:333px;text-align:right">
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
           </el-form-item>
@@ -97,12 +97,20 @@
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
           </el-form-item>
           <br>
-          <el-form-item label="合作方：" class="form-label" style="width:300px;text-align:right">
+          <el-form-item label="合作方：" class="form-label" style="width:330px;text-align:right">
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
         </div>
       </div>
     </el-form>
+    <!-- 删除人员确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>确定删除当前联系人吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDel = false">取 消</el-button>
+        <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -135,6 +143,8 @@ export default {
           propertyRightRatio: ""
         }
       ],
+      //删除客户确认框
+      dialogDel:false,
       dictionary: {
         //数据字典
         "633":"",//证件类型(护照,身份证,营业执照)
@@ -157,6 +167,38 @@ export default {
           this.relationList = res.data;
         }
       });
+    },
+    //添加客户
+    addcommissionData1() {
+      if (this.guestList.length < 4) {
+        this.guestList.push({
+          edit: true,
+          type: 2,
+          encryptionCode: "",
+          mobile: "",
+          encryptionMobile:"",
+          relation: "",
+          cardType: "",
+          name: "",
+          propertyRightRatio: ""
+        });
+      } else {
+        this.$message({
+          message: "已达到最大数量",
+          type: "warning"
+        });
+      }
+    },
+    //删除联系人确认框
+    delPeople(index){
+      this.peopleIndex=index;
+      this.dialogDel=true;
+    },
+    //确认删除
+    delPeopleMsg(){
+      this.guestList.splice(this.peopleIndex, 1);
+      // this.guestList_.splice(this.peopleIndex, 1);
+      this.dialogDel=false;
     },
     //纸质合同编号限制
     inputCode(type){
@@ -286,6 +328,7 @@ export default {
       color: @color-white;
       width: 140px;
       padding: 2px 0;
+      line-height: 32px;
       background: @color-blue;
       border-radius: 2px;
       cursor: pointer;

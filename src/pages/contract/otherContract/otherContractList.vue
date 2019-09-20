@@ -124,6 +124,17 @@ export default {
     }
   },
   created () {
+    console.log(this.$route.query.type)
+    if(this.$route.query.type==="xf"){
+      this.contractType='newHouse'
+      this.setPath(this.$tool.getRouter(['新房','合同','合同列表'],'otherContractList'));
+    }else if(this.$route.query.type==="cz"){
+      this.contractType='longRent'
+      this.setPath(this.$tool.getRouter(['长租','合同','合同列表'],'otherContractList'));
+    }else if(this.$route.query.type==="jr"){
+      this.contractType='financial'
+      this.setPath(this.$tool.getRouter(['金融','合同','合同列表'],'otherContractList'));
+    }
     this.getDictionary();//字典
     this.remoteMethod();//部门
   },
@@ -163,11 +174,19 @@ export default {
     //新增合同
     toAddcontract(){
       // addOtherContract
-      this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'addOtherContract'));
+      let router
+      if(this.contractType==="newHouse"){
+        router="新房"
+      }else if(this.contractType==="longRent"){
+        router="长租"
+      }else{
+        router="金融"
+      }
+      this.setPath(this.$tool.getRouter([router,'合同','新增合同'],'addOtherContract'));
       this.$router.push({
         path: "/addOtherContract",
         query: {
-          type: "newHouse",
+          type: this.contractType,
         }
       });
     },
