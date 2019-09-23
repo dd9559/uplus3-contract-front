@@ -133,6 +133,7 @@ export default {
           Square:''
         }
       },
+      signDate:[],
       rightAddrCity:'',
       rightAddrArea:'',
       rightAddrDetail:'',
