@@ -164,7 +164,7 @@ router.beforeEach((to, from, next) => {
     // debugger
     if (to.matched.some(record => record.meta.root)) {
       if (to.path === '/moneyCheck') {
-        to.meta.list = parseInt(to.query.type) === 1 ? ['财务', '收款审核'] : ['财务', '付款审核']
+        to.meta.list = parseInt(to.query.type) === 1 ? ["二手房",'财务', '收款审核'] : ["二手房",'财务', '付款审核']
       }
       let arr = TOOL.getRouter(to.meta.list, to.fullPath)
       store.commit('setPath', arr)
