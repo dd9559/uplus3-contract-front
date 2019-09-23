@@ -50,6 +50,8 @@ const payResult = () => import('@/pages/finance/payResult')
 const receiptBill = () => import('@/pages/finance/receiptBill')
 const receiptResult = () => import('@/pages/finance/receiptResult')
 const receiptCheck = () => import('@/pages/finance/receiptCheck')
+const receiptBill_simple=()=>import('@/pages/finance/receiptBill_simple')
+const receiptBillDetails=()=>import('@/pages/finance/receiptBillDetails')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
@@ -360,6 +362,20 @@ export default new Router({
           component: receiptBill,
           meta: {
             getParent: true
+          }
+        },
+        {
+          path: "receiptBill_simple",
+          component: receiptBill_simple,
+          meta: {
+            getParent: true
+          }
+        },
+        {
+          path: "receiptBillDetails",
+          component:receiptBillDetails,
+          meta:{
+            getParent:true
           }
         },
         {

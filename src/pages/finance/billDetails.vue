@@ -435,7 +435,7 @@
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
               let preloadList=[]
-              this.files.forEach((item,index)=>{
+              this.files.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
                 if(this.isPictureFile(item.type)){
                   preloadList.push(item.path)
                 }
