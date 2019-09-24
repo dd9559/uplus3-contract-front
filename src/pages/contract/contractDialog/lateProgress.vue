@@ -336,7 +336,7 @@
                             this.LookStepLoad = false;
                         });
                         this.stepsDataShow = true;
-                        this.$refs.stepsFrom.resetFields();
+                        if(this.$refs.stepsFrom != undefined) this.$refs.stepsFrom.resetFields();
                     }
                 }).catch(err=>{
                     this.$nextTick(()=>{

@@ -113,7 +113,8 @@
                                         <li 
                                         @click="previewPhoto(item.val,n)"
                                         >
-                                            <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                            <img class="suolue-img" :src="preloadFiles[getSrcIndex(i.path)]" alt="" v-if="isPictureFile(i.type)" width="70%">
+                                            <div class="img" v-else><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
                                         </el-tooltip>
@@ -203,6 +204,7 @@
                     }
                 ],
                 activeItem: 1,
+                preloadFiles:[]
             }
         },
         props: {
@@ -336,7 +338,22 @@
                             this.LookStepLoad = false;
                         });
                         this.stepsDataShow = true;
-                        this.$refs.stepsFrom.resetFields();
+                        if(this.$refs.stepsFrom != undefined) this.$refs.stepsFrom.resetFields();
+                        let preloadList = []
+                        resData.transAtepsAttach.forEach(e =>{
+                            if(e.type == 3) {
+                                e.val.forEach(t =>{
+                                    if(this.isPictureFile(t.type)){
+                                        preloadList.push(t.path)
+                                    }
+                                })   
+                            }
+                        })
+                        if(preloadList.length){
+                            this.fileSign(preloadList,'preload').then(res=>{
+                                this.preloadFiles=res
+                            })  
+                        }
                     }
                 }).catch(err=>{
                     this.$nextTick(()=>{
@@ -344,6 +361,21 @@
                     });
                     this.$message.error(err);
                 })
+            },
+            getSrcIndex(path) {
+                let item = this.preloadFiles
+                if(item.length) {
+                    let index
+                    for(let i = 0; i < item.length; i++) {
+                        item[i] = item[i].split('?')[0]
+                    }
+                    item.find((e,i) => {
+                        if(path == e) {
+                            index = i
+                        }
+                    })
+                    return index
+                }
             },
             // 图片格式状态判定
             stepsTypeImg(type){
