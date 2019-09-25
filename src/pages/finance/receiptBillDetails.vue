@@ -151,8 +151,9 @@
           flowType: 0
         },
         tabs: ['收款信息', '审核信息'],
-        activeItem: '收款信息',
-        billMsg: {},
+        activeItem: '收款信息',//顶部tab切换的选中项
+        payId:'',//收款id
+        billMsg: {},//详情返回对象
         list: [],
         checkList: [],//审核信息
         layer: {//审核备注
@@ -170,7 +171,9 @@
       }
     },
     created() {
-
+      let urlParam=this.$route.query
+      this.payId=Number(urlParam.id)
+      this.getData()
     },
     methods: {
       personChose: function () {
@@ -184,7 +187,14 @@
       showDialog: function () {
         this.layer.show = true
       },
+      /**
+       * 获取详情
+       */
       getData: function () {
+        let param={payId:this.payId}
+        this.$ajax.get('/api/insertSKRecord/getSKDetail',param).then(res=>{
+
+        })
       },
       /**
        * 获取审核信息

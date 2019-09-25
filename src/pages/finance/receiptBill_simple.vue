@@ -25,8 +25,8 @@
           <div class="input-group col" :class="[inputPerson?'active-360':'']">
             <label class="form-label no-width f14 margin-bottom-base">收付对象</label>
             <div class="flex-box">
-              <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择"
-                         @change="getOption(form.outObjType,1)">
+              <el-select size="small" class="w200" v-model="form.objType" placeholder="请选择"
+                         @change="getOption(form.objType,1)">
                 <el-option
                   v-for="item in dropdown"
                   :key="item.value"
@@ -35,19 +35,19 @@
                 </el-option>
               </el-select>
               <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20"
-                     v-model.trim="form.outObj" @input="inputOnly('normal')" v-if="inputPerson">
+                     v-model.trim="form.objName" @input="inputOnly('normal')" v-if="inputPerson">
             </div>
           </div>
           <div class="input-group col active-400">
             <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
             <div class="flex-box w400" v-if="inObjPerson">
-              <select-tree v-if="firstCreate.state" :data="DepList" :init="dep.name" @checkCell="handleNodeClick"
+              <select-tree v-if="firstCreate.state" :data="DepList" :init="form.deptName" @checkCell="handleNodeClick"
                            @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
               <div class="h32" :class="[!firstCreate.state?'no-min':'']" v-else>{{firstCreate.content.storeName}}</div>
               <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small"
-                         v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
-                         @change="getOption(form.inObjId,2)">
-                <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
+                         v-model="form.employeeId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
+                         @change="getOption(form.employeeId,2)">
+                <el-option :label="form.employeeName" :value="form.employeeId" v-if="employeInfo"></el-option>
                 <el-option
                   v-for="(item,index) in EmployeList"
                   :key="index"
@@ -56,13 +56,13 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>
+            <!--<div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>-->
           </div>
         </li>
         <li>
           <div class="input-group col no-max">
             <div class="flex-box tool-tip no-max">
-              <label class="form-label no-width f14 margin-bottom-base">{{receiptType|typeFormatter}}（元）</label><span>{{form.amount|formatChinese}}</span>
+              <label class="form-label no-width f14 margin-bottom-base">{{form.type|typeFormatter}}（元）</label><span>{{form.amount|formatChinese}}</span>
             </div>
             <input type="text" size="small" class="w430 el-input__inner" placeholder="请输入" v-model="form.amount"
                    @input="cutNum(1)">
@@ -73,7 +73,7 @@
               class="w400"
               size="small"
               value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.createTime"
+              v-model="form.closingDate"
               type="datetime"
               placeholder="选择日期时间">
             </el-date-picker>
@@ -106,28 +106,25 @@
   import moneyTypePop from '@/components/moneyTypePop'
 
   const rule = {
-    outObjId: {
-      name: '付款方',
-      type: 'negativeNum'
-    },
-    outObj: {
-      name: '付款方',
-    },
-    inObjId: {
-      name: '收款人',
-    },
-    createTime: {
-      name: '收款时间'
-    },
     moneyType: {
       name: '款类',
     },
+    objType: {
+      name: '收付对象',
+      type: 'negativeNum'
+    },
+    objName: {
+      name: '收付对象',
+    },
+    employeeId: {
+      name: '收款人',
+    },
     amount: {
-      name: '收款金额',
+      name: '佣金',
       type: 'money'
     },
-    admin: {
-      name: '收账账户'
+    closingDate: {
+      name: '结款时间'
     }
   }
 
@@ -138,35 +135,30 @@
     },
     data() {
       return {
-        receiptType: 'xf',
         contId: '',
-        dep: {
+        /*dep: {
           id: '',
           name: ''
-        },
+        },*/
         inputPerson: false,//是否显示第三方输入框
         form: {
+          type:1,//创建收款的导航类型
           contId: '',
-          remark: '',
-          inObj: '',
-          inObjId: '',
-          // inObjType:'',
-          outObj: '',
-          outObjId: '',
-          outObjType: '',
           moneyType: '',
-          moneyTypePid: '',
+          moneyTypePid:'',
+          remark: '',
           amount: '',
-          createTime: '',
+          closingDate: '',
+          deptId:'',
+          deptName:'',
+          employeeName:'',
+          employeeId:'',
+          objName:'',
+          objType:'',
         },
         moneyType: [],
         moneyTypeName: '',
-        dictionary: {
-          '534': ''
-        },
-        activeAdmin: '',
-        account: [],
-        dropdown: [],
+        dropdown: [],//收付对象list
         employeInfo: true,
         employePage: 1,
         fullscreenLoading: false,//提交表单防抖
@@ -179,7 +171,10 @@
       }
     },
     mounted() {
-      this.form.contId = this.$route.query.contId ? parseInt(this.$route.query.contId) : ''
+      let urlParam=this.$route.query
+      this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
+      this.form.type= urlParam?Number(urlParam.type):1
+
       this.getMoneyType()
       this.getDictionary()
       this.getDropdown()
@@ -195,26 +190,22 @@
             this.firstCreate.content = Object.assign({}, res.data)
             if (!res.data.showAccount) {
               this.firstCreate.state = false
-
-              if (!this.firstCreate.content.showAccount) {
-                this.activeAdmin = res.data.account[0].accountId
-              }
               this.getEmploye(res.data.storeId)
             } else {
               // console.log(this.getUser)
               this.firstCreate.state = true
 
-              this.dep.id = this.getUser.user.depId
-              this.dep.name = this.getUser.user.depName
+              this.form.deptId = this.getUser.user.depId
+              this.form.deptName = this.getUser.user.depName
               this.getEmploye(this.getUser.user.depId)
-              this.form.inObjId = this.getUser.user.empId
-              this.form.inObj = this.getUser.user.name
+              this.form.employeeId = this.getUser.user.empId
+              this.form.employeeName = this.getUser.user.name
             }
           }
         })
       },
       inputOnly: function (type, index) {//输入框限制
-        this.form.outObj = this.$tool.textInput(this.form.outObj)
+        this.form.objName = this.$tool.textInput(this.form.objName)
       },
       searchDep: function (payload) {
         this.form.inObjId = ''
@@ -223,20 +214,20 @@
       //收款人下拉选项操作
       clearSelect: function (type = 'dep') {
         if (type === 'dep') {
-          this.dep.name = ''
+          this.form.deptName = ''
           this.EmployeList = []
-          this.form.inObjId = ''
-          this.form.inObj = ''
+          this.form.employeeId = ''
+          this.form.employeeName = ''
           this.employePage = 1
         } else {
-          this.form.inObj = ''
+          this.form.employeeName = ''
         }
       },
       handleNodeClick(data) {
         this.getEmploye(data.depId, 1, false)
         this.clearSelect()
-        this.dep.id = data.depId
-        this.dep.name = data.name
+        this.form.deptId = data.depId
+        this.form.deptName = data.name
       },
       /**
        * 获取所有款类
@@ -261,9 +252,36 @@
         })
       },
       goResult: function () {
+        this.fullscreenLoading=true
+        let param = Object.assign({}, this.form)
+        this.$tool.checkForm(param,rule).then(res=>{
+          this.$ajax.postJSON('/api/payInfoRecord/insertSKRecord',param).then(res=>{
+            res = res.data
+            if (res.status === 200) {
+              this.fullscreenLoading=false
+              this.$router.replace({
+                path: 'receiptResult',
+                query:{
+                  type:1,
+                  content:JSON.stringify(res.data)
+                }
+              })
+            }
+          }).catch(error=>{
+            this.fullscreenLoading=false
+            this.$message({
+              message:error
+            })
+          })
+        }).catch(error=>{
+          this.fullscreenLoading=false
+          this.$message({
+            message:`${error.title}${error.msg}`
+          })
+        })
       },
       /**
-       * 获取下拉框数据
+       * 获取收付对象下拉框数据
        */
       getDropdown: function () {
         let param = {
@@ -277,25 +295,9 @@
         })
       },
       /**
-       * 获取收款账户
-       */
-      getAcount: function (empId) {
-        let param = {
-          contId: this.form.contId,
-          empId: empId
-        }
-        this.$ajax.get('/api/payInfo/selectProceedsAccount', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.account = [].concat(res.data)
-          }
-        })
-      },
-      /**
        * 款类选择操作
        */
       getCell: function (label) {
-        this.showAmount = label.pName === '代收代付' ? false : true
         this.form.moneyType = label.key
         this.form.moneyTypePid = label.pId
       },
@@ -308,6 +310,7 @@
       /**
        * 获取下拉框选择对象
        * @param item
+       * @param type 1=收付对象;2=选择收款人
        */
       getOption: function (item, type) {
         let obj = {}
@@ -315,19 +318,14 @@
         list.find(tip => {
           if (tip[type === 1 ? 'value' : 'empId'] === item) {
             if (type === 1) {
-              obj.outObjId = tip.custId
-              obj.outObj = tip.custName
-              if (item === 3) {
+              obj.objName = tip.custName
+              if (item === 3) {//表示收付对象选择其他项
                 this.inputPerson = true
               } else {
                 this.inputPerson = false
               }
             } else {
-              obj.inObj = tip.name
-              if (this.firstCreate.state) {
-                this.activeAdmin = ''
-                this.getAcount(this.form.inObjId)
-              }
+              obj.employeeName = tip.name
             }
             return
           }
@@ -335,16 +333,19 @@
 
         this.form = Object.assign({}, this.form, obj)
       },
+      cutNum:function (val) {
+        this.form.amount=this.$tool.cutFloat({val:this.form.amount,max:999999999.99})
+      },
     },
     filters: {
       typeFormatter(val) {
         let res = ''
         switch (val) {
-          case 'xf':
+          case 1:
             res = '返店佣金'
             break;
-          case 'cz':
-          case 'jr':
+          case 2:
+          case 3:
             res = '佣金'
             break;
           default:
@@ -749,7 +750,7 @@
     display: inline-block;
     &.worth-list {
       font-size: 14px;
-      margin-left: 40px;
+      margin-bottom: @margin-15;
       & > span {
         margin-right: 30px;
       }
