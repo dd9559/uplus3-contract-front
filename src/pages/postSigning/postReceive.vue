@@ -235,12 +235,13 @@
                                 <template v-if="ContractDatabase.length > 0">
                                     <div v-for="items in ContractDatabase" :key="items.kind">
                                         <div class="contract-tit">{{titleFn(items.kind)}}</div>
-                                        <div class="contract-main" v-for="item in items.children" :key="item.title">
+                                        <div class="contract-main" v-for="(item,index) in items.children" :key="item.title+index">
                                             <p class="cl-1 mb-10"><span class="spna"><template v-if="item.isrequire">*</template></span>{{item.title}}</p>
                                             <ul class="steps-img">
-                                                <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name">
+                                                <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name+i">
                                                     <li @click="previewPhoto(item.value,i)">
-                                                        <div class="img">
+                                                        <img class="suolue-img" :src="preloadFiles[getSrcIndex(ies.path)]" alt="" v-if="isPictureFile(ies.fileType)" width="70%">
+                                                        <div class="img" v-else>
                                                             <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
                                                         </div>
                                                         <p class="p">{{ies.name}}</p>
@@ -403,7 +404,8 @@
                     '53':'合作方式',
                     '64':'签约方式'
                 },
-                textAutosize:{ minRows: 7, maxRows: 7 }
+                textAutosize:{ minRows: 7, maxRows: 7 },
+                preloadFiles:[]
             }
         },
         computed: {
@@ -521,6 +523,21 @@
                 this.pageNum = e;
                 this.getListData('pagination');
             },
+            getSrcIndex(path) {
+                let item = this.preloadFiles
+                if(item.length) {
+                    let index
+                    for(let i = 0; i < item.length; i++) {
+                        item[i] = item[i].split('?')[0]
+                    }
+                    item.find((e,i) => {
+                        if(path == e) {
+                            index = i
+                        }
+                    })
+                    return index
+                }
+            },
             // 接收
             receiveFn(e) {
                 if(!this.power['sign-qh-rev-receive'].state){
@@ -590,6 +607,17 @@
                         if (!!res.data) {
                             let j = JSON.parse(res.data.address)
                             arr = this.recursiveFn([...j]);
+                            let preloadList=[]
+                            j.forEach(e => {
+                                if(this.isPictureFile(e.value[0].fileType)) {
+                                    preloadList.push(e.value[0].path)
+                                }
+                            })
+                            if(preloadList.length){
+                                this.fileSign(preloadList,'preload').then(res=>{
+                                    this.preloadFiles=res
+                                })  
+                            }
                         }
                         this.ContractDatabase = arr;
                     }
