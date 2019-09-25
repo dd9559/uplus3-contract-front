@@ -18,9 +18,9 @@ const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
 const commissionDialog = () => import('@/pages/setting/commissionDialog')
-const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
-const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
-const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
+// const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
+// const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
+// const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
 const conAttachment = () => import('@/pages/setting/conAttachment')
 
 //票据管理
@@ -170,31 +170,7 @@ export default new Router({
           component: operationLog,
           meta: {
             root: true,
-            list: ["操作日志", "二手房合同"]
-          }
-        },
-        {
-          path: "operationLog_xf",
-          component: operationLog_xf,
-          meta: {
-            root: true,
-            list: ["操作日志", "新房合同"]
-          }
-        },
-        {
-          path: "operationLog_cz",
-          component: operationLog_cz,
-          meta: {
-            root: true,
-            list: ["操作日志", "长租公寓合同"]
-          }
-        },
-        {
-          path: "operationLog_jr",
-          component: operationLog_jr,
-          meta: {
-            root: true,
-            list: ["操作日志", "金融合同"]
+            list: ["操作日志", "操作日志"]
           }
         },
         //操作模块 end
