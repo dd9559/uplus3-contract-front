@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
+          <el-tooltip class="item" effect="dark" content="合同编号/纸质合同编号/项目名称/客户姓名/物业地址" placement="top">
             <el-input v-model="contractForm.keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -13,7 +13,7 @@
           <select-tree :data="DepList" :init="contractForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.dealAgentId" @change="handleEmpNodeClick" placeholder="请选择">
+          <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="contractForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
@@ -24,23 +24,23 @@
         </el-form-item>
 
         <el-form-item label="签约日期" v-if="contractType!='financial'">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="signData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="结款时间" v-if="contractType==='newHouse'">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="closingData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="放款日期" v-if="contractType==='financial'">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="loanData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="交易方式" v-if="contractType==='longRent'">
-          <el-select v-model="contractForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+          <el-select v-model="contractForm.transMode" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['716']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -64,12 +64,7 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
-      <!-- 新房 -->
-      <newHouse v-if="contractType==='newHouse'" :tableDate="list" @getMoney="getMoney"></newHouse>
-      <!-- 长租 -->
-      <longRent v-if="contractType==='longRent'" :tableDate="list" @getMoney="getMoney"></longRent>
-      <!-- 金融 -->
-      <financial v-if="contractType==='financial'" :tableDate="list" @getMoney="getMoney"></financial>
+      <component v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
         <el-pagination
@@ -102,10 +97,13 @@ export default {
   data() {
     return {
       contractForm:{},
-      signDate:[],
+      signData:[],//签约日期
+      closingData:[],//结款日期
+      loanData:[],//放款日期
       dictionary: {
         //数据字典
         "13": "", //收佣状态
+        "716": "", //交易方式
       },
       total: 0,
       currentPage: 1,
@@ -124,27 +122,36 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.query.type)
     if(this.$route.query.type==="xf"){
       this.contractType='newHouse'
-      this.setPath(this.$tool.getRouter(['新房','合同','合同列表'],'otherContractList'));
+      this.getPath.unshift({name: '新房',path:this.$route.fullPath})
+      this.setPath(this.getPath);
     }else if(this.$route.query.type==="cz"){
       this.contractType='longRent'
-      this.setPath(this.$tool.getRouter(['长租','合同','合同列表'],'otherContractList'));
+      this.getPath.unshift({name: '长租',path:this.$route.fullPath})
+      this.setPath(this.getPath);
     }else if(this.$route.query.type==="jr"){
       this.contractType='financial'
-      this.setPath(this.$tool.getRouter(['金融','合同','合同列表'],'otherContractList'));
+      this.getPath.unshift({name: '金融',path:this.$route.fullPath})
+      this.setPath(this.getPath);
     }
     this.getDictionary();//字典
     this.remoteMethod();//部门
+    this.getContractList();//列表
   },
   methods:{
     //查询
     queryFn(){
-
+      this.currentPage=1
+      this.getContractList()
     },
     //重置
     resetFormFn(){
+      TOOL.clearForm(this.contractForm)
+      this.signData=[]
+      this.closingData=[]
+      this.loanData=[]
+      this.EmployeList = []
 
     },
     //获取当前部门
@@ -158,18 +165,72 @@ export default {
       this.contractForm.depName=payload.depName*/
     },
     clearDep:function () {
-      this.contractForm.dealAgentStoreId=''
+      this.contractForm.deptId=''
       this.contractForm.depName=''
       // this.EmployeList=[]
-      this.contractForm.dealAgentId=''
+      this.contractForm.empId=''
       this.clearSelect()
     },
     depHandleClick(data) {
       // this.getEmploye(data.depId)
-      this.contractForm.dealAgentStoreId=data.depId
+      this.contractForm.deptId=data.depId
       this.contractForm.depName=data.name
 
       this.handleNodeClick(data)
+    },
+    //获取列表数据
+    getContractList(){
+      let url,param
+      param = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        keyword:this.contractForm.keyword,
+        deptId:this.contractForm.deptId,
+        empId:this.contractForm.empId,
+        receiveAmountState:this.contractForm.receiveAmountState
+      }
+      if(this.contractType==='newHouse'){
+        url="/api/contractInfo/newHouse/contractList"
+        if(this.signData){
+          if (this.signData.length > 0) {
+            param.signStart = this.signData[0];
+            param.signEnd = this.signData[1];
+          }
+        }
+        if(this.closingData){
+          if (this.closingData.length > 0) {
+            param.closingStart = this.closingData[0];
+            param.closingEnd = this.closingData[1];
+          }
+        }
+      }else if(this.contractType==='longRent'){
+        url="/api/contractInfo/longLease/contractList"
+        param.transMode=this.contractForm.transMode
+        if(this.signData){
+          if (this.signData.length > 0) {
+            param.signStart = this.signData[0];
+            param.signEnd = this.signData[1];
+          }
+        }
+      }else{
+        url="/api/contractInfo/finance/contractList"
+        if(this.loanData){
+          if (this.loanData.length > 0) {
+            param.loanStart = this.loanData[0];
+            param.loanEnd = this.loanData[1];
+          }
+        }
+      }
+      this.$ajax.get(url,param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.list=res.data.list
+          this.total=res.data.total
+          this.list.forEach(element=>{
+            this.$set(element,"contractInfo",JSON.parse(element.contractInfo))
+          })
+        }
+      })
     },
     //新增合同
     toAddcontract(){
@@ -194,17 +255,19 @@ export default {
     getExcel(){
 
     },
-    //获取列表数据
-    getContractList(){
-
-    },
     //合同详情
-    toDetail(){
-
+    goDetail(val){
+      this.$router.push({
+        path: "/otherContractDetail",
+        query: {
+          type: this.contractType,
+          id:val.id
+        }
+      });
     },
     //收款
     getMoney(){
-
+      console.log("收款")
     },
     handleCurrentChange(val) {
       this.currentPage = val;

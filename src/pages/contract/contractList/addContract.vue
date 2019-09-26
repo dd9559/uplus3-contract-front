@@ -139,10 +139,10 @@
           <br>
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
+              <li v-for="(item,index) in ownerList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
                 </span>
                  <!-- :disabled="type===2&&!item.edit?true:false" -->
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
@@ -191,7 +191,7 @@
           <br>
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
+              <li v-for="(item,index) in guestList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
                   <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
@@ -297,22 +297,22 @@
       </div> -->
     </el-form>
     <div class="btn">
-        <div>
-          <div v-if="type===2">
-            <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
-            <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
-            <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
-          </div>
-        </div>
-        <div>
-          <!-- 新增+提审 -->
-          <!-- <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button> -->
-          <!-- 编辑+提审 -->
-          <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
-          <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
-          <el-button type="primary" round @click="isSave(0)" :disabled="canClick">保存并进入下一步</el-button>
+      <div>
+        <div v-if="type===2">
+          <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
+          <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
+          <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
         </div>
       </div>
+      <div>
+        <!-- 新增+提审 -->
+        <!-- <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button> -->
+        <!-- 编辑+提审 -->
+        <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
+        <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
+        <el-button type="primary" round @click="isSave(0)" :disabled="canClick">保存并进入下一步</el-button>
+      </div>
+    </div>
 
     <!-- 房源客源弹窗 -->
     <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
@@ -1396,7 +1396,7 @@ export default {
           }
         }).catch(error => {
           this.fullscreenLoading=false;
-          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="线下合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"&&error!=="合同编号不符合规范！"){
+          if(error!=="该合同房源已被其他合同录入，请重新选择房源！"&&error!=="该合同下的房源客源不属于同一个体系，请重新选择！"&&error!=="纸质合同编号规则不允许和系统生成规则一致，请重新输入！"&&error!=="合同编号已存在，请重新输入！"&&error!=="合同编号不符合规范！"){
             this.canClick=true
           }
           this.$message({
@@ -2071,6 +2071,8 @@ export default {
               this.guestList_.push(obj_);
             }
           }
+          console.log(this.ownerList,this.guestList)
+          // debugger
         }
       });
     },

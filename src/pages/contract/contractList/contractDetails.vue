@@ -1186,6 +1186,7 @@ export default {
     call(value,index,type) {
       var nowTime = (new Date()).getTime();
       var param = {
+        plateType:0,
         id:value.pid,
         contractCode:this.contCode,
         sourceType:value.personType.value===1?0:1
@@ -2129,6 +2130,9 @@ export default {
 .view-container {
   position: relative;
   min-height: 100%;
+  padding-left: 20px;
+  background: @bg-white;
+  font-size: 14px;
   .mainContent{
     /deep/.el-tabs{
       .el-tabs__header {
@@ -2136,8 +2140,8 @@ export default {
       }
       .el-tabs__item {
         font-size: 18px;
-        height: 60px;
-        line-height: 60px;
+        height: 50px;
+        line-height: 50px;
       }
     }
   }
@@ -2146,22 +2150,6 @@ export default {
     z-index: -9999;
     left: 20000px;
   }
-    // /deep/.el-tabs{
-    //   .el-tabs__header {
-    //     margin-bottom: 0;
-    //   }
-    //   .el-tabs__item {
-    //     font-size: 18px;
-    //     height: 60px;
-    //     line-height: 60px;
-    //   }
-    // }
-
-
-  padding-left: 20px;
-  background: @bg-white;
-  font-size: 14px;
-  position: relative;
   //合同详情
   .firstDetail{
     overflow-y: auto;

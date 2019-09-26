@@ -1,8 +1,9 @@
 <template>
   <div class="view-container">
-    <addNewHouse v-if="contractType==='newHouse'"></addNewHouse>
+    <component v-bind:is="contractType"></component>
+    <!-- <addNewHouse v-if="contractType==='newHouse'"></addNewHouse>
     <addLongRent v-if="contractType==='longRent'"></addLongRent>
-    <addFinancial v-if="contractType==='financial'"></addFinancial>
+    <addFinancial v-if="contractType==='financial'"></addFinancial> -->
   </div>
 </template>
            
@@ -24,7 +25,13 @@ export default {
     }
   },
   created () {
-    this.contractType=this.$route.query.type
+    if(this.$route.query.type==="newHouse"){
+      this.contractType="addNewHouse"
+    }else if(this.$route.query.type==="longRent"){
+      this.contractType="addLongRent"
+    }else{
+      this.contractType="addFinancial"
+    }
   }
 };
 </script>
