@@ -200,7 +200,8 @@
             <label>付款凭证:</label>
             <ul class="image-list" v-if="files.length>0">
               <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
-                <upload-cell :type="item.type"></upload-cell>
+                <img :src="preloadFiles[index]" alt="" v-if="isPictureFile(item.type)" width="70%">
+                <upload-cell :type="item.type" v-else></upload-cell>
                 <el-tooltip :content="item.name" placement="top">
                   <p class="span">{{item.name}}</p>
                 </el-tooltip>
@@ -335,6 +336,7 @@
         },
         invalidMax: 200,
         files: [],
+        preloadFiles:[],
         radioMask: false,
         amount:{},
         payRadio:0,
@@ -432,6 +434,15 @@
             this.billMsg = Object.assign({}, res.data)
             if (res.data.filePath) {
               this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+              let preloadList=[]
+              this.files.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                if(this.isPictureFile(item.type)){
+                  preloadList.push(item.path)
+                }
+              })
+              this.fileSign(preloadList,'preload').then(res=>{
+                this.preloadFiles=res
+              })
             }
             if(res.data.inAccountType&&(res.data.inAccountType===3)&&param.type===1&&res.data.billPath&&res.data.billPath.length>0){
               this.files = [].concat({

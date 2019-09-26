@@ -210,13 +210,13 @@ const MIXINS = {
     /**
      * 获取签名
      */
-    fileSign:function (arr,type) {
+    fileSign:async function (arr,type) {
       let param={urls:arr.join(',')}
       if(type==='download'){
         param.rct='application%2Foctet-stream'
       }
       // param.style='jjw-watermark'
-      this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
+      let result=await this.$ajax.put('/api/load/generateAccessURLBatch',param,2).then(res=>{
         res=res.data
         if(res.status===200){
           if(type==='download'){
@@ -227,6 +227,8 @@ const MIXINS = {
             document.body.appendChild(a)
             a.click();
             document.body.removeChild(a)
+          }else if(type==='preload'){//图片缩略图使用
+            return res.data
           }else if(type===2){//合同主体
             this.previewFiles=res.data
             this.preview=true
@@ -241,6 +243,9 @@ const MIXINS = {
           }
         }
       })
+      if(result){
+        return Promise.resolve(result)
+      }
     },
     // 图片放大
     // 这个方法的前提是你的图片json 格式是 是name ， path 分开的
@@ -283,7 +288,11 @@ const MIXINS = {
 
         }
     },
-    // 判断图片类别
+    // 判断是否为图片类别
+    isPictureFile(type){
+      return ['.png', '.jpg', '.jpeg', '.gif', '.bmp'].includes(type)
+    },
+    // 判断图片或视频类别
     imgBoolFn(type){
         switch (type.toLowerCase()) {
             case '.png':

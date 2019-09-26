@@ -105,7 +105,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="业绩申诉有效时间：" >
-          <el-input v-model="apltime" @keyup.native="numberFn"></el-input>
+          <el-input v-model="apltime" @input="numberFn" maxlength="3"></el-input>
           <el-select v-model="timeUnit" placeholder="请选择" style="margin-left:20px">
             <el-option v-for="item in dictionary['656']" :key="item.key" :label="item.value" :value="item.key"></el-option>
           </el-select>

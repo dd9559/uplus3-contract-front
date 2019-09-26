@@ -57,11 +57,11 @@ export default{
 @import "~@/assets/common.less";
 .view-container {
     .tabs {
-    height: 48px;
-    display: flex;
-    background: rgba(250, 250, 251, 1);
-    font-size: 16px;
-    padding-left: 30px;
+      height: 48px;
+      display: flex;
+      background: rgba(250, 250, 251, 1);
+      font-size: 16px;
+      padding-left: 30px;
     > li {
       display: flex;
       align-items: center;
