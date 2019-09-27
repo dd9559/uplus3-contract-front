@@ -1189,7 +1189,9 @@ export default {
         plateType:0,
         id:value.pid,
         contractCode:this.contCode,
-        sourceType:value.personType.value===1?0:1
+        sourceType:value.personType.value===1?0:1,
+        calledMobile:value.encryptionMobile,
+        calledName:value.name
       };
       if(type==='owner'){
         if(this.ownerData[index].time){
@@ -1212,7 +1214,7 @@ export default {
             this.callNumber=this.clientrData[index].virtualNum;
             this.dialogVisible = true;
           }else{
-            this.ownerData[index].time=nowTime;
+            this.clientrData[index].time=nowTime;
             this.getVirtualNum(param,index,type);
           }
         }else{
@@ -2462,14 +2464,6 @@ export default {
     width: 950px;
     padding-top: 20px;
     .name-wrapper {
-      // display: flex;
-      // display: -webkit-box;
-      /*!autoprefixer: off */
-      // -webkit-box-orient: vertical;
-      /* autoprefixer: on */
-      // -webkit-line-clamp: 1;
-      // overflow: hidden;
-      // text-overflow:ellipsis;
       text-overflow:ellipsis;
       white-space:nowrap;
       overflow:hidden;

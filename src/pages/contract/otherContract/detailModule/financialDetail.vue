@@ -22,53 +22,53 @@
           </p>
           <p>
             <span class="tag">放款日期：</span>
-            <span class="text">{{getDetail.contractInfo.loanDate}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.loanDate}}</span>
           </p>
           <p>
             <span class="tag">项目类型：</span>
-            <span class="text">{{getDetail.contractInfo.projectType?getDetail.contractInfo.projectType:"-"}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.projectType?getDetail.contractInfo.projectType:"-"}}</span>
           </p>
         </div>
         <div class="one_">
           <p>
             <span class="tag">放款金额：</span>
-            <span class="text">{{getDetail.contractInfo.loanAmount}} 元</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.loanAmount}} 元</span>
           </p>
           <p>
             <span class="tag">期限时间：</span>
-            <span class="text">{{getDetail.contractInfo.termStart?`${getDetail.contractInfo.termStart} ~ ${getDetail.contractInfo.termEnd}`:'-'}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.termStart?`${getDetail.contractInfo.termStart} ~ ${getDetail.contractInfo.termEnd}`:'-'}}</span>
           </p>
         </div>
         <div class="one_">
           <p>
             <span class="tag">金融专员：</span>
-            <span class="text">{{getDetail.contractInfo.financeCommissioner?getDetail.contractInfo.financeCommissioner:"-"}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.financeCommissioner?getDetail.contractInfo.financeCommissioner:"-"}}</span>
           </p>
           <p>
             <span class="tag">经办人：</span>
-            <span class="text">{{getDetail.contractInfo.transactor?getDetail.contractInfo.transactor:"-"}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.transactor?getDetail.contractInfo.transactor:"-"}}</span>
           </p>
           <p>
             <span class="tag">受理人：</span>
-            <span class="text">{{getDetail.contractInfo.acceptor?getDetail.contractInfo.acceptor:"-"}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.acceptor?getDetail.contractInfo.acceptor:"-"}}</span>
           </p>
           <p>
             <span class="tag">岗位名称：</span>
-            <span class="text">{{getDetail.contractInfo.positionName?getDetail.contractInfo.positionName:"-"}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.positionName?getDetail.contractInfo.positionName:"-"}}</span>
           </p>
         </div>
         <div class="one_">
           <p>
             <span class="tag">收入金额：</span>
-            <span class="text">{{getDetail.contractInfo.incomeAmount}} 元</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.incomeAmount}} 元</span>
           </p>
           <p>
             <span class="tag">金融成本比例：</span>
-            <span class="text">{{getDetail.contractInfo.financeCostRatio}}</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.financeCostRatio}}</span>
           </p>
           <p>
             <span class="tag">金融成本：</span>
-            <span class="text">{{getDetail.contractInfo.financeCost}} 元</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.financeCost}} 元</span>
           </p>
         </div>
       </div>
@@ -77,11 +77,20 @@
       <div class="title">房源信息</div>
       <div class="content">
         <div class="one_">
-          <p><span class="tag">房源编号：</span><span class="serialNumber">{{getDetail.houseinfoCode}}</span></p>
-          <p style="width:1000px"><span class="tag">U+地址：</span><span class="text">{{getDetail.contractInfo.propertyAddr}}</span></p>
+          <p>
+            <span class="tag">房源编号：</span>
+            <span class="serialNumber">{{getDetail.houseinfoCode}}</span>
+          </p>
+          <p style="width:1000px">
+            <span class="tag">U+地址：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.propertyAddr}}</span>
+          </p>
         </div>
         <div class="one_">
-          <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{getDetail.contractInfo.propertyRightAddr}}</span></p>
+          <p style="width:1000px">
+            <span class="tag">产权地址：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.propertyRightAddr}}</span>
+          </p>
         </div>
       </div>
     </div>
@@ -89,8 +98,14 @@
       <div class="title">客源信息</div>
       <div class="content">
         <div class="one_">
-          <p><span class="tag">客户姓名：</span><span class="text">{{getDetail.contractInfo.customerName}}</span></p>
-          <p><span class="tag">所属区域：</span><span class="text">{{getDetail.contractInfo.customerArea}}</span></p>
+          <p>
+            <span class="tag">客户姓名：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.customerName}}</span>
+          </p>
+          <p>
+            <span class="tag">所属区域：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.customerArea}}</span>
+          </p>
         </div>
       </div>
     </div>
@@ -119,28 +134,23 @@
       <div class="title">店佣信息</div>
       <div class="content">
         <div class="table">
-          <template>
-            <el-table :data="clientrData" border header-row-class-name="theader-bg">
-              <el-table-column prop="name" label="客户姓名"></el-table-column>
-              <el-table-column label="电话">
-                <template slot-scope="scope">
-                  {{scope.row.mobile}}
-                  <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
-                </template>
-              </el-table-column>
-              <el-table-column prop="relation" label="关系"></el-table-column>
-              <el-table-column label="产权比">
-                <template slot-scope="scope">
-                  {{scope.row.propertyRightRatio+'%'}}
-                </template>
-              </el-table-column>
-              <el-table-column min-width="150" label="证件号码">
-                <template slot-scope="scope">
-                  {{scope.row.identifyCode}}
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
+         <el-table :data="getStoreList" border header-row-class-name="theader-bg" style="width:500px">
+            <el-table-column label="返店佣金" min-width="120">
+              <template slot-scope="scope">
+                {{scope.row.amount}}元
+              </template>
+            </el-table-column>
+            <el-table-column label="结款时间" min-width="150">
+              <template slot-scope="scope">
+                {{scope.row.closingDate|formatTime}}
+              </template>
+            </el-table-column>
+            <el-table-column min-width="100" label="收款人">
+              <template slot-scope="scope">
+                {{scope.row.employeeName}}
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </div>
     </div>
@@ -155,7 +165,13 @@ export default {
       default() {
         return {}
       }
-    }
+    },
+    storeList:{
+      type: Array,
+      default() {
+        return []
+      }
+    },
   },
   data(){
     return{
@@ -165,6 +181,9 @@ export default {
   computed: {
     getDetail: function() {
       return this.detail;
+    },
+    getStoreList: function() {
+      return this.storeList;
     },
   }
 };

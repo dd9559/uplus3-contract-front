@@ -76,7 +76,7 @@
             <el-table-column prop="name" label="客户姓名"></el-table-column>
             <el-table-column label="电话">
               <template slot-scope="scope">
-                {{scope.row.mobile}}
+                {{scope.row.encryptionMobile}}
                 <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
               </template>
             </el-table-column>
@@ -116,46 +116,65 @@
       <div class="title">店佣信息</div>
       <div class="content">
         <div class="table">
-          <el-table :data="clientrData" border header-row-class-name="theader-bg">
-            <el-table-column prop="name" label="客户姓名"></el-table-column>
-            <el-table-column label="电话">
+          <el-table :data="getStoreList" border header-row-class-name="theader-bg" style="width:500px">
+            <el-table-column label="返店佣金" min-width="120">
               <template slot-scope="scope">
-                {{scope.row.mobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                {{scope.row.amount}}元
               </template>
             </el-table-column>
-            <el-table-column prop="relation" label="关系"></el-table-column>
-            <el-table-column label="产权比">
+            <el-table-column label="结款时间" min-width="150">
               <template slot-scope="scope">
-                {{scope.row.propertyRightRatio+'%'}}
+                {{scope.row.closingDate|formatTime}}
               </template>
             </el-table-column>
-            <el-table-column min-width="150" label="证件号码">
+            <el-table-column min-width="100" label="收款人">
               <template slot-scope="scope">
-                {{scope.row.identifyCode}}
+                {{scope.row.employeeName}}
               </template>
             </el-table-column>
           </el-table>
         </div>
       </div>
     </div>
+    <!-- 拨号弹出框 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div>
+        <div class="icon">
+          <i class="el-icon-success"></i>
+        </div>
+        <div class="text">
+          <p>号码绑定成功！ </p>
+          <p>请拨打此号码 {{callNumber}} 联系客户</p>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
            
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+  mixins: [MIXINS],
   props:{
     detail:{
       type: Object,
       default() {
         return {}
       }
-    }
+    },
+    storeList:{
+      type: Array,
+      default() {
+        return []
+      }
+    },
   },
   data(){
     return{
-      clientrData:[],
       clientHei:'',
+      callNumber: "",
+      dialogVisible: false,
+      canCall:true,
       power:{
         'sign-ht-xq-ly-wmemo': {
           state: false,
@@ -177,12 +196,62 @@ export default {
     }
   },
   created () {
-    
+    this.getAdmin();//获取当前登录人信息
   },
   methods:{
-    call(){
-
-    }
+    //打电话
+    call(value,index,type) {
+      let guestData=this.detail.contractInfo.customerList
+      var nowTime = (new Date()).getTime();
+      var param = {
+        plateType:1,
+        id:value.pid,
+        contractCode:detail.code,
+        sourceType:1,
+        calledMobile:value.mobile,
+        calledName:value.name
+      };
+      if(type==='guest'){
+        if(guestData[index].time){
+          let oldTime = (nowTime-guestData[index].time);
+          if(oldTime<300000){
+            this.callNumber=guestData[index].virtualNum;
+            this.dialogVisible = true;
+          }else{
+            guestData[index].time=nowTime;
+            this.getVirtualNum(param,index,type);
+          }
+        }else{
+          guestData[index].time=nowTime;
+          this.getVirtualNum(param,index,type);
+        }
+        // console.log(guestData,this.detail.contractInfo.customerList)
+      }
+    },
+    //生成虚拟号码
+    getVirtualNum(param,index,type){
+      let guestData=this.detail.contractInfo.customerList
+      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+        this.canCall=true;
+        res=res.data;
+        if(res.status===200){
+          if(type==='guest'){
+            guestData[index].virtualNum=res.data.virtualNum
+          }
+          this.callNumber=res.data.virtualNum;
+          this.dialogVisible = true;
+        }
+      }).catch(error=>{
+         if(type==='guest'){
+          guestData[index].time=''
+        }
+        this.canCall=true;
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      })
+    },
   },
   filters: {
     timeFormat_: function (val) {
@@ -204,6 +273,9 @@ export default {
   computed: {
     getDetail: function() {
       return this.detail;
+    },
+    getStoreList: function() {
+      return this.storeList;
     },
   }
 };
@@ -264,52 +336,6 @@ export default {
         width: 600px;
       }
     }
-    .extendParams{
-      width: 1000px;
-      display: flex;
-      flex-wrap: wrap;
-      > p{
-        display: flex;
-        width: 300px;
-        padding: 4px 0;
-        .tag{
-          width: 100px;
-          cursor: pointer;
-        }
-        .text{
-          max-width: 110px;
-          cursor: pointer;
-        }
-        .colon{
-          color: @color-6c;
-        }
-        .extendUnit{
-          color: @color-6c;
-          padding-left: 5px;
-        }
-        .tagHidden{
-          // display: -webkit-box;
-          /*!autoprefixer: off */
-          // -webkit-box-orient: vertical;
-          /* autoprefixer: on */
-          // -webkit-line-clamp: 1;
-          // overflow: hidden;
-          // text-overflow:ellipsis;
-          text-overflow:ellipsis;
-          white-space:nowrap;
-          overflow:hidden;
-          display: inline-block;
-        }
-      }
-    }
-    .performance {
-      > p {
-        color: @color-6c;
-        .orange {
-          color: @color-orange;
-        }
-      }
-    }
     .table {
       padding: 10px 0;
       width: 1050px;
@@ -329,24 +355,21 @@ export default {
         padding-bottom: 10px;
       }
     }
-    .remark {
-      display: flex;
-      padding-left: 15px;
-      >span{
-        color: @color-6c;
-      }
-      > p {
-        color: @color-6c;
-        width: 650px;
-        height: 100px;
-        padding: 10px;
-        border-radius: 4px;
-        border: 1px solid rgba(236, 239, 242, 1);
-        background: @bg-FA;
-      }
-      /deep/.el-textarea.is-disabled .el-textarea__inner{
-        color: #606266;
-      }
+  }
+}
+/deep/.el-dialog__body {
+  .icon {
+    text-align: center;
+    font-size: 50px;
+    padding-bottom: 15px;
+    padding-top: 25px;
+    color: #54d384;
+  }
+  .text {
+    text-align: center;
+    padding-bottom: 30px;
+    p {
+      line-height: 30px;
     }
   }
 }

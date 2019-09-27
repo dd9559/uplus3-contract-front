@@ -243,11 +243,12 @@ export default {
       }else{
         router="金融"
       }
-      this.setPath(this.$tool.getRouter([router,'合同','新增合同'],'addOtherContract'));
+      this.setPath(this.$tool.getRouter([router,'合同','新增合同'],'otherContractList'));
       this.$router.push({
         path: "/addOtherContract",
         query: {
           type: this.contractType,
+          operationType:1
         }
       });
     },
@@ -257,6 +258,15 @@ export default {
     },
     //合同详情
     goDetail(val){
+      let router
+      if(this.contractType==="newHouse"){
+        router="新房"
+      }else if(this.contractType==="longRent"){
+        router="长租"
+      }else{
+        router="金融"
+      }
+      this.setPath(this.$tool.getRouter([router,'合同','合同详情'],'otherContractList'));
       this.$router.push({
         path: "/otherContractDetail",
         query: {
@@ -266,8 +276,23 @@ export default {
       });
     },
     //收款
-    getMoney(){
-      console.log("收款")
+    getMoney(val){
+      let router
+      if(this.contractType==="newHouse"){
+        router="新房"
+      }else if(this.contractType==="longRent"){
+        router="长租"
+      }else{
+        router="金融"
+      }
+      this.setPath(this.$tool.getRouter([router,'合同','合同列表','创建收款'],'otherContractList'));
+      this.$router.push({
+        path: "/receiptBill_simple",
+        query: {
+          type: 1,
+          contId:val.id
+        }
+      });
     },
     handleCurrentChange(val) {
       this.currentPage = val;

@@ -95,7 +95,7 @@
       <div class="houseMsg">
         <p>签约信息</p>
         <div class="form-content">
-          <el-form-item label="成交经纪人：" class="form-label" style="width:333px;text-align:right">
+          <el-form-item label="成交经纪人：" class="form-label" style="width:355px;text-align:right">
             <el-select
               style="width:100px"
               v-model="contractForm.dealAgentId"
@@ -144,7 +144,7 @@
     </el-form>
     <div class="btn">
       <div>
-        <div v-if="operationType===2">
+        <div v-if="getOperationType===2">
           <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
           <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
           <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
@@ -189,24 +189,23 @@ const rule = {
   houseinfoCode: {
     name: "房源"
   },
-  // dealAgentId: {
-  //   name: "成交经纪人"
-  // },
-  // dealAgentStoreId: {
-  //   name: "成交经纪人门店"
-  // },
-  // shopOwnerId: {
-  //   name: "店长"
-  // },
-  // shopOwnerStoreId: {
-  //   name: "店长门店"
-  // },
 };
 
 export default {
   mixins: [MIXINS],
   components: {
     houseGuest
+  },
+  props:{
+    //操作类型  1 新增  2  编辑
+    operationType: {
+      type: Number,
+      default: 1
+    },
+    contId: {
+      type: Number,
+      default: ""
+    },
   },
   data(){
     return{
@@ -232,7 +231,8 @@ export default {
         shopOwnerId:"",
         shopOwnerName:"",
         shopOwnerStoreId:"",
-        shopOwnerStoreName:""
+        shopOwnerStoreName:"",
+        cooperationName:"",
       },
       termData:[],
       rightAddrCity:'',
@@ -240,12 +240,14 @@ export default {
       rightAddrDetail:'',
       //所属区域
       areaNameList:[],
+      //经纪人
+      options:[],
+      // 店长
+      options_:[],
       dictionary: {
         //数据字典
         "633":"",//证件类型(护照,身份证,营业执照)
       },
-       //操作类型  1 新增  2  编辑
-      operationType:1,
       //房客源弹窗
       isShowDialog:false,
       choseHcode:0,
@@ -255,13 +257,121 @@ export default {
   },
   created () {
     this.getDictionary();//字典
-    this.getNewData();//当前时间
     this.getRegion();//获取客户所属区域
+    if(this.operationType===1){
+      this.getNewData();//当前时间
+    }else{
+      this.getContractDetail()
+    }
   },
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
       this.clientHei= document.documentElement.clientHeight -200 + 'px'
+    },
+     //合同详情
+    getContractDetail(){
+      let param = {
+        id:this.contId
+      }
+      this.$ajax.get("/api/contractInfo/finance/detail",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          let contractDetail=res.data
+          this.$set(contractDetail,"contractInfo",JSON.parse(contractDetail.contractInfo))
+          console.log(contractDetail)
+          debugger
+          delete contractDetail.code
+          delete contractDetail.cityId
+          delete contractDetail.guestinfoCode
+          delete contractDetail.dealAgentStoreSystemtag
+          delete contractDetail.receiveAmountState
+          delete contractDetail.recordDept
+          delete contractDetail.recordId
+          delete contractDetail.recordDeptSystemtag
+          delete contractDetail.tradeType
+          delete contractDetail.updateBy
+          delete contractDetail.updateName
+          delete contractDetail.receivedCommission
+          //放款日期
+          contractDetail.loanDate= contractDetail.contractInfo.loanDate
+          //项目类型
+          contractDetail.projectType= contractDetail.contractInfo.projectType
+          // 放款金额
+          contractDetail.loanAmount= contractDetail.contractInfo.loanAmount
+          // 期限时间
+          this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          //金融专员
+          contractDetail.financeCommissioner= contractDetail.contractInfo.financeCommissioner
+          //经办人
+          contractDetail.transactor= contractDetail.contractInfo.transactor
+          //受理人
+          contractDetail.acceptor= contractDetail.contractInfo.acceptor
+          //岗位名称
+          contractDetail.positionName= contractDetail.contractInfo.positionName
+          //收入金额
+          contractDetail.incomeAmount= contractDetail.contractInfo.incomeAmount
+          //金融成本比例
+          contractDetail.financeCostRatio= contractDetail.contractInfo.financeCostRatio
+          //金融成本
+          contractDetail.financeCost= contractDetail.contractInfo.financeCost
+          //杂费
+          contractDetail.sundryAmount= contractDetail.contractInfo.sundryAmount
+          // 房源信息
+          contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
+          //房源编号
+          // contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
+          //U+地址
+          contractDetail.propertyAddr=contractDetail.contractInfo.propertyAddr
+          // 产权地址
+          let rightAddress = contractDetail.contractInfo.propertyRightAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.rightAddrDetail=rightAddress
+          }
+          //客源信息
+          // 客户姓名
+          contractDetail.customerName= contractDetail.contractInfo.customerName
+          // 所属区域
+          contractDetail.customerArea= contractDetail.contractInfo.customerArea
+          //经纪人
+          let option = {
+            empId:contractDetail.dealAgentId,
+            empName:contractDetail.dealAgentName,
+            depId:contractDetail.dealAgentStoreId,
+            depName:contractDetail.dealAgentStoreName
+          }
+          this.options=[option]
+          // 店长
+          let option_ = {
+            empId:contractDetail.shopOwnerId,
+            empName:contractDetail.shopOwnerName,
+            depId:contractDetail.shopOwnerStoreId,
+            depName:contractDetail.shopOwnerStoreName
+          }
+          this.options_=[option_]
+          console.log(contractDetail)
+          delete contractDetail.contractInfo
+          this.contractForm=contractDetail
+        }
+      })
     },
     //获取当前日期
     getNewData(){
@@ -540,6 +650,11 @@ export default {
         }
       }
       let param = this.contractForm
+      param.id = this.contId ? this.contId : null
+      delete param.createTime
+      delete param.recordDeptName
+      delete param.recordName
+      delete param.updateTime
       //新增
       let url="/api/contractInfo/finance/addContract"
       //编辑
@@ -568,6 +683,31 @@ export default {
           type:"error"
         })
       })
+    }
+  },
+  computed: {
+    getOperationType: function() {
+      return this.operationType;
+    },
+    getContId: function() {
+      return this.contId;
+    },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
     }
   },
   mounted(){
@@ -805,6 +945,7 @@ input:disabled{
   padding: 7px 15px;
   border: 1px solid #dcdfe6;
   border-radius: 3px;
+  color:#606266;
   &::-webkit-input-placeholder {
     color: #ccc;
   }
