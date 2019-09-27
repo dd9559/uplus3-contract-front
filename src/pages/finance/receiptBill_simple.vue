@@ -4,9 +4,9 @@
       <p class="f14 txt-title">收款信息</p>
       <ul class="bill-form">
         <li>
-          <p class="block-receipt-type worth-list" v-if="firstCreate.content.contCommission">
-            <span>应收佣金（元）：{{firstCreate.content.contCommission.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.contCommission.receivedCommission}}</span><span
-            class="warning-text">未收（元）：{{firstCreate.content.contCommission.uncollected}}</span>
+          <p class="block-receipt-type worth-list">
+            <span>应收佣金（元）：{{firstCreate.content.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.receivedCommission}}</span><span
+            class="warning-text">未收（元）：{{firstCreate.content.uncollected}}</span>
           </p>
         </li>
         <li>
@@ -94,7 +94,7 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult('postJSON')"
                  v-loading.fullscreen.lock="fullscreenLoading">创建收款信息
       </el-button>
     </p>
@@ -136,13 +136,10 @@
     data() {
       return {
         contId: '',
-        /*dep: {
-          id: '',
-          name: ''
-        },*/
+        payId:2,//收款编号
         inputPerson: false,//是否显示第三方输入框
         form: {
-          type:1,//创建收款的导航类型
+          type:1,//创建收款的导航类型,1新房收款 2长租收款 3金融收款
           contId: '',
           moneyType: '',
           moneyTypePid:'',
@@ -176,21 +173,25 @@
       this.form.type= urlParam?Number(urlParam.type):1
 
       this.getMoneyType()
-      this.getDictionary()
-      this.getDropdown()
+      // this.getDictionary()
 
       this.addInit(this.$route.query.contId)
+      if(urlParam.edit){
+        this.getDetailsData()
+      }
     },
     methods: {
       //判断用户该合同是否第一次选择收款人部门
       addInit: function (id) {
-        this.$ajax.get('/api/payInfo/toInsert', {contId: id}).then(res => {
+        this.$ajax.get('/api/payInfoRecord/toInsert', {contId: id}).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.firstCreate.content = Object.assign({}, res.data)
-            if (!res.data.showAccount) {
+            this.firstCreate.content = Object.assign({}, res.data.payee,res.data.contCommission)
+            this.dropdown = res.data.dropDown
+            if (!res.data.payee.firstCreate) {
               this.firstCreate.state = false
-              this.getEmploye(res.data.storeId)
+              this.getEmploye(res.data.payee.storeId)
+              this.form=Object.assign(this.form,{deptId:res.data.payee.storeId,deptName:res.data.payee.storeName})
             } else {
               // console.log(this.getUser)
               this.firstCreate.state = true
@@ -223,6 +224,7 @@
           this.form.employeeName = ''
         }
       },
+      //收款人选择部门
       handleNodeClick(data) {
         this.getEmploye(data.depId, 1, false)
         this.clearSelect()
@@ -244,6 +246,7 @@
           }
         })
       },
+      //取消
       goCancel: function () {
         this.$confirm('是否取消当前操作', {closeOnClickModal: false}).then(() => {
           this.$router.go(-1)
@@ -251,19 +254,25 @@
 
         })
       },
-      goResult: function () {
+      /**
+       * 创建收款操作
+       */
+      goResult: function (type,url='/payInfoRecord/insertSKRecord') {
+        if(this.$route.query.edit){
+          type='put';
+          url='/payInfoRecord/updateSKRecord';
+        }
         this.fullscreenLoading=true
         let param = Object.assign({}, this.form)
         this.$tool.checkForm(param,rule).then(res=>{
-          this.$ajax.postJSON('/api/payInfoRecord/insertSKRecord',param).then(res=>{
+          this.$ajax[type](`/api${url}`,param).then(res=>{
             res = res.data
             if (res.status === 200) {
               this.fullscreenLoading=false
               this.$router.replace({
-                path: 'receiptResult',
+                path: 'receiptCheck',
                 query:{
-                  type:1,
-                  content:JSON.stringify(res.data)
+                  type:this.form.type===1?"xf":this.form.type===2?"cz":this.form.type===3?"jr":"xf",
                 }
               })
             }
@@ -281,16 +290,23 @@
         })
       },
       /**
-       * 获取收付对象下拉框数据
+       * 编辑时获取详情
        */
-      getDropdown: function () {
-        let param = {
-          contId: this.form.contId
-        }
-        this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.dropdown = res.data
+      getDetailsData: function () {
+        let param={payId:this.payId}
+        this.$ajax.get('/api/payInfoRecord/getSKDetail',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.form.id=res.data.id
+            this.form.contId=res.data.cid
+            this.moneyTypeName=res.data.moneyName
+
+            let {moneyType,moneyTypePid,remark,amount,closingDate,employeeName,employeeId,objName,objType}=res.data
+            Object.assign(this.form,{moneyType,moneyTypePid,remark,amount,closingDate:this.$tool.timeFormat(closingDate),employeeName,employeeId,objName,objType:objType.value})
+
+            if(objType.value===3){//自定义收款对象
+              this.inputPerson=true
+            }
           }
         })
       },
@@ -321,6 +337,8 @@
               obj.objName = tip.custName
               if (item === 3) {//表示收付对象选择其他项
                 this.inputPerson = true
+                // obj.objName = this.form.objName
+                // this.form.objName
               } else {
                 this.inputPerson = false
               }

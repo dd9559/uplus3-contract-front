@@ -7,7 +7,7 @@ let TOOL = {
       id: 1,
       name: "二手房",
       category: "1",
-      icon: "icon-huaban",
+      icon: "icon-ershoufang",
       can:true,//是否可见
       child:[
         {
@@ -171,7 +171,7 @@ let TOOL = {
       name: "新房",
       category: "2",
       can:true,//是否可见
-      icon: "icon-huaban1",
+      icon: "icon-xinfang",
       child:[
         {
           name: "合同",
@@ -208,7 +208,7 @@ let TOOL = {
       name: "长租",
       category: "3",
       can:true,//是否可见
-      icon: "icon-huaban4",
+      icon: "icon-changzu",
       child:[
         {
           name: "合同",
@@ -245,7 +245,7 @@ let TOOL = {
       name: "金融",
       category: "4",
       can:true,//是否可见
-      icon: "icon-huaban2",
+      icon: "icon-jinrong",
       child:[
         {
           name: "合同",
@@ -352,18 +352,11 @@ let TOOL = {
     {
       id: 6,
       name: "操作日志",
-      category: "6",
+      category: "operationLog",
       can:true,//是否可见
-      icon: "icon-huaban3",
-      child: [
-        {
-          name:"操作日志",
-          category:"6-1",
-          can:true,//是否可见
-          path: "operationLog",
-          code: "sign-ht-js-query"
-        }
-      ]
+      icon: "icon-caozuorizhi",
+      code: "sign-ht-js-query",
+      child:[]
     }
   ], //侧边栏导航
   closeOnClickModal: false,
@@ -725,7 +718,7 @@ let TOOL = {
         : `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
     }
   },
-  timeFormat: function (val) {
+  timeFormat: function (val,second=true) {
     if (!val) {
       return "--";
     } else {
@@ -736,9 +729,15 @@ let TOOL = {
       let h = time.getHours();
       let m = time.getMinutes();
       let s = time.getSeconds();
-      return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
-        h > 9 ? h : "0" + h
-        }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+      if(second){
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+          h > 9 ? h : "0" + h
+          }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+      }else {
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+          h > 9 ? h : "0" + h
+          }:${m > 9 ? m : "0" + m}`;
+      }
     }
   },
   nullFormat: function (val,number) {

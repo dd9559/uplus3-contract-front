@@ -17,11 +17,6 @@ const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
-const commissionDialog = () => import('@/pages/setting/commissionDialog')
-// const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
-// const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
-// const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
-const conAttachment = () => import('@/pages/setting/conAttachment')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -149,20 +144,6 @@ export default new Router({
             list: ["设置", "后台设置","手续费设置"]
           }
         },
-        {
-          path: "commissionDialog",
-          component: commissionDialog,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "conAttachment",
-          component: conAttachment,
-          meta: {
-            getParent: true
-          }
-        },
         //设置模块 end
         //操作模块 start
         {
@@ -170,7 +151,7 @@ export default new Router({
           component: operationLog,
           meta: {
             root: true,
-            list: ["操作日志", "操作日志"]
+            list: ["操作日志"]
           }
         },
         //操作模块 end
@@ -221,7 +202,7 @@ export default new Router({
           component: receiptCheck,
           meta: {
             root: true,
-            list: ["二手房","财务", "收款审核"]
+            list: ["财务", "收款审核"]
           }
         },
         // 业绩板块
@@ -363,7 +344,7 @@ export default new Router({
           component: contractList,
           meta: {
             root: true,
-            list: ["合同", "合同列表"]
+            list: ["二手房","合同", "合同列表"]
           }
         },
         // 签后
@@ -415,10 +396,6 @@ export default new Router({
             list: ["二手房","合同", "合同审核"]
           }
         },
-        {
-          path: "login",
-          component: Login
-        },
         //分账/打款详情
         {
           path: "routingRemitDetail",
@@ -453,5 +430,10 @@ export default new Router({
           component: otherContractDetail,
         },
       ]
-    }]
+    },
+    {
+      path: "/login",
+      component: Login
+    },
+  ]
 });

@@ -200,7 +200,7 @@
             <label>付款凭证:</label>
             <ul class="image-list" v-if="files.length>0">
               <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
-                <img :src="preloadFiles[index]" alt="" v-if="isPictureFile(item.type)" width="70%">
+                <img :src="item.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(item.type)" width="70%">
                 <upload-cell :type="item.type" v-else></upload-cell>
                 <el-tooltip :content="item.name" placement="top">
                   <p class="span">{{item.name}}</p>
@@ -597,6 +597,20 @@
           return val===0?0:'-'
         }else {
           return val
+        }
+      },
+      /**
+       * 过滤显示图片缩略图
+       * @param val后端返回的所有文件资源遍历的当前项
+       * @param list图片资源获取签名后的临时数组
+       */
+      getSignImage(val,list){
+        if(list.length===0){
+          return '';
+        }else {
+          return list.find(item=>{
+            return item.includes(val)
+          })
         }
       }
     }
