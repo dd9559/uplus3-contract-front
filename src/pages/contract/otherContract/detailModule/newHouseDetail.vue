@@ -1,0 +1,376 @@
+<template>
+  <div class="firstDetail">
+    <div class="msg">
+      <div class="title">合同信息</div>
+      <div class="content">
+        <div class="one_">
+          <p style="position:relative;">
+            <span class="tag">合同编号：</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.code}}
+              </div>
+            </el-tooltip>
+          </p>
+          <p style="position:relative;">
+            <span class="tag">纸质合同编号：</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.pCode?getDetail.pCode:"-"}}
+              </div>
+            </el-tooltip>
+          </p>
+          <p>
+            <span class="tag">签约日期：</span>
+            <span class="text">{{getDetail.signDate|timeFormat_}}</span>
+          </p>
+          <p>
+            <span class="tag">项目名称：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.projectName}}</span>
+          </p>
+        </div>
+        <div class="one_">
+          <p>
+            <span class="tag">成交总价：</span>
+            <span class="text">{{getDetail.dealPrice}} 元</span>
+          </p>
+          <p>
+            <span class="tag">应收佣金：</span>
+            <span class="text">{{getDetail.receivableCommission}} 元</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="title">房源信息</div>
+      <div class="content">
+        <div class="one_">
+          <p style="width:1000px">
+            <span class="tag">产权地址：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.propertyRightAddr}}</span>
+          </p>
+        </div>
+        <div class="one_">
+          <p>
+            <span class="tag">建筑面积：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.square?`${getDetail.contractInfo.square} m²`:"-"}}</span>
+          </p>
+          <p>
+            <span class="tag">户型：</span>
+            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.houseType}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="title">客源信息</div>
+      <div class="content">
+        <div class="one_">
+          <p>
+            <span class="tag">客源编号：</span>
+            <span class="serialNumber">{{getDetail.guestinfoCode}}</span>
+          </p>
+        </div>
+        <div class="table" v-if="getDetail.contractInfo">
+          <el-table :data="getDetail.contractInfo.customerList" border header-row-class-name="theader-bg">
+            <el-table-column prop="name" label="客户姓名"></el-table-column>
+            <el-table-column label="电话">
+              <template slot-scope="scope">
+                {{scope.row.encryptionMobile}}
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+              </template>
+            </el-table-column>
+            <el-table-column prop="relation" label="关系">
+            </el-table-column>
+            <el-table-column min-width="150" label="证件号码">
+              <template slot-scope="scope">
+                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.cardCode}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="title">签约信息</div>
+      <div class="content">
+        <div class="one_">
+          <p>
+            <span class="tag">成交经纪人：</span>
+            <span class="text">{{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}</span>
+          </p>
+          <p>
+            <span class="tag">店长：</span>
+            <span class="text">{{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}</span>
+          </p>
+        </div>
+        <div class="one_">
+          <p>
+            <span class="tag">合作方：</span>
+            <span class="text">{{getDetail.cooperationName?getDetail.cooperationName:"-"}}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="msg">
+      <div class="title">店佣信息</div>
+      <div class="content">
+        <div class="table">
+          <el-table :data="getStoreList" border header-row-class-name="theader-bg" style="width:500px">
+            <el-table-column label="返店佣金" min-width="120">
+              <template slot-scope="scope">
+                {{scope.row.amount}}元
+              </template>
+            </el-table-column>
+            <el-table-column label="结款时间" min-width="150">
+              <template slot-scope="scope">
+                {{scope.row.closingDate|formatTime}}
+              </template>
+            </el-table-column>
+            <el-table-column min-width="100" label="收款人">
+              <template slot-scope="scope">
+                {{scope.row.employeeName}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+    </div>
+    <!-- 拨号弹出框 -->
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div>
+        <div class="icon">
+          <i class="el-icon-success"></i>
+        </div>
+        <div class="text">
+          <p>号码绑定成功！ </p>
+          <p>请拨打此号码 {{callNumber}} 联系客户</p>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+           
+<script>
+import { MIXINS } from "@/assets/js/mixins";
+export default {
+  mixins: [MIXINS],
+  props:{
+    detail:{
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    storeList:{
+      type: Array,
+      default() {
+        return []
+      }
+    },
+  },
+  data(){
+    return{
+      clientHei:'',
+      callNumber: "",
+      dialogVisible: false,
+      canCall:true,
+      power:{
+        'sign-ht-xq-ly-wmemo': {
+          state: false,
+          name: '添加录音备注'
+        },
+        'sign-ht-xq-ly-call': {
+          state: false,
+          name: '拨打电话'
+        },
+        'sign-ht-xq-ly-play': {
+          state: false,
+          name: '听取录音'
+        },
+        'sign-ht-xq-ly-vmemo': {
+          state: false,
+          name: '查看备注'
+        },
+      },
+    }
+  },
+  created () {
+    this.getAdmin();//获取当前登录人信息
+  },
+  methods:{
+    //打电话
+    call(value,index,type) {
+      let guestData=this.detail.contractInfo.customerList
+      var nowTime = (new Date()).getTime();
+      var param = {
+        plateType:1,
+        id:value.pid,
+        contractCode:detail.code,
+        sourceType:1,
+        calledMobile:value.mobile,
+        calledName:value.name
+      };
+      if(type==='guest'){
+        if(guestData[index].time){
+          let oldTime = (nowTime-guestData[index].time);
+          if(oldTime<300000){
+            this.callNumber=guestData[index].virtualNum;
+            this.dialogVisible = true;
+          }else{
+            guestData[index].time=nowTime;
+            this.getVirtualNum(param,index,type);
+          }
+        }else{
+          guestData[index].time=nowTime;
+          this.getVirtualNum(param,index,type);
+        }
+        // console.log(guestData,this.detail.contractInfo.customerList)
+      }
+    },
+    //生成虚拟号码
+    getVirtualNum(param,index,type){
+      let guestData=this.detail.contractInfo.customerList
+      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+        this.canCall=true;
+        res=res.data;
+        if(res.status===200){
+          if(type==='guest'){
+            guestData[index].virtualNum=res.data.virtualNum
+          }
+          this.callNumber=res.data.virtualNum;
+          this.dialogVisible = true;
+        }
+      }).catch(error=>{
+         if(type==='guest'){
+          guestData[index].time=''
+        }
+        this.canCall=true;
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      })
+    },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
+  },
+  computed: {
+    getDetail: function() {
+      return this.detail;
+    },
+    getStoreList: function() {
+      return this.storeList;
+    },
+  }
+};
+</script>
+<style scoped lang="less">
+@import "~@/assets/common.less";
+.contractDetailCode{
+  position: absolute;
+  left: 100px;
+  top:50%;
+  transform: translateY(-50%);
+  width: 150px;
+  display: inline-block;
+  box-sizing: border-box;
+  color: @color-blue;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+.msg {
+  border-bottom: 1px solid @border-ED;
+  display: flex;
+  padding: 20px 0 20px 0;
+  .title {
+    width: 70px;
+    font-weight: bold;
+    color: @color-blank;
+    white-space: nowrap;
+  }
+  .content {
+    .one_ {
+      margin-bottom: 10px;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+      > p {
+        width: 270px;
+        display: inline-block;
+        .tag {
+          display: inline-block;
+          width: 100px;
+          text-align: right;
+          color: @color-6c;
+        }
+        .text {
+          color: @color-blank;
+        }
+        .dealPrice {
+          color: @color-yellow;
+        }
+        .serialNumber {
+          color: @color-blue;
+          font-weight: bold;
+        }
+      }
+      .address {
+        width: 600px;
+      }
+    }
+    .table {
+      padding: 10px 0;
+      width: 1050px;
+      /deep/ .theader-bg {
+        > th {
+          background-color: @bg-th;
+        }
+      }
+      i {
+        font-size: 20px;
+        padding-left: 5px;
+        color: #54d384;
+        cursor: pointer;
+      }
+      > p {
+        color: @color-6c;
+        padding-bottom: 10px;
+      }
+    }
+  }
+}
+/deep/.el-dialog__body {
+  .icon {
+    text-align: center;
+    font-size: 50px;
+    padding-bottom: 15px;
+    padding-top: 25px;
+    color: #54d384;
+  }
+  .text {
+    text-align: center;
+    padding-bottom: 30px;
+    p {
+      line-height: 30px;
+    }
+  }
+}
+</style>

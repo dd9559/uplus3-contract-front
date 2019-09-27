@@ -4,62 +4,68 @@
       <template slot-scope="scope">
         <ul class="contract-msglist">
           <li>合同：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
-          <li>纸质合同编号：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.pCode}}</span></li>
+          <li v-if="scope.row.pCode">纸质合同编号：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.pCode}}</span></li>
         </ul>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="项目类型" prop="contType.label" min-width="100">
-    </el-table-column>
-
-    <el-table-column align="center" label="放款日期" prop="recordType.label" min-width="100">
-    </el-table-column>
-
-    <el-table-column align="center" label="放款金额(元)" prop="dealPrice" min-width="90">
+    <el-table-column align="center" label="项目类型" min-width="120" show-overflow-tooltip>
       <template slot-scope="scope">
-        <span>{{scope.row.dealPrice}}元</span>
+        <span>{{scope.row.contractInfo.projectType?scope.row.contractInfo.projectType:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="期限开始时间" prop="recordType.label" min-width="100">
+    <el-table-column align="center" label="放款日期" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.loanDate}}</span>
+      </template>
     </el-table-column>
 
-    <el-table-column align="center" label="期限结束时间" prop="recordType.label" min-width="100">
+    <el-table-column align="center" label="放款金额(元)" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.loanAmount}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="期限开始时间" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.termStart?scope.row.contractInfo.termStart:'-'}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="期限结束时间" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.termEnd?scope.row.contractInfo.termEnd:'-'}}</span>
+      </template>
     </el-table-column>
 
     <el-table-column align="center" label="收入金额(元)" min-width="100">
       <template slot-scope="scope">
-        <span>{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</span>
+        <span>{{scope.row.contractInfo.incomeAmount}}</span>
       </template>
     </el-table-column>
 
     <el-table-column align="center" label="金融成本比例" min-width="100">
       <template slot-scope="scope">
-        <span>-</span>
+        <span>{{scope.row.contractInfo.financeCostRatio}}</span>
       </template>
     </el-table-column>
 
     <el-table-column align="center" label="金融成本(元)" min-width="100">
       <template slot-scope="scope">
-        <span>-</span>
+        <span>{{scope.row.contractInfo.financeCost}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="实收佣金(元)" min-width="100">
-      <template slot-scope="scope">
-        <span>-</span>
-      </template>
+    <el-table-column align="center" label="实收佣金(元)" prop="receivedCommission" min-width="100">
     </el-table-column>
     <el-table-column align="center" label="杂费(元)" min-width="80">
       <template slot-scope="scope">
-        <span>-</span>
+        <span>{{scope.row.contractInfo.sundryAmount?scope.row.contractInfo.sundryAmount:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="收佣状态" min-width="80">
-      <template slot-scope="scope">
-        <span>-</span>
-      </template>
+    <el-table-column align="center" label="收佣状态" prop="receiveAmountState.label" min-width="80">
     </el-table-column>
 
     <el-table-column align="center" label="财务收款" min-width="80">
@@ -68,68 +74,62 @@
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="金融专员" min-width="120">
+    <el-table-column align="center" label="金融专员" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.financeCommissioner?scope.row.contractInfo.financeCommissioner:'-'}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="经办人" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.transactor?scope.row.contractInfo.transactor:'-'}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="受理人" min-width="100">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractInfo.acceptor?scope.row.contractInfo.acceptor:'-'}}</span>
+      </template>
+    </el-table-column>
+
+    <el-table-column align="center" label="成交经纪人" min-width="100">
       <template slot-scope="scope">
         <p>{{scope.row.dealAgentStoreName}}</p>
         <p>{{scope.row.dealAgentName}}</p>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="经办人" min-width="120">
+    <el-table-column align="center" label="店长" min-width="100">
       <template slot-scope="scope">
-        <p>{{scope.row.dealAgentStoreName}}</p>
-        <p>{{scope.row.dealAgentName}}</p>
+        <p>{{scope.row.shopOwnerStoreName}}</p>
+        <p>{{scope.row.shopOwnerName}}</p>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="受理人" min-width="120">
+    <el-table-column align="center" label="岗位名称" min-width="100">
       <template slot-scope="scope">
-        <p>{{scope.row.dealAgentStoreName}}</p>
-        <p>{{scope.row.dealAgentName}}</p>
+        <span>{{scope.row.contractInfo.positionName?scope.row.contractInfo.positionName:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="成交经纪人" min-width="120">
+    <el-table-column align="center" label="客户姓名" min-width="100">
       <template slot-scope="scope">
-        <p>{{scope.row.dealAgentStoreName}}</p>
-        <p>{{scope.row.dealAgentName}}</p>
+        <span>{{scope.row.contractInfo.customerName}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="店长" min-width="80">
+    <el-table-column align="center" label="所属区域" min-width="100">
       <template slot-scope="scope">
-          <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
-          <span v-else>-</span>
+        <span>{{scope.row.contractInfo.customerArea}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="岗位名称" min-width="70">
-      <template slot-scope="scope">
-        <span>{{scope.row.contState.label}}</span>
-      </template>
+    <el-table-column align="center" prop="houseinfoCode" label="房源编号" min-width="130">
     </el-table-column>
 
-    <el-table-column align="center" label="客户姓名" min-width="70">
+    <el-table-column align="center" label="产权地址" min-width="150" show-overflow-tooltip>
       <template slot-scope="scope">
-        <span>{{scope.row.contState.label}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column align="center" label="所属区域">
-      <template slot-scope="scope">
-        <span>{{scope.row.printCount}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column align="center" label="房源编号">
-      <template slot-scope="scope">
-        <span>{{scope.row.printCount}}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column align="center" label="产权地址">
-      <template slot-scope="scope">
-        <span>{{scope.row.printCount}}</span>
+        <span>{{scope.row.contractInfo.propertyRightAddr}}</span>
       </template>
     </el-table-column>
   </el-table>
@@ -150,10 +150,27 @@ export default{
     gathering(val){
       this.$emit('getMoney',val)
     },
-    toDetail(){
-
+    toDetail(val){
+      this.$emit('goDetail',val)
     },
-  }             
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
+  }
 }
 </script>
 <style scoped lang="less">
@@ -166,5 +183,9 @@ export default{
       cursor: pointer;
     }
   }
-}   
+}  
+.btn{
+  color: @color-blue;
+  cursor: pointer;
+}  
 </style>

@@ -1,16 +1,16 @@
 <template>
   <div>
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
           <el-form-item label="签约日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker>
+            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker>
           </el-form-item>
           <el-form-item label="交易方式：" class="form-label" style="width:290px;text-align:right;">
-            <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
-              <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
+            <el-select v-model="contractForm.transMode" placeholder="全部" :clearable="true" style="width:150px">
+              <el-option v-for="item in dictionary['716']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
           </el-form-item>
@@ -33,9 +33,9 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.houseinfoCode" maxlength="20" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice">
           </el-form-item>
-          <span class="select">请选择房源</span>
+          <span class="select" @click="showDialog('house')">请选择房源</span>
           <br>
           <el-form-item label="物业地址：" class="form-label" style="width:750px;text-align:right">
             <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
@@ -45,12 +45,11 @@
           <br>
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in ownerList" :key="index" v-if="item.type===1">
+              <li v-for="(item,index) in ownerList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.encryptionMobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
-                 <!-- :disabled="type===2&&!item.edit?true:false" -->
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
                   </el-option>
@@ -59,8 +58,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                 <!-- :class="{'disabled':type===2&&!item.edit}" -->
-                <input v-model="item.encryptionCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input v-model="item.cardCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData('owner')" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -73,20 +71,20 @@
         </div>
       </div>
       <!-- 客源信息 -->
-      <div class="houseMsg">
+      <div class="houseMsg" v-if="contractForm.transMode!==1">
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.guestinfoCode" maxlength="20" @input="inputCode('guestinfoCode')" placeholder="请输入内容" class="dealPrice">
           </el-form-item>
-          <span class="select">请选择客源</span>
+          <span class="select" @click="showDialog('guest')">请选择客源</span>
           <br>
           <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
             <ul class="peopleMsg">
-              <li v-for="(item,index) in guestList" :key="index" v-if="item.type===2">
+              <li v-for="(item,index) in guestList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
-                  <input v-model="item.mobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.encryptionMobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -96,7 +94,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <input id="guestCard" v-model="item.encryptionCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input id="guestCard" v-model="item.cardCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData('guest')" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -112,21 +110,65 @@
       <div class="houseMsg">
         <p>签约信息</p>
         <div class="form-content">
-          <el-form-item label="成交经纪人：" class="form-label" style="width:333px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
+          <el-form-item label="成交经纪人：" class="form-label" style="width:355px;text-align:right">
+            <el-select
+              style="width:100px"
+              v-model="contractForm.dealAgentId"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入"
+              @change="selectOption($event,'agent')"
+              :remote-method="(val)=>remoteMethod(val,'agent')">
+              <el-option
+                v-for="item in options"
+                :key="item.empId"
+                :label="item.empName"
+                :value="item.empId">
+                <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
+              </el-option>
+            </el-select>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
           </el-form-item>
           <el-form-item label="店长：" class="form-label" style="width:300px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
+            <el-select
+              style="width:100px"
+              v-model="contractForm.shopOwnerId"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入"
+              @change="selectOption($event,'owner')"
+              :remote-method="(val)=>remoteMethod(val,'owner')">
+              <el-option
+                v-for="item in options_"
+                :key="item.empId"
+                :label="item.empName"
+                :value="item.empId">
+                <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
+              </el-option>
+            </el-select>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
           </el-form-item>
           <br>
-          <el-form-item label="合作方：" class="form-label" style="width:330px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:200px" /> 
+          <el-form-item label="合作方：" style="width:330px;text-align:right">
+            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly('cooperationName')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
         </div>
       </div>
     </el-form>
+    <div class="btn">
+      <div>
+        <div v-if="getOperationType===2">
+          <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
+          <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
+          <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
+        </div>
+      </div>
+      <div>
+        <el-button type="primary" round @click="toSave" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button>
+      </div>
+    </div>
     <!-- 删除人员确认框 -->
     <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <span>确定删除当前联系人吗？</span>
@@ -135,20 +177,81 @@
         <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
       </span>
     </el-dialog>
+     <!-- 房源客源弹窗 -->
+    <houseGuest
+    :dialogType="dialogType"
+    :dialogVisible="isShowDialog"
+    :choseHcode="choseHcode"
+    :choseGcode="choseGcode"
+    @closeHouseGuest="closeHouseGuest"
+    v-if="isShowDialog">
+    </houseGuest>
   </div>
 </template>
            
 <script>
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
+import houseGuest from "../../contractDialog/houseGuest";
+
+const rule = {
+  signDate: {
+    name: "签约日期"
+  },
+  transMode:{
+    name:"交易方式"
+  },
+  dealPrice: {
+    name: "成交金额",
+    type: "money"
+  },
+  receivableCommission: {
+    name: "应收佣金",
+    type: "money"
+  },
+  houseinfoCode: {
+    name: "房源"
+  },
+  guestinfoCode: {
+    name: "客源"
+  },
+};
+
 export default {
   mixins: [MIXINS],
+  components: {
+    houseGuest
+  },
+  props:{
+    //操作类型  1 新增  2  编辑
+    operationType: {
+      type: Number,
+      default: 1
+    },
+    contId: {
+      type: Number,
+      default: ""
+    },
+  },
   data(){
     return{
+      clientHei:'',
       contractForm:{
-        houseInfo:{
-          Square:''
-        }
+        signDate: "",
+        transMode:"",
+        dealPrice:"",
+        receivableCommission:"",
+        houseinfoCode:"",
+        guestinfoCode:"",
+        dealAgentId:"",
+        dealAgentName:"",
+        dealAgentStoreId:"",
+        dealAgentStoreName:"",
+        shopOwnerId:"",
+        shopOwnerName:"",
+        shopOwnerStoreId:"",
+        shopOwnerStoreName:"",
+        cooperationName:""
       },
       rightAddrCity:'',
       rightAddrArea:'',
@@ -158,42 +261,177 @@ export default {
       //业主信息
       ownerList: [
         {
-          type: 1,
-          encryptionCode: "",
+          cardCode: "",
           mobile: "",
+          encryptionMobile: "",
           relation: "",
           cardType: "",
           name: "",
-          propertyRightRatio: ""
         }
       ],
+      ownerList_:[],
       //客户信息
       guestList: [
         {
-          type: 2,
-          encryptionCode: "",
+          cardCode: "",
           mobile: "",
+          encryptionMobile: "",
           relation: "",
           cardType: "",
           name: "",
-          propertyRightRatio: ""
         }
       ],
+      guestList_:[],
       delType:'',
       //删除客户确认框
       dialogDel:false,
       dictionary: {
         //数据字典
         "633":"",//证件类型(护照,身份证,营业执照)
-        "6":"",
+        "716":"",//交易方式
       },
+      //经纪人
+      options:[],
+      // 店长
+      options_:[],
+      //房客源弹窗
+      isShowDialog:false,
+      dialogType:"",
+      choseHcode:0,
+      choseGcode:0,
+      fullscreenLoading:false,//加载loading动画
     }
   },
   created () {
     this.getRelation();//人员关系
     this.getDictionary();//字典
+    if(this.operationType===1){
+      this.getNewData();//当前时间
+    }else{
+      this.getContractDetail()
+    }
   },
   methods:{
+    // 控制弹框body内容高度，超过显示滚动条
+    clientHeight() {
+      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+    },
+    //合同详情
+    getContractDetail(){
+      let param = {
+        id:this.contId
+      }
+      this.$ajax.get("/api/contractInfo/longLease/detail",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          let contractDetail=res.data
+          this.$set(contractDetail,"contractInfo",JSON.parse(contractDetail.contractInfo))
+          console.log(contractDetail.contractInfo)
+          delete contractDetail.code
+          delete contractDetail.cityId
+          delete contractDetail.dealAgentStoreSystemtag
+          delete contractDetail.receiveAmountState
+          delete contractDetail.recordDept
+          delete contractDetail.recordId
+          delete contractDetail.recordDeptSystemtag
+          delete contractDetail.tradeType
+          delete contractDetail.updateBy
+          delete contractDetail.updateName
+          delete contractDetail.receivedCommission
+          //签约日期
+          contractDetail.signDate= this.$options.filters['timeFormat_'](contractDetail.signDate)
+          //交易方式
+          contractDetail.transMode= contractDetail.contractInfo.transMode
+          //经纪人
+          let option = {
+            empId:contractDetail.dealAgentId,
+            empName:contractDetail.dealAgentName,
+            depId:contractDetail.dealAgentStoreId,
+            depName:contractDetail.dealAgentStoreName
+          }
+          this.options=[option]
+          // 店长
+          let option_ = {
+            empId:contractDetail.shopOwnerId,
+            empName:contractDetail.shopOwnerName,
+            depId:contractDetail.shopOwnerStoreId,
+            depName:contractDetail.shopOwnerStoreName
+          }
+          this.options_=[option_]
+          // 产权地址
+          let rightAddress = contractDetail.contractInfo.propertyAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.rightAddrDetail=rightAddress
+          }
+          // 房源信息
+          contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
+          this.ownerList=[];
+          for (var i = 0; i < contractDetail.contractInfo.ownerList.length; i++) {
+            let element = {
+              name:contractDetail.contractInfo.ownerList[i].name,
+              mobile:contractDetail.contractInfo.ownerList[i].mobile,
+              encryptionMobile:contractDetail.contractInfo.ownerList[i].encryptionMobile,
+              relation:contractDetail.contractInfo.ownerList[i].relation,
+              cardCode:contractDetail.contractInfo.ownerList[i].cardCode,
+              cardType:contractDetail.contractInfo.ownerList[i].cardType,
+              isEncryption:true
+            }
+            let obj = Object.assign({}, element);
+            this.ownerList.push(obj);
+            let obj_ = Object.assign({}, element);
+            this.ownerList_.push(obj_);
+          };
+          // 客源信息
+          contractDetail.guestInfo=contractDetail.contractInfo.guestInfo
+          this.guestList=[];
+          for (var i = 0; i < contractDetail.contractInfo.customerList.length; i++) {
+            let element = {
+              name:contractDetail.contractInfo.customerList[i].name,
+              mobile:contractDetail.contractInfo.customerList[i].mobile,
+              encryptionMobile:contractDetail.contractInfo.customerList[i].encryptionMobile,
+              relation:contractDetail.contractInfo.customerList[i].relation,
+              cardCode:contractDetail.contractInfo.customerList[i].cardCode,
+              cardType:contractDetail.contractInfo.customerList[i].cardType,
+              isEncryption:true
+            }
+            let obj = Object.assign({}, element);
+            this.guestList.push(obj);
+            let obj_ = Object.assign({}, element);
+            this.guestList_.push(obj_);
+          };
+          console.log(contractDetail)
+           delete contractDetail.contractInfo
+           this.contractForm=contractDetail
+        }
+      })
+    },
+    //获取当前日期
+    getNewData(){
+      let time = new Date()
+      let y = time.getFullYear()
+      let M = time.getMonth() + 1
+      let D = time.getDate()
+      let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+      this.contractForm.signDate=time_
+    },
     //获取所在城市的人员关系
     getRelation() {
       let param = {
@@ -211,15 +449,12 @@ export default {
       if(type==="owner"){
         if (this.guestList.length < 4) {
           this.guestList.push({
-            edit: true,
-            type: 2,
-            encryptionCode: "",
+            cardCode: "",
             mobile: "",
             encryptionMobile:"",
             relation: "",
             cardType: "",
             name: "",
-            propertyRightRatio: ""
           });
         } else {
           this.$message({
@@ -230,15 +465,12 @@ export default {
       }else{
         if (this.ownerList.length < 4) {
           this.ownerList.push({
-            edit: true,
-            type: 1,
-            encryptionCode: "",
+            cardCode: "",
             mobile: "",
             encryptionMobile:"",
             relation: "",
             cardType: "",
             name: "",
-            propertyRightRatio: ""
           });
         } else {
           this.$message({
@@ -266,14 +498,131 @@ export default {
         this.dialogDel=false;
       }
     },
+    //证件类型切换
+    changeCadrType(value,index,type){
+      if(type==="guest"){
+        this.guestList[index].cardCode=''
+      }else{
+        this.ownerList[index].cardCode=''
+      }
+    },
+     //房源客源弹窗
+    showDialog(value) {
+      this.isShowDialog = true;
+      this.dialogType = value;
+    },
+    //关闭房源客源弹窗
+    closeHouseGuest(value) {
+      if (value) {//判断是否点击的确认按钮
+        if (value.dialogType === "house") {
+          if(this.choseHcode&&this.choseHcode!==value.selectCode){
+            this.contractForm.propertyRightAddr=''
+          }
+          this.isShowDialog = false;
+          this.getHouseDetail(value.selectCode);
+          this.choseHcode=value.selectCode;
+        } else if (value.dialogType === "guest") {
+          this.isShowDialog = false;
+          this.getGuestDetail(value.selectCode);
+          this.choseGcode=value.selectCode;
+        }
+      } else {
+        this.isShowDialog = false;
+      }
+    },
+     //根据房源id获取房源信息
+    getHouseDetail(id) {
+      let param = {
+        houseId: id,
+      };
+      this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let houseMsg = res.data;
+          this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          this.contractForm.houseInfo = houseMsg;
+          //重新选择房源时清空产权地址
+          this.rightAddrCity='';
+          this.rightAddrArea='';
+          this.rightAddrDetail='';
+          if(houseMsg.OwnerInfoList.length>0){
+            this.ownerList=[];
+            this.ownerList_=[];
+            houseMsg.OwnerInfoList.forEach(element => {
+              element.cardCode='';
+              element.name=element.OwnerName;
+              element.mobile=element.OwnerMobile;
+              element.relation=element.Relation;
+              element.cardType='';
+              element.isEncryption=true;
+              delete element.OwnerName
+              delete element.OwnerMobile
+              delete element.Relation
+              let obj = Object.assign({}, element);
+              obj.encryptionMobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.ownerList.push(obj);
+              let obj_ = Object.assign({}, element);
+              this.ownerList_.push(obj_);
+            });
+          }
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      });
+    },
+     //根据客源id获取客源信息
+    getGuestDetail(id) {
+      let param = {
+        customerId: id,
+      };
+      this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let guestMsg = res.data;
+          this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
+          this.contractForm.guestInfo = guestMsg;
+          if(guestMsg.OwnerInfo.length>0){
+            this.guestList=[];
+            this.guestList_=[];
+            guestMsg.OwnerInfo.forEach(element => {
+              element.cardCode='';
+              element.name=element.CustName;
+              element.mobile=element.CustMobile;
+              element.relation=element.CustRelation;
+              element.cardType='';
+              element.isEncryption=true;
+              delete element.CustName
+              delete element.CustMobile
+              delete element.CustRelation
+              let obj = Object.assign({}, element);
+              obj.encryptionMobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+              this.guestList.push(obj);
+              let obj_ = Object.assign({}, element);
+              this.guestList_.push(obj_);
+            });
+          }
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      });
+    },
     //纸质合同编号限制
     inputCode(type){
       let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
       if(this.contractForm.pCode&&type==="pCode"){
         this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
       }
-      if(this.contractForm.project&&type==="project"){
-        this.contractForm.project=this.contractForm.project.replace(/\s+/g,"").replace(addrReg,'')
+      if(this.contractForm.houseinfoCode&&type==="houseinfoCode"){
+        this.contractForm.houseinfoCode=this.contractForm.houseinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+      }
+      if(this.contractForm.guestinfoCode&&type==="guestinfoCode"){
+        this.contractForm.guestinfoCode=this.contractForm.guestinfoCode.replace(/\s+/g,"").replace(addrReg,'')
       }
     },
     //数字金额限制
@@ -286,10 +635,6 @@ export default {
         this.$nextTick(()=>{
           this.contractForm.receivableCommission=this.$tool.cutFloat({val:this.contractForm.receivableCommission,max:999999999.99})
         })
-      }else if(val==="Square"){
-        this.$nextTick(()=>{
-          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999.99})
-        })
       }
     },
     //产权地址限制
@@ -301,6 +646,25 @@ export default {
         this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace(/\//g,'')
       }else{
         this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
+      }
+    },
+    //姓名限制
+    inputOnly(index,type){if(type==='guest'){
+        this.guestList[index].name=this.$tool.textInput(this.guestList[index].name)
+      }else if(type==="owner"){
+        this.ownerList[index].name=this.$tool.textInput(this.ownerList[index].name)
+      }else if(type==='cooperationName'){
+        this.contractForm.cooperationName=this.$tool.textInput(this.contractForm.cooperationName)
+      }
+    },
+    //存贮改变之前的手机号
+    saveMobile(item,index,type){
+      if(item.isEncryption){
+        if(type==="owner"){
+          this.beforeChangeMobile= this.ownerList[index].encryptionMobile;
+        }else if(type==="guest"){
+          this.beforeChangeMobile=this.guestList[index].encryptionMobile;
+        }
       }
     },
     //手机号验证
@@ -339,7 +703,488 @@ export default {
         }
       }
     },
-  }
+    //身份证验证
+    verifyIdcard(value,type=1){
+      if(type===2){
+        if(value.length===18){
+          if (!this.isIdCardNo(value)) {
+            this.$message({
+              message:'身份证格式不正确',
+              type: "warning"
+            })
+          }
+        }
+      }else{
+        if(value.cardCode.length===18){
+          if (!this.isIdCardNo(value.cardCode)&&value.cardType===1) {
+            this.$message({
+              message:'身份证格式不正确',
+              type: "warning"
+            })
+          }
+        }
+      }
+    },
+    isIdCardNo(num) {
+      num = num.toUpperCase();
+      //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
+      if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
+          // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
+          return false;
+      }
+      //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+      //下面分别分析出生日期和校验位
+      var len, re;
+      len = num.length;
+      if (len == 15) {
+          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确
+          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //将15位身份证转成18位
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+              var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              var nTemp = 0, i;
+              num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
+              for (i = 0; i < 17; i++) {
+                  nTemp += num.substr(i, 1) * arrInt[i];
+              }
+              num += arrCh[nTemp % 11];
+              return true;
+          }
+      }
+      if (len == 18) {
+          re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
+          var arrSplit = num.match(re);
+          //检查生日日期是否正确
+          var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
+          var bGoodDay;
+          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2]))
+                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
+                      && (dtmBirth.getDate() == Number(arrSplit[4]));
+          if (!bGoodDay) {
+              // alert(dtmBirth.getYear());
+              // alert(arrSplit[2]);
+              // alert('输入的身份证号里出生日期不对！');
+              return false;
+          } else {
+              //检验18位身份证的校验码是否正确。
+              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+              // var valnum;
+              // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+              // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+              // var nTemp = 0, i;
+              // for (i = 0; i < 17; i++) {
+              //     nTemp += num.substr(i, 1) * arrInt[i];
+              // }
+              // valnum = arrCh[nTemp % 11];
+              // if (valnum != num.substr(17, 1)) {
+              //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
+              //     return false;
+              // }
+              return true;
+          }
+      }
+      return false;
+    },
+    //经纪人店长查询
+    remoteMethod(keyword,type){
+      if(keyword!==''){
+        let param = {
+          type:type==="agent"?1:2,
+          name:keyword
+        }
+        this.$ajax.get('/api/contractInfo/getEmpDeptInfo',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(type==="agent"){
+              this.options=res.data
+            }else{
+              this.options_=res.data
+            }
+          }
+        })
+      }
+    },
+    //经纪人所属门店
+    selectOption(val,type){
+      if(type==="agent"){
+        if(this.options.length>0&&val){
+          this.options.forEach(element => {
+            if(element.empId==val){
+              this.contractForm.dealAgentName=element.empName
+              this.contractForm.dealAgentStoreId=element.depId
+              this.contractForm.dealAgentStoreName=element.depName
+            }
+          });
+        }
+      }else{
+        if(this.options_.length>0&&val){
+          this.options_.forEach(element => {
+            if(element.empId==val){
+              this.contractForm.shopOwnerName=element.empName
+              this.contractForm.shopOwnerStoreId=element.depId
+              this.contractForm.shopOwnerStoreName=element.depName
+            }
+          });
+        }
+      }
+    },
+    //保存合同
+    toSave(){
+      var rule_ = JSON.parse(JSON.stringify(rule))
+      if(!this.contractForm.signDate){
+        this.contractForm.signDate=''
+      }
+      if(!this.contractForm.transMode){
+        this.contractForm.transMode=''
+      }
+      if(this.contractForm.transMode===1){
+        delete rule_.guestinfoCode
+      }
+      this.$tool.checkForm(this.contractForm, rule_).then(() => {
+        //产权地址
+        if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
+          this.contractForm.propertyAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
+          //业主信息
+            let isOk
+            let ownerArr = this.ownerList.map(item=>Object.assign({},item));
+            ownerArr.forEach((element,index) => {
+              if(element.isEncryption){//没编辑过手机号
+                element.mobile=this.ownerList_[index].mobile
+              }else{//编辑过手机号
+                element.mobile=element.encryptionMobile;
+              }
+            });
+            for(var i=0;i<ownerArr.length;i++){
+              let element = ownerArr[i];
+              isOk = false;
+              //客户姓名
+              if (element.name) {
+                if(element.name.replace(/\s/g,"")){
+                  element.name=element.name.replace(/\s/g,"");
+                  if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
+                    // 电话号码
+                    if (element.mobile.length === 11) {
+                    let reg = /^1[0-9]{10}$/;//手机号正则
+                    let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                    if (reg.test(element.mobile)||reg_.test(element.mobile)) {
+                      // 人员关系
+                      if (element.relation) {
+                        // 证件类型
+                        if(element.cardType){
+                          // 证件号码
+                          if (element.cardCode.replace(/\s/g,"")) {
+                            if(element.cardType!==1){
+                              element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                            }
+                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)) {
+                              isOk = true;
+                            }else{
+                              this.$message({
+                                message: "房源信息-业主证件号不正确",
+                                type: "warning"
+                              });
+                              break
+                            }
+                          } else {
+                            this.$message({
+                              message: "房源信息-业主证件号不能为空",
+                              type: "warning"
+                            });
+                            break
+                          }
+                      }else {
+                        this.$message({
+                          message: "房源信息-业主证件类型不能为空",
+                          type: "warning"
+                        });
+                        break
+                      }
+                    } else {
+                      this.$message({
+                        message: "房源信息-业主关系不能为空",
+                        type: "warning"
+                      });
+                      break
+                    }
+                    }else{
+                      this.$message({
+                        message: "房源信息-业主电话号码不正确",
+                        type: "warning"
+                      });
+                      break
+                    }
+                  } else {
+                    this.$message({
+                      message: "房源信息-业主电话号码不正确",
+                      type: "warning"
+                    });
+                    break
+                  }
+                } else {
+                  this.$message({
+                    message: "房源信息-业主姓名不正确",
+                    type: "warning"
+                  });
+                  break
+                }
+                }else{
+                  this.$message({
+                    message: "房源信息-业主姓名不能为空",
+                    type: "warning"
+                  });
+                  break
+                }
+              } else {
+                this.$message({
+                  message: "房源信息-客户姓名不能为空",
+                  type: "warning"
+                });
+                break
+              }
+            };
+            if(isOk){
+              let isOk_
+              if(this.contractForm.transMode===2){
+                //客户信息
+                let guestArr = this.guestList.map(item=>Object.assign({},item));
+                guestArr.forEach((element,index) => {
+                  if(element.isEncryption){//没编辑过手机号
+                    element.mobile=this.guestList_[index].mobile
+                  }else{//编辑过手机号
+                    element.mobile=element.encryptionMobile;
+                  }
+                });
+                for(var i=0;i<guestArr.length;i++){
+                  let element = guestArr[i];
+                  isOk = false;
+                  //客户姓名
+                  if (element.name) {
+                    if(element.name.replace(/\s/g,"")){
+                      element.name=element.name.replace(/\s/g,"");
+                      if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
+                        // 电话号码
+                        if (element.mobile.length === 11) {
+                        let reg = /^1[0-9]{10}$/;//手机号正则
+                        let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                        if (reg.test(element.mobile)||reg_.test(element.mobile)) {
+                          // 人员关系
+                          if (element.relation) {
+                            // 证件类型
+                            if(element.cardType){
+                              // 证件号码
+                              if (element.cardCode.replace(/\s/g,"")) {
+                                if(element.cardType!==1){
+                                  element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                                }
+                                if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)) {
+                                  isOk_ = true;
+                                }else{
+                                  this.$message({
+                                    message: "客源信息-客户证件号不正确",
+                                    type: "warning"
+                                  });
+                                  break
+                                }
+                              } else {
+                                this.$message({
+                                  message: "客源信息-客户证件号不能为空",
+                                  type: "warning"
+                                });
+                                break
+                              }
+                          }else {
+                            this.$message({
+                              message: "客源信息-客户证件类型不能为空",
+                              type: "warning"
+                            });
+                            break
+                          }
+                        } else {
+                          this.$message({
+                            message: "客源信息-客户关系不能为空",
+                            type: "warning"
+                          });
+                          break
+                        }
+                        }else{
+                          this.$message({
+                            message: "客源信息-客户电话号码不正确",
+                            type: "warning"
+                          });
+                          break
+                        }
+                      } else {
+                        this.$message({
+                          message: "客源信息-客户电话号码不正确",
+                          type: "warning"
+                        });
+                        break
+                      }
+                    } else {
+                      this.$message({
+                        message: "客源信息-客户姓名不正确",
+                        type: "warning"
+                      });
+                      break
+                    }
+                    }else{
+                      this.$message({
+                        message: "客源信息-客户姓名不能为空",
+                        type: "warning"
+                      });
+                      break
+                    }
+                  } else {
+                    this.$message({
+                      message: "客源信息-客户姓名不能为空",
+                      type: "warning"
+                    });
+                    break
+                  }
+                };
+              }
+              if(isOk_||this.contractForm.transMode===1){
+                //经纪人
+                if(this.contractForm.dealAgentId){
+                  // 店长
+                  if(this.contractForm.shopOwnerId){
+                    this.postContractForm()
+                  }else{
+                    this.$message({
+                      message:'签约信息-店长不能为空',
+                      type: "warning"
+                    })
+                  }
+                }else{
+                  this.$message({
+                    message:'签约信息-成交经纪人不能为空',
+                    type: "warning"
+                  })
+                }
+              }
+            }
+        }else{
+          this.$message({
+            message:'房源信息-物业地址未填写完整',
+            type: "warning"
+          })
+        }
+      }).catch(error => {
+          this.$message({
+            message: `${error.title.length<3?'':'合同信息-'}${error.title}${error.msg}`,
+            type: "warning"
+          });
+        });
+    },
+    //提交合同表单
+    postContractForm(){
+      this.fullscreenLoading=true
+      this.contractForm.ownerList=[];
+      this.contractForm.customerList=[];
+      let ownerArr = this.ownerList.map(item=>Object.assign({},item));
+      let guestArr = this.guestList.map(item=>Object.assign({},item));
+      ownerArr.forEach((element,index) => {
+        if(element.isEncryption){
+          element.mobile=this.ownerList_[index].mobile
+        }else{
+          element.mobile=element.encryptionMobile;
+        }
+        delete element.isEncryption;
+        this.contractForm.ownerList.push(element);
+      });
+      if(this.contractForm.transMode===2){
+        guestArr.forEach((element,index) => {
+          if(element.isEncryption){
+            element.mobile=this.guestList_[index].mobile
+          }else{
+            element.mobile=element.encryptionMobile;
+          }
+          delete element.isEncryption;
+          this.contractForm.customerList.push(element);
+        });
+      }else{
+        //若先填写了客源信息 然后切换交易方式为收房 保存合同时需要把客源信息去掉
+        delete this.contractForm.guestinfoCode
+        delete this.contractForm.guestinfo
+      }
+      let param = this.contractForm
+      param.id = this.contId ? this.contId : null
+      delete param.createTime
+      delete param.recordDeptName
+      delete param.recordName
+      delete param.updateTime
+      //新增
+      let url="/api/contractInfo/longLease/addContract"
+      //编辑
+      if(this.operationType===2){
+        url="/api/contractInfo/longLease/updateContract"
+      }
+      this.$ajax.postJSON(url,param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.fullscreenLoading=false
+          this.$message({
+            message:"创建成功",
+            type:"success"
+          })
+          this.$router.push({
+            path: "/otherContractList",
+            query:{
+              type:"cz"
+            }
+          });
+        }
+      }).catch(error=>{
+        this.fullscreenLoading=false
+        this.$message({
+          message:error,
+          type:"error"
+        })
+      })
+    }
+  },
+  computed: {
+    getOperationType: function() {
+      return this.operationType;
+    },
+    getContId: function() {
+      return this.contId;
+    },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
+  },
+  mounted(){
+    window.onresize = this.clientHeight;
+  },
+  beforeUpdate() {
+    this.clientHeight();
+  },
 };
 </script>
 
@@ -458,6 +1303,11 @@ export default {
         }
       }
     }
+    .storeStyle{
+      color:#606266;
+      width: 120px;
+      background-color: #f5f7fa;
+    }
   }
   .cooperation {
     min-height: 240px;
@@ -561,6 +1411,7 @@ export default {
   padding: 7px 15px;
   border: 1px solid #dcdfe6;
   border-radius: 3px;
+  color:#606266;
   &::-webkit-input-placeholder {
     color: #ccc;
   }
@@ -571,5 +1422,16 @@ export default {
   right: 6px;
   font-size: 14px;
   color: #ccc;
+}
+.btn {
+  padding: 10px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  p {
+    color: @color-6c;
+    display: inline-block;
+    padding-right: 20px;
+    font-size: 12px;
+  }
 }
 </style>

@@ -4,12 +4,12 @@
         @propQueryFn="queryFn"
         @propResetFormFn="resetFormFn">
         <div class="content">
-            <!-- <div class="input-group">
-                <label>选择城市</label>
-                <el-select size="small" v-model="searchForm.cityId" :clearable="true">
-                    <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
+            <div class="input-search">
+                <label class="w-70">交易类型</label>
+                <el-select size="small" v-model="searchForm.modularType" :clearable="true">
+                    <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
-            </div> -->
+            </div>
             <div class="input-search" v-if="version==2">
                 <label class="w-70">合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
@@ -40,16 +40,26 @@
         <div class="aduit-list">
             <p v-if="power['sign-set-verify'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <el-button @click="operation('添加',1)" type="primary">添加</el-button>
+                <!-- <el-button @click="operation('添加',1)" type="primary">添加</el-button> -->
+                <el-dropdown placement="bottom" @command="addFn">
+                    <el-button round type="primary" size="small">
+                    添加<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item v-for="item in dictionary['711']" :key="item.key" :command="item.key">
+                            {{item.value}}
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
-                    <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
-                    <el-table-column align="center" label="城市" prop="cityName">
+                    <el-table-column align="center" label="交易类型" prop="modularType">
                         <template slot-scope="scope">
-                            <span>{{scope.row.cityName}}</span>
+                            <span v-for="item in dictionary['711']" :key="item.key" v-if="item.key===scope.row.modularType">{{item.value}}</span>
                         </template>
                     </el-table-column>
+                    <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
                     <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
                     <el-table-column align="center" label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
                         <template slot-scope="scope">
@@ -73,7 +83,7 @@
                     </el-table-column>
                     <el-table-column align="center" label="操作">
                         <template slot-scope="scope">
-                            <el-button type="text" size="medium" @click="operation('编辑',2,scope.row)" v-if="power['sign-set-verify'].state">编辑</el-button>
+                            <el-button type="text" size="medium" @click="operation(scope.row)" v-if="power['sign-set-verify'].state">编辑</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -94,19 +104,18 @@
             <div class="aduit-content">
                 <div class="row">
                     <div class="aduit-input must">
-                        <label>当前城市:</label>
-                        <!-- <el-select size="small" v-model="aduitForm.cityId" :disabled="editDisabled">
-                            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                        </el-select> -->
-                        <el-input size="small" v-model="aduitForm.cityId" disabled></el-input>
+                        <label>交易类型:</label>
+                        <el-select size="small" v-model="aduitForm.modularType" disabled>
+                            <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
                     </div>
-                    <div class="aduit-input must" v-if="version==2">
+                    <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
                         <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must" v-else>
+                    <div class="aduit-input must" v-if="version==3">
                         <label class="mr-28">体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
                             <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -117,7 +126,7 @@
                    <div class="aduit-input must">
                     <label>流程类型:</label>
                         <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
-                            <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                            <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?true:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input must">
@@ -298,14 +307,14 @@
                     deptAttr: "",
                     type: "",
                     branchCondition: "",
-                    systemTag: ""
+                    systemTag: "",
+                    modularType: ""
                 },
                 tableData: [],
-                cityList: [],
                 aduitDialog: false,
                 aduitTitle: "",
                 aduitForm: {
-                    cityId: "",
+                    modularType: "",
                     deptAttr: "",
                     name: "",
                     type: "",
@@ -325,7 +334,8 @@
                     '601':'',
                     '603':'',
                     '659':'职级类型',
-                    '660':'部门类型'
+                    '660':'部门类型',
+                    '711':'交易类型'
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -481,76 +491,77 @@
                 this.DepList = payload.list
                 this.nodeList[index].depName = payload.depName
             },
-            operation(title,type,row) {
+            addFn(command) {
                 this.aduitDialog = true
-                this.aduitTitle = title
-                if(type === 1) {
-                    this.$tool.clearForm(this.aduitForm)
-                    this.aduitForm.cityId = this.cityInfo.cityName
-                    this.isAudit = ""
-                    this.tempAudit = ""
-                    this.editDisabled = false
-                    this.conditionList = []
-                } else {
-                    let {...currentRow} = row
-                    this.currentFlowId = currentRow.id
-                    this.aduitForm.cityId = currentRow.cityName
-                    this.aduitForm.deptAttr = currentRow.deptAttr ? currentRow.deptAttr.value : ""
-                    this.aduitForm.systemTag = currentRow.systemTag ? currentRow.systemTag : ""
-                    this.aduitForm.name = currentRow.name
-                    this.aduitForm.type = currentRow.type
-                    this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
-                    this.isAudit = currentRow.branch[0].isAudit.toString()
-                    this.tempAudit = this.isAudit
-                    this.aduitForm.flowDesc = currentRow.flowDesc
-                    this.setConditionList(currentRow.type)
-                    this.editDisabled = true
-                    this.dep.id = ""
-                    this.dep.name = ""
-                    //获取节点信息
-                    let editRow = JSON.parse(JSON.stringify(currentRow.branch))
-                    if(this.isAudit === "1") {
-                        editRow[0].choice = JSON.parse(editRow[0].choice)
-                        editRow[0].personArr = JSON.parse(editRow[0].personArr)
-                        editRow[0].depArr = JSON.parse(editRow[0].depArr)
-                        editRow[0].depTypeArr = editRow[0].depTypeArr?JSON.parse(editRow[0].depTypeArr):[]
-                        editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
-                        editRow[0].depName = ""
-                        editRow[0].userId = ""
-                        delete editRow[0].code
-                    }
-                    let array = []
-                    array.unshift(editRow[0])
-                    for(var i = 1; i < editRow.length; i++) {
-                        array.push({
-                            name: editRow[i].name,
-                            type: editRow[i].type,
-                            sort: editRow[i].sort,
-                            isAudit: editRow[i].isAudit,
-                            depName: "",
-                            personArr: JSON.parse(editRow[i].personArr),
-                            depArr: JSON.parse(editRow[i].depArr),
-                            depTypeArr: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr):[],
-                            roleArr: JSON.parse(editRow[i].roleArr),
-                            choice: JSON.parse(editRow[i].choice),
-                            depID: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userId:'',
-                            depStr: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userName:'',
-                            depType: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userId:'',
-                            depTypeStr: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userName:'',
-                            lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
-                            peopleTime: JSON.parse(editRow[i].personArr).length + 1,
-                            depsTime: JSON.parse(editRow[i].depArr).length + 1,
-                            depTypeTime: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr).length + 1:1,
-                            rolesTime: JSON.parse(editRow[i].roleArr).length + 1,
-                            employeList:[],
-                            employeeTotal:0,
-                            employeePage:1,
-                            currentDep:null
-                        })
-                    }
-                    this.nodeList = array
-                    this.tempNodeList = JSON.parse(JSON.stringify(array))
+                this.aduitTitle = '添加'
+                this.$tool.clearForm(this.aduitForm)
+                this.aduitForm.modularType = command
+                this.isAudit = ""
+                this.tempAudit = ""
+                this.editDisabled = false
+                this.conditionList = []
+            },
+            operation(row) {
+                this.aduitDialog = true
+                this.aduitTitle = '编辑'
+                let {...currentRow} = row
+                this.currentFlowId = currentRow.id
+                this.aduitForm.modularType = currentRow.modularType
+                this.aduitForm.deptAttr = currentRow.deptAttr ? currentRow.deptAttr.value : ""
+                this.aduitForm.systemTag = currentRow.systemTag ? currentRow.systemTag : ""
+                this.aduitForm.name = currentRow.name
+                this.aduitForm.type = currentRow.type
+                this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
+                this.isAudit = currentRow.branch[0].isAudit.toString()
+                this.tempAudit = this.isAudit
+                this.aduitForm.flowDesc = currentRow.flowDesc
+                this.setConditionList(currentRow.type)
+                this.editDisabled = true
+                this.dep.id = ""
+                this.dep.name = ""
+                //获取节点信息
+                let editRow = JSON.parse(JSON.stringify(currentRow.branch))
+                if(this.isAudit === "1") {
+                    editRow[0].choice = JSON.parse(editRow[0].choice)
+                    editRow[0].personArr = JSON.parse(editRow[0].personArr)
+                    editRow[0].depArr = JSON.parse(editRow[0].depArr)
+                    editRow[0].depTypeArr = editRow[0].depTypeArr?JSON.parse(editRow[0].depTypeArr):[]
+                    editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
+                    editRow[0].depName = ""
+                    editRow[0].userId = ""
+                    delete editRow[0].code
                 }
+                let array = []
+                array.unshift(editRow[0])
+                for(var i = 1; i < editRow.length; i++) {
+                    array.push({
+                        name: editRow[i].name,
+                        type: editRow[i].type,
+                        sort: editRow[i].sort,
+                        isAudit: editRow[i].isAudit,
+                        depName: "",
+                        personArr: JSON.parse(editRow[i].personArr),
+                        depArr: JSON.parse(editRow[i].depArr),
+                        depTypeArr: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr):[],
+                        roleArr: JSON.parse(editRow[i].roleArr),
+                        choice: JSON.parse(editRow[i].choice),
+                        depID: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userId:'',
+                        depStr: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userName:'',
+                        depType: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userId:'',
+                        depTypeStr: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userName:'',
+                        lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
+                        peopleTime: JSON.parse(editRow[i].personArr).length + 1,
+                        depsTime: JSON.parse(editRow[i].depArr).length + 1,
+                        depTypeTime: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr).length + 1:1,
+                        rolesTime: JSON.parse(editRow[i].roleArr).length + 1,
+                        employeList:[],
+                        employeeTotal:0,
+                        employeePage:1,
+                        currentDep:null
+                    })
+                }
+                this.nodeList = array
+                this.tempNodeList = JSON.parse(JSON.stringify(array))
             },
             setConditionList(val) {
                 switch(val) {
@@ -897,9 +908,9 @@
                 this.nodeList.splice(index,1)
             },
             isSave() {
-                if(this.aduitForm.cityId) {
+                if(this.aduitForm.modularType !== '') {
                     if(this.version == 2) {
-                        if(!this.aduitForm.deptAttr) {
+                        if(!this.aduitForm.deptAttr&&this.aduitForm.modularType==0) {
                             this.$message({message:"合作方式不能为空"})
                             return
                         }
@@ -929,7 +940,7 @@
                         return false
                     }
                 } else {
-                    this.$message({message:"城市选择不能为空"})
+                    this.$message({message:"交易类型不能为空"})
                     return false
                 }
                 let isOk
@@ -1041,6 +1052,7 @@
                 this.getData('search')
             },
             resetFormFn() {
+                this.searchForm.modularType = ""
                 this.searchForm.systemTag = ""
                 this.searchForm.deptAttr = ""
                 this.searchForm.name = ""

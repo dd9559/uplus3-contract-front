@@ -1186,9 +1186,12 @@ export default {
     call(value,index,type) {
       var nowTime = (new Date()).getTime();
       var param = {
+        plateType:0,
         id:value.pid,
         contractCode:this.contCode,
-        sourceType:value.personType.value===1?0:1
+        sourceType:value.personType.value===1?0:1,
+        calledMobile:value.encryptionMobile,
+        calledName:value.name
       };
       if(type==='owner'){
         if(this.ownerData[index].time){
@@ -1211,7 +1214,7 @@ export default {
             this.callNumber=this.clientrData[index].virtualNum;
             this.dialogVisible = true;
           }else{
-            this.ownerData[index].time=nowTime;
+            this.clientrData[index].time=nowTime;
             this.getVirtualNum(param,index,type);
           }
         }else{
@@ -2129,6 +2132,9 @@ export default {
 .view-container {
   position: relative;
   min-height: 100%;
+  padding-left: 20px;
+  background: @bg-white;
+  font-size: 14px;
   .mainContent{
     /deep/.el-tabs{
       .el-tabs__header {
@@ -2136,8 +2142,8 @@ export default {
       }
       .el-tabs__item {
         font-size: 18px;
-        height: 60px;
-        line-height: 60px;
+        height: 50px;
+        line-height: 50px;
       }
     }
   }
@@ -2146,22 +2152,6 @@ export default {
     z-index: -9999;
     left: 20000px;
   }
-    // /deep/.el-tabs{
-    //   .el-tabs__header {
-    //     margin-bottom: 0;
-    //   }
-    //   .el-tabs__item {
-    //     font-size: 18px;
-    //     height: 60px;
-    //     line-height: 60px;
-    //   }
-    // }
-
-
-  padding-left: 20px;
-  background: @bg-white;
-  font-size: 14px;
-  position: relative;
   //合同详情
   .firstDetail{
     overflow-y: auto;
@@ -2474,14 +2464,6 @@ export default {
     width: 950px;
     padding-top: 20px;
     .name-wrapper {
-      // display: flex;
-      // display: -webkit-box;
-      /*!autoprefixer: off */
-      // -webkit-box-orient: vertical;
-      /* autoprefixer: on */
-      // -webkit-line-clamp: 1;
-      // overflow: hidden;
-      // text-overflow:ellipsis;
       text-overflow:ellipsis;
       white-space:nowrap;
       overflow:hidden;
