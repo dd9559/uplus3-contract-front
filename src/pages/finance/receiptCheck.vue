@@ -23,7 +23,7 @@
       </div>
       <div class="input-group">
         <label>收付状态:</label>
-        <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
+        <el-select :clearable="true" size="small" v-model="searchForm.state" placeholder="请选择">
           <el-option
             v-for="item in dictionary['62']"
             :key="item.key"
@@ -34,7 +34,15 @@
       </div>
     </div>
   </ScreeningTop>
-  <component v-bind:is="activeComponent" :list="list"></component>
+  <div class="view-context">
+    <div class="table-tool">
+      <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
+      <p>
+        <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
+      </p>
+    </div>
+    <component v-bind:is="activeComponent" :list="list" :type="getType"></component>
+  </div>
   <el-pagination
     v-if="list.length>0"
     class="pagination-info"
@@ -63,25 +71,13 @@
       return {
         activeComponent:'receiptCheck_xf',
         searchForm: {
-          contType: [],
-          timeType: '',
-          depName:'',
-          deptId: '',
-          empId: '',
-          billStatus: '',
-          proAccount: '',
-          checkStatus: '',
-          moneyType: '',
-          payMethod: '',
           keyword: '',
           timeRange:'',
-          payObjType:'',
-          cooperation:'',
-          recordType:'',
+          state:'',//收付状态
         },
-        list: ['a','b','c'],
+        list: [],
         dictionary: {
-          '23': ''
+          '62': ''
         },
         //分页
         total:0,
@@ -145,17 +141,21 @@
       }
     },
     created(){
-      let state = this.getPath.every(item=>{
+      let urlParam=this.$route.query
+      let state = this.getPath.some(item=>{
         return ['新房','长租','金融'].includes(item.name)
       })
       if(!state){
-        this.getPath.unshift({name: '新房',path:this.$route.fullPath})//unshift方法返回数组的长度
+        this.getPath.unshift({name: urlParam.type==='xf'?'新房':urlParam.type==='cz'?'长租':urlParam.type==='jr'?'金融':'新房',path:this.$route.fullPath})//unshift方法返回数组的长度
         this.setPath(this.getPath)
-        this.list.push(this.$route.query.type)
       }
-      this.activeComponent=`receiptCheck_${this.$route.query.type}`
+      this.activeComponent=`receiptCheck_${urlParam.type}`
+      this.getData()
     },
     methods:{
+      getExcel:function () {
+
+      },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
       },
@@ -168,27 +168,25 @@
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
-        param.contTypes = param.contType.join(',')
         param.pageNum = this.currentPage
         param.pageSize = this.pageSize
-        delete param.contType
         delete param.timeRange
 
+        let url = `/payInfoRecord/list${this.getType===1?'Xf':this.getType===2?'Cz':this.getType===3?'Jr':'Xf'}Records`
         //点击查询时，缓存筛选条件
         if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:this.$route.fullPath,
-            url:'',
+            url:url,
             query:Object.assign({},param)
           }))
         }
 
-        let url = ''
         this.$ajax.get(`/api${url}`,param).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.list = res.data.page.list
-            this.total = res.data.page.total
+            this.list = res.data.list
+            this.total = res.data.total
           }
         }).catch(error => {
           this.$message({
@@ -203,6 +201,23 @@
         this.currentPage = val
         this.getData('pagination')
       },
+    },
+    computed:{
+      getType:function () {
+        let type=1;
+        switch (this.activeComponent){
+          case 'receiptCheck_xf':
+            type=1;
+            break;
+          case 'receiptCheck_cz':
+            type=2;
+            break
+          case 'receiptCheck_jr':
+            type=3;
+            break
+        }
+        return type;
+      }
     }
   }
 </script>
@@ -235,5 +250,36 @@
         }*/
       }
     }
+  }
+  .view-context {
+    background-color: @color-white;
+    padding: 0 @margin-10;
+    &.other{
+      padding-top: @margin-10;
+    }
+    /deep/ .theader-bg {
+      > th {
+        background-color: @bg-th;
+      }
+    }
+  }
+  .table-tool{
+    /*height: 60px;*/
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @margin-base 0;
+    >h4{
+      >i{
+        margin-right: 8px;
+      }
+    }
+    /*>p{
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform:translateY(-50%);
+    }*/
   }
 </style>

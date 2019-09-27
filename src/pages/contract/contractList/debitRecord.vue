@@ -554,6 +554,7 @@
             this.id = e.id,
             this.payremark=""//清空备注
             let param = {
+              plateType:0,
               storeId: e.inStoreId
             }
             this.$ajax.get("/api/separate/queryBank", param)

@@ -1,57 +1,57 @@
 <template>
   <div>
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
           <el-form-item label="放款日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker>
+            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.loanDate" style="width:140px"></el-date-picker>
           </el-form-item>
           <el-form-item label="纸质合同编号：" style="width:340px;text-align:right;">
             <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode('pCode')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <el-form-item label="项目类型：" style="width:320px;text-align:right;">
-            <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode('project')" placeholder="请输入" class="dealPrice">
+            <input style="width:200px;" type="text" maxlength="100" v-model="contractForm.projectType" @input="inputCode('projectType')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <el-form-item label="放款金额：" class="form-label width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.loanAmount" @input="cutNumber('loanAmount')" @change="countCost" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
           <el-form-item label="期限时间：" style="width:470px;text-align:right;">
-            <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+            <el-date-picker v-model="termData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="金融专员：" style="width:270px;text-align:right;">
-            <input type="text" v-model="contractForm.receivableCommission" @input="cutNumber('receivableCommission')" placeholder="请输入" class="dealPrice">
+            <input type="text" maxlength="10" v-model="contractForm.financeCommissioner" @input="inputOnly('financeCommissioner')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <el-form-item label="经办人：" class="width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" maxlength="10" v-model="contractForm.transactor" @input="inputOnly('transactor')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <el-form-item label="受理人：" style="width:280px;text-align:right;">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" maxlength="10" v-model="contractForm.acceptor" @input="inputOnly('acceptor')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <el-form-item label="岗位名称：" style="width:245px;text-align:right;">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" maxlength="10" v-model="contractForm.positionName" @input="inputOnly('positionName')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <br>
           <el-form-item label="收入金额：" class="form-label width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" v-model="contractForm.incomeAmount" @input="cutNumber('incomeAmount')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
           <el-form-item label="金融成本比例：" class="form-label" style="width:280px;text-align:right;">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" v-model="contractForm.financeCostRatio" @input="cutNumber('dealPrice')" @change="countCost" placeholder="请输入" class="dealPrice">
             <i class="yuan">%</i>
           </el-form-item>
           <el-form-item label="金融成本：" class="form-label width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+            <input type="text" v-model="contractForm.financeCost" disabled @input="cutNumber('financeCost')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
           <br>
-          <el-form-item label="杂费：" class="form-label width-250">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+          <el-form-item label="杂费：" class="width-250">
+            <input type="text" v-model="contractForm.sundryAmount" @input="cutNumber('sundryAmount')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
         </div>
@@ -61,12 +61,12 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.houseInfo.Square" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice">
+            <input type="text" v-model="contractForm.houseinfoCode" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice">
           </el-form-item>
-          <span class="select">请选择房源</span>
+          <span class="select" @click="showDialog">请选择房源</span>
           <br>
           <el-form-item label="U+地址：" class="form-label" style="width:705px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:600px" />
+            <input v-model="contractForm.propertyAddr" maxlength="10" placeholder="请输入" @input="inputCode('propertyAddr')" class="dealPrice" style="width:600px" />
           </el-form-item>
           <br>
           <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
@@ -80,12 +80,12 @@
       <div class="houseMsg">
         <p>客源信息</p>
         <div class="form-content">
-          <el-form-item label="客户姓名：" style="width:245px;text-align:right;">
-            <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
+          <el-form-item label="客户姓名：" class="form-label" style="width:245px;text-align:right;">
+            <input type="text" v-model="contractForm.customerName" @input="inputOnly('customerName')" placeholder="请输入" class="dealPrice">
           </el-form-item>
-          <el-form-item label="所属区域：" style="width:245px;text-align:right;">
-            <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
-              <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key">
+          <el-form-item label="所属区域：" class="form-label" style="width:245px;text-align:right;">
+            <el-select v-model="contractForm.customerArea" placeholder="全部" :clearable="true" style="width:150px">
+              <el-option v-for="(item,index) in areaNameList" :key="index" :label="item" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
@@ -95,160 +95,328 @@
       <div class="houseMsg">
         <p>签约信息</p>
         <div class="form-content">
-          <el-form-item label="成交经纪人：" class="form-label" style="width:333px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
+          <el-form-item label="成交经纪人：" class="form-label" style="width:355px;text-align:right">
+            <el-select
+              style="width:100px"
+              v-model="contractForm.dealAgentId"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入"
+              @change="selectOption($event,'agent')"
+              :remote-method="(val)=>remoteMethod(val,'agent')">
+              <el-option
+                v-for="item in options"
+                :key="item.empId"
+                :label="item.empName"
+                :value="item.empId">
+                <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
+              </el-option>
+            </el-select>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
           </el-form-item>
           <el-form-item label="店长：" class="form-label" style="width:300px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 
+            <el-select
+              style="width:100px"
+              v-model="contractForm.shopOwnerId"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入"
+              @change="selectOption($event,'owner')"
+              :remote-method="(val)=>remoteMethod(val,'owner')">
+              <el-option
+                v-for="item in options_"
+                :key="item.empId"
+                :label="item.empName"
+                :value="item.empId">
+                <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
+              </el-option>
+            </el-select>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
           </el-form-item>
           <br>
-          <el-form-item label="合作方：" class="form-label" style="width:330px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:200px" /> 
+          <el-form-item label="合作方：" style="width:330px;text-align:right">
+            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly('cooperationName')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
         </div>
       </div>
     </el-form>
-    <!-- 删除人员确认框 -->
-    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-      <span>确定删除当前联系人吗？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogDel = false">取 消</el-button>
-        <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
-      </span>
-    </el-dialog>
+    <div class="btn">
+      <div>
+        <div v-if="getOperationType===2">
+          <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
+          <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
+          <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
+        </div>
+      </div>
+      <div>
+        <el-button type="primary" round @click="toSave" v-loading.fullscreen.lock="fullscreenLoading">保存</el-button>
+      </div>
+    </div>
+     <!-- 房源客源弹窗 -->
+    <houseGuest
+    dialogType="house"
+    :dialogVisible="isShowDialog"
+    :choseHcode="choseHcode"
+    :choseGcode="choseGcode"
+    @closeHouseGuest="closeHouseGuest"
+    v-if="isShowDialog">
+    </houseGuest>
   </div>
 </template>
            
 <script>
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
+import houseGuest from "../../contractDialog/houseGuest";
+
+const rule = {
+  loanDate: {
+    name: "放款日期"
+  },
+  loanAmount:{
+    name:"放款金额",
+    type: "money"
+  },
+  incomeAmount: {
+    name: "收入金额",
+    type: "money"
+  },
+  financeCostRatio: {
+    name: "金融成本比例",
+  },
+  houseinfoCode: {
+    name: "房源"
+  },
+};
+
 export default {
   mixins: [MIXINS],
+  components: {
+    houseGuest
+  },
+  props:{
+    //操作类型  1 新增  2  编辑
+    operationType: {
+      type: Number,
+      default: 1
+    },
+    contId: {
+      type: Number,
+      default: ""
+    },
+  },
   data(){
     return{
+      clientHei:"",
       contractForm:{
-        houseInfo:{
-          Square:''
-        }
+        loanDate:"",
+        loanAmount:"",
+        financeCommissioner:"",
+        transactor:"",
+        acceptor:"",
+        positionName:"",
+        incomeAmount:"",
+        financeCostRatio:"",
+        financeCost:"",
+        houseinfoCode:"",
+        propertyAddr:"",
+        customerName:"",
+        customerArea:"",
+        dealAgentId:"",
+        dealAgentName:"",
+        dealAgentStoreId:"",
+        dealAgentStoreName:"",
+        shopOwnerId:"",
+        shopOwnerName:"",
+        shopOwnerStoreId:"",
+        shopOwnerStoreName:"",
+        cooperationName:"",
       },
-      signDate:[],
+      termData:[],
       rightAddrCity:'',
       rightAddrArea:'',
       rightAddrDetail:'',
-      //人员关系列表
-      relationList: [],
-      //业主信息
-      ownerList: [
-        {
-          type: 1,
-          encryptionCode: "",
-          mobile: "",
-          relation: "",
-          cardType: "",
-          name: "",
-          propertyRightRatio: ""
-        }
-      ],
-      //客户信息
-      guestList: [
-        {
-          type: 2,
-          encryptionCode: "",
-          mobile: "",
-          relation: "",
-          cardType: "",
-          name: "",
-          propertyRightRatio: ""
-        }
-      ],
-      delType:'',
-      //删除客户确认框
-      dialogDel:false,
+      //所属区域
+      areaNameList:[],
+      //经纪人
+      options:[],
+      // 店长
+      options_:[],
       dictionary: {
         //数据字典
         "633":"",//证件类型(护照,身份证,营业执照)
-        "6":"",
       },
+      //房客源弹窗
+      isShowDialog:false,
+      choseHcode:0,
+      choseGcode:0,
+      fullscreenLoading:false,//加载loading动画
     }
   },
   created () {
-    this.getRelation();//人员关系
     this.getDictionary();//字典
+    this.getRegion();//获取客户所属区域
+    if(this.operationType===1){
+      this.getNewData();//当前时间
+    }else{
+      this.getContractDetail()
+    }
   },
   methods:{
-    //获取所在城市的人员关系
-    getRelation() {
+    // 控制弹框body内容高度，超过显示滚动条
+    clientHeight() {
+      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+    },
+     //合同详情
+    getContractDetail(){
       let param = {
-        type: "Relation"
-      };
-      this.$ajax.get("/api/dictionary/uplus", param).then(res => {
-        res = res.data;
-        if (res.status === 200) {
-          this.relationList = res.data;
+        id:this.contId
+      }
+      this.$ajax.get("/api/contractInfo/finance/detail",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          let contractDetail=res.data
+          this.$set(contractDetail,"contractInfo",JSON.parse(contractDetail.contractInfo))
+          console.log(contractDetail)
+          debugger
+          delete contractDetail.code
+          delete contractDetail.cityId
+          delete contractDetail.guestinfoCode
+          delete contractDetail.dealAgentStoreSystemtag
+          delete contractDetail.receiveAmountState
+          delete contractDetail.recordDept
+          delete contractDetail.recordId
+          delete contractDetail.recordDeptSystemtag
+          delete contractDetail.tradeType
+          delete contractDetail.updateBy
+          delete contractDetail.updateName
+          delete contractDetail.receivedCommission
+          //放款日期
+          contractDetail.loanDate= contractDetail.contractInfo.loanDate
+          //项目类型
+          contractDetail.projectType= contractDetail.contractInfo.projectType
+          // 放款金额
+          contractDetail.loanAmount= contractDetail.contractInfo.loanAmount
+          // 期限时间
+          this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          //金融专员
+          contractDetail.financeCommissioner= contractDetail.contractInfo.financeCommissioner
+          //经办人
+          contractDetail.transactor= contractDetail.contractInfo.transactor
+          //受理人
+          contractDetail.acceptor= contractDetail.contractInfo.acceptor
+          //岗位名称
+          contractDetail.positionName= contractDetail.contractInfo.positionName
+          //收入金额
+          contractDetail.incomeAmount= contractDetail.contractInfo.incomeAmount
+          //金融成本比例
+          contractDetail.financeCostRatio= contractDetail.contractInfo.financeCostRatio
+          //金融成本
+          contractDetail.financeCost= contractDetail.contractInfo.financeCost
+          //杂费
+          contractDetail.sundryAmount= contractDetail.contractInfo.sundryAmount
+          // 房源信息
+          contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
+          //房源编号
+          // contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
+          //U+地址
+          contractDetail.propertyAddr=contractDetail.contractInfo.propertyAddr
+          // 产权地址
+          let rightAddress = contractDetail.contractInfo.propertyRightAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.rightAddrDetail=rightAddress
+          }
+          //客源信息
+          // 客户姓名
+          contractDetail.customerName= contractDetail.contractInfo.customerName
+          // 所属区域
+          contractDetail.customerArea= contractDetail.contractInfo.customerArea
+          //经纪人
+          let option = {
+            empId:contractDetail.dealAgentId,
+            empName:contractDetail.dealAgentName,
+            depId:contractDetail.dealAgentStoreId,
+            depName:contractDetail.dealAgentStoreName
+          }
+          this.options=[option]
+          // 店长
+          let option_ = {
+            empId:contractDetail.shopOwnerId,
+            empName:contractDetail.shopOwnerName,
+            depId:contractDetail.shopOwnerStoreId,
+            depName:contractDetail.shopOwnerStoreName
+          }
+          this.options_=[option_]
+          console.log(contractDetail)
+          delete contractDetail.contractInfo
+          this.contractForm=contractDetail
         }
-      });
+      })
     },
-    //添加客户
-    addcommissionData(type) {
-      if(type==="owner"){
-        if (this.guestList.length < 4) {
-          this.guestList.push({
-            edit: true,
-            type: 2,
-            encryptionCode: "",
-            mobile: "",
-            encryptionMobile:"",
-            relation: "",
-            cardType: "",
-            name: "",
-            propertyRightRatio: ""
-          });
-        } else {
-          this.$message({
-            message: "已达到最大数量",
-            type: "warning"
-          });
+    //获取当前日期
+    getNewData(){
+      let time = new Date()
+      let y = time.getFullYear()
+      let M = time.getMonth() + 1
+      let D = time.getDate()
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
+      this.contractForm.loanDate=time_
+    },
+    //获取客户所属区域
+    getRegion(){
+      this.$ajax.get("/api/organize/currentdep/areaname").then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.areaNameList=res.data
         }
-      }else{
-        if (this.ownerList.length < 4) {
-          this.ownerList.push({
-            edit: true,
-            type: 1,
-            encryptionCode: "",
-            mobile: "",
-            encryptionMobile:"",
-            relation: "",
-            cardType: "",
-            name: "",
-            propertyRightRatio: ""
-          });
-        } else {
-          this.$message({
-            message: "已达到最大数量",
-            type: "warning"
-          });
-        }
+      })
+    },
+    //计算金融成本
+    countCost(){
+      if(this.contractForm.loanAmount&&(this.contractForm.financeCostRatio||this.contractForm.financeCostRatio==="0")){
+        // this.contractForm.financeCost
+        let result = Number(this.contractForm.loanAmount)*Number(this.contractForm.financeCostRatio)/100
+        this.contractForm.financeCost=this.fomatFloat(result,2)
       }
     },
-    //删除联系人确认框
-    delPeople(index,type){
-      this.peopleIndex=index;
-      this.delType=type;
-      this.dialogDel=true;
-    },
-    //确认删除
-    delPeopleMsg(){
-      if(this.delType==="owner"){
-        this.ownerList.splice(this.peopleIndex, 1);
-        this.ownerList_.splice(this.peopleIndex, 1);
-        this.dialogDel=false;
-      }else if(this.delType==="guest"){
-        this.guestList.splice(this.peopleIndex, 1);
-        this.guestList_.splice(this.peopleIndex, 1);
-        this.dialogDel=false;
+    //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
+    fomatFloat: function(num, n) {
+      var f = parseFloat(num);
+      if (isNaN(f)) {
+        return false;
       }
+      f = Math.round(num * Math.pow(10, n)) / Math.pow(10, n); // n 幂
+      var s = f.toString();
+      var rs = s.indexOf(".");
+      //判定如果是整数，增加小数点再补0
+      if (rs < 0) {
+        rs = s.length;
+        s += ".";
+      }
+      while (s.length <= rs + n) {
+        s += "0";
+      }
+      return s;
     },
     //纸质合同编号限制
     inputCode(type){
@@ -256,24 +424,55 @@ export default {
       if(this.contractForm.pCode&&type==="pCode"){
         this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
       }
-      if(this.contractForm.project&&type==="project"){
-        this.contractForm.project=this.contractForm.project.replace(/\s+/g,"").replace(addrReg,'')
+      if(this.contractForm.project&&type==="projectType"){
+        this.contractForm.projectType=this.contractForm.projectType.replace(/\s+/g,"").replace(addrReg,'')
+      }
+      if(this.contractForm.houseinfoCode&&type==="houseinfoCode"){
+        this.contractForm.houseinfoCode=this.contractForm.houseinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+      }
+      if(this.contractForm.propertyAddr&&type==="propertyAddr"){
+        this.contractForm.propertyAddr=this.contractForm.propertyAddr.replace(/\s+/g,"").replace(addrReg,'')
       }
     },
     //数字金额限制
     cutNumber(val){
-      if(val==="dealPrice"){
+      if(val==="loanAmount"){
         this.$nextTick(()=>{
-          this.contractForm.dealPrice=this.$tool.cutFloat({val:this.contractForm.dealPrice,max:999999999.99})
+          this.contractForm.loanAmount=this.$tool.cutFloat({val:this.contractForm.loanAmount,max:999999999.99})
         })
-      }else if(val==="receivableCommission"){
+      }else if(val==="incomeAmount"){
         this.$nextTick(()=>{
-          this.contractForm.receivableCommission=this.$tool.cutFloat({val:this.contractForm.receivableCommission,max:999999999.99})
+          this.contractForm.incomeAmount=this.$tool.cutFloat({val:this.contractForm.incomeAmount,max:999999999.99})
         })
-      }else if(val==="Square"){
+      }else if(val==="sundryAmount"){
         this.$nextTick(()=>{
-          this.contractForm.houseInfo.Square=this.$tool.cutFloat({val:this.contractForm.houseInfo.Square,max:999999.99})
+          this.contractForm.sundryAmount=this.$tool.cutFloat({val:this.contractForm.sundryAmount,max:999999999.99})
         })
+      }else if(val==="financeCost"){
+        this.$nextTick(()=>{
+          this.contractForm.financeCost=this.$tool.cutFloat({val:this.contractForm.financeCost,max:100})
+        })
+      }
+    },
+    //姓名限制
+    inputOnly(type){
+      if(type==='financeCommissioner'){
+        this.contractForm.financeCommissioner=this.$tool.textInput(this.contractForm.financeCommissioner)
+      }
+      if(type==='transactor'){
+        this.contractForm.transactor=this.$tool.textInput(this.contractForm.transactor)
+      }
+      if(type==='acceptor'){
+        this.contractForm.acceptor=this.$tool.textInput(this.contractForm.acceptor)
+      }
+      if(type==='positionName'){
+        this.contractForm.positionName=this.$tool.textInput(this.contractForm.positionName)
+      }
+      if(type==='customerName'){
+        this.contractForm.customerName=this.$tool.textInput(this.contractForm.customerName)
+      }
+      if(type==='cooperationName'){
+        this.contractForm.cooperationName=this.$tool.textInput(this.contractForm.cooperationName)
       }
     },
     //产权地址限制
@@ -287,48 +486,244 @@ export default {
         this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
       }
     },
-    //手机号验证
-    verifyMobile(item,index,type) {
-      if(item.isEncryption){
-        if(type==="owner"){
-          if(this.ownerList[index].mobile!==this.beforeChangeMobile){
-            if(Number(item.mobile)){
-              this.ownerList[index].mobile=item.mobile;
+    //房源客源弹窗
+    showDialog(value) {
+      this.isShowDialog = true;
+    },
+     //关闭房源客源弹窗
+    closeHouseGuest(value) {
+      if (value) {//判断是否点击的确认按钮
+        this.isShowDialog = false;
+        this.getHouseDetail(value.selectCode);
+        this.choseHcode=value.selectCode;
+      } else {
+        this.isShowDialog = false;
+      }
+    },
+     //根据房源id获取房源信息
+    getHouseDetail(id) {
+      let param = {
+        houseId: id,
+      };
+      this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          let houseMsg = res.data;
+          this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          this.contractForm.houseInfo = houseMsg;
+          this.contractForm.propertyAddr=houseMsg.EstateName.replace(/\s/g,"")+' '+houseMsg.BuildingName.replace(/\s/g,"")+houseMsg.Unit.replace(/\s/g,"")+houseMsg.RoomNo.replace(/\s/g,"")
+          //重新选择房源时清空产权地址
+          this.rightAddrCity='';
+          this.rightAddrArea='';
+          this.rightAddrDetail='';
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      });
+    },
+      //经纪人店长查询
+    remoteMethod(keyword,type){
+      if(keyword!==''){
+        let param = {
+          type:type==="agent"?1:2,
+          name:keyword
+        }
+        this.$ajax.get('/api/contractInfo/getEmpDeptInfo',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(type==="agent"){
+              this.options=res.data
             }else{
-              this.ownerList[index].mobile='';
+              this.options_=res.data
             }
-            // this.ownerList[index].mobile='';
-            this.ownerList[index].isEncryption=false;
           }
-        }else if(type==="guest"){
-          if(this.guestList[index].mobile!==this.beforeChangeMobile){
-            if(Number(item.mobile)){
-              this.guestList[index].mobile=item.mobile;
-            }else{
-              this.guestList[index].mobile='';
+        })
+      }
+    },
+    //经纪人所属门店
+    selectOption(val,type){
+      if(type==="agent"){
+        if(this.options.length>0&&val){
+          this.options.forEach(element => {
+            if(element.empId==val){
+              this.contractForm.dealAgentName=element.empName
+              this.contractForm.dealAgentStoreId=element.depId
+              this.contractForm.dealAgentStoreName=element.depName
             }
-            this.guestList[index].isEncryption=false;
-          }
+          });
         }
       }else{
-        if(item.mobile.length===11){
-          let reg = /^1[0-9]{10}$/;
-          let reg_ = /^0\d{2,3}-?\d{7,8}$/
-          if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
-            this.$message({
-              message:'电话号码格式不正确',
-              type: "warning"
-            })
-          }
+        if(this.options_.length>0&&val){
+          this.options_.forEach(element => {
+            if(element.empId==val){
+              this.contractForm.shopOwnerName=element.empName
+              this.contractForm.shopOwnerStoreId=element.depId
+              this.contractForm.shopOwnerStoreName=element.depName
+            }
+          });
         }
       }
     },
-  }
+    //保存合同
+    toSave(){
+      if(!this.contractForm.loanDate){
+        this.contractForm.loanDate=''
+      }
+      if(!this.contractForm.customerArea){
+        this.contractForm.customerArea=''
+      }
+      this.$tool.checkForm(this.contractForm, rule).then(() => {
+        // U+地址
+        if(this.contractForm.propertyAddr){
+          //产权地址
+          if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
+            this.contractForm.propertyRightAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
+            //客户姓名
+            if(this.contractForm.customerName){
+              if(this.contractForm.customerName.indexOf("先生")===-1&&this.contractForm.customerName.indexOf("女士")===-1){
+                //客户所属区域
+                if(this.contractForm.customerArea){
+                  //经纪人
+                  if(this.contractForm.dealAgentId){
+                    // 店长
+                    if(this.contractForm.shopOwnerId){
+                      this.postContractForm()
+                    }else{
+                      this.$message({
+                        message:'签约信息-店长不能为空',
+                        type: "warning"
+                      })
+                    }
+                  }else{
+                    this.$message({
+                      message:'签约信息-成交经纪人不能为空',
+                      type: "warning"
+                    })
+                  }
+                }else{
+                  this.$message({
+                    message:'客源信息-所属区域不能为空',
+                    type: "warning"
+                  })
+                }
+              }else{
+                this.$message({
+                  message:'客源信息-客户姓名不正确',
+                  type: "warning"
+                })
+              }
+            }else{
+              this.$message({
+                message:'客源信息-客户姓名不能为空',
+                type: "warning"
+              })
+            }
+          }else{
+            this.$message({
+              message:'房源信息-物业地址未填写完整',
+              type: "warning"
+            })
+          }
+        }else{
+          this.$message({
+            message: "房源信息-U+地址不能为空",
+            type: "warning"
+          });
+        }
+      }).catch(error => {
+          this.$message({
+            message: `${error.title.length<3?'':'合同信息-'}${error.title}${error.msg}`,
+            type: "warning"
+          });
+        });
+    },
+    //提交合同表单
+    postContractForm(){
+      this.fullscreenLoading=true
+      if(this.termData){
+        if (this.termData.length > 0) {
+          this.contractForm.termStart = this.termData[0];
+          this.contractForm.termEnd = this.termData[1];
+        }
+      }
+      let param = this.contractForm
+      param.id = this.contId ? this.contId : null
+      delete param.createTime
+      delete param.recordDeptName
+      delete param.recordName
+      delete param.updateTime
+      //新增
+      let url="/api/contractInfo/finance/addContract"
+      //编辑
+      if(this.operationType===2){
+        url="/api/contractInfo/finance/updateContract"
+      }
+      this.$ajax.postJSON(url,param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.fullscreenLoading=false
+          this.$message({
+            message:"创建成功",
+            type:"success"
+          })
+          this.$router.push({
+            path: "/otherContractList",
+            query:{
+              type:"jr"
+            }
+          });
+        }
+      }).catch(error=>{
+        this.fullscreenLoading=false
+        this.$message({
+          message:error,
+          type:"error"
+        })
+      })
+    }
+  },
+  computed: {
+    getOperationType: function() {
+      return this.operationType;
+    },
+    getContId: function() {
+      return this.contId;
+    },
+  },
+  filters: {
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
+  },
+  mounted(){
+    window.onresize = this.clientHeight;
+  },
+  beforeUpdate() {
+    this.clientHeight();
+  },
 };
 </script>
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
+input:disabled{
+  background-color: #f5f7fa;
+}
 .add-form {
   padding: 10px;
   font-size: 14px;
@@ -442,6 +837,11 @@ export default {
         }
       }
     }
+    .storeStyle{
+      color:#606266;
+      width: 120px;
+      background-color: #f5f7fa;
+    }
   }
   .cooperation {
     min-height: 240px;
@@ -545,6 +945,7 @@ export default {
   padding: 7px 15px;
   border: 1px solid #dcdfe6;
   border-radius: 3px;
+  color:#606266;
   &::-webkit-input-placeholder {
     color: #ccc;
   }
@@ -555,5 +956,16 @@ export default {
   right: 6px;
   font-size: 14px;
   color: #ccc;
+}
+.btn {
+  padding: 10px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  p {
+    color: @color-6c;
+    display: inline-block;
+    padding-right: 20px;
+    font-size: 12px;
+  }
 }
 </style>

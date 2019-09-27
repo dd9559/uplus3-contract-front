@@ -607,6 +607,7 @@ export default {
         search_.startTime=this.signDate[0]
         search_.endTime=this.signDate[1]
         let param = {
+          plateType:0,
           queryForm:search_,
           pageNum:this.currentPage,
           pageSize:this.pageSize,

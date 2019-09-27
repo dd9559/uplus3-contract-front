@@ -7,8 +7,7 @@
         </li>
       </ul>
       <p>
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog"
-                   v-if="billMsg.auditButton&&btnCheck">审核
+        <el-button class="btn-info" round size="small" type="primary" @click="showDialog">审核
         </el-button>
       </p>
     </div>
@@ -16,62 +15,60 @@
       <template v-if="activeItem==='收款信息'">
         <li>
           <h4 class="f14">{{activeItem}}</h4>
-          <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table border :data="[{}]" header-row-class-name="theader-bg">
             <el-table-column align="center" label="合同编号">
               <template slot-scope="scope">
-                <span>{{billMsg.contCode}}</span>
+                <span>{{dataMsg.contractCode}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="纸质合同编号">
               <template slot-scope="scope">
-                <span>{{billMsg.contCode}}</span>
+                <span>{{dataMsg.contractPaperCode}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="付款ID">
               <template slot-scope="scope">
-                <span>{{billMsg.payCode}}</span>
+                <span>{{dataMsg.payCode}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="收付对象">
               <template slot-scope="scope">
-                <span>{{billMsg.inObjType|getLabel}}{{billMsg.inObjName?`-${billMsg.inObjName}`:''}}</span>
+                <span>{{dataMsg.objType|getLabel}}-{{dataMsg.objName}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="创建时间">
               <template slot-scope="scope">
-                <span>{{billMsg.createTime|formatTime}}</span>
+                <span>{{dataMsg.createTime|formatTime(false)}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="收款人">
               <template slot-scope="scope">
-                <span>{{billMsg.inObjStore}}-{{billMsg.inObjName}}</span>
+                <span>{{dataMsg.deptName}}-{{dataMsg.employeeName}}</span>
               </template>
             </el-table-column>
           </el-table>
         </li>
         <li>
           <h4 class="f14">佣金信息</h4>
-          <el-table border :data="!billMsg.inAccount?[{}]:billMsg.inAccount" header-row-class-name="theader-bg"
-                    v-if="billMsg.inAccount||!billMsg.inAccount">
+          <el-table border :data="[{}]" header-row-class-name="theader-bg">
             <el-table-column align="center" label="款类">
               <template slot-scope="scope">
-                <span>{{billMsg.moneyTypeName}}</span>
+                <span>{{dataMsg.moneyName}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="佣金（元）">
               <template slot-scope="scope">
-                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
-                <span v-else>{{billMsg.method}}</span>
+                <span>{{dataMsg.amount}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="状态">
               <template slot-scope="scope">
-                <span>{{billMsg.statusName}}</span>
+                <span>{{dataMsg.state|getLabel}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="结款时间">
               <template slot-scope="scope">
-                {{billMsg.toAccountTime|formatTime}}
+                {{dataMsg.closingDate|formatTime(false)}}
               </template>
             </el-table-column>
           </el-table>
@@ -153,7 +150,7 @@
         tabs: ['收款信息', '审核信息'],
         activeItem: '收款信息',//顶部tab切换的选中项
         payId:'',//收款id
-        billMsg: {},//详情返回对象
+        dataMsg: {},//详情返回对象
         list: [],
         checkList: [],//审核信息
         layer: {//审核备注
@@ -192,8 +189,11 @@
        */
       getData: function () {
         let param={payId:this.payId}
-        this.$ajax.get('/api/insertSKRecord/getSKDetail',param).then(res=>{
-
+        this.$ajax.get('/api/payInfoRecord/getSKDetail',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.dataMsg=res.data
+          }
         })
       },
       /**

@@ -609,9 +609,11 @@
                             arr = this.recursiveFn([...j]);
                             let preloadList=[]
                             j.forEach(e => {
-                                if(this.isPictureFile(e.value[0].fileType)) {
-                                    preloadList.push(e.value[0].path)
-                                }
+                                e.value.forEach(t =>{
+                                    if(this.isPictureFile(t.fileType)) {
+                                        preloadList.push(t.path)
+                                    }
+                                })
                             })
                             if(preloadList.length){
                                 this.fileSign(preloadList,'preload').then(res=>{

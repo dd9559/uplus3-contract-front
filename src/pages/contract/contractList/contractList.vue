@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/房产证号/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
+          <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
             <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -300,6 +300,12 @@
         <el-table-column align="center" label="成交报告" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value===2||scope.row.contType.value===3">{{scope.row.dealReportState.label}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="上传合同主体时间" min-width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">合同主体时间</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -990,8 +996,6 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      console.log(item.contChangeState.value);
-      //debugger
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "changeLook";
@@ -1005,7 +1009,6 @@ export default {
     },
     //上传合同主体
     upload(item) {
-      //console.log(code);
       this.changeCancel = true;
       this.dialogType = "upload";
       this.contId = item.id,
