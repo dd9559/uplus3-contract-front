@@ -329,6 +329,7 @@
         //上传
         this.modal = true
         if(type===1){
+          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板上传'],'contractTemplate'))
             this.contraName=''
             this.mbanAddress=''
             this.mmaiAddress=''
@@ -341,7 +342,7 @@
         }
         //预览
         else if(type===2){
-          this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
+          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板预览'],'contractTemplate'))
           this.$router.push({
             path: "/contraPreview",
             query: {
@@ -351,7 +352,7 @@
           });
         }
         else if(type==3){
-          this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板修改'],'contractTemplate'))
+          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板修改'],'contractTemplate'))
            this.$router.push({
             path: "/contraPreview",
             query: {
