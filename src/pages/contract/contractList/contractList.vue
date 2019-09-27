@@ -303,6 +303,12 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="上传合同主体时间" min-width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contType.value<4">合同主体时间</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="后期状态" min-width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1">
@@ -990,8 +996,6 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      console.log(item.contChangeState.value);
-      //debugger
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "changeLook";
@@ -1005,7 +1009,6 @@ export default {
     },
     //上传合同主体
     upload(item) {
-      //console.log(code);
       this.changeCancel = true;
       this.dialogType = "upload";
       this.contId = item.id,

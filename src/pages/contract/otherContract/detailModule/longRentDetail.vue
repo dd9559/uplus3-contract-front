@@ -184,21 +184,9 @@ export default {
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-wmemo': {
-          state: false,
-          name: '添加录音备注'
-        },
         'sign-ht-xq-ly-call': {
           state: false,
           name: '拨打电话'
-        },
-        'sign-ht-xq-ly-play': {
-          state: false,
-          name: '听取录音'
-        },
-        'sign-ht-xq-ly-vmemo': {
-          state: false,
-          name: '查看备注'
         },
       },
     }

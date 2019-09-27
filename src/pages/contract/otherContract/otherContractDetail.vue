@@ -80,6 +80,20 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 回访录音添加备注弹窗 -->
+    <el-dialog title="添加备注" :visible.sync="showRemarks" width="740px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeRemarks">
+      <div class="top">
+        <p class="form-label" style="width:50px"> 备注</p>
+        <div class="reason">
+          <el-input type="textarea" :rows="6" placeholder="请填写备注，最多100字 " v-model="recordRemarks" resize='none' style="width:640px" maxlength="100"></el-input>
+          <span class="recordLength">{{recordRemarks.length}}/100</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="showRemarks = false">取消</el-button>
+        <el-button round type="primary" @click="addRemark">保存</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
            
@@ -114,6 +128,23 @@ export default {
       isPlay:false,
       isReady:false,
       recordSrc:'',
+      showRemarks:false,//录音备注弹窗
+      recordRemarks:"",
+      remarkId:"",
+      power:{
+        'sign-ht-xq-ly-wmemo': {
+          state: false,
+          name: '添加录音备注'
+        },
+        'sign-ht-xq-ly-play': {
+          state: false,
+          name: '听取录音'
+        },
+        'sign-ht-xq-ly-vmemo': {
+          state: false,
+          name: '查看备注'
+        },
+      }
     }
   },
   created () {
@@ -507,6 +538,48 @@ export default {
           /deep/.el-button.is-round {
             padding: 10px 20px;
           }
+        }
+      }
+    }
+  }
+  .top {
+    display: flex;
+    padding-top: 20px;
+    > p {
+      padding-right: 15px;
+      font-size: 14px;
+      width: 90px;
+      color: @color-6c;
+    }
+    >.invalid{
+      font-size: 16px;
+      width: 120px;
+    }
+    > .reason {
+      position: relative;
+      /deep/.el-textarea{
+        textarea{
+          min-height: 120px!important;
+        }
+      }
+      > .recordLength {
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+        color: @color-6c;
+      }
+      > .invalidReasonLength{
+        position: absolute;
+        bottom: 35px;
+        right: 20px;
+        color: @color-6c;
+      }
+      > p {
+        padding-top: 10px;
+        color: @color-6c;
+        font-size: 12px;
+        > span {
+          color: @color-blank;
         }
       }
     }

@@ -1136,10 +1136,10 @@ export default {
     this.getAdmin();//获取当前登录人信息
   },
   beforeRouteEnter(to,from,next){
-      next(vm=>{
-        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
-      })
-    },
+    next(vm=>{
+      vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+    })
+  },
   methods: {
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {
@@ -1796,7 +1796,6 @@ export default {
       })
     },
     //获取合同资料库信息
-
     getContData() {
       let param = {
         id: this.id
@@ -1837,6 +1836,7 @@ export default {
               // this.otherDataList.push(element);
             }
           });
+          
         }
       });
     },
