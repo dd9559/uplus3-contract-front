@@ -7,7 +7,7 @@
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
          <el-form-item label="体系">
           <el-select v-model="searchForm.sysid" filterable :clearable="true">
-            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+            <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
             <!-- <el-option v-for="item in dictionary['638']" :key="item.key" :label="item.value" :value="item.key"></el-option> -->
           </el-select>
         </el-form-item>
@@ -45,7 +45,7 @@
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
         <el-table-column align="center" label="体系"  width="90">
           <template slot-scope="scope">
-            <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+            <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="业绩申诉有效时间">
@@ -100,7 +100,7 @@
         <el-form :inline="true" size="medium">
         <el-form-item label="体系：" >
           <el-select v-model="formSys" :disabled="title=='编辑'?true:false" placeholder="请选择体系" :clearable="true">
-           <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+           <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
             <!-- <el-option v-for="item in dictionary['638']" :key="item.key" :label="item.value" :value="item.key"></el-option> -->
           </el-select>
         </el-form-item>
@@ -127,8 +127,16 @@
   import {MIXINS} from "@/assets/js/mixins";
 
   export default {
-    name: "company",
+    name: "aplTime",
     mixins: [MIXINS],
+    props: {
+        systemArr: {
+            type: Array,
+            default: function() {
+                return []
+            }
+        }
+    },
     data() {
       return {
         // 搜索表单中的数据
@@ -162,7 +170,6 @@
       }
     },
     created(){
-      this.getSystemTag()
       this.getDictionary()
       var param={
         cityId:this.cityInfo2.cityId,

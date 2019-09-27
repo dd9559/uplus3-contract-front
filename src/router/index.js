@@ -17,11 +17,6 @@ const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
-const commissionDialog = () => import('@/pages/setting/commissionDialog')
-// const operationLog_cz = () => import('@/pages/setting/otherLog/operationLog_cz')
-// const operationLog_jr = () => import('@/pages/setting/otherLog/operationLog_jr')
-// const operationLog_xf = () => import('@/pages/setting/otherLog/operationLog_xf')
-const conAttachment = () => import('@/pages/setting/conAttachment')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -147,20 +142,6 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "后台设置","手续费设置"]
-          }
-        },
-        {
-          path: "commissionDialog",
-          component: commissionDialog,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "conAttachment",
-          component: conAttachment,
-          meta: {
-            getParent: true
           }
         },
         //设置模块 end

@@ -2,10 +2,16 @@
     <div ref="tableComView">
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <div class="content">
+                <div v-if="adminYes">
+                    <label>城市选择</label>
+                    <el-select size="small" v-model="searchForm.cityId" @change="getTixi($event,1)">
+                        <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
+                    </el-select>
+                </div>
                 <div>
                     <label>体系</label>
-                    <el-select size="small" class="w300" v-model="systemTag">
-                        <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-select size="small" v-model="searchForm.systemTag" @change="selectTixi">
+                        <el-option v-for="item in systemArr1" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div>
@@ -48,7 +54,7 @@
             :max-height="tableNumberCom">
                 <el-table-column align="center" label="体系" prop="systemTag">
                     <template slot-scope="scope">
-                        <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+                        <span v-for="item in systemArr1" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="收佣手续费" width="350">
@@ -74,46 +80,241 @@
                 </el-table-column>
             </el-table>
         </div>
+        <!-- 新增 编辑 弹窗 -->
+        <el-dialog
+        :title="com_title+'手续费'"
+        :closeOnClickModal="$tool.closeOnClickModal"
+        :close-on-press-escape="$tool.closeOnClickModal"
+        :visible.sync="addVisible"
+        width="900px"
+        >
+        <div class="com-box">
+            <div class="com-select">
+                <div class="mark-red com-select-city" v-if="adminYes">
+                    <label>城市：</label>
+                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'">
+                        <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
+                    </el-select>
+                </div>
+                <div class="mark-red">
+                    <label>体系：</label>
+                    <el-select size="small" class="w240" v-model="commissionForm.systemTag" :disabled="this.com_title=='编辑'">
+                        <el-option v-for="item in systemArr2" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div>
+                <p class="mark-blue">
+                    <span class="size-16">收佣手续费</span>
+                    <span class="color-red">收取手续费金额（元）= 实际收佣金额（元）* 手续费率（%）</span>
+                </p>
+                <div class="mark-red">手续费率：</div>
+                <div class="table-box">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>支付方式</th>
+                                <th>手续费率（%）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>储蓄卡</td>
+                                <td><input type="text" v-model="commissionForm.cash" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'cash')"></td>
+                            </tr>
+                            <tr>
+                                <td>信用卡</td>
+                                <td><input type="text" v-model="commissionForm.credit" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'credit')"></td>
+                            </tr>
+                            <tr>
+                                <td>微信</td>
+                                <td><input type="text" v-model="commissionForm.wechat" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'wechat')"></td>
+                            </tr>
+                            <tr>
+                                <td>支付宝</td>
+                                <td><input type="text" v-model="commissionForm.aliPay" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'aliPay')"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div>
+                <p class="mark-blue">
+                    <span class="size-16">分账/付款手续费</span>
+                    <span class="color-red">分账/付款手续费分对公和对私账户，按每笔来计算</span>
+                </p>
+                <div>
+                    <div class="mark-red">手续费金额：</div>
+                    <div class="table-box">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>账户类型</th>
+                                    <th>手续费金额（元/笔）</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>对公账户</td>
+                                    <td><input type="text" v-model="commissionForm.public" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'public')"></td>
+                                </tr>
+                                <tr>
+                                    <td>对私账户</td>
+                                    <td><input type="text" v-model="commissionForm.private" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'private')"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>  
+                </div>
+            </div>
+            <div class="color-red tip-msg"> 注：设置新的手续费值成功后，原来的手续费值被替换。</div>
+        </div>
+        <div class="btn">
+            <el-button @click="addVisible=false" round>取 消</el-button>
+            <el-button type="primary" @click="saveFn" round>保 存</el-button>
+        </div>
+        </el-dialog>
+        <!-- 确认保存弹窗 -->
+        <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
+            <div class="save-txt">
+                <p style="margin-bottom:10px;">确认保存新的手续费设置？</p>
+                <p class="color-red">新的手续费率会覆盖原来的手续费率</p>
+                <p>当前收佣手续费率 储蓄卡{{commissionForm.cash}}% 信用卡{{commissionForm.credit}}% 微信{{commissionForm.wechat}}% 支付宝{{commissionForm.aliPay}}%</p>
+                <p>当前分账/付款手续费 对公{{commissionForm.public}}元/笔 对私{{commissionForm.private}}元/笔</p>
+            </div>
+            <div class="save-btn">
+                <el-button @click="saveDialog=false" round>取 消</el-button>
+                <el-button type="primary" @click="sureFn" round>确 认</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
+    const RULE = {
+        cityId: {
+            name: '城市'
+        },
+        systemTag: {
+            name: '体系'
+        },
+        cash: {
+            name: '收佣储蓄卡手续费率'
+        },
+        credit: {
+            name: '收佣信用卡手续费率'
+        },
+        wechat: {
+            name: '收佣微信手续费率'
+        },
+        aliPay: {
+            name: '收佣支付宝手续费率'
+        },
+        public: {
+            name: '分账/付款对公账户手续费金额'
+        },
+        private: {
+            name: '分账/付款对私账户手续费金额'
+        }
+    }
     export default {
         name: "commission",
         mixins: [MIXINS, FILTER],
         data() {
             return {
-                systemTag: '',
+                searchForm: {
+                    cityId: '',
+                    systemTag: ''
+                },
                 settingTime: [],
                 updateTime: [],
-                list: [],
+                list: [], //列表
                 power: {
                     'sign-set-sxf': {
                         name: '查询',
                         state: false
                     }
-                }
+                },
+                cityList: [],
+                systemArr1: [], //筛选体系
+                systemArr2: [], //新增编辑体系
+                addVisible: false, //新增编辑弹窗
+                saveDialog: false, //确认保存弹窗
+                // 新增编辑 表单
+                commissionForm: {
+                    systemTag: '',
+                    cash: '',
+                    credit: '',
+                    wechat: '',
+                    aliPay: '',
+                    public: '',
+                    private: '',
+                    cityId: ''
+                },
+                rowId: 0,
+                com_title: '',
+                adminYes: false //是否超级管理员账号
             }
         },
         created() {
-            // 获取体系
-            this.getSystemTag()
+            if((this.isProd==0&&this.userInfo.empId==15349)||(this.isProd==1&&this.userInfo.empId==37109)) this.adminYes = true
+            // 超级管理员账号 获取城市
+            if(this.adminYes) this.getCity()
+            // 非超级管理员获取体系
+            if(!this.adminYes) {
+                this.searchForm.cityId = this.userInfo.cityId
+                this.$ajax.get('/api/organize/getSystemTag',{cityId: this.searchForm.cityId}).then(res => {
+                    res = res.data
+                    if(res.status === 200){
+                        this.systemArr1 = res.data
+                        this.systemArr2 = res.data
+                    }
+                })
+            }
             let res = this.getDataList
             if(res&&(res.route === this.$route.path)){
-                this.list = res.data
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 let query = session.query
-                this.systemTag = query.systemTag
+                this.searchForm.cityId = query.cityId
+                this.searchForm.systemTag = query.systemTag
+                this.list = res.data
                 this.settingTime = query.settingTimeStart ? [query.settingTimeStart,query.settingTimeEnd] : []
                 this.updateTime = query.updateTimeStart ? [query.updateTimeStart,query.updateTimeEnd] : []
             }else{
-                // 列表查询
-                this.getData()  
+                // 非超级管理员列表
+                if(!this.adminYes) {
+                    this.getData()
+                }
             }
         },
         methods: {
+            getCity() {
+                this.$ajax.get('/api/organize/cities').then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.cityList = res.data
+                    }
+                })
+            },
+            // 超级管理员获取体系
+            getTixi(e,type) {
+                if(type===1) {
+                    this.searchForm.systemTag = ""
+                    this.list = []
+                }
+                this.$ajax.get('/api/organize/getSystemTag',{cityId: e}).then(res => {
+                    res = res.data
+                    if(res.status === 200){
+                        type==1 ? this.systemArr1 = res.data : this.systemArr2 = res.data
+                    }
+                })
+            },
+            // 超级管理员列表
+            selectTixi() {
+                if(this.adminYes) this.getData()
+            },
             addSignFn(n,i) {
                 return `${n}${i}%`
             },
@@ -125,8 +326,8 @@
                 let bool1 = this.settingTime!=null&&this.settingTime.length
                 let bool2 = this.updateTime!=null&&this.updateTime.length
                 let param = {
-                    cityId: this.userInfo.cityId,
-                    systemTag: this.systemTag,
+                    cityId: this.searchForm.cityId,
+                    systemTag: this.searchForm.systemTag,
                     settingTimeStart: bool1 ? this.settingTime[0] : '',
                     settingTimeEnd: bool1 ? this.settingTime[1] : '',
                     updateTimeStart: bool2 ? this.updateTime[0] : '',
@@ -154,31 +355,127 @@
                 })
             },
             openFn(type,row) {
-                this.setPath(this.getPath.concat({name: type===1?'新增手续费':'编辑手续费'}))
-                this.$router.push({
-                    path: 'commissionDialog',
-                    query: {
-                        type
+                this.addVisible = true
+                if(type == 1) {
+                    this.com_title = "新增"
+                    this.$tool.clearForm(this.commissionForm)
+                    if(this.adminYes) this.systemArr2 = []
+                    if(!this.adminYes) this.commissionForm.cityId = this.userInfo.cityId
+                }else{
+                    this.com_title = "编辑"
+                    this.rowId = row.id
+                    if(this.adminYes) this.getTixi(row.cityId,2)
+                    this.commissionForm = {
+                        cityId: row.cityId,
+                        systemTag: row.systemTag,
+                        cash: row.commissionFee[0].fee,
+                        credit: row.commissionFee[1].fee,
+                        wechat: row.commissionFee[2].fee,
+                        aliPay: row.commissionFee[3].fee,
+                        public: row.sepaFee[0].feeMoney,
+                        private: row.sepaFee[1].feeMoney
                     }
-                })
-                if(type===2){
-                    localStorage.setItem('row',JSON.stringify(row))
                 }
+            },
+            cutNumber(type,item) {
+                this.$nextTick(() =>{
+                    this.commissionForm[item]=this.$tool.cutFloat({val:this.commissionForm[item],max:type===1?1:100})
+                })
+            },
+            saveFn() {
+                this.$tool.checkForm(
+                    this.commissionForm,
+                    RULE
+                ).then(() => {
+                    this.saveDialog = true
+                }).catch(error => {
+                    this.$message({message:`${error.title}${error.msg}`})
+                })
+            },
+            sureFn() {
+                let arr1 = [
+                    {
+                        payType: 0,
+                        fee: this.commissionForm.cash
+                    },
+                    {
+                        payType: 1,
+                        fee: this.commissionForm.credit
+                    },
+                    {
+                        payType: 2,
+                        fee: this.commissionForm.wechat
+                    },
+                    {
+                        payType: 3,
+                        fee: this.commissionForm.aliPay
+                    }
+                ]
+                let arr2 = [
+                    {
+                        accountType: 0,
+                        feeMoney: this.commissionForm.public
+                    },
+                    {
+                        accountType: 1,
+                        feeMoney: this.commissionForm.private
+                    }
+                ]
+                let param = {
+                    cityId: this.commissionForm.cityId,
+                    systemTag: this.commissionForm.systemTag,
+                    commissionFee: arr1,
+                    sepaFee: arr2
+                }
+
+                let url
+                if(this.com_title==='新增'){
+                    url = '/api/feesetting/operateInsert'
+                }else{
+                    url = '/api/feesetting/operateUpdate'
+                    param.id = this.rowId
+                }
+                this.$ajax.postJSON(url,
+                    param
+                ).then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.$message(res.message)
+                        this.saveDialog = false
+                        this.addVisible = false
+                        if(this.adminYes&&!this.searchForm.cityId) return
+                        this.getData()
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
             },
             // 查询
             queryFn() {
-                this.getData('search')
+                if(this.adminYes) {
+                    if(this.searchForm.cityId&&this.searchForm.systemTag) this.getData('search')
+                }else{
+                    this.getData('search')
+                }
             },
             // 重置
             resetFormFn() {
-                this.systemTag = ''
+                this.searchForm.systemTag = ''
                 this.settingTime = []
                 this.updateTime = []
+                if(this.adminYes) {
+                    this.searchForm.cityId = ''
+                    this.list = []
+                }
             }
         },
         computed: {
-            userInfo(){
+            userInfo() {
                 return this.getUser.user
+            },
+            // 测试环境0 超级管理员15349;正式环境1 超级管理员37109
+            isProd() {
+                return this.getUser.isProd
             }
         }
     }
@@ -188,9 +485,11 @@
     @import "~@/assets/common.less";
     .content {
         display: flex;
+        flex-wrap: wrap;
         padding-bottom: 10px;
         >div {
             margin-right: 20px;
+            margin-bottom: 18px;
             >label {
                 margin-right: 5px;
             }
@@ -223,5 +522,102 @@
     }
     /deep/ .el-table th {
         background: @bg-th;
+    }
+    .com-box {
+        font-size: @size-14;
+        padding: 10px 20px 0 20px;
+        overflow-y: auto;
+        .com-select {
+            display: flex;
+            &-city {
+                margin-right: 50px;
+            }
+        }
+        .size-16 {
+            font-size: @size-16;
+        }
+        .mark-red::before {
+            content: '*';
+            position: relative;
+            color: @color-red;
+            top: 3px;
+            margin-right: 1px;
+        }
+        .mark-blue {
+            position: relative;
+            padding-left: 8px;
+            margin-bottom: 5px;
+            &::before {
+                content: '';
+                position: absolute;
+                width: 2px;
+                height: 12px;
+                left: 0;
+                top: 5px;
+                background-color: @color-blue;
+            }
+        }
+        .input-tac {
+            text-align: center;
+        }
+        >div:nth-child(-n+3) {
+            margin-bottom: 10px;
+        }
+        .table-box {
+            margin-top: 5px;
+            .table {
+                width: 100%;
+                border-collapse:collapse;
+                border-spacing:1;
+                border-top: 1px solid #EBEEF5;
+                border-left: 1px solid #EBEEF5;
+                text-align: center;
+                tr:hover td{
+                    background: @border-F5;
+                }
+                tr th,tr td{
+                    border-right: 1px solid #EBEEF5;
+                    border-bottom: 1px solid #EBEEF5;
+                    line-height: 30px;
+                    height: 30px;
+                }
+                tr th{
+                    background-color: @bg-th;
+                    color: #909399;
+                }
+                tr td{
+                    color: #606266;
+                    &:last-child{
+                        padding: 0 10px;
+                    }
+                }
+            }
+        }
+        .tip-msg {
+            padding: 10px 0;
+        }
+    }
+    .color-red {
+        color: @color-red;
+    }
+    .btn {
+        padding: 10px 20px 10px 0;
+        text-align: right;
+        border-top: 1px solid #EDECF0;
+    }
+    .el-button {
+        min-width:80px;
+    }
+    /deep/ .el-dialog__body{
+        padding: 0;
+    }
+    .save-txt {
+        padding: 40px 0;
+        text-align: center;
+        border-bottom: 1px solid #EDECF0;
+    }
+    .save-btn {
+        padding: 10px;
+        text-align: right;
     }
 </style>

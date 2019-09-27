@@ -5,7 +5,7 @@
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="体系">
           <el-select v-model="searchForm.systemTag" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -40,7 +40,7 @@
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" border :max-height="tableNumberCom">
         <el-table-column align="center" label="体系" min-width="50">
           <template slot-scope="scope">
-            <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+            <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="成交总价" min-width="50">
@@ -87,7 +87,7 @@
         <div>
           <p class="form-label system">体系：</p>
           <el-select v-model="systemType" size="small" placeholder="全部" :disabled="forbid" :clearable="true" style="width:200px">
-            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -160,6 +160,14 @@ import { TOOL } from "@/assets/js/common";
 
 export default{
   mixins: [MIXINS],
+  props: {
+      systemArr: {
+          type: Array,
+          default: function() {
+              return []
+          }
+      }
+  },
   components: {
     ScreeningTop
   },
@@ -194,7 +202,6 @@ export default{
     }
   },
   created(){
-    this.getSystemTag()
     this.getDictionary();//字典
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){

@@ -3,53 +3,57 @@
     <ul class="tabs">
       <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
-    <low-commission v-if="activeItem==1"></low-commission>
-    <house-status-setting v-if="activeItem==2"></house-status-setting>
-    <apl-time v-if="activeItem==3"></apl-time>
-
+    <component :is="current" :systemArr="systemTagList"></component>
     </div>
 </template>
            
 <script>
-  import { FILTER } from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import aplTime from "./aplTime";
   import lowCommission from "./lowCommission";
-  import houseStatusSetting from "./houseStatusSetting";
+  import conAttachment from "./conAttachment";
 export default{
-    mixins: [FILTER,MIXINS],
+    mixins: [MIXINS],
     data() {
         return {
-           activeItem: 1, //Tab当前项
-           tabs: [
-          {
-            id: 1,
-            name: "低佣比例设置",
-          },
-          {
-            id: 2,
-            name: "房源状态设置",
-          },
-          {
-            id: 3,
-            name: "申诉时间设置",
-          },
-          {
-            id: 4,
-            name: "合同附件库设置",
-          }
-        ],
+            activeItem: 1, //Tab当前项
+            current: "lowCommission", //当前组件
+            tabs: [
+              {
+                id: 1,
+                name: "低佣比例设置",
+              },
+              {
+                id: 2,
+                name: "申诉时间设置",
+              },
+              {
+                id: 3,
+                name: "合同附件库设置",
+              }
+          ],
         }
+    },
+    created() {
+        // 获取体系
+        this.getSystemTag()
     },
     methods:{
         checkTab(item) {
             this.activeItem = item.id;
+            if (item.id == 1) {
+              this.current = "lowCommission";
+            } else if (item.id == 2) {
+              this.current = "aplTime";
+            } else {
+              this.current = "conAttachment";
+            }
         }
     },
     components:{
         aplTime,
         lowCommission,
-        houseStatusSetting
+        conAttachment
     }
 }
 </script>
