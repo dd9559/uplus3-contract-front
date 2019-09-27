@@ -170,7 +170,7 @@ export default new Router({
           component: operationLog,
           meta: {
             root: true,
-            list: ["操作日志", "操作日志"]
+            list: ["操作日志"]
           }
         },
         //操作模块 end
@@ -221,7 +221,7 @@ export default new Router({
           component: receiptCheck,
           meta: {
             root: true,
-            list: ["二手房","财务", "收款审核"]
+            list: ["财务", "收款审核"]
           }
         },
         // 业绩板块
@@ -363,7 +363,7 @@ export default new Router({
           component: contractList,
           meta: {
             root: true,
-            list: ["合同", "合同列表"]
+            list: ["二手房","合同", "合同列表"]
           }
         },
         // 签后
@@ -415,10 +415,6 @@ export default new Router({
             list: ["二手房","合同", "合同审核"]
           }
         },
-        {
-          path: "login",
-          component: Login
-        },
         //分账/打款详情
         {
           path: "routingRemitDetail",
@@ -453,5 +449,10 @@ export default new Router({
           component: otherContractDetail,
         },
       ]
-    }]
+    },
+    {
+      path: "/login",
+      component: Login
+    },
+  ]
 });

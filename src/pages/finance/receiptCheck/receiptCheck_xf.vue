@@ -3,35 +3,51 @@
     <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="getList" header-row-class-name="theader-bg" style="width: 100%;max-height:500px;" @row-dblclick="toDetails">
       <el-table-column align="center" min-width="120" label="收款ID" prop="payCode"
                        :formatter="nullFormatter"></el-table-column>
-      <el-table-column align="center" label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
+      <el-table-column align="center" label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
         <template slot-scope="scope">
-          <ul class="contract-msglist">
-            <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.contCode}}</span></li>
-            <li class="code-paper">纸质合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.paperCode|getLabel}}</span></li>
+          <ul class="contract-msg">
+            <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.cCode}}</span></li>
+            <li class="code-paper">纸质合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.cPaperCode}}</span></li>
           </ul>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="120" label="项目名称" prop="address"
+      <el-table-column align="center" min-width="120" label="项目名称" prop="projectName"
                        :formatter="nullFormatter"></el-table-column>
-      <el-table-column align="center" min-width="60" label="签约日期" prop="contType" :formatter="nullFormatter"></el-table-column>
-      <el-table-column align="center" min-width="60" label="成交总价" prop="recordType" :formatter="nullFormatter"></el-table-column>
-      <el-table-column align="center" min-width="60" label="实收/应收（佣金)" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-      <el-table-column align="center" min-width="80" label="收佣状态"></el-table-column>
-      <el-table-column align="center" min-width="60" label="成交经纪人">
+      <el-table-column align="center" min-width="120" label="签约日期">
         <template slot-scope="scope">
-          <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+          <span>{{scope.row.signDate|formatDate}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" min-width="90" label="成交总价" prop="dealPrice" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="90" label="实收/应收（佣金)">
+        <template slot-scope="scope">
+          <span>{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" min-width="80" label="收佣状态">
+        <template slot-scope="scope">
+          <span>{{scope.row.statusReceiveAmount|getLabel}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" min-width="120" label="成交经纪人">
+        <template slot-scope="scope">
+          <span>{{scope.row.dealAgentStoreName}}-{{scope.row.dealAgentName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="店长" min-width="120">
         <template slot-scope="scope">
-
+          <span>{{scope.row.dealAgentStoreName}}-{{scope.row.shopOwnerName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="80" label="客户姓名"></el-table-column>
-      <el-table-column align="center" min-width="80" label="产权地址"></el-table-column>
-      <el-table-column align="center" min-width="80" label="户型"></el-table-column>
-      <el-table-column align="center" min-width="80" label="建筑面积（㎡）"></el-table-column>
-      <el-table-column align="center" min-width="80" label="收款人"></el-table-column>
+      <el-table-column align="center" min-width="80" label="客户姓名" prop="objName" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="120" label="产权地址" prop="propertyRightAddr" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="80" label="户型" prop="houseType" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="90" label="建筑面积（㎡）" prop="square" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="120" label="收款人">
+        <template slot-scope="scope">
+          <span>{{scope.row.deptName}}-{{scope.row.employeeName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="当前审核人" min-width="120">
         <template slot-scope="scope">
           <p v-if="!scope.row.auditStore&&!scope.row.auditName">-</p>
@@ -53,27 +69,27 @@
           <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
+      <el-table-column align="center" label="创建时间" min-width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.createTime|formatTime}}</span>
+          <span>{{scope.row.createTime|formatTime(false)}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="收款时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
+      <el-table-column align="center" label="收款时间" min-width="120">
         <template slot-scope="scope">
-          <span>{{scope.row.toAccountTime|formatTime}}</span>
+          <span>{{scope.row.skTime|formatTime(false)}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="80" label="状态" prop="payStatus">
+      <el-table-column align="center" min-width="80" label="状态">
         <template slot-scope="scope">
+          <span>{{scope.row.state|getLabel}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" fixed="right" min-width="120">
         <template slot-scope="scope">
+          <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1">编辑</el-button>
           <template v-if="scope.row.auditButton">
             <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button>
-            <el-button type="text" @click="cellOpera(scope.row,'del')">编辑</el-button>
           </template>
-          <span v-else>--</span>
         </template>
       </el-table-column>
     </el-table>
@@ -90,6 +106,14 @@
   }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+  @import "~@/assets/common.less";
+  /deep/.contract-msg{
+    margin: 0;
+    text-align: left;
+    span{
+      color: @color-blue;
+      cursor: pointer;
+    }
+  }
 </style>

@@ -48,17 +48,11 @@
 
                   views.forEach((item,index)=>{//获取侧边栏信息中用户可访问的元素
                     item.child.forEach(tip=>{
-                      if(!tip['child']){
-                        if(arr.includes(tip.code)){
-                          sliders.push(tip)
+                      tip.child.forEach(grade=>{
+                        if(arr.includes(grade.code)){
+                          sliders.push(grade)
                         }
-                      }else {
-                        tip.child.forEach(grade=>{
-                          if(arr.includes(grade.code)){
-                            sliders.push(grade)
-                          }
-                        })
-                      }
+                      })
                     })
                   })
                   this.$router.push({

@@ -209,6 +209,7 @@
         </el-table>
         <!-- 分页 -->
         <el-pagination
+          class="pagination-info"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNum"
@@ -484,6 +485,7 @@
         </el-table>
         <!-- 分页 -->
         <el-pagination
+          class="pagination-info"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="pageNum"

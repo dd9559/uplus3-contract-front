@@ -1,5 +1,9 @@
 const receiptCheck={
   props:{
+    type:{
+      type:Number,
+      default:1
+    },
     list:{
       type:Array,
       default(){
@@ -27,8 +31,30 @@ const receiptCheck={
       }
       this.msgOpera(param)
     },
-    toDetails:function () {
+    toDetails:function (row) {
+      this.setPath(this.getPath.concat({name: '收款详情'}))
+      this.$router.push({
+        path:'/receiptBillDetails',
+        query:{
+          id:row.id
+        }
+      })
+    },
+    //操作
+    cellOpera:function (row,type='check') {
+      if(type==='edit'){
+        this.setPath(this.getPath.concat({name: '编辑收款'}))
+        this.$router.push({
+          path:'/receiptBill_simple',
+          query:{
+            contId:row.id,
+            type:this.type,
+            edit:true
+          }
+        })
+      }else{
 
+      }
     }
   }
 }
