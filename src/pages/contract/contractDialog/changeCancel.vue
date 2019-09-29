@@ -25,7 +25,8 @@
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
 									<div class="namePath" @click="previewPhoto(uploadList,index)">
-										<upload-cell :type="item.fileType"></upload-cell>
+										<img class="signImage" :src="item.path|getSignImage(changeCancelFiles)" alt="" v-if="isPictureFile(item.fileType)">
+										<upload-cell :type="item.fileType" v-else></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
@@ -55,7 +56,8 @@
 							<li v-for="(item,index) in address.value" :key="index">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
 									<div class="namePath" @click="previewPhoto(address.value,index)">
-										<upload-cell :type="item.fileType"></upload-cell>
+										<img class="signImage" :src="item.path|getSignImage(changeCancelFiles)" alt="" v-if="isPictureFile(item.fileType)">
+										<upload-cell :type="item.fileType" v-else></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
@@ -93,7 +95,8 @@
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
 									<div class="namePath" @click="previewPhoto(uploadList,index)">
-										<upload-cell :type="item.fileType"></upload-cell>
+										<img class="signImage" :src="item.path|getSignImage(changeCancelFiles)" alt="" v-if="isPictureFile(item.fileType)">
+										<upload-cell :type="item.fileType" v-else></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
@@ -123,7 +126,8 @@
 							<li v-for="(item,index) in address.value" :key="index">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
 									<div class="namePath" @click="previewPhoto(address.value,index)">
-										<upload-cell :type="item.fileType"></upload-cell>
+										<img class="signImage" :src="item.path|getSignImage(changeCancelFiles)" alt="" v-if="isPictureFile(item.fileType)">
+										<upload-cell :type="item.fileType" v-else></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
@@ -230,7 +234,8 @@ export default {
           state: false,
           name: '下载合同主体'
         },
-			}
+			},
+			changeCancelFiles:[],//图片缩略图
     };
   },
 
@@ -265,9 +270,15 @@ export default {
         element.fileType = fileType;
       });
 			this.uploadList=this.uploadList.concat(arr);
-      // let fileType = this.$tool.get_suffix(arr[0].name);
-      // arr[0].fileType = fileType;
-			// this.uploadList.push(arr[0])
+			let preloadList=[]
+			arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+				if(this.isPictureFile(item.fileType)){
+					preloadList.push(item.path)
+				}
+			})
+			this.fileSign(preloadList,'preload').then(res=>{
+				this.changeCancelFiles=this.changeCancelFiles.concat(res)
+			})
 		},
 		moveIn(value){
 			this.isDelete=value
@@ -438,21 +449,19 @@ export default {
 						element.fileType=fileType;
 					});
 					this.address=address_;
+					let preloadList=[]
+          address_.value.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            if(this.isPictureFile(item.fileType)){
+              preloadList.push(item.path)
+            }
+          })
+          this.fileSign(preloadList,'preload').then(res=>{
+            this.changeCancelFiles=res
+          })
 				}
 			})
 		},
-		//图片预览
-  //   getPicture(value,index){
-  //     this.start=index;
-  //     let arr=[];
-  //     // console.log(value);
-  //     value.forEach(item =>{
-  //       arr.push(item.path)
-  //     })
-  //     this.fileSign(arr)
-  //   }
   },
-
   created() {
     console.log("222");
     if (this.dialogType === "changeEdit" || this.dialogType === "changeLook") {
@@ -472,7 +481,23 @@ export default {
 				this.getContractBody();
 			}
     }
-  }
+	},
+	filters:{
+		/**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
+    }
+	}
 };
 </script>
 
@@ -623,6 +648,11 @@ export default {
 						box-sizing: border-box;
 						border-radius:4px;
 						background: @color-F2;
+						.signImage{
+							width:60px;
+							height: 60px;
+							margin: 1px 0;
+						}
 						> p{
 							padding-top: 5px;
 							display: inline-block;
