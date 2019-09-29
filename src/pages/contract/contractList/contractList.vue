@@ -467,7 +467,7 @@ export default {
       pageSize: 10,
       water: false,
       // contractCode: "",
-      tiaoyong: true,
+      tiaoyong: false,
       layerAudit:{},
       jiesuan: false,
       changeCancel: false,
