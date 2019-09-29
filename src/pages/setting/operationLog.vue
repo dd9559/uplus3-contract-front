@@ -5,6 +5,11 @@
         @propResetFormFn="resetFormFn">
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
+                    <el-form-item label="交易类型">
+                        <el-select v-model="bustype" placeholder="请选择">
+                            <el-option v-for="item in dictionary['711']" :key="item.value" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </el-form-item>
                      <el-form-item label="关键字">
                         <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
                     </el-form-item>
@@ -83,9 +88,10 @@
 <script>
     import ScreeningTop from '@/components/ScreeningTop';
     import { MIXINS } from "@/assets/js/mixins";
+    import {FILTER} from "@/assets/js/filter";
     var param={}
     export default {
-        mixins: [MIXINS],
+        mixins: [MIXINS,FILTER],
         data() {
             return {
                 Loading:false,
@@ -99,6 +105,10 @@
                 pageNum: 1,
                 selectType:'',
                 total:0,
+                dictionary: {
+                '711':'',
+                },
+                bustype:0,
                 users:[],
                 type:[],
                 depUser:'',
@@ -109,6 +119,9 @@
                     },
                  }
             }
+        },
+         created(){
+            this.getDictionary()
         },
         mounted() {
             this.remoteMethod()
@@ -187,7 +200,8 @@
                         objectType:this.selectType,
                         startTime:this.searchTime!== null?this.searchTime[0]:'',
                         endTime:this.searchTime!==null?this.searchTime[1]:'',
-                        keyword:this.keyword
+                        keyword:this.keyword,
+                         plateType:this.bustype
                     }
                     
                     this.$ajax.get('/api/operation/getList',param).then(res => {
@@ -212,6 +226,7 @@
                 this.depUser='',
                 this.department=''
                 this.users=''
+                this.bustype=0
                 this.departmentName=''
                 this.clearSelect()
                 this.EmployeList = []
@@ -227,7 +242,8 @@
                         objectType:this.selectType,
                         startTime:this.searchTime!== null?this.searchTime[0]:'',
                         endTime:this.searchTime!==null?this.searchTime[1]:'',
-                        keyword:this.keyword
+                        keyword:this.keyword,
+                        plateType:this.bustype
                     }
                  sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/operationLog',

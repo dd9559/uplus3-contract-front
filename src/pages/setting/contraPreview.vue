@@ -86,8 +86,10 @@
 </template>
 
 <script>
-import {TOOL} from "@/assets/js/common"
+import {TOOL} from "@/assets/js/common";
+import {MIXINS} from "@/assets/js/mixins";
 export default{
+    mixins: [MIXINS],
         data(){
           return{
             saveBtn:true,
@@ -137,6 +139,13 @@ export default{
             this.show=this.$route.query.show
             this.id=this.$route.query.id
             this.enableTemplateId=this.$route.query.enableTemplateId
+            if(this.show==1){
+                this.setPath(this.getPath.concat({name:'合同模板上传'}),'contractTemplate')
+            }else if(this.show==2){
+                this.setPath(this.getPath.concat({name:'合同模板预览'}),'contractTemplate')
+            }else{
+                this.setPath(this.getPath.concat({name:'合同模板编辑'}),'contractTemplate')
+            }
         },
         mounted(){
             this.divWidth=706

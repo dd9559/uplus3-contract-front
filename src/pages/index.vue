@@ -32,7 +32,7 @@
     },
     methods: {
       toLink: function (item, index) {
-        if (index < 2) {
+        if (index < 3) {
           if (item.path.includes('/storeReceive')) {//业绩报表特殊路由处理
             item.path = item.path.split('?')[0]
           }
