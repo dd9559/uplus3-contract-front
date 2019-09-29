@@ -856,7 +856,8 @@ export default {
 
         })
       }
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractDetails'));
+      // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
       if(this.contType>3){
         this.$router.replace({
           path: "/newIntention",
