@@ -98,7 +98,8 @@
                 <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath" @click="previewPhoto(uploadList,index)">
-                        <upload-cell :type="item.fileType"></upload-cell>
+                        <img class="signImage" :src="item.path|getSignImage(layerAuditFiles)" alt="" v-if="isPictureFile(item.fileType)">
+                        <upload-cell :type="item.fileType" v-else></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
@@ -187,6 +188,7 @@ export default {
           // start:'',
           //上传的协议
           uploadList: [],
+          layerAuditFiles:[],//协议缩略图
           isDelete:'',
           // 弹框里用到的
           dialogImageUrl: '',
@@ -196,22 +198,9 @@ export default {
           
         }
     },
-
-    computed: {
-        getDialogVisible: function () {
-            return this.dialogVisible
-        },
-        getLayerAudit: function () {
-            return this.layerAudit
-        }
+    created() {
+      this.getDictionary();  
     },
-
-    filters: {
-       getDate(val) {
-         return TOOL.dateFormat(val);
-       }
-    },
-
     methods: {
       trim(str){  
         return str.replace(/(^\s*)|(\s*$)/g, "")
@@ -247,13 +236,22 @@ export default {
 
       //获取文件路径后缀名
       uploadSubject(data) {
-          let arr = data.param;
-          console.log(data)
-          arr.forEach(element => {
-                let fileType = this.$tool.get_suffix(element.name);
-                element.fileType = fileType;
-            });
-			    this.uploadList=this.uploadList.concat(arr);
+        let arr = data.param;
+        console.log(data)
+        arr.forEach(element => {
+          let fileType = this.$tool.get_suffix(element.name);
+          element.fileType = fileType;
+        });
+        this.uploadList=this.uploadList.concat(arr);
+        let preloadList=[]
+        arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+          if(this.isPictureFile(item.fileType)){
+            preloadList.push(item.path)
+          }
+        })
+        this.fileSign(preloadList,'preload').then(res=>{
+          this.layerAuditFiles=this.layerAuditFiles.concat(res)
+        })
       }, 
 
       //合同主体的删除
@@ -437,16 +435,40 @@ export default {
        
       }
     },
+    computed: {
+        getDialogVisible: function () {
+            return this.dialogVisible
+        },
+        getLayerAudit: function () {
+            return this.layerAudit
+        }
+    },
+
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       },
+       /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+      getSignImage(val,list){
+        if(list.length===0){
+          return '';
+        }else {
+          return list.find(item=>{
+            return item.includes(val)
+          })
+        }
+      }
+    },
     watch:{
       layerAudit:function(news,old){
         this.$set(this.auditForm,"money1",news.ownerCommission)
         this.$set(this.auditForm,"money2",news.custCommission)
         this.$set(this.auditForm,"money4",news.otherCooperationCost)
       }
-    },
-    created() {
-      this.getDictionary();
-      // this.getData();    
     },
     mounted() {
       var _this = this;
@@ -651,6 +673,11 @@ export default {
             box-sizing: border-box;
             border-radius:4px;
             background: #F2F3F8;
+            .signImage{
+							width:60px;
+							height: 60px;
+							margin: 1px 0;
+						}
             > p{
             padding-top: 5px;
             display: inline-block;

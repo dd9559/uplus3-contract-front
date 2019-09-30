@@ -171,7 +171,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column align="center" label="合同信息" min-width="200" fixed>
+        <el-table-column align="center" label="合同信息" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -237,10 +237,10 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="房客源店长" min-width="120">
+        <el-table-column align="center" label="房客源店长" min-width="150">
           <template slot-scope="scope">
-            <p>房：{{scope.row.dealAgentStoreName}}</p>
-            <p>客：{{scope.row.dealAgentName}}</p>
+            <p>房：{{scope.row.houseStoreName+"-"+scope.row.houseShopOwner}}</p>
+            <p>客：{{scope.row.guestStoreName+"-"+scope.row.guestShopOwner}}</p>
           </template>
         </el-table-column>
         <el-table-column align="center" label="签约日期" min-width="90">
@@ -770,7 +770,8 @@ export default {
     //收款
     gathering(item) {
       if(this.power['sign-ht-info-collect'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','创建收款'],'contractList'));
+        let pathArr = this.getPath.concat([{name:"创建收款"}])
+        this.setPath(pathArr)
         this.$router.push({
           path:'/receiptBill',
           query:{
@@ -785,7 +786,8 @@ export default {
     //付款
     payment(item) {
       if(this.power['sign-ht-info-pay'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','创建付款'],'contractList'));
+        let pathArr = this.getPath.concat([{name:"创建付款"}])
+        this.setPath(pathArr)
         this.$router.push({
           path:'/payBill',
           query:{
@@ -822,33 +824,18 @@ export default {
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        // let pathArr = this.getPath.concat([{name:"合同详情"}])
+        // this.setPath(pathArr)
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          // this.$router.push({
-          //   path: "/contractDetails",
-          //   query: {
-          //     id: value.id,//合同id
-          //     code: value.code,//合同编号
-          //     contType: value.contType.value//合同类型
-          //   }
-          // });
           let newPage = this.$router.resolve({
             path: "/contractDetails",
             query: {
               id: value.id,//合同id
-              // code: value.code,//合同编号
               contType: value.contType.value//合同类型
             }
           });
           window.open(newPage.href, '_blank');
         }else{
-          // this.$router.push({
-          //   path: "/detailIntention",
-          //   query: {
-          //     id: value.id,
-          //     contType: value.contType.value
-          //   }
-          // });
           let newPage = this.$router.resolve({
             path: "/detailIntention",
             query: {
@@ -864,7 +851,8 @@ export default {
     },
     uploadData(value) {
         if(this.power['sign-com-htdetail'].state){
-          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+          // let pathArr = this.getPath.concat([{name:"合同详情"}])
+          // this.setPath(pathArr)
           this.$router.push({
             path: "/contractDetails",
             query: {
@@ -899,7 +887,8 @@ export default {
         res=res.data;
         if(res.status===200){
           localStorage.removeItem('backMsg')
-          this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
+          let pathArr = this.getPath.concat([{name:"新增合同"}])
+          this.setPath(pathArr)
           if (command === 1 || command === 2 || command === 3) {
             this.$router.push({
               path: "/addContract",
@@ -934,7 +923,8 @@ export default {
     },
     //合同预览
     goPreview(item) {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+      let pathArr = this.getPath.concat([{name:"合同预览"}])
+      this.setPath(pathArr)
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -946,7 +936,8 @@ export default {
     //合同审核
     goCheck(item) {
       if(this.power['sign-ht-info-view'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+        let pathArr = this.getPath.concat([{name:"合同预览"}])
+        this.setPath(pathArr)
         this.$router.push({
           path:'/contractPreview',
           query:{

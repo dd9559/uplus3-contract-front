@@ -311,7 +311,7 @@ export default {
     },
     beforeRouteEnter(to,from,next){
       next(vm=>{
-        vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+        vm.setPath(vm.$tool.getRouter(['二手房','合同','合同列表','合同详情'],'contractList'));
       })
     },
 
@@ -329,7 +329,7 @@ export default {
 
         //预览事件
         onPreview() {
-            this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+            this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同预览'],'contractList'));
             this.$router.push({
                 path:'/contractPreview',
                 query:{
@@ -340,7 +340,7 @@ export default {
 
         //编辑事件
         onEdit(e) {
-            this.setPath(this.$tool.getRouter(['合同','合同列表','编辑合同'],'contractList'));
+            this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractList'));
             this.$router.push({
                 path:'/newIntention',
                 query:{

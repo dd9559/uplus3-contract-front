@@ -258,7 +258,8 @@
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath" @click="previewPhoto(uploadList,index)">
-                        <upload-cell :type="item.fileType"></upload-cell>
+                        <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
+                        <upload-cell :type="item.fileType" v-else></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
@@ -346,7 +347,8 @@
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath" @click="previewPhoto(uploadList,index)">
-                        <upload-cell :type="item.fileType"></upload-cell>
+                        <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
+                        <upload-cell :type="item.fileType" v-else></upload-cell>
                         <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
@@ -497,6 +499,7 @@
         // checked: false, //是否有解除协议
 
         tableData:[],
+        adjustCheckFiles:[],//调佣详情附件缩略图
 
         power: {
           'sign-ht-maid-query': {
@@ -512,10 +515,6 @@
               state:false,
           },
         }
-
-
-
-
       }
     },
 
@@ -542,7 +541,21 @@
            return '-'
          }
          return TOOL.timeFormat(val)
-       }
+       },
+        /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+      getSignImage(val,list){
+        if(list.length===0){
+          return '';
+        }else {
+          return list.find(item=>{
+            return item.includes(val)
+          })
+        }
+      }
     },
 
     methods:{
@@ -780,7 +793,15 @@
               this.myCheckId = data.data.checkId;
               this.uploadList = data.data.voucher;
               this.checkInfo = data.data.list
-              console.log()
+              let preloadList=[]
+              this.uploadList.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                if(this.isPictureFile(item.fileType)){
+                  preloadList.push(item.path)
+                }
+              })
+              this.fileSign(preloadList,'preload').then(res=>{
+                this.adjustCheckFiles=res
+              })
             }
           }).catch(error => {
               this.$message({
@@ -810,6 +831,15 @@
             this.layerAudit = data.data;
             this.myCheckId = data.data.checkId;
             this.uploadList = data.data.voucher;
+            let preloadList=[]
+            this.uploadList.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if(this.isPictureFile(item.fileType)){
+                preloadList.push(item.path)
+              }
+            })
+            this.fileSign(preloadList,'preload').then(res=>{
+              this.adjustCheckFiles=res
+            })
           }
         }).catch(error => {
             this.$message({
@@ -1310,6 +1340,11 @@
             box-sizing: border-box;
             border-radius:4px;
             background: #F2F3F8;
+            .signImage{
+              width:60px;
+              height: 60px;
+              margin: 1px 0;
+            }
             > p{
               padding-top: 5px;
               display: inline-block;

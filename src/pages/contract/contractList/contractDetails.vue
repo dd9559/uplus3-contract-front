@@ -318,12 +318,12 @@
               <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(uploadList,index,2)">
-                    <upload-cell :type="item.fileType"></upload-cell>
+                    <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt="" v-if="isPictureFile(item.fileType)">
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                 <!-- v-if="isDelete===item.title+item.path" -->
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
           </div>
@@ -345,7 +345,8 @@
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                       <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <upload-cell :type="item_.fileType"></upload-cell>
+                        <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                        <upload-cell :type="item_.fileType" v-else></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
@@ -368,7 +369,8 @@
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                       <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <upload-cell :type="item_.fileType"></upload-cell>
+                        <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                        <upload-cell :type="item_.fileType" v-else></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
@@ -391,7 +393,8 @@
                   <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                     <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                       <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <upload-cell :type="item_.fileType"></upload-cell>
+                        <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                        <upload-cell :type="item_.fileType" v-else></upload-cell>
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
@@ -1107,6 +1110,8 @@ export default {
       sellerInfo: [],
       sellerFirst: {},
       dialogSuccess:false,//提示上传资料库
+      contDataFiles:[],//资料库图片缩略图
+      mainDataFiles:[],//合同主体图片缩略图
     };
   },
   created() {
@@ -1137,7 +1142,7 @@ export default {
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
-      vm.setPath(vm.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+      vm.setPath(vm.$tool.getRouter(['二手房','合同','合同列表','合同详情'],'contractList'));
     })
   },
   methods: {
@@ -1252,7 +1257,7 @@ export default {
     },
     //合同预览
     goPreview() {
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同预览'],'contractList'));
+      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -1312,7 +1317,7 @@ export default {
 
         })
       }
-      this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractList'));
       this.$router.push({
         path: "/addContract",
         query: {
@@ -1643,7 +1648,6 @@ export default {
       this.$ajax.get("/api/contract/getTransFlowListByCity").then(res => {
         res = res.data;
         if (res.status === 200) {
-          console.log(res.data);
           this.transFlowList = res.data;
         }
       });
@@ -1676,6 +1680,15 @@ export default {
             element.fileType=fileType;
           });
           this.uploadList=uploadList_;
+          let preloadList=[]
+          uploadList_.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            if(this.isPictureFile(item.fileType)){
+              preloadList.push(item.path)
+            }
+          })
+          this.fileSign(preloadList,'preload').then(res=>{
+            this.mainDataFiles=res
+          })
         }
       })
     },
@@ -1686,13 +1699,29 @@ export default {
         let fileType = this.$tool.get_suffix(element.name);
         element.fileType = fileType;
       });
-			this.uploadList=this.uploadList.concat(arr);
+      this.uploadList=this.uploadList.concat(arr);
+      let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.mainDataFiles=this.mainDataFiles.concat(res)
+      })
     },
     //合同主体的删除
-    ZTdelectData(index){
+    ZTdelectData(index,path){
       if(this.contractDetail.contState.value===3){
         if(this.uploadList.length>1){
           this.uploadList.splice(index,1);
+          //没必要删除缩略图数组
+          // let mainIndex
+          // this.mainDataFiles.forEach((element,index)=>{
+          //   if(element.includes(path)){
+          //     mainIndex=index
+          //   }
+          // })
           let param = {
             contId:this.id,
             datas:this.uploadList
@@ -1700,7 +1729,6 @@ export default {
           this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
             res=res.data;
             if(res.status===200){
-              // this.getContractBody();
               this.$message({
                 message:'删除成功',
                 type:'success'
@@ -1767,7 +1795,6 @@ export default {
         res = res.data;
         if (res.status === 200) {
           let dataType = JSON.parse(res.data);
-          console.log(dataType);
           dataType.forEach(element => {
             if(element.type==='1'){
               let item={};
@@ -1803,40 +1830,43 @@ export default {
       this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-          // this.buyerList=[];
-          // this.sellerList=[];
-          // this.otherList=[];
+          let pathList = []
           let address = JSON.parse(res.data.address);
           address.forEach(element => {
             element.value.forEach(item => {
               let fileType = this.$tool.get_suffix(item.name);
               item.fileType=fileType
+              pathList.push(item)
             });
             if(element.kind==="1"){
               this.buyerList.forEach(ele => {
                 if(element.title===ele.title){
-                  // let fileType = this.$tool.get_suffix(element.name)
                   ele.value=element.value
                 }
               });
-              // this.buyerDataList.push(element);
             }else if(element.kind==="2"){
               this.sellerList.forEach(ele => {
                 if(element.title===ele.title){
                   ele.value=element.value
                 }
               });
-              // this.sellerDataList.push(element);
             }else if(element.kind==="3"){
               this.otherList.forEach(ele => {
                 if(element.title===ele.title){
                   ele.value=element.value
                 }
               });
-              // this.otherDataList.push(element);
             }
           });
-          
+          let preloadList=[]
+          pathList.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            if(this.isPictureFile(item.fileType)){
+              preloadList.push(item.path)
+            }
+          })
+          this.fileSign(preloadList,'preload').then(res=>{
+            this.contDataFiles=res
+          })
         }
       });
     },
@@ -1859,6 +1889,15 @@ export default {
         // this.otherList[num].value.push(arr[0]);
         this.otherList[num].value=this.otherList[num].value.concat(arr);
       }
+      let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.contDataFiles=this.contDataFiles.concat(res)
+      })
     },
     //显示删除按钮
     moveIn(value){
@@ -2088,6 +2127,20 @@ export default {
       var s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
       return result = h + ":" + m + ":" + s;
     },
+    /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
+    }
   }
 };
 </script>
@@ -2314,6 +2367,11 @@ export default {
     box-sizing: border-box;
     border-radius:4px;
     background: @color-F2;
+    .signImage{
+      width:60px;
+      height: 60px;
+      margin: 1px 0;
+    }
     > p{
       padding-top: 5px;
       display: inline-block;
