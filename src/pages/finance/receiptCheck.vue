@@ -151,6 +151,7 @@
       }
       this.activeComponent=`receiptCheck_${urlParam.type}`
       this.getData()
+      this.getDictionary()
     },
     methods:{
       getExcel:function () {

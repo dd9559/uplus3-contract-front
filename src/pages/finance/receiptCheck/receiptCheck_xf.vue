@@ -55,7 +55,7 @@
             <span>{{scope.row.auditStore}}</span>
             <p>{{scope.row.auditName}}</p>
           </template>
-          <p class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)">{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
+          <p class="btn-text-info" type="text" v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditId)&&scope.row.state&&scope.row.state.value===3" @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditId?2:1)">{{getUser.user.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</p>
         </template>
       </el-table-column>
       <el-table-column align="center" label="下一步审核人" min-width="120">
@@ -66,7 +66,7 @@
 
             <p>{{scope.row.nextAuditName}}</p>
           </template>
-          <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
+          <p class="btn-text-info color-red" type="text" v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditId)&&scope.row.state&&scope.row.state.value===3" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="120">

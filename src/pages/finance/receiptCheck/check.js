@@ -22,14 +22,14 @@ const receiptCheck={
      * @param type
      */
     toLink:function (row,type) {
-      let param={
-        contType:row.contTypeId,
-        contId:row.contId,
-        contCode:row.contCode,
-        operaType:type,
-        power:type==='cont'?this.power['sign-com-htdetail']:type==='house'?this.power['sign-com-house']:type==='customer'?this.power['sign-com-cust']:''
-      }
-      this.msgOpera(param)
+      this.setPath(this.getPath.concat({name:'合同详情'}))
+      this.$router.push({
+        path:'/otherContractDetail',
+        query:{
+          id:row.cid,
+          type:this.type===1?'newHouse':this.type===2?'longRent':this.type===3?'financial':''
+        }
+      })
     },
     toDetails:function (row) {
       this.setPath(this.getPath.concat({name: '收款详情'}))
