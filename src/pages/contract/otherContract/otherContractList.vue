@@ -180,6 +180,7 @@ export default {
     },
     //获取列表数据
     getContractList(){
+      debugger
       let url,param
       param = {
         pageNum: this.currentPage,
@@ -224,6 +225,7 @@ export default {
       this.$ajax.get(url,param).then(res=>{
         res=res.data
         if(res.status===200){
+          debugger
           this.list=res.data.list
           this.total=res.data.total
           this.list.forEach(element=>{

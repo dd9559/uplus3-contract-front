@@ -406,6 +406,18 @@
             <div class="classifyFoot" v-if="contractDetail.laterStageState.value===4">
               <p class="objection">拒绝理由: {{contractDetail.refuseReasons}}</p>
             </div>
+            <div class="accessoryDown" v-if="attachmentList.length>0">
+              <ul>
+                <li>合同相关附件下载</li>
+                <li v-for="item in attachmentList"
+                :key="item.path"
+                :title="item.enclosureName.length>10?item.enclosureName:''"
+                @click="downloadAttachment(item)"
+                >
+                {{item.enclosureName}}
+                </li>
+              </ul>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="回访录音" name="fourth">
@@ -1112,6 +1124,7 @@ export default {
       dialogSuccess:false,//提示上传资料库
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
+      attachmentList:[],//合同附件
     };
   },
   created() {
@@ -1139,6 +1152,7 @@ export default {
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
+    this.getAttachment()//合同附件列表
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
@@ -2104,6 +2118,31 @@ export default {
           this.checkData=res.data.data;
         }
       })
+    },
+    //合同附件列表
+    getAttachment(){
+      this.$ajax.get("/api/attachment/getdelAttachment").then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.attachmentList = res.data
+        }
+      })
+    },
+    //附件下载
+    downloadAttachment(item){
+      let url,title
+      url = item.path
+      title = item.enclosureName
+      var a = document.createElement("a");
+      a.setAttribute("href", url);
+      a.setAttribute("download", title);
+      a.setAttribute("id", "startTelMedicine");
+      // 防止反复添加
+      if (document.getElementById("startTelMedicine")) {
+        document.body.removeChild(document.getElementById("startTelMedicine"));
+      }
+      document.body.appendChild(a);
+      a.click();
     }
   },
   mounted(){
@@ -2432,6 +2471,30 @@ export default {
       .objection{
         font-size: 14px;
         color: @color-FF;
+      }
+    }
+    .accessoryDown{
+      position: fixed;
+      top: 150px;
+      right: 140px;
+      ul{
+        li{
+          padding: 5px 0;
+          color: @color-blue;
+          text-decoration: underline;
+          cursor: pointer;
+          // display :inline-block ;
+          width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &:first-of-type{
+            font-size: 16px;
+            font-weight: bold;
+            color: @color-324;
+            text-decoration: none;
+          }
+        }
       }
     }
   }
