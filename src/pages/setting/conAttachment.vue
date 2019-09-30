@@ -6,7 +6,7 @@
                     <el-input v-model="searchForm.keyword" placeholder="附件名称/添加人"></el-input>
                 </el-form-item>
                 <el-form-item label="体系">
-                    <el-select class="w240" v-model="searchForm.systemTag">
+                    <el-select class="w240" v-model="searchForm.systemId">
                         <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
@@ -30,17 +30,33 @@
                 <el-button icon="el-icon-plus" @click="addFn" round type="primary">新增合同附件</el-button>
             </p>
             <el-table :data="attachData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
-                <el-table-column align="center" label="体系"></el-table-column>
-                <el-table-column align="center" label="附件名称"></el-table-column>
-                <el-table-column align="center" label="添加时间"></el-table-column>
-                <el-table-column align="center" label="添加人"></el-table-column>
+                <el-table-column align="center" label="体系" prop="systemId">
+                    <template slot-scope="scope">
+                        <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemId">{{item.value}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="附件名称" prop="enclosureName"></el-table-column>
+                <el-table-column align="center" label="添加时间" prop="createTime">
+                    <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+                </el-table-column>
+                <el-table-column align="center" label="添加人" prop="createName"></el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="medium">下载</el-button>
-                        <el-button type="text" size="medium">删除</el-button>
+                        <el-button type="text" size="medium" @click="downloadFn(attachData,scope.$index)">下载</el-button>
+                        <el-button type="text" size="medium" @click="deleteAttach(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
+            <el-pagination
+            v-if="total"
+            class="pagination-info"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-size="pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total">
+            </el-pagination>
         </div>
         <!-- 新增合同附件 -->
         <el-dialog
@@ -81,14 +97,31 @@
         <!-- 图片预览 -->
         <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
         </el-dialog>
+        <!-- 确认删除 弹窗 -->
+        <el-dialog
+        title="确认删除"
+        :closeOnClickModal="$tool.closeOnClickModal"
+        :close-on-press-escape="$tool.closeOnClickModal"
+        :visible.sync="sureDeleteDialog"
+        width="500px">
+        <div class="sure-box">
+            <p>确认删除该附件？</p>
+            <p>删除附件后将无法在合同附件库下载此附件</p>
+        </div>
+        <div class="btn">
+            <el-button @click="sureDeleteDialog=false" round>取 消</el-button>
+            <el-button type="primary" @click="sureDelete" round>确 认</el-button>
+        </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+    import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
     export default {
         name: "conAttachment",
-        mixins: [MIXINS],
+        mixins: [MIXINS,FILTER],
         props: {
             systemArr: {
                 type: Array,
@@ -102,23 +135,39 @@
                 clientHei: document.documentElement.clientHeight, //窗体高度
                 searchForm: {
                     keyword: '',
-                    systemTag: ''
+                    systemId: ''
                 },
                 addTime: [],
-                attachData: [],
-                addVisible: false,
+                attachData: [], //列表数据
+                addVisible: false, //新增弹窗
                 addSystemTag: '',
-                attachList: [],
-                dataScane:{
+                attachList: [], //上传附件数组
+                dataScane: {
                     path:"ziliaoku",
                     id:''
                 },
                 preloadList: [],
                 preloadFiles:[],
+                pageNum: 1,
+                pageSize: 10,
+                total: 0,
+                sureDeleteDialog: false, //确认删除弹窗
+                deleteId: '' //删除行id
             }
         },
         created() {
-            
+            let res = this.getDataList
+            if(res&&(res.route === this.$route.path)){
+                let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+                let query = session.query
+                this.attachData = res.data
+                this.searchForm.keyword = query.keyword
+                this.searchForm.systemId = query.systemId
+                this.addTime = query.staDate ? [query.staDate,query.endDate] : []
+            }else{
+                // 列表
+                this.getData()
+            }
         },
         mounted(){
             var _this = this
@@ -127,11 +176,65 @@
             }
         },
         methods: {
+            getData(type='init') {
+                let bool = this.addTime!=null&&this.addTime.length
+                let param = {
+                    staDate: bool ? this.addTime[0] : '',
+                    endDate: bool ? this.addTime[1] : '',
+                    pageSize: this.pageSize,
+                    pageNum: this.pageNum,
+                    cityId: this.userInfo.cityId
+                }
+                param = Object.assign({},this.searchForm,param)
+
+                //点击查询时，缓存筛选条件
+                if(type==='search'||type==='pagination'){
+                    sessionStorage.setItem('sessionQuery',JSON.stringify({
+                        path:'/conAttachment',
+                        url:'/attachment/getattachmentList',
+                        query:param
+                    }))
+                }
+
+                this.$ajax.get('/api/attachment/getattachmentList', param).then(res=>{
+                    res = res.data
+                    if(res.status === 200) {
+                        this.attachData = res.data.list
+                        this.total = res.total
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
+            },
+            // 下载
+            downloadFn(arr,i) {
+                this.fileSign([].concat(arr[i].path),'download')
+            },
+            // 删除
+            deleteAttach(i) {
+                this.sureDeleteDialog = true
+                this.deleteId = i
+            },
+            // 确认删除
+            sureDelete() {
+                this.$ajax.post('/api/attachment/delAttachment', { id: this.deleteId }).then(res=>{
+                    res = res.data
+                    if(res.status === 200) {
+                        this.$message(res.message)
+                        this.sureDeleteDialog = false
+                        this.getData()
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
+            },
+            // 新增合同附件
             addFn() {
                 this.addVisible = true
                 this.addSystemTag = ''
                 this.attachList = []
             },
+            // 上传
             addSubject(data) {
                 let arr = data.param
                 arr.forEach(item => {
@@ -172,6 +275,7 @@
                 }
                 this.attachList.splice(i,1)
             },
+            // 保存
             saveFn() {
                 if(!this.addSystemTag) {
                     this.$message({message:'体系不能为空'})
@@ -181,18 +285,52 @@
                     this.$message({message:'请上传附件'})
                     return
                 }
+
+                let arr = []
+                this.attachList.forEach(item =>{
+                    arr.push({
+                        systemId: this.addSystemTag,
+                        enclosureName: item.name,
+                        path: item.path
+                    })
+                })
+                this.$ajax.postJSON('/api/attachment/addAttaaddchment', arr).then(res=>{
+                    res = res.data
+                    if(res.status === 200) {
+                        this.$message(res.message)
+                        this.addVisible = false
+                        this.getData()
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
             },
+            // 查询
             queryFn() {
-                
+                this.pageNum = 1
+                this.getData('search')
             },
+            // 重置
             resetFormFn() {
                 this.searchForm.keyword = ''
-                this.searchForm.systemTag = ''
+                this.searchForm.systemId = ''
                 this.addTime = []
+            },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                this.pageNum = val
+                this.getData('pagination')
             },
             // 控制弹框body内容高度，超过显示滚动条
             clientHeight() {        
                 return this.clientHei - 550 + 'px'
+            }
+        },
+        computed: {
+            userInfo() {
+                return this.getUser.user
             }
         }
     }
@@ -297,5 +435,13 @@
     }
     /deep/ .el-dialog__body {
         padding: 0;
+    }
+    .sure-box {
+        text-align: center;
+        padding: 30px 0 50px 0;
+        border-bottom: 1px solid #EDECF0;
+        > p {
+            margin-top: 10px;
+        }
     }
 </style>
