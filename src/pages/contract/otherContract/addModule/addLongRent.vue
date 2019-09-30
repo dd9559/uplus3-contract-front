@@ -386,6 +386,7 @@ export default {
           this.ownerList=[];
           for (var i = 0; i < contractDetail.contractInfo.ownerList.length; i++) {
             let element = {
+              pid:contractDetail.contractInfo.ownerList[i].pid,
               name:contractDetail.contractInfo.ownerList[i].name,
               mobile:contractDetail.contractInfo.ownerList[i].mobile,
               encryptionMobile:contractDetail.contractInfo.ownerList[i].encryptionMobile,
@@ -404,6 +405,7 @@ export default {
           this.guestList=[];
           for (var i = 0; i < contractDetail.contractInfo.customerList.length; i++) {
             let element = {
+              pid:contractDetail.contractInfo.customerList[i].pid,
               name:contractDetail.contractInfo.customerList[i].name,
               mobile:contractDetail.contractInfo.customerList[i].mobile,
               encryptionMobile:contractDetail.contractInfo.customerList[i].encryptionMobile,
@@ -1101,6 +1103,9 @@ export default {
           element.mobile=element.encryptionMobile;
         }
         delete element.isEncryption;
+        if(this.operationType===1){
+          element.pid=index+1
+        }
         this.contractForm.ownerList.push(element);
       });
       if(this.contractForm.transMode===2){
@@ -1109,6 +1114,9 @@ export default {
             element.mobile=this.guestList_[index].mobile
           }else{
             element.mobile=element.encryptionMobile;
+          }
+          if(this.operationType===1){
+            element.pid=index+1
           }
           delete element.isEncryption;
           this.contractForm.customerList.push(element);

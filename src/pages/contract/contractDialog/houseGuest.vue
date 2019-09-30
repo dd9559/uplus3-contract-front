@@ -39,7 +39,7 @@
           <el-button type="primary" round class="search_btn" @click="inquireHouse">查询</el-button>
           <el-button round class="search_btn" @click="resetFormFn">清空</el-button>
           <el-form-item label="部门：">
-            <select-tree :data="DepList" :treeType="house" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+            <select-tree :data="DepList" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
           </el-form-item>
           <el-form-item>
             <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="empId" placeholder="请选择">
@@ -122,7 +122,7 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="部门:">
-              <select-tree :data="DepList" :treeType="guest" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+              <select-tree :data="DepList" :init="depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
             </el-form-item>
             <el-form-item>
               <el-select style="width:100px" :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="empId" placeholder="请选择">

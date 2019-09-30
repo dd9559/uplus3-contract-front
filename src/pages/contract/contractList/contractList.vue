@@ -305,7 +305,7 @@
         </el-table-column>
         <el-table-column align="center" label="上传合同主体时间" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">合同主体时间</span>
+            <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>

@@ -277,19 +277,22 @@ export default {
     },
     //收款
     getMoney(val){
-      let router
+      let router,type
       if(this.contractType==="newHouse"){
         router="新房"
+        type=1
       }else if(this.contractType==="longRent"){
         router="长租"
+        type=2
       }else{
         router="金融"
+        type=3
       }
       this.setPath(this.$tool.getRouter([router,'合同','合同列表','创建收款'],'otherContractList'));
       this.$router.push({
         path: "/receiptBill_simple",
         query: {
-          type: 1,
+          type: type,
           contId:val.id
         }
       });

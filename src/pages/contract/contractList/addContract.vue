@@ -591,7 +591,6 @@ export default {
     addcommissionData() {
       if (this.ownerList.length < 4) {
         this.ownerList.push({
-          edit: true,
           type: 1,
           encryptionCode: "",
           mobile: "",
@@ -614,7 +613,6 @@ export default {
     addcommissionData1() {
       if (this.guestList.length < 4) {
         this.guestList.push({
-          edit: true,
           type: 2,
           encryptionCode: "",
           mobile: "",
@@ -1324,7 +1322,6 @@ export default {
         }else{
           element.encryptionMobile=element.mobile;
         }
-        delete element.edit;
         delete element.isEncryption;
         this.contractForm.contPersons.push(element);
       });
@@ -1334,7 +1331,6 @@ export default {
         }else{
           element.encryptionMobile=element.mobile;
         }
-        delete element.edit;
         delete element.isEncryption;
         this.contractForm.contPersons.push(element);
       });
@@ -2041,7 +2037,6 @@ export default {
                 encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 cardType:this.contractForm.contPersons[i].cardType,
                 type:1,
-                edit:false,
                 isEncryption:true
               }
               let obj = Object.assign({}, element);
@@ -2061,7 +2056,6 @@ export default {
                 encryptionCode:this.contractForm.contPersons[i].encryptionCode,
                 cardType:this.contractForm.contPersons[i].cardType,
                 type:2,
-                edit:false,
                 isEncryption:true
               }
               let obj = Object.assign({}, element);
