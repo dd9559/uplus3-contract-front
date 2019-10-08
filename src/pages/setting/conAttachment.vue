@@ -73,7 +73,7 @@
             <p class="item-title"><i>*</i>附件：</p>
             <ul class="ulData">
                 <li>
-                    <file-up class="upload-box" :scane="dataScane" @getUrl="addSubject">
+                    <file-up class="upload-box" @getUrl="addSubject">
                         <i class="iconfont icon-shangchuan"></i>
                         <p>点击上传</p>
                     </file-up>
@@ -142,10 +142,6 @@
                 addVisible: false, //新增弹窗
                 addSystemTag: '',
                 attachList: [], //上传附件数组
-                dataScane: {
-                    path:"ziliaoku",
-                    id:''
-                },
                 preloadList: [],
                 preloadFiles:[],
                 pageNum: 1,
