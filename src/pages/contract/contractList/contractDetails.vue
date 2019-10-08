@@ -1347,7 +1347,8 @@ export default {
       let param = {
         cityId:this.contractDetail.cityCode,
         flowType:3,
-        bizCode:this.contractDetail.code
+        bizCode:this.contractDetail.code,
+        modularType:0//合同类型
       }
       this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
         this.isSubmitAudit=false;

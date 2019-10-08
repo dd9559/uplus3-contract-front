@@ -725,6 +725,7 @@ export default {
             let param = {
               bizCode:this.code,
               flowType:3,
+              modularType:0,//合同类型
               approvalForm:{
                 result: num,
                 isRisk: this.isSign, //风险单
@@ -748,6 +749,7 @@ export default {
         let param = {
           bizCode:this.code,
           flowType:3,
+          modularType:0,//合同类型
           approvalForm:{
             result: num,
             isRisk: this.isSign, //风险单
@@ -891,7 +893,8 @@ export default {
       let param = {
         cityId:this.cityId,
         flowType:3,
-        bizCode:this.code
+        bizCode:this.code,
+        modularType:0//合同类型
       }
       this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
         res=res.data

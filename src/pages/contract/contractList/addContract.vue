@@ -1415,6 +1415,7 @@ export default {
           delete param.leaseCont.distributableAchievement;
           delete param.leaseCont.achievementState;
           delete param.leaseCont.recordType
+          delete param.leaseCont.resultState
         }else if(this.contractForm.type === 2 || this.contractForm.type === 3){
           delete param.saleCont.contChangeState;
           delete param.saleCont.contState;
@@ -1427,6 +1428,7 @@ export default {
           delete param.saleCont.distributableAchievement;
           delete param.saleCont.achievementState;
           delete param.saleCont.recordType
+          delete param.saleCont.resultState
         }
         var url = '/api/contract/updateContract';
         if(this.isOffline===1){
