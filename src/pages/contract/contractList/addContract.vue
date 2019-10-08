@@ -1638,6 +1638,7 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
+      // PropertyCode
       // console.log("房源");
       let param = {
         houseId: id,
@@ -1648,6 +1649,7 @@ export default {
         if (res.status === 200) {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          this.contractForm.houseInfo.PropertyCode=houseMsg.PropertyCode
           if(!this.canInput){
             if(houseMsg.TradeInt===2){
               this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
@@ -1713,6 +1715,7 @@ export default {
     //根据客源id获取客源信息
     getGuestDetail(id) {
       // console.log("客源");
+      // InquiryCode
       let param = {
         customerId: id,
         // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
@@ -1722,6 +1725,7 @@ export default {
         if (res.status === 200) {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
+          this.contractForm.guestInfo.InquiryCode=guestMsg.InquiryCode
           if(!this.canInput){
             this.contractForm.guestInfo = guestMsg;
             this.$set(this.contractForm.guestInfo,'paymentMethod',1)
