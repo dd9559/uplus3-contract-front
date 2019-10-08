@@ -2096,16 +2096,6 @@ export default {
       //   })
       // }
     },
-    //图片预览
-    // getPicture(value,index){
-    //   this.start=index;
-    //   let arr=[];
-    //   // console.log(value);
-    //   value.forEach(item =>{
-    //     arr.push(item.path)
-    //   })
-    //   this.fileSign(arr)
-    // },
     //合同审核信息
     getAuditList(){
       let param = {

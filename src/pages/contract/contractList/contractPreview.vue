@@ -152,7 +152,8 @@
               <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                    <upload-cell :type="item_.fileType" v-else></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
@@ -175,7 +176,8 @@
               <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                    <upload-cell :type="item_.fileType" v-else></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
@@ -198,7 +200,8 @@
               <li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
                 <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                    <upload-cell :type="item_.fileType"></upload-cell>
+                    <img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+                    <upload-cell :type="item_.fileType" v-else></upload-cell>
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
@@ -367,6 +370,7 @@ export default {
         },
       },
       countnum:0,//创建拖拽元素个数
+      contDataFiles:[],//资料库图片缩略图
     };
   },
   created() {
@@ -1038,7 +1042,6 @@ export default {
       })
     },
     //获取合同资料库信息
-
     getContData() {
       let param = {
         id: this.id
@@ -1046,6 +1049,7 @@ export default {
       this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
         res = res.data;
         if (res.status === 200) {
+          let pathList = []
           if(res.data){
             let address = JSON.parse(res.data.address);
             // console.log(address)
@@ -1053,6 +1057,7 @@ export default {
               element.value.forEach(item => {
                 let fileType = this.$tool.get_suffix(item.name);
                 item.fileType=fileType
+                pathList.push(item)
               });
               if(element.kind==="1"){
                 this.buyerList.forEach(ele => {
@@ -1074,6 +1079,15 @@ export default {
                 });
               }
             });
+            let preloadList=[]
+            pathList.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if(this.isPictureFile(item.fileType)){
+                preloadList.push(item.path)
+              }
+            })
+            this.fileSign(preloadList,'preload').then(res=>{
+              this.contDataFiles=res
+            })
           }
         }
       });
@@ -1097,6 +1111,15 @@ export default {
         // this.otherList[num].value.push(arr[0]);
         this.otherList[num].value=this.otherList[num].value.concat(arr);
       }
+      let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.contDataFiles=this.contDataFiles.concat(res)
+      })
     },
     //显示删除按钮
     moveIn(value){
@@ -1235,6 +1258,22 @@ export default {
     getWidth:function () {
       return `${this.imgWidth}px`
     },
+  },
+  filters:{
+    /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
+    }
   }
   // watch:{
   //   textarea:function(val){
@@ -1617,6 +1656,11 @@ export default {
       box-sizing: border-box;
       border-radius:4px;
       background: @color-F2;
+      .signImage{
+        width:60px;
+        height: 60px;
+        margin: 1px 0;
+      }
       > p{
         padding-top: 3px;
         display: inline-block;
