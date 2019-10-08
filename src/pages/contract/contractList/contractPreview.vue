@@ -20,7 +20,7 @@
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
         <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button> -->
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(contState!=3||contState===3&&resultState===1&&contChangeState!=2)" @click="toEdit">编辑</el-button>
         <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
@@ -271,6 +271,8 @@ export default {
       contState:'',
       //审核状态
       examineState:'',
+      //结算状态
+      resultState:"",
       //合同类型
       contType:'',
       //变更解约
@@ -781,6 +783,7 @@ export default {
           //   this.signature(2)
           // }
           this.examineState=res.data.examineState.value;
+          this.resultState=res.data.resultState.value;
           this.laterStageState=res.data.laterStageState.value;
           this.contState=res.data.contState.value;
           this.contType=res.data.contType.value;
