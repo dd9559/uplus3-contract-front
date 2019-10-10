@@ -269,7 +269,7 @@ export default {
         receiveAmountState:this.contractForm.receiveAmountState
       }
       if(this.contractType==="newHouse"){
-        contType="新房"
+        contType=1
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -283,7 +283,7 @@ export default {
           }
         }
       }else if(this.contractType==="longRent"){
-        contType="长租"
+        contType=2
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -291,7 +291,7 @@ export default {
           }
         }
       }else{
-        contType="金融"
+        contType=3
         if(this.loanData){
           if (this.loanData.length > 0) {
             param.loanStart = this.loanData[0];
@@ -299,8 +299,8 @@ export default {
           }
         }
       }
-      param.contType=contType
-      // this.excelCreate("/input/contractExcel",param)
+      param.tradeType=contType
+      this.excelCreate("/input/contractExcel",param)
     },
     //合同详情
     goDetail(val){
