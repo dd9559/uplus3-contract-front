@@ -297,7 +297,7 @@
               <!-- <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.recordType.value===1&&contractDetail.contState.value===2)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.contState.value!=3&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button> -->
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(contractDetail.recordType.value===1&&contractDetail.contState.value===2)" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
@@ -405,6 +405,18 @@
             </div>
             <div class="classifyFoot" v-if="contractDetail.laterStageState.value===4">
               <p class="objection">拒绝理由: {{contractDetail.refuseReasons}}</p>
+            </div>
+            <div class="accessoryDown" v-if="attachmentList.length>0">
+              <ul>
+                <li>合同相关附件下载</li>
+                <li v-for="item in attachmentList"
+                :key="item.path"
+                :title="item.enclosureName.length>10?item.enclosureName:''"
+                @click="downloadAttachment(item)"
+                >
+                {{item.enclosureName}}
+                </li>
+              </ul>
             </div>
           </div>
         </el-tab-pane>
@@ -1112,6 +1124,7 @@ export default {
       dialogSuccess:false,//提示上传资料库
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
+      attachmentList:[],//合同附件
     };
   },
   created() {
@@ -1139,6 +1152,7 @@ export default {
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
+    this.getAttachment()//合同附件列表
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
@@ -1333,7 +1347,8 @@ export default {
       let param = {
         cityId:this.contractDetail.cityCode,
         flowType:3,
-        bizCode:this.contractDetail.code
+        bizCode:this.contractDetail.code,
+        modularType:0//合同类型
       }
       this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
         this.isSubmitAudit=false;
@@ -2082,16 +2097,6 @@ export default {
       //   })
       // }
     },
-    //图片预览
-    // getPicture(value,index){
-    //   this.start=index;
-    //   let arr=[];
-    //   // console.log(value);
-    //   value.forEach(item =>{
-    //     arr.push(item.path)
-    //   })
-    //   this.fileSign(arr)
-    // },
     //合同审核信息
     getAuditList(){
       let param = {
@@ -2104,6 +2109,31 @@ export default {
           this.checkData=res.data.data;
         }
       })
+    },
+    //合同附件列表
+    getAttachment(){
+      this.$ajax.get("/api/attachment/getdelAttachment").then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.attachmentList = res.data
+        }
+      })
+    },
+    //附件下载
+    downloadAttachment(item){
+      let url,title
+      url = item.path
+      title = item.enclosureName
+      var a = document.createElement("a");
+      a.setAttribute("href", url);
+      a.setAttribute("download", title);
+      a.setAttribute("id", "startTelMedicine");
+      // 防止反复添加
+      if (document.getElementById("startTelMedicine")) {
+        document.body.removeChild(document.getElementById("startTelMedicine"));
+      }
+      document.body.appendChild(a);
+      a.click();
     }
   },
   mounted(){
@@ -2432,6 +2462,30 @@ export default {
       .objection{
         font-size: 14px;
         color: @color-FF;
+      }
+    }
+    .accessoryDown{
+      position: fixed;
+      top: 150px;
+      right: 140px;
+      ul{
+        li{
+          padding: 5px 0;
+          color: @color-blue;
+          text-decoration: underline;
+          cursor: pointer;
+          // display :inline-block ;
+          width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &:first-of-type{
+            font-size: 16px;
+            font-weight: bold;
+            color: @color-324;
+            text-decoration: none;
+          }
+        }
       }
     }
   }

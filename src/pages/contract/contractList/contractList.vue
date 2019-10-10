@@ -303,9 +303,9 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="上传合同主体时间" min-width="80">
+        <el-table-column align="center" label="上传合同主体时间" min-width="90">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">合同主体时间</span>
+            <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -1039,7 +1039,8 @@ export default {
       let param = {
         cityId:this.submitAuditData.cityCode,
         flowType:3,
-        bizCode:this.submitAuditData.code
+        bizCode:this.submitAuditData.code,
+        modularType:0//合同类型
       }
       this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
         this.isSubmitAudit=false;
@@ -1296,7 +1297,22 @@ export default {
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         return time_.substr(0, 10)
       }
-    }
+    },
+    timeFormat_hm: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 16)
+      }
+    },
   }
 };
 </script>

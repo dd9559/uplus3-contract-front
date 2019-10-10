@@ -367,6 +367,7 @@ export default {
           this.guestList=[];
           for (var i = 0; i < contractDetail.contractInfo.customerList.length; i++) {
             let element = {
+              pid:contractDetail.contractInfo.customerList[i].pid,
               name:contractDetail.contractInfo.customerList[i].name,
               mobile:contractDetail.contractInfo.customerList[i].mobile,
               encryptionMobile:contractDetail.contractInfo.customerList[i].encryptionMobile,
@@ -433,7 +434,7 @@ export default {
     //确认删除
     delPeopleMsg(){
       this.guestList.splice(this.peopleIndex, 1);
-      // this.guestList_.splice(this.peopleIndex, 1);
+      this.guestList_.splice(this.peopleIndex, 1);
       this.dialogDel=false;
     },
     //纸质合同编号限制
@@ -899,6 +900,9 @@ export default {
           element.mobile=element.encryptionMobile;
         }
         delete element.isEncryption;
+        if(this.operationType===1){
+          element.pid=index+1
+        }
         this.contractForm.customerList.push(element);
       });
       let param = this.contractForm
@@ -908,6 +912,7 @@ export default {
       delete param.recordName
       delete param.updateTime
       //新增
+      debugger
       let url="/api/contractInfo/newHouse/addContract"
       //编辑
       if(this.operationType===2){

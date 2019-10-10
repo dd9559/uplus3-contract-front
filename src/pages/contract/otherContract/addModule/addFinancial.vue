@@ -65,7 +65,7 @@
           </el-form-item>
           <span class="select" @click="showDialog">请选择房源</span>
           <br>
-          <el-form-item label="U+地址：" class="form-label" style="width:705px;text-align:right">
+          <el-form-item label="U+地址：" style="width:705px;text-align:right">
             <input v-model="contractForm.propertyAddr" maxlength="10" placeholder="请输入" @input="inputCode('propertyAddr')" class="dealPrice" style="width:600px" />
           </el-form-item>
           <br>
@@ -429,6 +429,8 @@ export default {
       }
       if(this.contractForm.houseinfoCode&&type==="houseinfoCode"){
         this.contractForm.houseinfoCode=this.contractForm.houseinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+        //手动更改房源编号 清空U+地址
+        this.contractForm.propertyAddr=""
       }
       if(this.contractForm.propertyAddr&&type==="propertyAddr"){
         this.contractForm.propertyAddr=this.contractForm.propertyAddr.replace(/\s+/g,"").replace(addrReg,'')
@@ -576,8 +578,8 @@ export default {
         this.contractForm.customerArea=''
       }
       this.$tool.checkForm(this.contractForm, rule).then(() => {
-        // U+地址
-        if(this.contractForm.propertyAddr){
+        // U+地址   2019.09.29黄鹤更改需求变为非必填项
+        // if(this.contractForm.propertyAddr){
           //产权地址
           if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
             this.contractForm.propertyRightAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
@@ -627,12 +629,12 @@ export default {
               type: "warning"
             })
           }
-        }else{
-          this.$message({
-            message: "房源信息-U+地址不能为空",
-            type: "warning"
-          });
-        }
+        // }else{
+        //   this.$message({
+        //     message: "房源信息-U+地址不能为空",
+        //     type: "warning"
+        //   });
+        // }
       }).catch(error => {
           this.$message({
             message: `${error.title.length<3?'':'合同信息-'}${error.title}${error.msg}`,

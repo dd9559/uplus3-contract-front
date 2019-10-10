@@ -180,6 +180,7 @@ export default {
     },
     //获取列表数据
     getContractList(){
+      debugger
       let url,param
       param = {
         pageNum: this.currentPage,
@@ -224,6 +225,7 @@ export default {
       this.$ajax.get(url,param).then(res=>{
         res=res.data
         if(res.status===200){
+          debugger
           this.list=res.data.list
           this.total=res.data.total
           this.list.forEach(element=>{
@@ -277,19 +279,22 @@ export default {
     },
     //收款
     getMoney(val){
-      let router
+      let router,type
       if(this.contractType==="newHouse"){
         router="新房"
+        type=1
       }else if(this.contractType==="longRent"){
         router="长租"
+        type=2
       }else{
         router="金融"
+        type=3
       }
       this.setPath(this.$tool.getRouter([router,'合同','合同列表','创建收款'],'otherContractList'));
       this.$router.push({
         path: "/receiptBill_simple",
         query: {
-          type: 1,
+          type: type,
           contId:val.id
         }
       });
