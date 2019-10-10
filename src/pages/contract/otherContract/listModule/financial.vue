@@ -1,5 +1,5 @@
 <template>
-  <el-table ref="tableCom" class="info-scrollbar" :data="tableDate" style="width: 100%" @row-dblclick='toDetail' border>
+  <el-table :max-height="tableHeight" class="info-scrollbar" :data="tableDate" style="width: 100%" @row-dblclick='toDetail' border>
     <el-table-column align="center" label="合同信息" min-width="200" fixed>
       <template slot-scope="scope">
         <ul class="contract-msglist">
@@ -143,7 +143,11 @@ export default{
       default() {
         return []
       }
-    }
+    },
+    tableHeight:{
+      type: Number,
+      default:0
+    },
   },
   methods:{
     //收款

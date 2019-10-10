@@ -4,7 +4,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
-          <el-tooltip class="item" effect="dark" content="合同编号/纸质合同编号/项目名称/客户姓名/物业地址" placement="top">
+          <el-tooltip class="item" effect="dark" :content="content" placement="top">
             <el-input v-model="contractForm.keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
           </el-tooltip>
         </el-form-item>
@@ -64,7 +64,7 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
-      <component v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
+      <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
         <el-pagination
@@ -110,6 +110,8 @@ export default {
       pageSize: 10,
       //合同类型
       contractType:'newHouse',
+      //关键字提示语
+      content:"",
       //列表数据
       list:[],
        //权限配置
@@ -124,14 +126,17 @@ export default {
   created () {
     if(this.$route.query.type==="xf"){
       this.contractType='newHouse'
+      this.content="合同编号/纸质合同编号/客源编号/手机号/项目名称/客户姓名/产权地址"
       this.getPath.unshift({name: '新房',path:this.$route.fullPath})
       this.setPath(this.getPath);
     }else if(this.$route.query.type==="cz"){
       this.contractType='longRent'
+      this.content="合同编号/纸质合同编号/房源编号/客源编号/手机号/物业地址"
       this.getPath.unshift({name: '长租',path:this.$route.fullPath})
       this.setPath(this.getPath);
     }else if(this.$route.query.type==="jr"){
       this.contractType='financial'
+      this.content="合同编号/纸质合同编号/房源编号/产权地址"
       this.getPath.unshift({name: '金融',path:this.$route.fullPath})
       this.setPath(this.getPath);
     }
@@ -180,7 +185,6 @@ export default {
     },
     //获取列表数据
     getContractList(){
-      debugger
       let url,param
       param = {
         pageNum: this.currentPage,
@@ -225,7 +229,6 @@ export default {
       this.$ajax.get(url,param).then(res=>{
         res=res.data
         if(res.status===200){
-          debugger
           this.list=res.data.list
           this.total=res.data.total
           this.list.forEach(element=>{
@@ -256,7 +259,48 @@ export default {
     },
     //导出
     getExcel(){
-
+      let contType,param
+      param = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        keyword:this.contractForm.keyword,
+        deptId:this.contractForm.deptId,
+        empId:this.contractForm.empId,
+        receiveAmountState:this.contractForm.receiveAmountState
+      }
+      if(this.contractType==="newHouse"){
+        contType="新房"
+        if(this.signData){
+          if (this.signData.length > 0) {
+            param.signStart = this.signData[0];
+            param.signEnd = this.signData[1];
+          }
+        }
+        if(this.closingData){
+          if (this.closingData.length > 0) {
+            param.closingStart = this.closingData[0];
+            param.closingEnd = this.closingData[1];
+          }
+        }
+      }else if(this.contractType==="longRent"){
+        contType="长租"
+        if(this.signData){
+          if (this.signData.length > 0) {
+            param.signStart = this.signData[0];
+            param.signEnd = this.signData[1];
+          }
+        }
+      }else{
+        contType="金融"
+        if(this.loanData){
+          if (this.loanData.length > 0) {
+            param.loanStart = this.loanData[0];
+            param.loanEnd = this.loanData[1];
+          }
+        }
+      }
+      param.contType=contType
+      // this.excelCreate("/input/contractExcel",param)
     },
     //合同详情
     goDetail(val){

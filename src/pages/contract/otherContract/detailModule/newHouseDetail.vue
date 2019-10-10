@@ -206,7 +206,7 @@ export default {
       var param = {
         plateType:1,
         id:value.pid,
-        contractCode:detail.code,
+        contractCode:this.detail.code,
         sourceType:1,
         calledMobile:value.mobile,
         calledName:value.name
