@@ -1,6 +1,6 @@
 const receiptCheck={
   props:{
-    type:{
+    type:{//列表类型
       type:Number,
       default:1
     },
@@ -9,6 +9,10 @@ const receiptCheck={
       default(){
         return []
       }
+    },
+    tableHeight:{//列表table的maxHeight设置初值
+      type:Number,
+      default:0
     }
   },
   computed:{
@@ -36,7 +40,8 @@ const receiptCheck={
       this.$router.push({
         path:'/receiptBillDetails',
         query:{
-          id:row.id
+          id:row.id,
+          type:this.type
         }
       })
     },
@@ -47,14 +52,19 @@ const receiptCheck={
         this.$router.push({
           path:'/receiptBill_simple',
           query:{
-            contId:row.id,
+            id:row.id,
+            contId:row.cid,
             type:this.type,
             edit:true
           }
         })
       }else{
-
+        this.toDetails(row)
       }
+    },
+    //设置审核人
+    choseCheckPerson(row,type){
+      this.$emit('choseCheckPerson',{row,type})
     }
   }
 }

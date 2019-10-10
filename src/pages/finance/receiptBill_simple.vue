@@ -62,7 +62,7 @@
         <li>
           <div class="input-group col no-max">
             <div class="flex-box tool-tip no-max">
-              <label class="form-label no-width f14 margin-bottom-base">{{form.type|typeFormatter}}（元）</label><span>{{form.amount|formatChinese}}</span>
+              <label class="form-label no-width f14 margin-bottom-base">{{receiptType|typeFormatter}}（元）</label><span>{{form.amount|formatChinese}}</span>
             </div>
             <input type="text" size="small" class="w430 el-input__inner" placeholder="请输入" v-model="form.amount"
                    @input="cutNum(1)">
@@ -98,12 +98,14 @@
                  v-loading.fullscreen.lock="fullscreenLoading">创建收款信息
       </el-button>
     </p>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
-  import moneyTypePop from '@/components/moneyTypePop'
+  import moneyTypePop from '@/components/moneyTypePop';
+  import checkPerson from '@/components/checkPerson';
 
   const rule = {
     moneyType: {
@@ -132,14 +134,20 @@
     mixins: [MIXINS],
     components: {
       moneyTypePop,
+      checkPerson
     },
     data() {
       return {
-        contId: '',
+        checkPerson: {//审核人弹窗配置
+          state:false,
+          type:3,
+          code:'',
+          flowType:1,//流程类型，本页面为定值
+        },
         payId:2,//收款编号
         inputPerson: false,//是否显示第三方输入框
+        receiptType:1,//创建收款的导航类型,1新房收款 2长租收款 3金融收款
         form: {
-          type:1,//创建收款的导航类型,1新房收款 2长租收款 3金融收款
           contId: '',
           moneyType: '',
           moneyTypePid:'',
@@ -169,14 +177,15 @@
     },
     mounted() {
       let urlParam=this.$route.query
+      this.receiptType= urlParam?Number(urlParam.type):1
       this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
-      this.form.type= urlParam?Number(urlParam.type):1
 
-      this.getMoneyType()
+      // this.getMoneyType()
       // this.getDictionary()
 
       this.addInit(this.$route.query.contId)
       if(urlParam.edit){
+        this.payId=Number(urlParam.id)
         this.getDetailsData()
       }
     },
@@ -188,6 +197,7 @@
           if (res.status === 200) {
             this.firstCreate.content = Object.assign({}, res.data.payee,res.data.contCommission)
             this.dropdown = res.data.dropDown
+            this.moneyType=res.data.moneyTypes
             if (!res.data.payee.firstCreate) {
               this.firstCreate.state = false
               this.getEmploye(res.data.payee.storeId)
@@ -272,21 +282,35 @@
               this.$router.replace({
                 path: 'receiptCheck',
                 query:{
-                  type:this.form.type===1?"xf":this.form.type===2?"cz":this.form.type===3?"jr":"xf",
+                  type:this.receiptType===1?"xf":this.receiptType===2?"cz":this.receiptType===3?"jr":"xf",
                 }
               })
             }
           }).catch(error=>{
             this.fullscreenLoading=false
-            this.$message({
-              message:error
-            })
+            if(error.message==='下一节点审批人不存在'){//设置下一节点审核人
+              this.checkPerson=Object.assign(this.checkPerson,{state:true,code:error.data.payCode})
+            }else {
+              this.$message({
+                message:error
+              })
+            }
           })
         }).catch(error=>{
           this.fullscreenLoading=false
           this.$message({
             message:`${error.title}${error.msg}`
           })
+        })
+      },
+      //监听设置下一节点审核人弹窗操作
+      personChose:function () {
+        this.checkPerson.state=false
+        this.$router.replace({
+          path: 'receiptCheck',
+          query:{
+            type:this.receiptType===1?"xf":this.receiptType===2?"cz":this.receiptType===3?"jr":"xf",
+          }
         })
       },
       /**
@@ -298,7 +322,7 @@
           res=res.data
           if(res.status===200){
             this.form.id=res.data.id
-            this.form.contId=res.data.cid
+            // this.form.contId=res.data.cid
             this.moneyTypeName=res.data.moneyName
 
             let {moneyType,moneyTypePid,remark,amount,closingDate,employeeName,employeeId,objName,objType}=res.data

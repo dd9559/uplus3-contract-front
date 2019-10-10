@@ -200,7 +200,7 @@
             <label>付款凭证:</label>
             <ul class="image-list" v-if="files.length>0">
               <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
-                <img :src="item.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(item.type)" width="70%">
+                <img :src="item|getSignImage(preloadFiles,_self)" alt="" v-if="isPictureFile(item.type)" height="90px" :key="item.path" :width="item.width">
                 <upload-cell :type="item.type" v-else></upload-cell>
                 <el-tooltip :content="item.name" placement="top">
                   <p class="span">{{item.name}}</p>
@@ -489,7 +489,8 @@
           bizCode: this.billMsg.audit.bizCode,
           // flowId: this.billMsg.audit.flowId,
           // sort: this.billMsg.audit.nodeSort,
-          flowType: this.activeItem==='付款信息'?0:1
+          flowType: this.activeItem==='付款信息'?0:1,
+          modularType: 0
         }
         param.ApprovalForm = {
           result: type,
@@ -603,14 +604,41 @@
        * 过滤显示图片缩略图
        * @param val后端返回的所有文件资源遍历的当前项
        * @param list图片资源获取签名后的临时数组
+       * @vm 接收vue实例通过this._self传递才有效
        */
-      getSignImage(val,list){
+      getSignImage(val,list,vm){
         if(list.length===0){
           return '';
         }else {
-          return list.find(item=>{
-            return item.includes(val)
+          let imgDir = list.find(item=>{
+            return item.includes(val.path)
           })
+          let img=new Image();
+          img.src=imgDir;
+          img.onload=function () {
+            let persent = parseFloat((img.width/img.height).toFixed(2))
+            let imgWidth=0
+            // console.log(persent)
+            if(img.width>100){
+              imgWidth=100
+              // picture.style.height=`${800/this.persent}px`
+              if(img.height>90){
+                // picture.style.height=`${window.innerHeight}px`
+                if(persent>1){
+                  imgWidth=90*persent*0.6
+                }else {
+                  imgWidth=90*persent
+                }
+              }
+            }else {
+              if(img.height>90){
+                // picture.style.height=`${window.innerHeight}px`
+                imgWidth=90*persent
+              }
+            }
+            vm.$set(val,'width',`${imgWidth}px`)
+          }
+          return imgDir
         }
       }
     }

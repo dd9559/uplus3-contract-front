@@ -1,5 +1,5 @@
 <template>
-<div class="view">
+<div class="view" ref="tableComView">
   <ScreeningTop @propResetFormFn="reset" @propQueryFn="getData('search')">
     <div class="content">
       <div class="input-group">
@@ -41,7 +41,7 @@
         <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
       </p>
     </div>
-    <component v-bind:is="activeComponent" :list="list" :type="getType"></component>
+    <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="activeComponent" :list="list" :type="getType" @choseCheckPerson="choseCheckPerson"></component>
   </div>
   <el-pagination
     v-if="list.length>0"
@@ -53,11 +53,13 @@
     layout="total, prev, pager, next, jumper"
     :total="total">
   </el-pagination>
+  <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
 </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
+  import checkPerson from '@/components/checkPerson';
 
   const receiptCheck_xf =()=>import('@/pages/finance/receiptCheck/receiptCheck_xf');
   const receiptCheck_cz =()=>import('@/pages/finance/receiptCheck/receiptCheck_cz');
@@ -66,9 +68,16 @@
   export default {
     name: "receipt-check",
     mixins: [MIXINS],
-    components:{receiptCheck_xf,receiptCheck_cz,receiptCheck_jr},
+    components:{receiptCheck_xf,receiptCheck_cz,receiptCheck_jr,checkPerson},
     data(){
       return {
+        checkPerson: {//审核人弹窗配置
+          state:false,
+          type:'init',
+          code:'',
+          flowType:1,//流程类型，本页面为定值
+          label:false,
+        },
         activeComponent:'receiptCheck_xf',
         searchForm: {
           keyword: '',
@@ -159,6 +168,20 @@
       },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
+      },
+      choseCheckPerson:function (payload) {
+        this.checkPerson.code=payload.row.payCode
+        this.checkPerson.state=true
+        this.checkPerson.type=payload.type
+        if(payload.row.nextAuditId===-1){
+          this.checkPerson.label=true
+        }else {
+          this.checkPerson.label=false
+        }
+      },
+      personChose:function () {
+        this.checkPerson.state=false
+        this.getData()
       },
       getData: function (type='init') {
         if(type==='search'){
