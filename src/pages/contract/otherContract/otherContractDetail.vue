@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="成交报告" name="detail">
+        <el-tab-pane label="合同详情" name="detail">
           <!-- <newHouseDetail :style="{ height: clientHei }"></newHouseDetail> -->
           <component v-bind:is="contractType" :detail="contractDetail" :storeList="storeCommissionList" :style="{ height: clientHei }"></component>
           <div class="footer">

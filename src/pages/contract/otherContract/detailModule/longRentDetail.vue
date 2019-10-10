@@ -197,14 +197,13 @@ export default {
   methods:{
     //打电话
     call(value,index,type) {
-      debugger
       let ownerData=this.detail.contractInfo.ownerList
       let clientrData=this.detail.contractInfo.customerList
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:2,
         id:value.pid,
-        contractCode:detail.code,
+        contractCode:this.detail.code,
         sourceType:type==="owner"?0:1,
         calledMobile:value.mobile,
         calledName:value.name
