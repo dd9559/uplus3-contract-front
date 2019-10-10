@@ -58,7 +58,7 @@
 
     <el-table-column align="center" label="客户姓名" min-width="70">
       <template slot-scope="scope">
-        <!-- <span>{{scope.row.contractInfo.customerList[0].name}}</span> -->
+        <span>{{scope.row.contractInfo.customerList[0].name}}</span>
       </template>
     </el-table-column>
 
