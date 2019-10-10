@@ -1,5 +1,5 @@
 <template>
-  <el-table ref="tableCom" class="info-scrollbar" :data="tableDate" style="width: 100%" @row-dblclick='toDetail' border>
+  <el-table ref="tableCom" :max-height="tableHeight" class="info-scrollbar" :data="tableDate" style="width: 100%" @row-dblclick='toDetail' border>
     <el-table-column align="center" label="合同信息" min-width="200" fixed>
       <template slot-scope="scope">
         <ul class="contract-msglist">
@@ -58,7 +58,7 @@
 
     <el-table-column align="center" label="客户姓名" min-width="70">
       <template slot-scope="scope">
-        <span>{{scope.row.contractInfo.customerList[0].name}}</span>
+        <!-- <span>{{scope.row.contractInfo.customerList[0].name}}</span> -->
       </template>
     </el-table-column>
 
@@ -90,7 +90,11 @@ export default{
       default() {
         return []
       }
-    }
+    },
+    tableHeight:{
+      type: Number,
+      default:0
+    },
   },
   methods:{
     //收款
@@ -101,6 +105,11 @@ export default{
       this.$emit('goDetail',val)
     },
   },
+  // computed:{
+  //   getTableNumberCom(){
+  //     return this.tableNumberCom
+  //   }
+  // },
   filters: {
     timeFormat_: function (val) {
       if (!val) {
