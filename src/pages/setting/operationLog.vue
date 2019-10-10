@@ -12,15 +12,15 @@
                     </el-form-item>
                      <el-form-item label="关键字">
                         <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
-                    </el-form-item>
-                    <el-form-item label="部门">
+                    </el-form-item> 
+                    <el-form-item label="部门" class="dep">
                          <select-tree :data="DepList" :init="departmentName"    @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
                             </el-option>
                         </el-select> -->
-                        <el-select v-model="depUser" :clearable="true" @change="handleEmpNodeClick" v-loadmore="moreEmploye" filterable placeholder="请选择">
+                        <el-select v-model="depUser" style="margin-left:10px" :clearable="true" @change="handleEmpNodeClick" v-loadmore="moreEmploye" filterable placeholder="请选择">
                             <el-option
                                 v-for="item in EmployeList"
                                 :key="item.empId"
@@ -266,7 +266,6 @@
     background-color: #fff;
     border-radius:2px;
     box-sizing: border-box;
-    box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
     .form-title {
         margin-bottom: 10px;
         display: flex;
@@ -310,6 +309,9 @@
 }
 .el-select-dropdown__item.selected {
     font-weight: normal;
+}
+/deep/ .dep .el-form-item__content{
+    display: flex
 }
 .mr-8{
     margin-right: 8px;
