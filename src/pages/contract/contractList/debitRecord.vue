@@ -1231,9 +1231,9 @@
      text-align: right;
   }
 
-  .adjustbox{
-    box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
-  }
+  // .adjustbox{
+  //   box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
+  // }
 
   .adjust-form {
     margin-bottom: 10px;
