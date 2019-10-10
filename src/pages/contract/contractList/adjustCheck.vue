@@ -90,7 +90,7 @@
             <p v-if="scope.row.tradeType === 5">定金</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="签约方式" min-width="40">
+        <el-table-column align="center" label="签约方式" min-width="80">
           <template slot-scope="scope">
             {{scope.row.recordType===2?'线下':'线上'}}
           </template>
