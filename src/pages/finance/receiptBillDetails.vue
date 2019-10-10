@@ -7,7 +7,7 @@
         </li>
       </ul>
       <p>
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog">审核
+        <el-button class="btn-info" round size="small" type="primary" v-if="dataMsg.state&&dataMsg.state.value===3&&getUser.user&&(getUser.user.empId===dataMsg.auditId)" @click="showDialog">审核
         </el-button>
       </p>
     </div>
@@ -76,7 +76,7 @@
       </template>
       <li v-else>
         <h4 class="f14">审核信息</h4>
-        <el-table border :data="checkList" header-row-class-name="theader-bg">
+        <el-table border :data="checkList" header-row-class-name="theader-bg" key="checkMsgTable">
           <el-table-column align="center" label="时间">
             <template slot-scope="scope">
               <span>{{scope.row.auditTime|formatTime}}</span>
@@ -143,9 +143,9 @@
       return {
         checkPerson: {
           state: false,
-          type: 3,
+          type: 3,//定值
           code: '',
-          flowType: 0
+          flowType: 1,//定值
         },
         tabs: ['收款信息', '审核信息'],
         activeItem: '收款信息',//顶部tab切换的选中项
@@ -193,6 +193,8 @@
           res=res.data
           if(res.status===200){
             this.dataMsg=res.data
+            this.getCheckData()
+            Object.assign(this.checkPerson,{code:this.dataMsg.payCode})
           }
         })
       },
@@ -201,13 +203,10 @@
        */
       getCheckData: function () {
         let param = {
-          /*pageSize:this.pageSize,
-          pageNum:this.currentPage,*/
-          flowType: this.billMsg.audit.flowType,
-          bizCode: this.billMsg.audit.bizCode
+          flowType: 1,
+          bizCode: this.dataMsg.payCode
         }
         this.$ajax.get('/api/machine/getAuditListToFinance', param).then(res => {
-          // debugger
           res = res.data
           if (res.status === 200) {
             this.checkList = res.data.data
@@ -220,11 +219,9 @@
        */
       checkBill: function (type) {
         let param = {
-          // bizId: this.billMsg.audit.bizId,
-          bizCode: this.billMsg.audit.bizCode,
-          // flowId: this.billMsg.audit.flowId,
-          // sort: this.billMsg.audit.nodeSort,
-          flowType: this.activeItem === '付款信息' ? 0 : 1
+          bizCode: this.dataMsg.payCode,
+          flowType: 1,
+          modularType: Number(this.$route.query.type)
         }
         param.ApprovalForm = {
           result: type,
