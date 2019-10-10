@@ -4,7 +4,7 @@
     <div class="content">
       <div class="input-group">
         <label>关键字:</label>
-        <el-tooltip content="收款ID/合同编号/纸质合同编号/房源编号/物业地址" placement="top">
+        <el-tooltip :content="getType===1?'收款ID/合同编号/纸质合同编号/项目名称/客户姓名/物业地址':'收款ID/合同编号/纸质合同编号/房源编号/物业地址'" placement="top">
           <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入"></el-input>
         </el-tooltip>
       </div>
