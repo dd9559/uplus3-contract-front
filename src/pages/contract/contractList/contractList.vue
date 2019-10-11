@@ -674,7 +674,6 @@ export default {
   },
   methods: {
     dayin(){
-      debugger
       document.querySelector('#dayin').contentWindow.print()
     },
     //用途

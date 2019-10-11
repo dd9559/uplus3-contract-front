@@ -526,7 +526,29 @@ export default {
         })
       });
     },
-      //经纪人店长查询
+     //根据经纪人id查询上级
+    getSuperior(id){
+      let param = {
+        agentId:id
+      }
+      this.$ajax.get("/api/resource/getShopowner",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractForm.shopOwnerId=res.data.ShopOwnerId//店长id
+          this.contractForm.shopOwnerName=res.data.ShopOwnerName//店长姓名
+          this.contractForm.shopOwnerStoreId=res.data.ShopOwnerStoreId//店长门店id
+          this.contractForm.shopOwnerStoreName=res.data.ShopOwnerStoreName//店长门店
+          let item = {
+            depName:res.data.ShopOwnerStoreName,
+            depId:res.data.ShopOwnerStoreId,
+            empName:res.data.ShopOwnerName,
+            empId:res.data.ShopOwnerId
+          }
+          this.options_=[item]
+        }
+      })
+    },
+    //经纪人店长查询
     remoteMethod(keyword,type){
       if(keyword!==''){
         let param = {
@@ -548,6 +570,7 @@ export default {
     //经纪人所属门店
     selectOption(val,type){
       if(type==="agent"){
+        this.getSuperior(val)
         if(this.options.length>0&&val){
           this.options.forEach(element => {
             if(element.empId==val){
