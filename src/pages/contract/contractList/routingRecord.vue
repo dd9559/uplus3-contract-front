@@ -705,7 +705,7 @@ export default {
   background-color: #fff;
   padding: 0 10px;
   border-radius: 2px;
-  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  // box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   >p{
     padding: 10px 0 10px 0;
     .title{
@@ -722,7 +722,7 @@ export default {
   background-color: #fff;
   border-radius: 2px;
   box-sizing: border-box;
-  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  // box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   .paper-set-tit {
     padding-bottom: 10px;
   }
