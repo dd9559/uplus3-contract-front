@@ -316,7 +316,7 @@ export default {
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //合同详情
     getContractDetail(){
@@ -546,7 +546,7 @@ export default {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
-          // 物业地址
+          // 物业地址 2019.10.11黄鹤更改需求由三个输入框合成一个 并且带出的物业地址不能修改
           this.contractForm.propertyAddr=this.contractForm.houseInfo.EstateName.replace(/\s/g,"")+this.contractForm.houseInfo.BuildingName.replace(/\s/g,"")+this.contractForm.houseInfo.Unit.replace(/\s/g,"")+this.contractForm.houseInfo.RoomNo.replace(/\s/g,"")
           //重新选择房源时清空产权地址
           // this.rightAddrCity='';
@@ -591,7 +591,8 @@ export default {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
-          // 成交经纪人
+          //2019.10.11黄鹤更改需求 选择了客源自动带出经纪人和经纪人店长
+          // 成交经纪人 
           this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
           this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
           this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
@@ -633,6 +634,7 @@ export default {
         })
       });
     },
+    //2019.10.11黄鹤更改需求 选择了经纪人自动带出店长和店长门店
     //根据经纪人id查询上级
     getSuperior(id){
       let param = {
@@ -1255,6 +1257,7 @@ export default {
 .add-form {
   padding: 10px;
   font-size: 14px;
+  box-sizing:border-box;
   background: @bg-white;
   overflow-y: auto;
 }

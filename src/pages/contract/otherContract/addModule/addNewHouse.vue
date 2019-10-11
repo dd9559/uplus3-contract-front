@@ -286,7 +286,7 @@ export default {
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //合同详情
     getContractDetail(){
@@ -1018,6 +1018,7 @@ export default {
 .add-form {
   padding: 10px;
   font-size: 14px;
+  box-sizing:border-box;
   background: @bg-white;
   overflow-y: auto;
 }
