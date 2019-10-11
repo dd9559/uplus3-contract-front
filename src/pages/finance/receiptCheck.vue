@@ -25,7 +25,7 @@
         <label>收付状态:</label>
         <el-select :clearable="true" size="small" v-model="searchForm.state" placeholder="请选择">
           <el-option
-            v-for="item in dictionary['62']"
+            v-for="item in dictionary['70']"
             :key="item.key"
             :label="item.value"
             :value="item.key">
@@ -86,7 +86,7 @@
         },
         list: [],
         dictionary: {
-          '62': ''
+          '70': ''
         },
         //分页
         total:0,
@@ -151,20 +151,52 @@
     },
     created(){
       let urlParam=this.$route.query
-      let state = this.getPath.some(item=>{
+      let _state = this.getPath.some(item=>{
         return ['新房','长租','金融'].includes(item.name)
       })
-      if(!state){
+      if(!_state){
         this.getPath.unshift({name: urlParam.type==='xf'?'新房':urlParam.type==='cz'?'长租':urlParam.type==='jr'?'金融':'新房',path:this.$route.fullPath})//unshift方法返回数组的长度
         this.setPath(this.getPath)
       }
       this.activeComponent=`receiptCheck_${urlParam.type}`
-      this.getData()
+      //获取筛选条件的缓存
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.fullPath)){
+        this.list = res.data.list
+        this.total = res.data.total
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        // debugger
+        if(!!session){
+          let {keyword,state,startTime,endTime,pageNum}=session.query
+          this.currentPage=pageNum
+          Object.assign(this.searchForm,{keyword:keyword,state:state,timeRange:!startTime?[]:[startTime,endTime]})
+        }
+      }else {
+        this.getData()
+      }
       this.getDictionary()
     },
     methods:{
       getExcel:function () {
-
+        this.getData('search')
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        Object.assign(param,{startTime:'',endTime:''})
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
+          param.startTime = param.timeRange[0]
+          param.endTime = param.timeRange[1]
+        }
+        delete param.timeRange
+        switch (this.getType){
+          case 1:
+            this.excelCreate('/input/proceedsAuditExcel_XF',param)
+                break;
+          case 2:
+            this.excelCreate('/input/proceedsAuditExcel_CZ',param)
+            break;
+          case 3:
+            this.excelCreate('/input/proceedsAuditExcel_JR',param)
+            break;
+        }
       },
       reset:function () {
         this.$tool.clearForm(this.searchForm)
