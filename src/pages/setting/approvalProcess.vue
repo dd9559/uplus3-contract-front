@@ -103,7 +103,7 @@
         <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
                 <div class="row">
-                    <div class="aduit-input must mr-40">
+                    <div class="aduit-input must mr-35">
                         <label>交易类型:</label>
                         <el-select size="small" v-model="aduitForm.modularType" disabled>
                             <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -121,13 +121,13 @@
                             <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-40">
+                    <div class="aduit-input must mr-35">
                         <label>流程类型:</label>
                         <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?true:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-40">
+                    <div class="aduit-input must mr-35">
                         <label>分支条件:</label>
                         <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
                             <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -1167,8 +1167,8 @@
         &.pr-80 {
             padding-right: 80px;
         }
-        &.mr-40 {
-            margin-right: 40px;
+        &.mr-35 {
+            margin-right: 35px;
         }
         &.ml-28 {
             margin-left: 28px;
