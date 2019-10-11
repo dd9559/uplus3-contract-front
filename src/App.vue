@@ -31,7 +31,7 @@
                 <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
                             class="second-grade-menu">
                   <template slot="title">{{grade.name}}</template>
-                  <el-menu-item v-for="tip in grade.child" :index="tip.path">{{tip.name}}</el-menu-item>
+                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path">{{tip.name}}</el-menu-item>
                 </el-submenu>
               </template>
             </el-submenu>
@@ -172,7 +172,7 @@
     .el-submenu__title{
       padding: 0 20px;
       >i{
-        color: #BBC1CD;
+        color: #BBC1CD !important;
       }
     }
   }
