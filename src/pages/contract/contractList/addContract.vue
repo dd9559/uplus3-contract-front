@@ -938,7 +938,6 @@ export default {
                 };
                 if (isOk) {
                   if (ownerRightRatio === 100||this.contractForm.type===1) {
-                    // if (this.contractForm.guestInfo.paymentMethod) {
                       if (this.contractForm.guestInfo.GuestStoreCode) {
                         //客户产权比
                         let guestRightRatio = 0;
@@ -1268,12 +1267,6 @@ export default {
                           type: "warning"
                         });
                       }
-                    // } else {
-                    //   this.$message({
-                    //     message: "客源信息-付款方式不能为空",
-                    //     type: "warning"
-                    //   });
-                    // }
                   } else {
                     this.$message({
                       message: "房源信息-业主产权比和必须为100%",
@@ -1287,12 +1280,6 @@ export default {
                     type: "warning"
                   })
                 }
-              // } else {
-              //   this.$message({
-              //     message: "房源信息-房源方门店不能为空",
-              //     type: "warning"
-              //   });
-              // }
           } else {
             this.$message({
               message: "合同信息-佣金不能为零",
@@ -1638,24 +1625,19 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
-      // PropertyCode
-      // console.log("房源");
       let param = {
         houseId: id,
-        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
-          this.contractForm.houseInfo.PropertyCode=houseMsg.PropertyCode
-          if(!this.canInput){
+          if(!this.canInput){//正常编辑
             if(houseMsg.TradeInt===2){
               this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
             }else{
               this.contractForm.dealPrice = houseMsg.ListingPrice;
-              // this.contractForm.timeUnit=2;
               // 1 月 2 季度 4 年
               let unit
               if(houseMsg.PriceUnitNameEnum){
@@ -1693,7 +1675,22 @@ export default {
                 this.ownerList_.push(obj_);
               });
             }
+          }else{//已签约编辑
+            houseMsg.EstateName=this.contractForm.houseInfo.EstateName
+            houseMsg.BuildingName=this.contractForm.houseInfo.BuildingName
+            houseMsg.Unit=this.contractForm.houseInfo.Unit
+            houseMsg.RoomNo=this.contractForm.houseInfo.RoomNo
+            houseMsg.Square=this.contractForm.houseInfo.Square
+            houseMsg.SquareUse=this.contractForm.houseInfo.SquareUse
+            houseMsg.PriceUnitNameEnum=this.contractForm.timeUnit// 1 月 2 季度 4 年
+            
+            if(this.contractForm.houseInfo.TradeInt===2){
+              houseMsg.ListingPrice=this.contractForm.dealPrice/10000
+            }else{
+              houseMsg.ListingPrice = this.contractForm.dealPrice
+            }
           }
+          this.contractForm.houseInfo = houseMsg;
           // this.options.push({
           //   name: houseMsg.HouseStoreName,
           //   id: houseMsg.HouseStoreCode
@@ -1714,19 +1711,15 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
-      // console.log("客源");
-      // InquiryCode
       let param = {
         customerId: id,
-        // dealDate:this.contractForm.signDate?this.contractForm.signDate:''
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
-          this.contractForm.guestInfo.InquiryCode=guestMsg.InquiryCode
-          if(!this.canInput){
+          if(!this.canInput){//正常编辑
             this.contractForm.guestInfo = guestMsg;
             this.$set(this.contractForm.guestInfo,'paymentMethod',1)
             if(guestMsg.OwnerInfo.length>0){
@@ -1752,6 +1745,8 @@ export default {
                 this.guestList_.push(obj_);
               });
             }
+          }else{//已签约编辑
+            this.contractForm.guestInfo = guestMsg;
           }
           //获取客源分成人
           let param = {
@@ -1760,32 +1755,6 @@ export default {
           }
           this.getAgentMsg(param)
         }
-          // let element = {
-          //   name: guestMsg.OwnerInfo.CustName,
-          //   mobile: guestMsg.OwnerInfo.CustMobile,
-          //   type: 2,
-          //   relation: guestMsg.OwnerInfo.CustRelation,
-          //   encryptionCode:'',
-          //   cardType:'',
-          //   propertyRightRatio:'',
-          //   isEncryption:true
-          // }
-          // let obj = Object.assign({}, element);
-          // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
-          // this.guestList.push(obj);
-          // let obj_ = Object.assign({}, element);
-          // obj_.encryptionMobile=obj_.mobile;
-          // this.guestList_.push(obj_);
-
-          // this.guestList.push({
-          //   name: guestMsg.OwnerInfo.CustName,
-          //   mobile: guestMsg.OwnerInfo.CustMobile,
-          //   type: 2,
-          //   relation: guestMsg.OwnerInfo.CustRelation,
-          //   identifyCode:'',
-          //   propertyRightRatio:''
-          // })
-        // }
       }).catch(error=>{
         this.$message({
           message:error,

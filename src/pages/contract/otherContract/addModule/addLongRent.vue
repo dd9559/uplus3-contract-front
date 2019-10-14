@@ -179,9 +179,11 @@
       </span>
     </el-dialog>
      <!-- 房源客源弹窗 -->
+     <!-- 长租房客源只展示求租 -->
     <houseGuest
     :dialogType="dialogType"
     :dialogVisible="isShowDialog"
+    :contractType="contractType"
     :choseHcode="choseHcode"
     :choseGcode="choseGcode"
     @closeHouseGuest="closeHouseGuest"
@@ -298,6 +300,7 @@ export default {
       //房客源弹窗
       isShowDialog:false,
       dialogType:"",
+      contractType:"求租",
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
@@ -328,7 +331,6 @@ export default {
         if(res.status===200){
           let contractDetail=res.data
           this.$set(contractDetail,"contractInfo",JSON.parse(contractDetail.contractInfo))
-          console.log(contractDetail.contractInfo)
           delete contractDetail.code
           delete contractDetail.cityId
           delete contractDetail.dealAgentStoreSystemtag
@@ -360,29 +362,31 @@ export default {
             depName:contractDetail.shopOwnerStoreName
           }
           this.options_=[option_]
-          // 产权地址
-          let rightAddress = contractDetail.contractInfo.propertyAddr
-          let index1 = rightAddress.indexOf('市')
-          let index2 = rightAddress.indexOf('区')
-          if(index1>0){
-            this.rightAddrCity=rightAddress.substring(0,index1)
-          }
-          if(index2>0){
-            if(index1>0){
-              this.rightAddrArea=rightAddress.substring(index1+1,index2)
-            }else{
-              this.rightAddrArea=rightAddress.substring(0,index2)
-            }
-          }
-          if(index1>0&&index2>0){
-            this.rightAddrDetail=rightAddress.substring(index2+1)
-          }else if(index1>0&&index2<0){
-            this.rightAddrDetail=rightAddress.substring(index1+1)
-          }else if(index1<0&&index2>0){
-            this.rightAddrDetail=rightAddress.substring(index2+1)
-          }else{
-            this.rightAddrDetail=rightAddress
-          }
+          //物业地址
+          contractDetail.propertyAddr=contractDetail.contractInfo.propertyAddr
+          // // 产权地址
+          // let rightAddress = contractDetail.contractInfo.propertyAddr
+          // let index1 = rightAddress.indexOf('市')
+          // let index2 = rightAddress.indexOf('区')
+          // if(index1>0){
+          //   this.rightAddrCity=rightAddress.substring(0,index1)
+          // }
+          // if(index2>0){
+          //   if(index1>0){
+          //     this.rightAddrArea=rightAddress.substring(index1+1,index2)
+          //   }else{
+          //     this.rightAddrArea=rightAddress.substring(0,index2)
+          //   }
+          // }
+          // if(index1>0&&index2>0){
+          //   this.rightAddrDetail=rightAddress.substring(index2+1)
+          // }else if(index1>0&&index2<0){
+          //   this.rightAddrDetail=rightAddress.substring(index1+1)
+          // }else if(index1<0&&index2>0){
+          //   this.rightAddrDetail=rightAddress.substring(index2+1)
+          // }else{
+          //   this.rightAddrDetail=rightAddress
+          // }
           // 房源信息
           contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
           this.ownerList=[];
@@ -1185,16 +1189,18 @@ export default {
       delete param.updateTime
       //新增
       let url="/api/contractInfo/longLease/addContract"
+      let message = "创建成功"
       //编辑
       if(this.operationType===2){
         url="/api/contractInfo/longLease/updateContract"
+        message = "保存成功"
       }
       this.$ajax.postJSON(url,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.fullscreenLoading=false
           this.$message({
-            message:"创建成功",
+            message:message,
             type:"success"
           })
           this.$router.push({

@@ -156,10 +156,10 @@
       </span>
     </el-dialog>
     <!-- 房源客源弹窗 -->
+    <!-- 长租合同客源求租求购都展示 -->
     <houseGuest
     dialogType="guest"
     :dialogVisible="isShowDialog"
-    contractType="求购"
     :choseHcode="choseHcode"
     :choseGcode="choseGcode"
     @closeHouseGuest="closeHouseGuest"
@@ -951,16 +951,18 @@ export default {
       //新增
       debugger
       let url="/api/contractInfo/newHouse/addContract"
+      let message = "创建成功"
       //编辑
       if(this.operationType===2){
         url="/api/contractInfo/newHouse/updateContract"
+        message = "保存成功"
       }
       this.$ajax.postJSON(url,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.fullscreenLoading=false
           this.$message({
-            message:"创建成功",
+            message:message,
             type:"success"
           })
           this.$router.push({
