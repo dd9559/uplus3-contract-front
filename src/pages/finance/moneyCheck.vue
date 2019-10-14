@@ -660,7 +660,8 @@
             type:item.inAccountType,
             power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
-            bill: this.power['sign-cw-debt-invoice'].state
+            bill: this.power['sign-cw-debt-invoice'].state,
+            listName:2
           }
           this.setPath(this.getPath.concat({name:'收款详情'}))
         } else {
@@ -669,7 +670,8 @@
             id:item.id,
             power:this.getUser.user.empId===item.auditBy,
             print:this.power['sign-cw-bill-print'].state,
-            bill: this.power['sign-cw-debt-invoice'].state
+            bill: this.power['sign-cw-debt-invoice'].state,
+            listName:3
           }
           this.setPath(this.getPath.concat({name:'付款详情'}))
         }

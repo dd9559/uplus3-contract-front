@@ -180,6 +180,15 @@
       this.receiptType= urlParam?Number(urlParam.type):1
       this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
 
+      let contractName={
+        1:{name:'新房',type:'xf'},
+        2:{name:'长租',type:'cz'},
+        3:{name:'金融',type:'jr'}
+      }
+      let arr=this.$tool.getRouter([contractName[this.receiptType].name,'合同','合同列表'],`/otherContractList?type=${contractName[this.receiptType].type}`);
+      arr.push({name:'创建收款',path:this.$route.fullPath});
+      this.setPath(arr);
+
       // this.getMoneyType()
       // this.getDictionary()
 
