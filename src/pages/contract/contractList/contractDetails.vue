@@ -1156,7 +1156,9 @@ export default {
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
-      vm.setPath(vm.$tool.getRouter(['二手房','合同','合同列表','合同详情'],'contractList'));
+      let arr=vm.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
+      arr.push({name:'合同详情',path:''});
+      vm.setPath(arr);
     })
   },
   methods: {
@@ -1271,7 +1273,6 @@ export default {
     },
     //合同预览
     goPreview() {
-      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同预览'],'contractList'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -1331,7 +1332,6 @@ export default {
 
         })
       }
-      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractList'));
       this.$router.push({
         path: "/addContract",
         query: {

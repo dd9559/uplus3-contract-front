@@ -906,8 +906,6 @@
       //跳转合同详情页
       goContractDetail(e){
          if(this.power['sign-com-htdetail'].state){
-          // console.log(e)
-          this.setPath(this.$tool.getRouter(['合同','结算审核','合同详情'],'settleCheck'));
           this.$router.push({
             path:'/contractDetails',
             query: {

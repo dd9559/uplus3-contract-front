@@ -148,15 +148,27 @@ export default {
     }
   },
   created () {
+    let contractName={
+      1:{name:'新房',type:'xf'},
+      2:{name:'长租',type:'cz'},
+      3:{name:'金融',type:'jr'}
+    }
+    let routeType
     this.contId=Number(this.$route.query.id)
     if(this.$route.query.type==="newHouse"){
       this.contractType="newHouseDetail"
       this.isActive=2
+      routeType=1
     }else if(this.$route.query.type==="longRent"){
       this.contractType="longRentDetail"
+      routeType=2
     }else{
       this.contractType="financialDetail"
+      routeType=3
     }
+    let arr=this.$tool.getRouter([contractName[routeType].name,'合同','合同列表'],`otherContractList?type=${contractName[routeType].type}`);
+    arr.push({name:'合同详情',path:this.$route.fullPath});
+    this.setPath(arr);
     this.getContractDetail();//合同详情
     this.getStoreCommission();//店佣信息
   },
@@ -219,7 +231,6 @@ export default {
         type="financial"
         router="金融"
       }
-      this.setPath(this.$tool.getRouter([router,'合同','合同编辑'],'otherContractList'));
       this.$router.replace({
         path: "/addOtherContract",
         query: {
