@@ -769,8 +769,6 @@ export default {
     //收款
     gathering(item) {
       if(this.power['sign-ht-info-collect'].state){
-        let pathArr = this.getPath.concat([{name:"创建收款"}])
-        this.setPath(pathArr)
         this.$router.push({
           path:'/receiptBill',
           query:{
@@ -785,8 +783,6 @@ export default {
     //付款
     payment(item) {
       if(this.power['sign-ht-info-pay'].state){
-        let pathArr = this.getPath.concat([{name:"创建付款"}])
-        this.setPath(pathArr)
         this.$router.push({
           path:'/payBill',
           query:{
@@ -823,8 +819,6 @@ export default {
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        // let pathArr = this.getPath.concat([{name:"合同详情"}])
-        // this.setPath(pathArr)
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           let newPage = this.$router.resolve({
             path: "/contractDetails",
@@ -886,8 +880,6 @@ export default {
         res=res.data;
         if(res.status===200){
           localStorage.removeItem('backMsg')
-          let pathArr = this.getPath.concat([{name:"新增合同"}])
-          this.setPath(pathArr)
           if (command === 1 || command === 2 || command === 3) {
             this.$router.push({
               path: "/addContract",
@@ -922,8 +914,6 @@ export default {
     },
     //合同预览
     goPreview(item) {
-      let pathArr = this.getPath.concat([{name:"合同预览"}])
-      this.setPath(pathArr)
       this.$router.push({
         path: "/contractPreview",
         query: {

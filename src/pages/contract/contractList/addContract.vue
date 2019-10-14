@@ -569,6 +569,9 @@ export default {
         }
       }
     }
+    let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
+    arr.push({name:this.type===1?"新增合同":'合同编辑',path:this.$route.fullPath});
+    this.setPath(arr);
     this.getDictionary();//字典
     this.getTransFlow();//交易类型
     this.getRelation();//人员关系

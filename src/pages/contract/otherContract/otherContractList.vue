@@ -286,15 +286,6 @@ export default {
     },
     //新增合同
     toAddcontract(){
-      // addOtherContract
-      let router
-      if(this.contractType==="newHouse"){
-        router="新房"
-      }else if(this.contractType==="longRent"){
-        router="长租"
-      }else{
-        router="金融"
-      }
       this.$router.push({
         path: "/addOtherContract",
         query: {
@@ -350,17 +341,6 @@ export default {
     },
     //合同详情
     goDetail(val){
-      let router
-      if(this.contractType==="newHouse"){
-        router="新房"
-      }else if(this.contractType==="longRent"){
-        router="长租"
-      }else{
-        router="金融"
-      }
-      // let arr=this.$tool.getRouter([router,'合同'],this.$route.fullPath);
-      // arr.push({name:'合同详情'});
-      // this.setPath(arr);
       this.$router.push({
         path: "/otherContractDetail",
         query: {
@@ -382,9 +362,6 @@ export default {
         router="金融"
         type=3
       }
-      // let arr=this.$tool.getRouter([router,'合同','合同列表'],this.$route.fullPath);
-      // arr.push({name:'创建收款'});
-      // this.setPath(arr);
       this.$router.push({
         path: "/receiptBill_simple",
         query: {

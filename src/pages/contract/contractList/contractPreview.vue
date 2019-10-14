@@ -388,7 +388,9 @@ export default {
     this.getContDataType();//获取合同集料库类型
     this.getContImg();
     this.getAdmin();//获取当前登录人信息
-
+    let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
+    arr.push({name:'合同预览',path:this.$route.fullPath});
+    this.setPath(arr);
   },
   methods: {
       tuozhuai(sign,countnum){
@@ -865,8 +867,10 @@ export default {
 
         })
       }
-      this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractDetails'));
-      // this.setPath(this.$tool.getRouter(['合同','合同列表','合同编辑'],'contractList'));
+      let arr = this.getPath
+      arr.splice(3,1)
+      arr.push({name:'合同预览',path:''})
+      this.setPath(arr);
       if(this.contType>3){
         this.$router.replace({
           path: "/newIntention",

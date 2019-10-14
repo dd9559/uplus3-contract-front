@@ -933,15 +933,12 @@
       //跳转合同详情页
       goContractDetail(value){
         if(this.power['sign-com-htdetail'].state){
-
-          // console.log(value)
-          this.setPath(this.$tool.getRouter(['合同','调佣审核','合同详情'],'adjustCheck'));
           this.$router.push({
             path:'/contractDetails',
             query:{
               id: value.contId,
               code: value.contractCode,
-              contType: value.tradeType
+              contType: value.tradeType,
             }
           })
         }else{
