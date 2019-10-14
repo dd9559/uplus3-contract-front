@@ -274,6 +274,9 @@
         }
         this.fullscreenLoading=true
         let param = Object.assign({}, this.form)
+        if(!param.closingDate){
+          param.closingDate=''
+        }
         this.$tool.checkForm(param,rule).then(res=>{
           this.$ajax[type](`/api${url}`,param).then(res=>{
             res = res.data
