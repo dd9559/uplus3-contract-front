@@ -142,7 +142,7 @@
           state:false,
           type:3,
           code:'',
-          flowType:1,//流程类型，本页面为定值
+          flowType:0,//流程类型，本页面为定值
         },
         payId:2,//收款编号
         inputPerson: false,//是否显示第三方输入框
@@ -274,6 +274,9 @@
         }
         this.fullscreenLoading=true
         let param = Object.assign({}, this.form)
+        if(!param.closingDate){
+          param.closingDate=''
+        }
         this.$tool.checkForm(param,rule).then(res=>{
           this.$ajax[type](`/api${url}`,param).then(res=>{
             res = res.data

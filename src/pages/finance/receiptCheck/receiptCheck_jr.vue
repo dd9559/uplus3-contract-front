@@ -68,6 +68,11 @@
       <el-table-column align="center" min-width="80" label="所属区域" prop="customerArea" :formatter="nullFormatter"></el-table-column>
       <el-table-column align="center" min-width="80" label="房源编号" prop="houseinfoCode" :formatter="nullFormatter"></el-table-column>
       <el-table-column align="center" min-width="140" label="产权地址" prop="propertyRightAddr" :formatter="nullFormatter"></el-table-column>
+      <el-table-column align="center" min-width="120" label="收款人">
+        <template slot-scope="scope">
+          <span>{{scope.row.deptName}}-{{scope.row.employeeName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="当前审核人" min-width="120">
         <template slot-scope="scope">
           <p v-if="!scope.row.auditDepName&&!scope.row.auditName">-</p>

@@ -252,7 +252,7 @@
       </div>-->
       <div class="input-group" v-if="billStatus">
         <div class="flex-box txt-title">
-          <label class="form-label f14">支付信息</label>
+          <label class="f14">支付信息</label>
           <el-tooltip content="多种收款方式可通过“添加支付方式”进行录入" placement="top">
             <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
           </el-tooltip>
@@ -261,7 +261,7 @@
           <li v-for="(item,index) in payList" :key="index">
             <div class="message-box flex-box">
               <section>
-                <label class="f14 margin-bottom-base">支付方式</label>
+                <label class="form-label f14 margin-bottom-base">支付方式</label>
                 <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择" @change="hideCardList">
                   <el-option
                     v-for="item in dictionary['534']"
@@ -273,7 +273,7 @@
               </section>
               <section>
                 <div class="flex-box tool-tip w400 no-max">
-                  <label class="f14 margin-bottom-base">金额（元）</label>
+                  <label class="form-label f14 margin-bottom-base">金额（元）</label>
                   <span>{{item.amount|formatChinese}}</span>
                 </div>
                 <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
@@ -1429,8 +1429,8 @@
       align-items: flex-end;
       /*justify-content: space-between;*/
       border-bottom: 1px @color-E9 dashed;
-      padding-bottom: @margin-15;
-      margin-bottom: @margin-15;
+      /*padding-bottom: @margin-15;
+      margin-bottom: @margin-15;*/
       &:last-of-type{
         /*border: 0px;*/
         margin-bottom: 0px;
@@ -1438,6 +1438,7 @@
       >i{
         color: @color-C8;
         font-size: @icon-size-30;
+        margin-bottom: @margin-10;
       }
     }
     .message-box{

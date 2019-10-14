@@ -60,8 +60,8 @@
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
         </div>
         <div>
-          <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
-          <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button class="btn-info"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
+          <el-button class="btn-info"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
       <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
@@ -142,13 +142,52 @@ export default {
     }
     this.getDictionary();//字典
     this.remoteMethod();//部门
-    this.getContractList();//列表
+    let res=this.getDataList
+    if(res&&(res.route===this.$route.fullPath)){
+      this.list = res.data.list
+      this.list.forEach(element=>{
+        this.$set(element,"contractInfo",JSON.parse(element.contractInfo))
+      })
+      this.total = res.data.total
+      let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+      this.contractForm = Object.assign({},this.contractForm,session.query)
+      delete this.contractForm.pageNum
+      delete this.contractForm.signStart
+      delete this.contractForm.signEnd
+      delete this.contractForm.closingStart
+      delete this.contractForm.closingEnd
+      delete this.contractForm.loanStart
+      delete this.contractForm.loanEnd
+      this.currentPage=session.query.pageNum
+      if(session.query.signStart){
+        this.signData[0]=session.query.signStart
+        this.signData[1]=session.query.signEnd
+      }
+      if(session.query.closingStart){
+        this.closingData[0]=session.query.closingStart
+        this.closingData[1]=session.query.closingEnd
+      }
+      if(session.query.loanStart){
+        this.loanData[0]=session.query.loanStart
+        this.loanData[1]=session.query.loanEnd
+      }
+      if(this.contractForm.empId){
+        this.dep=Object.assign({},this.dep,{id:this.contractForm.deptId,empId:this.contractForm.empId,empName:this.contractForm.empName})
+        this.EmployeList.unshift({
+          empId:this.contractForm.empId,
+          name:this.contractForm.empName
+        })
+        this.getEmploye(this.contractForm.deptId)
+      }
+    }else{
+      this.getContractList();//列表
+    }
   },
   methods:{
     //查询
     queryFn(){
       this.currentPage=1
-      this.getContractList()
+      this.getContractList("search")
     },
     //重置
     resetFormFn(){
@@ -184,7 +223,7 @@ export default {
       this.handleNodeClick(data)
     },
     //获取列表数据
-    getContractList(){
+    getContractList(type="init"){
       let url,param
       param = {
         pageNum: this.currentPage,
@@ -195,7 +234,7 @@ export default {
         receiveAmountState:this.contractForm.receiveAmountState
       }
       if(this.contractType==='newHouse'){
-        url="/api/contractInfo/newHouse/contractList"
+        url="/contractInfo/newHouse/contractList"
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -209,7 +248,7 @@ export default {
           }
         }
       }else if(this.contractType==='longRent'){
-        url="/api/contractInfo/longLease/contractList"
+        url="/contractInfo/longLease/contractList"
         param.transMode=this.contractForm.transMode
         if(this.signData){
           if (this.signData.length > 0) {
@@ -218,7 +257,7 @@ export default {
           }
         }
       }else{
-        url="/api/contractInfo/finance/contractList"
+        url="/contractInfo/finance/contractList"
         if(this.loanData){
           if (this.loanData.length > 0) {
             param.loanStart = this.loanData[0];
@@ -226,7 +265,15 @@ export default {
           }
         }
       }
-      this.$ajax.get(url,param).then(res=>{
+      if(type==="search"||type==="page"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:this.$route.fullPath,
+          url:url,
+          query:Object.assign({},param,{empName:this.dep.empName,depName:this.contractForm.depName}),
+          methods:"get"
+        }))
+      }
+      this.$ajax.get(`/api${url}`,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.list=res.data.list
@@ -269,7 +316,7 @@ export default {
         receiveAmountState:this.contractForm.receiveAmountState
       }
       if(this.contractType==="newHouse"){
-        contType="新房"
+        contType=1
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -283,7 +330,7 @@ export default {
           }
         }
       }else if(this.contractType==="longRent"){
-        contType="长租"
+        contType=2
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -291,7 +338,7 @@ export default {
           }
         }
       }else{
-        contType="金融"
+        contType=3
         if(this.loanData){
           if (this.loanData.length > 0) {
             param.loanStart = this.loanData[0];
@@ -299,8 +346,8 @@ export default {
           }
         }
       }
-      param.contType=contType
-      // this.excelCreate("/input/contractExcel",param)
+      param.tradeType=contType
+      this.excelCreate("/input/contractExcel",param)
     },
     //合同详情
     goDetail(val){
@@ -358,7 +405,7 @@ export default {
   background-color: #fff;
   padding: 0 10px;
   border-radius: 2px;
-  box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+  // box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   > .listTitle {
     display: flex;
     align-items: center;

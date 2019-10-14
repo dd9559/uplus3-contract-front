@@ -156,10 +156,10 @@
       </span>
     </el-dialog>
     <!-- 房源客源弹窗 -->
+    <!-- 长租合同客源求租求购都展示 -->
     <houseGuest
-    dialogType="house"
+    dialogType="guest"
     :dialogVisible="isShowDialog"
-    contractType="求购"
     :choseHcode="choseHcode"
     :choseGcode="choseGcode"
     @closeHouseGuest="closeHouseGuest"
@@ -286,7 +286,7 @@ export default {
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //合同详情
     getContractDetail(){
@@ -393,7 +393,7 @@ export default {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
       this.contractForm.signDate=time_
     },
     //获取所在城市的人员关系
@@ -662,6 +662,20 @@ export default {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
+          // 成交经纪人
+          this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
+          this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
+          this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
+          this.contractForm.dealAgentStoreName=guestMsg.GuestStoreName//经纪人门店
+          //经纪人上级
+          this.getSuperior(guestMsg.EmpCode)
+          let item = {
+            depName:guestMsg.GuestStoreName,
+            depId:guestMsg.GuestStoreCode,
+            empName:guestMsg.EmpName,
+            empId:guestMsg.EmpCode
+          }
+          this.options=[item]
           if(guestMsg.OwnerInfo.length>0){
             this.guestList=[];
             this.guestList_=[];
@@ -697,6 +711,28 @@ export default {
         })
       });
     },
+    //根据经纪人id查询上级
+    getSuperior(id){
+      let param = {
+        agentId:id
+      }
+      this.$ajax.get("/api/resource/getShopowner",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractForm.shopOwnerId=res.data.ShopOwnerId//店长id
+          this.contractForm.shopOwnerName=res.data.ShopOwnerName//店长姓名
+          this.contractForm.shopOwnerStoreId=res.data.ShopOwnerStoreId//店长门店id
+          this.contractForm.shopOwnerStoreName=res.data.ShopOwnerStoreName//店长门店
+          let item = {
+            depName:res.data.ShopOwnerStoreName,
+            depId:res.data.ShopOwnerStoreId,
+            empName:res.data.ShopOwnerName,
+            empId:res.data.ShopOwnerId
+          }
+          this.options_=[item]
+        }
+      })
+    },
     //经纪人店长查询
     remoteMethod(keyword,type){
       if(keyword!==''){
@@ -719,6 +755,7 @@ export default {
     //经纪人所属门店
     selectOption(val,type){
       if(type==="agent"){
+        this.getSuperior(val)
         if(this.options.length>0&&val){
           this.options.forEach(element => {
             if(element.empId==val){
@@ -914,16 +951,18 @@ export default {
       //新增
       debugger
       let url="/api/contractInfo/newHouse/addContract"
+      let message = "创建成功"
       //编辑
       if(this.operationType===2){
         url="/api/contractInfo/newHouse/updateContract"
+        message = "保存成功"
       }
       this.$ajax.postJSON(url,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.fullscreenLoading=false
           this.$message({
-            message:"创建成功",
+            message:message,
             type:"success"
           })
           this.$router.push({
@@ -981,6 +1020,7 @@ export default {
 .add-form {
   padding: 10px;
   font-size: 14px;
+  box-sizing:border-box;
   background: @bg-white;
   overflow-y: auto;
 }

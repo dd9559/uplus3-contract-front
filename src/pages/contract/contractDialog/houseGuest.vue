@@ -346,13 +346,6 @@ export default {
     };
   },
   created() {
-    // let userMsg = JSON.parse(sessionStorage.getItem("userMsg"))
-    // this.userMsg=userMsg;
-    // this.depHandleClick(userMsg.user)
-    // this.depId = userMsg.user.depId
-    // this.depName=userMsg.user.depName
-    // this.empId=userMsg.user.empId
-    // this.EmployeList.push({depId:this.depId,depName:this.depName,empId:this.empId,name:userMsg.user.name})
     if (this.contractType === "求租") {
       this.housetType = 3;
       this.guestType = 1;
@@ -387,7 +380,6 @@ export default {
         this.attention=1
       }
       this.showDataList = true;
-      // this.attention = !this.attention;
       this.getHouseList();
     },
     handleCurrentChange1(val) {
@@ -419,8 +411,6 @@ export default {
         res = res.data;
         this.loading_ = false;
         if (res.status === 200) {
-          // debugger
-          //alert('222')
           this.dataList = [];
           if (res.data&&res.data.TotalCount > 0) {
             this.dataList = res.data.list;
@@ -452,7 +442,6 @@ export default {
         this.loading_ = false;
         res = res.data;
         if (res.status === 200) {
-          //alert('222')
           this.dataList = [];
           if (res.data&&res.data.TotalCount > 0) {
             this.dataList = res.data.list;
@@ -488,7 +477,6 @@ export default {
     },
     //楼栋
     getBuildList(id) {
-      console.log(id);
       this.buildList = [];
       this.BuildingCode = "";
       for (let i = 0; i < this.options.length; i++) {
@@ -509,7 +497,6 @@ export default {
     },
     //选中房源客源
     selectItem(value) {
-      console.log(value);
       if (this.dialogType === "house") {
         if (value.invalid) {
           if (this.selectCode === value.PropertyCode) {

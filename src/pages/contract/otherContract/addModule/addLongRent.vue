@@ -37,10 +37,11 @@
           </el-form-item>
           <span class="select" @click="showDialog('house')">请选择房源</span>
           <br>
-          <el-form-item label="物业地址：" class="form-label" style="width:750px;text-align:right">
-            <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
+          <el-form-item label="物业地址：" class="form-label" style="width:705px;text-align:right">
+            <!-- <input v-model="rightAddrCity" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" style="width:100px" /> 市
             <input v-model="rightAddrArea" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" style="width:100px" /> 区
-            <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" />
+            <input v-model="rightAddrDetail" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" style="width:400px" /> -->
+            <input v-model="contractForm.propertyAddr" :disabled="canNotInput" maxlength="100" placeholder="请输入" @input="inputCode('propertyAddr')" class="dealPrice" :class="{'disabled':canNotInput}" style="width:600px" />
           </el-form-item>
           <br>
           <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
@@ -178,9 +179,11 @@
       </span>
     </el-dialog>
      <!-- 房源客源弹窗 -->
+     <!-- 长租房客源只展示求租 -->
     <houseGuest
     :dialogType="dialogType"
     :dialogVisible="isShowDialog"
+    :contractType="contractType"
     :choseHcode="choseHcode"
     :choseGcode="choseGcode"
     @closeHouseGuest="closeHouseGuest"
@@ -297,9 +300,11 @@ export default {
       //房客源弹窗
       isShowDialog:false,
       dialogType:"",
+      contractType:"求租",
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
+      canNotInput:false,//带出的物业地址不能修改
     }
   },
   created () {
@@ -314,7 +319,7 @@ export default {
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
     //合同详情
     getContractDetail(){
@@ -326,7 +331,6 @@ export default {
         if(res.status===200){
           let contractDetail=res.data
           this.$set(contractDetail,"contractInfo",JSON.parse(contractDetail.contractInfo))
-          console.log(contractDetail.contractInfo)
           delete contractDetail.code
           delete contractDetail.cityId
           delete contractDetail.dealAgentStoreSystemtag
@@ -358,29 +362,31 @@ export default {
             depName:contractDetail.shopOwnerStoreName
           }
           this.options_=[option_]
-          // 产权地址
-          let rightAddress = contractDetail.contractInfo.propertyAddr
-          let index1 = rightAddress.indexOf('市')
-          let index2 = rightAddress.indexOf('区')
-          if(index1>0){
-            this.rightAddrCity=rightAddress.substring(0,index1)
-          }
-          if(index2>0){
-            if(index1>0){
-              this.rightAddrArea=rightAddress.substring(index1+1,index2)
-            }else{
-              this.rightAddrArea=rightAddress.substring(0,index2)
-            }
-          }
-          if(index1>0&&index2>0){
-            this.rightAddrDetail=rightAddress.substring(index2+1)
-          }else if(index1>0&&index2<0){
-            this.rightAddrDetail=rightAddress.substring(index1+1)
-          }else if(index1<0&&index2>0){
-            this.rightAddrDetail=rightAddress.substring(index2+1)
-          }else{
-            this.rightAddrDetail=rightAddress
-          }
+          //物业地址
+          contractDetail.propertyAddr=contractDetail.contractInfo.propertyAddr
+          // // 产权地址
+          // let rightAddress = contractDetail.contractInfo.propertyAddr
+          // let index1 = rightAddress.indexOf('市')
+          // let index2 = rightAddress.indexOf('区')
+          // if(index1>0){
+          //   this.rightAddrCity=rightAddress.substring(0,index1)
+          // }
+          // if(index2>0){
+          //   if(index1>0){
+          //     this.rightAddrArea=rightAddress.substring(index1+1,index2)
+          //   }else{
+          //     this.rightAddrArea=rightAddress.substring(0,index2)
+          //   }
+          // }
+          // if(index1>0&&index2>0){
+          //   this.rightAddrDetail=rightAddress.substring(index2+1)
+          // }else if(index1>0&&index2<0){
+          //   this.rightAddrDetail=rightAddress.substring(index1+1)
+          // }else if(index1<0&&index2>0){
+          //   this.rightAddrDetail=rightAddress.substring(index2+1)
+          // }else{
+          //   this.rightAddrDetail=rightAddress
+          // }
           // 房源信息
           contractDetail.houseInfo=contractDetail.contractInfo.houseInfo
           this.ownerList=[];
@@ -431,7 +437,7 @@ export default {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
       this.contractForm.signDate=time_
     },
     //获取所在城市的人员关系
@@ -449,8 +455,8 @@ export default {
     //添加客户
     addcommissionData(type) {
       if(type==="owner"){
-        if (this.guestList.length < 4) {
-          this.guestList.push({
+        if (this.ownerList.length < 4) {
+          this.ownerList.push({
             cardCode: "",
             mobile: "",
             encryptionMobile:"",
@@ -465,8 +471,8 @@ export default {
           });
         }
       }else{
-        if (this.ownerList.length < 4) {
-          this.ownerList.push({
+        if (this.guestList.length < 4) {
+          this.guestList.push({
             cardCode: "",
             mobile: "",
             encryptionMobile:"",
@@ -540,13 +546,16 @@ export default {
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
         res = res.data;
         if (res.status === 200) {
+          this.canNotInput=true
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
+          // 物业地址 2019.10.11黄鹤更改需求由三个输入框合成一个 并且带出的物业地址不能修改
+          this.contractForm.propertyAddr=this.contractForm.houseInfo.EstateName.replace(/\s/g,"")+this.contractForm.houseInfo.BuildingName.replace(/\s/g,"")+this.contractForm.houseInfo.Unit.replace(/\s/g,"")+this.contractForm.houseInfo.RoomNo.replace(/\s/g,"")
           //重新选择房源时清空产权地址
-          this.rightAddrCity='';
-          this.rightAddrArea='';
-          this.rightAddrDetail='';
+          // this.rightAddrCity='';
+          // this.rightAddrArea='';
+          // this.rightAddrDetail='';
           if(houseMsg.OwnerInfoList.length>0){
             this.ownerList=[];
             this.ownerList_=[];
@@ -586,6 +595,21 @@ export default {
           let guestMsg = res.data;
           this.contractForm.guestinfoCode = guestMsg.InquiryNo; //客源编号
           this.contractForm.guestInfo = guestMsg;
+          //2019.10.11黄鹤更改需求 选择了客源自动带出经纪人和经纪人店长
+          // 成交经纪人 
+          this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
+          this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
+          this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
+          this.contractForm.dealAgentStoreName=guestMsg.GuestStoreName//经纪人门店
+          //经纪人上级
+          this.getSuperior(guestMsg.EmpCode)
+          let item = {
+            depName:guestMsg.GuestStoreName,
+            depId:guestMsg.GuestStoreCode,
+            empName:guestMsg.EmpName,
+            empId:guestMsg.EmpCode
+          }
+          this.options=[item]
           if(guestMsg.OwnerInfo.length>0){
             this.guestList=[];
             this.guestList_=[];
@@ -614,6 +638,29 @@ export default {
         })
       });
     },
+    //2019.10.11黄鹤更改需求 选择了经纪人自动带出店长和店长门店
+    //根据经纪人id查询上级
+    getSuperior(id){
+      let param = {
+        agentId:id
+      }
+      this.$ajax.get("/api/resource/getShopowner",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractForm.shopOwnerId=res.data.ShopOwnerId//店长id
+          this.contractForm.shopOwnerName=res.data.ShopOwnerName//店长姓名
+          this.contractForm.shopOwnerStoreId=res.data.ShopOwnerStoreId//店长门店id
+          this.contractForm.shopOwnerStoreName=res.data.ShopOwnerStoreName//店长门店
+          let item = {
+            depName:res.data.ShopOwnerStoreName,
+            depId:res.data.ShopOwnerStoreId,
+            empName:res.data.ShopOwnerName,
+            empId:res.data.ShopOwnerId
+          }
+          this.options_=[item]
+        }
+      })
+    },
     //纸质合同编号限制
     inputCode(type){
       let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
@@ -622,9 +669,14 @@ export default {
       }
       if(this.contractForm.houseinfoCode&&type==="houseinfoCode"){
         this.contractForm.houseinfoCode=this.contractForm.houseinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+        this.canNotInput=false
+        this.contractForm.propertyAddr=""
       }
       if(this.contractForm.guestinfoCode&&type==="guestinfoCode"){
         this.contractForm.guestinfoCode=this.contractForm.guestinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+      }
+      if(this.contractForm.propertyAddr&&type==="propertyAddr"){
+        this.contractForm.propertyAddr=this.contractForm.propertyAddr.replace(/\s+/g,"").replace(addrReg,'')
       }
     },
     //数字金额限制
@@ -820,6 +872,7 @@ export default {
     //经纪人所属门店
     selectOption(val,type){
       if(type==="agent"){
+        this.getSuperior(val)
         if(this.options.length>0&&val){
           this.options.forEach(element => {
             if(element.empId==val){
@@ -854,9 +907,11 @@ export default {
         delete rule_.guestinfoCode
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
+        // 物业地址
+        if(this.contractForm.propertyAddr){
         //产权地址
-        if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
-          this.contractForm.propertyAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
+        // if (this.rightAddrCity&&this.rightAddrArea&&this.rightAddrDetail) {
+        //   this.contractForm.propertyAddr=this.rightAddrCity+"市"+this.rightAddrArea+"区"+this.rightAddrDetail
           //业主信息
             let isOk
             let ownerArr = this.ownerList.map(item=>Object.assign({},item));
@@ -1134,16 +1189,18 @@ export default {
       delete param.updateTime
       //新增
       let url="/api/contractInfo/longLease/addContract"
+      let message = "创建成功"
       //编辑
       if(this.operationType===2){
         url="/api/contractInfo/longLease/updateContract"
+        message = "保存成功"
       }
       this.$ajax.postJSON(url,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.fullscreenLoading=false
           this.$message({
-            message:"创建成功",
+            message:message,
             type:"success"
           })
           this.$router.push({
@@ -1198,9 +1255,15 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.disabled {
+  background-color: #f5f7fa;
+  cursor: not-allowed;
+  color: #C0C4CC !important;
+}
 .add-form {
   padding: 10px;
   font-size: 14px;
+  box-sizing:border-box;
   background: @bg-white;
   overflow-y: auto;
 }

@@ -267,7 +267,7 @@ export default {
   methods:{
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -200 + 'px'
+      this.clientHei= document.documentElement.clientHeight -140 + 'px'
     },
      //合同详情
     getContractDetail(){
@@ -526,7 +526,29 @@ export default {
         })
       });
     },
-      //经纪人店长查询
+     //根据经纪人id查询上级
+    getSuperior(id){
+      let param = {
+        agentId:id
+      }
+      this.$ajax.get("/api/resource/getShopowner",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contractForm.shopOwnerId=res.data.ShopOwnerId//店长id
+          this.contractForm.shopOwnerName=res.data.ShopOwnerName//店长姓名
+          this.contractForm.shopOwnerStoreId=res.data.ShopOwnerStoreId//店长门店id
+          this.contractForm.shopOwnerStoreName=res.data.ShopOwnerStoreName//店长门店
+          let item = {
+            depName:res.data.ShopOwnerStoreName,
+            depId:res.data.ShopOwnerStoreId,
+            empName:res.data.ShopOwnerName,
+            empId:res.data.ShopOwnerId
+          }
+          this.options_=[item]
+        }
+      })
+    },
+    //经纪人店长查询
     remoteMethod(keyword,type){
       if(keyword!==''){
         let param = {
@@ -548,6 +570,7 @@ export default {
     //经纪人所属门店
     selectOption(val,type){
       if(type==="agent"){
+        this.getSuperior(val)
         if(this.options.length>0&&val){
           this.options.forEach(element => {
             if(element.empId==val){
@@ -659,16 +682,18 @@ export default {
       delete param.updateTime
       //新增
       let url="/api/contractInfo/finance/addContract"
+      let message = "创建成功"
       //编辑
       if(this.operationType===2){
         url="/api/contractInfo/finance/updateContract"
+        message = "保存成功"
       }
       this.$ajax.postJSON(url,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.fullscreenLoading=false
           this.$message({
-            message:"创建成功",
+            message:message,
             type:"success"
           })
           this.$router.push({
@@ -730,6 +755,7 @@ input:disabled{
   padding: 10px;
   font-size: 14px;
   background: @bg-white;
+  box-sizing:border-box;
   overflow-y: auto;
 }
 .contractMsg {
