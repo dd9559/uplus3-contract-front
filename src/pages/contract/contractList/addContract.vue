@@ -1422,7 +1422,6 @@ export default {
         if(this.isOffline===1){
           url = '/api/contract/addLocalContract'
         }
-        // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
@@ -1432,14 +1431,20 @@ export default {
                 message:"保存成功",
                 type: "success"
               })
-              this.$router.push({
-                path: "/contractDetails",
-                query:{
-                  id:res.data.id,
-                  contType:this.contractForm.type,
-                  type:"contBody"
-                }
-              });
+              if(this.canInput){//已签约状态编辑完成跳转合同列表
+                this.$router.push({
+                  path: "/contractList"
+                });
+              }else{
+                this.$router.push({
+                  path: "/contractDetails",
+                  query:{
+                    id:res.data.id,
+                    contType:this.contractForm.type,
+                    type:"contBody"
+                  }
+                });
+              }
             }else{
               if(this.canInput){//已签约状态编辑完成跳转合同列表
                 this.$message({
