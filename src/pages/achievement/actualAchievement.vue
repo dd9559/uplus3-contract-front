@@ -261,6 +261,11 @@
           </el-table-column>
 
           <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
+          <el-table-column label="上传合同主体时间" align="center" min-width="90">
+              <template slot-scope="scope">
+              <p>{{scope.row.uploadTime|formatTime(false)}}</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
 
