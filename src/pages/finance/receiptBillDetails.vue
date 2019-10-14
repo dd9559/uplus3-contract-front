@@ -171,6 +171,14 @@
       let urlParam=this.$route.query
       this.payId=Number(urlParam.id)
       this.getData()
+      let contractName={
+        1:{name:'新房',type:'xf'},
+        2:{name:'长租',type:'cz'},
+        3:{name:'金融',type:'jr'}
+      }
+      let arr=this.$tool.getRouter([contractName[Number(urlParam.type)].name,'财务','收款审核'],`/receiptCheck?type=${contractName[Number(urlParam.type)].type}`);
+      arr.push({name:'收款详情',path:this.$route.fullPath});
+      this.setPath(arr);
     },
     methods: {
       personChose: function () {

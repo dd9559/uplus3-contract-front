@@ -365,6 +365,14 @@
       if(this.$route.query.type){
         this.receiptBill=parseInt(this.$route.query.type)
       }
+      let _listName={
+        1:{name:'收付款单',url:'/Bill'},
+        2:{name:'付款审核',url:'/moneyCheck?type=1'},
+        3:{name:'收款审核',url:'/moneyCheck?type=2'}
+      }
+      let arr=this.$tool.getRouter(['二手房','财务',_listName[Number(this.$route.query.listName)].name],_listName[Number(this.$route.query.listName)].url);
+      arr.push({name:`${this.$route.query.tab==='收款信息'?'收款':'付款'}详情`,path:this.$route.fullPath});
+      this.setPath(arr);
     },
     methods: {
       previewImg:function () {

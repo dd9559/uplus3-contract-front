@@ -36,7 +36,6 @@ const receiptCheck={
       })
     },
     toDetails:function (row) {
-      this.setPath(this.getPath.concat({name: '收款详情'}))
       this.$router.push({
         path:'/receiptBillDetails',
         query:{

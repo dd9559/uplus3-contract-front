@@ -564,6 +564,9 @@
       if(inAccount){
         this.activeType=parseInt(inAccount)===4?2:1
       }
+      let arr=this.$tool.getRouter(['二手房','合同','合同列表'],'/contractList');
+      arr.push({name:'创建收款',path:this.$route.fullPath});
+      this.setPath(arr);
     },
     methods: {
       //判断用户该合同是否已经选择过收款方式
