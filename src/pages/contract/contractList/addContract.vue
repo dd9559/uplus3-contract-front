@@ -1676,10 +1676,11 @@ export default {
               });
             }
           }else{//已签约编辑
-            houseMsg.EstateName=this.contractForm.houseInfo.EstateName
-            houseMsg.BuildingName=this.contractForm.houseInfo.BuildingName
-            houseMsg.Unit=this.contractForm.houseInfo.Unit
-            houseMsg.RoomNo=this.contractForm.houseInfo.RoomNo
+            //2019.10.14 张丽茹更改需求 已签约编辑房源物业地址需要更新
+            // houseMsg.EstateName=this.contractForm.houseInfo.EstateName
+            // houseMsg.BuildingName=this.contractForm.houseInfo.BuildingName
+            // houseMsg.Unit=this.contractForm.houseInfo.Unit
+            // houseMsg.RoomNo=this.contractForm.houseInfo.RoomNo
             houseMsg.Square=this.contractForm.houseInfo.Square
             houseMsg.SquareUse=this.contractForm.houseInfo.SquareUse
             houseMsg.PriceUnitNameEnum=this.contractForm.timeUnit// 1 月 2 季度 4 年
