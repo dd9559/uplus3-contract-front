@@ -295,7 +295,6 @@ export default {
       }else{
         router="金融"
       }
-      this.setPath(this.$tool.getRouter([router,'合同','新增合同'],'otherContractList'));
       this.$router.push({
         path: "/addOtherContract",
         query: {
@@ -359,7 +358,9 @@ export default {
       }else{
         router="金融"
       }
-      this.setPath(this.$tool.getRouter([router,'合同','合同详情'],'otherContractList'));
+      // let arr=this.$tool.getRouter([router,'合同'],this.$route.fullPath);
+      // arr.push({name:'合同详情'});
+      // this.setPath(arr);
       this.$router.push({
         path: "/otherContractDetail",
         query: {
@@ -381,7 +382,9 @@ export default {
         router="金融"
         type=3
       }
-      this.setPath(this.$tool.getRouter([router,'合同','合同列表','创建收款'],'otherContractList'));
+      // let arr=this.$tool.getRouter([router,'合同','合同列表'],this.$route.fullPath);
+      // arr.push({name:'创建收款'});
+      // this.setPath(arr);
       this.$router.push({
         path: "/receiptBill_simple",
         query: {
