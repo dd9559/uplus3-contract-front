@@ -9,14 +9,13 @@
       </div>
       <el-table :data="listData" @cell-click="cellClick" border :max-height="tableHeight">
         <el-table-column
-        align="center"
         :label="item.name"
         :prop="item.prop"
         :formatter="nullFormatter"
         v-for="item in tHeader"
         :key="item.id">
         </el-table-column>
-        <el-table-column align="center" label="操作" min-width="90">
+        <el-table-column label="操作" min-width="90">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,'edit',1)" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
             <el-button @click="rowOperation(scope.row,'delete','stepsType')" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
@@ -31,33 +30,33 @@
         <el-button type="primary" @click="addTradeSteps" v-if="power['sign-set-hq'].state">添加交易步骤</el-button>
       </div>
       <el-table :data="listData_other" border :max-height="tableHeight">
-        <el-table-column align="center" :label="item.name" :prop="item.prop" :formatter="nullFormatter"
+        <el-table-column :label="item.name" :prop="item.prop" :formatter="nullFormatter"
                         v-for="item in tHeader_other" :key="item.id">
         </el-table-column>
-        <el-table-column align="center" label="计划天数" width="100">
+        <el-table-column label="计划天数" width="100">
           <template slot-scope="scope">
             <p>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="步骤附属信息" width="200">
+        <el-table-column label="步骤附属信息" width="220">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.title}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="信息类型">
+        <el-table-column label="信息类型">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.type|getValue}}</p>  
           </template>
         </el-table-column>
-        <el-table-column align="center" label="是否必须">
+        <el-table-column label="是否必须">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.isRequired==1?'是':'否'}}</p>  
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="medium" @click="rowOperation(scope.row,'edit',2)" v-if="power['sign-set-hq'].state">编辑</el-button>
             <el-button type="text" size="medium" @click="rowOperation(scope.row,'delete','stepBusiness')" v-if="power['sign-set-hq'].state">删除</el-button>
@@ -661,11 +660,18 @@
       .cell {
         padding: 0;
         p {
-          border-bottom: 1px solid #EDECF0;
+          border-bottom: 1px solid #EBEEF5;
           line-height: 2.4;
+          padding-left: 10px;
           &:last-child {
             border: none;
           }
+        }
+      }
+      &:nth-child(-n+2),
+      &:last-child {
+        .cell {
+          padding: 10px;
         }
       }
     }

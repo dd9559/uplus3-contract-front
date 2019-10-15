@@ -6,8 +6,8 @@
                 <span>数据列表</span>
             </p>
             <el-table :data="tableData" ref='onetable' border   @row-click="rowClick" class='onetable' :row-class-name='tableStyle' highlight-current-row>
-                <el-table-column align="center" width="100px" label="序号" type="index"></el-table-column>
-                <el-table-column align="center" label="款类(大类)" prop="name"></el-table-column>
+                <el-table-column  width="100px" label="序号" type="index"></el-table-column>
+                <el-table-column  label="款类(大类)" prop="name"></el-table-column>
             </el-table>
         </div>
         <div class="commission gap">
@@ -16,9 +16,9 @@
                  <el-button type="primary" class='paper-btn' round size="medium"  v-show="power['sign-set-kl-add'].state==true && !isSF" @click='operation(null,1)'>新增</el-button> 
             </p>
             <el-table :data="moneyTypes" border>
-                <el-table-column align="center" label="序号" type="index"></el-table-column>
-                <el-table-column align="center" label="款类(小类)" prop="name"></el-table-column>
-                <el-table-column align="center" label="描述" prop="remark">
+                <el-table-column  label="序号" type="index"></el-table-column>
+                <el-table-column  label="款类(小类)" prop="name"></el-table-column>
+                <el-table-column  label="描述" prop="remark">
                     <template slot-scope="scope">
                         <span v-if="scope.row.remark.length>24">
                         <el-popover trigger="hover"  width="160" placement="top">
@@ -34,8 +34,8 @@
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="收付配置" prop="accountType.label"></el-table-column>
-                <el-table-column align="center" label="操作" :formatter="nullFormatter">
+                <el-table-column  label="收付配置" prop="accountType.label"></el-table-column>
+                <el-table-column  label="操作" :formatter="nullFormatter">
                     <template slot-scope="scope">
                         <div v-if="bigName =='代收代付' || !power['sign-set-kl-edit'].state">--</div>
                         <div v-else>

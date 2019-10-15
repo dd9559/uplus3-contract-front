@@ -136,14 +136,14 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
-          <el-table-column label="上传合同主体时间" align="center" min-width="90">
+          <el-table-column prop="recordType.label" label="签约方式"  min-width="60"></el-table-column>
+          <el-table-column label="上传合同主体时间"  min-width="90">
               <template slot-scope="scope">
               <p>{{scope.row.uploadTime|formatTime(false)}}</p>
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉状态" align="center" min-width="80">
+          <el-table-column label="申诉状态"  min-width="80">
             <template slot-scope="scope">
               <div v-if="scope.row.appealStatus">
                 <p v-if="scope.row.appealStatus.value==0" class="green">已处理</p>
@@ -153,7 +153,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉人" align="center" min-width="120">
+          <el-table-column label="申诉人"  min-width="120">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <p>{{item.appealDepName}}-{{item.appealName}}</p>
@@ -161,7 +161,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="date" label="申诉时间" align="center" min-width="90">
+          <el-table-column prop="date" label="申诉时间"  min-width="90">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <p>{{item.appealTime|formatDate}}</p>
@@ -169,7 +169,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉角色" align="center" min-width="100">
+          <el-table-column label="申诉角色"  min-width="100">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="!item.roles||item.roles.length==0">-</div>
@@ -192,7 +192,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉内容" align="center" min-width="200">
+          <el-table-column label="申诉内容"  min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="item.appealContent.length>10">
@@ -215,7 +215,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉凭证" align="center" min-width="100">
+          <el-table-column label="申诉凭证"  min-width="100">
             <template slot-scope="scope">
               <div  v-for="item2 in scope.row.achievementAppeals">
                 <div  v-if="item2.voucherUrl&&item2.voucherUrl.length>0">
@@ -240,7 +240,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="审核人" align="center" min-width="120">
+          <el-table-column label="审核人"  min-width="120">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <p>{{item.auditDepName}}-{{item.auditName}}</p>
@@ -248,7 +248,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="审核状态(时间)" align="center" min-width="200">
+          <el-table-column label="审核状态(时间)"  min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="item.auditStatus">
@@ -263,7 +263,7 @@
 
           
 
-          <el-table-column label="审核备注" align="center" min-width="200">
+          <el-table-column label="审核备注"  min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
                   <div v-if="item.auditRemarks.length>0">
@@ -278,7 +278,7 @@
 
           
 
-          <el-table-column label="操作" align="center" min-width="120">
+          <el-table-column label="操作"  min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
                 <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1&&scope.row.appealStatus.value!=0"

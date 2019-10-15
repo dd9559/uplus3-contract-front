@@ -89,7 +89,7 @@
                 <!-- <div class="paper-tit-fl"><i class="iconfont icon-tubiao-11 mr-10 font-cl1"></i>数据列表</div> -->
             </div>
             <el-table ref="tableCom" border :max-height="tableNumberCom" :data="tableData.list" v-loading="loadingList" class="paper-table">
-                <el-table-column :formatter="nullFormatterData" label="合同信息" align="left" min-width="150">
+                <el-table-column :formatter="nullFormatterData" label="合同信息" min-width="150">
                     <template slot-scope="scope">
                         <p>
                             合同:
@@ -101,35 +101,35 @@
                         </p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约日期" align="center" min-width="90">
+                <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
+                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约日期" min-width="90">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.signDate)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="后期状态" align="center" min-width="80">
+                <el-table-column :formatter="nullFormatterData" label="后期状态" min-width="80">
                     <template slot-scope="scope">
                         {{statusLaterStageFn(scope.row.statusLaterStage.value)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" align="center" min-width="260">
+                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="260">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" align="center" min-width="90">
+                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="90">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" align="center" min-width="90">
+                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="90">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="成交经纪人" align="center" min-width="140">
+                <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="140">
                     <template slot-scope="scope">
                         {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="操作" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" label="操作" min-width="120">
                     <template slot-scope="scope">
                         <el-button v-if="power['sign-qh-rev-receive'].state" class="blue" type="text" @click="receiveFn(scope.row)">{{receiveComFn(scope.row.statusLaterStage.value,1)}}</el-button>
                     </template>

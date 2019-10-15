@@ -117,7 +117,7 @@
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
-        <el-table-column min-width="200" align="center" label="合同信息" prop="cityName" :formatter="nullFormatter">
+        <el-table-column min-width="200" label="合同信息" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>合同:<span class="span-cursor" @click="toLink(scope.row,'cont')">{{scope.row.code}}</span></li>
@@ -127,42 +127,42 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="款类" prop="collectionType">
+        <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="款类" prop="collectionType">
           <template slot-scope="scope">
             佣金
           </template>
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="物业地址" prop="propertyAddr">
+        <el-table-column min-width="160" label="物业地址" prop="propertyAddr">
           <!--<template slot-scope="scope">
             &#45;&#45;
           </template>-->
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="成交经纪人" prop="broker">
+        <el-table-column min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
             {{scope.row.dealAgentStoreName}}
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter">
+        <el-table-column label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter">
           <!--<template slot-scope="scope">
             {{scope.row.receivableCommission-scope.row.receivedCommission|moneyFormatter}}
           </template>-->
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="签约时间" prop="operation time">
+        <el-table-column min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
             {{scope.row.signTime|formatDate}}
           </template>
         </el-table-column>
-        <el-table-column align="center" min-width="160" label="收款时间" prop="operation time">
+        <el-table-column min-width="160" label="收款时间" prop="operation time">
           <template slot-scope="scope">
             {{scope.row.lastCollectCommissionTime|formatTime}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
+        <el-table-column label="收款状态" prop="receiveAmountState" :formatter="nullFormatter">
           <template slot-scope="scope">
             {{scope.row.receivableCommission-scope.row.receivedCommission>0?scope.row.receivableCommission-scope.row.receivedCommission===scope.row.receivableCommission?'未收':'部分':'收齐'}}
           </template>

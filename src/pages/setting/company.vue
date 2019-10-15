@@ -51,45 +51,45 @@
         <el-button @click="addCompany" icon="el-icon-plus" type="primary">公司信息</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
-        <el-table-column align="center" label="城市" prop="cityName" width="90">
+        <el-table-column label="城市" prop="cityName" width="90">
         </el-table-column>
-        <el-table-column align="center" label="门店" prop="storeName">
+        <el-table-column label="门店" prop="storeName">
         </el-table-column>
-        <el-table-column align="center" label="账户类型" min-width="50">
+        <el-table-column label="账户类型" min-width="50">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="开户名" min-width="180">
+        <el-table-column label="开户名" min-width="180">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="银行卡号">
+        <el-table-column label="银行卡号">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="银行">
+        <el-table-column label="银行">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="支行">
+        <el-table-column label="支行">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合作方式" prop="cooperationMode.label" min-width="50">
+        <el-table-column label="合作方式" prop="cooperationMode.label" min-width="50">
         </el-table-column>
-        <el-table-column align="center" label="添加时间" prop="createTime" min-width="60">
+        <el-table-column label="添加时间" prop="createTime" min-width="60">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatDate(2)}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="添加人" prop="createByName">
+        <el-table-column label="添加人" prop="createByName">
         </el-table-column>
-        <el-table-column align="center" label="操作" min-width="60">
+        <el-table-column label="操作" min-width="60">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&editBtnShow(scope.row)">编辑</el-button>

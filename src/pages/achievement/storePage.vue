@@ -73,117 +73,117 @@
           :max-height="tableNumberCom"
           style="width: 100%"
           border>
-          <el-table-column label="上级部门" align="center" min-width="80"></el-table-column>
-          <el-table-column label="门店" align="center" width="80"></el-table-column>
-          <el-table-column label="门店状态" align="center" width="80"></el-table-column>
+          <el-table-column label="上级部门"  min-width="80"></el-table-column>
+          <el-table-column label="门店"  width="80"></el-table-column>
+          <el-table-column label="门店状态"  width="80"></el-table-column>
 
-          <el-table-column label="店长" align="center"></el-table-column>
-          <el-table-column label="签约总单数" align="center">
+          <el-table-column label="店长" ></el-table-column>
+          <el-table-column label="签约总单数" >
             <el-table-column
               prop="leaseAmount"
               label="租赁"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="lowCommissionAmount"
               label="买卖"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
               label="低佣"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
-              align="center"
+              
               width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="本月实收业绩（元）" align="center">
+          <el-table-column label="本月实收业绩（元）" >
             <el-table-column
               prop="leaseAmount"
               label="租赁"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="lowCommissionAmount"
               label="买卖"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
               label="低佣"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="违约金（元）"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="金融收入（元）"
-              align="center"
+              
               width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="本月合同业绩（元）" align="center">
+          <el-table-column label="本月合同业绩（元）" >
             <el-table-column
               prop="leaseAmount"
               label="租赁"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="lowCommissionAmount"
               label="买卖"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
               label="低佣"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="违约金（元）"
-              align="center"
+              
               width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="金融收入（元）"
-              align="center"
+              
               width="70">
             </el-table-column>
           </el-table-column>
 
-          <el-table-column label="本月实收金额（元）" align="center"></el-table-column>
+          <el-table-column label="本月实收金额（元）" ></el-table-column>
 
-          <el-table-column label="本月合同金额（元）" align="center"></el-table-column>
+          <el-table-column label="本月合同金额（元）" ></el-table-column>
         </el-table>
 
 

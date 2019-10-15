@@ -5,10 +5,10 @@
         </div>
         <div class="list1">
           <el-table :data="listData" style="width: 100%" border :max-height="tableHeight">
-            <el-table-column align="center" label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
-            <el-table-column align="left" label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
-            <el-table-column align="center" label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
-            <el-table-column align="center" label="操作">
+            <el-table-column label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
+            <el-table-column label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
+            <el-table-column label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
+            <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button @click="rowOperation(scope.row,'init')" type="text" size="small" v-if="power['sign-set-hq'].state">交易流程管理</el-button>
                 <el-button @click="rowOperation(scope.row,'edit')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
