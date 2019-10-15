@@ -658,7 +658,7 @@
       background-color: rgba(254,252,247,1);
       padding: 0!important;
       .cell {
-        // padding: 0;
+        padding-right: 0;
         p {
           border-bottom: 1px solid #EDECF0;
           line-height: 2.4;
