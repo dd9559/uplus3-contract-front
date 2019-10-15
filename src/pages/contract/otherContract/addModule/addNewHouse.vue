@@ -131,7 +131,7 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.shopOwnerStoreName.length>7">
+            <el-tooltip class="item" effect="dark" :content="contractForm.shopOwnerStoreName" placement="top" v-if="contractForm.shopOwnerStoreName.length>7">
               <span>
                 <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
               </span>
