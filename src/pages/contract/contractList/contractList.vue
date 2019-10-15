@@ -171,7 +171,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column label="合同信息" min-width="250" fixed>
+        <el-table-column label="合同信息" label-class-name="pdl" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -351,7 +351,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
               <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</el-button>
@@ -1309,6 +1309,11 @@ export default {
 @import "~@/assets/common.less";
 .width300{
   width: 325px !important;
+}
+/deep/.pdl{
+  &.cell{
+    padding-left: 30px !important;
+  }
 }
 .percent{
   position: relative;
