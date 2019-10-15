@@ -149,9 +149,6 @@
             }
           }
         }
-        .el-table__body-wrapper {
-          /*overflow-y: scroll;*/
-        }
         // &.info-scrollbar{
         //   margin-bottom: 54px;
         //   .el-table__body-wrapper{
