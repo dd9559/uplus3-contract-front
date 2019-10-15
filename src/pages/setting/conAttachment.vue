@@ -30,17 +30,17 @@
                 <el-button icon="el-icon-plus" @click="addFn" round type="primary">新增合同附件</el-button>
             </p>
             <el-table :data="attachData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
-                <el-table-column align="center" label="体系" prop="systemId">
+                <el-table-column label="体系" prop="systemId">
                     <template slot-scope="scope">
                         <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemId">{{item.value}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="附件名称" prop="enclosureName"></el-table-column>
-                <el-table-column align="center" label="添加时间" prop="createTime">
+                <el-table-column label="附件名称" prop="enclosureName"></el-table-column>
+                <el-table-column label="添加时间" prop="createTime">
                     <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="添加人" prop="createName"></el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column label="添加人" prop="createName"></el-table-column>
+                <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="medium" @click="downloadFn(attachData,scope.$index)">下载</el-button>
                         <el-button type="text" size="medium" @click="deleteAttach(scope.row.id)">删除</el-button>
