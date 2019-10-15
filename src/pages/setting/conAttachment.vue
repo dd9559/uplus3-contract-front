@@ -172,6 +172,16 @@
             }
         },
         methods: {
+            //动态高度获取
+            comHeightFn(){
+                if(this.$refs.tableCom&&this.$refs.tableComView){
+                    let wh = document.documentElement.clientHeight;
+                    let h1 =this.$refs.tableComView.clientHeight + 80 + 50;
+                    let h2 =this.$refs.tableCom.$el.clientHeight;
+                    let th = wh - h1;
+                    this.tableNumberCom = h2 + th;
+                }
+            },
             getData(type='init') {
                 let bool = this.addTime!=null&&this.addTime.length
                 let param = {
