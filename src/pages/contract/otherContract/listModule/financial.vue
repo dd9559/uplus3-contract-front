@@ -1,6 +1,6 @@
 <template>
   <el-table :max-height="tableHeight" class="info-scrollbar" :data="tableDate" style="width: 100%" @row-dblclick='toDetail' border>
-    <el-table-column align="center" label="合同信息" min-width="200" fixed>
+    <el-table-column label="合同信息" min-width="200" fixed>
       <template slot-scope="scope">
         <ul class="contract-msglist">
           <li>合同：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
@@ -9,125 +9,126 @@
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="项目类型" min-width="120" show-overflow-tooltip>
+    <el-table-column label="项目类型" min-width="120" show-overflow-tooltip>
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.projectType?scope.row.contractInfo.projectType:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="放款日期" min-width="100">
+    <el-table-column label="放款日期" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.loanDate}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="放款金额(元)" min-width="100">
+    <el-table-column label="放款金额(元)" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.loanAmount}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="期限开始时间" min-width="100">
+    <el-table-column label="期限开始时间" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.termStart?scope.row.contractInfo.termStart:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="期限结束时间" min-width="100">
+    <el-table-column label="期限结束时间" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.termEnd?scope.row.contractInfo.termEnd:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="收入金额(元)" min-width="100">
+    <el-table-column label="收入金额(元)" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.incomeAmount}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="金融成本比例" min-width="100">
+    <el-table-column label="金融成本比例" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.financeCostRatio}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="金融成本(元)" min-width="100">
+    <el-table-column label="金融成本(元)" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.financeCost}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="实收佣金(元)" prop="receivedCommission" min-width="100">
+    <el-table-column label="实收佣金(元)" prop="receivedCommission" min-width="100">
     </el-table-column>
-    <el-table-column align="center" label="杂费(元)" min-width="80">
+
+    <el-table-column label="杂费(元)" min-width="80">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.sundryAmount?scope.row.contractInfo.sundryAmount:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="收佣状态" prop="receiveAmountState.label" min-width="80">
+    <el-table-column label="收佣状态" prop="receiveAmountState.label" min-width="80">
     </el-table-column>
 
-    <el-table-column align="center" label="财务收款" min-width="80">
+    <el-table-column label="财务收款" min-width="80">
       <template slot-scope="scope">
         <div class="btn" @click="gathering(scope.row)">收款</div>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="金融专员" min-width="100">
+    <el-table-column label="金融专员" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.financeCommissioner?scope.row.contractInfo.financeCommissioner:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="经办人" min-width="100">
+    <el-table-column label="经办人" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.transactor?scope.row.contractInfo.transactor:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="受理人" min-width="100">
+    <el-table-column label="受理人" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.acceptor?scope.row.contractInfo.acceptor:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="成交经纪人" min-width="100">
+    <el-table-column label="成交经纪人" min-width="100">
       <template slot-scope="scope">
         <p>{{scope.row.dealAgentStoreName}}</p>
         <p>{{scope.row.dealAgentName}}</p>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="店长" min-width="100">
+    <el-table-column label="店长" min-width="100">
       <template slot-scope="scope">
         <p>{{scope.row.shopOwnerStoreName}}</p>
         <p>{{scope.row.shopOwnerName}}</p>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="岗位名称" min-width="100">
+    <el-table-column label="岗位名称" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.positionName?scope.row.contractInfo.positionName:'-'}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="客户姓名" min-width="100">
+    <el-table-column label="客户姓名" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.customerName}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" label="所属区域" min-width="100">
+    <el-table-column label="所属区域" min-width="100">
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.customerArea}}</span>
       </template>
     </el-table-column>
 
-    <el-table-column align="center" prop="houseinfoCode" label="房源编号" min-width="130">
+    <el-table-column prop="houseinfoCode" label="房源编号" min-width="130">
     </el-table-column>
 
-    <el-table-column align="center" label="产权地址" min-width="150" show-overflow-tooltip>
+    <el-table-column label="产权地址" min-width="150" show-overflow-tooltip>
       <template slot-scope="scope">
         <span>{{scope.row.contractInfo.propertyRightAddr}}</span>
       </template>

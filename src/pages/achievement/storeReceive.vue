@@ -75,137 +75,137 @@
           :span-method="elTabelMerge"
           style="width: 100%"
           border>
-          <el-table-column label="上级部门" align="center" prop="areaName" min-width="80"></el-table-column>
-          <el-table-column label="门店" align="center" min-width="80">
+          <el-table-column label="上级部门"  prop="areaName" min-width="80"></el-table-column>
+          <el-table-column label="门店"  min-width="80">
             <template slot-scope="scope">
               <span @click="toDetails(scope.row)" :class="{'cursor-style':scope.row.depName!=='合计'}">{{scope.row.depName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="门店状态" align="center" min-width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="门店状态"  min-width="80" prop="depStatus.label" :formatter="nullFormatter"></el-table-column>
 
-          <el-table-column label="店长" align="center" prop="depManagerName" :formatter="nullFormatter"></el-table-column>
-          <el-table-column label="签约总单数" align="center">
+          <el-table-column label="店长"  prop="depManagerName" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="签约总单数" >
             <el-table-column
               prop="leaseAmount"
               label="租赁"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondAmount"
               label="买卖"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowAmount"
               label="低佣"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyAmount"
               label="代办"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="本月实收佣金（元）" align="center">
+          <el-table-column label="本月实收佣金（元）" >
             <el-table-column
               prop="leaseActual"
               label="租赁"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondActual"
               label="买卖"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowActual"
               label="低佣"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyActual"
               label="代办"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="damagesActual"
               label="违约金（元）"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="financialFeeActual"
               label="金融收入（元）"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
           </el-table-column>
-          <el-table-column label="本月合同业绩（元）" align="center">
+          <el-table-column label="本月合同业绩（元）" >
             <el-table-column
               prop="leaseShould"
               label="租赁"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="secondShould"
               label="买卖"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="lowShould"
               label="低佣"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="agencyShould"
               label="代办"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="damagesShould"
               label="违约金（元）"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
             <el-table-column
               prop="financialFeeShould"
               label="金融收入（元）"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
             </el-table-column>
           </el-table-column>
 
-          <el-table-column label="本月实收金额（元）" align="center" prop="totalActual" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="本月实收金额（元）"  prop="totalActual" :formatter="nullFormatter"></el-table-column>
 
-          <el-table-column label="本月合同金额（元）" align="center" prop="totalShould" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="本月合同金额（元）"  prop="totalShould" :formatter="nullFormatter"></el-table-column>
         </el-table>
         <!-- 分页 -->
         <el-pagination
@@ -229,16 +229,16 @@
           :span-method="elTabelMerge"
           style="width: 100%"
           border>
-          <el-table-column label="门店" align="center" min-width="80">
+          <el-table-column label="门店"  min-width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.type==='total'">总计</span>
               <span v-else>{{storeName[scope.$index+1]}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="合同内容" align="center">
+          <el-table-column label="合同内容" >
             <el-table-column
               label="签约日期"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span v-if="scope.row.contractContent" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.signDate|formatDate}}</span>
@@ -246,7 +246,7 @@
             </el-table-column>
             <el-table-column
               label="合同类型"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.tradeType|getLabel}}</span>
@@ -254,7 +254,7 @@
             </el-table-column>
             <el-table-column
               label="签约方式"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.recordType|getLabel}}</span>
@@ -263,7 +263,7 @@
             <el-table-column
               prop="contractContent.code"
               label="合同编号"
-              align="center"
+              
               :formatter="nullFormatter"
               min-width="70">
               <template slot-scope="scope">
@@ -272,7 +272,7 @@
             </el-table-column>
             <el-table-column
               label="纸质编号"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.pCode|getLabel}}</span>
@@ -280,7 +280,7 @@
             </el-table-column>
             <el-table-column
               label="合同地址"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.propertyAddr|getLabel}}</span>
@@ -288,7 +288,7 @@
             </el-table-column>
             <el-table-column
               label="合同成交价（元）"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.dealPrice|formatNull(true)}}</span>
@@ -296,22 +296,22 @@
             </el-table-column>
             <el-table-column
               label="合同应收佣金（元）"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.contractContent.receivableCommission|formatNull(true)}}</span>
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="单数" align="center">
+          <el-table-column label="单数" >
             <template slot-scope="scope">
               <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.singleNum|getLabel}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="本店收入" align="center">
+          <el-table-column label="本店收入" >
             <el-table-column
               label="本店分成比例"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span v-if="scope.row.localIncome.ratioSum" :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.ratioSum}}%</span>
@@ -320,7 +320,7 @@
             </el-table-column>
             <el-table-column
               label="本店应收佣金（元）"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.receivableSum|formatNull(true)}}</span>
@@ -328,7 +328,7 @@
             </el-table-column>
             <el-table-column
               label="本月实收佣金（元）"
-              align="center"
+              
               min-width="70">
               <template slot-scope="scope">
                 <span :class="{'txt-red':scope.row.type==='noAchievementEmp'}">{{scope.row.localIncome.localActual|formatNull(true)}}</span>
@@ -336,7 +336,7 @@
             </el-table-column>
             <el-table-column
               label="经纪人"
-              align="center"
+              
               class-name="info-cell"
               min-width="140">
               <template slot-scope="scope">
@@ -354,7 +354,7 @@
             </el-table-column>
             <el-table-column
               label="在职状态"
-              align="center"
+              
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
@@ -372,7 +372,7 @@
             </el-table-column>
             <el-table-column
               label="分成比例"
-              align="center"
+              
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
@@ -391,7 +391,7 @@
             </el-table-column>
             <el-table-column
               label="本月实收分成金额（元）"
-              align="center"
+              
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
@@ -407,10 +407,10 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="合作门店收入" align="center">
+          <el-table-column label="合作门店收入" >
             <el-table-column
               label="合作门店"
-              align="center"
+              
               class-name="info-cell"
               min-width="120">
               <template slot-scope="scope">
@@ -428,7 +428,7 @@
             </el-table-column>
             <el-table-column
               label="合作经纪人"
-              align="center"
+              
               class-name="info-cell"
               min-width="120">
               <template slot-scope="scope">
@@ -446,7 +446,7 @@
             </el-table-column>
             <el-table-column
               label="分成比例"
-              align="center"
+              
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
@@ -465,7 +465,7 @@
             </el-table-column>
             <el-table-column
               label="本月实收分成金额（元）"
-              align="center"
+              
               class-name="info-cell"
               min-width="70">
               <template slot-scope="scope">
