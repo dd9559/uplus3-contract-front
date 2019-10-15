@@ -2210,14 +2210,14 @@
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
-              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
+              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
             })
               return sum
         },
         clienttotal(){
             var sum =0
             this.clientArr.forEach((item,index)=>{
-              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
+              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
             })
               return sum
         },
