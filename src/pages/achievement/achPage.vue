@@ -97,9 +97,9 @@
                 >
                   <template slot-scope="scope">
                     <el-input
-                      v-model.number="scope.row.ratio"
+                      v-model="scope.row.ratio"
                       placeholder="请输入"
-                      @change="filterHouseNumber(scope.row.ratio,scope.$index)"
+                      @input="filterHouseNumber(scope.row.ratio,scope.$index)"
                     ></el-input>
                   </template>
                 </el-table-column>
@@ -413,7 +413,7 @@
                     <el-input
                       v-model="scope.row.ratio"
                       placeholder="请输入"
-                      @change="filterClientNumber(scope.row.ratio,scope.$index)"
+                      @input="filterClientNumber(scope.row.ratio,scope.$index)"
                     ></el-input>
                   </template>
                 </el-table-column>
@@ -1210,22 +1210,14 @@
       },
       //判断分成比例只能输入1-100的正整数
       filterHouseNumber(val, index) {
-        if (val > 100) {
-          this.houseArr[index].ratio = 100;
-        }else if(val < 1){
-          this.houseArr[index].ratio = 1;
-        }else {
-          val = val.toString().match(/^\d*\.?\d?/)[0];
-          this.houseArr[index].ratio = val;
-        }
+        this.$nextTick(() =>{
+                    this.houseArr[index].ratio=this.$tool.cutFloat({val:this.houseArr[index].ratio,max:100})
+                })
       },
       filterClientNumber(val, index) {
-        if (val > 100) {
-          this.clientArr[index].ratio = 100;
-        } else {
-          val = val.toString().match(/^\d*\.?\d?/)[0];
-          this.clientArr[index].ratio = val;
-        }
+         this.$nextTick(() =>{
+                     this.clientArr[index].ratio=this.$tool.cutFloat({val: this.clientArr[index].ratio,max:100})
+                })
       },
       // 获取经纪人
       getAssignors(queryString) {
@@ -2312,14 +2304,14 @@
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
-              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
+              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
             })
               return sum
         },
         clienttotal(){
             var sum =0
             this.clientArr.forEach((item,index)=>{
-              sum=parseInt(sum)+parseInt(item.ratio==''?0:item.ratio)
+              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
             })
               return sum
         },
