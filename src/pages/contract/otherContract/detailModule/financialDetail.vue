@@ -24,9 +24,14 @@
             <span class="tag">放款日期：</span>
             <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.loanDate}}</span>
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">项目类型：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.projectType?getDetail.contractInfo.projectType:"-"}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.projectType" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.contractInfo.projectType?getDetail.contractInfo.projectType:"-"}}
+              </div>
+            </el-tooltip>
+            <!-- <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.projectType?getDetail.contractInfo.projectType:"-"}}</span> -->
           </p>
         </div>
         <div class="one_">
@@ -40,21 +45,41 @@
           </p>
         </div>
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">金融专员：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.financeCommissioner?getDetail.contractInfo.financeCommissioner:"-"}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.financeCommissioner" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.contractInfo.financeCommissioner?getDetail.contractInfo.financeCommissioner:"-"}}
+              </div>
+            </el-tooltip>
+            <!-- <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.financeCommissioner?getDetail.contractInfo.financeCommissioner:"-"}}</span> -->
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">经办人：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.transactor?getDetail.contractInfo.transactor:"-"}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.transactor" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.contractInfo.transactor?getDetail.contractInfo.transactor:"-"}}
+              </div>
+            </el-tooltip>
+            <!-- <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.transactor?getDetail.contractInfo.transactor:"-"}}</span> -->
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">受理人：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.acceptor?getDetail.contractInfo.acceptor:"-"}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.acceptor" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.contractInfo.acceptor?getDetail.contractInfo.acceptor:"-"}}
+              </div>
+            </el-tooltip>
+            <!-- <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.acceptor?getDetail.contractInfo.acceptor:"-"}}</span> -->
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">岗位名称：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.positionName?getDetail.contractInfo.positionName:"-"}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.positionName" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.contractInfo.positionName?getDetail.contractInfo.positionName:"-"}}
+              </div>
+            </el-tooltip>
+            <!-- <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.positionName?getDetail.contractInfo.positionName:"-"}}</span> -->
           </p>
         </div>
         <div class="one_">
@@ -113,17 +138,25 @@
       <div class="title">签约信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">成交经纪人：</span>
-            <span class="text">{{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.dealAgentStoreName+' - '+getDetail.dealAgentName" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}
+              </div>
+            </el-tooltip>
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">店长：</span>
-            <span class="text">{{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.shopOwnerStoreName+' - '+getDetail.shopOwnerName" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="one_">
-          <p>
+          <p style="width:1000px">
             <span class="tag">合作方：</span>
             <span class="text">{{getDetail.cooperationName?getDetail.cooperationName:"-"}}</span>
           </p>

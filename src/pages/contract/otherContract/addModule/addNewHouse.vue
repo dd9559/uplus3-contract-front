@@ -229,6 +229,7 @@ export default {
         signDate: "",
         projectName:"",
         dealPrice:"",
+        square:"",
         receivableCommission:"",
         guestinfoCode:"",
         dealAgentId:"",
@@ -569,6 +570,10 @@ export default {
       }else if(val==="receivableCommission"){
         this.$nextTick(()=>{
           this.contractForm.receivableCommission=this.$tool.cutFloat({val:this.contractForm.receivableCommission,max:999999999.99})
+        })
+      }else if(val==="square"){
+        this.$nextTick(()=>{
+          this.contractForm.square=this.$tool.cutFloat({val:this.contractForm.square,max:999999999.99})
         })
       }else if(val==="shi"){
         this.$nextTick(()=>{

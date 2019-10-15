@@ -24,9 +24,13 @@
             <span class="tag">签约日期：</span>
             <span class="text">{{getDetail.signDate|timeFormat_}}</span>
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">项目名称：</span>
-            <span class="text" v-if="getDetail.contractInfo">{{getDetail.contractInfo.projectName}}</span>
+            <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.projectName" placement="top-start">
+              <div class="contractDetailCode" style="color:black;font-weight:100;">
+                {{getDetail.contractInfo.projectName}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="one_">
@@ -95,17 +99,25 @@
       <div class="title">签约信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">成交经纪人：</span>
-            <span class="text">{{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.dealAgentStoreName+' - '+getDetail.dealAgentName" placement="top">
+              <div class="contractDetailCode" style="color:black;font-weight:100;">
+                {{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}
+              </div>
+            </el-tooltip>
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">店长：</span>
-            <span class="text">{{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.shopOwnerStoreName+' - '+getDetail.shopOwnerName" placement="top">
+              <div class="contractDetailCode" style="color:black;font-weight:100;">
+                {{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="one_">
-          <p>
+          <p style="width:1000px">
             <span class="tag">合作方：</span>
             <span class="text">{{getDetail.cooperationName?getDetail.cooperationName:"-"}}</span>
           </p>

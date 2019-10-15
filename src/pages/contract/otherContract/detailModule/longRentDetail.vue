@@ -103,17 +103,25 @@
       <div class="title">签约信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">成交经纪人：</span>
-            <span class="text">{{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.dealAgentStoreName+' - '+getDetail.dealAgentName" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}
+              </div>
+            </el-tooltip>
           </p>
-          <p>
+          <p style="position:relative;">
             <span class="tag">店长：</span>
-            <span class="text">{{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.shopOwnerStoreName+' - '+getDetail.shopOwnerName" placement="top">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                {{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="one_">
-          <p>
+          <p style="width:1000px">
             <span class="tag">合作方：</span>
             <span class="text">{{getDetail.cooperationName?getDetail.cooperationName:"-"}}</span>
           </p>
