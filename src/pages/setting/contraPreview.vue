@@ -140,11 +140,14 @@ export default{
             this.id=this.$route.query.id
             this.enableTemplateId=this.$route.query.enableTemplateId
             if(this.show==1){
-                this.setPath(this.getPath.concat({name:'合同模板上传'}),'contractTemplate')
+                this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板上传'],'contractTemplate'))
+                // this.setPath(this.getPath.concat({name:'合同模板上传'}),'contractTemplate')
             }else if(this.show==2){
-                this.setPath(this.getPath.concat({name:'合同模板预览'}),'contractTemplate')
+                this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板预览'],'contractTemplate'))
+                // this.setPath(this.getPath.concat({name:'合同模板预览'}),'contractTemplate')
             }else{
-                this.setPath(this.getPath.concat({name:'合同模板编辑'}),'contractTemplate')
+                this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板编辑'],'contractTemplate'))
+                // this.setPath(this.getPath.concat({name:'合同模板编辑'}),'contractTemplate')
             }
         },
         mounted(){
@@ -714,6 +717,7 @@ export default{
 .view-container{
     display: flex;
     flex-wrap: wrap;
+    height: 100%;
     .title{
         height: 58px;
         display: flex;
@@ -815,6 +819,8 @@ export default{
 .bodycontainer{
     display: flex;
     width:100%;
+    overflow: auto;
+    height: calc(100% - 59px);
     .ht-list{
         img{
             width:706px;
