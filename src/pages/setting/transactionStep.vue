@@ -38,7 +38,7 @@
             <p>{{scope.row.planDays||scope.row.planDays===0?scope.row.planDays:'--'}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="步骤附属信息" width="200">
+        <el-table-column label="步骤附属信息" width="220">
           <template slot-scope="scope">
             <p v-if="scope.row.transStepsAttach.length==0">--</p>
             <p v-for="(item,index) in scope.row.transStepsAttach" :key="index" v-else>{{item.title}}</p>
@@ -658,13 +658,20 @@
       background-color: rgba(254,252,247,1);
       padding: 0!important;
       .cell {
-        padding-right: 0;
+        padding: 0;
         p {
-          border-bottom: 1px solid #EDECF0;
+          border-bottom: 1px solid #EBEEF5;
           line-height: 2.4;
+          padding-left: 10px;
           &:last-child {
             border: none;
           }
+        }
+      }
+      &:nth-child(-n+2),
+      &:last-child {
+        .cell {
+          padding: 10px;
         }
       }
     }
