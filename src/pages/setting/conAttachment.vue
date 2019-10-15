@@ -196,7 +196,7 @@
                     res = res.data
                     if(res.status === 200) {
                         this.attachData = res.data.list
-                        this.total = res.total
+                        this.total = res.data.total
                     }
                 }).catch(error => {
                     this.$message({message:error})
