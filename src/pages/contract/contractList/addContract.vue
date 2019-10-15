@@ -310,7 +310,7 @@
         <!-- 编辑+提审 -->
         <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
         <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
-        <el-button type="primary" round @click="isSave(0)" :disabled="canClick">保存并进入下一步</el-button>
+        <el-button type="primary" round @click="isSave(0)" :disabled="canClick">{{canInput?"保存":"保存并进入下一步"}}</el-button>
       </div>
     </div>
 
@@ -569,6 +569,9 @@ export default {
         }
       }
     }
+    let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
+    arr.push({name:this.type===1?"新增合同":'合同编辑',path:this.$route.fullPath});
+    this.setPath(arr);
     this.getDictionary();//字典
     this.getTransFlow();//交易类型
     this.getRelation();//人员关系
@@ -1375,9 +1378,7 @@ export default {
                   path: "/extendParams"
                 });
               }
-
             }
-
           }
         }).catch(error => {
           this.fullscreenLoading=false;
@@ -1421,7 +1422,6 @@ export default {
         if(this.isOffline===1){
           url = '/api/contract/addLocalContract'
         }
-        // let page = window.open('','_blank');
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
@@ -1431,24 +1431,40 @@ export default {
                 message:"保存成功",
                 type: "success"
               })
-              this.$router.push({
-                path: "/contractDetails",
-                query:{
-                  id:res.data.id,
-                  contType:this.contractForm.type,
-                  type:"contBody"
-                }
-              });
-            }else{
-              let contractMsg = res.data
-              sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-              if(contractMsg.singleCompany){
-                this.singleCompany=true
-                this.singleCompanyName=contractMsg.singleCompany
+              if(this.canInput){//已签约状态编辑完成跳转合同列表
+                this.$router.push({
+                  path: "/contractList"
+                });
               }else{
                 this.$router.push({
-                  path: "/extendParams"
+                  path: "/contractDetails",
+                  query:{
+                    id:res.data.id,
+                    contType:this.contractForm.type,
+                    type:"contBody"
+                  }
                 });
+              }
+            }else{
+              if(this.canInput){//已签约状态编辑完成跳转合同列表
+                this.$message({
+                  message:"保存成功",
+                  type: "success"
+                })
+                this.$router.push({
+                  path: "/contractList"
+                });
+              }else{
+                let contractMsg = res.data
+                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                if(contractMsg.singleCompany){
+                  this.singleCompany=true
+                  this.singleCompanyName=contractMsg.singleCompany
+                }else{
+                  this.$router.push({
+                    path: "/extendParams"
+                  });
+                }
               }
             }
           }

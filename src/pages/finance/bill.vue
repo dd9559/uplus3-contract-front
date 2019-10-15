@@ -654,7 +654,8 @@
               tab: row.type === 1 ? '收款信息' : '付款信息',
               power: this.getUser.user.empId===row.auditBy,
               bill: this.power['sign-cw-bill-invoice'].state,
-              contId: row.contId
+              contId: row.contId,
+              listName:1
             }
           })
         // }

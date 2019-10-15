@@ -449,7 +449,6 @@ export default {
     },
     //合同预览
     goPreview(item) {
-      this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
       this.$router.push({
         path: "/contractPreview",
         query: {
@@ -465,7 +464,8 @@ export default {
         flowType:3
       }
       if(item.contType.value===1||item.auditId===this.getUserMsg.empId){
-        this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
+        this.setPath(arr);
+        // this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
         this.$router.push({
           path:'/contractPreview',
           query:{
@@ -479,7 +479,6 @@ export default {
           res = res.data
           if(res.status===200){
             if(this.power['sign-ht-info-view'].state){
-              this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
               this.$router.push({
                 path:'/contractPreview',
                 query:{
@@ -503,7 +502,6 @@ export default {
     //合同详情
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        this.setPath(this.$tool.getRouter(['合同','合同审核','合同详情'],'contractCheck'));
         if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
           this.$router.push({
             path: "/contractDetails",

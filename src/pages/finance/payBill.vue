@@ -367,6 +367,9 @@
       if(query.code){
         this.uploadScane.id=query.code
       }
+      let arr=this.$tool.getRouter(['二手房','合同','合同列表'],'/contractList');
+      arr.push({name:'创建付款',path:this.$route.fullPath});
+      this.setPath(arr);
     },
     methods:{
       bankCheck:function () {

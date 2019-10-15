@@ -12,8 +12,10 @@
 import addNewHouse from "../otherContract/addModule/addNewHouse";
 import addLongRent from "../otherContract/addModule/addLongRent";
 import addFinancial from "../otherContract/addModule/addFinancial";
+import { MIXINS } from "@/assets/js/mixins";
 
 export default {
+  mixins: [MIXINS],
   components: {
     addNewHouse,
     addLongRent,
@@ -28,17 +30,29 @@ export default {
     }
   },
   created () {
+    let contractName={
+      1:{name:'新房',type:'xf'},
+      2:{name:'长租',type:'cz'},
+      3:{name:'金融',type:'jr'}
+    }
+    let routeType
     this.operationType=Number(this.$route.query.operationType)
     if(this.$route.query.id){
       this.contId=Number(this.$route.query.id)
     }
     if(this.$route.query.type==="newHouse"){
       this.contractType="addNewHouse"
+      routeType=1
     }else if(this.$route.query.type==="longRent"){
       this.contractType="addLongRent"
+      routeType=2
     }else{
       this.contractType="addFinancial"
+      routeType=3
     }
+    let arr=this.$tool.getRouter([contractName[routeType].name,'合同','合同列表'],`otherContractList?type=${contractName[routeType].type}`);
+    arr.push({name:this.operationType===1?'新增合同':'合同编辑',path:this.$route.fullPath});
+    this.setPath(arr);
   }
 };
 </script>
