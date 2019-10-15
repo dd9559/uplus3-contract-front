@@ -106,7 +106,12 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
+            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.dealAgentStoreName.length>7">
+              <span>
+                <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
+              </span>
+            </el-tooltip>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName" v-else>
           </el-form-item>
           <el-form-item label="店长：" class="form-label" style="width:300px;text-align:right">
             <el-select
@@ -126,7 +131,12 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
+            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.shopOwnerStoreName.length>7">
+              <span>
+                <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
+              </span>
+            </el-tooltip>
+            <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName" v-else>
           </el-form-item>
           <br>
           <el-form-item label="合作方：" style="width:330px;text-align:right">
