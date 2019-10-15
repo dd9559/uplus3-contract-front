@@ -2,11 +2,11 @@
     <div class='view-container'  v-loading="loading">
       <p class='title'>
           <span>合同模板预览</span>
-          <el-button type="primary saveAll paper-btn" @click="saveAll" v-dbClick v-if="saveBtn">保存</el-button>
+          <!-- <el-button type="primary saveAll paper-btn" @click="saveAll" v-dbClick v-if="saveBtn">保存</el-button> -->
       </p>
       <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone"  ref='htlist'>
-          <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position'>签章位置</el-button>
+          <!-- <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position'>签章位置</el-button> -->
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(1)"></el-button>
               <div><span>{{count}}</span>/<span>{{total}}</span></div>
@@ -18,7 +18,7 @@
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
-          <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position2'>签章位置</el-button>
+          <!-- <el-button type="primary paper-btn" class="qzbtn" @click="showPos" v-show='position2'>签章位置</el-button> -->
           <div class='pagerUp'>
               <el-button ref='delBtn' class="el-icon-caret-top" @click="del(2)"></el-button>
               <div><span>{{count2}}</span>/<span>{{total2}}</span></div>
@@ -176,7 +176,7 @@ export default{
                             this.sigtureShow2=false
                             for(let i=0;i<this.signPositions.length;i++){
                                 if(this.count2==this.signPositions[i].pageIndex){
-                                this.sigtureShow2=true
+                                // this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -198,7 +198,7 @@ export default{
                            this.sigtureShow=false
                            for(let i=0;i<this.signPositions.length;i++){
                             if(this.count==this.signPositions[i].pageIndex){
-                             this.sigtureShow=true
+                            //  this.sigtureShow=true
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -244,7 +244,7 @@ export default{
                             this.sigtureShow2=false
                             for(let i=0;i<this.signPositions.length;i++){
                                 if(this.count2==this.signPositions[i].pageIndex){
-                                this.sigtureShow2=true
+                                // this.sigtureShow2=true
                                 let dropbtn=document.getElementsByClassName('signaturetwo')[0]
                                 dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                                 dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -396,13 +396,13 @@ export default{
                         };
                 },
             saveAll(){
-                if(this.signPositions.length==0){
-                    this.$message({
-                        type: 'error',
-                        message: '请设置签章位置！'
-                        })
-                        return
-                }
+                // if(this.signPositions.length==0){
+                //     this.$message({
+                //         type: 'error',
+                //         message: '请设置签章位置！'
+                //         })
+                //         return
+                // }
                 if(this.show==1){
                         let param={
                         address:{
@@ -423,9 +423,10 @@ export default{
                             this.$ajax.postJSON('/api/setting/contractTemplate/insert',param).then(res=>{
                             if(res.status==200){
                                     this.touch=false
-                                    this.$router.push({
-                                    path: "/contractTemplate",
-                                });
+                                    this.$message({
+                                    type: 'success',
+                                    message: '上传成功'
+                                    })
                             }
                         }).catch(
                                 error=>this.$notify({
@@ -632,40 +633,6 @@ export default{
                   this.$nextTick(()=>{
                       this.loading=false
                     })
-                 
-                //   if(res.data.data.unPlaceholder!==''){
-                //       for( let i=0;i<res.data.data.unPlaceholder.length;i++){
-                //           if(res.data.data.unPlaceholder[i]!==null){
-                //               for(let key in res.data.data.unPlaceholder[i]){
-                //                 if(key=='key'){
-                //                     this.tableDate.push(res.data.data.unPlaceholder[i].key)
-                //                 }
-                //                 if(key=='value'){
-                //                 this.content.push(res.data.data.unPlaceholder[i].value) 
-                //                     this.contents.push('该占位符需要输入'+res.data.data.unPlaceholder[i].value+'个值')
-                //                 }
-                //               }   
-
-                //           }
-                //       }
-                //   }else{
-                //         this.tableDate=null
-                //   }
-                //   var arr=[]
-                //   for(let i=0;i<this.tableDate.length;i++){
-                //       var obj={}
-                //       obj['name']=this.tableDate[i]
-                //     //   obj['isRequired']=1
-                //       obj['inputType']=Number(this.content[i])!==0?3:1
-                //       obj['checkboxCount']=this.content[i]
-                //       obj['options']=''
-                //       obj['unit']=''
-                //       arr.push(obj)
-                //   }
-                //   this.tableDate=arr
-                //   if(this.tableDate.length!==0 && this.show==1 && this.flag==1){
-                //       this.modalDialog=true
-                //     }
                  if((this.towFlag==1) && (this.type==2)){
                     this.showSed=true
                     this.position=false
@@ -692,6 +659,7 @@ export default{
                     this.autograph(htImg,newsrc)
                  }
               }
+              this.saveAll()
             }).catch(error=>{
                  this.$message({
                     type: 'error',

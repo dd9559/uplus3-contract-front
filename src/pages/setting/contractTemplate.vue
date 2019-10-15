@@ -41,7 +41,7 @@
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
             <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览</el-button>
-            <el-button @click="rowOperation(scope.row,3)" type="text" size="small">编辑</el-button>
+            <!-- <el-button @click="rowOperation(scope.row,3)" type="text" size="small">编辑</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -339,6 +339,7 @@
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
             this.uploadType = row.flag==1
+            
         }
         //预览
         else if(type===2){
