@@ -7,9 +7,9 @@
           <div class="ach-header">
             <h1
               v-if="dialogType==0"
-            >业绩申诉审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
-            <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
-            <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{housetotal+clienttotal}}%</span></h1>
+            >业绩申诉审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
+            <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
+            <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
             <h1
               v-if="dialogType==3"
               style="fontSize:20px;"
@@ -2201,7 +2201,22 @@
         }
         m = Math.pow(10,Math.max(sq1, sq2));
         return (num1 * m + num2 * m) / m;
+      },
+        accAdd(num1, num2) {
+      var baseNum, baseNum1, baseNum2;
+      try {
+        baseNum1 = num1.toString().split(".")[1].length;
+      } catch (e) {
+        baseNum1 = 0;
       }
+      try {
+        baseNum2 = num2.toString().split(".")[1].length;
+      } catch (e) {
+        baseNum2 = 0;
+      }
+      baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
+      return (num1 * baseNum + num2 * baseNum) / baseNum;
+    },
     },
     computed:{
         validInput() {
@@ -2210,16 +2225,19 @@
         housetotal(){
             var sum =0
             this.houseArr.forEach((item,index)=>{
-              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
+             sum=this.accAdd(sum,item.ratio==''?0:item.ratio)
             })
               return sum
         },
         clienttotal(){
             var sum =0
             this.clientArr.forEach((item,index)=>{
-              sum=parseFloat(sum)+parseFloat(item.ratio==''?0:item.ratio)
+              sum=this.accAdd(sum,item.ratio==''?0:item.ratio)
             })
               return sum
+        },
+        fctotal(){
+          return this.accAdd(this.housetotal,this.clienttotal)
         },
         userInfo() {
           return this.getUser.user
