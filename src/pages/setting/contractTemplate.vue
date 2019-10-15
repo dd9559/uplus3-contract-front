@@ -26,18 +26,18 @@
     </el-form>
     <div class="data-list">
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
-        <!-- <el-table-column align="center" label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column> -->
-        <el-table-column align="center" label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="上传人" prop="currentUpdateByName" :formatter="nullFormatter"></el-table-column>
-        <el-table-column align="center" label="上传时间" :formatter="nullFormatter">
+        <!-- <el-table-column  label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column> -->
+        <el-table-column  label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
+        <el-table-column  label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
+        <el-table-column  label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
+        <el-table-column  label="上传人" prop="currentUpdateByName" :formatter="nullFormatter"></el-table-column>
+        <el-table-column  label="上传时间" :formatter="nullFormatter">
           <template slot-scope="scope">
             {{scope.row.uploadTime | formatDate}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="已使用份数" prop="useNum"></el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column  label="已使用份数" prop="useNum"></el-table-column>
+        <el-table-column  label="操作">
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
             <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览</el-button>
@@ -83,19 +83,19 @@
       </template>
       <template v-if="template===3">
         <el-table  :data="rowData" class="contractType detail" ref='detail' @row-click="rowClick" :row-class-name='tableStyle' highlight-current-row >
-          <el-table-column align="center" min-width="100px" label="合同版本号" prop="version"
+          <el-table-column  min-width="100px" label="合同版本号" prop="version"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="合同名称" prop="name"
+          <el-table-column  min-width="100px" label="合同名称" prop="name"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="上传人" prop="uploadByName"
+          <el-table-column  min-width="100px" label="上传人" prop="uploadByName"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" min-width="100px" label="上传时间"
+          <el-table-column  min-width="100px" label="上传时间"
                            :formatter="nullFormatter">
                            <template slot-scope="scope">
                           {{scope.row.uploadTime | formatDate}}
                         </template>
           </el-table-column>
-          <el-table-column align="center" min-width="100px" label="操作">
+          <el-table-column  min-width="100px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="small" @click="enable(scope.row)">启用</el-button>
               <el-button @click="rowOperation(scope.row,2,2)" type="text" size="small">预览</el-button>
@@ -339,7 +339,7 @@
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
             this.uploadType = row.flag==1
-            
+
         }
         //预览
         else if(type===2){

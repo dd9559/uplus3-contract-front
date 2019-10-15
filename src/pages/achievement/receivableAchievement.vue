@@ -154,7 +154,7 @@
           </el-table-column>
 
           <!-- dealStorefront   dealName -->
-          <el-table-column prop="man" label="成交经纪人" align="center" min-width="120">
+          <el-table-column prop="man" label="成交经纪人"  min-width="120">
             <template slot-scope="scope">
               <div v-if="scope.row.dealName">
                 <p>{{scope.row.dealStorefront}}-{{scope.row.dealName}}</p>
@@ -166,55 +166,55 @@
           </el-table-column>
 
           <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
-          <el-table-column label="合同类型" align="center" min-width="60">
+          <el-table-column label="合同类型"  min-width="60">
             <template slot-scope="scope">
               <p>{{scope.row.contType.label}}</p>
             </template>
           </el-table-column>
 
-          <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
-          <el-table-column label="上传合同主体时间" align="center" min-width="90">
+          <el-table-column prop="recordType.label" label="签约方式"  min-width="60"></el-table-column>
+          <el-table-column label="上传合同主体时间"  min-width="90">
               <template slot-scope="scope">
               <p>{{scope.row.uploadTime|formatTime(false)}}</p>
             </template>
           </el-table-column>
 
           <!-- propertyAddr -->
-          <el-table-column prop="propertyAddr" label="物业地址" align="center" min-width="120"></el-table-column>
+          <el-table-column prop="propertyAddr" label="物业地址"  min-width="120"></el-table-column>
 
           <!-- signDate -->
-          <el-table-column prop="date" label="签约日期" align="center" min-width="90">
+          <el-table-column prop="date" label="签约日期"  min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.signDate|formatDate}}</p>
             </template>
           </el-table-column>
 
 
-          <el-table-column prop="actualSettlement" label="结算金额（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="actualSettlement" label="结算金额（元）"  min-width="80"></el-table-column>
 
-          <el-table-column  label="结算日期" align="center" min-width="90">
+          <el-table-column  label="结算日期"  min-width="90">
                       <template slot-scope="scope">
                           <p>{{scope.row.settleTime|formatDate}}</p>
                       </template>
           </el-table-column>
 
-          <el-table-column label="分成人" align="center" min-width="120">
+          <el-table-column label="分成人"  min-width="120">
                <template slot-scope="scope">
                           <p>{{scope.row.level4}}-{{scope.row.assignor}}</p>
                  </template>
           </el-table-column>
 
-          <el-table-column prop="roleName" label="角色类型" align="center" min-width="60"></el-table-column>
+          <el-table-column prop="roleName" label="角色类型"  min-width="60"></el-table-column>
 
-          <el-table-column prop="ratio" label="分成比例（%）" align="center" min-width="60"></el-table-column>
+          <el-table-column prop="ratio" label="分成比例（%）"  min-width="60"></el-table-column>
 
-          <el-table-column prop="agentPayFee" label="刷卡手续费（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="agentPayFee" label="刷卡手续费（元）"  min-width="80"></el-table-column>
 
-          <el-table-column prop="agentPlatformFee" label="平台费（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="agentPlatformFee" label="平台费（元）"  min-width="80"></el-table-column>
 
-          <el-table-column prop="receivableComm" label="实收金额（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="receivableComm" label="实收金额（元）"  min-width="80"></el-table-column>
 
-          <el-table-column prop="agentReceipts" label="分账金额（元）" align="center" min-width="80"></el-table-column>
+          <el-table-column prop="agentReceipts" label="分账金额（元）"  min-width="80"></el-table-column>
         </el-table>
          <el-pagination
              @size-change="handleSizeChange"
