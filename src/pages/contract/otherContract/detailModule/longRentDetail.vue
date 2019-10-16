@@ -16,10 +16,10 @@
             <span class="tag">纸质合同编号：</span>
             <el-tooltip v-if="getDetail.pCode" class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
               <div class="contractDetailCode" >
-                 {{getDetail.pCode?getDetail.pCode:"-"}}
+                 {{getDetail.pCode}}
               </div>
             </el-tooltip>
-            <span v-else>--</span>
+            <span class="text" v-else>--</span>
           </p>
           <p>
             <span class="tag">签约日期：</span>
@@ -221,7 +221,7 @@ export default {
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:2,
-        id:value.pid,
+        // id:value.pid,
         contractCode:this.detail.code,
         sourceType:type==="owner"?0:1,
         calledMobile:value.mobile,

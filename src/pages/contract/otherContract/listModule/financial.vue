@@ -47,7 +47,7 @@
 
     <el-table-column label="金融成本比例" min-width="100">
       <template slot-scope="scope">
-        <span>{{scope.row.contractInfo.financeCostRatio}}</span>
+        <span>{{scope.row.contractInfo.financeCostRatio}}%</span>
       </template>
     </el-table-column>
 

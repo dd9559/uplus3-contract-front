@@ -61,7 +61,7 @@
         </div>
         <div>
           <el-button class="btn-info"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
-          <el-button class="btn-info"  round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
       <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
