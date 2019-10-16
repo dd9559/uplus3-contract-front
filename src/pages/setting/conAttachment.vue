@@ -65,7 +65,7 @@
         :close-on-press-escape="$tool.closeOnClickModal"
         :visible.sync="addVisible"
         width="740px">
-        <div class="dialog-body" :style="{ height: clientHeight() }">
+        <div class="dialog-body">
             <p class="item-title"><i>*</i>体系：</p>
             <el-select class="w400 item-title" v-model="addSystemTag" size="small">
                 <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -163,12 +163,6 @@
             }else{
                 // 列表
                 this.getData()
-            }
-        },
-        mounted(){
-            var _this = this
-            window.onresize = function(){
-                _this.clientHei = document.documentElement.clientHeight
             }
         },
         methods: {
@@ -328,10 +322,6 @@
             handleCurrentChange(val) {
                 this.pageNum = val
                 this.getData('pagination')
-            },
-            // 控制弹框body内容高度，超过显示滚动条
-            clientHeight() {        
-                return this.clientHei - 550 + 'px'
             }
         },
         computed: {
@@ -367,6 +357,7 @@
         }
     }
     .dialog-body {
+        max-height: 400px;
         overflow-y: auto;
         padding: 20px;
         border-bottom: 1px solid #EDECF0;
