@@ -351,16 +351,16 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120" fixed="right">
+        <el-table-column label="操作" min-width="60" fixed="right">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</el-button>
+              <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
               <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
               <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
+              <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
             <!-- </div> -->
           </template>
         </el-table-column>
