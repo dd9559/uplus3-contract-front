@@ -147,7 +147,7 @@
           </el-form-item>
           <br>
           <el-form-item label="合作方：" style="width:330px;text-align:right">
-            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly('cooperationName')" class="dealPrice" style="width:200px" /> 
+            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly(0,'cooperationName')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
         </div>
       </div>
@@ -560,7 +560,7 @@ export default {
     remoteMethod(keyword,type){
       if(keyword!==''){
         let param = {
-          type:type==="agent"?1:2,
+          // type:type==="agent"?1:2,  2019.10.16张丽茹更改需求 经纪人可以为店长 不做限制
           name:keyword
         }
         this.$ajax.get('/api/contractInfo/getEmpDeptInfo',param).then(res=>{

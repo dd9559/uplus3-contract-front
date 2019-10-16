@@ -27,7 +27,7 @@
           <p style="position:relative;">
             <span class="tag">项目名称：</span>
             <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.projectName" placement="top-start">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.contractInfo.projectName}}
               </div>
             </el-tooltip>
@@ -70,9 +70,13 @@
       <div class="title">客源信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">客源编号：</span>
-            <span class="serialNumber">{{getDetail.guestinfoCode}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.guestinfoCode}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="table" v-if="getDetail.contractInfo">
@@ -102,7 +106,7 @@
           <p style="position:relative;">
             <span class="tag">成交经纪人：</span>
             <el-tooltip class="item" effect="dark" :content="getDetail.dealAgentStoreName+' - '+getDetail.dealAgentName" placement="top">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}
               </div>
             </el-tooltip>
@@ -110,7 +114,7 @@
           <p style="position:relative;">
             <span class="tag">店长：</span>
             <el-tooltip class="item" effect="dark" :content="getDetail.shopOwnerStoreName+' - '+getDetail.shopOwnerName" placement="top">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}
               </div>
             </el-tooltip>

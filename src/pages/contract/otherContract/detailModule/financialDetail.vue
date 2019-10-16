@@ -102,9 +102,13 @@
       <div class="title">房源信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">房源编号：</span>
-            <span class="serialNumber">{{getDetail.houseinfoCode}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.houseinfoCode}}
+              </div>
+            </el-tooltip>
           </p>
           <p style="width:1000px">
             <span class="tag">U+地址：</span>

@@ -392,10 +392,10 @@ const rule = {
   houseinfoCode: {
     name: "房源"
   },
-  dealPrice: {
-    name: "成交总价",
-    type: "money"
-  },
+  // dealPrice: {
+  //   name: "成交总价",
+  //   type: "money"
+  // },
   guestinfoCode: {
     name: "客源"
   }
@@ -815,7 +815,8 @@ export default {
         this.contractForm.pCode=''
       }
       this.$tool.checkForm(this.contractForm, rule_).then(() => {
-          if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {
+          if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0) {//佣金
+            if(this.contractForm.dealPrice>0){
             // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
               // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
               // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
@@ -1283,6 +1284,12 @@ export default {
                     type: "warning"
                   })
                 }
+            }else{
+              this.$message({
+                message: `房源信息-${this.contractForm.type===1?"租金":"成交总价"}不能为零`,
+                type: "warning"
+              });
+            }
           } else {
             this.$message({
               message: "合同信息-佣金不能为零",
@@ -1651,9 +1658,9 @@ export default {
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           if(!this.canInput){//正常编辑
             if(houseMsg.TradeInt===2){
-              this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
+              // this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
             }else{
-              this.contractForm.dealPrice = houseMsg.ListingPrice;
+              // this.contractForm.dealPrice = houseMsg.ListingPrice;
               // 1 月 2 季度 4 年
               let unit
               if(houseMsg.PriceUnitNameEnum){

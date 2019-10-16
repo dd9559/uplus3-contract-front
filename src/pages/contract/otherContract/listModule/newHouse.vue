@@ -76,7 +76,7 @@
 
     <el-table-column label="建筑面积（㎡）" min-width="100">
       <template slot-scope="scope">
-        <span>{{scope.row.contractInfo.square}}</span>
+        <span>{{scope.row.contractInfo.square?scope.row.contractInfo.square:"-"}}</span>
       </template>
     </el-table-column>
   </el-table>
