@@ -72,7 +72,7 @@
         <div class="one_">
           <p style="position:relative;">
             <span class="tag">客源编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+            <el-tooltip class="item" effect="dark" :content="getDetail.guestinfoCode" placement="bottom">
               <div class="contractDetailCode">
                 {{getDetail.guestinfoCode}}
               </div>

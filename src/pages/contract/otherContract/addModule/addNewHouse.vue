@@ -965,7 +965,6 @@ export default {
       delete param.recordName
       delete param.updateTime
       //新增
-      debugger
       let url="/api/contractInfo/newHouse/addContract"
       let message = "创建成功"
       //编辑
