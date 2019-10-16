@@ -60,7 +60,7 @@
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
         </div>
         <div>
-          <el-button class="btn-info"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
+          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-add'].state||contractType==='longRent'&&power['sign-cz-ht-ls-add'].state||contractType==='financial'&&power['sign-jr-ht-ls-add'].state"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
@@ -119,7 +119,34 @@ export default {
         'sign-ht-info-export': {
           state: false,
           name: '导出'
-        }
+        },
+        //新房
+        'sign-xf-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-xf-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        //长租
+        'sign-cz-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-cz-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        //金融
+        'sign-jr-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-jr-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
       }
     }
   },
@@ -341,13 +368,21 @@ export default {
     },
     //合同详情
     goDetail(val){
-      this.$router.push({
-        path: "/otherContractDetail",
-        query: {
-          type: this.contractType,
-          id:val.id
-        }
-      });
+      if(this.power['sign-xf-com-htdetail'].state&&this.contractType==='newHouse'||this.power['sign-cz-com-htdetail'].state&&this.contractType==='longRent'||this.power['sign-jr-com-htdetail'].state&&this.contractType==='financial'){
+        this.$router.push({
+          path: "/otherContractDetail",
+          query: {
+            type: this.contractType,
+            id:val.id
+          }
+        });
+      }else{
+        // this.noPower('合同详情')
+        this.$message({
+          message:"没有合同详情权限",
+          type:"warning"
+        })
+      }
     },
     //收款
     getMoney(val){

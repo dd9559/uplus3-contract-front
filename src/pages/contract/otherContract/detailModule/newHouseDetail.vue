@@ -86,7 +86,7 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-xf-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系">
@@ -193,21 +193,9 @@ export default {
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-wmemo': {
-          state: false,
-          name: '添加录音备注'
-        },
-        'sign-ht-xq-ly-call': {
+        'sign-xf-ht-xq-ly': {
           state: false,
           name: '拨打电话'
-        },
-        'sign-ht-xq-ly-play': {
-          state: false,
-          name: '听取录音'
-        },
-        'sign-ht-xq-ly-vmemo': {
-          state: false,
-          name: '查看备注'
         },
       },
     }
