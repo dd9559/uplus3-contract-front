@@ -185,9 +185,7 @@
         2:{name:'长租',type:'cz'},
         3:{name:'金融',type:'jr'}
       }
-      let arr=this.$tool.getRouter([contractName[this.receiptType].name,'合同','合同列表'],`/otherContractList?type=${contractName[this.receiptType].type}`);
-      arr.push({name:'创建收款',path:this.$route.fullPath});
-      this.setPath(arr);
+      let arr;
 
       // this.getMoneyType()
       // this.getDictionary()
@@ -196,7 +194,13 @@
       if(urlParam.edit){
         this.payId=Number(urlParam.id)
         this.getDetailsData()
+        arr=this.$tool.getRouter([contractName[this.receiptType].name,'财务','收款审核'],`/receiptCheck?type=${contractName[this.receiptType].type}`);
+        arr.push({name:'编辑收款',path:this.$route.fullPath});
+      }else {
+        arr=this.$tool.getRouter([contractName[this.receiptType].name,'合同','合同列表'],`/otherContractList?type=${contractName[this.receiptType].type}`)
+        arr.push({name:'创建收款',path:this.$route.fullPath});
       }
+      this.setPath(arr);
     },
     methods: {
       //判断用户该合同是否第一次选择收款人部门

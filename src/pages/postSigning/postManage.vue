@@ -288,7 +288,7 @@
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" min-width="80">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="stepInstanceName" label="后期进度" header-min-width="140">
+                <el-table-column :formatter="nullFormatterData" prop="stepInstanceName" label="后期进度" min-width="140">
                     <template slot-scope="scope">
                         <template v-if="scope.row.statusLaterStage.label === STATE.start">
                             <el-button class="blue" type="text" @click="progressFn(scope.row)">查看交易流程</el-button>

@@ -38,28 +38,28 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" border :max-height="tableNumberCom">
-        <el-table-column label="体系" min-width="50">
+        <el-table-column label="体系">
           <template slot-scope="scope">
             <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="成交总价" min-width="50">
+        <el-table-column label="成交总价">
           <template slot-scope="scope">
             <p v-for="item in scope.row.list" :key="item.id">{{item.dealPriceMin+' ~ '+item.dealPriceMax}}万</p>
           </template>
         </el-table-column>
-        <el-table-column label="低佣比例" min-width="50">
+        <el-table-column label="低佣比例">
           <template slot-scope="scope">
             <p v-for="item in scope.row.list" :key="item.id"><span v-if="item.judgeType===1" style="font-size:16px;">≤ </span><span v-if="item.judgeType===2" style="font-size:16px;">= </span><span v-if="item.judgeType===3" style="font-size:16px;">≥ </span>{{item.comPercentMin}} %</p>
           </template>
         </el-table-column>
-        <el-table-column label="设置时间" min-width="50">
+        <el-table-column label="设置时间">
           <template slot-scope="scope">
             <!-- <p v-for="item in scope.row.list" :key="item.id">{{item.settingTime|formatTime}}</p> -->
             {{scope.row.list[0].settingTime|formatTime}}
           </template>
         </el-table-column>
-        <el-table-column label="最新修改时间" min-width="50">
+        <el-table-column label="最新修改时间">
           <template slot-scope="scope">
             <!-- <p v-for="item in scope.row.list" :key="item.id">{{item.updateTime|formatTime}}</p> -->
             {{scope.row.list[0].updateTime|formatTime}}

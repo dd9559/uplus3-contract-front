@@ -510,9 +510,6 @@
     .list1 {
       padding: 0 12px;
       background-color: #fff;
-      /deep/ .has-gutter th:nth-child(2) {
-        text-align: center;
-      }
     }
     .processDialog {
       .add-form-item {

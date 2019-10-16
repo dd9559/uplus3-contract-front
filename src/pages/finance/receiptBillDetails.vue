@@ -23,7 +23,7 @@
             </el-table-column>
             <el-table-column align="center" label="纸质合同编号">
               <template slot-scope="scope">
-                <span>{{dataMsg.contractPaperCode}}</span>
+                <span>{{dataMsg.contractPaperCode|formatNull}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="付款ID">
