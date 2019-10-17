@@ -102,14 +102,24 @@
         this.views.forEach((item, index) => {
           let sliders = []
           if (item.id === 6) {
-            if (!arr.includes(item.code)) {
-              item.can = false
+            let objType=Object.prototype.toString.call(item.code)
+            if(objType==='[object Boolean]'){
+              item.can = item.code
+            }else {
+              if (!arr.includes(item.code)) {
+                item.can = false
+              }
             }
           } else {
             item.child.forEach(tip => {
               tip.child.forEach(grade => {
-                if (!arr.includes(grade.code)) {
-                  tip.can = false
+                let objType=Object.prototype.toString.call(grade.code)
+                if(objType==='[object Boolean]'){
+                  tip.can = grade.code
+                }else {
+                  if (!arr.includes(grade.code)) {
+                    tip.can = false
+                  }
                 }
               })
             })

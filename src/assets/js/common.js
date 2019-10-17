@@ -183,7 +183,7 @@ let TOOL = {
               category:"2-1-1",
               can:true,//是否可见
               path: "otherContractList?type=xf",
-              code: "sign-ht-info-query"
+              code: "sign-xf-ht-ls-query"
             }
           ]
         },
@@ -197,7 +197,7 @@ let TOOL = {
               category:"2-2-1",
               can:true,//是否可见
               path: "receiptCheck?type=xf",
-              code: "sign-cw-rev-query"
+              code: "sign-xf-cw-rev-query"
             }
           ]
         },
@@ -220,7 +220,7 @@ let TOOL = {
               category:"3-1-1",
               can:true,//是否可见
               path: "otherContractList?type=cz",
-              code: "sign-ht-info-query"
+              code: "sign-cz-ht-ls-query"
             }
           ]
         },
@@ -234,7 +234,7 @@ let TOOL = {
               category:"3-2-1",
               can:true,//是否可见
               path: "receiptCheck?type=cz",
-              code: "sign-cw-rev-query"
+              code: "sign-cz-cw-rev-query"
             }
           ]
         },
@@ -257,7 +257,7 @@ let TOOL = {
               category:"4-1-1",
               can:true,//是否可见
               path: "otherContractList?type=jr",
-              code: "sign-ht-info-query"
+              code: "sign-jr-ht-ls-query"
             }
           ]
         },
@@ -271,7 +271,7 @@ let TOOL = {
               category:"4-2-1",
               can:true,//是否可见
               path: "receiptCheck?type=jr",
-              code: "sign-cw-rev-query"
+              code: "sign-jr-cw-rev-query"
             }
           ]
         },
@@ -336,14 +336,14 @@ let TOOL = {
               category:"5-2-3",
               can:true,//是否可见
               path: "ruleSetting",
-              code: "sign-set-dybl"
+              code: true
             },
             {
               name: "后期流程设置",
               category:"5-2-4",
               can:true,//是否可见
               path: "postProcess",
-              code: "sign-set-hq"
+              code: 'sign-set-hq'
             }
           ]
         }
@@ -355,7 +355,7 @@ let TOOL = {
       category: "operationLog",
       can:true,//是否可见
       icon: "icon-caozuorizhi",
-      code: "sign-ht-js-query",
+      code: "sign-set-log-query",
       child:[]
     }
   ], //侧边栏导航
