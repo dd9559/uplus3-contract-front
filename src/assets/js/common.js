@@ -336,7 +336,7 @@ let TOOL = {
               category:"5-2-3",
               can:true,//是否可见
               path: "ruleSetting",
-              code: true
+              code: ['sign-set-rule-query','sign-set-vtime','sign-set-dybl']
             },
             {
               name: "后期流程设置",

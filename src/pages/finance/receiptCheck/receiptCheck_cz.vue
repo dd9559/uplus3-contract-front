@@ -6,7 +6,7 @@
       <template slot-scope="scope">
         <ul class="contract-msg">
           <li>合同:<span @click="toLink(scope.row,'cz')">{{scope.row.cCode}}</span></li>
-          <li class="code-paper">纸质合同编号:<span @click="toLink(scope.row,'cz')">{{scope.row.cPaperCode}}</span></li>
+          <li class="code-paper" v-if="scope.row.cPaperCode">纸质合同编号:<span @click="toLink(scope.row,'cz')">{{scope.row.cPaperCode}}</span></li>
         </ul>
       </template>
     </el-table-column>
