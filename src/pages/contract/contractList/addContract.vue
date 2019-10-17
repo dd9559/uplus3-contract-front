@@ -1056,8 +1056,9 @@ export default {
                         };
                         if (isOk_) {
                           if (guestRightRatio === 100||this.contractForm.type===1) {
-                            // 验证手机号是否重复
-                            let mobileList = [];
+                            // 验证手机号是否重复  2019.10.17 张丽茹更改需求 业主之间电话号码可以重复 客户之间电话号码可以重复 但业主和客户电话号码不能重复
+                            let ownerMobileList = [];
+                            let guestMobileList = [];
                             //验证身份证是否重复
                             let IdCardList = [];
                             //验证护照是否重复
@@ -1075,7 +1076,7 @@ export default {
                               if(element.cardType===3){
                                 businessList.push(element.encryptionCode);
                               }
-                              mobileList.push(element.encryptionMobile);
+                              ownerMobileList.push(element.encryptionMobile);
                             });
 
                             guestArr.forEach(element => {
@@ -1088,21 +1089,40 @@ export default {
                               if(element.cardType===3){
                                 businessList.push(element.encryptionCode);
                               }
-                              mobileList.push(element.encryptionMobile);
+                              guestMobileList.push(element.encryptionMobile);
                             });
-
+                            let ownerGuestMobile = true
+                            let otherMobile = true
                             if(this.contractForm.isHaveCooperation===1&&this.contractForm.otherCooperationInfo.mobile){
-                              mobileList.push(this.contractForm.otherCooperationInfo.mobile)
+                              // mobileList.push(this.contractForm.otherCooperationInfo.mobile)
+                              let allMobileList = ownerMobileList.concat(guestMobileList)
+                              for (let i = 0; i < allMobileList.length; i++) {
+                                if(allMobileList[i]===this.contractForm.otherCooperationInfo.mobile){
+                                  otherMobile=false
+                                  break
+                                }
+                              }
+                              for (let index = 0; index < guestMobileList.length; index++) {
+                                if(ownerMobileList.includes(guestMobileList[index])){
+                                  ownerGuestMobile=false
+                                  break
+                                }
+                              }
+                            }else{
+                              for (let index = 0; index < guestMobileList.length; index++) {
+                                if(ownerMobileList.includes(guestMobileList[index])){
+                                  ownerGuestMobile=false
+                                  break
+                                }
+                              }
                             }
                             if(this.contractForm.isHaveCooperation===1&&this.contractForm.otherCooperationInfo.identifyCode){
                               IdCardList.push(this.contractForm.otherCooperationInfo.identifyCode)
                             }
-                            let mobileList_= Array.from(new Set(mobileList));
                             let IdCardList_= Array.from(new Set(IdCardList));
                             let passportList_= Array.from(new Set(passportList));
                             let businessList_= Array.from(new Set(businessList));
-                            if(mobileList.length===mobileList_.length){
-                              // debugger
+                              if(ownerGuestMobile&&otherMobile){
                               if(IdCardList.length===IdCardList_.length){
                               if(passportList.length===passportList_.length){
                               if(businessList.length===businessList_.length){
@@ -1248,7 +1268,7 @@ export default {
                               }
                             }else{
                               this.$message({
-                                message:'证件号重复',
+                                message:'身份证号重复',
                                 type: "warning"
                               })
                             }

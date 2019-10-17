@@ -283,6 +283,13 @@ export default {
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
+      // 权限
+      // power:{
+      //   'sign-cz-ht-xq-ly': {
+      //     state: false,
+      //     name: '拨打电话'
+      //   },
+      // },
     }
   },
   created () {
@@ -904,20 +911,61 @@ export default {
               }
             };
             if(isOk){
-              //经纪人
-              if(this.contractForm.dealAgentId){
-                // 店长
-                if(this.contractForm.shopOwnerId){
-                  this.postContractForm()
+              //验证身份证是否重复
+              let IdCardList = [];
+              //验证护照是否重复
+              let passportList = [];
+              //验证营业执照是否重复
+              let businessList = [];
+              guestArr.forEach(element => {
+                if(element.cardType===1){
+                  IdCardList.push(element.cardCode);
+                }
+                if(element.cardType===2){
+                  passportList.push(element.cardCode);
+                }
+                if(element.cardType===3){
+                  businessList.push(element.cardCode);
+                }
+              });
+              let IdCardList_= Array.from(new Set(IdCardList));
+              let passportList_= Array.from(new Set(passportList));
+              let businessList_= Array.from(new Set(businessList));
+              if(IdCardList.length===IdCardList_.length){
+                if(passportList.length===passportList_.length){
+                  if(businessList.length===businessList_.length){
+                    //经纪人
+                    if(this.contractForm.dealAgentId){
+                      // 店长
+                      if(this.contractForm.shopOwnerId){
+                        this.postContractForm()
+                      }else{
+                        this.$message({
+                          message:'签约信息-店长不能为空',
+                          type: "warning"
+                        })
+                      }
+                    }else{
+                      this.$message({
+                        message:'签约信息-成交经纪人不能为空',
+                        type: "warning"
+                      })
+                    }
+                  }else{
+                    this.$message({
+                      message:'营业执照重复',
+                      type: "warning"
+                    })
+                  }
                 }else{
                   this.$message({
-                    message:'签约信息-店长不能为空',
+                    message:'护照重复',
                     type: "warning"
                   })
                 }
               }else{
                 this.$message({
-                  message:'签约信息-成交经纪人不能为空',
+                  message:'证件号重复',
                   type: "warning"
                 })
               }

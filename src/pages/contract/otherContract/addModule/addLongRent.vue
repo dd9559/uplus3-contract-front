@@ -1122,20 +1122,104 @@ export default {
                 };
               }
               if(isOk_||this.contractForm.transMode===1){
-                //经纪人
-                if(this.contractForm.dealAgentId){
-                  // 店长
-                  if(this.contractForm.shopOwnerId){
-                    this.postContractForm()
+                //验证手机号吗是否重复
+                let ownerMobileList = [];
+                let guestMobileList = [];
+                //验证身份证是否重复
+                let IdCardList = [];
+                //验证护照是否重复
+                let passportList = [];
+                //验证营业执照是否重复
+                let businessList = [];
+
+                ownerArr.forEach(element => {
+                  if(element.cardType===1){
+                    IdCardList.push(element.cardCode);
+                  }
+                  if(element.cardType===2){
+                    passportList.push(element.cardCode);
+                  }
+                  if(element.cardType===3){
+                    businessList.push(element.cardCode);
+                  }
+                  ownerMobileList.push(element.mobile);
+                });
+                let ownerGuestMobile = true
+                if(this.contractForm.transMode===2){
+                  //客户信息
+                  let guestArr = this.guestList.map(item=>Object.assign({},item));
+                  guestArr.forEach((element,index) => {
+                    if(element.isEncryption){//没编辑过手机号
+                      element.mobile=this.guestList_[index].mobile
+                    }else{//编辑过手机号
+                      element.mobile=element.encryptionMobile;
+                    }
+                  });
+                  guestArr.forEach(element => {
+                    if(element.cardType===1){
+                      IdCardList.push(element.cardCode);
+                    }
+                    if(element.cardType===2){
+                      passportList.push(element.cardCode);
+                    }
+                    if(element.cardType===3){
+                      businessList.push(element.cardCode);
+                    }
+                    guestMobileList.push(element.mobile);
+                  });
+                  for (let index = 0; index < guestMobileList.length; index++) {
+                    if(ownerMobileList.includes(guestMobileList[index])){
+                      ownerGuestMobile=false
+                      break
+                    }
+                  }
+                }
+                let IdCardList_= Array.from(new Set(IdCardList));
+                let passportList_= Array.from(new Set(passportList));
+                let businessList_= Array.from(new Set(businessList));
+                
+                if(ownerGuestMobile){
+                  if(IdCardList.length===IdCardList_.length){
+                    if(passportList.length===passportList_.length){
+                      if(businessList.length===businessList_.length){
+                        //经纪人
+                        if(this.contractForm.dealAgentId){
+                          // 店长
+                          if(this.contractForm.shopOwnerId){
+                            this.postContractForm()
+                          }else{
+                            this.$message({
+                              message:'签约信息-店长不能为空',
+                              type: "warning"
+                            })
+                          }
+                        }else{
+                          this.$message({
+                            message:'签约信息-成交经纪人不能为空',
+                            type: "warning"
+                          })
+                        }
+                      }else{
+                        this.$message({
+                          message:'营业执照重复',
+                          type: "warning"
+                        })
+                      }
+                    }else{
+                      this.$message({
+                        message:'护照重复',
+                        type: "warning"
+                      })
+                    }
                   }else{
                     this.$message({
-                      message:'签约信息-店长不能为空',
+                      message:'证件号重复',
                       type: "warning"
                     })
                   }
                 }else{
                   this.$message({
-                    message:'签约信息-成交经纪人不能为空',
+                    message:'电话号码重复',
                     type: "warning"
                   })
                 }

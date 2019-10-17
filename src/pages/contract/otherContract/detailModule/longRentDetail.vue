@@ -16,10 +16,10 @@
             <span class="tag">纸质合同编号：</span>
             <el-tooltip v-if="getDetail.pCode" class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
               <div class="contractDetailCode" >
-                 {{getDetail.pCode?getDetail.pCode:"-"}}
+                 {{getDetail.pCode}}
               </div>
             </el-tooltip>
-            <span v-else>--</span>
+            <span class="text" v-else>--</span>
           </p>
           <p>
             <span class="tag">签约日期：</span>
@@ -97,7 +97,7 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-cz-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系"></el-table-column>
@@ -203,7 +203,7 @@ export default {
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-call': {
+        'sign-cz-ht-xq-ly': {
           state: false,
           name: '拨打电话'
         },
@@ -221,7 +221,7 @@ export default {
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:2,
-        id:value.pid,
+        // id:value.pid,
         contractCode:this.detail.code,
         sourceType:type==="owner"?0:1,
         calledMobile:value.mobile,

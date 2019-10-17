@@ -12,7 +12,8 @@
               <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
             </div>
             <div>
-              <el-button round type="primary" class="search_btn" @click="goEdit">编辑</el-button>
+              <el-button v-if="contractType==='newHouseDetail'&&power['sign-xf-ht-xq-edit'].state||contractType==='longRentDetail'&&power['sign-cz-ht-xq-edit'].state||contractType==='financialDetail'&&power['sign-jr-ht-xq-edit'].state" round type="primary" class="search_btn" @click="goEdit">编辑</el-button>
+              <!-- <el-button  round type="primary" class="search_btn" @click="goEdit">编辑</el-button> -->
             </div>
           </div>
         </el-tab-pane>
@@ -61,7 +62,7 @@
               <el-table-column label="备注" width="320">
                 <template slot-scope="scope">
                   <div v-if="scope.row.remarks">
-                    <el-popover trigger="hover" placement="top" v-if="power['sign-ht-xq-ly-vmemo'].state">
+                    <el-popover trigger="hover" placement="top" v-if="contractType==='newHouseDetail'&&power['sign-xf-ht-xq-ly'].state||contractType==='longRentDetail'&&power['sign-cz-ht-xq-ly'].state||contractType==='financialDetail'&&power['sign-jr-ht-xq-ly'].state">
                       <div style="width:300px">
                         {{scope.row.remarks}}
                       </div>
@@ -132,17 +133,32 @@ export default {
       recordRemarks:"",
       remarkId:"",
       power:{
-        'sign-ht-xq-ly-wmemo': {
+        //新房
+        'sign-xf-ht-xq-ly': {
           state: false,
-          name: '添加录音备注'
+          name: '回访录音'
         },
-        'sign-ht-xq-ly-play': {
+        //长租
+        'sign-cz-ht-xq-ly': {
           state: false,
-          name: '听取录音'
+          name: '回访录音'
         },
-        'sign-ht-xq-ly-vmemo': {
+        //金融
+        'sign-jr-ht-xq-ly': {
           state: false,
-          name: '查看备注'
+          name: '回访录音'
+        },
+        'sign-xf-ht-xq-edit': {
+          state: false,
+          name: '编辑'
+        },
+        'sign-cz-ht-xq-edit': {
+          state: false,
+          name: '编辑'
+        },
+        'sign-jr-ht-xq-edit': {
+          state: false,
+          name: '编辑'
         },
       }
     }
@@ -296,11 +312,15 @@ export default {
     },
     //添加备注弹窗
     showRemark(item){
-      if(this.power['sign-ht-xq-ly-wmemo'].state){
+      if(this.power['sign-xf-ht-xq-ly'].state){
         this.showRemarks=true;
         this.remarkId = item.id;
       }else{
-        this.noPower('添加备注')
+        // this.noPower('添加备注')
+        this.$message({
+          message:"没有添加备注权限",
+          type:"warning"
+        })
       }
     },
     //添加备注
@@ -348,7 +368,7 @@ export default {
     },
     //播放录音
     playStop(index,row){
-      if(this.power['sign-ht-xq-ly-play'].state){
+      if(this.power['sign-xf-ht-xq-ly'].state){
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);
@@ -390,7 +410,11 @@ export default {
           myAudio.pause();
         }
       }else{
-        this.noPower('听取录音')
+        this.$message({
+          message:"没有听取录音权限",
+          type:"warning"
+        })
+        // this.noPower('听取录音')
       }
 
     },

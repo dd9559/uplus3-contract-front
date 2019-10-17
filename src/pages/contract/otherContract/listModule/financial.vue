@@ -47,7 +47,7 @@
 
     <el-table-column label="金融成本比例" min-width="100">
       <template slot-scope="scope">
-        <span>{{scope.row.contractInfo.financeCostRatio}}</span>
+        <span>{{scope.row.contractInfo.financeCostRatio}}%</span>
       </template>
     </el-table-column>
 
@@ -71,7 +71,8 @@
 
     <el-table-column label="财务收款" min-width="80">
       <template slot-scope="scope">
-        <div class="btn" @click="gathering(scope.row)">收款</div>
+        <div class="btn" v-if="power['sign-cz-ht-ls-debt'].state" @click="gathering(scope.row)">收款</div>
+        <span v-else>-</span>
       </template>
     </el-table-column>
 
@@ -137,7 +138,9 @@
 </template>
            
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default{
+  mixins: [MIXINS],
   props:{
     tableDate:{
       type: Array,
@@ -149,6 +152,16 @@ export default{
       type: Number,
       default:0
     },
+  },
+  data(){
+    return{
+      power: {
+        'sign-cz-ht-ls-debt': {
+          state: false,
+          name: '收款'
+        },
+      }
+    }
   },
   methods:{
     //收款

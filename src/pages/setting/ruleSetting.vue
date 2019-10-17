@@ -1,7 +1,7 @@
 <template>
     <div class="view-container" >
     <ul class="tabs">
-      <li v-for="item in tabs" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
+      <li v-for="item in power" v-if="item.state==true" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
     <component :is="current" :systemArr="systemTagList"></component>
     </div>
@@ -18,20 +18,23 @@ export default{
         return {
             activeItem: 1, //Tab当前项
             current: "lowCommission", //当前组件
-            tabs: [
-              {
+            power: {
+              'sign-set-dybl': {
                 id: 1,
-                name: "低佣比例设置",
+                state: false,
+                name: "低佣比例设置"
               },
-              {
+              'sign-set-vtime': {
                 id: 2,
-                name: "申诉时间设置",
+                state: false,
+                name: "申诉时间设置"
               },
-              {
+              'sign-set-rule-query': {
                 id: 3,
-                name: "合同附件库设置",
+                state: false,
+                name: "合同附件库设置"
               }
-          ],
+            }
         }
     },
     created() {

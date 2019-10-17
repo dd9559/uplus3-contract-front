@@ -209,9 +209,6 @@ export default {
   .contract-list {
     padding: 0 12px;
     background-color: #fff;
-    /deep/ .has-gutter th:nth-child(2) {
-      text-align: center;
-    }
   }
   .contract-form {
     .el-form-item {

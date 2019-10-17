@@ -1460,7 +1460,10 @@ export default {
         this.showRemarks=true;
         this.remarkId = item.id;
       }else{
-        this.noPower('添加备注')
+        this.$message({
+          message:"没有添加备注权限",
+          type:"warning"
+        })
       }
     },
     //添加备注
@@ -1563,7 +1566,10 @@ export default {
           myAudio.pause();
         }
       }else{
-        this.noPower('听取录音')
+        this.$message({
+          message:"没有听取录音权限",
+          type:"warning"
+        })
       }
 
     },

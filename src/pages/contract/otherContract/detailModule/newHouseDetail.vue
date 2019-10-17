@@ -6,7 +6,7 @@
         <div class="one_">
           <p style="position:relative;">
             <span class="tag">合同编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="top-start">
               <div class="contractDetailCode">
                 {{getDetail.code}}
               </div>
@@ -14,11 +14,12 @@
           </p>
           <p style="position:relative;">
             <span class="tag">纸质合同编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
+            <el-tooltip class="item" v-if="getDetail.pCode" effect="dark" :content="getDetail.pCode" placement="top-start">
               <div class="contractDetailCode">
-                {{getDetail.pCode?getDetail.pCode:"-"}}
+                {{getDetail.pCode}}
               </div>
             </el-tooltip>
+            <span v-else class="text">-</span>
           </p>
           <p>
             <span class="tag">签约日期：</span>
@@ -72,7 +73,7 @@
         <div class="one_">
           <p style="position:relative;">
             <span class="tag">客源编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.guestinfoCode" placement="bottom">
+            <el-tooltip class="item" effect="dark" :content="getDetail.guestinfoCode" placement="top-start">
               <div class="contractDetailCode">
                 {{getDetail.guestinfoCode}}
               </div>
@@ -85,7 +86,7 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-xf-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系">
@@ -192,21 +193,9 @@ export default {
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-wmemo': {
-          state: false,
-          name: '添加录音备注'
-        },
-        'sign-ht-xq-ly-call': {
+        'sign-xf-ht-xq-ly': {
           state: false,
           name: '拨打电话'
-        },
-        'sign-ht-xq-ly-play': {
-          state: false,
-          name: '听取录音'
-        },
-        'sign-ht-xq-ly-vmemo': {
-          state: false,
-          name: '查看备注'
         },
       },
     }
@@ -221,7 +210,7 @@ export default {
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:1,
-        id:value.pid,
+        // id:value.pid,
         contractCode:this.detail.code,
         sourceType:1,
         calledMobile:value.mobile,
