@@ -13,6 +13,7 @@
             </div>
             <div>
               <el-button v-if="contractType==='newHouseDetail'&&power['sign-xf-ht-xq-edit'].state||contractType==='longRentDetail'&&power['sign-cz-ht-xq-edit'].state||contractType==='financialDetail'&&power['sign-jr-ht-xq-edit'].state" round type="primary" class="search_btn" @click="goEdit">编辑</el-button>
+              <!-- <el-button  round type="primary" class="search_btn" @click="goEdit">编辑</el-button> -->
             </div>
           </div>
         </el-tab-pane>

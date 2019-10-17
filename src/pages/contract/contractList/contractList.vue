@@ -757,7 +757,10 @@ export default {
         this.contCode=item.code;
         this.waterContId=item.id;
       }else{
-        this.noPower('流水查看')
+        this.$message({
+          message:"没有流水查看权限",
+          type:"warning"
+        })
       }
     },
     //关闭流水弹窗
@@ -777,7 +780,10 @@ export default {
           }
         })
       }else{
-        this.noPower('收款')
+        this.$message({
+          message:"没有收款权限",
+          type:"warning"
+        })
       }
     },
     //付款
@@ -792,7 +798,10 @@ export default {
           }
         })
       }else{
-        this.noPower('付款')
+        this.$message({
+          message:"没有付款权限",
+          type:"warning"
+        })
       }
     },
     //打印次数详情
@@ -839,7 +848,10 @@ export default {
           window.open(newPage.href, '_blank');
         }
       }else{
-        this.noPower('合同详情查看')
+        this.$message({
+          message:"没有合同详情查看权限",
+          type:"warning"
+        })
       }
     },
     uploadData(value) {
@@ -856,7 +868,10 @@ export default {
             }
           });
         }else{
-          this.noPower('合同详情')
+          this.$message({
+            message:"没有合同详情权限",
+            type:"warning"
+          })
         }
     },
     handleCurrentChange(val) {
@@ -936,7 +951,10 @@ export default {
           }
         })
       }else{
-        this.noPower('合同预览')
+        this.$message({
+          message:"没有合同预览权限",
+          type:"warning"
+        })
       }
 
     },
@@ -1105,7 +1123,10 @@ export default {
           })
         }
       }else{
-        this.noPower('结算')
+        this.$message({
+          message:"没有结算权限",
+          type:"warning"
+        })
       }
     },
     //关闭结算弹窗
@@ -1124,7 +1145,10 @@ export default {
         }
         this.$refs.lateProgress.show(value);
       }else{
-        this.noPower('后期流程查看')
+        this.$message({
+          message:"没有后期流程查看权限",
+          type:"warning"
+        })
       }
     },
     closePrint(){
