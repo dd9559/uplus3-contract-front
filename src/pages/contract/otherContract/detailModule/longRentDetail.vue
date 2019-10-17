@@ -65,7 +65,7 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-cz-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系"></el-table-column>
