@@ -281,9 +281,14 @@
        * 创建收款操作
        */
       goResult: function (type,url='/payInfoRecord/insertSKRecord') {
+        let editUrl={
+          1:'/payInfoRecord/updateXFSKRecord',
+          2:'/payInfoRecord/updateCZSKRecord',
+          3:'/payInfoRecord/updateJRSKRecord'
+        }
         if(this.$route.query.edit){
           type='put';
-          url='/payInfoRecord/updateSKRecord';
+          url=editUrl[this.receiptType];
         }
         this.fullscreenLoading=true
         let param = Object.assign({}, this.form)

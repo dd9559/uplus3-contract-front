@@ -5,8 +5,8 @@
     <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
       <template slot-scope="scope">
         <ul class="contract-msg">
-          <li>合同:<span @click="toLink(scope.row,'cont')">{{scope.row.cCode}}</span></li>
-          <li class="code-paper">纸质合同编号:<span @click="toLink(scope.row,'cont')">{{scope.row.cPaperCode}}</span></li>
+          <li>合同:<span @click="toLink(scope.row,'cz')">{{scope.row.cCode}}</span></li>
+          <li class="code-paper" v-if="scope.row.cPaperCode">纸质合同编号:<span @click="toLink(scope.row,'cz')">{{scope.row.cPaperCode}}</span></li>
         </ul>
       </template>
     </el-table-column>
@@ -47,7 +47,7 @@
     </el-table-column>
     <el-table-column label="当前审核人" min-width="120">
       <template slot-scope="scope">
-        <p v-if="!scope.row.auditDepName&&!scope.row.auditName">-</p>
+        <p v-if="!scope.row.auditDepName&&!scope.row.auditName||(scope.row.state&&scope.row.state.value===2)">-</p>
         <template v-else>
           <span>{{scope.row.auditDepName}}</span>
           <p>{{scope.row.auditName}}</p>
@@ -83,9 +83,11 @@
     </el-table-column>
     <el-table-column label="操作" fixed="right" min-width="120">
       <template slot-scope="scope">
-        <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1">编辑</el-button>
-        <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId)">审核</el-button>
-        <span v-if="scope.row.state.value===1">--</span>
+        <div v-if="(scope.row.state.value!==1&&power['sign-cz-cw-rev-edit'].state)||(scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId))">
+          <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-cz-cw-rev-edit'].state">编辑</el-button>
+          <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId)">审核</el-button>
+        </div>
+        <span v-else>--</span>
       </template>
     </el-table-column>
   </el-table>
@@ -98,6 +100,25 @@
 
   export default {
     mixins:[MIXINS,FILTER,receiptCheck],
+    data(){
+      return {
+        //权限配置
+        power: {
+          'sign-cz-cw-rev-edit': {
+            state: false,
+            name: '编辑'
+          },
+          'sign-cz-com-revdetail': {
+            state: false,
+            name: '收款详情'
+          },
+          'sign-cz-com-htdetail': {
+            state: false,
+            name: '合同详情'
+          }
+        }
+      }
+    }
   }
 </script>
 

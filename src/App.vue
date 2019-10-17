@@ -22,20 +22,20 @@
             text-color="#333333"
             active-text-color="#478DE3">
             <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id"
-                        v-if="item.id!==6">
+                        v-if="item.id!==6&&item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{item.name}}</span>
               </template>
               <template>
                 <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
-                            class="second-grade-menu">
+                            class="second-grade-menu" v-if="grade.can">
                   <template slot="title">{{grade.name}}</template>
-                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path">{{tip.name}}</el-menu-item>
+                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">{{tip.name}}</el-menu-item>
                 </el-submenu>
               </template>
             </el-submenu>
-            <el-menu-item :index="views[5].category" class="navbar-item" :class="[{'collapse-row':collapse}]">
+            <el-menu-item :index="views[5].category" class="navbar-item" :class="[{'collapse-row':collapse}]" v-if="views[5].can">
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[5].icon"></i>
                 <span>{{views[5].name}}</span>
@@ -97,25 +97,65 @@
       ])
     },
     watch: {
-      getUser: function (val) {
-        let arr = val.privileges
-        this.views.forEach((item, index) => {
-          let sliders = []
-          if (item.id === 6) {
-            if (!arr.includes(item.code)) {
-              item.can = false
-            }
-          } else {
-            item.child.forEach(tip => {
-              tip.child.forEach(grade => {
-                if (!arr.includes(grade.code)) {
-                  tip.can = false
+      getUser: {
+        handler:function (val) {
+          if(val){
+            let arr = val.privileges
+            this.views.forEach((item, index) => {
+              let sliders = []
+              if (item.id === 6) {
+                let objType=Object.prototype.toString.call(item.code)
+                if(objType==='[object Boolean]'){
+                  // item.can = item.code
+                  this.$set(item,'can',item.code)
+                }else {
+                  if (!arr.includes(item.code)) {
+                    // item.can = false
+                    this.$set(item,'can',false)
+                  }
                 }
-              })
+              } else {
+                item.child.forEach(tip => {
+                  tip.child.forEach(grade => {
+                    let objType=Object.prototype.toString.call(grade.code)
+                    if(objType==='[object Array]'){
+                      let joinCell=true//父级导航是否子项组合的
+                      if(grade.code.length>0){
+                        joinCell=!grade.code.every(cell=>{
+                          return !arr.includes(cell)
+                        })
+                      }
+                      // grade.can = joinCell
+                      this.$set(grade,'can',joinCell)
+                    }else {
+                      if (!arr.includes(grade.code)) {
+                        // grade.can = false
+                        this.$set(grade,'can',false)
+                      }
+                    }
+                  })
+                  //遍历是否所有子项都无权限，是则父级导航也没有权限
+                  let status=tip.child.every(cell=>{
+                    return cell.can===false
+                  })
+                  // tip.can=!status
+                  this.$set(tip,'can',!status)
+                })
+              }
+              //遍历是否所有子项都无权限，是则父级导航也没有权限
+              if(item.child.length>0){
+                let status=item.child.every(cell=>{
+                  return cell.can===false
+                })
+                // item.can=!status
+                this.$set(item,'can',!status)
+              }
+              // item.child=sliders
             })
           }
-          // item.child=sliders
-        })
+        },
+        immediate:true,
+        deep:true
       }
     }
   }
