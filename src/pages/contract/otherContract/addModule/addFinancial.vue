@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: tableHeight }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
@@ -42,7 +42,7 @@
             <i class="yuan">元</i>
           </el-form-item>
           <el-form-item label="金融成本比例：" class="form-label" style="width:280px;text-align:right;">
-            <input type="text" v-model="contractForm.financeCostRatio" @input="cutNumber('dealPrice')" @change="countCost" placeholder="请输入" class="dealPrice">
+            <input type="text" v-model="contractForm.financeCostRatio" @input="cutNumber('financeCostRatio')" @change="countCost" placeholder="请输入" class="dealPrice">
             <i class="yuan">%</i>
           </el-form-item>
           <el-form-item label="金融成本：" class="form-label width-250">
@@ -216,10 +216,13 @@ export default {
       type: Number,
       default: ""
     },
+    tableHeight:{
+      type: String,
+      default:''
+    },
   },
   data(){
     return{
-      clientHei:"",
       contractForm:{
         loanDate:"",
         loanAmount:"",
@@ -275,10 +278,6 @@ export default {
     }
   },
   methods:{
-    // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -140 + 'px'
-    },
      //合同详情
     getContractDetail(){
       let param = {
@@ -460,9 +459,14 @@ export default {
         })
       }else if(val==="financeCost"){
         this.$nextTick(()=>{
-          this.contractForm.financeCost=this.$tool.cutFloat({val:this.contractForm.financeCost,max:100})
+          this.contractForm.financeCost=this.$tool.cutFloat({val:this.contractForm.financeCost,max:999999999.99})
+        })
+      }else if(val==="financeCostRatio"){
+        this.$nextTick(()=>{
+          this.contractForm.financeCostRatio=this.$tool.cutFloat({val:this.contractForm.financeCostRatio,max:100})
         })
       }
+      // financeCostRatio
     },
     //姓名限制
     inputOnly(type){
@@ -744,12 +748,6 @@ export default {
         return time_.substr(0, 10)
       }
     }
-  },
-  mounted(){
-    window.onresize = this.clientHeight;
-  },
-  beforeUpdate() {
-    this.clientHeight();
   },
 };
 </script>
