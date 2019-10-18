@@ -98,7 +98,7 @@
                  v-loading.fullscreen.lock="fullscreenLoading">创建收款信息
       </el-button>
     </p>
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="personChose" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
