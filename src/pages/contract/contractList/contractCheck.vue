@@ -464,8 +464,6 @@ export default {
         flowType:3
       }
       if(item.contType.value===1||item.auditId===this.getUserMsg.empId){
-        this.setPath(arr);
-        // this.setPath(this.$tool.getRouter(['合同','合同审核','合同预览'],'contractCheck'));
         this.$router.push({
           path:'/contractPreview',
           query:{
