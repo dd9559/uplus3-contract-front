@@ -188,7 +188,6 @@ export default {
   },
   data(){
     return{
-      clientHei:'',
       callNumber: "",
       dialogVisible: false,
       canCall:true,
@@ -236,7 +235,7 @@ export default {
     //生成虚拟号码
     getVirtualNum(param,index,type){
       let guestData=this.detail.contractInfo.customerList
-      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      this.$ajax.get('/api/record/xinfang/virtualNum',param).then(res=>{
         this.canCall=true;
         res=res.data;
         if(res.status===200){

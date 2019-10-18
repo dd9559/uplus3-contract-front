@@ -138,23 +138,23 @@ export default {
           state: false,
           name: '回访录音'
         },
+        'sign-xf-ht-xq-edit': {
+          state: false,
+          name: '编辑'
+        },
         //长租
         'sign-cz-ht-xq-ly': {
           state: false,
           name: '回访录音'
         },
+        'sign-cz-ht-xq-edit': {
+          state: false,
+          name: '编辑'
+        },
         //金融
         'sign-jr-ht-xq-ly': {
           state: false,
           name: '回访录音'
-        },
-        'sign-xf-ht-xq-edit': {
-          state: false,
-          name: '编辑'
-        },
-        'sign-cz-ht-xq-edit': {
-          state: false,
-          name: '编辑'
         },
         'sign-jr-ht-xq-edit': {
           state: false,
@@ -277,7 +277,13 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize
       }
-      this.$ajax.get('/api/record/list', param).then(res=>{
+      let url
+      if(this.contractType==="newHouseDetail"){
+        url="/api/record/xinfang/list"
+      }else if(this.contractType==="longRentDetail"){
+        url="/api/record/longLease/list"
+      }
+      this.$ajax.get(url, param).then(res=>{
         res=res.data;
         if(res.status===200){
           // this.recordData=res.data.list;
@@ -368,7 +374,7 @@ export default {
     },
     //播放录音
     playStop(index,row){
-      if(this.power['sign-xf-ht-xq-ly'].state){
+      if(this.contractType==="newHouseDetail"&&this.power['sign-xf-ht-xq-ly'].state||this.contractType==="longRentDetail"&&this.power['sign-cz-ht-xq-ly'].state||this.contractType==="financialDetail"&&this.power['sign-jr-ht-xq-ly'].state){
         let id = 'audio'+index;
         let myAudios = document.getElementsByTagName('audio');
         let myAudio = document.getElementById(id);

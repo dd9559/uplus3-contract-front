@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: tableHeight }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
@@ -216,10 +216,13 @@ export default {
       type: Number,
       default: ""
     },
+    tableHeight:{
+      type: String,
+      default:''
+    },
   },
   data(){
     return{
-      clientHei:"",
       contractForm:{
         loanDate:"",
         loanAmount:"",
@@ -275,10 +278,6 @@ export default {
     }
   },
   methods:{
-    // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -140 + 'px'
-    },
      //合同详情
     getContractDetail(){
       let param = {
@@ -744,12 +743,6 @@ export default {
         return time_.substr(0, 10)
       }
     }
-  },
-  mounted(){
-    window.onresize = this.clientHeight;
-  },
-  beforeUpdate() {
-    this.clientHeight();
   },
 };
 </script>

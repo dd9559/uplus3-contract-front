@@ -261,7 +261,7 @@ export default {
     getVirtualNum(param,index,type){
       let ownerData=this.detail.contractInfo.ownerList
       let clientrData=this.detail.contractInfo.customerList
-      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      this.$ajax.get('/api/record/longLease/virtualNum',param).then(res=>{
         this.canCall=true;
         res=res.data;
         if(res.status===200){
