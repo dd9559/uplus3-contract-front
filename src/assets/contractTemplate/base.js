@@ -97,16 +97,16 @@ let contractConfig = {
    * @param dropdownName下拉框的name，用于查找与下拉框关联的dom列表
    * @param callback选择筛选项之后的回调
    */
-  dropdownListener:function (val,datalist,dropdownName,callback) {
+  dropdownListener: function (val, datalist, dropdownName, callback) {
     let domList = Array.from(document.querySelectorAll(`*[name*=${dropdownName}]`))//查找与下拉框关联的dom列表
     //当前拉下框选中domList的哪一项
-    let tip=datalist.findIndex(function(item){
-      return item===val
+    let tip = datalist.findIndex(function (item) {
+      return item === val
     })
-    domList.forEach(function(item,index){
+    domList.forEach(function (item, index) {
       item.classList.remove('modal');
       //为非选项添加modal遮罩层
-      if(tip>-1&&index!==tip){
+      if (tip > -1 && index !== tip) {
         item.classList.add('modal')
       }
     })
@@ -117,29 +117,49 @@ let contractConfig = {
    * @param config配置对象（以extendparam属性名作为key值的集合）--交互性的勾选框、下拉筛选框相关的子表单元素
    * @param readonly初始化子元素时，判断是否只可读（默认只读）
    */
-  initForm:function (config,readonly=1) {
-    config.forEach(function(item){
+  initForm: function (config, readonly = 1) {
+    config.forEach(function (item) {
       let dom = document.querySelector(`*[extendparam=${item}]`)
-      if(readonly===1){
-        dom.setAttribute("readonly","readonly");
-        dom.setAttribute('disabled',"disabled")
-        dom.setAttribute('systemParam',"true")
+      if (readonly === 1) {
+        dom.setAttribute("readonly", "readonly");
+        dom.setAttribute('disabled', "disabled")
+        dom.setAttribute('systemParam', "true")
       }
       let domType = dom.getAttribute('type')
       let domTag = dom.getAttribute('tag')
       //判断标签元素为输入框、下拉框（变相的也算输入框）时清空输入内容，勾选框时取消勾选状态
-      if(domType==='text'||domType==='number'||domTag==='input-auto'){
-        if(dom.tagName.toLocaleLowerCase()==='input'){
-          dom.value=''
+      if (domType === 'text' || domType === 'number' || domTag === 'input-auto') {
+        if (dom.tagName.toLocaleLowerCase() === 'input') {
+          dom.value = ''
           dom.removeAttribute("value")
-        }else{
-          dom.innerHTML=''
+        } else {
+          dom.innerHTML = ''
           dom.classList.add('input-before')
         }
-      }else{
+      } else {
         dom.querySelector('p').removeAttribute('checked')
       }
     })
+  },
+  /**
+   * 带有交互的下拉框，选择时为其子项添加遮罩层
+   * @param val下拉框当前选择值
+   * @param arr下拉框options数组，如['a','b','c'....]
+   * @param checkName下拉框inputmethode属性的值（或者子项的name属性值）
+   * @param callback回调函数
+   */
+  prohibit: function (val, arr, checkName, callback) {
+    let options = Array.from(document.querySelectorAll(`*[name*=${checkName}]`))//获取所有选择项
+    let tip = arr.findIndex(function (item) {//获取当前选择项的下标
+      return item === val.value.toLowerCase()
+    })
+    options.forEach(function (item, index) {
+      item.classList.remove('modal');//初始化遮罩样式
+      if (index !== tip && tip > -1) {
+        item.classList.add('modal')
+      }
+    })
+    callback&&callback()
   }
 }
 let toChineseNumber = function (money) {
