@@ -29,7 +29,8 @@ let Obj={
             res = {'time_val56': null,'val58': null,'val60': null,'val62': null};
             break;
           case '(三)':
-            res = {'time_val63': null,'val65': null,'val66': null,'val68': null,'val70': null};            
+            res = {'time_val63': null,'val65': null,'val66': null,'val68': null,'val70': null};
+            break            
         }
         return res;
       }
