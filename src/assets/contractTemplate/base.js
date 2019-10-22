@@ -16,8 +16,12 @@ let contractConfig = {
    * 表单校验方法
    */
   submit: function (e, obj = sub) {
+    //初始化
     contractConfig.errorArr2 = [];
+    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr2));
+
     for (let item in obj) {
+      contractConfig.errorArr2=JSON.parse(sessionStorage.getItem("templateError"));
       if (contractConfig.errorArr2.length > 0) {
         break;
       }
@@ -27,23 +31,31 @@ let contractConfig = {
           return cell.querySelector('p').getAttribute('checked')
         })
         if (checkedIndex === -1) {
-          contractConfig.errorArr2.push(`${item}请勾选`);
+          contractConfig.errorArr2.push({
+            name:item.split('_')[1]
+          });
           break;
         } else {
           obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](checkedIndex))
         }
       } else if (item.includes('drapdown')) {
-        let dropdownVal = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`).value;
-        if (dropdownVal.length === 0) {
-          contractConfig.errorArr2.push(`${item}请选择`);
+        let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
+        if (dropdown.value.length === 0) {
+          contractConfig.errorArr2.push({
+            type:'input',
+            name:dropdown.getAttribute('extendparam')
+          });
           break;
         } else {
           obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](dropdownVal))
         }
       } else if (item.includes('time')) {
-        let timeVal = document.querySelector(`*[extendparam=${item.split('_')[1]}]`).value;
-        if (timeVal.length === 0) {
-          contractConfig.errorArr2.push(`${item}请选择`);
+        let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
+        if (time.value.length === 0) {
+          contractConfig.errorArr2.push({
+            type:'input',
+            name:time.getAttribute('extendparam')
+          });
           break;
         }
       } else if (item.includes('info')) {
@@ -52,11 +64,15 @@ let contractConfig = {
         let input = document.querySelector(`*[extendparam=${item}]`);
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
-          contractConfig.errorArr2.push(`${item}请输入`);
+          contractConfig.errorArr2.push({
+            type:'input',
+            name:item
+          });
           break;
         }
       }
     }
+    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr2))
     return contractConfig.errorArr2;
   },
   /**
