@@ -4,8 +4,8 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-  <link rel="stylesheet" href="./datepicker.css"/>
-  <!-- <link rel="stylesheet" href="/datepicker.css"/> -->
+  <!-- <link rel="stylesheet" href="./datepicker.css"/> -->
+  <link rel="stylesheet" href="/datepicker.css"/>
   <title>买卖合同</title>
   <style>
       body{
@@ -150,7 +150,7 @@
         text-align: center;
       }
       .tablestyle tr td {
-        height: 22px;
+        height: 25px;
       }
       .tablestyle .item>td:first-child {
         width: 45px;
@@ -294,7 +294,7 @@
               <span>取消</span>
           </p>
       </div>
-      <div class="page_one page1">
+      <div class="page_one">
         <div class="title fontBold"><p>二手房买卖合同</p></div>
         <div class="code fontBold"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
         <div class="cw_message">
@@ -332,7 +332,7 @@
           <div class="lingH18">（一）经甲、乙双方协商一致，该房屋买卖成交价格为：人民币(小写)<span tag="input-auto"></span>元(大写<span tag="input-auto" systemParam="dealPriceUpper"></span>圆)整。该成交价格包括附随房屋一并转让的设施、设备价格。该转让成交价不含税费，因本次交易所产生的相关税费根据本合同第七条之约定各自承担。</div>
           <div class="lingH18">（二）乙方同意在本合同生效<span tag="input-auto" listen="number" class="input-before" extendParam="val40"></span>日内（含当日）向甲方支付定金。定金为人民币(小写)<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val42"></span>元(大写<span tag="input-auto" systemParam="true" extendParam="val42_add"></span>圆)整。</div>
           <div class="lingH18">（三）为保证交易资金安全，该房屋交易定金可由甲、乙双方约定的银行或第三方账户进行资金监管。甲、乙双方约定的银行或第三方账户为：</div>
-          <p class="lingH18">户名：<span tag="input-auto" class="text-limit input-before" extendParam="val45"></span>，开户行：<span tag="input-auto" class="text-limit input-before" extendParam="val46"></span></p>
+          <p class="lingH18">户名：<span tag="input-auto" class="text-limit input-before" extendParam="val45"></span>，<span style="margin-left: 30px;">开户行：</span><span tag="input-auto" class="text-limit input-before" extendParam="val46"></span></p>
           <p>账号：<span tag="input-auto" class="text-limit input-before" extendParam="val48"></span></p>
           <p>本条所约定的交易定金交由双方所约定第三方监管，监管方式，放款，退款条件等事项依买卖双方与第三方所签的监管协议或其他法律文书另行约定。乙方将定金打入资金监管账户，视为甲方本人已收讫定金，甲方应向乙方出具定金收据，甲方拒绝向乙方出具定金收据的，不影响定金的生效。</p>
           <p id="three" class="navTitle fontBold">第三条、付款方式</p>
