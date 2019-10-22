@@ -90,9 +90,9 @@
         >
         <div class="com-box">
             <div class="com-select">
-                <div class="mark-red com-select-city" v-if="adminYes">
+                <div class="mark-red com-select-city">
                     <label>城市：</label>
-                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'">
+                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'||!this.adminYes">
                         <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
                     </el-select>
                 </div>
@@ -260,8 +260,8 @@
         },
         created() {
             if((this.isProd==0&&this.userInfo.empId==15349)||(this.isProd==1&&this.userInfo.empId==37109)) this.adminYes = true
-            // 超级管理员账号 获取城市
-            if(this.adminYes) this.getCity()
+            // 获取城市
+            this.getCity()
             // 非超级管理员获取体系
             if(!this.adminYes) {
                 this.searchForm.cityId = this.userInfo.cityId
