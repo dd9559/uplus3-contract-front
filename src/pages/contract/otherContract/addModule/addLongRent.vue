@@ -59,7 +59,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <input v-model="item.cardCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input v-model="item.cardCode" type="text" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData('owner')" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -95,7 +95,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <input id="guestCard" v-model="item.cardCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input id="guestCard" v-model="item.cardCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData('guest')" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -953,7 +953,7 @@ export default {
                             if(element.cardType!==1){
                               element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                             }
-                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)) {
+                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
                               isOk = true;
                             }else{
                               this.$message({
@@ -1053,7 +1053,7 @@ export default {
                                 if(element.cardType!==1){
                                   element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                 }
-                                if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)) {
+                                if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
                                   isOk_ = true;
                                 }else{
                                   this.$message({
@@ -1130,6 +1130,8 @@ export default {
                 let passportList = [];
                 //验证营业执照是否重复
                 let businessList = [];
+                //验证军官证是否重复
+                let militaryIDList = [];
 
                 ownerArr.forEach(element => {
                   if(element.cardType===1){
@@ -1140,6 +1142,9 @@ export default {
                   }
                   if(element.cardType===3){
                     businessList.push(element.cardCode);
+                  }
+                  if(element.cardType===4){
+                    militaryIDList.push(element.encryptionCode);
                   }
                   ownerMobileList.push(element.mobile);
                 });
@@ -1164,6 +1169,9 @@ export default {
                     if(element.cardType===3){
                       businessList.push(element.cardCode);
                     }
+                    if(element.cardType===4){
+                      militaryIDList.push(element.encryptionCode);
+                    }
                     guestMobileList.push(element.mobile);
                   });
                   for (let index = 0; index < guestMobileList.length; index++) {
@@ -1176,25 +1184,33 @@ export default {
                 let IdCardList_= Array.from(new Set(IdCardList));
                 let passportList_= Array.from(new Set(passportList));
                 let businessList_= Array.from(new Set(businessList));
-                
+                let militaryIDList_= Array.from(new Set(militaryIDList));
+
                 if(ownerGuestMobile){
                   if(IdCardList.length===IdCardList_.length){
                     if(passportList.length===passportList_.length){
                       if(businessList.length===businessList_.length){
+                        if(militaryIDList.length===militaryIDList_.length){
                         //经纪人
-                        if(this.contractForm.dealAgentId){
-                          // 店长
-                          if(this.contractForm.shopOwnerId){
-                            this.postContractForm()
+                          if(this.contractForm.dealAgentId){
+                            // 店长
+                            if(this.contractForm.shopOwnerId){
+                              this.postContractForm()
+                            }else{
+                              this.$message({
+                                message:'签约信息-店长不能为空',
+                                type: "warning"
+                              })
+                            }
                           }else{
                             this.$message({
-                              message:'签约信息-店长不能为空',
+                              message:'签约信息-成交经纪人不能为空',
                               type: "warning"
                             })
                           }
                         }else{
                           this.$message({
-                            message:'签约信息-成交经纪人不能为空',
+                            message:'军官证重复',
                             type: "warning"
                           })
                         }

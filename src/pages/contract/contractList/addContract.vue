@@ -155,7 +155,7 @@
                   </el-option>
                 </el-select>
                  <!-- :class="{'disabled':type===2&&!item.edit}" -->
-                <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData" class="icon" v-if="!canInput">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -205,7 +205,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -866,7 +866,7 @@ export default {
                                       element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                     }
                                   // }
-                                  if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)) {
+                                  if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
                                     isOk = true;
                                     ownerRightRatio += element.propertyRightRatio - 0;
                                   }else{
@@ -980,7 +980,7 @@ export default {
                                           element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                         }
                                       }
-                                      if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)) {
+                                      if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
                                         isOk_ = true;
                                         guestRightRatio += element.propertyRightRatio - 0;
                                       }else{
@@ -1065,6 +1065,8 @@ export default {
                             let passportList = [];
                             //验证营业执照是否重复
                             let businessList = [];
+                            //验证军官证是否重复
+                            let militaryIDList = [];
 
                             ownerArr.forEach(element => {
                               if(element.cardType===1){
@@ -1075,6 +1077,9 @@ export default {
                               }
                               if(element.cardType===3){
                                 businessList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===4){
+                                militaryIDList.push(element.encryptionCode);
                               }
                               ownerMobileList.push(element.encryptionMobile);
                             });
@@ -1088,6 +1093,9 @@ export default {
                               }
                               if(element.cardType===3){
                                 businessList.push(element.encryptionCode);
+                              }
+                              if(element.cardType===4){
+                                militaryIDList.push(element.encryptionCode);
                               }
                               guestMobileList.push(element.encryptionMobile);
                             });
@@ -1122,162 +1130,76 @@ export default {
                             let IdCardList_= Array.from(new Set(IdCardList));
                             let passportList_= Array.from(new Set(passportList));
                             let businessList_= Array.from(new Set(businessList));
+                            let militaryIDList_= Array.from(new Set(militaryIDList));
                               if(ownerGuestMobile&&otherMobile){
-                              if(IdCardList.length===IdCardList_.length){
-                              if(passportList.length===passportList_.length){
-                              if(businessList.length===businessList_.length){
-                              //验证三方合作
-                              if(this.contractForm.isHaveCooperation){
-                                let mobileOk=true;
-                                let IDcardOk=true;
-                                // contractForm.otherCooperationInfo.mobile
-                                if(this.contractForm.otherCooperationInfo.mobile){
-                                  mobileOk=false;
-                                  let reg = /^1[0-9]{10}$/;
-                                  let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
-                                  if (reg.test(this.contractForm.otherCooperationInfo.mobile)||reg_.test(this.contractForm.otherCooperationInfo.mobile)) {
-                                    mobileOk=true;
+                                if(IdCardList.length===IdCardList_.length){
+                                  if(passportList.length===passportList_.length){
+                                    if(businessList.length===businessList_.length){
+                                      if(militaryIDList.length===militaryIDList_.length){
+                                        //验证三方合作
+                                        if(this.contractForm.isHaveCooperation){
+                                          let mobileOk=true;
+                                          let IDcardOk=true;
+                                          if(this.contractForm.otherCooperationInfo.mobile){
+                                            mobileOk=false;
+                                            let reg = /^1[0-9]{10}$/;
+                                            let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                                            if (reg.test(this.contractForm.otherCooperationInfo.mobile)||reg_.test(this.contractForm.otherCooperationInfo.mobile)) {
+                                              mobileOk=true;
+                                            }else{
+                                              this.$message({
+                                                message: "三方合作-电话号码不正确",
+                                                type: "warning"
+                                              });
+                                            }
+                                          };
+                                          if(this.contractForm.otherCooperationInfo.identifyCode){
+                                            IDcardOk=false;
+                                            if (this.isIdCardNo(this.contractForm.otherCooperationInfo.identifyCode)) {
+                                              IDcardOk=true;
+                                            }else{
+                                              this.$message({
+                                                message: "三方合作-身份证号不正确",
+                                                type: "warning"
+                                              });
+                                            }
+                                          };
+                                          if(mobileOk&&IDcardOk){
+                                            this.dialogSave = true;
+                                          }
+                                        }else{
+                                          this.dialogSave = true;
+                                        }
+                                      }else{
+                                        this.$message({
+                                          message:'军官证重复',
+                                          type: "warning"
+                                        })
+                                      }
+                                    }else{
+                                      this.$message({
+                                        message:'营业执照重复',
+                                        type: "warning"
+                                      })
+                                    }
                                   }else{
                                     this.$message({
-                                      message: "三方合作-电话号码不正确",
+                                      message:'护照重复',
                                       type: "warning"
-                                    });
+                                    })
                                   }
-                                };
-                                if(this.contractForm.otherCooperationInfo.identifyCode){
-                                  IDcardOk=false;
-                                  // let reg = /^\d{6}(18|19|20)?\d{2}(0[1-9]|1[012])(0[1-9]|[12]\d|3[01])\d{3}(\d|[xX])$/;
-                                  if (this.isIdCardNo(this.contractForm.otherCooperationInfo.identifyCode)) {
-                                    IDcardOk=true;
-                                  }else{
-                                    this.$message({
-                                      message: "三方合作-身份证号不正确",
-                                      type: "warning"
-                                    });
-                                  }
-                                };
-                                if(mobileOk&&IDcardOk){
-                                  // 合同扩展参数验证
-                                  // let paramsOk=true;
-                                  // for(var i=0;i<this.contractForm.extendParams.length;i++){
-                                  //   paramsOk=false;
-                                  //   let item = this.contractForm.extendParams[i];
-                                  //   if(item.type!=4){//type=4为时间选择器
-                                  //     if(item.value){
-                                  //       if(item.type===5){
-                                  //         if(item.value.length>0){
-                                  //           paramsOk=true
-                                  //         }else{
-                                  //           this.$message({
-                                  //             message: `扩展参数-${item.name}不能为空`,
-                                  //             type: "warning"
-                                  //           });
-                                  //           break
-                                  //         }
-                                  //       }else{
-                                  //         item.value=item.value.replace(/\s/g,"");
-                                  //         if(item.value){
-                                  //           paramsOk=true
-                                  //         }else{
-                                  //           this.$message({
-                                  //             message: `扩展参数-${item.name}不能为空`,
-                                  //             type: "warning"
-                                  //           });
-                                  //           break
-                                  //         }
-                                  //       }
-                                  //     }else{
-                                  //       this.$message({
-                                  //         message: `扩展参数-${item.name}不能为空`,
-                                  //         type: "warning"
-                                  //       });
-                                  //       break
-                                  //     }
-                                  //   }else{
-                                  //     paramsOk=true
-                                  //   }
-                                  // }
-                                  // if(paramsOk){
-                                  //   this.dialogSave = true;
-                                  // }
-
-
-
-                                  this.dialogSave = true;
-                                  // this.addContract();
+                                }else{
+                                  this.$message({
+                                    message:'身份证号重复',
+                                    type: "warning"
+                                  })
                                 }
                               }else{
-                                // 合同扩展参数验证
-                                // let paramsOk=true;
-                                // for(var i=0;i<this.contractForm.extendParams.length;i++){
-                                //   paramsOk=false;
-                                //   let item = this.contractForm.extendParams[i];
-                                //   // console.log(item);
-                                //   if(item.type!=4){
-                                //     if(item.value){
-                                //       if(item.type===5){
-                                //         if(item.value.length>0){
-                                //           paramsOk=true
-                                //         }else{
-                                //           this.$message({
-                                //             message: `扩展参数-${item.name}不能为空`,
-                                //             type: "warning"
-                                //           });
-                                //           break
-                                //         }
-                                //       }else{
-                                //         item.value=item.value.replace(/\s/g,"");
-                                //         if(item.value){
-                                //           paramsOk=true
-                                //         }else{
-                                //           this.$message({
-                                //             message: `扩展参数-${item.name}不能为空`,
-                                //             type: "warning"
-                                //           });
-                                //           break
-                                //         }
-                                //       }
-                                //     }else{
-                                //       this.$message({
-                                //         message: `扩展参数-${item.name}不能为空`,
-                                //         type: "warning"
-                                //       });
-                                //       break
-                                //     }
-                                //   }else{
-                                //     paramsOk=true
-                                //   }
-                                // }
-                                // if(paramsOk){
-                                //   this.dialogSave = true;
-                                // }
-                                 this.dialogSave = true;
-                                // this.addContract();
-                              }
-                              }else{
                                 this.$message({
-                                  message:'营业执照重复',
+                                  message:'电话号码重复',
                                   type: "warning"
                                 })
                               }
-                              }else{
-                                this.$message({
-                                  message:'护照重复',
-                                  type: "warning"
-                                })
-                              }
-                            }else{
-                              this.$message({
-                                message:'身份证号重复',
-                                type: "warning"
-                              })
-                            }
-                            }else{
-                              this.$message({
-                                message:'电话号码重复',
-                                type: "warning"
-                              })
-                            }
                           } else {
                             this.$message({
                               message: "客源信息-客户产权比和必须为100%",
@@ -1544,97 +1466,6 @@ export default {
       this.dialogSuccess=false;
       this.$router.push('/contractList');
     },
-    /* 新增/编辑合同 */
-    // addContract1() {
-    //   this.contractForm.contPersons=[]
-    //   this.ownerList.forEach(element => {
-    //     delete element.edit
-    //     this.contractForm.contPersons.push(element);
-    //   });
-    //   this.guestList.forEach(element => {
-    //     delete element.edit
-    //     this.contractForm.contPersons.push(element);
-    //   });
-
-    //   /* 新增/编辑租赁合同 */
-    //   if (this.contractForm.type === 1) {
-    //     let param = {
-    //       leaseCont: this.contractForm,
-    //       type: this.type,
-    //       haveExamine:this.haveExamine
-    //     };
-    //     if(this.type===2){
-    //       delete param.leaseCont.contChangeState;
-    //       delete param.leaseCont.contState;
-    //       delete param.leaseCont.contType;
-    //       delete param.leaseCont.laterStageState;
-    //       delete param.leaseCont.toExamineState;
-    //       delete param.leaseCont.previewImg;
-    //       delete param.leaseCont.updateTimes;
-    //       delete param.leaseCont.propertyRightRatios;
-    //       delete param.leaseCont.pids;
-    //       delete param.leaseCont.pmobiles;
-    //       delete param.leaseCont.pnames;
-    //       delete param.saleCont.distributableAchievement;
-    //     }
-    //     this.$ajax.postJSON("/api/contract/editLeaseCont", param).then(res => {
-    //       res = res.data;
-    //       this.fullscreenLoading=false;
-    //       if (res.status === 200) {
-    //         this.dialogSave=false
-    //         this.$message({
-    //           message: "操作成功",
-    //           type: "success"
-    //         });
-    //         this.$router.push('/contractList');
-    //       }
-    //     }).catch(error => {
-    //       this.fullscreenLoading=false;
-    //       console.log(error)
-    //       this.$message({
-    //         message:error
-    //       })
-    //     })
-    //   }
-    //   /* 新增/编辑买卖合同 */
-    //   if (this.contractForm.type === 2 || this.contractForm.type === 3) {
-    //     let param = {
-    //       saleCont: this.contractForm,
-    //       type: this.type,
-    //       haveExamine:this.haveExamine
-    //     };
-    //     if(this.type===2){
-    //       delete param.saleCont.contChangeState;
-    //       delete param.saleCont.contState;
-    //       delete param.saleCont.contType;
-    //       delete param.saleCont.laterStageState;
-    //       delete param.saleCont.toExamineState;
-    //       delete param.saleCont.previewImg;
-    //       delete param.saleCont.subscriptionTerm;
-    //       delete param.saleCont.updateTime;
-    //       delete param.saleCont.distributableAchievement;
-    //       param.saleCont.signDate=param.saleCont.signDate.replace(/-/g,"/");
-    //     }
-
-    //     this.$ajax.postJSON("/api/contract/editSaleCont", param).then(res => {
-    //       res = res.data;
-    //       this.fullscreenLoading=false;
-    //       if (res.status === 200) {
-    //         this.dialogSave=false
-    //         this.$message({
-    //           message: "操作成功",
-    //           type: "success"
-    //         });
-    //         this.$router.push('/contractList');
-    //       }
-    //     }).catch(error => {
-    //       this.fullscreenLoading=false;
-    //       this.$message({
-    //         message:'数据异常'
-    //       })
-    //     })
-    //   }
-    // },
     //获取所在城市的交易类型
     getTransFlow() {
       this.$ajax.get("/api/contract/getTransFlowListByCity").then(res => {

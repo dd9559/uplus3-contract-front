@@ -93,7 +93,7 @@
             </el-table-column>
             <el-table-column min-width="150" label="证件号码">
               <template slot-scope="scope">
-                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.cardCode}}
+                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}
               </template>
             </el-table-column>
           </el-table>
