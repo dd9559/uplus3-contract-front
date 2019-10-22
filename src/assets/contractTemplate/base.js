@@ -11,18 +11,18 @@ let contractConfig = {
    * 4.clear属性为改部件下所有的子项，方便清空其所有子项状态
    */
   sub: Object.create(null),
-  errorArr2: [],//存储校验未通过项
+  errorArr: [],//存储校验未通过项
   /**
    * 表单校验方法
    */
   submit: function (e, obj = sub) {
     //初始化
-    contractConfig.errorArr2 = [];
-    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr2));
+    contractConfig.errorArr = [];
+    sessionStorage.setItem('templateError',JSON.stringify([]));
 
     for (let item in obj) {
-      contractConfig.errorArr2=JSON.parse(sessionStorage.getItem("templateError"));
-      if (contractConfig.errorArr2.length > 0) {
+      // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
+      if (contractConfig.errorArr.length > 0) {
         break;
       }
       if (item.includes('checkbox')) {
@@ -31,7 +31,7 @@ let contractConfig = {
           return cell.querySelector('p').getAttribute('checked')
         })
         if (checkedIndex === -1) {
-          contractConfig.errorArr2.push({
+          contractConfig.errorArr.push({
             name:item.split('_')[1]
           });
           break;
@@ -41,7 +41,7 @@ let contractConfig = {
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
         if (dropdown.value.length === 0) {
-          contractConfig.errorArr2.push({
+          contractConfig.errorArr.push({
             type:'input',
             name:dropdown.getAttribute('extendparam')
           });
@@ -52,9 +52,9 @@ let contractConfig = {
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
         if (time.value.length === 0) {
-          contractConfig.errorArr2.push({
+          contractConfig.errorArr.push({
             type:'input',
-            name:time.getAttribute('extendparam')
+            name:item.split('_')[1]
           });
           break;
         }
@@ -64,7 +64,7 @@ let contractConfig = {
         let input = document.querySelector(`*[extendparam=${item}]`);
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
-          contractConfig.errorArr2.push({
+          contractConfig.errorArr.push({
             type:'input',
             name:item
           });
@@ -72,8 +72,8 @@ let contractConfig = {
         }
       }
     }
-    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr2))
-    return contractConfig.errorArr2;
+    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr))
+    return contractConfig.errorArr;
   },
   /**
    * 监听自适应输入框
