@@ -36,7 +36,7 @@ let contractConfig = {
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](checkedIndex))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex))
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
@@ -47,7 +47,7 @@ let contractConfig = {
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](dropdownVal))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdown.value))
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
@@ -59,7 +59,7 @@ let contractConfig = {
           break;
         }
       } else if (item.includes('info')) {
-        submit(e, obj[item]['stateful']());
+        contractConfig.submit(e, obj[item]['stateful']());
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
@@ -210,7 +210,10 @@ let contractConfig = {
           dom.removeAttribute("value")
         } else {
           dom.innerHTML = ''
-          dom.classList.add('input-before')
+          //判断是否需要'input-before'类来显示placeholder属性
+          if(item.indexOf('_')==-1){
+            dom.classList.add('input-before')
+          }
         }
       } else {
         dom.querySelector('p').removeAttribute('checked')
