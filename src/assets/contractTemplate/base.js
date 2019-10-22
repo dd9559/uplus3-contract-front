@@ -1,5 +1,65 @@
 let contractConfig = {
   /**
+   * 校验配置对象
+   * 勾选框key值必须使用'checkbox'开头，下划线后面跟勾选框的name属性值
+   * 下拉框key值必须使用'drapdown'开头，下划线后面跟下拉框的inputmethod属性值
+   * 时间选择控件key值必须使用'time'开头，下划线后面跟控件的extendparam属性值
+   * 输入框key值使用相应的extendparam属性值
+   * 重点：1.有子项校验时，value值为一个带有stateful属性的对象，否则取null;
+   * 2.stateful为一个返回子项校验配置对象的方法;
+   * 3.key值带有'info'表示stateful方法有自定义校验,
+   * 4.clear属性为改部件下所有的子项，方便清空其所有子项状态
+   */
+  sub: Object.create(null),
+  errorArr2: [],//存储校验未通过项
+  /**
+   * 表单校验方法
+   */
+  submit: function (e, obj = sub) {
+    contractConfig.errorArr2 = [];
+    for (let item in obj) {
+      if (contractConfig.errorArr2.length > 0) {
+        break;
+      }
+      if (item.includes('checkbox')) {
+        let doms = Array.from(document.querySelectorAll(`*[name=${item.split('_')[1]}]`));
+        let checkedIndex = doms.findIndex(function (cell) {//是否有勾选
+          return cell.querySelector('p').getAttribute('checked')
+        })
+        if (checkedIndex === -1) {
+          contractConfig.errorArr2.push(`${item}请勾选`);
+          break;
+        } else {
+          obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](checkedIndex))
+        }
+      } else if (item.includes('drapdown')) {
+        let dropdownVal = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`).value;
+        if (dropdownVal.length === 0) {
+          contractConfig.errorArr2.push(`${item}请选择`);
+          break;
+        } else {
+          obj[item] && obj[item]['stateful'] && submit(e, obj[item]['stateful'](dropdownVal))
+        }
+      } else if (item.includes('time')) {
+        let timeVal = document.querySelector(`*[extendparam=${item.split('_')[1]}]`).value;
+        if (timeVal.length === 0) {
+          contractConfig.errorArr2.push(`${item}请选择`);
+          break;
+        }
+      } else if (item.includes('info')) {
+        submit(e, obj[item]['stateful']());
+      } else {//输入框非空校验
+        let input = document.querySelector(`*[extendparam=${item}]`);
+        let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
+        if (inputVal.length === 0) {
+          contractConfig.errorArr2.push(`${item}请输入`);
+          break;
+        }
+      }
+    }
+    return contractConfig.errorArr2;
+  },
+  /**
    * 监听自适应输入框
    * @param callback 弹窗中多行文本框的输入回调,success为取消按钮的回调
    * 注意弹窗必须是一个div.alert-viwer，子元素有textarea#inputArea、p.control-btn
@@ -159,7 +219,7 @@ let contractConfig = {
         item.classList.add('modal')
       }
     })
-    callback&&callback()
+    callback && callback()
   }
 }
 let toChineseNumber = function (money) {
