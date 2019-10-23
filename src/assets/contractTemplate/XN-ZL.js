@@ -118,7 +118,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }else{
     let btn=document.createElement('span')
@@ -127,7 +127,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }
 
