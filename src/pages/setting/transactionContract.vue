@@ -5,15 +5,15 @@
         </div>
         <div class="contract-list">
           <el-table :data="listData" style="width: 100%" border :max-height="tableHeight">
-              <el-table-column align="center" label="序号" type="index" width="90"></el-table-column>
-              <el-table-column align="left" label="名称" prop="name"></el-table-column>
-              <el-table-column align="center" label="信息类型" prop="type">
+              <el-table-column label="序号" type="index" width="90"></el-table-column>
+              <el-table-column label="名称" prop="name"></el-table-column>
+              <el-table-column label="信息类型" prop="type">
                 <template slot-scope="scope">
                   <span>{{scope.row.type|getInfoType}}</span>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="是否为必选项" prop="isNecessary" :formatter="booleanFormatter"></el-table-column>
-              <el-table-column align="center" label="操作">
+              <el-table-column label="是否为必选项" prop="isNecessary" :formatter="booleanFormatter"></el-table-column>
+              <el-table-column label="操作">
                   <template slot-scope="scope">
                       <el-button @click="rowOperation(scope.row,1,'编辑合同资料')" type="text" size="small" v-if="power['sign-set-hq'].state">编辑</el-button>
                       <el-button @click="rowOperation(scope.row,2)" type="text" size="small" v-if="power['sign-set-hq'].state">删除</el-button>
@@ -209,9 +209,6 @@ export default {
   .contract-list {
     padding: 0 12px;
     background-color: #fff;
-    /deep/ .has-gutter th:nth-child(2) {
-      text-align: center;
-    }
   }
   .contract-form {
     .el-form-item {

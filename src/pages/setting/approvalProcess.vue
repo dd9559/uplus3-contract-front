@@ -54,34 +54,34 @@
             </p>
             <div class="table">
                 <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
-                    <el-table-column align="center" label="交易类型" prop="modularType">
+                    <el-table-column label="交易类型" prop="modularType">
                         <template slot-scope="scope">
                             <span v-for="item in dictionary['711']" :key="item.key" v-if="item.key===scope.row.modularType">{{item.value}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="流程名称" prop="name"></el-table-column>
-                    <el-table-column align="center" label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
-                    <el-table-column align="center" label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
+                    <el-table-column label="流程名称" prop="name"></el-table-column>
+                    <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
+                    <el-table-column label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
                         <template slot-scope="scope">
                             <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="流程类型" prop="type">
+                    <el-table-column label="流程类型" prop="type">
                         <template slot-scope="scope">
                             <span v-for="item in dictionary['573']" :key="item.key" v-if="item.key===scope.row.type">{{item.value}}</span>                            
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="分支条件" prop="branchCondition">
+                    <el-table-column label="分支条件" prop="branchCondition">
                         <template slot-scope="scope">
                             <span>{{scope.row.conditionName}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="分支节点" prop="name">
+                    <el-table-column label="分支节点" prop="name">
                         <template slot-scope="scope">
                             <p v-for="item in scope.row.branch" :key="item.sort">{{item.name?item.name:'无需审核'}}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="操作">
+                    <el-table-column label="操作">
                         <template slot-scope="scope">
                             <el-button type="text" size="medium" @click="operation(scope.row)" v-if="power['sign-set-verify'].state">编辑</el-button>
                         </template>

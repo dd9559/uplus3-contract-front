@@ -38,7 +38,8 @@
 
     <el-table-column label="财务收款" min-width="100">
       <template slot-scope="scope">
-        <div class="btn" @click="gathering(scope.row)">收款</div>
+        <div class="btn" v-if="power['sign-cz-ht-ls-debt'].state" @click="gathering(scope.row)">收款</div>
+        <span v-else>-</span>
       </template>
     </el-table-column>
 
@@ -89,6 +90,12 @@ export default{
         //数据字典
         "716":"",//交易方式
       },
+      power: {
+        'sign-cz-ht-ls-debt': {
+          state: false,
+          name: '收款'
+        },
+      }
     }
   },
   created () {

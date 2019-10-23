@@ -16,10 +16,10 @@
             <span class="tag">纸质合同编号：</span>
             <el-tooltip v-if="getDetail.pCode" class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
               <div class="contractDetailCode" >
-                 {{getDetail.pCode?getDetail.pCode:"-"}}
+                 {{getDetail.pCode}}
               </div>
             </el-tooltip>
-            <span v-else>--</span>
+            <span class="text" v-else>--</span>
           </p>
           <p>
             <span class="tag">签约日期：</span>
@@ -46,9 +46,13 @@
       <div class="title">房源信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">房源编号：</span>
-            <span class="serialNumber">{{getDetail.houseinfoCode}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.houseinfoCode" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.houseinfoCode}}
+              </div>
+            </el-tooltip>
           </p>
           <p style="width:1000px">
             <span class="tag">房源地址：</span>
@@ -61,13 +65,13 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-cz-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系"></el-table-column>
             <el-table-column min-width="150" label="证件号码">
               <template slot-scope="scope">
-                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.cardCode}}
+                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}
               </template>
             </el-table-column>
           </el-table>
@@ -78,7 +82,14 @@
       <div class="title">客源信息</div>
       <div class="content">
         <div class="one_">
-          <p><span class="tag">客源编号：</span><span class="serialNumber">{{getDetail.guestinfoCode}}</span></p>
+          <p style="position:relative;">
+            <span class="tag">客源编号：</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.guestinfoCode" placement="bottom">
+              <div class="contractDetailCode">
+                {{getDetail.guestinfoCode}}
+              </div>
+            </el-tooltip>
+          </p>
         </div>
         <div class="table" v-if="getDetail.contractInfo">
           <el-table :data="getDetail.contractInfo.customerList" border header-row-class-name="theader-bg">
@@ -86,13 +97,13 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-cz-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系"></el-table-column>
             <el-table-column min-width="150" label="证件号码">
               <template slot-scope="scope">
-                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.cardCode}}
+                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}
               </template>
             </el-table-column>
           </el-table>
@@ -192,7 +203,7 @@ export default {
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-call': {
+        'sign-cz-ht-xq-ly': {
           state: false,
           name: '拨打电话'
         },
@@ -210,7 +221,7 @@ export default {
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:2,
-        id:value.pid,
+        // id:value.pid,
         contractCode:this.detail.code,
         sourceType:type==="owner"?0:1,
         calledMobile:value.mobile,
@@ -250,7 +261,7 @@ export default {
     getVirtualNum(param,index,type){
       let ownerData=this.detail.contractInfo.ownerList
       let clientrData=this.detail.contractInfo.customerList
-      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      this.$ajax.get('/api/record/longLease/virtualNum',param).then(res=>{
         this.canCall=true;
         res=res.data;
         if(res.status===200){

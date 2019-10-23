@@ -171,7 +171,7 @@
         </div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column label="合同信息" min-width="250" fixed>
+        <el-table-column label="合同信息" label-class-name="pdl" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -351,16 +351,16 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column label="操作" min-width="60" fixed="right">
           <template slot-scope="scope">
             <!-- <div style="text-align:center"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</el-button>
+              <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
               <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
               <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
-              <el-button type="text" size="medium" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</el-button>
+              <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
               <!-- </span> -->
-              <el-button type="text" size="medium" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</el-button>
+              <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
             <!-- </div> -->
           </template>
         </el-table-column>
@@ -757,7 +757,10 @@ export default {
         this.contCode=item.code;
         this.waterContId=item.id;
       }else{
-        this.noPower('流水查看')
+        this.$message({
+          message:"没有流水查看权限",
+          type:"warning"
+        })
       }
     },
     //关闭流水弹窗
@@ -777,7 +780,10 @@ export default {
           }
         })
       }else{
-        this.noPower('收款')
+        this.$message({
+          message:"没有收款权限",
+          type:"warning"
+        })
       }
     },
     //付款
@@ -792,7 +798,10 @@ export default {
           }
         })
       }else{
-        this.noPower('付款')
+        this.$message({
+          message:"没有付款权限",
+          type:"warning"
+        })
       }
     },
     //打印次数详情
@@ -839,7 +848,10 @@ export default {
           window.open(newPage.href, '_blank');
         }
       }else{
-        this.noPower('合同详情查看')
+        this.$message({
+          message:"没有合同详情查看权限",
+          type:"warning"
+        })
       }
     },
     uploadData(value) {
@@ -856,7 +868,10 @@ export default {
             }
           });
         }else{
-          this.noPower('合同详情')
+          this.$message({
+            message:"没有合同详情权限",
+            type:"warning"
+          })
         }
     },
     handleCurrentChange(val) {
@@ -936,7 +951,10 @@ export default {
           }
         })
       }else{
-        this.noPower('合同预览')
+        this.$message({
+          message:"没有合同预览权限",
+          type:"warning"
+        })
       }
 
     },
@@ -1105,7 +1123,10 @@ export default {
           })
         }
       }else{
-        this.noPower('结算')
+        this.$message({
+          message:"没有结算权限",
+          type:"warning"
+        })
       }
     },
     //关闭结算弹窗
@@ -1124,7 +1145,10 @@ export default {
         }
         this.$refs.lateProgress.show(value);
       }else{
-        this.noPower('后期流程查看')
+        this.$message({
+          message:"没有后期流程查看权限",
+          type:"warning"
+        })
       }
     },
     closePrint(){
@@ -1309,6 +1333,11 @@ export default {
 @import "~@/assets/common.less";
 .width300{
   width: 325px !important;
+}
+/deep/.pdl{
+  &.cell{
+    padding-left: 30px !important;
+  }
 }
 .percent{
   position: relative;

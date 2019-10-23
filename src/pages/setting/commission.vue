@@ -52,28 +52,28 @@
             border
             ref="tableCom"
             :max-height="tableNumberCom">
-                <el-table-column align="center" label="体系" prop="systemTag">
+                <el-table-column label="体系" prop="systemTag">
                     <template slot-scope="scope">
                         <span v-for="item in systemArr1" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="收佣手续费" width="350">
+                <el-table-column label="收佣手续费" width="350">
                     <template slot-scope="scope">
                         <span :class="i!=scope.row.commissionFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.commissionFee" :key="i">{{addSignFn(item.payType.label,item.fee)}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="分账/付款手续费" width="350">
+                <el-table-column label="分账/付款手续费" width="350">
                     <template slot-scope="scope">
                         <span :class="i!=scope.row.sepaFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.sepaFee" :key="i">{{addTextFn(item.accountType.label,item.feeMoney)}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="设置时间" prop="settingTime">
+                <el-table-column label="设置时间" prop="settingTime">
                     <template slot-scope="scope">{{scope.row.settingTime|formatTime}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="最新修改时间" prop="updateTime">
+                <el-table-column label="最新修改时间" prop="updateTime">
                     <template slot-scope="scope">{{scope.row.updateTime|formatTime}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" @click="openFn(2,scope.row)">编辑</el-button>
                     </template>
@@ -90,9 +90,9 @@
         >
         <div class="com-box">
             <div class="com-select">
-                <div class="mark-red com-select-city" v-if="adminYes">
+                <div class="mark-red com-select-city">
                     <label>城市：</label>
-                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'">
+                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'||!this.adminYes">
                         <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
                     </el-select>
                 </div>
@@ -260,8 +260,8 @@
         },
         created() {
             if((this.isProd==0&&this.userInfo.empId==15349)||(this.isProd==1&&this.userInfo.empId==37109)) this.adminYes = true
-            // 超级管理员账号 获取城市
-            if(this.adminYes) this.getCity()
+            // 获取城市
+            this.getCity()
             // 非超级管理员获取体系
             if(!this.adminYes) {
                 this.searchForm.cityId = this.userInfo.cityId
@@ -604,9 +604,6 @@
         padding: 10px 20px 10px 0;
         text-align: right;
         border-top: 1px solid #EDECF0;
-    }
-    .el-button {
-        min-width:80px;
     }
     /deep/ .el-dialog__body{
         padding: 0;

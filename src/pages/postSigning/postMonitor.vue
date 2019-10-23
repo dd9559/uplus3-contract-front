@@ -154,7 +154,7 @@
             element-loading-text="正在加载中"
             @row-dblclick="tradingStepsFn"
             class="paper-table">
-                <el-table-column label="合同信息" align="left" min-width="150">
+                <el-table-column label="合同信息" min-width="150">
                     <template slot-scope="scope">
                         <p>
                             合同:
@@ -166,53 +166,53 @@
                         </p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="recordType.label" label="签约方式" align="center" min-width="60"></el-table-column>
-                <el-table-column label="接收日期" align="center" min-width="90">
+                <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
+                <el-table-column label="接收日期" min-width="90">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.receiveTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" align="center" min-width="200">
+                <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="200">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightAddr" label="产权地址" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyRightRegion" label="产权地址区域" min-width="120">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" align="center" min-width="60">
+                <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="60">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" align="center" min-width="60">
+                <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="60">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="成交经纪人" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="120">
                     <template slot-scope="scope">
                         {{agentFn(scope.row.dealagentStoreName,scope.row.dealAgentName)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="guestinfo.ShopOwnerName" label="店长" align="center" min-width="80">
+                <el-table-column :formatter="nullFormatterData" prop="guestinfo.ShopOwnerName" label="店长" min-width="80">
                 </el-table-column>
-                <el-table-column prop="overtimeSteps" label="当前步骤"  :formatter="nullFormatterData" align="center" min-width="80">
+                <el-table-column prop="overtimeSteps" label="当前步骤"  :formatter="nullFormatterData" min-width="80">
                     <!-- <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="tradingStepsFn(scope.row)">{{scope.row.overtimeSteps}}</el-button>
                     </template> -->
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="overtimeName" label="当前步骤责任人" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="overtimeName" label="当前步骤责任人" min-width="120">
                 </el-table-column>
-                <el-table-column label="计划完成时间" align="center" min-width="90">
+                <el-table-column label="计划完成时间" min-width="90">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.specifiedTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数" align="center" min-width="60">
+                <el-table-column :formatter="nullFormatterData" prop="overtimeDay" label="超时天数" min-width="60">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="实收/应收" align="center" min-width="60">
+                <el-table-column :formatter="nullFormatterData" label="实收/应收" min-width="60">
                     <template slot-scope="scope">
                         {{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" align="center" min-width="60">
+                <el-table-column :formatter="nullFormatterData" prop="statusReceiveAmount.label" label="收佣状态" min-width="60">
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" label="操作" align="center" min-width="120">
+                <el-table-column :formatter="nullFormatterData" label="操作" min-width="120">
                     <template slot-scope="scope">
                         <el-button class="blue" type="text" @click="operationFn(scope.row)" v-if="power['sign-com-bill'].state">流水</el-button>
                     </template>

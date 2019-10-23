@@ -60,8 +60,10 @@
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
         </div>
         <div>
-          <el-button class="btn-info"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
-          <el-button class="btn-info"  round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-add'].state||contractType==='longRent'&&power['sign-cz-ht-ls-add'].state||contractType==='financial'&&power['sign-jr-ht-ls-add'].state"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
+          <!-- <el-button class="btn-info" round type="primary" size="small" @click="toAddcontract">新增合同</el-button> -->
+          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
+          <!-- <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button> -->
         </div>
       </div>
       <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component>
@@ -116,10 +118,45 @@ export default {
       list:[],
        //权限配置
       power: {
-        'sign-ht-info-export': {
+        //新房
+        'sign-xf-ht-ls-export': {
           state: false,
           name: '导出'
-        }
+        },
+        'sign-xf-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-xf-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        //长租
+        'sign-cz-ht-ls-export': {
+          state: false,
+          name: '导出'
+        },
+        'sign-cz-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-cz-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        //金融
+        'sign-jr-ht-ls-export': {
+          state: false,
+          name: '导出'
+        },
+        'sign-jr-ht-ls-add': {
+          state: false,
+          name: '新增合同'
+        },
+        'sign-jr-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
       }
     }
   },
@@ -296,7 +333,7 @@ export default {
     },
     //导出
     getExcel(){
-      let contType,param
+      let url,param
       param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -306,7 +343,7 @@ export default {
         receiveAmountState:this.contractForm.receiveAmountState
       }
       if(this.contractType==="newHouse"){
-        contType=1
+        url="/input/newHouse/contractExcel"
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -320,7 +357,7 @@ export default {
           }
         }
       }else if(this.contractType==="longRent"){
-        contType=2
+        url="/input/longLease/contractExcel"
         if(this.signData){
           if (this.signData.length > 0) {
             param.signStart = this.signData[0];
@@ -328,7 +365,7 @@ export default {
           }
         }
       }else{
-        contType=3
+        url="/input/finance/contractExcel"
         if(this.loanData){
           if (this.loanData.length > 0) {
             param.loanStart = this.loanData[0];
@@ -336,18 +373,24 @@ export default {
           }
         }
       }
-      param.tradeType=contType
-      this.excelCreate("/input/contractExcel",param)
+      this.excelCreate(url,param)
     },
     //合同详情
     goDetail(val){
-      this.$router.push({
-        path: "/otherContractDetail",
-        query: {
-          type: this.contractType,
-          id:val.id
-        }
-      });
+      if(this.power['sign-xf-com-htdetail'].state&&this.contractType==='newHouse'||this.power['sign-cz-com-htdetail'].state&&this.contractType==='longRent'||this.power['sign-jr-com-htdetail'].state&&this.contractType==='financial'){
+        this.$router.push({
+          path: "/otherContractDetail",
+          query: {
+            type: this.contractType,
+            id:val.id
+          }
+        });
+      }else{
+        this.$message({
+          message:"没有合同详情权限",
+          type:"warning"
+        })
+      }
     },
     //收款
     getMoney(val){

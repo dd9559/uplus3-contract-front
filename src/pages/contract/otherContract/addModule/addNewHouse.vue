@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: tableHeight }">
       <!-- 合同信息 -->
       <div class="contractMsg">
         <p>合同信息</p>
@@ -72,7 +72,7 @@
                   <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                   </el-option>
                 </el-select>
-                <input id="guestCard" v-model="item.cardCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:18" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
+                <input id="guestCard" v-model="item.cardCode" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" @input="verifyIdcard(item)">
                 <span @click.stop="addcommissionData" class="icon">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -140,7 +140,7 @@
           </el-form-item>
           <br>
           <el-form-item label="合作方：" style="width:330px;text-align:right">
-            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly('cooperationName')" class="dealPrice" style="width:200px" /> 
+            <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly(0,'cooperationName')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
         </div>
       </div>
@@ -221,10 +221,13 @@ export default {
       type: Number,
       default: ""
     },
+    tableHeight:{
+      type: String,
+      default:''
+    },
   },
   data(){
     return{
-      clientHei:'',
       contractForm:{
         signDate: "",
         projectName:"",
@@ -283,6 +286,13 @@ export default {
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
+      // 权限
+      // power:{
+      //   'sign-cz-ht-xq-ly': {
+      //     state: false,
+      //     name: '拨打电话'
+      //   },
+      // },
     }
   },
   created () {
@@ -295,10 +305,6 @@ export default {
     }
   },
   methods:{
-    // 控制弹框body内容高度，超过显示滚动条
-    clientHeight() {
-      this.clientHei= document.documentElement.clientHeight -140 + 'px'
-    },
     //合同详情
     getContractDetail(){
       let param = {
@@ -462,7 +468,8 @@ export default {
       }
     },
     //姓名限制
-    inputOnly(index,type){if(type==='guest'){
+    inputOnly(index,type){
+      if(type==='guest'){
         this.guestList[index].name=this.$tool.textInput(this.guestList[index].name)
       }else if(type==='cooperationName'){
         this.contractForm.cooperationName=this.$tool.textInput(this.contractForm.cooperationName)
@@ -752,7 +759,7 @@ export default {
     remoteMethod(keyword,type){
       if(keyword!==''){
         let param = {
-          type:type==="agent"?1:2,
+          // type:type==="agent"?1:2,  2019.10.16张丽茹更改需求 经纪人可以为店长 不做限制
           name:keyword
         }
         this.$ajax.get('/api/contractInfo/getEmpDeptInfo',param).then(res=>{
@@ -836,7 +843,7 @@ export default {
                             if(element.cardType!==1){
                               element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                             }
-                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)) {
+                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
                               isOk = true;
                             }else{
                               this.$message({
@@ -903,20 +910,74 @@ export default {
               }
             };
             if(isOk){
-              //经纪人
-              if(this.contractForm.dealAgentId){
-                // 店长
-                if(this.contractForm.shopOwnerId){
-                  this.postContractForm()
+              //验证身份证是否重复
+              let IdCardList = [];
+              //验证护照是否重复
+              let passportList = [];
+              //验证营业执照是否重复
+              let businessList = [];
+              //验证军官证是否重复
+              let militaryIDList = [];
+              guestArr.forEach(element => {
+                if(element.cardType===1){
+                  IdCardList.push(element.cardCode);
+                }
+                if(element.cardType===2){
+                  passportList.push(element.cardCode);
+                }
+                if(element.cardType===3){
+                  businessList.push(element.cardCode);
+                }
+                if(element.cardType===4){
+                  militaryIDList.push(element.encryptionCode);
+                }
+              });
+              let IdCardList_= Array.from(new Set(IdCardList));
+              let passportList_= Array.from(new Set(passportList));
+              let businessList_= Array.from(new Set(businessList));
+              let militaryIDList_= Array.from(new Set(militaryIDList));
+              if(IdCardList.length===IdCardList_.length){
+                if(passportList.length===passportList_.length){
+                  if(businessList.length===businessList_.length){
+                    if(militaryIDList.length===militaryIDList_.length){
+                    //经纪人
+                      if(this.contractForm.dealAgentId){
+                        // 店长
+                        if(this.contractForm.shopOwnerId){
+                          this.postContractForm()
+                        }else{
+                          this.$message({
+                            message:'签约信息-店长不能为空',
+                            type: "warning"
+                          })
+                        }
+                      }else{
+                        this.$message({
+                          message:'签约信息-成交经纪人不能为空',
+                          type: "warning"
+                        })
+                      }
+                    }else{
+                      this.$message({
+                        message:'军官证重复',
+                        type: "warning"
+                      })
+                    }
+                  }else{
+                    this.$message({
+                      message:'营业执照重复',
+                      type: "warning"
+                    })
+                  }
                 }else{
                   this.$message({
-                    message:'签约信息-店长不能为空',
+                    message:'护照重复',
                     type: "warning"
                   })
                 }
               }else{
                 this.$message({
-                  message:'签约信息-成交经纪人不能为空',
+                  message:'证件号重复',
                   type: "warning"
                 })
               }
@@ -964,7 +1025,6 @@ export default {
       delete param.recordName
       delete param.updateTime
       //新增
-      debugger
       let url="/api/contractInfo/newHouse/addContract"
       let message = "创建成功"
       //编辑
@@ -1020,12 +1080,6 @@ export default {
         return time_.substr(0, 10)
       }
     }
-  },
-  mounted(){
-    window.onresize = this.clientHeight;
-  },
-  beforeUpdate() {
-    this.clientHeight();
   },
 };
 </script>

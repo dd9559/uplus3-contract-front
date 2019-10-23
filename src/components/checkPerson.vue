@@ -148,7 +148,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val, //部门名称关键字
-          type:this.type===3?1:0, //当前节点/下一节点
+          type:this.type===3?1:0, //设置下一节点（或审核）为1，设置当前节点（或提审）为0
           bizCode:this.bizCode, //业务编码
           flowType:this.flowType  //流程类型
         }

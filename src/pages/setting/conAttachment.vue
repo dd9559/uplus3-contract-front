@@ -30,17 +30,17 @@
                 <el-button icon="el-icon-plus" @click="addFn" round type="primary">新增合同附件</el-button>
             </p>
             <el-table :data="attachData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
-                <el-table-column align="center" label="体系" prop="systemId">
+                <el-table-column label="体系" prop="systemId">
                     <template slot-scope="scope">
                         <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemId">{{item.value}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column align="center" label="附件名称" prop="enclosureName"></el-table-column>
-                <el-table-column align="center" label="添加时间" prop="createTime">
+                <el-table-column label="附件名称" prop="enclosureName"></el-table-column>
+                <el-table-column label="添加时间" prop="createTime">
                     <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
                 </el-table-column>
-                <el-table-column align="center" label="添加人" prop="createName"></el-table-column>
-                <el-table-column align="center" label="操作">
+                <el-table-column label="添加人" prop="createName"></el-table-column>
+                <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="medium" @click="downloadFn(attachData,scope.$index)">下载</el-button>
                         <el-button type="text" size="medium" @click="deleteAttach(scope.row.id)">删除</el-button>
@@ -65,7 +65,7 @@
         :close-on-press-escape="$tool.closeOnClickModal"
         :visible.sync="addVisible"
         width="740px">
-        <div class="dialog-body" :style="{ height: clientHeight() }">
+        <div class="dialog-body">
             <p class="item-title"><i>*</i>体系：</p>
             <el-select class="w400 item-title" v-model="addSystemTag" size="small">
                 <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -163,12 +163,6 @@
             }else{
                 // 列表
                 this.getData()
-            }
-        },
-        mounted(){
-            var _this = this
-            window.onresize = function(){
-                _this.clientHei = document.documentElement.clientHeight
             }
         },
         methods: {
@@ -328,10 +322,6 @@
             handleCurrentChange(val) {
                 this.pageNum = val
                 this.getData('pagination')
-            },
-            // 控制弹框body内容高度，超过显示滚动条
-            clientHeight() {        
-                return this.clientHei - 550 + 'px'
             }
         },
         computed: {
@@ -367,6 +357,7 @@
         }
     }
     .dialog-body {
+        max-height: 400px;
         overflow-y: auto;
         padding: 20px;
         border-bottom: 1px solid #EDECF0;

@@ -38,7 +38,8 @@
 
     <el-table-column label="财务收款" min-width="60">
       <template slot-scope="scope">
-        <div class="btn" @click="gathering(scope.row)">收款</div>
+        <div class="btn" v-if="power['sign-xf-ht-ls-debt'].state" @click="gathering(scope.row)">收款</div>
+        <span v-else>-</span>
       </template>
     </el-table-column>
 
@@ -76,14 +77,16 @@
 
     <el-table-column label="建筑面积（㎡）" min-width="100">
       <template slot-scope="scope">
-        <span>{{scope.row.contractInfo.square}}</span>
+        <span>{{scope.row.contractInfo.square?scope.row.contractInfo.square:"-"}}</span>
       </template>
     </el-table-column>
   </el-table>
 </template>
            
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default{
+  mixins: [MIXINS],
   props:{
     tableDate:{
       type: Array,
@@ -95,6 +98,16 @@ export default{
       type: Number,
       default:0
     },
+  },
+  data(){
+    return{
+      power: {
+        'sign-xf-ht-ls-debt': {
+          state: false,
+          name: '收款'
+        },
+      }
+    }
   },
   methods:{
     //收款

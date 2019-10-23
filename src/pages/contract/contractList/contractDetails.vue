@@ -134,7 +134,7 @@
                       <el-table-column min-width="150" label="证件号码">
                         <!-- cardType -->
                         <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.identifyCode}}
+                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
                         </template>
                       </el-table-column>
                     </el-table>
@@ -175,7 +175,7 @@
                       </el-table-column>
                       <el-table-column min-width="150" label="证件号码">
                         <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.identifyCode}}
+                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
                         </template>
                       </el-table-column>
                     </el-table>
@@ -685,7 +685,7 @@
               <div class="title">买方信息</div>
               <div class="two-item">
                 <p class="line"><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>{{buyerFirst.cardType===1?"身份证":buyerFirst.cardType===2?"护照":"营业执照"}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+                <p><span>{{buyerFirst.cardType===1?"身份证":buyerFirst.cardType===2?"护照":buyerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
@@ -708,7 +708,7 @@
               <div class="title">卖方信息</div>
               <div class="two-item">
                 <p class="line"><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>{{sellerFirst.cardType===1?"身份证":sellerFirst.cardType===2?"护照":"营业执照"}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+                <p><span>{{sellerFirst.cardType===1?"身份证":sellerFirst.cardType===2?"护照":sellerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
               </div>
               <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
               <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
@@ -1460,7 +1460,10 @@ export default {
         this.showRemarks=true;
         this.remarkId = item.id;
       }else{
-        this.noPower('添加备注')
+        this.$message({
+          message:"没有添加备注权限",
+          type:"warning"
+        })
       }
     },
     //添加备注
@@ -1563,7 +1566,10 @@ export default {
           myAudio.pause();
         }
       }else{
-        this.noPower('听取录音')
+        this.$message({
+          message:"没有听取录音权限",
+          type:"warning"
+        })
       }
 
     },

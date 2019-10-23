@@ -34,8 +34,8 @@
       </div>
     </div>
   </ScreeningTop>
-  <div class="view-context">
-    <div class="table-tool">
+  <div class="view-context" :class="{'other':!power[`sign-${$route.query.type}-cw-rev-export`].state}">
+    <div class="table-tool" v-if="power[`sign-${$route.query.type}-cw-rev-export`].state">
       <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
       <p>
         <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
@@ -94,58 +94,18 @@
         pageSize:10,
         //权限配置
         power: {
-          'sign-cw-rev-query': {
-            state: false,
-            name: '查询'
-          },
-          'sign-cw-rev-export': {
+          'sign-xf-cw-rev-export': {
             state: false,
             name: '导出'
           },
-          'sign-cw-rev-void': {
-            state: false,
-            name: '作废'
-          },
-          'sign-cw-pay-query':{
-            state: false,
-            name: '查询'
-          },
-          'sign-cw-pay-export': {
+          'sign-cz-cw-rev-export': {
             state: false,
             name: '导出'
           },
-          'sign-cw-pay-void': {
+          'sign-jr-cw-rev-export': {
             state: false,
-            name: '作废'
+            name: '导出'
           },
-          'sign-cw-debt-invoice': {
-            state: false,
-            name: '开票'
-          },
-          'sign-cw-bill-print':{
-            state: false,
-            name: '打印'
-          },
-          'sign-cw-debt-pay': {
-            state: false,
-            name: '付款详情'
-          },
-          'sign-cw-debt-rev': {
-            state: false,
-            name: '收款详情'
-          },
-          'sign-com-htdetail': {
-            state: false,
-            name: '合同详情'
-          },
-          'sign-com-house': {
-            state: false,
-            name: '房源详情'
-          },
-          'sign-com-cust': {
-            state: false,
-            name: '客源详情'
-          }
         }
       }
     },

@@ -43,7 +43,7 @@
         <el-button @click="addSys" type="primary" icon="el-icon-plus">新增业绩申诉有效时间</el-button>
       </p>
       <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
-        <el-table-column  label="体系"  width="90">
+        <el-table-column  label="体系">
           <template slot-scope="scope">
             <span v-for="item in systemArr" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
           </template>
@@ -53,17 +53,17 @@
             <span>{{scope.row.effectTime}}{{scope.row.timeUnit==1?'小时':'天'}}</span>
           </template>
         </el-table-column>
-        <el-table-column  label="设置时间"  min-width="50">
+        <el-table-column  label="设置时间">
            <template slot-scope="scope">
             <span>{{scope.row.settingTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column  label="最新修改时间"  min-width="60">
+        <el-table-column  label="最新修改时间">
           <template slot-scope="scope">
             <span>{{scope.row.updateTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column  label="操作" min-width="60">
+        <el-table-column  label="操作">
           <template slot-scope="scope">
             <el-button type="text" class="edit-btn" @click="adclick2(scope.row)" size="medium">编辑</el-button>
           </template>

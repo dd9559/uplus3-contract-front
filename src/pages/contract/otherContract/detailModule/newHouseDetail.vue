@@ -6,7 +6,7 @@
         <div class="one_">
           <p style="position:relative;">
             <span class="tag">合同编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="bottom">
+            <el-tooltip class="item" effect="dark" :content="getDetail.code" placement="top-start">
               <div class="contractDetailCode">
                 {{getDetail.code}}
               </div>
@@ -14,11 +14,12 @@
           </p>
           <p style="position:relative;">
             <span class="tag">纸质合同编号：</span>
-            <el-tooltip class="item" effect="dark" :content="getDetail.pCode" placement="bottom">
+            <el-tooltip class="item" v-if="getDetail.pCode" effect="dark" :content="getDetail.pCode" placement="top-start">
               <div class="contractDetailCode">
-                {{getDetail.pCode?getDetail.pCode:"-"}}
+                {{getDetail.pCode}}
               </div>
             </el-tooltip>
+            <span v-else class="text">-</span>
           </p>
           <p>
             <span class="tag">签约日期：</span>
@@ -27,7 +28,7 @@
           <p style="position:relative;">
             <span class="tag">项目名称：</span>
             <el-tooltip v-if="getDetail.contractInfo" class="item" effect="dark" :content="getDetail.contractInfo.projectName" placement="top-start">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.contractInfo.projectName}}
               </div>
             </el-tooltip>
@@ -70,9 +71,13 @@
       <div class="title">客源信息</div>
       <div class="content">
         <div class="one_">
-          <p>
+          <p style="position:relative;">
             <span class="tag">客源编号：</span>
-            <span class="serialNumber">{{getDetail.guestinfoCode}}</span>
+            <el-tooltip class="item" effect="dark" :content="getDetail.guestinfoCode" placement="top-start">
+              <div class="contractDetailCode">
+                {{getDetail.guestinfoCode}}
+              </div>
+            </el-tooltip>
           </p>
         </div>
         <div class="table" v-if="getDetail.contractInfo">
@@ -81,14 +86,14 @@
             <el-table-column label="电话">
               <template slot-scope="scope">
                 {{scope.row.encryptionMobile}}
-                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-xf-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
             <el-table-column prop="relation" label="关系">
             </el-table-column>
             <el-table-column min-width="150" label="证件号码">
               <template slot-scope="scope">
-                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':'营业执照：'}}{{scope.row.cardCode}}
+                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}
               </template>
             </el-table-column>
           </el-table>
@@ -102,7 +107,7 @@
           <p style="position:relative;">
             <span class="tag">成交经纪人：</span>
             <el-tooltip class="item" effect="dark" :content="getDetail.dealAgentStoreName+' - '+getDetail.dealAgentName" placement="top">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.dealAgentStoreName+" - "+getDetail.dealAgentName}}
               </div>
             </el-tooltip>
@@ -110,7 +115,7 @@
           <p style="position:relative;">
             <span class="tag">店长：</span>
             <el-tooltip class="item" effect="dark" :content="getDetail.shopOwnerStoreName+' - '+getDetail.shopOwnerName" placement="top">
-              <div class="contractDetailCode" style="color:black;font-weight:100;">
+              <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                 {{getDetail.shopOwnerStoreName+" - "+getDetail.shopOwnerName}}
               </div>
             </el-tooltip>
@@ -183,26 +188,13 @@ export default {
   },
   data(){
     return{
-      clientHei:'',
       callNumber: "",
       dialogVisible: false,
       canCall:true,
       power:{
-        'sign-ht-xq-ly-wmemo': {
-          state: false,
-          name: '添加录音备注'
-        },
-        'sign-ht-xq-ly-call': {
+        'sign-xf-ht-xq-ly': {
           state: false,
           name: '拨打电话'
-        },
-        'sign-ht-xq-ly-play': {
-          state: false,
-          name: '听取录音'
-        },
-        'sign-ht-xq-ly-vmemo': {
-          state: false,
-          name: '查看备注'
         },
       },
     }
@@ -217,7 +209,7 @@ export default {
       var nowTime = (new Date()).getTime();
       var param = {
         plateType:1,
-        id:value.pid,
+        // id:value.pid,
         contractCode:this.detail.code,
         sourceType:1,
         calledMobile:value.mobile,
@@ -243,7 +235,7 @@ export default {
     //生成虚拟号码
     getVirtualNum(param,index,type){
       let guestData=this.detail.contractInfo.customerList
-      this.$ajax.get('/api/record/virtualNum',param).then(res=>{
+      this.$ajax.get('/api/record/xinfang/virtualNum',param).then(res=>{
         this.canCall=true;
         res=res.data;
         if(res.status===200){
