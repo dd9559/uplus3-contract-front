@@ -14,8 +14,9 @@ let contractConfig = {
   errorArr: [],//存储校验未通过项
   /**
    * 表单校验方法
+   * obj配置对象
    */
-  submit: function (e, obj = sub) {
+  submit: function (e, obj) {
     //初始化
     contractConfig.errorArr = [];
     sessionStorage.setItem('templateError',JSON.stringify([]));
