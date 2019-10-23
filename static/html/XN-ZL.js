@@ -1,84 +1,4 @@
 import {contractConfig,toChineseNumber} from "./base.js"
-// let obj = {
-//     val22:'',
-//     val25:'',
-//     val26:'',
-//     val27:'',
-//     check4:{
-//       name:'zhizhao4',
-//       require:true
-//     },
-//     val33:'',
-//     check5:{
-//       name:'zhizhao5',
-//       require:true,
-//       // other:['val40','val41']
-//     },
-//     val42:'',
-//     check6:{
-//       name:'zhizhao6'
-//     },
-//     check18:{
-//       name:'facility',
-//       require:true
-//     },
-//     val52:'',
-//     val53:'',
-//     val56:'',
-//     // val59:'',
-//     val60:'',
-//     val61:'',
-//     // val64:'',
-//     val65:'',
-//     val66:'',
-//     // check7:{
-//     //     name:'zhizhao7'
-//     // },
-//     val73:'',
-//     check8:{
-//       name:'zhizhao8'
-//     },
-//     val300:'',
-//     // val79:'',
-//     val80:'',
-//     val82:'',
-//     val83:'',
-//     val84:'',
-//     val92:'',
-//     val93:'',
-//     val94:'',
-//     val301:'',
-//     val400:'',
-//     check9:{
-//       name:'zhizhao9',
-//       require:true
-//     },
-//     check10:{
-//       name:'zhizhao10',
-//       require:true
-//     },
-//     check11:{
-//       name:'zhizhao11',
-//       require:true
-//     },
-//     check12:{
-//       name:'zhizhao12',
-//       require:true
-//     },
-//     check15:{
-//       name:'zhizhao15',
-//       require:true
-//     },
-//     check16:{
-//       name:'remote',
-//       require:true
-//     },
-//     check17:{
-//       name:'zhizhao16',
-//       require:true
-//     },
-// // }
-// let errorArr1=[]
 //初始化时间控件
 Calendar.create({
     classN: 'calendar-item',
@@ -144,7 +64,6 @@ contractConfig.inputListener(function(ev,tip){
     if(initVal.length>0){
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
    }else{
-     debugger
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
    }
    }
@@ -152,6 +71,10 @@ contractConfig.inputListener(function(ev,tip){
 
 // 勾选框逻辑
 contractConfig.checkboxListener(function(){},function(obj,index){
+  let attr = obj.currentTarget.getAttribute('name')
+  if(attr){
+    contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
+  }
   if(obj.currentTarget.getAttribute('name')==='zhizhao5'){
     document.querySelector(`span[extendparam="val40"]`).innerHTML=''
     document.querySelector(`span[extendparam="val41"]`).innerHTML=''
@@ -166,21 +89,25 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }
 })
 
-function getCheckState(ele) {
-    return !!(ele.querySelector('p').getAttribute('checked'))
-}
+// function getCheckState(ele) {
+//     return !!(ele.querySelector('p').getAttribute('checked'))
+// }
 //给按钮添加点击事件
-let mainBtn=document.querySelector('#submit');
-if(mainBtn){
-    mainBtn.addEventListener('click',submit)
-}else{
+  let mainBtn=document.querySelector('#submit');
+  if(mainBtn){
+    mainBtn.addEventListener('click',function(e){
+      contractConfig.submit(e,sub,true)
+    })
+  }else{
     let btn=document.createElement('span')
     btn.id='submit'
     btn.style.display='none'
     btn.innerHTML='click'
     document.body.appendChild(btn)
-    btn.addEventListener('click',submit)
-}
+    btn.addEventListener('click',function(e){
+      contractConfig.submit(e,sub,true)
+    })
+  }
 
 /**
  * 校验配置对象
@@ -193,104 +120,46 @@ if(mainBtn){
  * 3.key值带有'info'表示stateful方法有自定义校验
  */
 let sub = {
-  'checkbox_prove': {
-    clear: ['checkbox_acquire', 'val12', 'val15', 'checkbox_trader']
-  },
-  'checkbox_acquire':{
+  'checkbox_zhizhao4': {
     stateful:function (index) {
-      return index===0?{'val12':null}:{'val15':null,'checkbox_trader':null,}
+      return index===3?{'val32':null}:null
     },
-    clear: ['val12', 'val15','checkbox_trader'],
   },
-  'checkbox_hasRunsh':{
-    stateful:function (index) {//index勾选框对应选项
-      return index===0?{'val19':null}:null
+  'checkbox_zhizhao5': null,
+  'val40': null,
+  'val41': null,
+  'val42': null,
+  'checkbox_zhizhao6': null,
+  'checkbox_facility': {
+    stateful:function (index) {
+      return index===5?{'val51':null}:null
     },
-    clear:['val19']
   },
-  'checkbox_loans':null,
-  'checkbox_pledge':null,
-  'checkbox_transaction':null,
-  'info_first': {
-    stateful: function () {
-      let inputVal=document.querySelector('*[extendparam=val30]').innerHTML;
-      if(inputVal.length===0){
-        return {'checkbox_nature':null};
-      }else{
-        return null;
-      }
-    }
-  },
-  'checkbox_setting':{
-    stateful:function (index) {
-      return index===0?null:{'drapdown_diya':null}
-    }
-  },
-  'drapdown_diya': {
-    stateful: function (val) {
-      return val.toLowerCase() === 'a' ? {
-        'checkbox_thirdparty': {
-          stateful: function (index) {
-            return index === 0 ? {'time_val35': null} : null
-          }
-        }
-      } : {
-        'checkbox_cash': {
-          stateful: function (index) {
-            return index === 0 ? {'time_val40': null} : {'val44': null}
-          }
-        },
-        'val45':null
-      }
-    }
-  },
-  'val46':null,
-  'checkbox_furniture':{
-    stateful:function (index) {
-      return index===0?{'val62':null}:null
-    }
-  },
-  'checkbox_carport':{
-    stateful:function (index) {
-      return index===0?{'checkbox_right':null,'val67':null,'val68':null}:null
-    }
-  },
-  'val70': null,
-  'val71': null,
-  'drapdown_pay': {
-    stateful: function (val) {
-      let res = null;
-      switch (val.toLowerCase()) {
-        case 'b':
-          res = {
-            'checkbox_psecond': {
-              stateful: function (index) {
-                return index === 0 ? {'time_val74': null} : {'val78': null}
-              }
-            }, 'val79': null, 'val80': null
-          };
-          break;
-        case 'c':
-          res = {'time_val81': null, 'val84': null};
-          break;
-        case 'd':
-          res = {'time_val85': null, 'val88': null}
-      }
-      return res;
-    }
-  },
+  'val52': null,
+  'time_val53': null,
+  'time_val56': null,
+  'val60': null,
+  'time_val61': null,
+  'val400': null,
+  'val65': null,
+  'val66': null,
+  'checkbox_zhizhao7': null,
+  'val73': null,
+  'checkbox_zhizhao8': null,
+  'val300': null,
+  'val80': null,
+  'time_val82': null,
+  'val83': null,
+  'val84': null,
+  'val85': null,
+  'val90': null,
+  'val91': null,
+  'val92': null,
   'val93': null,
-  'drapdown_loans1': {
-    stateful: function (val) {
-      return val.toLowerCase() === 'a' ? null : {
-        'checkbox_loanstype': null, 'time_val98': null, 'drapdown_reject': {
-          stateful: function (val) {
-            return val.toLowerCase()==='a'?null:{'val100':null,'val101':null}
-          }
-        }
-      }
-    }
-  }
+  'val94': null,
+  'val301': null,
+  'val95': null,
+  
 }
 
 
@@ -324,7 +193,7 @@ for(let readonlyItem in msg){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', arr[index])
             // }else if(readonlyItem==='propertyAddr'||readonlyItem==='guestTel'||readonlyItem==='square'||readonlyItem==='dealPrice'||readonlyItem==='dealPriceUpper'||readonlyItem==='ownerName'||readonlyItem==='guestName'){
-            }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
+            }else if(readonlyItem==='ownerName'||readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', msg[readonlyItem])
             }else{

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="/datepicker.css"/>
+  <!-- <link rel="stylesheet" href="/datepicker.css"/> -->
   <title>租赁</title>
   <style>
     h1{
@@ -250,7 +250,7 @@
     <p class="p-title">第一条  出租房屋的基本情况：</p>
     <ul>
       <li>1.类型：<div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>住宅</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>商铺</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>写字楼</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>其他</span></div><span extendParam="val32" tag="input-auto" class="input-before"></span></li>
-      <li>2.座落于：咸宁市<span systemparam="propertyAddr" extendParam="val33" tag="input-auto" class="input-before"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
+      <li>2.座落于：咸宁市<span systemparam="propertyAddr" extendParam="val33" tag="input-auto"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
       <li>3.房屋权属状况：甲方持有（<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋所有权证</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>公有住房租赁合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋买卖合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>其他房屋</span></div><span style="font-weight:bold">来源证明文件</span>），房屋所有权证编号：<span extendParam="val40" tag="input-auto" class="input-before" ></span>或《商品房买卖合同》编号:<span extendParam="val41" tag="input-auto" class="input-before"></span>。房屋所有权人（公有住房承租人、购房人）姓名或名称：<span extendParam="val42" tag="input-auto" class="input-before"></span>，房屋（<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>是</span></div>/<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>否</span></div>） 已设定了抵押。</li>
       <li>4.已开通的基本设施：<div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>水</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>电</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>有线电视</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>网线</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>管道煤气</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>其他：</span></div><span extendParam="val51" tag="input-auto" class="input-before"></span>。</li>
       <li>5.附属设施、设备：附《房屋交割清单》（见附件二）</li>
@@ -289,8 +289,8 @@
       <li>
         <span>2.本合同签订当日：</span>
         <ul class="text-indent">
-          <li>（1）甲方应向丙方支付人民币<span systemParam="ownerCommission" extendParam="val86" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="ownerCommissionUpper" extendParam="val87" class="text-limit" tag="input-auto"></span>圆）作为居间服务费；</li>
-          <li>（2）乙方应向丙方支付人民币<span systemParam="custCommission" extendParam="val88" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="custCommissionUpper" extendParam="val89" class="text-limit" tag="input-auto" ></span>圆）作为居间服务费。</li>
+          <li>（1）甲方应向丙方支付人民币<span systemParam="ownerCommission" extendParam="val86" tag="input-auto" ></span>元整（大写：<span systemParam="ownerCommissionUpper" extendParam="val87" class="text-limit" tag="input-auto"></span>圆）作为居间服务费；</li>
+          <li>（2）乙方应向丙方支付人民币<span systemParam="custCommission" extendParam="val88" tag="input-auto" ></span>元整（大写：<span systemParam="custCommissionUpper" extendParam="val89" class="text-limit" tag="input-auto" ></span>圆）作为居间服务费。</li>
         </ul>
       </li>
       <li>3.本合同签订后，如租赁双方解约、中止或变更租赁关系的，租赁双方仍应向丙方支付所约定的居间服务费。</li>
@@ -774,47 +774,50 @@
   </p>
 </div>
 </body>
-<script type="text/javascript" src="./datepicker.js"></script>
+<!-- <script type="text/javascript" src="./datepicker.js"></script>
 <script type="text/javascript" src="./dropdown.js"></script>
-<script type="module" src="./XL-ZL.js"></script>
+<script type="module" src="./XL-ZL.js"></script> -->
 <!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_zl20190409.js"></script> -->
-<!-- <script>
-     (function () {
-      var scriptList = document.getElementsByTagName("script")
-      console.log(scriptList)
-      if(!scriptList[0].src){
-        var host='https://sign2.jjw.com'
-        var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl20190402.js","datepicker.css"]
-        for (let i = 0; i < addrList.length; i++) {
-          if(window.location.host==='localhost:8080'){
-            if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
-            }else{
-              addrList[i]=host_other+'/'+addrList[i]
-            }
-          }else{
-            addrList[i]='/'+addrList[i]
-          }
-          if(addrList[i].indexOf('.css')>-1){
-            var hm = document.createElement("link");
-            hm.rel="stylesheet"
-            hm.href = addrList[i];
-            var s = document.getElementsByTagName("link")[0];
-            s.parentNode.insertBefore(hm,s);
-          }else{
-            var hm = document.createElement("script");
-            hm.src = addrList[i];
-            var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
-            s.parentNode.insertBefore(hm,s);
-          }
-        }
-      }
-    })();
-</script> -->
+<script>
+  // (function () {
+  //   var scriptList = document.getElementsByTagName("script")
+  //   console.log(scriptList)
+  //   if(!scriptList[0].src){
+  //     var host='https://sign2.jjw.com'
+  //     var host_other="http://sign2.jjw.com:28879"
+  //     var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190402.js","datepicker.css"]
+  //     for (let i = 0; i < addrList.length; i++) {
+  //       if(window.location.host==='localhost:8080'){
+  //         if(addrList[i].indexOf('bundle')>-1){
+  //           // addrList[i]=host_other+'/'+addrList[i]
+  //           addrList[i]='./XN-ZL.js'
+  //         }else{
+  //           addrList[i]=host_other+'/'+addrList[i]
+  //         }
+  //       }else{
+  //         addrList[i]='/'+addrList[i]
+  //       }
+  //       if(addrList[i].indexOf('.css')>-1){
+  //         var hm = document.createElement("link");
+  //         hm.rel="stylesheet"
+  //         hm.href = addrList[i];
+  //         /*var s = document.getElementsByTagName("link")[0];
+  //         s.parentNode.insertBefore(hm,s);*/
+  //         document.head.appendChild(hm);
+  //       }else{
+  //         var hm = document.createElement("script");
+  //         addrList[i].includes('XN-ZL')&&(hm.type = 'module');
+  //         hm.src = addrList[i];
+  //         var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+  //         s.parentNode.insertBefore(hm,s);
+  //       }
+  //     }
+  //   }
+  // })();
+</script>
 
 </html>
