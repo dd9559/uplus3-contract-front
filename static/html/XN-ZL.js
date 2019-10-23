@@ -55,6 +55,7 @@ contractConfig.inputListener(function(ev,tip){
   }else {
     tip.target.innerHTML=ev.target.value
   }
+
 },function(tip){
   //获取输入框的默认值
   let initVal=tip.target.innerHTML
@@ -165,7 +166,54 @@ let sub = {
 
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg={
+cityId: 2,
+code: "Z0002191023002",
+commissionPayment: 0,
+companyNames: ["周黑鸭", "正常测试"],
+custCommission: 600,
+custCommissionUpper: "陆佰",
+custEnsure: 0,
+dealPrice: 2400,
+dealPriceUpper: "贰仟肆佰",
+guestCardType: "护照",
+guestCardTypes: "护照",
+guestID: "111111222",
+guestIDs: "222222332",
+guestName: "熊桂兰",
+guestNames: "二傻子",
+guestTel: "18716810042",
+guestTels: "18611909690",
+guestinfoCode: "JGSD000020",
+houseinfoCode: "Z7E5CSXD000004",
+id: 3219,
+isHaveData: 0,
+isWuHanMM: 0,
+moneyUnit: "元",
+otherCooperationCost: 0,
+ownerCardType: "护照",
+ownerCardTypes: "护照",
+ownerCommission: 600,
+ownerCommissionUpper: "陆佰",
+ownerID: "222222222",
+ownerIDs: "111111111",
+ownerName: "测试数据",
+ownerNames: "跟恒",
+ownerTel: "18771790771",
+ownerTels: "18611909594",
+propertyAddr: "咸宁市大兴区288号88楼8层",
+propertyCard: "",
+remarks: "",
+signDate: 1571760000000,
+singleCompany: "",
+square: 100,
+squareUse: 22,
+subscriptionPrice: 0,
+subscriptionPriceUpper: "零",
+timeUnit: "月",
+type: 1,
+}
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
@@ -193,7 +241,7 @@ for(let readonlyItem in msg){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', arr[index])
             // }else if(readonlyItem==='propertyAddr'||readonlyItem==='guestTel'||readonlyItem==='square'||readonlyItem==='dealPrice'||readonlyItem==='dealPriceUpper'||readonlyItem==='ownerName'||readonlyItem==='guestName'){
-            }else if(readonlyItem==='ownerName'||readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
+            }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', msg[readonlyItem])
             }else{
