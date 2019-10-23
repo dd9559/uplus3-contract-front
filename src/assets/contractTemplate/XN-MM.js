@@ -87,7 +87,8 @@ let Obj={
       }
     },
     val122:null,
-    val125:null
+    val125:null,
+    val130:null
   }
 
   //给按钮添加点击事件
