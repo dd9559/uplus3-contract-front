@@ -33,27 +33,27 @@ let contractConfig = {
           return cell.querySelector('p').getAttribute('checked')
         })
         if (checkedIndex === -1) {
-          contractConfig.errorArr.push({
-            name:item.split('_')[1]
-          });
+          contractConfig.errorArr.push(item.split('_')[1]);
           break;
         } else {
           obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex))
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
-        if (dropdown.value.length === 0) {
+        let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
+        if (dropdownVal.length === 0) {
           contractConfig.errorArr.push({
             type:'input',
             name:dropdown.getAttribute('extendparam')
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdown.value))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal))
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
-        if (time.value.length === 0) {
+        let timeVal = time.tagName.toLowerCase() === 'span' ? time.innerHTML : time.value;
+        if (timeVal.length === 0) {
           contractConfig.errorArr.push({
             type:'input',
             name:item.split('_')[1]
