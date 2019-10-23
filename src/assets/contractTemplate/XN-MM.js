@@ -30,7 +30,7 @@ let Obj={
             break;
           case '(三)':
             res = {'time_val63': null,'val65': null,'val66': null,'val68': null,'val70': null};
-            break            
+            break
         }
         return res;
       }
@@ -94,7 +94,7 @@ let Obj={
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }else{
     let btn=document.createElement('span')
@@ -103,7 +103,7 @@ let Obj={
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }
 
