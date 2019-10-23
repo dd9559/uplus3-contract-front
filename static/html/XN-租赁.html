@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="/datepicker.css"/>
+  <!-- <link rel="stylesheet" href="/datepicker.css"/> -->
   <title>租赁</title>
   <style>
     h1{
@@ -20,7 +20,7 @@
       width: 80px;
       text-align: center;
     }
-    .model{
+    .alert-viwer{
       position: fixed;
       top: 50%;
       left: 50%;
@@ -31,24 +31,24 @@
       z-index: 999;
       box-shadow: 0 1px 3px rgba(0,0,0,.3);
     }
-    .model>textarea{
+    .alert-viwer>textarea{
       background: #fff;
       border: 1px solid #dcdfe6;
     }
-    .model>p{
+    .alert-viwer>p{
       text-align: right;
       margin: 6px 0 0;
       padding: 0;
       line-height: normal;
     }
-    .model>p>span{
+    .alert-viwer>p>span{
       display: inline-block;
       background: #409eff;
       padding: 6px 12px;
       color: #FFFFFF;
       border-radius: 4px;
     }
-    .model>p>span:last-of-type{
+    .alert-viwer>p>span:last-of-type{
       background: #fff;
       color: #606266;
       border: 1px solid #dcdfe6;
@@ -250,7 +250,7 @@
     <p class="p-title">第一条  出租房屋的基本情况：</p>
     <ul>
       <li>1.类型：<div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>住宅</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>商铺</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>写字楼</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>其他</span></div><span extendParam="val32" tag="input-auto" class="input-before"></span></li>
-      <li>2.座落于：武汉市<span systemparam="propertyAddr" extendParam="val33" tag="input-auto" class="input-before"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
+      <li>2.座落于：咸宁市<span systemparam="propertyAddr" extendParam="val33" tag="input-auto"></span>（以下简称：“该房屋”），房屋建筑面积<span systemParam="square" extendParam="val35" readonly="readonly" class="text-before" tag="input-auto"></span>平方米。</li>
       <li>3.房屋权属状况：甲方持有（<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋所有权证</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>公有住房租赁合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>房屋买卖合同</span></div>/<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>其他房屋</span></div><span style="font-weight:bold">来源证明文件</span>），房屋所有权证编号：<span extendParam="val40" tag="input-auto" class="input-before" ></span>或《商品房买卖合同》编号:<span extendParam="val41" tag="input-auto" class="input-before"></span>。房屋所有权人（公有住房承租人、购房人）姓名或名称：<span extendParam="val42" tag="input-auto" class="input-before"></span>，房屋（<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>是</span></div>/<div class="info-checkbox" name="zhizhao6"><p type="check"></p><span>否</span></div>） 已设定了抵押。</li>
       <li>4.已开通的基本设施：<div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>水</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>电</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>有线电视</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>网线</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>管道煤气</span></div><div class="info-checkbox" name="facility" more="true"><p type="check"></p><span>其他：</span></div><span extendParam="val51" tag="input-auto" class="input-before"></span>。</li>
       <li>5.附属设施、设备：附《房屋交割清单》（见附件二）</li>
@@ -262,7 +262,7 @@
   <div>
     <p class="p-title">第二条  租赁期限</p>
     <ul>
-      <li>1.房屋租赁期自<input extendParam="val53" type="text" readonly="readonly" class="text-limit calendar-item" />至<input extendParam="val56" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>，共计<span extendParam="val60" listen="number" tag="input-auto" class="input-before"></span>个月。甲方应于<input extendParam="val61" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>前将房屋按约定条件交付乙方。《房屋交割清单》经甲乙双方校验签字盖章并移交房屋钥匙后视为交付完成。</li>
+      <li>1.房屋租赁期自<input extendParam="val53" type="text" readonly="readonly" class="text-limit calendar-item" />至<input extendParam="val56" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>，共计<span extendParam="val60" listen="number" tag="input-auto" class="input-before"></span>个月。甲方应于<input extendParam="val61" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>前将房屋按约定条件交付乙方。《房屋交割清单》经甲乙双方校验签字盖章并移交房屋钥匙及<span extendParam="val400" tag="input-auto" class="input-before" ></span>后视为交付完成。</li>
       <li>2.租赁期满或合同解除后，甲方有权收回房屋，乙方应按照原状返还房屋及其附属物品、设备设施。甲乙双方应对房屋和附属品、设备设施及水电使用等情况进行验收，结清各自应当承担的费用。</li>
       <li>3.乙方继续承租的，应提前<span extendParam="val65"  listen="number" tag="input-auto" class="input-before"></span>日向甲方提出续租要求，协商一致后双方重新签订房屋租赁合同；甲方如不续租或卖房，应提前<span extendParam="val66" type="text" listen="number" tag="input-auto" class="input-before" ></span>日通知乙方。</li>
     </ul>
@@ -271,8 +271,8 @@
     <p class="p-title">第三条  租金及押金</p>
     <ul>
       <li>1.租金标准及支付方式：人民币<span systemParam="dealPrice" extendParam="val67" max="12" class="input-before" tag="input-auto"></span>元整（大写：<span systemParam="dealPriceUpper" extendParam="val68" tag="input-auto" style="width:240px"></span>圆）（<div class="info-checkbox" systemParam="timeUnit" value="月" name="zhizhao7" disabled="true"><p type="check"></p><span>月</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="季度" name="zhizhao7" disabled="true"><p type="check"></p><span>季</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="半年" name="zhizhao7" disabled="true"><p type="check"></p><span>半年</span></div>/<div class="info-checkbox" systemParam="timeUnit" value="年" name="zhizhao7" disabled="true"><p type="check"></p><span>年</span></div>），
-        租金总计：人民币<span extendParam="val73" brother="name1" max="12" listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val73_add" brother="name1" type="text" unselectable="on" readonly="readonly" class="text-limit" tag="input-auto"></span>圆，此价格不含相关税费） 支付方式为：（<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>月付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>季付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>半年付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>年付</span></div>），首次租金乙方于<span extendParam="val300" class="input-before" tag="input-auto"></span>交付给甲方，以后各期租金交付时间为 <span extendParam="val79" class="input-before" tag="input-auto"></span>。</li>
-      <li>2.押金：人民币<span extendParam="val80" brother="name2" max="12"  listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val81" brother="name2" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input-auto"></span>圆），支付时间为：<input extendParam="val82" unselectable="on" readonly="readonly" type="text" class="text-limit calendar-item" tag="input"/>。租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应承担的违约赔偿责任外，剩余部分应如数返还乙方。</li>
+        租金总计：人民币<span extendParam="val73" brother="name1" max="12" listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val73_add" brother="name1" type="text" unselectable="on" readonly="readonly" class="text-limit" tag="input-auto"></span>圆，此价格不含相关税费） 支付方式为：（<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>月付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>季付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>半年付</span></div>/<div class="info-checkbox" name="zhizhao8"><p type="check"></p><span>年付</span></div>），支付时间为<span extendParam="val300" class="input-before" tag="input-auto"></span> 。</li>
+      <li>2.押金：人民币<span extendParam="val80" brother="name2" max="12"  listen="number" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="true" extendParam="val80_add" brother="name2" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input-auto"></span>圆），支付时间为：<input extendParam="val82" unselectable="on" readonly="readonly" type="text" class="text-limit calendar-item" tag="input"/>。租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应承担的违约赔偿责任外，剩余部分应如数返还乙方。</li>
     </ul>
   </div>
   <div>
@@ -289,8 +289,8 @@
       <li>
         <span>2.本合同签订当日：</span>
         <ul class="text-indent">
-          <li>（1）甲方应向丙方支付人民币<span systemParam="ownerCommission" extendParam="val86" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="ownerCommissionUpper" extendParam="val87" class="text-limit" tag="input-auto"></span>圆）作为居间服务费；</li>
-          <li>（2）乙方应向丙方支付人民币<span systemParam="custCommission" extendParam="val88" tag="input-auto" class="input-before"></span>元整（大写：<span systemParam="custCommissionUpper" extendParam="val89" class="text-limit" tag="input-auto" ></span>圆）作为居间服务费。</li>
+          <li>（1）甲方应向丙方支付人民币<span systemParam="ownerCommission" extendParam="val86" tag="input-auto" ></span>元整（大写：<span systemParam="ownerCommissionUpper" extendParam="val87" class="text-limit" tag="input-auto"></span>圆）作为居间服务费；</li>
+          <li>（2）乙方应向丙方支付人民币<span systemParam="custCommission" extendParam="val88" tag="input-auto" ></span>元整（大写：<span systemParam="custCommissionUpper" extendParam="val89" class="text-limit" tag="input-auto" ></span>圆）作为居间服务费。</li>
         </ul>
       </li>
       <li>3.本合同签订后，如租赁双方解约、中止或变更租赁关系的，租赁双方仍应向丙方支付所约定的居间服务费。</li>
@@ -349,8 +349,8 @@
   <div>
     <p class="p-title">第九条  违约责任</p>
     <ul>
-      <li class="text-indent">1.甲方有第八条第3款约定的情形之一的，应向乙方支付违约金<span extendParam="val92" type="text" tag="input-auto" class="input-before"></span>；乙方有第八条第4款约定的情形之一的，应向甲方支付违约金<span extendParam="val93" type="text" tag="input-auto" class="input-before"></span>，同时甲方可要求乙方将房屋恢复原状并赔偿相应损失。</li>
-      <li class="text-indent">2.租赁期内，甲方需提前收回该房屋的，或乙方需提前退租的，应提前<span extendParam="val94" type="text" listen="number" tag="input-auto" class="input-before" style="width:100px"></span>日通知对方；甲方提前收回房屋或乙方提前退租的，应向对方支付违约金<span extendParam="val301" tag="input-auto" class="input-before"></span>。同时，甲方应将扣除违约金后乙方已预缴的剩余租金及支付的押金退还乙方。</li>
+      <li class="text-indent">1.甲方有第八条第3款约定的情形之一的，应按月租金的<span extendParam="val92" type="text" tag="input-auto" class="input-before"></span>向乙方支付违约金；乙方有第八条第4款约定的情形之一的，应按月租金的<span extendParam="val93" type="text" tag="input-auto" class="input-before"></span>向甲方支付违约金，同时甲方可要求乙方将房屋恢复原状并赔偿相应损失。</li>
+      <li class="text-indent">2.租赁期内，甲方需提前收回该房屋的，或乙方需提前退租的，应提前<span extendParam="val94" type="text" listen="number" tag="input-auto" class="input-before" style="width:100px"></span>日通知对方；甲方提前收回房屋或乙方提前退租的，应向对方支付月租金的<span extendParam="val301" tag="input-auto" class="input-before"></span>作为违约金。同时，甲方应将扣除违约金后乙方已预缴的剩余租金及支付的押金退还乙方。</li>
       <li class="text-indent">3.因甲方未按约定履行维修义务造成乙方人身、财产损失的，甲方应承担赔偿责任。</li>
       <li class="text-indent">4.<span extendParam="val95" type="text" style="width:690px" tag="input-auto" class="input-before"></span>。</li>
     </ul>
@@ -766,7 +766,7 @@
     <span id="submit" style="display: none;">click</span>
   </div>
 </div>
-<div class="model" style="display: none;">
+<div class="alert-viwer" style="display: none;">
   <textarea id="inputArea" cols="30" rows="4"></textarea>
   <p class="control-btn">
     <span>保存</span>
@@ -774,47 +774,50 @@
   </p>
 </div>
 </body>
-<script type="text/javascript" src="./datepicker.js"></script>
+<!-- <script type="text/javascript" src="./datepicker.js"></script>
 <script type="text/javascript" src="./dropdown.js"></script>
-<script type="module" src="./ZL.js"></script>
+<script type="module" src="./XL-ZL.js"></script> -->
 <!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_zl20190409.js"></script> -->
-<!-- <script>
-     (function () {
-      var scriptList = document.getElementsByTagName("script")
-      console.log(scriptList)
-      if(!scriptList[0].src){
-        var host='https://sign2.jjw.com'
-        var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl20190402.js","datepicker.css"]
-        for (let i = 0; i < addrList.length; i++) {
-          if(window.location.host==='localhost:8080'){
-            if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
-            }else{
-              addrList[i]=host_other+'/'+addrList[i]
-            }
-          }else{
-            addrList[i]='/'+addrList[i]
-          }
-          if(addrList[i].indexOf('.css')>-1){
-            var hm = document.createElement("link");
-            hm.rel="stylesheet"
-            hm.href = addrList[i];
-            var s = document.getElementsByTagName("link")[0];
-            s.parentNode.insertBefore(hm,s);
-          }else{
-            var hm = document.createElement("script");
-            hm.src = addrList[i];
-            var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
-            s.parentNode.insertBefore(hm,s);
-          }
-        }
-      }
-    })();
-</script> -->
+<script>
+  // (function () {
+  //   var scriptList = document.getElementsByTagName("script")
+  //   console.log(scriptList)
+  //   if(!scriptList[0].src){
+  //     var host='https://sign2.jjw.com'
+  //     var host_other="http://sign2.jjw.com:28879"
+  //     var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190402.js","datepicker.css"]
+  //     for (let i = 0; i < addrList.length; i++) {
+  //       if(window.location.host==='localhost:8080'){
+  //         if(addrList[i].indexOf('bundle')>-1){
+  //           // addrList[i]=host_other+'/'+addrList[i]
+  //           addrList[i]='./XN-ZL.js'
+  //         }else{
+  //           addrList[i]=host_other+'/'+addrList[i]
+  //         }
+  //       }else{
+  //         addrList[i]='/'+addrList[i]
+  //       }
+  //       if(addrList[i].indexOf('.css')>-1){
+  //         var hm = document.createElement("link");
+  //         hm.rel="stylesheet"
+  //         hm.href = addrList[i];
+  //         /*var s = document.getElementsByTagName("link")[0];
+  //         s.parentNode.insertBefore(hm,s);*/
+  //         document.head.appendChild(hm);
+  //       }else{
+  //         var hm = document.createElement("script");
+  //         addrList[i].includes('XN-ZL')&&(hm.type = 'module');
+  //         hm.src = addrList[i];
+  //         var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+  //         s.parentNode.insertBefore(hm,s);
+  //       }
+  //     }
+  //   }
+  // })();
+</script>
 
 </html>
