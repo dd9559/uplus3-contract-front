@@ -40,6 +40,7 @@ let contractConfig = {
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
+        dropdown.classList.remove('BODERRED');
         let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
         if (dropdownVal.length === 0) {
           contractConfig.errorArr.push({
@@ -52,6 +53,7 @@ let contractConfig = {
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
+        time.classList.remove('BODERRED');
         let timeVal = time.tagName.toLowerCase() === 'span' ? time.innerHTML : time.value;
         if (timeVal.length === 0) {
           contractConfig.errorArr.push({
@@ -64,6 +66,7 @@ let contractConfig = {
         contractConfig.submit(e, obj[item]['stateful']());
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
+        input.classList.remove('BODERRED');
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
           contractConfig.errorArr.push({
