@@ -9,7 +9,7 @@
     <div class="contentBox">
       <div class="nav" :class="{'hid':isActive===2}">
         <ul>
-					<li v-for="item in navTag" :key="item.id" :class="{'navBlue':navId===item.id}"  @click="goNav(item.id)"><span>{{item.title}}</span></li>
+					<li v-for="item in navTag" :key="item.id" :class="{'navBlue':navId===item.id}"  @click="goNav(item.id)"><span :title="item.title">{{item.title}}</span></li>
           <!-- <li><span :class="{'navBlue':navId==='#one'}" @click="goNav('#one')">第一条、房屋基本情况</span></li>
           <li><span :class="{'navBlue':navId==='#two'}" @click="goNav('#two')">第二条、房屋交易流程</span></li>
           <li><span :class="{'navBlue':navId==='#three'}" @click="goNav('#three')">第三条、房屋权属情况</span></li>
@@ -368,7 +368,7 @@ export default {
 								inputTag.classList.add("BODERRED")
 								inputHeight1 = inputTag.offsetTop
 							}else{
-								inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+								inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
 							}
 							iframebox1.contentWindow.scrollTo(0,inputHeight1)
 						}else if(emptyInput2.length>0){
@@ -377,7 +377,32 @@ export default {
 								type:'warning'
 							})
 						}
-				}else{
+					}else{
+						if(emptyInput2.length>0){
+							this.$message({
+								message:'合同信息未填写完整',
+								type:'warning'
+							})
+							let inputHeight2=0
+							if(emptyInput2[0].type){
+								let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
+								inputTag.classList.add("BODERRED")
+								inputHeight2 = inputTag.offsetTop
+							}else{
+								inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
+							}
+							// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
+							iframebox2.contentWindow.scrollTo(0,inputHeight2)
+						}else if(emptyInput1.length>0){
+							this.$message({
+								message:'居间合同信息未填写完整',
+								type:'warning'
+							})
+						}
+					}
+				}else{//非武汉买卖
+				// debugger
+					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					if(emptyInput2.length>0){
 						this.$message({
 							message:'合同信息未填写完整',
@@ -389,37 +414,12 @@ export default {
 							inputTag.classList.add("BODERRED")
 							inputHeight2 = inputTag.offsetTop
 						}else{
-							inputHeight2 = iframebox2.contentWindow.document.querySelector(`div[name=${emptyInput2[0]}]`).offsetTop
+							inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
 						}
 						// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
 						iframebox2.contentWindow.scrollTo(0,inputHeight2)
-					}else if(emptyInput1.length>0){
-						this.$message({
-							message:'居间合同信息未填写完整',
-							type:'warning'
-						})
 					}
 				}
-			}else{//非武汉买卖
-			// debugger
-				emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
-				if(emptyInput2.length>0){
-					this.$message({
-						message:'合同信息未填写完整',
-						type:'warning'
-					})
-					let inputHeight2=0
-					if(emptyInput2[0].type){
-						let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
-						inputTag.classList.add("BODERRED")
-						inputHeight2 = inputTag.offsetTop
-					}else{
-						inputHeight2 = iframebox2.contentWindow.document.querySelector(`div[name=${emptyInput2[0]}]`).offsetTop
-					}
-					// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
-					iframebox2.contentWindow.scrollTo(0,inputHeight2)
-				}
-			}
 			
 			}else{
 				iframebox1.contentWindow.document.querySelector("#submit").click()
@@ -439,7 +439,7 @@ export default {
 							inputHeight1 = inputTag.offsetTop
 						}
 					}else{
-						inputHeight1 = iframebox1.contentWindow.document.querySelector(`div[name=${emptyInput1[0]}]`).offsetTop
+						inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
 					}
 					iframebox1.contentWindow.scrollTo(0,inputHeight1)
 				}
@@ -750,10 +750,20 @@ export default {
     .nav{
       text-align: left;
       font-size: 16px;
-      visibility: hidden;
+			visibility: hidden;
+			width: 250px;
       >ul{
         padding: 10px;
-        border: 1px solid #ccc;
+				border: 1px solid #ccc;
+				>li{
+					span{
+						display: inline-block;
+						width: 230px;
+						overflow: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+					}
+				}
       }
       span{
         cursor: pointer;

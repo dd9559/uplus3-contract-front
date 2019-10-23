@@ -15,11 +15,12 @@ let contractConfig = {
   /**
    * 表单校验方法
    * obj配置对象
+   * storage保存errorArr校验结果的本地缓存。当城市模板同时有买卖居间时，买卖的传templateError1，居间的传templateError；其他情况下都传递templateError
    */
-  submit: function (e, obj) {
+  submit: function (e, obj,storage='templateError') {
     //初始化
     contractConfig.errorArr = [];
-    sessionStorage.setItem('templateError',JSON.stringify([]));
+    sessionStorage.setItem(storage,JSON.stringify([]));
 
     for (let item in obj) {
       // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
@@ -32,27 +33,27 @@ let contractConfig = {
           return cell.querySelector('p').getAttribute('checked')
         })
         if (checkedIndex === -1) {
-          contractConfig.errorArr.push({
-            name:item.split('_')[1]
-          });
+          contractConfig.errorArr.push(item.split('_')[1]);
           break;
         } else {
           obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex))
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
-        if (dropdown.value.length === 0) {
+        let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
+        if (dropdownVal.length === 0) {
           contractConfig.errorArr.push({
             type:'input',
             name:dropdown.getAttribute('extendparam')
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdown.value))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal))
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
-        if (time.value.length === 0) {
+        let timeVal = time.tagName.toLowerCase() === 'span' ? time.innerHTML : time.value;
+        if (timeVal.length === 0) {
           contractConfig.errorArr.push({
             type:'input',
             name:item.split('_')[1]
@@ -73,7 +74,7 @@ let contractConfig = {
         }
       }
     }
-    sessionStorage.setItem('templateError',JSON.stringify(contractConfig.errorArr))
+    sessionStorage.setItem(storage,JSON.stringify(contractConfig.errorArr))
     return contractConfig.errorArr;
   },
   /**
