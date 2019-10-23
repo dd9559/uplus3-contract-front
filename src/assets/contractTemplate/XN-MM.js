@@ -95,7 +95,7 @@ let Obj={
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub)
+      contractConfig.submit(e,sub,'templateError1')
     })
   }else{
     let btn=document.createElement('span')
@@ -104,7 +104,7 @@ let Obj={
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub)
+      contractConfig.submit(e,sub,'templateError1')
     })
   }
 

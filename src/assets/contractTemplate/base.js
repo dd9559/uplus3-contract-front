@@ -15,7 +15,7 @@ let contractConfig = {
   /**
    * 表单校验方法
    * obj配置对象
-   * storage保存errorArr校验结果的本地缓存。当城市模板同时有买卖居间时，买卖的传templateError1，居间的传templateError；其他情况下都传递templateError
+   * storage保存errorArr校验结果的本地缓存。当模板为买卖的传templateError1，其他情况下都传递templateError
    */
   submit: function (e, obj,storage='templateError') {
     //初始化
