@@ -360,7 +360,7 @@
               <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
               <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
               <!-- </span> -->
-              <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
+              <div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
             <!-- </div> -->
           </template>
         </el-table-column>
