@@ -11,7 +11,7 @@
       color: red;
     }
     input{
-      /* width: 101px; */
+      width: 101px;
     }
     #input{
       position: relative;
@@ -51,6 +51,12 @@
       color: #FFFFFF;
       border-radius: 4px;
     }
+
+    span[tag='input-auto'].input-before.input-select:before{
+        content:'请选择';
+        text-align: center;
+        color: #a1a1a1;
+      }
     .alert-viwer>p>span:last-of-type{
       background: #fff;
       color: #606266;
@@ -222,26 +228,35 @@
     @page {
       size: 955px 1350px;
     }
+    .jiafang>li>span:nth-of-type(1){
+       margin-right: 200px;
+    }
+    .yifang>li>span:nth-of-type(1){
+       margin-right: 200px;
+    }
+    .bingfang>li>span:nth-of-type(1){
+       margin-right: 200px;
+    }
   </style>
 </head>
 <body>
 <div class="zulin container">
   <p class="title">房屋租赁合同</p>
   <p class="hetong-no">合同编号：<input systemParam="code"  extendParam="val1"  class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:200px" /></p>
-  <ul>
-    <li>甲方（出租人）：<span systemParam="ownerName" extendParam="val2" class="input-before" tag="input-auto"></span>证件号码：<span systemParam="ownerID" extendParam="val6" class="input-before" tag="input-auto" ></span></li>
-    <li>通讯地址：<span extendParam="val7" unselectable="on" readonly="readonly" systemParam="propertyAddr"  class="input-title" tag="input-auto"></span>  联系电话：<span systemParam="ownerTel" extendParam="val8" class="input-before" tag="input-auto"></span></li>
+  <ul class="jiafang">
+    <li>甲方（出租人）：<span style="margin-right: 154px;" systemParam="ownerName" extendParam="val2" class="input-before" tag="input-auto"></span>证件号码：<span systemParam="ownerID" extendParam="val6" class="input-before" tag="input-auto" ></span></li>
+    <li>通讯地址：<span extendParam="val7" style="margin-right: 194px;" unselectable="on" readonly="readonly" systemParam="propertyAddr"  class="input-before" tag="input-auto"></span>  联系电话：<span systemParam="ownerTel" extendParam="val8" class="input-before" tag="input-auto"></span></li>
     <li>共有权人：<span extendParam="val9" class="input-before" tag="input-auto"></span>证件号码：<span  extendParam="val13" class="input-before" tag="input-auto" max="20"></span></li>
     <li>通讯地址：<span extendParam="val14" class="input-before" tag="input-auto"></span>联系电话：<span extendParam="val15" listen="number" max="11" class="input-before" tag="input-auto"></span></li>
     <!-- <li>房源编号：<input systemParam="houseinfoCode" unselectable="on" readonly="readonly" extendParam="val16"  type="text" class="text-limit" tag="input" style="width:400px;" /></li> -->
   </ul>
   <ul class="yifang">
-    <li>乙方（承租人）：<span systemParam="guestName" extendParam="val17" class="input-before" tag="input-auto"></span>证件号码：<span systemParam="guestID" extendParam="val21" class="input-before" tag="input-auto"></span></li>
+    <li>乙方（承租人）：<span style="margin-right:154px" systemParam="guestName" extendParam="val17" class="input-before" tag="input-auto"></span>证件号码：<span systemParam="guestID" extendParam="val21" class="input-before" tag="input-auto"></span></li>
     <li>通讯地址：<span  extendParam="val22" class="input-before" tag="input-auto"></span>联系电话：<span systemParam="guestTel" class="input-before" tag="input-auto"></span></li>
     <!-- <li>客源编号：<input systemParam="guestinfoCode" unselectable="on" readonly="readonly" extendParam="val24" type="text" class="text-limit" tag="input" style="width:408px;" /></li> -->
   </ul>
-  <ul>
-    <li style="position:relative;"><img class="SignatureLocation" style="position:absolute;left:170px;top:-30px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" />丙方（居间人）：<input extendParam="val25" maxlength="25" type="text" class="text-limit dropdown-item" tag="input" style="width:610px" /></li>
+  <ul class="bingfang">   
+    <li style="position:relative;"><img class="SignatureLocation" style="position:absolute;left:170px;top:-30px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" />丙方（居间人）：<span extendParam="val25"  systemParam="true" maxlength="25" type="text" class="text-limit input-before input-select dropdown-item" tag="input-auto"></span></li>
     <li>通讯地址：<span extendParam="val26" tag="input-auto" class="input-before"></span>联系电话：<span extendParam="val27" listen="number" max="11" tag="input-auto" class="input-before"></span></li>
   </ul>
   <div class="zulin-body">
@@ -265,7 +280,7 @@
   <div>
     <p class="p-title">第二条  租赁期限</p>
     <ul>
-      <li>1.房屋租赁期自<input extendParam="val53" type="text" readonly="readonly" class="text-limit calendar-item"  />至<input extendParam="val56" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>，共计<span extendParam="val60" listen="number" tag="input-auto" class="input-before"></span>个月。甲方应于<input extendParam="val61" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>前将房屋按约定条件交付乙方。《房屋交割清单》经甲乙双方校验签字盖章并移交房屋钥匙及<span extendParam="val400" tag="input-auto" class="input-before" ></span>后视为交付完成。</li>
+      <li>1.房屋租赁期自<input extendParam="val53" type="text" readonly="readonly" class="text-limit calendar-item"   />至<input extendParam="val56" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>，共计<span extendParam="val60" listen="number" tag="input-auto" class="input-before"></span>个月。甲方应于<input extendParam="val61" type="text" unselectable="on" readonly="readonly" class="text-limit calendar-item"/>前将房屋按约定条件交付乙方。《房屋交割清单》经甲乙双方校验签字盖章并移交房屋钥匙及<span extendParam="val400" tag="input-auto" class="input-before" ></span>后视为交付完成。</li>
       <li>2.租赁期满或合同解除后，甲方有权收回房屋，乙方应按照原状返还房屋及其附属物品、设备设施。甲乙双方应对房屋和附属品、设备设施及水电使用等情况进行验收，结清各自应当承担的费用。</li>
       <li>3.乙方继续承租的，应提前<span extendParam="val65"  listen="number" tag="input-auto" class="input-before"></span>日向甲方提出续租要求，协商一致后双方重新签订房屋租赁合同；甲方如不续租或卖房，应提前<span extendParam="val66" type="text" listen="number" tag="input-auto" class="input-before" ></span>日通知乙方。</li>
     </ul>

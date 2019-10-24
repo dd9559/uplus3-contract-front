@@ -15,7 +15,7 @@ let contractConfig = {
   /**
    * 表单校验方法
    * obj配置对象
-   * storage保存errorArr校验结果的本地缓存。当城市模板同时有买卖居间时，买卖的传templateError1，居间的传templateError；其他情况下都传递templateError
+   * storage保存errorArr校验结果的本地缓存。当模板为买卖的传templateError1，其他情况下都传递templateError
    */
   submit: function (e, obj,storage='templateError') {
     //初始化
@@ -40,6 +40,7 @@ let contractConfig = {
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
+        dropdown.classList.remove('BODERRED');
         let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
         if (dropdownVal.length === 0) {
           contractConfig.errorArr.push({
@@ -52,6 +53,7 @@ let contractConfig = {
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
+        time.classList.remove('BODERRED');
         let timeVal = time.tagName.toLowerCase() === 'span' ? time.innerHTML : time.value;
         if (timeVal.length === 0) {
           contractConfig.errorArr.push({
@@ -64,6 +66,7 @@ let contractConfig = {
         contractConfig.submit(e, obj[item]['stateful']());
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
+        input.classList.remove('BODERRED');
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
           contractConfig.errorArr.push({
