@@ -118,7 +118,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }else{
     let btn=document.createElement('span')
@@ -127,7 +127,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,true)
+      contractConfig.submit(e,sub)
     })
   }
 
@@ -141,6 +141,10 @@ let sub = {
   'info_test':{
     stateful:function() {
       let flag= document.querySelector(`*[name="zhizhao5"]`).querySelector('p').getAttribute('checked')
+      let obj_40 = document.querySelector(`*[extendparam="val40"]`);
+       obj_40.classList.remove('BODERRED');
+       let obj_41 = document.querySelector(`*[extendparam="val41"]`);
+       obj_41.classList.remove('BODERRED');
       if(flag){
         return {'val40':null}
       }else{
@@ -176,14 +180,10 @@ let sub = {
   'time_val82': null,
   'val83': null,
   'val84': null,
-  'val85': null,
-  'val90': null,
-  'val91': null,
   'val92': null,
   'val93': null,
   'val94': null,
   'val301': null,
-  'val95': null,
 }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
