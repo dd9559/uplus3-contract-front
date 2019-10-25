@@ -17,7 +17,7 @@
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
-                :label="item.positionId===0?item.name:`${item.name}+${item.positionName}`"
+                :label="!item.positionName?`${item.name}`:item.positionId===0?item.name:`${item.name}+${item.positionName}`"
                 :value="item.flag">
               </el-option>
             </el-select>
