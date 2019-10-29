@@ -1,31 +1,61 @@
 <template>
-  <div class="view">
+  <el-dialog :title="getTitle" width="671px" :close-on-click-modal="false" @close="goCancel" :visible="dialogShow">
     <div class="view-context">
-      <p class="f14 txt-title">收款信息</p>
       <ul class="bill-form">
-        <li>
-          <p class="block-receipt-type worth-list">
-            <span>应收佣金（元）：{{firstCreate.content.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.receivedCommission}}</span><span
-            class="warning-text">未收（元）：{{firstCreate.content.uncollected}}</span>
-          </p>
-        </li>
-        <li>
+        <li v-if="dialogOperation!==3">
           <div class="input-group col">
             <div class="flex-box tool-tip">
               <label class="form-label no-width f14 margin-bottom-base">
                 <span>款类</span>
               </label>
-              <el-tooltip content="当未找到需要的款类时，可联系管理员进行配置" placement="top">
-                <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
-              </el-tooltip>
             </div>
-            <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
+            <moneyTypePop class="info-pop" :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
                           @clear="clearMoneyType"></moneyTypePop>
           </div>
-          <div class="input-group col" :class="[inputPerson?'active-360':'']">
-            <label class="form-label no-width f14 margin-bottom-base">收付对象</label>
+          <div class="input-group col">
+            <label class="form-label no-width f14 margin-bottom-base">合同编号</label>
+            <div class="flex-box w300">
+              <el-input size="small" :disabled="true" v-model="form.code"></el-input>
+            </div>
+          </div>
+
+          <div class="input-group col" v-if="dialogType===2">
+            <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
+            <el-date-picker
+              class="w300"
+              size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-model="form.receiptDate"
+              type="datetime"
+              placeholder="选择日期时间">
+            </el-date-picker>
+          </div>
+          <div class="input-group col">
+            <label class="form-label no-width f14 margin-bottom-base">收款金额</label>
             <div class="flex-box">
-              <el-select size="small" class="w200" v-model="form.objType" placeholder="请选择"
+              <input type="text" size="small" class="w300 el-input__inner" placeholder="请输入" maxlength="20"
+                     v-model.trim="form.amount" @input="inputOnly('amount')">
+            </div>
+          </div>
+          <div class="input-group col">
+            <label class="form-label no-width f14 margin-bottom-base">收付方式</label>
+            <div class="flex-box w300">
+              <el-select size="small" class="w300" v-model="form.methods" placeholder="请选择">
+                <el-option
+                  v-for="item in methodsList"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+
+          <div class="input-group col" v-show="form.methods===2">
+            <label class="form-label no-width f14 margin-bottom-base">付款方</label>
+            <div class="flex-box">
+              <el-select size="small" :class="[(Number(form.objType)!==3)?'w300':'w140']" v-model="form.objType"
+                         placeholder="请选择"
                          @change="getOption(form.objType,1)">
                 <el-option
                   v-for="item in dropdown"
@@ -35,17 +65,19 @@
                 </el-option>
               </el-select>
               <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20"
-                     v-model.trim="form.objName" @input="inputOnly('normal')" v-if="inputPerson">
+                     v-model.trim="form.objName" @input="inputOnly('normal')" v-if="Number(form.objType)===3">
             </div>
           </div>
-          <div class="input-group col active-400">
+          <div class="input-group col" v-show="form.methods===1">
             <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
-            <div class="flex-box w400" v-if="inObjPerson">
+            <div class="flex-box">
               <select-tree v-if="firstCreate.state" :data="DepList" :init="form.deptName" @checkCell="handleNodeClick"
                            @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
-              <div class="h32" :class="[!firstCreate.state?'no-min':'']" v-else>{{firstCreate.content.storeName}}</div>
-              <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small"
-                         v-model="form.employeeId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
+              <el-input :disabled="true" size="small" class="w140" v-model="form.deptName"
+                        v-else></el-input>
+              <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="person w140" size="small"
+                         v-model="form.employeeId" placeholder="请选择" @clear="clearSelect('emp')"
+                         @focus="employeInfo=false"
                          @change="getOption(form.employeeId,2)">
                 <el-option :label="form.employeeName" :value="form.employeeId" v-if="employeInfo"></el-option>
                 <el-option
@@ -56,77 +88,89 @@
                 </el-option>
               </el-select>
             </div>
-            <!--<div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>-->
           </div>
         </li>
-        <li>
-          <div class="input-group col no-max">
-            <div class="flex-box tool-tip no-max">
-              <label class="form-label no-width f14 margin-bottom-base">{{receiptType|typeFormatter}}（元）</label><span>{{form.amount|formatChinese}}</span>
-            </div>
-            <input type="text" size="small" class="w430 el-input__inner" placeholder="请输入" v-model="form.amount"
-                   @input="cutNum(1)">
-          </div>
-          <div class="input-group col">
-            <label class="form-label no-width f14 margin-bottom-base">结款时间</label>
-            <el-date-picker
-              class="w400"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.closingDate"
-              type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
-          </div>
+        <li v-if="dialogOperation===3">
+          <p class="details-content"><span>录入时间：</span><span>{{detailMsg.writeTime}}</span></p>
+          <p class="details-content"><span>合同编号：</span><span>{{form.code}}</span></p>
+          <p class="details-content"><span>款类：</span><span>{{moneyTypeName}}</span></p>
+          <p class="details-content"><span>应收金额（元）：</span><span>{{form.amount}}</span></p>
+          <p class="details-content"><span>收付方式：</span><span>{{form.methods===1?'收款':'付款'}}</span></p>
+          <p class="details-content"><span>{{form.methods===1?'收款人':'付款方'}}：</span><span v-if="detailMsg.payer">{{detailMsg.payer.pay}}</span></p>
         </li>
       </ul>
       <section>
-        <p class="txt-title">其他信息</p>
         <div class="col-other other-message">
-          <div class="input-group">
-            <p><label class="f14">备注信息</label></p>
+          <div v-if="dialogOperation!==3" class="input-group">
+            <p><label class="f14">备注：</label></p>
             <el-input v-model="form.remark" class="info-textarea"
                       :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5"
                       maxlength="200" type="textarea"></el-input>
           </div>
+          <div class="input-group">
+            <p v-if="dialogOperation!==3"><label class="f14">上传附件:</label><span>（支持所有格式）</span></p>
+            <p v-else><label class="f14">附件:</label></p>
+            <ul class="upload-list">
+              <li v-if="dialogOperation!==3">
+                <file-up class="upload-context" @getUrl="getFiles">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <span>点击上传</span>
+                </file-up>
+              </li>
+              <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"
+                  @click="previewPhoto(imgList,index)">
+                <img :src="item|getSignImage(preloadFiles,_self)" alt="" v-if="isPictureFile(item.type)" height="90px"
+                     :key="item.path" :width="item.width">
+                <upload-cell :type="item.type" v-else></upload-cell>
+                <!--<span>{{item.name}}</span>-->
+                <el-tooltip :content="item.name" placement="top">
+                  <div class="span">{{item.name}}</div>
+                </el-tooltip>
+                <p v-show="activeLi===index" @click.stop="delFile"><i class="iconfont icon-tubiao-6"></i></p>
+              </li>
+            </ul>
+            <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
+          </div>
         </div>
       </section>
+      <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </div>
-    <p>
+    <p slot="footer" v-if="dialogOperation!==3">
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult('postJSON')"
-                 v-loading.fullscreen.lock="fullscreenLoading">创建收款信息
+                 v-loading.fullscreen.lock="fullscreenLoading">保存
       </el-button>
     </p>
-    <checkPerson :show="checkPerson.state" page="list" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="personChose" v-if="checkPerson.state"></checkPerson>
-  </div>
+  </el-dialog>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import moneyTypePop from '@/components/moneyTypePop';
-  import checkPerson from '@/components/checkPerson';
 
   const rule = {
-    moneyType: {
+    pid: {
       name: '款类',
     },
-    objType: {
-      name: '收付对象',
-      type: 'negativeNum'
-    },
-    objName: {
-      name: '收付对象',
-    },
-    employeeId: {
-      name: '收款人',
+    skTime: {
+      name: '收款时间'
     },
     amount: {
-      name: '佣金',
+      name: '收款金额',
       type: 'money'
     },
-    closingDate: {
-      name: '结款时间'
+    type: {
+      name:'收付方式'
+    },
+    outObjType: {
+      name: '付款方',
+      type: 'negativeNum'
+    },
+    outObj: {
+      name: '付款方',
+    },
+    empId: {
+      name: '收款人',
     }
   }
 
@@ -134,32 +178,39 @@
     mixins: [MIXINS],
     components: {
       moneyTypePop,
-      checkPerson
+    },
+    props: {
+      dialogShow: {
+        type: Boolean,
+        default: true
+      },
+      dialogType: {
+        type: Number,
+        default: 2,//1=应收/应付款项,2=实收/实付款项
+      },
+      dialogOperation: {
+        type: Number,
+        default: 2,//1=新增,2=编辑,3=查看
+      }
     },
     data() {
       return {
-        checkPerson: {//审核人弹窗配置
-          state:false,
-          type:3,
-          code:'',
-          flowType:1,//流程类型，本页面为定值
-        },
-        payId:2,//收款编号
-        inputPerson: false,//是否显示第三方输入框
-        receiptType:1,//创建收款的导航类型,1新房收款 2长租收款 3金融收款
+        methodsList: [],
         form: {
           contId: '',
+          code:'',
           moneyType: '',
-          moneyTypePid:'',
+          moneyTypePid: '',
           remark: '',
           amount: '',
-          closingDate: '',
-          deptId:'',
-          deptName:'',
-          employeeName:'',
-          employeeId:'',
-          objName:'',
-          objType:'',
+          receiptDate: '',
+          deptId: '',
+          deptName: '',
+          employeeName: '',
+          employeeId: '',
+          objName: '',
+          objType: '',//付款方options类型
+          methods: 1,//add
         },
         moneyType: [],
         moneyTypeName: '',
@@ -167,58 +218,47 @@
         employeInfo: true,
         employePage: 1,
         fullscreenLoading: false,//提交表单防抖
-        showAmount: false,//款类是否为代收代付
-        inObjPerson: true,//收款人是否可选
         firstCreate: {
           state: true,
-          content: {}
+          content: {},
+          dealAgentId:0
         },//合同是否第一次创建
+        files: [],
+        imgList: [],
+        activeLi: '',
+        preloadFiles: [],
+        detailMsg:{
+          writeTime:'',//录入时间
+          payer:null,
+        }
       }
     },
     mounted() {
-      let urlParam=this.$route.query
-      this.receiptType= urlParam?Number(urlParam.type):1
+      let urlParam = this.$route.query
       this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
 
-      let contractName={
-        1:{name:'新房',type:'xf'},
-        2:{name:'长租',type:'cz'},
-        3:{name:'金融',type:'jr'}
-      }
-      let arr;
-
+      this.addInit(this.form.contId)
       // this.getMoneyType()
-      // this.getDictionary()
-
-      this.addInit(this.$route.query.contId)
-      if(urlParam.edit){
-        this.payId=Number(urlParam.id)
-        this.getDetailsData()
-        arr=this.$tool.getRouter([contractName[this.receiptType].name,'财务','收款审核'],`/receiptCheck?type=${contractName[this.receiptType].type}`);
-        arr.push({name:'编辑收款',path:this.$route.fullPath});
-      }else {
-        arr=this.$tool.getRouter([contractName[this.receiptType].name,'合同','合同列表'],`/otherContractList?type=${contractName[this.receiptType].type}`)
-        arr.push({name:'创建收款',path:this.$route.fullPath});
+      if(this.dialogOperation!==1){
+        this.getDetailsData(urlParam.id)
       }
-      this.setPath(arr);
     },
     methods: {
       //判断用户该合同是否第一次选择收款人部门
       addInit: function (id) {
-        this.$ajax.get('/api/payInfoRecord/toInsert', {contId: id}).then(res => {
+        this.$ajax.get('/api/receivables/toInsert', {id: id}).then(res => {
           res = res.data
           if (res.status === 200) {
-            this.firstCreate.content = Object.assign({}, res.data.payee,res.data.contCommission)
             this.dropdown = res.data.dropDown
-            this.moneyType=res.data.moneyTypes
-            if (!res.data.payee.firstCreate) {
-              this.firstCreate.state = false
-              this.getEmploye(res.data.payee.storeId)
-              this.form=Object.assign(this.form,{deptId:res.data.payee.storeId,deptName:res.data.payee.storeName})
+            this.methodsList = [].concat(res.data.type)
+            this.moneyType = res.data.moneyTypes
+            this.form.code=res.data.code
+            this.firstCreate.dealAgentId=res.data.dealAgentId
+            if (!!res.data.dealAgentStoreId) {
+              this.firstCreate.state=false
+              this.getEmploye(res.data.dealAgentStoreId)
+              this.form = Object.assign(this.form, {deptId: res.data.dealAgentStoreId, deptName: res.data.dealAgentStoreName})
             } else {
-              // console.log(this.getUser)
-              this.firstCreate.state = true
-
               this.form.deptId = this.getUser.user.depId
               this.form.deptName = this.getUser.user.depName
               this.getEmploye(this.getUser.user.depId)
@@ -229,7 +269,11 @@
         })
       },
       inputOnly: function (type, index) {//输入框限制
-        this.form.objName = this.$tool.textInput(this.form.objName)
+        if (type === 'amount') {
+          this.form.amount = this.$tool.cutFloat({val: this.form.amount, max: 999999999999})
+        } else {
+          this.form.objName = this.$tool.textInput(this.form.objName)
+        }
       },
       searchDep: function (payload) {
         this.form.inObjId = ''
@@ -259,9 +303,6 @@
        */
       getMoneyType: function () {
         let param = {}
-        if (this.$route.query.edit) {
-          param.payId = this.$route.query.id
-        }
         this.$ajax.get('/api/payInfo/selectMoneyType', param).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -271,87 +312,71 @@
       },
       //取消
       goCancel: function () {
-        this.$confirm('是否取消当前操作', {closeOnClickModal: false}).then(() => {
-          this.$router.go(-1)
-        }).catch(() => {
-
-        })
+        // this.$tool.clearForm(this.form)
+        this.$emit('close')
       },
       /**
        * 创建收款操作
        */
-      goResult: function (type,url='/payInfoRecord/insertSKRecord') {
-        let editUrl={
-          1:'/payInfoRecord/updateXFSKRecord',
-          2:'/payInfoRecord/updateCZSKRecord',
-          3:'/payInfoRecord/updateJRSKRecord'
+      goResult: function (type, url = '/receivables/insertrRceivables') {
+        let {contId,code,moneyType,moneyTypePid,remark,amount,receiptDate,deptId,deptName,employeeName,employeeId,objName,objType}=this.form
+        let param=Object.create(null)
+        Object.assign(param,{id:contId,code:code,pid:moneyTypePid,key:moneyType,amount:amount,type:this.form.methods,remark:remark,filePath:this.files})
+        if(this.form.methods===1){
+          Object.assign(param,{storeId:deptId,storeName:deptName,empId:employeeId,empName:employeeName})
+        }else{
+          Object.assign(param,{outObjType:objType,outObj:objName})
         }
-        if(this.$route.query.edit){
-          type='put';
-          url=editUrl[this.receiptType];
+        if(this.dialogType===2){
+          Object.assign(param,{skTime:receiptDate})
         }
-        this.fullscreenLoading=true
-        let param = Object.assign({}, this.form)
-        if(!param.closingDate){
-          param.closingDate=''
+        if(this.dialogOperation===2){
+          type='put'
+          url='/receivables/updateRceivables'
+          param.payId=Number(this.$route.query.id)
         }
         this.$tool.checkForm(param,rule).then(res=>{
           this.$ajax[type](`/api${url}`,param).then(res=>{
-            res = res.data
-            if (res.status === 200) {
-              this.fullscreenLoading=false
-              this.$router.replace({
-                path: 'receiptCheck',
-                query:{
-                  type:this.receiptType===1?"xf":this.receiptType===2?"cz":this.receiptType===3?"jr":"xf",
-                }
-              })
+            res=res.data
+            if(res.status===200){
+              this.$emit('success')
             }
           }).catch(error=>{
-            this.fullscreenLoading=false
-            if(error.message==='下一节点审批人不存在'){//设置下一节点审核人
-              this.checkPerson=Object.assign(this.checkPerson,{state:true,code:error.data.payCode})
-            }else {
-              this.$message({
-                message:error
-              })
-            }
+            this.$message({
+              message:`${error}`
+            })
           })
         }).catch(error=>{
-          this.fullscreenLoading=false
           this.$message({
             message:`${error.title}${error.msg}`
           })
         })
       },
-      //监听设置下一节点审核人弹窗操作
-      personChose:function () {
-        this.checkPerson.state=false
-        this.$router.replace({
-          path: 'receiptCheck',
-          query:{
-            type:this.receiptType===1?"xf":this.receiptType===2?"cz":this.receiptType===3?"jr":"xf",
-          }
-        })
-      },
       /**
        * 编辑时获取详情
        */
-      getDetailsData: function () {
-        let param={payId:this.payId}
-        this.$ajax.get('/api/payInfoRecord/getSKDetail',param).then(res=>{
+      getDetailsData: function (id) {
+        let param={
+          id:id
+        }
+        this.$ajax.get('/api/receivables/getRceivables',param).then(res=>{
           res=res.data
           if(res.status===200){
-            this.form.id=res.data.id
-            // this.form.contId=res.data.cid
-            this.moneyTypeName=res.data.moneyName
-
-            let {moneyType,moneyTypePid,remark,amount,closingDate,employeeName,employeeId,objName,objType}=res.data
-            Object.assign(this.form,{moneyType,moneyTypePid,remark,amount,closingDate:this.$tool.timeFormat(closingDate),employeeName,employeeId,objName,objType:objType.value})
-
-            if(objType.value===3){//自定义收款对象
-              this.inputPerson=true
+            let {amount,contractCode,file,moneyType,payer,time,type,remark}=res.data
+            this.moneyTypeName=moneyType.name
+            this.files=[].concat(file);
+            (this.dialogOperation===3)&&Object.assign(this.detailMsg,{writeTime:this.$tool.timeFormat(time),payer:payer})
+            //初始化form表单对象
+            Object.assign(this.form,{amount:amount,code:contractCode,receiptDate:this.dialogType===2?this.$tool.timeFormat(time):'',methods:type.value,moneyTypePid:moneyType.parentId,moneyType:moneyType.id,remark:remark})
+            if(this.form.methods===1){
+              Object.assign(this.form,{deptId:payer.prefixId,deptName:payer.prefixName,employeeId:payer.suffixId,employeeName:payer.suffixName})
+            }else{
+              Object.assign(this.form,{objType:payer.prefixId,objName:payer.suffixName})
             }
+            if(this.dialogType===2){
+              Object.assign(this.form,{receiptDate:this.$tool.timeFormat(time)})
+            }
+            this.getFiles()
           }
         })
       },
@@ -366,12 +391,11 @@
         this.form.moneyType = ''
         this.form.moneyTypePid = ''
         this.moneyTypeName = ''
-        this.$tool.clearForm(this.amount, true)
       },
       /**
        * 获取下拉框选择对象
        * @param item
-       * @param type 1=收付对象;2=选择收款人
+       * @param type 1=付款方选择;2=选择收款人
        */
       getOption: function (item, type) {
         let obj = {}
@@ -380,13 +404,6 @@
           if (tip[type === 1 ? 'value' : 'empId'] === item) {
             if (type === 1) {
               obj.objName = tip.custName
-              if (item === 3) {//表示收付对象选择其他项
-                this.inputPerson = true
-                // obj.objName = this.form.objName
-                // this.form.objName
-              } else {
-                this.inputPerson = false
-              }
             } else {
               obj.employeeName = tip.name
             }
@@ -396,25 +413,87 @@
 
         this.form = Object.assign({}, this.form, obj)
       },
-      cutNum:function (val) {
-        this.form.amount=this.$tool.cutFloat({val:this.form.amount,max:999999999.99})
+      /**
+       * 获取上传文件
+       */
+      getFiles: function (payload) {
+        if(payload){
+          this.files = this.files.concat(this.$tool.getFilePath(payload.param))
+        }
+        this.imgList = this.$tool.cutFilePath(this.files)
+        // this.preloadFiles=[].concat()
+        this.imgList.forEach(item => {
+          if (this.isPictureFile(item.type)) {
+            let hasImg = this.preloadFiles.find(imgData => imgData.includes(item.path))
+            !hasImg && this.fileSign([].concat(item.path), 'preload').then(res => {
+              this.preloadFiles.push(res[0])
+            })
+          }
+        })
+      },
+      delFile: function () {
+        this.imgList.splice(this.activeLi, 1)
+        this.files.splice(this.activeLi, 1)
       },
     },
-    filters: {
-      typeFormatter(val) {
+    computed: {
+      getTitle: function () {
         let res = ''
-        switch (val) {
+        switch (this.dialogOperation) {
           case 1:
-            res = '返店佣金'
+            res = '新增'
             break;
           case 2:
-          case 3:
-            res = '佣金'
+            res = '编辑'
             break;
-          default:
-            res='佣金'
+          case 3:
+            res = '查看'
+            break;
         }
-        return res;
+        return res
+      }
+    },
+    filters: {
+      /**
+       * 过滤显示图片缩略图
+       * @param val后端返回的所有文件资源遍历的当前项
+       * @param list图片资源获取签名后的临时数组
+       * @vm 接收vue实例通过this._self传递才有效
+       */
+      getSignImage(val, list, vm) {
+        if (list.length === 0) {
+          return '';
+        } else {
+          let imgDir = list.find(item => {
+            return item.includes(val.path)
+          })
+          let img = new Image();
+          img.src = imgDir;
+          img.onload = function () {
+            let persent = parseFloat((img.width / img.height).toFixed(2))
+            let imgWidth = 0
+            // console.log(persent)
+            if (img.width > 100) {
+              imgWidth = 100
+              // picture.style.height=`${800/this.persent}px`
+              if (img.height > 90) {
+                // picture.style.height=`${window.innerHeight}px`
+                if (persent > 1) {
+                  imgWidth = 90 * persent * 0.6
+                } else {
+                  imgWidth = 90 * persent
+                }
+              }
+            } else {
+              if (img.height > 90) {
+                // picture.style.height=`${window.innerHeight}px`
+                imgWidth = 90 * persent
+              }
+            }
+            vm.$set(val, 'width', `${imgWidth}px`)
+          }
+          return imgDir
+        }
       }
     }
   }
@@ -422,6 +501,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+
+  /deep/ .info-pop {
+    .w200 {
+      width: 300px !important;
+    }
+  }
 
   .h32 {
     height: 32px;
@@ -449,8 +534,8 @@
     height: 32px;
   }
 
-  input.person {
-    margin-left: @margin-10;
+  .person {
+    margin-left: 20px;
   }
 
   .flex-box {
@@ -476,7 +561,7 @@
   }
 
   /deep/ .info-textarea {
-    width: 400px;
+    width: 615px;
     .el-textarea__inner {
       height: 115px;
     }
@@ -495,24 +580,28 @@
     }
   }
 
-  .other-message {
+  /*.other-message {
     .input-group {
       margin-right: 60px;
     }
-  }
+  }*/
 
   .bill-form {
-    margin-bottom: 30px;
+    /*margin-bottom: 30px;*/
     > li {
       display: flex;
+      flex-wrap: wrap;
+      /*justify-content: space-between;*/
       &:last-of-type {
         .col {
           margin-bottom: 0px;
         }
       }
       .col {
-        max-width: 210px;
-        margin: 0 30px 21px 0;
+        /*max-width: 210px;*/
+        /*margin: 0 30px 21px 0;*/
+        margin-right: @margin-15;
+        flex: 1;
         &.no-max {
           max-width: none;
         }
@@ -532,6 +621,16 @@
         .text-height {
           height: 32px;
           line-height: 32px;
+        }
+      }
+      .details-content {
+        flex: 1;
+        min-width: 48%;
+        &:nth-of-type(2n+2) {
+          margin-left: @margin-10;
+        }
+        &:not(:last-of-type) {
+          margin-bottom: @margin-10;
         }
       }
     }
@@ -715,7 +814,7 @@
       display: flex;
       flex-wrap: nowrap;
       margin: @margin-base 0;
-      width: 810px;
+      width: 615px;
       overflow-x: auto;
       > li {
         border: 1px dashed @color-D6;
@@ -783,7 +882,7 @@
     &-context {
       height: 100%;
       overflow: auto;
-      padding: @margin-10 @margin-10 60px;
+      padding: @margin-10 @margin-10;
       box-sizing: border-box;
     }
     section {
