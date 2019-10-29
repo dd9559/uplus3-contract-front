@@ -53,7 +53,6 @@
     layout="total, prev, pager, next, jumper"
     :total="total">
   </el-pagination>
-  <billDialog :dialog-show="dialogState" @close="dialogState=false" @success="dialogState=false" v-if="dialogState"></billDialog>
   <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
 </div>
 </template>
@@ -65,12 +64,11 @@
   const receiptCheck_xf =()=>import('@/pages/finance/receiptCheck/receiptCheck_xf');
   const receiptCheck_cz =()=>import('@/pages/finance/receiptCheck/receiptCheck_cz');
   const receiptCheck_jr =()=>import('@/pages/finance/receiptCheck/receiptCheck_jr');
-  const billDialog=()=>import('@/components/billDialog');
 
   export default {
     name: "receipt-check",
     mixins: [MIXINS],
-    components:{receiptCheck_xf,receiptCheck_cz,receiptCheck_jr,checkPerson,billDialog},
+    components:{receiptCheck_xf,receiptCheck_cz,receiptCheck_jr,checkPerson},
     data(){
       return {
         checkPerson: {//审核人弹窗配置
@@ -108,8 +106,7 @@
             state: false,
             name: '导出'
           },
-        },
-        dialogState:false
+        }
       }
     },
     created(){
@@ -179,7 +176,6 @@
         this.getData()
       },
       getData: function (type='init') {
-        this.dialogState=true
         if(type==='search'){
           this.currentPage=1
         }
