@@ -2256,19 +2256,20 @@ export default {
     },
     //附件下载
     downloadAttachment(item){
-      let url,title
-      url = item.path
-      title = item.enclosureName
-      var a = document.createElement("a");
-      a.setAttribute("href", url);
-      a.setAttribute("download", title);
-      a.setAttribute("id", "startTelMedicine");
-      // 防止反复添加
-      if (document.getElementById("startTelMedicine")) {
-        document.body.removeChild(document.getElementById("startTelMedicine"));
-      }
-      document.body.appendChild(a);
-      a.click();
+      this.fileSign([item.path],'download')
+      // let url,title
+      // url = item.path
+      // title = item.enclosureName
+      // var a = document.createElement("a");
+      // a.setAttribute("href", url);
+      // a.setAttribute("download", title);
+      // a.setAttribute("id", "startTelMedicine");
+      // // 防止反复添加
+      // if (document.getElementById("startTelMedicine")) {
+      //   document.body.removeChild(document.getElementById("startTelMedicine"));
+      // }
+      // document.body.appendChild(a);
+      // a.click();
     },
     //获取应收实收列表
     getReceiptList(){
