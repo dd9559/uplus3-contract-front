@@ -191,13 +191,21 @@
       dialogOperation: {
         type: Number,
         default: 2,//1=新增,2=编辑,3=查看
+      },
+      contId:{//合同id
+        type:Number,
+        default: 124
+      },
+      payId:{//查询详情，编辑时用到id
+        type:Number,
+        default:2659
       }
     },
     data() {
       return {
         methodsList: [],
         form: {
-          contId: '',
+          contId: this.contId,
           code:'',
           moneyType: '',
           moneyTypePid: '',
@@ -210,7 +218,7 @@
           employeeId: '',
           objName: '',
           objType: '',//付款方options类型
-          methods: 1,//add
+          methods: 1,//add收付方式
         },
         moneyType: [],
         moneyTypeName: '',
@@ -234,13 +242,10 @@
       }
     },
     mounted() {
-      let urlParam = this.$route.query
-      this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
-
-      this.addInit(this.form.contId)
+      this.addInit(this.contId)
       // this.getMoneyType()
       if(this.dialogOperation!==1){
-        this.getDetailsData(urlParam.id)
+        this.getDetailsData(this.payId)
       }
     },
     methods: {
@@ -333,7 +338,7 @@
         if(this.dialogOperation===2){
           type='put'
           url='/receivables/updateRceivables'
-          param.payId=Number(this.$route.query.id)
+          param.payId=Number(this.payId)
         }
         this.$tool.checkForm(param,rule).then(res=>{
           this.$ajax[type](`/api${url}`,param).then(res=>{
@@ -374,7 +379,7 @@
               Object.assign(this.form,{objType:payer.prefixId,objName:payer.suffixName})
             }
             if(this.dialogType===2){
-              Object.assign(this.form,{receiptDate:this.$tool.timeFormat(time)})
+              Object.assign(this.form,{receiptDate:this.$tool.timeFormat(res.data.skTime)})
             }
             this.getFiles()
           }
