@@ -421,6 +421,72 @@
             </div>
           </div>
         </el-tab-pane>
+        <el-tab-pane label="应收实收" name="receipt">
+          <div class="receiptModule">
+            <div class="moduleTitle">
+              <span>应收/应付款项</span>
+              <el-button round type="primary" size="small" @click="receiptAdd">新增</el-button>
+            </div>
+            <div class="receiptList">
+              <el-table :data="supposedList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
+                <el-table-column label="录入时间" prop="time" min-width="50">
+                </el-table-column>
+                <el-table-column label="款类" prop="payType" min-width="50">
+                </el-table-column>
+                <el-table-column label="应收金额（元）" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="收付方式" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="付款方" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="收款人" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="合同编号" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="备注" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="操作" min-width="50">
+                  <template slot-scope="scope">
+                    <span class="receipBtn" @click="receiptEdit">编辑</span>
+                    <span class="receipBtn" @click="receiptDel">删除</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <div class="receiptModule">
+            <div class="moduleTitle">
+              <span>实收/实付款项</span>
+              <el-button round type="primary" size="small" @click="receiptAdd">新增</el-button>
+            </div>
+            <div class="receiptList">
+              <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
+                <el-table-column label="录入时间" prop="time" min-width="50">
+                </el-table-column>
+                <el-table-column label="款类" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="实收金额（元）" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="收付方式" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="付款方" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="收款人" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="合同编号" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="备注" prop="contType.label" min-width="50">
+                </el-table-column>
+                <el-table-column label="操作" min-width="50">
+                  <template slot-scope="scope">
+                    <span class="receipBtn">编辑</span>
+                    <span class="receipBtn">删除</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
             <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
@@ -613,6 +679,24 @@
         <el-button @click="dialogSuccess=false">暂不完善</el-button>
         <el-button type="primary" @click="toUpload">完善资料库</el-button>
       </span>
+    </el-dialog>
+    <!-- 应收实收详情弹窗 -->
+    <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="receiptDetail">
+        <div>
+          <p>录入时间：2019/10/15 10:05:24</p>
+          <p>款类：交易服务费</p>
+          <p>收付方式：付款</p>
+        </div>
+        <div>
+          <p>合同编号：D0001191024004</p>
+          <p>应收金额（元）：2000</p>
+          <p>付款方：业主-大田</p>
+        </div>
+      </div>
+      <div class="receiptAccessory">
+        <p>附件：</p>
+      </div>
     </el-dialog>
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
@@ -1126,6 +1210,13 @@ export default {
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
       attachmentList:[],//合同附件
+      supposedList:[
+        {time:"2019-10-26",payType:"收款"}
+      ],//应收应付
+      actualList:[
+        {time:"2019-10-26"}
+      ],//实收实付
+      dialogReceipt:false,
     };
   },
   created() {
@@ -2141,6 +2232,34 @@ export default {
       }
       document.body.appendChild(a);
       a.click();
+    },
+    //获取应收实收列表
+    getReceiptList(){
+      let param = {
+
+      }
+      this.$ajax.get("/api/",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+
+        }
+      })
+    },
+    //应收实收详情
+    toReceiptDetail(){
+      this.dialogReceipt=true
+    },
+    //应收实收新增
+    receiptAdd(){
+
+    },
+    //应收实收编辑
+    receiptEdit(){
+
+    },
+    //应收实收删除
+    receiptDel(){
+
     }
   },
   mounted(){
@@ -2671,6 +2790,42 @@ export default {
         }
       }
     }
+  }
+  //应收实收
+  .receiptModule{
+    padding-top: 20px;
+    width: 1300px;
+    .moduleTitle{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      span{
+        border-left: 3px solid #409EFF;
+        padding-left: 5px;
+      }
+    }
+    .receiptList{
+      .receipBtn{
+        color: #409EFF;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+    }
+  }
+  .receiptDetail{
+    display: flex;
+    padding: 10px;
+    div{
+      width: 50%;
+      p{
+        padding: 5px 0;
+      }
+    }
+  }
+  .receiptAccessory{
+    padding-left: 10px;
+    min-height: 150px;
   }
 }
 //打印模块
