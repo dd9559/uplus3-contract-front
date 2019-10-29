@@ -421,7 +421,7 @@
             </div>
           </div>
         </el-tab-pane>
-        <!-- <el-tab-pane label="应收实收" name="receipt">
+         <!--<el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
@@ -498,7 +498,7 @@
               </el-table>
             </div>
           </div>
-        </el-tab-pane> -->
+        </el-tab-pane>-->
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
             <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
