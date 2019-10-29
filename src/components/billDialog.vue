@@ -186,11 +186,11 @@
       },
       dialogType: {
         type: Number,
-        default: 2,//1=应收/应付款项,2=实收/实付款项
+        default: 1,//1=应收/应付款项,2=实收/实付款项
       },
       dialogOperation: {
         type: Number,
-        default: 2,//1=新增,2=编辑,3=查看
+        default: 1,//1=新增,2=编辑,3=查看
       },
       contId:{//合同id
         type:Number,
