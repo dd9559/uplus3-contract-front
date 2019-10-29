@@ -440,15 +440,9 @@
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="50">
                 </el-table-column>
-                <el-table-column label="付款方" min-width="50">
-                  <template slot-scope="scope">
-                    {{scope.row.payment==="收款"?'-':scope.row.payee}}
-                  </template>
+                <el-table-column label="付款方" prop="payer" min-width="50">
                 </el-table-column>
-                <el-table-column label="收款人" min-width="50">
-                  <template slot-scope="scope">
-                    {{scope.row.payment==="收款"?scope.row.payee:'-'}}
-                  </template>
+                <el-table-column label="收款人" prop="payee" min-width="50">
                 </el-table-column>
                 <el-table-column label="合同编号" prop="contCode" min-width="50">
                 </el-table-column>
@@ -484,15 +478,9 @@
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="50">
                 </el-table-column>
-                <el-table-column label="付款方" min-width="50">
-                  <template slot-scope="scope">
-                    {{scope.row.payment==="收款"?'-':scope.row.payee}}
-                  </template>
+                <el-table-column label="付款方" prop="payer" min-width="50">
                 </el-table-column>
-                <el-table-column label="收款人" min-width="50">
-                  <template slot-scope="scope">
-                    {{scope.row.payment==="收款"?scope.row.payee:'-'}}
-                  </template>
+                <el-table-column label="收款人" prop="payee" min-width="50">
                 </el-table-column>
                 <el-table-column label="合同编号" prop="contCode" min-width="50">
                 </el-table-column>
@@ -713,6 +701,7 @@
     :dialogOperation="dialogOperation"
     :dialogType="dialogType"
     :payId="payId"
+    :contId="id"
     >
     </billDialog>
     <!-- 删除应收实收确认框 -->
@@ -1256,12 +1245,8 @@ export default {
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
       attachmentList:[],//合同附件
-      supposedList:[
-        {time:"2019-10-26",payType:"收款"}
-      ],//应收应付
-      actualList:[
-        {time:"2019-10-26"}
-      ],//实收实付
+      supposedList:[],//应收应付
+      actualList:[],//实收实付
       dialogState:false,
       payId:0,
       dialogOperation:1,//1=新增,2=编辑,3=查看
@@ -2288,7 +2273,7 @@ export default {
     //获取应收实收列表
     getReceiptList(){
       let param = {
-        contId:124
+        contId:this.id
       }
       this.$ajax.get("/api/receivables/listRceivables",param).then(res=>{
         res=res.data
@@ -2326,12 +2311,25 @@ export default {
       let param = {
         id:this.payId
       }
-      this.$ajax.put("/api/receivables/deleteRceivables",param).then(res=>{
+      this.$ajax.put("/api/receivables/deleteRceivables",param,2).then(res=>{
         res=res.data
+        if(res.status===200){
+          this.$message({
+            message:"删除成功",
+            type:"success"
+          })
+          this.dialogDel=false
+          this.getReceiptList()
+        }
       })
     },
     //新增/编辑成功刷新列表
     addEditSuccess(){
+      this.$message({
+        message:this.dialogOperation===1?"新增成功":"编辑成功",
+        type:"success"
+      })
+      this.dialogState=false
       this.getReceiptList()
     }
   },

@@ -105,6 +105,8 @@ let api = {
     let header={}
     if(type===1){
       header['Content-Type']='application/json'
+    }else if(type===2){
+      header['Content-Type']='application/x-www-form-urlencoded'
     }
     return axios.put(url, type===1?JSON.stringify(param):qs.stringify(param),{headers:header}).then(res => {
       return res
