@@ -680,8 +680,18 @@
         <el-button type="primary" @click="toUpload">完善资料库</el-button>
       </span>
     </el-dialog>
+    <!-- 应收实收弹窗 -->
+    <billDialog
+    :dialog-show="dialogState"
+    @close="dialogState=false"
+    @success="dialogState=false"
+    v-if="dialogState"
+    :dialogOperation="dialogOperation"
+    :dialogType="dialogType"
+    >
+    </billDialog>
     <!-- 应收实收详情弹窗 -->
-    <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
+    <!-- <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="receiptDetail">
         <div>
           <p>录入时间：2019/10/15 10:05:24</p>
@@ -697,7 +707,7 @@
       <div class="receiptAccessory">
         <p>附件：</p>
       </div>
-    </el-dialog>
+    </el-dialog> -->
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
@@ -982,6 +992,8 @@ import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
+import billDialog from '@/components/billDialog';
+
 const marriage = [
   {id:1,type:"已婚"},
   {id:2,type:"未婚"},
@@ -1216,7 +1228,9 @@ export default {
       actualList:[
         {time:"2019-10-26"}
       ],//实收实付
-      dialogReceipt:false,
+      dialogState:false,
+      dialogOperation:1,//1=新增,2=编辑,3=查看
+      dialogType:1,//1=应收/应付款项,2=实收/实付款项
     };
   },
   created() {
@@ -2247,7 +2261,7 @@ export default {
     },
     //应收实收详情
     toReceiptDetail(){
-      this.dialogReceipt=true
+      this.dialogState=true
     },
     //应收实收新增
     receiptAdd(){
