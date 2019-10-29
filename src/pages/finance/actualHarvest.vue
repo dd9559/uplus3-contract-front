@@ -281,17 +281,24 @@
     methods: {
       getExcel:function () {
         this.getData('search')
-        let param = Object.assign({},this.searchForm)
-        if(Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
+
+        let param=Object.assign({},this.searchForm)
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
           param.beginDate = this.$tool.dateFormat(param.signTime[0])
           param.endDate = this.$tool.dateFormat(param.signTime[1])
-          delete param.signTime
         }
-        if(Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
           param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
           param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
-          delete param.collectionTime
         }
+
+        // delete param.moneyType
+        param.contTypes = param.contType.join(',')
+        param.pageNum=this.currentPage
+        param.pageSize=this.pageSize
+        delete param.signTime
+        delete param.collectionTime
+        delete param.contType
         this.excelCreate('/input/RceivablesExcel',param)
       },
       noScroll:function (payload) {
