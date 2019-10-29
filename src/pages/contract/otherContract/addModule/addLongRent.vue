@@ -434,6 +434,18 @@ export default {
             let obj_ = Object.assign({}, element);
             this.guestList_.push(obj_);
           };
+          if(this.guestList.length===0){
+            this.guestList=[
+              {
+                cardCode: "",
+                mobile: "",
+                encryptionMobile: "",
+                relation: "",
+                cardType: "",
+                name: "",
+              }
+            ]
+          }
           console.log(contractDetail)
            delete contractDetail.contractInfo
            this.contractForm=contractDetail

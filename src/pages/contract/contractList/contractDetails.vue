@@ -421,34 +421,46 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="应收实收" name="receipt">
+        <!-- <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
-              <el-button round type="primary" size="small" @click="receiptAdd">新增</el-button>
+              <el-button round type="primary" size="small" @click="receiptAdd('supposed')">新增</el-button>
             </div>
             <div class="receiptList">
               <el-table :data="supposedList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
-                <el-table-column label="录入时间" prop="time" min-width="50">
+                <el-table-column label="录入时间" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.createTime|formatTime}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="款类" prop="payType" min-width="50">
+                <el-table-column label="款类" prop="moneyName" min-width="50">
                 </el-table-column>
-                <el-table-column label="应收金额（元）" prop="contType.label" min-width="50">
+                <el-table-column label="应收金额（元）" prop="amount" min-width="50">
                 </el-table-column>
-                <el-table-column label="收付方式" prop="contType.label" min-width="50">
+                <el-table-column label="收付方式" prop="payment" min-width="50">
                 </el-table-column>
-                <el-table-column label="付款方" prop="contType.label" min-width="50">
+                <el-table-column label="付款方" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.payment==="收款"?'-':scope.row.payee}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="收款人" prop="contType.label" min-width="50">
+                <el-table-column label="收款人" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.payment==="收款"?scope.row.payee:'-'}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="合同编号" prop="contType.label" min-width="50">
+                <el-table-column label="合同编号" prop="contCode" min-width="50">
                 </el-table-column>
-                <el-table-column label="备注" prop="contType.label" min-width="50">
+                <el-table-column label="备注" prop="remark" min-width="50" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
-                    <span class="receipBtn" @click="receiptEdit">编辑</span>
-                    <span class="receipBtn" @click="receiptDel">删除</span>
+                    <div v-if="scope.row.operation!=1">
+                      <span class="receipBtn" @click="receiptEdit('supposed',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" @click="receiptDel(scope.row.payId)">删除</span>
+                    </div>
+                    <span v-else>-</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -457,36 +469,48 @@
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>实收/实付款项</span>
-              <el-button round type="primary" size="small" @click="receiptAdd">新增</el-button>
+              <el-button round type="primary" size="small" @click="receiptAdd('actual')">新增</el-button>
             </div>
             <div class="receiptList">
               <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
-                <el-table-column label="录入时间" prop="time" min-width="50">
+                <el-table-column label="收款时间" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.skTime|formatTime}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="款类" prop="contType.label" min-width="50">
+                <el-table-column label="款类" prop="moneyName" min-width="50">
                 </el-table-column>
-                <el-table-column label="实收金额（元）" prop="contType.label" min-width="50">
+                <el-table-column label="实收金额（元）" prop="amount" min-width="50">
                 </el-table-column>
-                <el-table-column label="收付方式" prop="contType.label" min-width="50">
+                <el-table-column label="收付方式" prop="payment" min-width="50">
                 </el-table-column>
-                <el-table-column label="付款方" prop="contType.label" min-width="50">
+                <el-table-column label="付款方" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.payment==="收款"?'-':scope.row.payee}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="收款人" prop="contType.label" min-width="50">
+                <el-table-column label="收款人" min-width="50">
+                  <template slot-scope="scope">
+                    {{scope.row.payment==="收款"?scope.row.payee:'-'}}
+                  </template>
                 </el-table-column>
-                <el-table-column label="合同编号" prop="contType.label" min-width="50">
+                <el-table-column label="合同编号" prop="contCode" min-width="50">
                 </el-table-column>
-                <el-table-column label="备注" prop="contType.label" min-width="50">
+                <el-table-column label="备注" prop="remark" min-width="50" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
-                    <span class="receipBtn">编辑</span>
-                    <span class="receipBtn">删除</span>
+                    <div v-if="scope.row.operation!=1">
+                      <span class="receipBtn" @click="receiptEdit('actual',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" @click="receiptDel(scope.row.payId)">删除</span>
+                    </div>
+                    <span v-else>-</span>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
           </div>
-        </el-tab-pane>
+        </el-tab-pane> -->
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
             <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
@@ -684,12 +708,21 @@
     <billDialog
     :dialog-show="dialogState"
     @close="dialogState=false"
-    @success="dialogState=false"
+    @success="addEditSuccess"
     v-if="dialogState"
     :dialogOperation="dialogOperation"
     :dialogType="dialogType"
+    :payId="payId"
     >
     </billDialog>
+    <!-- 删除应收实收确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>确定删除本条数据吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDel = false">取 消</el-button>
+        <el-button type="primary" @click="delBillMsg">确 定</el-button>
+      </span>
+    </el-dialog>
     <!-- 应收实收详情弹窗 -->
     <!-- <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="receiptDetail">
@@ -1011,7 +1044,8 @@ export default {
     checkPerson,
     LayerPrint,
     flowAccount,
-    dealReport
+    dealReport,
+    billDialog
   },
   data() {
     return {
@@ -1229,8 +1263,10 @@ export default {
         {time:"2019-10-26"}
       ],//实收实付
       dialogState:false,
+      payId:0,
       dialogOperation:1,//1=新增,2=编辑,3=查看
       dialogType:1,//1=应收/应付款项,2=实收/实付款项
+      dialogDel:false,
     };
   },
   created() {
@@ -1307,6 +1343,8 @@ export default {
         this.getAuditList();//合同审核信息
       }else if(tab.name==="fourth"){
         this.getRecordList();//电话录音
+      }else if(tab.name==="receipt"){
+        this.getReceiptList();
       }
     },
     //打电话
@@ -2250,30 +2288,51 @@ export default {
     //获取应收实收列表
     getReceiptList(){
       let param = {
-
+        contId:124
       }
-      this.$ajax.get("/api/",param).then(res=>{
+      this.$ajax.get("/api/receivables/listRceivables",param).then(res=>{
         res=res.data
         if(res.status===200){
-
+          this.supposedList=res.data.listReceivables
+          this.actualList=res.data.listReceipts
         }
       })
     },
     //应收实收详情
-    toReceiptDetail(){
+    toReceiptDetail(val){
+      this.payId=val.payId
       this.dialogState=true
+      this.dialogOperation=3
     },
     //应收实收新增
-    receiptAdd(){
-
+    receiptAdd(type){
+      this.dialogType = type==="supposed"?1:2
+      this.dialogState=true
+      this.dialogOperation=1
     },
     //应收实收编辑
-    receiptEdit(){
-
+    receiptEdit(type,payId){
+      this.dialogType = type==="supposed"?1:2
+      this.dialogState=true
+      this.dialogOperation=2
+      this.payId=payId
     },
     //应收实收删除
-    receiptDel(){
-
+    receiptDel(payId){
+      this.dialogDel=true
+      this.payId=payId
+    },
+    delBillMsg(){
+      let param = {
+        id:this.payId
+      }
+      this.$ajax.put("/api/receivables/deleteRceivables",param).then(res=>{
+        res=res.data
+      })
+    },
+    //新增/编辑成功刷新列表
+    addEditSuccess(){
+      this.getReceiptList()
     }
   },
   mounted(){
