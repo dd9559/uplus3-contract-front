@@ -91,12 +91,12 @@
           </div>
         </li>
         <li v-if="dialogOperation===3">
-          <p class="details-content"><span>录入时间：</span><span></span></p>
-          <p class="details-content"><span>合同编号：</span><span></span></p>
-          <p class="details-content"><span>款类：</span><span></span></p>
-          <p class="details-content"><span>应收金额（元）：</span><span></span></p>
-          <p class="details-content"><span>收付方式：</span><span></span></p>
-          <p class="details-content"><span>付款方：</span><span></span></p>
+          <p class="details-content"><span>录入时间：</span><span>{{detailMsg.writeTime}}</span></p>
+          <p class="details-content"><span>合同编号：</span><span>{{form.code}}</span></p>
+          <p class="details-content"><span>款类：</span><span>{{moneyTypeName}}</span></p>
+          <p class="details-content"><span>应收金额（元）：</span><span>{{form.amount}}</span></p>
+          <p class="details-content"><span>收付方式：</span><span>{{form.methods===1?'收款':'付款'}}</span></p>
+          <p class="details-content"><span>{{form.methods===1?'收款人':'付款方'}}：</span><span v-if="detailMsg.payer">{{detailMsg.payer.pay}}</span></p>
         </li>
       </ul>
       <section>
@@ -135,7 +135,7 @@
       </section>
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     </div>
-    <p slot="footer">
+    <p slot="footer" v-if="dialogOperation!==3">
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult('postJSON')"
                  v-loading.fullscreen.lock="fullscreenLoading">保存
@@ -186,11 +186,11 @@
       },
       dialogType: {
         type: Number,
-        default: 1,//1=应收/应付款项,2=实收/实付款项
+        default: 2,//1=应收/应付款项,2=实收/实付款项
       },
       dialogOperation: {
         type: Number,
-        default: 1,//1=新增,2=编辑,3=查看
+        default: 2,//1=新增,2=编辑,3=查看
       }
     },
     data() {
@@ -227,14 +227,21 @@
         imgList: [],
         activeLi: '',
         preloadFiles: [],
+        detailMsg:{
+          writeTime:'',//录入时间
+          payer:null,
+        }
       }
     },
     mounted() {
       let urlParam = this.$route.query
       this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
 
-      this.addInit(this.$route.query.contId)
+      this.addInit(this.form.contId)
       // this.getMoneyType()
+      if(this.dialogOperation!==1){
+        this.getDetailsData(urlParam.id)
+      }
     },
     methods: {
       //判断用户该合同是否第一次选择收款人部门
@@ -311,7 +318,7 @@
       /**
        * 创建收款操作
        */
-      goResult: function (type, url = '/payInfoRecord/insertSKRecord') {
+      goResult: function (type, url = '/receivables/insertrRceivables') {
         let {contId,code,moneyType,moneyTypePid,remark,amount,receiptDate,deptId,deptName,employeeName,employeeId,objName,objType}=this.form
         let param=Object.create(null)
         Object.assign(param,{id:contId,code:code,pid:moneyTypePid,key:moneyType,amount:amount,type:this.form.methods,remark:remark,filePath:this.files})
@@ -323,8 +330,13 @@
         if(this.dialogType===2){
           Object.assign(param,{skTime:receiptDate})
         }
+        if(this.dialogOperation===2){
+          type='put'
+          url='/receivables/updateRceivables'
+          param.payId=Number(this.$route.query.id)
+        }
         this.$tool.checkForm(param,rule).then(res=>{
-          this.$ajax.postJSON('/api/receivables/insertrRceivables',param).then(res=>{
+          this.$ajax[type](`/api${url}`,param).then(res=>{
             res=res.data
             if(res.status===200){
               this.$emit('success')
@@ -343,8 +355,30 @@
       /**
        * 编辑时获取详情
        */
-      getDetailsData: function () {
-
+      getDetailsData: function (id) {
+        let param={
+          id:id
+        }
+        this.$ajax.get('/api/receivables/getRceivables',param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            let {amount,contractCode,file,moneyType,payer,time,type,remark}=res.data
+            this.moneyTypeName=moneyType.name
+            this.files=[].concat(file);
+            (this.dialogOperation===3)&&Object.assign(this.detailMsg,{writeTime:this.$tool.timeFormat(time),payer:payer})
+            //初始化form表单对象
+            Object.assign(this.form,{amount:amount,code:contractCode,receiptDate:this.dialogType===2?this.$tool.timeFormat(time):'',methods:type.value,moneyTypePid:moneyType.parentId,moneyType:moneyType.id,remark:remark})
+            if(this.form.methods===1){
+              Object.assign(this.form,{deptId:payer.prefixId,deptName:payer.prefixName,employeeId:payer.suffixId,employeeName:payer.suffixName})
+            }else{
+              Object.assign(this.form,{objType:payer.prefixId,objName:payer.suffixName})
+            }
+            if(this.dialogType===2){
+              Object.assign(this.form,{receiptDate:this.$tool.timeFormat(time)})
+            }
+            this.getFiles()
+          }
+        })
       },
       /**
        * 款类选择操作
@@ -383,7 +417,9 @@
        * 获取上传文件
        */
       getFiles: function (payload) {
-        this.files = this.files.concat(this.$tool.getFilePath(payload.param))
+        if(payload){
+          this.files = this.files.concat(this.$tool.getFilePath(payload.param))
+        }
         this.imgList = this.$tool.cutFilePath(this.files)
         // this.preloadFiles=[].concat()
         this.imgList.forEach(item => {

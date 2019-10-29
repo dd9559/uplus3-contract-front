@@ -67,7 +67,7 @@
         type:[String,Number],
         default:''
       },
-      flowType:{//流程类型，提审时选择审批人传0；审批时选择审批人传1
+      flowType:{//流程类型，付款传0；收款传1
         type:Number,
       },
       showLabel:{//是否显示label文本
