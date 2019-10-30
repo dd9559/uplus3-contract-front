@@ -523,11 +523,13 @@
     methods: {
       getExcel:function () {
         this.getData('search')
-        let param = Object.assign({},this.searchForm)
-        if(Object.prototype.toString.call(param.timeRange)==='[object Array]'&&param.timeRange.length>0){
+        let param = JSON.parse(JSON.stringify(this.searchForm))
+        if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){
           param.startTime = param.timeRange[0]
           param.endTime = param.timeRange[1]
         }
+        param.contTypes = param.contType.join(',')
+        delete param.contType
         delete param.timeRange
         this.excelCreate(this.activeView===1?'/input/proceedsAuditExcel':'/input/payMentAuditExcel',param)
       },

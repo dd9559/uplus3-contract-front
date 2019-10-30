@@ -29,7 +29,7 @@
             <div class="input-search">
                 <label class="w-70">流程类型</label>
                 <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition">
-                    <el-option v-for="item in dictionary['573']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in dictionary['573']" v-if="item.key!=4" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="w200 ml-10">
                     <el-option v-for="item in homeConditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -124,7 +124,7 @@
                     <div class="aduit-input must mr-35">
                         <label>流程类型:</label>
                         <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
-                            <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?true:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                            <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?item.key!=4:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input must mr-35">
@@ -333,7 +333,9 @@
                     '603':'',
                     '659':'职级类型',
                     '660':'部门类型',
-                    '711':'交易类型'
+                    '711':'交易类型',
+                    '722':'',
+                    '724':''
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -513,7 +515,7 @@
                 this.isAudit = currentRow.branch[0].isAudit.toString()
                 this.tempAudit = this.isAudit
                 this.aduitForm.flowDesc = currentRow.flowDesc
-                this.setConditionList(currentRow.type)
+                this.setConditionList(currentRow.type,2)
                 this.editDisabled = true
                 this.dep.id = ""
                 this.dep.name = ""
@@ -561,57 +563,16 @@
                 this.nodeList = array
                 this.tempNodeList = JSON.parse(JSON.stringify(array))
             },
-            setConditionList(val) {
-                switch(val) {
-                    case 0:
-                        this.conditionList = this.dictionary['586']
-                        break
-                    case 1:
-                        this.conditionList = this.dictionary['597']
-                        break
-                    case 2:
-                        this.conditionList = this.dictionary['603']
-                        break
-                    case 3:
-                        this.conditionList = this.dictionary['580']
-                        break
-                    case 4:
-                        this.conditionList = this.dictionary['599']
-                        break
-                    case 5:
-                        this.conditionList = this.dictionary['601']
-                        break
-                }
-            },
-            setHomeConditionList(val) {
-                switch(val) {
-                    case 0:
-                        this.homeConditionList = this.dictionary['586']
-                        break
-                    case 1:
-                        this.homeConditionList = this.dictionary['597']
-                        break
-                    case 2:
-                        this.homeConditionList = this.dictionary['603']
-                        break
-                    case 3:
-                        this.homeConditionList = this.dictionary['580']
-                        break
-                    case 4:
-                        this.homeConditionList = this.dictionary['599']
-                        break
-                    case 5:
-                        this.homeConditionList = this.dictionary['601']
-                        break
-                }
+            setConditionList(val,type=1) {
+                this[type==1?'homeConditionList':'conditionList'] = this.dictionary[val==0?'586':val==1?'597':val==2?'603':val==3?'580':val==7?'722':'724']
             },
             changeFlowTypeOne(val) {
                 this.searchForm.branchCondition = ""
-                this.setHomeConditionList(val)
+                this.setConditionList(val)
             },
             changeFlowTypeTwo(val) {
                 this.aduitForm.branchCondition = ""
-                this.setConditionList(val)
+                this.setConditionList(val,2)
             },
             // 3.0环境获取部门类型/部门名称
             getDepStr(e,i,type) {
@@ -1075,7 +1036,7 @@
             dictionary(val){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 if(val&&session!=null){
-                    this.setHomeConditionList(this.searchForm.type)
+                    this.setConditionList(this.searchForm.type)
                 }
             }
         },
