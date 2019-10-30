@@ -129,11 +129,11 @@
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="款类" prop="collectionType">
+        <!--<el-table-column label="款类" prop="collectionType">
           <template slot-scope="scope">
             佣金
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column min-width="160" label="物业地址" prop="propertyAddr">
           <!--<template slot-scope="scope">
             &#45;&#45;
@@ -145,30 +145,30 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
+        <!--<el-table-column label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>
-        <!--<el-table-column label="实收/应收（佣金）">
+        <el-table-column label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>-->
+        <el-table-column label="实收/应收（佣金）">
           <template slot-scope="scope">
             {{scope.row.receivedCommission|formatNull}}/{{scope.row.receivableCommission|formatNull}}
           </template>
         </el-table-column>
-        <el-table-column label="待收款佣金（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>-->
-        <!--<el-table-column label="实收/应收（交易服务费）">
+        <el-table-column label="待收款佣金（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="实收/应收（交易服务费）">
           <template slot-scope="scope">
-            {{scope.row.receivedCommission|formatNull}}/{{scope.row.receivableCommission|formatNull}}
+            {{scope.row.serviceMoney|formatNull}}
           </template>
         </el-table-column>
         <el-table-column label="实收/应收（成交违约金）">
           <template slot-scope="scope">
-            {{scope.row.receivedCommission|formatNull}}/{{scope.row.receivableCommission|formatNull}}
+            {{scope.row.penalMoney|formatNull}}
           </template>
         </el-table-column>
         <el-table-column label="实收/应收（意向违约金）">
           <template slot-scope="scope">
-            {{scope.row.receivedCommission|formatNull}}/{{scope.row.receivableCommission|formatNull}}
+            {{scope.row.intentionMoney|formatNull}}
           </template>
-        </el-table-column>-->
+        </el-table-column>
         <el-table-column min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
             {{scope.row.signTime|formatDate}}
