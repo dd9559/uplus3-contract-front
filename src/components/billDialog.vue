@@ -55,22 +55,9 @@
               v-model="form.receiptDate"
               type="datetime"
               placeholder="选择日期时间"
+              @change="checkDate"
             >
             </el-date-picker>
-          </div>
-          <div class="input-group col">
-            <label class="form-label no-width f14 margin-bottom-base">收款金额</label>
-            <div class="flex-box">
-              <input
-                type="text"
-                size="small"
-                class="w300 el-input__inner"
-                placeholder="请输入"
-                maxlength="20"
-                v-model.trim="form.amount"
-                @input="inputOnly('amount')"
-              >
-            </div>
           </div>
           <div class="input-group col">
             <label class="form-label no-width f14 margin-bottom-base">收付方式</label>
@@ -91,8 +78,22 @@
               </el-select>
             </div>
           </div>
+          <div class="input-group col">
+            <label class="form-label no-width f14 margin-bottom-base">金额</label>
+            <div class="flex-box">
+              <input
+                type="text"
+                size="small"
+                class="w300 el-input__inner"
+                placeholder="请输入"
+                maxlength="20"
+                v-model.trim="form.amount"
+                @input="inputOnly('amount')"
+              >
+            </div>
+          </div>
 
-          <div
+          <!--<div
             class="input-group col"
             v-show="form.methods===2"
           >
@@ -124,11 +125,8 @@
                 v-if="Number(form.objType)===3"
               >
             </div>
-          </div>
-          <div
-            class="input-group col"
-            v-show="form.methods===1"
-          >
+          </div>-->
+          <div class="input-group col">
             <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
             <div class="flex-box">
               <select-tree
@@ -181,7 +179,7 @@
           <p class="details-content"><span>款类：</span><span>{{moneyTypeName}}</span></p>
           <p class="details-content"><span>应收金额（元）：</span><span>{{form.amount}}</span></p>
           <p class="details-content"><span>收付方式：</span><span>{{form.methods===1?'收款':'付款'}}</span></p>
-          <p class="details-content"><span>{{form.methods===1?'收款人':'付款方'}}：</span><span v-if="detailMsg.payer">{{detailMsg.payer.pay}}</span></p>
+          <p class="details-content"><span>收款人：</span><span v-if="detailMsg.payer">{{detailMsg.payer.pay}}</span></p>
         </li>
       </ul>
       <section>
@@ -418,6 +416,16 @@ export default {
         }
       });
     },
+    checkDate:function(val){
+      // debugger
+      let date=new Date(val);
+      if(date.getTime()>Date.now()){
+        this.form.receiptDate=''
+        this.$message({
+          message:'不能选择未来时间'
+        })
+      }
+    },
     inputOnly: function(type, index) {
       //输入框限制
       if (type === "amount") {
@@ -499,7 +507,7 @@ export default {
         remark: remark,
         filePath: this.files
       });
-      if (this.form.methods === 1) {
+      if (this.form.methods === 1||true) {
         Object.assign(param, {
           storeId: deptId,
           storeName: deptName,
@@ -577,7 +585,7 @@ export default {
             moneyType: moneyType.key,
             remark: remark
           });
-          if (this.form.methods === 1) {
+          if (this.form.methods === 1||true) {
             Object.assign(this.form, {
               deptId: payer.prefixId,
               deptName: payer.prefixName,

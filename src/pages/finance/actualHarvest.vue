@@ -154,17 +154,17 @@
           </template>
         </el-table-column>
         <el-table-column label="待收款佣金（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="实收/应收（交易服务费）">
+        <el-table-column label="实收/应收（交易服务费）" min-width="100">
           <template slot-scope="scope">
             {{scope.row.serviceMoney|formatNull}}
           </template>
         </el-table-column>
-        <el-table-column label="实收/应收（成交违约金）">
+        <el-table-column label="实收/应收（成交违约金）" min-width="100">
           <template slot-scope="scope">
             {{scope.row.penalMoney|formatNull}}
           </template>
         </el-table-column>
-        <el-table-column label="实收/应收（意向违约金）">
+        <el-table-column label="实收/应收（意向违约金）" min-width="100">
           <template slot-scope="scope">
             {{scope.row.intentionMoney|formatNull}}
           </template>
@@ -500,6 +500,9 @@
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
+        .cell{
+          white-space: normal !important;
+        }
       }
     }
   }
