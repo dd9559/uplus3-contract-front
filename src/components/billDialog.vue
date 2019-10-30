@@ -47,7 +47,7 @@
             class="input-group col"
             v-if="dialogType===2"
           >
-            <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
+            <label class="form-label no-width f14 margin-bottom-base">收付时间</label>
             <el-date-picker
               class="w300"
               size="small"
