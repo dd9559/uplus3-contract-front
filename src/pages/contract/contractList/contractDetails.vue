@@ -116,29 +116,27 @@
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
                 </div> -->
                 <div class="table">
-                  <template>
-                    <el-table :data="ownerData" border header-row-class-name="theader-bg">
-                      <el-table-column prop="name" label="业主姓名"></el-table-column>
-                      <el-table-column label="电话">
-                        <template slot-scope="scope">
-                          {{scope.row.mobile}}
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="relation" label="关系"></el-table-column>
-                      <el-table-column label="产权比" v-if="contType!='1'">
-                        <template slot-scope="scope">
-                          {{scope.row.propertyRightRatio+'%'}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column min-width="150" label="证件号码">
-                        <!-- cardType -->
-                        <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </template>
+                  <el-table :data="ownerData" border header-row-class-name="theader-bg">
+                    <el-table-column prop="name" label="业主姓名"></el-table-column>
+                    <el-table-column label="电话">
+                      <template slot-scope="scope">
+                        {{scope.row.mobile}}
+                        <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="relation" label="关系"></el-table-column>
+                    <el-table-column label="产权比" v-if="contType!='1'">
+                      <template slot-scope="scope">
+                        {{scope.row.propertyRightRatio+'%'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" label="证件号码">
+                      <!-- cardType -->
+                      <template slot-scope="scope">
+                        {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
             </div>
@@ -158,28 +156,26 @@
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
                 </div> -->
                 <div class="table">
-                  <template>
-                    <el-table :data="clientrData" border header-row-class-name="theader-bg">
-                      <el-table-column prop="name" label="客户姓名"></el-table-column>
-                      <el-table-column label="电话">
-                        <template slot-scope="scope">
-                          {{scope.row.mobile}}
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="relation" label="关系"></el-table-column>
-                      <el-table-column label="产权比" v-if="contType!='1'">
-                        <template slot-scope="scope">
-                          {{scope.row.propertyRightRatio+'%'}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column min-width="150" label="证件号码">
-                        <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </template>
+                  <el-table :data="clientrData" border header-row-class-name="theader-bg">
+                    <el-table-column prop="name" label="客户姓名"></el-table-column>
+                    <el-table-column label="电话">
+                      <template slot-scope="scope">
+                        {{scope.row.mobile}}
+                        <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="relation" label="关系"></el-table-column>
+                    <el-table-column label="产权比" v-if="contType!='1'">
+                      <template slot-scope="scope">
+                        {{scope.row.propertyRightRatio+'%'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" label="证件号码">
+                      <template slot-scope="scope">
+                        {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
             </div>
@@ -421,7 +417,7 @@
             </div>
           </div>
         </el-tab-pane>
-         <el-tab-pane label="应收实收" name="receipt">
+        <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
@@ -429,35 +425,44 @@
             </div>
             <div class="receiptList">
               <el-table :data="supposedList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
-                <el-table-column label="录入时间" min-width="50">
+                <el-table-column label="录入时间" min-width="60">
                   <template slot-scope="scope">
                     {{scope.row.createTime|formatTime}}
                   </template>
                 </el-table-column>
-                <el-table-column label="款类" prop="moneyName" min-width="50">
+                <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="应收金额（元）" prop="amount" min-width="50">
                 </el-table-column>
-                <el-table-column label="收付方式" prop="payment" min-width="50">
+                <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
-                <el-table-column label="付款方" prop="payer" min-width="50">
+                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
+                </el-table-column> -->
+                <el-table-column label="收款人" prop="payee" min-width="60" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column label="收款人" prop="payee" min-width="50">
+                <el-table-column label="合同编号" prop="contCode" min-width="55">
                 </el-table-column>
-                <el-table-column label="合同编号" prop="contCode" min-width="50">
-                </el-table-column>
-                <el-table-column label="备注" prop="remark" min-width="50" show-overflow-tooltip>
+                <el-table-column label="备注" prop="remark" min-width="70" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
                     <div v-if="scope.row.operation!=1">
                       <span class="receipBtn" @click="receiptEdit('supposed',scope.row.payId)">编辑</span>
-                      <span class="receipBtn" @click="receiptDel(scope.row.payId)">删除</span>
+                      <span class="receipBtn" @click="receiptDel(scope.row.payId,'supposed')">删除</span>
                     </div>
                     <span v-else>-</span>
                   </template>
                 </el-table-column>
               </el-table>
+              <el-pagination
+                v-if="supposedList.length>0"
+                class="pagination-info"
+                @current-change="supposedNumChange"
+                :current-page="supposedNum"
+                :page-size="receiptSize"
+                layout="total, prev, pager, next, jumper"
+                :total="supposedTotal">
+              </el-pagination>
             </div>
           </div>
           <div class="receiptModule">
@@ -467,35 +472,44 @@
             </div>
             <div class="receiptList">
               <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
-                <el-table-column label="收款时间" min-width="50">
+                <el-table-column label="收款时间" min-width="60">
                   <template slot-scope="scope">
                     {{scope.row.skTime|formatTime}}
                   </template>
                 </el-table-column>
-                <el-table-column label="款类" prop="moneyName" min-width="50">
+                <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="实收金额（元）" prop="amount" min-width="50">
                 </el-table-column>
-                <el-table-column label="收付方式" prop="payment" min-width="50">
+                <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
-                <el-table-column label="付款方" prop="payer" min-width="50">
+                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
+                </el-table-column> -->
+                <el-table-column label="收款人" prop="payee" min-width="60" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column label="收款人" prop="payee" min-width="50">
+                <el-table-column label="合同编号" prop="contCode" min-width="55">
                 </el-table-column>
-                <el-table-column label="合同编号" prop="contCode" min-width="50">
-                </el-table-column>
-                <el-table-column label="备注" prop="remark" min-width="50" show-overflow-tooltip>
+                <el-table-column label="备注" prop="remark" min-width="70" show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
                     <div v-if="scope.row.operation!=1">
                       <span class="receipBtn" @click="receiptEdit('actual',scope.row.payId)">编辑</span>
-                      <span class="receipBtn" @click="receiptDel(scope.row.payId)">删除</span>
+                      <span class="receipBtn" @click="receiptDel(scope.row.payId,'actual')">删除</span>
                     </div>
                     <span v-else>-</span>
                   </template>
                 </el-table-column>
               </el-table>
+              <el-pagination
+                v-if="actualList.length>0"
+                class="pagination-info"
+                @current-change="actualNumChange"
+                :current-page="actualNum"
+                :page-size="receiptSize"
+                layout="total, prev, pager, next, jumper"
+                :total="actualTotal">
+              </el-pagination>
             </div>
           </div>
         </el-tab-pane>
@@ -555,7 +569,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+            <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
             <!-- <button @click="downloadRecord">下载</button> -->
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
@@ -1245,8 +1259,17 @@ export default {
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
       attachmentList:[],//合同附件
+
       supposedList:[],//应收应付
+      supposedTotal:0,
+      supposedNum:1,
+
       actualList:[],//实收实付
+      actualTotal:0,
+      actualNum:1,
+
+      receiptSize:5,
+
       dialogState:false,
       payId:0,
       dialogOperation:1,//1=新增,2=编辑,3=查看
@@ -1329,7 +1352,8 @@ export default {
       }else if(tab.name==="fourth"){
         this.getRecordList();//电话录音
       }else if(tab.name==="receipt"){
-        this.getReceiptList();
+        this.getSupposedList();//应收应付
+        this.getActualList();//实收实付
       }
     },
     //打电话
@@ -2257,32 +2281,45 @@ export default {
     //附件下载
     downloadAttachment(item){
       this.fileSign([item.path],'download')
-      // let url,title
-      // url = item.path
-      // title = item.enclosureName
-      // var a = document.createElement("a");
-      // a.setAttribute("href", url);
-      // a.setAttribute("download", title);
-      // a.setAttribute("id", "startTelMedicine");
-      // // 防止反复添加
-      // if (document.getElementById("startTelMedicine")) {
-      //   document.body.removeChild(document.getElementById("startTelMedicine"));
-      // }
-      // document.body.appendChild(a);
-      // a.click();
     },
-    //获取应收实收列表
-    getReceiptList(){
+    //获取应收列表
+    getSupposedList(){
       let param = {
-        contId:this.id
+        contId:this.id,
+        pageNum: this.supposedNum,
+        pageSize:5
       }
       this.$ajax.get("/api/receivables/listRceivables",param).then(res=>{
         res=res.data
         if(res.status===200){
-          this.supposedList=res.data.listReceivables
-          this.actualList=res.data.listReceipts
+          this.supposedList=res.data.list
+          this.supposedTotal=res.data.total
         }
       })
+    },
+    //获取实收列表
+    getActualList(){
+      let param = {
+        contId:this.id,
+        pageNum: this.actualNum,
+        pageSize:5
+      }
+      this.$ajax.get("/api/receivables/listReceipts",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.actualList=res.data.list
+          this.actualTotal=res.data.total
+        }
+      })
+    },
+    //翻页
+    supposedNumChange(val){
+      this.supposedNum=val
+      this.getSupposedList()
+    },
+    actualNumChange(val){
+      this.actualNum=val
+      this.getActualList()
     },
     //应收实收详情
     toReceiptDetail(val){
@@ -2304,9 +2341,10 @@ export default {
       this.payId=payId
     },
     //应收实收删除
-    receiptDel(payId){
+    receiptDel(payId,type){
       this.dialogDel=true
       this.payId=payId
+      this.dialogType = type==="supposed"?1:2
     },
     delBillMsg(){
       let param = {
@@ -2320,7 +2358,11 @@ export default {
             type:"success"
           })
           this.dialogDel=false
-          this.getReceiptList()
+          if(this.dialogType===1){
+            this.getSupposedList()
+          }else{
+            this.getActualList()
+          }
         }
       })
     },
@@ -2331,7 +2373,11 @@ export default {
         type:"success"
       })
       this.dialogState=false
-      this.getReceiptList()
+      if(this.dialogType===1){
+        this.getSupposedList()
+      }else{
+        this.getActualList()
+      }
     }
   },
   mounted(){
@@ -2525,7 +2571,7 @@ export default {
       }
       .table {
         padding: 10px 0;
-        width: 1050px;
+        width: 950px;
         /deep/ .theader-bg {
           > th {
             background-color: @bg-th;
@@ -2866,7 +2912,7 @@ export default {
   //应收实收
   .receiptModule{
     padding-top: 20px;
-    width: 1300px;
+    width: 950px;
     .moduleTitle{
       display: flex;
       align-items: center;

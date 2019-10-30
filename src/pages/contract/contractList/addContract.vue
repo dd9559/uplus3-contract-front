@@ -416,7 +416,7 @@ export default {
         houseinfoCode: "",
         guestinfoCode: "",
         signDate: "",
-        transFlowCode: "",
+        // transFlowCode: "",
         dealPrice: "",
         contPersons: [],
         propertyRightAddr:'',
@@ -433,7 +433,7 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        extendParams:[],
+        // extendParams:[],
         isHaveCooperation: 0
       },
       //业主信息
@@ -805,9 +805,9 @@ export default {
       if(!this.contractForm.signDate){
         this.contractForm.signDate=''
       }
-      if(!this.contractForm.transFlowCode){
-        this.contractForm.transFlowCode=''
-      }
+      // if(!this.contractForm.transFlowCode){
+      //   this.contractForm.transFlowCode=''
+      // }
       if(this.contractForm.pCode){
         this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"")
       }

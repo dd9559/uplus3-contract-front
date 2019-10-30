@@ -372,6 +372,7 @@
          class="pagination-info"
          @current-change="handleCurrentChange"
          :current-page="currentPage"
+         :page-size="pageSize"
          layout="total, prev, pager, next, jumper"
          :total="total">
         </el-pagination>
