@@ -132,6 +132,11 @@
       cursor: pointer;
     }
   }
+  /deep/ .theader-bg{
+    >th>.cell{
+      white-space: normal !important;
+    }
+  }
   .btn-text-info{
     padding: 0;
     color: @color-blue;
