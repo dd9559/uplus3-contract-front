@@ -189,6 +189,7 @@
           <div
             v-if="dialogOperation!==3"
             class="input-group"
+            style="position: relative;"
           >
             <p><label class="f14">备注：</label></p>
             <el-input
@@ -199,11 +200,13 @@
               rows="5"
               maxlength="200"
               type="textarea"
+              show-word-limit
             ></el-input>
+            <span class="text-calendar">{{getTextLength}}/200</span>
           </div>
           <div class="input-group">
-            <p v-if="dialogOperation!==3"><label class="f14">上传附件:</label><span>（支持所有格式）</span></p>
-            <p v-else><label class="f14">附件:</label></p>
+            <p v-if="dialogOperation!==3"><label class="f14">上传附件:</label></p>
+            <p v-else><label class="f14">附件：</label><span v-if="imgList.length===0">无</span></p>
             <ul class="upload-list">
               <li v-if="dialogOperation!==3">
                 <file-up
@@ -571,7 +574,7 @@ export default {
               this.dialogType === 2 ? this.$tool.timeFormat(time) : "",
             methods: type.value,
             moneyTypePid: moneyType.parentId,
-            moneyType: moneyType.id,
+            moneyType: moneyType.key,
             remark: remark
           });
           if (this.form.methods === 1) {
@@ -678,6 +681,10 @@ export default {
           break;
       }
       return res;
+    },
+    getTextLength:function(){
+      let res=this.form.remark.trim()
+      return res.length
     }
   },
   filters: {
@@ -733,6 +740,11 @@ export default {
   .w200 {
     width: 300px !important;
   }
+}
+.text-calendar{
+  position: absolute;
+  right: 30px;
+  bottom: 5px;
 }
 
 .h32 {
@@ -819,15 +831,14 @@ input[size="small"] {
     display: flex;
     flex-wrap: wrap;
     /*justify-content: space-between;*/
-    &:last-of-type {
+    /*&:last-of-type {
       .col {
         margin-bottom: 0px;
       }
-    }
+    }*/
     .col {
       /*max-width: 210px;*/
-      /*margin: 0 30px 21px 0;*/
-      margin-right: @margin-15;
+      margin: 0 @margin-15 @margin-10 0;
       flex: 1;
       &.no-max {
         max-width: none;
