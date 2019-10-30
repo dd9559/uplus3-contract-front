@@ -472,7 +472,7 @@
             </div>
             <div class="receiptList">
               <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
-                <el-table-column label="收款时间" min-width="60">
+                <el-table-column label="收付时间" min-width="60">
                   <template slot-scope="scope">
                     {{scope.row.skTime|formatTime}}
                   </template>
