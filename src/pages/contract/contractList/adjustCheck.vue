@@ -599,7 +599,11 @@
       },
       // 选择审核人
       choseCheckPerson:function (row,type) {
-        this.checkPerson.flowType=4   //调佣的流程类型为4
+        if(row.tradeType===1){
+          this.checkPerson.flowType=8   //租赁调佣的流程类型为8
+        }else if(row.tradeType===2){
+          this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+        }
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true
         this.checkPerson.type=type
