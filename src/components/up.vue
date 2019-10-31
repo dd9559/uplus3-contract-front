@@ -98,7 +98,7 @@
                     picture.onload = function (e) {
                       var config = e.target
                       let {width, height} = config
-                      let mix = 1//默认图片缩放比例
+                      let mix = 0.5//默认图片缩放比例
                       let canvas=document.createElement('canvas')
                       let img=canvas.getContext('2d')
                       let imgData=null
@@ -114,7 +114,7 @@
                         that.canvasBlobState=true
                         that.uploader.splice(0,1)
                         that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
-                      },'image/png', 0.5)
+                      },'image/png',0.5)
                     }
                   }
                   reader.readAsDataURL(item.getNative())
