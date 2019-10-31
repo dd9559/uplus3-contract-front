@@ -421,7 +421,7 @@
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
-              <el-button round type="primary" size="small" @click="receiptAdd('supposed')">新增</el-button>
+              <el-button round type="primary" size="small" @click="receiptAdd('supposed')" v-if="power['sign-ht-xq-ys-add'].state">新增</el-button>
             </div>
             <div class="receiptList">
               <el-table :data="supposedList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
@@ -447,8 +447,9 @@
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
                     <div v-if="scope.row.operation!=1">
-                      <span class="receipBtn" @click="receiptEdit('supposed',scope.row.payId)">编辑</span>
-                      <span class="receipBtn" @click="receiptDel(scope.row.payId,'supposed')">删除</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptEdit('supposed',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-del'].state" @click="receiptDel(scope.row.payId,'supposed')">删除</span>
+                      <span v-if="!power['sign-ht-xq-ys-add'].state&&!power['sign-ht-xq-ys-del'].state">-</span>
                     </div>
                     <span v-else>-</span>
                   </template>
@@ -468,7 +469,7 @@
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>实收/实付款项</span>
-              <el-button round type="primary" size="small" @click="receiptAdd('actual')">新增</el-button>
+              <el-button round type="primary" size="small" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptAdd('actual')">新增</el-button>
             </div>
             <div class="receiptList">
               <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
@@ -494,8 +495,9 @@
                 <el-table-column label="操作" min-width="50">
                   <template slot-scope="scope">
                     <div v-if="scope.row.operation!=1">
-                      <span class="receipBtn" @click="receiptEdit('actual',scope.row.payId)">编辑</span>
-                      <span class="receipBtn" @click="receiptDel(scope.row.payId,'actual')">删除</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptEdit('actual',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-del'].state" @click="receiptDel(scope.row.payId,'actual')">删除</span>
+                      <span v-if="!power['sign-ht-xq-ys-add'].state&&!power['sign-ht-xq-ys-del'].state">-</span>
                     </div>
                     <span v-else>-</span>
                   </template>
@@ -1242,6 +1244,15 @@ export default {
         'sign-ht-xq-ly-vmemo': {
           state: false,
           name: '查看备注'
+        },
+        //应收实收
+        'sign-ht-xq-ys-add': {
+          state: false,
+          name: '新增/编辑'
+        },
+        'sign-ht-xq-ys-del': {
+          state: false,
+          name: '删除'
         },
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
