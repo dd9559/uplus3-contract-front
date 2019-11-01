@@ -93,11 +93,8 @@
             </div>
           </div>
 
-          <!--<div
-            class="input-group col"
-            v-show="form.methods===2"
-          >
-            <label class="form-label no-width f14 margin-bottom-base">付款方</label>
+          <div class="input-group col" v-show="form.methods===2">
+            <label class="form-label no-width f14 margin-bottom-base">收款人</label>
             <div class="flex-box">
               <el-select
                 size="small"
@@ -125,9 +122,9 @@
                 v-if="Number(form.objType)===3"
               >
             </div>
-          </div>-->
-          <div class="input-group col">
-            <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
+          </div>
+          <div class="input-group col" v-show="form.methods===1">
+            <label class="form-label no-width f14 margin-bottom-base">收款人</label>
             <div class="flex-box">
               <select-tree
                 v-if="firstCreate.state"
@@ -507,7 +504,7 @@ export default {
         remark: remark,
         filePath: this.files
       });
-      if (this.form.methods === 1||true) {
+      if (this.form.methods === 1) {
         Object.assign(param, {
           storeId: deptId,
           storeName: deptName,
@@ -585,7 +582,7 @@ export default {
             moneyType: moneyType.key,
             remark: remark
           });
-          if (this.form.methods === 1||true) {
+          if (this.form.methods === 1) {
             Object.assign(this.form, {
               deptId: payer.prefixId,
               deptName: payer.prefixName,

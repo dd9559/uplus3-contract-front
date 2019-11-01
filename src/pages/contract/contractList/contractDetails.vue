@@ -438,7 +438,10 @@
                 </el-table-column>
                 <!-- <el-table-column label="付款方" prop="payer" min-width="50">
                 </el-table-column> -->
-                <el-table-column label="收款人" prop="payee" min-width="60" show-overflow-tooltip>
+                <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
+                  </template>
                 </el-table-column>
                 <el-table-column label="合同编号" prop="contCode" min-width="55">
                 </el-table-column>
@@ -486,7 +489,10 @@
                 </el-table-column>
                 <!-- <el-table-column label="付款方" prop="payer" min-width="50">
                 </el-table-column> -->
-                <el-table-column label="收款人" prop="payee" min-width="60" show-overflow-tooltip>
+                <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
+                  </template>
                 </el-table-column>
                 <el-table-column label="合同编号" prop="contCode" min-width="55">
                 </el-table-column>
