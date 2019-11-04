@@ -5,8 +5,18 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" :disabled="canInput" v-model="contractForm.signDate" style="width:140px" @clear="clearData"></el-date-picker>
+          <el-form-item label="签约日期：" style="text-align:right;width:285px;" class="form-label">
+            <!-- <el-date-picker type="date" value-format="yyyy/MM/dd/HH/mm" placeholder="选择日期" :disabled="type===2?true:false" v-model="contractForm.signDate" style="width:140px"></el-date-picker> -->
+            <el-date-picker
+              style="width:180px"
+              :disabled="type===2?true:false"
+              v-model="contractForm.signDate"
+              type="datetime"
+              value-format="yyyy/MM/dd HH:mm:ss"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+              default-time="12:00:00">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型：" class="width-250">
             <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
@@ -47,7 +57,7 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
@@ -172,7 +182,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
-            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
           <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
@@ -544,8 +554,17 @@ export default {
       agentsDialog:false,
       agentsList:[],//分成人列表
       sourceBtnCheck:true,//房客源是否可选择
-      //是否能输入
-      canInput:false
+      //是否能输入（已签约 未结算）
+      canInput:false,
+      //线下合同已签约状态编辑
+      offLine:false,
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
+
     };
   },
   created() {
@@ -586,7 +605,10 @@ export default {
         let y = time.getFullYear()
         let M = time.getMonth() + 1
         let D = time.getDate()
-        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
@@ -637,9 +659,6 @@ export default {
     // deleteRowcommissionData1(index) {
     //   this.guestList.splice(index, 1);
     // },
-    clearData(){
-      console.log('111')
-    },
     //删除联系人确认框
     delPeople(index,type){
       this.peopleIndex=index;
@@ -1825,10 +1844,13 @@ export default {
           this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           //合同状态为已签约且未结算时只允许编辑房客源编号
-          if(res.data.resultState.value===1&&res.data.contState.value===3){
+          if(this.contractForm.recordType.value===1&&res.data.resultState.value===1&&res.data.contState.value===3){
             this.canInput=true
           }
-          // this.resultState=res.data.resultState.value
+          //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
+          if(this.contractForm.recordType.value===2&&this.contractForm.contState.value===3){
+            this.offLine=true
+          }
           this.sourceBtnCheck=(res.data.contState.value===3)?false:true
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
