@@ -59,7 +59,7 @@
         </div>
       </div>
       <!-- <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component> -->
-      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" ></changeCancelList>
+      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" :tableDate="list"></changeCancelList>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
         <el-pagination
@@ -104,6 +104,7 @@ export default {
   created(){
     this.getDictionary();//字典
     this.remoteMethod();//部门
+    this.getChangeList()
   },
   methods:{
     //查询
@@ -119,7 +120,7 @@ export default {
     },
     //审核列表
     getChangeList(type="init"){
-      param = {
+      let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         keyword:this.contractForm.keyword,
@@ -140,17 +141,17 @@ export default {
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/cancelCheck',
-          url:'/contract/auditList',
+          url:'/contract/cancelAuditList',
           query:Object.assign({},param,{empName:this.dep.empName}),
           methods:"postJSON"
         }))
       }
 
-      this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
+      this.$ajax.get("/api/contract/cancelAuditList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.list = res.data.list;
-          this.total = res.data.count;
+          this.total = res.data.total;
         }
       });
     },

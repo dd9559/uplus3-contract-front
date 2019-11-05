@@ -2,9 +2,9 @@
   <div>
     <el-table :max-height="tableHeight" class="info-scrollbar" :data="tableDate" style="width: 100%" border>
       <el-table-column label="合同信息" min-width="200" fixed>
-        <template>
+        <template slot-scope="scope">
           <div class="contract_msg">
-            <!-- <div class="riskLabel">
+            <div class="riskLabel">
               <el-popover
                 placement="top-start"
                 width="50"
@@ -12,27 +12,27 @@
                 content="风险单"
                 v-if="scope.row.isRisk">
                 <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
-              </el-popover> -->
-            <!-- </div> -->
+              </el-popover>
+            </div>
             <ul class="contract-msglist">
-              <!-- <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
+              <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
               <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
-              <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li> -->
+              <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
             </ul>
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="合同类型" prop="contType.label" min-width="60" fixed>
+      <el-table-column label="合同类型" prop="contType.label" min-width="60">
       </el-table-column>
 
-      <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
+      <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
       </el-table-column>
       
-      <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
+      <el-table-column label="成交总价" prop="dealPrice" min-width="90">
         <template slot-scope="scope">
           <span>{{scope.row.dealPrice}} 元</span>
-          <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+          <!-- <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> -->
         </template>
       </el-table-column>
 
@@ -43,69 +43,60 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="签约日期" min-width="90">
+      <el-table-column label="签约时间" min-width="110">
         <template slot-scope="scope">
-          {{Number(scope.row.signDate)|timeFormat_}}
+          {{scope.row.signDate}}
         </template>
       </el-table-column>
 
-      <el-table-column label="可分配业绩 (元)" min-width="80">
+      <el-table-column label="签约方式" prop="recordType.label" min-width="60">
+      </el-table-column>
+
+      <el-table-column label="可分配业绩 (元)" min-width="90">
         <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
-            <span v-else>-</span>
+            <span>{{scope.row.distributableAchievement}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="合同状态" min-width="80">
+      <el-table-column label="变更审核状态" min-width="80">
         <template slot-scope="scope">
-          <span v-if="scope.row.contType.value<4">
-            <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
-            <el-popover trigger="hover" placement="top" v-else>
-              <div style="width:160px">
-                {{scope.row.delReason}}
-              </div>
-              <div slot="reference" class="name-wrapper isFlex">
-                {{scope.row.contState.label}}
-              </div>
-            </el-popover>
-          </span>
-          <span v-else>-</span>
+          {{scope.row.changeRecord.examineState===0?"审核中":scope.row.changeRecord.examineState===1?"已通过":"已驳回"}}
         </template>
       </el-table-column>
 
-      <el-table-column label="审核时间" min-width="120">
+      <el-table-column label="审核时间" min-width="110">
         <template slot-scope="scope">
-          <span v-if="scope.row.auditTime">{{Number(scope.row.auditTime)|formatTime}}</span>
+          <span v-if="scope.row.changeRecord.auditTime">{{Number(scope.row.changeRecord.auditTime)|formatTime}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
 
       <el-table-column label="当前审核人" min-width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
-            <p>{{scope.row.auditStoreName}}</p>
-            <p>{{scope.row.auditName}}</p>
+          <span v-if="scope.row.changeRecord.auditId>0&&scope.row.changeRecord.examineState===0">
+            <p>{{scope.row.changeRecord.auditStoreName}}</p>
+            <p>{{scope.row.changeRecord.auditName}}</p>
           </span>
           <p v-else>-</p>
-          <el-button type="text" v-if="getUserMsg&&(scope.row.auditId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+          <el-button type="text" v-if="getUserMsg&&(scope.row.changeRecord.auditId===getUserMsg.empId||scope.row.changeRecord.preAuditId===getUserMsg.empId)&&scope.row.changeRecord.examineState===0" @click="choseCheckPerson(scope.row,scope.row.changeRecord.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.changeRecord.auditId?'转交审核人':'设置审核人'}}</el-button>
         </template>
       </el-table-column>
 
       <el-table-column label="下一步审核人" min-width="120">
         <template slot-scope="scope">
-          <span v-if="scope.row.nextAuditId>0">
-            <p>{{scope.row.nextAuditStoreName}}</p>
-            <p>{{scope.row.nextAuditName}}</p>
+          <span v-if="scope.row.changeRecord.nextAuditId>0">
+            <p>{{scope.row.changeRecord.nextAuditStoreName}}</p>
+            <p>{{scope.row.changeRecord.nextAuditName}}</p>
           </span>
           <p v-else>-</p>
-          <el-button type="text" v-if="getUserMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===getUserMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+          <el-button type="text" v-if="getUserMsg&&(scope.row.changeRecord.nextAuditId!==0&&scope.row.changeRecord.auditId===getUserMsg.empId&&scope.row.changeRecord.examineState===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.changeRecord.nextAuditId===0}">设置审核人</el-button>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" min-width="90" fixed="right">
         <template slot-scope="scope">
-          <div style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-          <div class="btn" v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</div>
+          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div>
+          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
@@ -205,6 +196,25 @@ export default{
         this.noPower('合同详情查看')
       }
     },
+  },
+  computed:{
+    fawu:function(){
+      let host=window.location.host
+      let url = false
+      switch (host){
+          case "localhost:8080":
+          case "sign2.jjw.com:28879":
+            url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
+                break
+          case "sign2.jjw.com":
+            url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
+                break
+        }
+        return url
+    },
+    getUserMsg(){
+      return this.getUser.user
+    }
   },
   filters: {
     timeFormat_: function (val) {
