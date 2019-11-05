@@ -12,7 +12,8 @@
               :disabled="type===2?true:false"
               v-model="contractForm.signDate"
               type="datetime"
-              value-format="yyyy/MM/dd HH:mm:ss"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
               default-time="12:00:00">
@@ -35,7 +36,7 @@
             <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="业主佣金：" class="width-250">
+          <el-form-item label="业主佣金：" style="text-align:right;width:285px;">
             <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
             <i class="yuan">元</i>
           </el-form-item>
@@ -607,8 +608,7 @@ export default {
         let D = time.getDate()
         let h = time.getHours()
         let m = time.getMinutes()
-        let s = time.getSeconds()
-        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
         this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条

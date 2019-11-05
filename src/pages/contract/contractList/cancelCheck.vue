@@ -139,13 +139,12 @@ export default {
       }
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
-          path:'/contractCheck',
+          path:'/cancelCheck',
           url:'/contract/auditList',
           query:Object.assign({},param,{empName:this.dep.empName}),
           methods:"postJSON"
         }))
       }
-      printParam=Object.assign({},param)
 
       this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
         res = res.data;

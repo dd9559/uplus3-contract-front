@@ -2660,6 +2660,7 @@ export default {
       white-space: nowrap;
     }
     .content {
+      min-width: 1370px;
       .one_ {
         margin-bottom: 10px;
         &:last-of-type {
