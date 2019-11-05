@@ -876,12 +876,12 @@
             <p>合同基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
-                <p class="w30"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
+                <p class="w30"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
+                <p class="w25"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
                 <p><span>交易类型：</span><span>{{contractDetail.contType.label}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
+                <p class="w30"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
                 <p><span>应收佣金：</span><span>{{contractDetail.receivableCommission}}元</span></p>
               </li>
             </ul>
@@ -890,24 +890,25 @@
             <p>房屋基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
-                <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
+                <p class="w30"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
+                <p class="w25"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
                 <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment==='0'?'否':'是'}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
-                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
+                <p class="w30"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
+                <p class="w25"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
                 <p><span>土地性质：</span><span>{{contractDetail.report.landNature?contractDetail.report.landNature===1?'划拨':'出让':'--'}}</span></p>
+              </li>
+              <li>
+                <p class="w30"><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
+                <p><span>建成年代：</span><span>{{contractDetail.houseInfo.CompleteYear?contractDetail.houseInfo.CompleteYear:'--'}}</span></p>
               </li>
               <li>
                 <p><span>产权地址：</span><span>{{contractDetail.propertyRightAddr}}</span></p>
               </li>
               <li>
-                <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
-              </li>
-              <li>
-                <p class="w25"><span>预缴税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
-                <p class="w30"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
+                <p class="w30"><span>预缴税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
+                <p class="w25"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
                 <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure?contractDetail.report.buildingStructure:'--'}}</span></p>
                 <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue?contractDetail.report.evaluationValue+'万元':'--'}}</span></p>
               </li>
@@ -933,15 +934,22 @@
           </div>
           <div class="mai-mai resource">
             <div class="guest">
-              <div class="title">买方信息</div>
-              <div class="two-item">
-                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>{{buyerFirst.cardType===1?"身份证":buyerFirst.cardType===2?"护照":buyerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+              <div class="title" style="border-bottom: 1px solid #ebeef5;">买方信息</div>
+              <div>
+                <p><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
-              <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
-                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              <div class="two-item">
+                <p class="line"><span>{{getCardTypeVal(buyerFirst.cardType)}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+                <p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p>
+              </div>
+              <div class="no-bottom display-b" v-for="(item,index) in buyerInfo" :key="index">
+                <div>
+                  <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
+                </div>
+                <div class="two-item">
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                </div>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
@@ -956,15 +964,22 @@
               </div>
             </div>
             <div class="seller">
-              <div class="title">卖方信息</div>
-              <div class="two-item">
-                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>{{sellerFirst.cardType===1?"身份证":sellerFirst.cardType===2?"护照":sellerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+              <div class="title" style="border-bottom: 1px solid #ebeef5;">卖方信息</div>
+              <div>
+                <p><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
-              <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
-                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              <div class="two-item">
+                <p class="line"><span>{{getCardTypeVal(sellerFirst.cardType)}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+                <p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p>
+              </div>
+              <div class="no-bottom display-b" v-for="(item,index) in sellerInfo" :key="index">
+                <div>
+                  <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
+                </div>
+                <div class="two-item">
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                </div>
               </div>
               <div class="last-item" style="border-top:1px solid #ebeef5;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
@@ -1445,6 +1460,18 @@ export default {
     })
   },
   methods: {
+    // 成交报告打印页获取证件类型文本
+    getCardTypeVal(val) {
+      if(val==1){
+        return '身份证'
+      }else if(val==2){
+        return '护照'
+      }else if(val==3){
+        return '营业执照'
+      }else{
+        return '军官证'
+      }
+    },
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {
       this.saveBtnShow = !this.saveBtnShow
@@ -3188,6 +3215,9 @@ export default {
         &.title {
           justify-content: center;
           font-size: 16px;
+        }
+        &.display-b {
+          display: block;
         }
         p {
           padding-left: 5px;
