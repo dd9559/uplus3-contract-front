@@ -42,7 +42,21 @@ let TOOL = {
               can:true,//是否可见
               path: "settleCheck",
               code: "sign-ht-js-query"
-            }
+            },
+            {
+              name: "变更审核",
+              category:"1-1-5",
+              can:true,//是否可见
+              path: "changeCheck",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "解约审核",
+              category:"1-1-6",
+              can:true,//是否可见
+              path: "cancelCheck",
+              code: "sign-ht-info-query"
+            },
           ]
         },
         {

@@ -170,7 +170,7 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
-      <el-table ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
+      <el-table :span-method="objectSpanMethod" ref="tableCom" class="info-scrollbar" :data="tableData" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
         <el-table-column label="合同信息" label-class-name="pdl" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -485,7 +485,7 @@ export default {
         "53": "", //合作方式
         "54": "", //业绩状态
         "538": "", //用途
-        "507": "",
+        "507": "", //租赁时间单位
         "11": "",//后期状态
         "65":"",//线下合同类型
         "64":"",//签约方式  线上线下
@@ -675,6 +675,22 @@ export default {
     }
   },
   methods: {
+    //委托合同合并单元格
+    objectSpanMethod({ row, column, rowIndex, columnIndex }){
+      // if (columnIndex === 0) {
+      //   if (rowIndex % 2 === 0) {
+      //     return {
+      //       rowspan: 2,
+      //       colspan: 1
+      //     };
+      //   } else {
+      //     return {
+      //       rowspan: 0,
+      //       colspan: 0
+      //     };
+      //   }
+      // }
+    },
     dayin(){
       document.querySelector('#dayin').contentWindow.print()
     },
@@ -710,8 +726,6 @@ export default {
         param.contTypes=''
       }
 
-      // delete param.depName
-      //console.log(param)
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/contractList',
@@ -818,12 +832,6 @@ export default {
             this.printData=res.data
             this.isHavePrint=true
           }
-          // else{
-          //   this.$message({
-          //     message: '该合同暂无打印详情',
-          //     type: "warning"
-          //   });
-          // }
         }
       });
     },
@@ -1177,53 +1185,6 @@ export default {
           type:"error"
         })
       })
-
-      // if(command===1){
-      //   if(this.blankPdf1){
-      //     this.getUrl(this.blankPdf1);
-      //   }else{
-      //     this.$message({
-      //       message:'该类型合同模板未上传,请上传后再打印',
-      //       type: "warning"
-      //     })
-      //   }
-      // }else if(command===2){
-      //   if(this.blankPdf2){
-      //     this.getUrl(this.blankPdf2);
-      //   }else{
-      //     this.$message({
-      //       message:'该类型合同模板未上传,请上传后再打印',
-      //       type: "warning"
-      //     })
-      //   }
-      // }else if(command===3){
-      //   if(this.blankPdf3){
-      //     this.getUrl(this.blankPdf3);
-      //   }else{
-      //     this.$message({
-      //       message:'该类型合同模板未上传,请上传后再打印',
-      //       type: "warning"
-      //     })
-      //   }
-      // }else if(command===4){
-      //   if(this.blankPdf4){
-      //     this.getUrl(this.blankPdf4);
-      //   }else{
-      //     this.$message({
-      //       message:'该类型合同模板未上传,请上传后再打印',
-      //       type: "warning"
-      //     })
-      //   }
-      // }else if(command===5){
-      //   if(this.blankPdf5){
-      //     this.getUrl(this.blankPdf5);
-      //   }else{
-      //     this.$message({
-      //       message:'该类型合同模板未上传,请上传后再打印',
-      //       type: "warning"
-      //     })
-      //   }
-      // }
     },
     //获取空白合同pdf
     getBlankPdf(){

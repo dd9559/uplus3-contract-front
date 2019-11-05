@@ -5,8 +5,19 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="放款日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.loanDate" style="width:140px"></el-date-picker>
+          <el-form-item label="放款日期：" style="text-align:right;width:285px;" class="form-label">
+            <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.loanDate" style="width:140px"></el-date-picker> -->
+            <el-date-picker
+              style="width:180px"
+              :disabled="operationType===2?true:false"
+              v-model="contractForm.loanDate"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+              default-time="12:00:00">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="纸质合同编号：" style="width:340px;text-align:right;">
             <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode('pCode')" placeholder="请输入" class="dealPrice">
@@ -19,7 +30,7 @@
             <input type="text" v-model="contractForm.loanAmount" @input="cutNumber('loanAmount')" @change="countCost" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="期限时间：" style="width:470px;text-align:right;">
+          <el-form-item label="期限时间：" style="width:510px;text-align:right;">
             <el-date-picker v-model="termData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
             </el-date-picker>
           </el-form-item>
@@ -30,7 +41,7 @@
           <el-form-item label="经办人：" class="width-250">
             <input type="text" maxlength="10" v-model="contractForm.transactor" @input="inputOnly('transactor')" placeholder="请输入" class="dealPrice">
           </el-form-item>
-          <el-form-item label="受理人：" style="width:280px;text-align:right;">
+          <el-form-item label="受理人：" style="width:320px;text-align:right;">
             <input type="text" maxlength="10" v-model="contractForm.acceptor" @input="inputOnly('acceptor')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <el-form-item label="岗位名称：" style="width:245px;text-align:right;">
@@ -41,7 +52,7 @@
             <input type="text" v-model="contractForm.incomeAmount" @input="cutNumber('incomeAmount')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="金融成本比例：" class="form-label" style="width:280px;text-align:right;">
+          <el-form-item label="金融成本比例：" class="form-label" style="width:320px;text-align:right;">
             <input type="text" v-model="contractForm.financeCostRatio" @input="cutNumber('financeCostRatio')" @change="countCost" placeholder="请输入" class="dealPrice">
             <i class="yuan">%</i>
           </el-form-item>
@@ -266,6 +277,12 @@ export default {
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
     }
   },
   created () {
@@ -386,7 +403,9 @@ export default {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
+      let h = time.getHours()
+      let m = time.getMinutes()
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
       this.contractForm.loanDate=time_
     },
     //获取客户所属区域

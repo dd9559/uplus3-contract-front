@@ -417,6 +417,9 @@
             </div>
           </div>
         </el-tab-pane>
+        <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
+          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow"></agency-contract>
+        </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
             <div class="moduleTitle">
@@ -432,7 +435,7 @@
                 </el-table-column>
                 <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column label="应收金额（元）" prop="amount" min-width="50">
+                <el-table-column label="应收/应付金额（元）" prop="amount" min-width="50">
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
@@ -483,7 +486,7 @@
                 </el-table-column>
                 <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column label="实收金额（元）" prop="amount" min-width="50">
+                <el-table-column label="实收/实付金额（元）" prop="amount" min-width="50">
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
@@ -583,33 +586,143 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
-          <div class="record" v-if="power['sign-com-htdetail'].state">
-            <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
-              <el-table-column label="时间">
-                <template slot-scope="scope">
-                  {{scope.row.auditTime|formatTime}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="userName" label="姓名">
-              </el-table-column>
-              <el-table-column prop="roleName" label="职务">
-              </el-table-column>
-              <el-table-column prop="operate" label="操作">
-              </el-table-column>
-              <el-table-column label="备注" width="320">
-                <template slot-scope="scope">
-                    <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
-                      <div style="width:300px">
-                        {{scope.row.auditInfo}}
-                      </div>
-                      <div slot="reference" class="name-wrapper">
-                        {{scope.row.auditInfo}}
-                      </div>
-                    </el-popover>
-                  <span v-else>-</span>
-                </template>
-              </el-table-column>
-            </el-table>
+          <div class="firstDetail" :style="{ height: clientHei }">
+            <!-- 合同审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 委托合同审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>委托合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同变更审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同变更审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同解约审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同解约审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -1037,6 +1150,7 @@ import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
 import billDialog from '@/components/billDialog';
+import agencyContract from '../contractDialog/agencyContract';
 
 const marriage = [
   {id:1,type:"已婚"},
@@ -1056,7 +1170,8 @@ export default {
     LayerPrint,
     flowAccount,
     dealReport,
-    billDialog
+    billDialog,
+    agencyContract
   },
   data() {
     return {
@@ -1292,6 +1407,7 @@ export default {
       dialogOperation:1,//1=新增,2=编辑,3=查看
       dialogType:1,//1=应收/应付款项,2=实收/实付款项
       dialogDel:false,
+      agencyShow:false, //委托合同组件显示
     };
   },
   created() {
@@ -1371,6 +1487,8 @@ export default {
       }else if(tab.name==="receipt"){
         this.getSupposedList();//应收应付
         this.getActualList();//实收实付
+      }else if(tab.name==="agency"){
+        this.agencyShow = true //委托合同
       }
     },
     //打电话
@@ -2395,7 +2513,46 @@ export default {
       }else{
         this.getActualList()
       }
-    }
+    },
+    // 委托合同审核信息
+    getEntrustMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
+    // 合同变更审核
+    getChangeMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
+    // 合同解约审核
+    getCancelMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
   },
   mounted(){
     window.onresize = this.clientHeight;
@@ -2511,6 +2668,7 @@ export default {
       white-space: nowrap;
     }
     .content {
+      min-width: 1370px;
       .one_ {
         margin-bottom: 10px;
         &:last-of-type {
