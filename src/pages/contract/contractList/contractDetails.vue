@@ -417,6 +417,9 @@
             </div>
           </div>
         </el-tab-pane>
+        <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
+          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow"></agency-contract>
+        </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
             <div class="moduleTitle">
@@ -1147,6 +1150,7 @@ import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
 import billDialog from '@/components/billDialog';
+import agencyContract from '../contractDialog/agencyContract';
 
 const marriage = [
   {id:1,type:"已婚"},
@@ -1166,7 +1170,8 @@ export default {
     LayerPrint,
     flowAccount,
     dealReport,
-    billDialog
+    billDialog,
+    agencyContract
   },
   data() {
     return {
@@ -1402,6 +1407,7 @@ export default {
       dialogOperation:1,//1=新增,2=编辑,3=查看
       dialogType:1,//1=应收/应付款项,2=实收/实付款项
       dialogDel:false,
+      agencyShow:false, //委托合同组件显示
     };
   },
   created() {
@@ -1481,6 +1487,8 @@ export default {
       }else if(tab.name==="receipt"){
         this.getSupposedList();//应收应付
         this.getActualList();//实收实付
+      }else if(tab.name==="agency"){
+        this.agencyShow = true //委托合同
       }
     },
     //打电话
