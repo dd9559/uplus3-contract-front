@@ -7,14 +7,19 @@
           <div class="input-group">
             <label class="form-label no-width f14 margin-bottom-base">收款方式:</label>
             <p class="block-receipt-type">
-              <el-button size="small" class="btn-info" :type="!billStatus?'primary':''" @click="checkReceiptType(1)">线上收款</el-button>
-              <el-button size="small" class="btn-info" :type="billStatus?'primary':''" @click="checkReceiptType(2)">线下收款</el-button>
+              <el-button size="small" class="btn-info" :type="!billStatus?'primary':''" @click="checkReceiptType(1)">
+                线上收款
+              </el-button>
+              <el-button size="small" class="btn-info" :type="billStatus?'primary':''" @click="checkReceiptType(2)">
+                线下收款
+              </el-button>
               <!--<el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
                 <i class="iconfont icon-wenhao"></i>
               </el-tooltip>-->
             </p>
             <p class="block-receipt-type worth-list" v-if="firstCreate.content.contCommission">
-              <span>应收佣金（元）：{{firstCreate.content.contCommission.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.contCommission.receivedCommission}}</span><span class="warning-text">未收（元）：{{firstCreate.content.contCommission.uncollected}}</span>
+              <span>应收佣金（元）：{{firstCreate.content.contCommission.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.contCommission.receivedCommission}}</span><span
+              class="warning-text">未收（元）：{{firstCreate.content.contCommission.uncollected}}</span>
             </p>
           </div>
         </li>
@@ -28,12 +33,14 @@
                 <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
               </el-tooltip>
             </div>
-            <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
+            <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
+                          @clear="clearMoneyType"></moneyTypePop>
           </div>
           <div class="input-group col" :class="[inputPerson?'active-360':'']">
             <label class="form-label no-width f14 margin-bottom-base">付款方</label>
             <div class="flex-box">
-              <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
+              <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择"
+                         @change="getOption(form.outObjType,1)">
                 <el-option
                   v-for="item in dropdown"
                   :key="item.value"
@@ -41,20 +48,24 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.outObj" @input="inputOnly('normal')" v-if="inputPerson">
+              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20"
+                     v-model.trim="form.outObj" @input="inputOnly('normal')" v-if="inputPerson">
             </div>
           </div>
           <div class="input-group col active-400">
             <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
             <div class="flex-box w400" v-if="inObjPerson">
-              <select-tree v-if="firstCreate.state" :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
+              <select-tree v-if="firstCreate.state" :data="DepList" :init="dep.name" @checkCell="handleNodeClick"
+                           @clear="clearSelect('dep')" @search="searchDep" key="other"></select-tree>
               <div class="h32" :class="[!firstCreate.state?'no-min':'']" v-else>{{firstCreate.content.storeName}}</div>
               <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
                 <el-option class="drop-tree" value="">
                   <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
                 </el-option>
               </el-select>-->
-              <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
+              <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small"
+                         v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
+                         @change="getOption(form.inObjId,2)">
                 <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
                 <el-option
                   v-for="(item,index) in EmployeList"
@@ -83,11 +94,13 @@
             <div class="flex-box tool-tip no-max">
               <label class="form-label no-width f14 margin-bottom-base">收款金额（元）</label><span>{{form.amount|formatChinese}}</span>
             </div>
-            <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount" @input="cutNum(1)">
+            <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount"
+                   @input="cutNum(1)">
           </div>
           <div class="input-group col" :class="[!firstCreate.state?'no-max':'']" v-if="billStatus">
             <label class="form-label f14 margin-bottom-base">收账账户</label>
-            <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择" v-if="firstCreate.state||firstCreate.content.showAccount">
+            <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择"
+                       v-if="firstCreate.state||firstCreate.content.showAccount">
               <el-option
                 v-for="item in account"
                 :key="item.id"
@@ -96,160 +109,12 @@
                 {{item.storeName}}-{{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
               </el-option>
             </el-select>
-            <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>{{firstCreate.content.account[0].storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}</div>
+            <div class="h32" :class="[!firstCreate.state?'other':'']" v-else>
+              {{firstCreate.content.account[0].storeName}}-{{firstCreate.content.account[0].userName}}-{{firstCreate.content.account[0].bankName}}-{{firstCreate.content.account[0].cardNumber}}
+            </div>
           </div>
         </li>
       </ul>
-      <!--<section>
-        <div class="input-group">
-          <label class="form-label no-width f14">付款方</label>
-          <el-select size="small" v-model="form.outObjType" placeholder="请选择" @change="getOption(form.outObjType,1)">
-            <el-option
-              v-for="item in dropdown"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label class="form-label no-width f14">收款人:</label>
-          <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')"></select-tree>
-          &lt;!&ndash;<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearSelect('dep')" v-model="dep.name" placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
-            </el-option>
-          </el-select>&ndash;&gt;
-          <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false" @change="getOption(form.inObjId,2)">
-            <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
-            <el-option
-              v-for="(item,index) in EmployeList"
-              :key="index"
-              :label="item.name"
-              :value="item.empId">
-            </el-option>
-          </el-select>
-          &lt;!&ndash;<el-select size="small" v-model="form.inObjId" placeholder="请选择" @change="getOption(form.inObjId,2)">
-            <el-option
-              v-for="item in receiptMan"
-              :key="item.empId"
-              :label="item.name"
-              :value="item.empId">
-            </el-option>
-          </el-select>&ndash;&gt;
-        </div>
-      </section>
-      <div class="input-group">
-        <p><label class="form-label f14">款类</label></p>
-        <ul class="money-type-list" v-if="moneyTypeOther.length>0">
-          <li v-for="item in types" :key="item.id" :class="[activeType===item.id?'active':'']"
-              @click="choseType(item)">{{item.name}}
-          </li>
-        </ul>
-        <el-table v-if="activeType===1||moneyTypeOther.length===0" class="collapse-cell" border :data="moneyType" :span-method="collapseRow"
-                  style="width: 100%"
-                  header-row-class-name="theader-bg">
-          <el-table-column align="center" prop="pName" label="款类（大类）"></el-table-column>
-          <el-table-column min-width="100" align="center" label="款类（小类）">
-            <template slot-scope="scope">
-              <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row)">{{scope.row.name}}</el-radio>
-              &lt;!&ndash;<ul>
-                <li v-for="item in scope.row.moneyTypes">
-                  <el-radio class="money-type-radio" v-model="form.moneyType" :label="item.key" @change="getType(scope.row)">{{item.name}}
-                  </el-radio>
-                </li>
-              </ul>&ndash;&gt;
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款金额（元） ">
-            <template slot-scope="scope">
-              <input type="text" class="no-style" placeholder="请输入" v-focus v-model="form.smallAmount" @input="cutNum(1)" v-if="form.moneyType===scope.row.key">
-              <span v-else @click="getType(scope.row,'focus')">请输入</span>
-              &lt;!&ndash;<ul>
-                <li v-for="(item,index) in scope.row.moneyTypes">
-                  <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
-                         v-if="form.moneyType===item.key">
-                  <span v-else @click="getType(scope.row,'focus',index)">请输入</span>
-                </li>
-              </ul>&ndash;&gt;
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="金额大写">
-            <template slot-scope="scope">
-              <span>{{form.smallAmount|formatChinese}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款账户">
-            <template slot-scope="scope">
-              <div class="collapse-context" v-if="activeType===1">
-                <p>分账账户</p>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-table v-else-if="moneyTypeOther.length>0" class="collapse-cell" border :data="moneyTypeOther[0].moneyTypes" :span-method="collapseRow"
-                  style="width: 100%"
-                  header-row-class-name="theader-bg" key="other">
-          <el-table-column align="center" label="款类（大类）">
-            <template slot-scope="scope">{{moneyTypeOther[0].name}}</template>
-          </el-table-column>
-          <el-table-column min-width="100" align="center" label="款类（小类）">
-            <template slot-scope="scope">
-              <div class="box box-left">
-                <el-radio class="money-type-radio" v-model="form.moneyType" :label="scope.row.key" @change="getType(scope.row,'other')">
-                  {{scope.row.name}}
-                </el-radio>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款金额（元） ">
-            <template slot-scope="scope">
-              <div class="box">
-                <input type="text" class="no-style" placeholder="请输入" v-focus @input="cutNum(1)" v-model="form.smallAmount"
-                       v-if="form.moneyType===scope.row.key">
-                <span v-else @click="getType(scope.row,'other')">请输入</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款方式">
-            <template slot-scope="scope">
-              <div class="box">
-                <el-select v-model="form.proceedsType" placeholder="请选择" v-if="form.moneyType===scope.row.key">
-                  <el-option
-                    v-for="item in dictionary['534']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key">
-                  </el-option>
-                </el-select>
-                <span v-else>请选择<i class="iconfont icon-xialazhankai"></i></span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="收款账户">
-            <template slot-scope="scope">
-              <div class="box">
-                <el-select v-model="activeAdmin" placeholder="请选择" v-if="form.moneyType===scope.row.key">
-                  <el-option
-                    v-for="item in account"
-                    :key="item.bankCard"
-                    :label="`${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
-                    :value="item.bankCard">
-                    {{item.bankAccountName}}<span style="margin: 0 4px;">{{item.bankBranchName}}</span>{{item.bankCard}}
-                  </el-option>
-                </el-select>
-                <span v-else>请选择<i class="iconfont icon-xialazhankai"></i></span>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        &lt;!&ndash;<ul class="table-total" v-if="activeType===2">
-          <li>现金收款:<span>3000元</span></li>
-          <li>转账收款:<span>3000元</span></li>
-          <li>POS刷卡收款:<span>3000元</span></li>
-          <li>合计金额:<span>9000元</span></li>
-        </ul>&ndash;&gt;
-      </div>-->
       <div class="input-group" v-if="billStatus">
         <div class="flex-box txt-title">
           <label class="f14">支付信息</label>
@@ -276,7 +141,8 @@
                   <label class="form-label f14 margin-bottom-base">金额（元）</label>
                   <span>{{item.amount|formatChinese}}</span>
                 </div>
-                <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount" @input="cutNum(item,'amount')">
+                <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount"
+                       @input="cutNum(item,'amount')">
               </section>
               <!--<section v-if="item.payMethod===2">
                 <label class="f14 margin-bottom-base">收账账户</label>
@@ -305,7 +171,8 @@
           </el-table-column>
           <el-table-column align="center" label="户名">
             <template slot-scope="scope">
-              <input type="text" v-model.trim="scope.row.userName" class="no-style" placeholder="请输入" @input="inputOnly('userName',scope.$index)">
+              <input type="text" v-model.trim="scope.row.userName" class="no-style" placeholder="请输入"
+                     @input="inputOnly('userName',scope.$index)">
             </template>
           </el-table-column>
           <el-table-column align="center" label="账户 ">
@@ -316,17 +183,20 @@
           </el-table-column>
           <el-table-column align="center" label="金额（元）">
             <template slot-scope="scope">
-              <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')" placeholder="请输入">
+              <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')"
+                     placeholder="请输入">
             </template>
           </el-table-column>
           <el-table-column align="center" label="订单编号">
             <template slot-scope="scope">
-              <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入" @input="inputOnly('orderNo',scope.$index)">
+              <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入"
+                     @input="inputOnly('orderNo',scope.$index)">
             </template>
           </el-table-column>
           <el-table-column align="center" label="手续费（元）">
             <template slot-scope="scope">
-              <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')" placeholder="请输入">
+              <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')"
+                     placeholder="请输入">
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作">
@@ -349,7 +219,8 @@
                   <span>点击上传</span>
                 </file-up>
               </li>
-              <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"  @click="previewPhoto(imgList,index)">
+              <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"
+                  @click="previewPhoto(imgList,index)">
                 <upload-cell :type="item.type"></upload-cell>
                 <!--<span>{{item.name}}</span>-->
                 <el-tooltip :content="item.name" placement="top">
@@ -362,7 +233,9 @@
           </div>
           <div class="input-group">
             <p><label class="f14">备注信息</label></p>
-            <el-input v-model="form.remark" class="info-textarea" :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5" maxlength="200" type="textarea"></el-input>
+            <el-input v-model="form.remark" class="info-textarea"
+                      :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5"
+                      maxlength="200" type="textarea"></el-input>
           </div>
           <div class="input-group">
             <p><label class="f14">温馨提示</label></p>
@@ -377,1080 +250,935 @@
     </div>
     <p>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-loading.fullscreen.lock="fullscreenLoading">{{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
+                 v-loading.fullscreen.lock="fullscreenLoading">{{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}
+      </el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
 <script>
-  import {MIXINS} from "@/assets/js/mixins";
-  import moneyTypePop from '@/components/moneyTypePop'
+    import {MIXINS} from "@/assets/js/mixins";
+    import moneyTypePop from '@/components/moneyTypePop'
 
-  const rule={
-    outObjId:{
-      name:'付款方',
-      type:'negativeNum'
-    },
-    outObj:{
-      name:'付款方',
-    },
-    inObjId:{
-      name:'收款人',
-    },
-    createTime:{
-      name:'收款时间'
-    },
-    moneyType:{
-      name:'款类',
-    },
-    amount:{
-      name:'收款金额',
-      type:'money'
-    },
-    admin:{
-      name:'收账账户'
+    const rule = {
+        outObjId: {
+            name: '付款方',
+            type: 'negativeNum'
+        },
+        outObj: {
+            name: '付款方',
+        },
+        inObjId: {
+            name: '收款人',
+        },
+        createTime: {
+            name: '收款时间'
+        },
+        moneyType: {
+            name: '款类',
+        },
+        amount: {
+            name: '收款金额',
+            type: 'money'
+        },
+        admin: {
+            name: '收账账户'
+        }
     }
-  }
-  const cardRule = {
-    userName:{
-      name:'户名'
-    },
-    cardNumber:{
-      name:'账户'
-    },
-    bankName:{
-      name:'刷卡银行'
-    },
-    amount:{
-      name:'金额',
-      type:'money'
-    },
-    orderNo:{
-      name:'订单号'
-    },
-    fee:{
-      name:'手续费',
-      type:'zeroNum'
+    const cardRule = {
+        userName: {
+            name: '户名'
+        },
+        cardNumber: {
+            name: '账户'
+        },
+        bankName: {
+            name: '刷卡银行'
+        },
+        amount: {
+            name: '金额',
+            type: 'money'
+        },
+        orderNo: {
+            name: '订单号'
+        },
+        fee: {
+            name: '手续费',
+            type: 'zeroNum'
+        }
     }
-  }
-  const payRule = {
-    payMethod:{
-      name:'支付方式'
-    },
-    amount:{
-      name:'金额',
-      type:'money'
-    },
-    /*activeAdmin:{
-      name:'收帐账户'
-    }*/
-  }
-
-  export default {
-    mixins: [MIXINS],
-    components:{
-      moneyTypePop,
-    },
-    data() {
-      return {
-        contId:'',
-        dep:{
-          id:'',
-          name:''
+    const payRule = {
+        payMethod: {
+            name: '支付方式'
         },
-        inputPerson:false,//是否显示第三方输入框
-        billStatus:false,//线上或线下,false=线上，true=线下
-        form: {
-          contId: '',
-          remark: '',
-          inObj: '',
-          inObjId: '',
-          // inObjType:'',
-          outObj: '',
-          outObjId: '',
-          outObjType: '',
-          moneyType: '',
-          moneyTypePid: '',
-          amount: '',
-          createTime: '',
+        amount: {
+            name: '金额',
+            type: 'money'
         },
-        types: [
-          {
-            id: 1,
-            name: '收入',
-          },
-          {
-            id: 2,
-            name: '代收代付'
-          }
-        ],
-        activeType: 1,
-        moneyType: [],
-        moneyTypeName: '',
-        moneyTypeOther: [],
-        payList: [
-          {
-            payMethod:'',
-            amount:'',
-            activeAdmin:''
-          }
-        ],
-        cardList: [
-          {
-            bankName: '',
-            userName: '',
-            cardNumber: '',
-            amount: '',
-            orderNo: '',
-            fee: ''
-          }
-        ],
-        dictionary: {
-          '534': ''
-        },
-        activeAdmin: '',
-        account: [],
-        dropdown: [],
-        receiptMan: [],
-        files:[],
-        imgList:[],
-        activeLi:'',
-        employeInfo:true,
-        employePage:1,
-        collapseMsg:{
-          total:0,
-          row:[]
-        },
-        fullscreenLoading:false,//提交表单防抖
-        showAmount:false,//款类是否为代收代付
-        showCard:true,//是否显示刷卡补充
-        inObjPerson:true,//收款人是否可选
-        firstCreate:{
-          state:true,
-          content:{}
-        },//合同是否第一次创建
-        uploadScane:{path:'sk',id:''},//上传场景值
-        hasChose_receiptType:{
-          state:false,
-          version:0,
-        },//合同是否第一次选择过收款方式
-      }
-    },
-    mounted() {
-      this.form.contId = this.$route.query.contId?parseInt(this.$route.query.contId):''
-      this.getMoneyType()
-      this.getDictionary()
-      // this.remoteMethod()
-      this.getDropdown()
-      // this.getReceiptman()
-      // this.getAdmin()
-      this.getFirstTime_receipt(this.$route.query.contId)
-      this.addInit(this.$route.query.contId)
-      let type = this.$route.query.edit
-      let inAccount = this.$route.query.type
-      let code=this.$route.query.code
-      if(code){
-        this.uploadScane.id=code
-      }
-      if (type) {
-        this.inObjPerson=false
-        this.getDetails({type: type, payId: this.$route.query.id})
-      }else {
-        if(this.getUser){
-          this.getAcount(this.getUser&&this.getUser.user.empId)
-        }
-      }
-      if(inAccount){
-        this.activeType=parseInt(inAccount)===4?2:1
-      }
-      let arr=this.$tool.getRouter(['二手房','合同','合同列表'],'/contractList');
-      arr.push({name:'创建收款',path:this.$route.fullPath});
-      this.setPath(arr);
-    },
-    methods: {
-      //判断用户该合同是否已经选择过收款方式
-      getFirstTime_receipt:function (id) {
-        this.$ajax.get('/api/payInfo/checkPayAccountType',{contId:id}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            if(res.data){
-              this.billStatus=res.data.account.value===3?false:true
-              this.hasChose_receiptType.state=true
-              this.hasChose_receiptType.version=res.data.version
-            }
-          }
-        })
-      },
-      //判断用户该合同是否第一次选择收款人部门
-      addInit:function (id) {
-        this.$ajax.get('/api/payInfo/toInsert',{contId:id}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.firstCreate.content = Object.assign({},res.data)
-            if(!res.data.showAccount){
-              this.firstCreate.state=false
-
-              if(!this.firstCreate.content.showAccount){
-                this.activeAdmin = res.data.account[0].accountId
-              }
-              this.getEmploye(res.data.storeId)
-            }else {
-              // console.log(this.getUser)
-              this.firstCreate.state=true
-
-              this.dep.id=this.getUser.user.depId
-              this.dep.name=this.getUser.user.depName
-              this.getEmploye(this.getUser.user.depId)
-              this.form.inObjId=this.getUser.user.empId
-              this.form.inObj=this.getUser.user.name
-            }
-          }
-        })
-      },
-      clearData:function () {
-        this.$tool.clearForm(this.form)
-        this.cardList=[]
-        this.files=[]
-        this.imgList=[]
-      },
-      cutNum:function (val,item) {
-        if(val===1){
-          this.form.amount=this.$tool.cutFloat({val:this.form.amount,max:999999999.99})
-        }else {
-          val[item]=this.$tool.cutFloat({val:val[item],max:999999999.99})
-        }
-      },
-      inputOnly:function (type,index) {
-        if(type==='userName'){
-          this.cardList[index].userName=this.$tool.textInput(this.cardList[index].userName,3)
-        }else if(type==='orderNo') {
-          this.cardList[index].orderNo=this.$tool.textInput(this.cardList[index].orderNo,2)
-        }else {
-          this.form.outObj=this.$tool.textInput(this.form.outObj)
-        }
-      },
-      getPicture:function () {
-        let arr=[]
-        this.imgList.forEach(item=>{
-          arr.push(item.path)
-        })
-        this.fileSign(arr)
-      },
-      initDepList:function (val) {
-        if(!val){
-          this.remoteMethod()
-        }
-      },
-      searchDep:function (payload) {
-        /*this.DepList=payload.list
-        this.dep.name=payload.depName*/
-        this.form.inObjId=''
-        this.clearSelect('emp')
-      },
-      //收款人下拉选项操作
-      clearSelect:function (type='dep') {
-        if(type==='dep'){
-          this.dep.name=''
-          this.EmployeList=[]
-          this.form.inObjId=''
-          this.form.inObj=''
-          this.employePage=1
-          /*if(this.DepList.length===0){
-            let val=this.getUser.user
-            this.dep.id=val.depId
-            this.dep.name=val.depName
-            this.getEmploye(val.depId)
-            this.form.inObjId=val.empId
-            this.form.inObj=val.name
-          }*/
-        }else {
-          this.form.inObj=''
-          /*this.employePage=1
-          this.EmployeList=[]*/
-        }
-        //初始收账账户数据
-        this.payList.forEach(item=>{
-          item.activeAdmin=''
-        })
-        if(this.firstCreate.state){
-          this.activeAdmin = ''
-        }
-        this.account=[]
-      },
-      handleNodeClick(data) {
-        this.getEmploye(data.depId,1,false)
-        this.clearSelect()
-        this.dep.id=data.depId
-        this.dep.name=data.name
-        /*if(data.subs.length===0){
-          this.$refs.tree.blur()
+        /*activeAdmin:{
+          name:'收帐账户'
         }*/
-      },
-      //是否隐藏刷卡补充
-      hideCardList:function (val) {
-        let state = this.payList.every(item=>{
-          return item.payMethod===3
-        })
-        if(state){
-          this.showCard=false
-        }else{
-          this.showCard=true
-        }
-      },
-      //支付信息表单增减
-      payListOper:function (index) {
-        // this.hideCardList()
-        if(index===0){
-          let cell={
-            payMethod:'',
-            amount:'',
-            activeAdmin:''
-          }
-          this.payList=this.payList.concat(cell)
-        }else {
-          this.payList.splice(index,1)
-        }
-        this.hideCardList()
-      },
-      /**
-       * 修改款单，获取初始数据
-       */
-      getDetails: function (param) {
-        this.$ajax.get('/api/payInfo/selectDetail', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            let obj = {
-              remark: res.data.remark,
-              inObj: res.data.inObjName,
-              inObjId: res.data.inObjId,
-              // inObjType:'',
-              outObj: res.data.outObj,
-              outObjId: res.data.outObjId,
-              outObjType: res.data.outObjType.value,
-              moneyType: res.data.moneyType,
-              moneyTypePid: res.data.moneyTypePid,
-              amount: res.data.amount,
-              id: res.data.id,
-              createTime: this.$tool.timeFormat(res.data.createTime)
-            }
-            if(obj.outObjType===3){
-              this.inputPerson=true
-            }
-            this.billStatus=res.data.inAccountType===3?false:true
-            this.moneyTypeName=res.data.moneyTypeName
-            this.dep.id=res.data.inObjStoreId
-            this.dep.name=res.data.inObjStore
-            this.getEmploye(res.data.deptId)
-            // if(this.activeType===2){
-              if(res.data.filePath){
-                this.imgList=this.$tool.cutFilePath(JSON.parse(res.data.filePath))
-              }
-              this.imgList.forEach(item=>{
-                this.files.push(`${item.path}?${item.name}`)
-              })
-              this.cardList = res.data.account //刷卡补充
-            let arr = res.data.inAccount.map(item=>Object.assign({},item,{activeAdmin:item.cardNumber,payMethod:item.payMethod.value}))
-              this.payList = [].concat(arr)
-              if(res.data.inAccount&&res.data.inAccount.length>0){ //收账账户
-                this.activeAdmin = res.data.inAccount[0].accountId
-              }
-            // }
-            this.form = Object.assign({}, this.form, obj)
-            this.getAcount(this.form.inObjId)
-            this.hideCardList()
-          }
-        })
-      },
-      /**
-       * 获取所有款类
-       */
-      getMoneyType: function () {
-        let param={}
-        if(this.$route.query.edit){
-          param.payId=this.$route.query.id
-        }
-        this.$ajax.get('/api/payInfo/selectMoneyType',param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.moneyType = this.moneyType.concat(res.data)
-            /*res.data.forEach((item, index) => {
-              if (item.name === '代收代付') {
-                // this.moneyType.splice(index, 1)
-                this.moneyTypeOther = res.data.splice(index, 1)
-              }
-            })
-            res.data.forEach(item=>{
-              this.collapseMsg.total=this.collapseMsg.total+item.moneyTypes.length
-              this.collapseMsg.row.push(item.moneyTypes.length)
-              item.moneyTypes.forEach(cell=>{
-                cell.pId=item.id
-                cell.pName=item.name
-              })
-              this.moneyType = this.moneyType.concat(item.moneyTypes)
-            })*/
-          }
-        })
-      },
-      /**
-       * 获取上传文件
-       */
-      getFiles:function (payload) {
-        this.files=this.files.concat(this.$tool.getFilePath(payload.param))
-        this.imgList=this.$tool.cutFilePath(this.files)
-      },
-      delFile:function () {
-        this.imgList.splice(this.activeLi,1)
-        this.files.splice(this.activeLi,1)
-      },
-      goCancel:function () {
-        this.$confirm('是否取消当前操作',{closeOnClickModal:false}).then(()=>{
-          this.$router.go(-1)
-        }).catch(()=>{
+    }
 
-        })
-      },
-      goResult: function () {
-        // console.log(this.getUser)
-        // let RULE = this.activeType===1?rule:otherRule
-        let param = Object.assign({admin:this.activeAdmin}, this.form)
-        param.payAccountType=this.billStatus?4:3
-
-        //支付信息列表更新
-        let newPayList = this.payList.map(item=>{
-          return Object.assign({},item)
-        })
-
-        let arr=[]
-        let payTotal=0
-        let cardTotal=0
-        let checkTotal=0
-        //收款信息验证
-        if(!this.billStatus){
-          delete param.admin
-          delete param.createTime
-        }
-        arr.push(this.$tool.checkForm(param,rule))
-        //支付信息验证
-        if(this.billStatus){
-          let cardListStatus = newPayList.every(item=>item.payMethod===3)
-          newPayList.forEach(item=>{
-            if(item.payMethod!==2){
-              delete item.activeAdmin
-            }
-            if(item.payMethod!==3){
-              checkTotal+=parseFloat(item.amount)
-            }
-            payTotal+=parseFloat(item.amount)
-            arr.push(this.$tool.checkForm(item,payRule))
-          })
-          if(!cardListStatus&&this.cardList[0].bankName){
-            //刷卡资料验证
-            this.cardList.forEach(item=>{
-              cardTotal+=parseFloat(item.amount)
-              arr.push(this.$tool.checkForm(item,cardRule))
-            })
-          }
-          Promise.all(arr).then(res=>{
-            let total = parseFloat(this.form.amount)
-            if(total!==parseFloat(payTotal.toFixed(2))){
-              this.$message({
-                message:'收款金额=支付总金额'
-              })
-            }else if(parseFloat(checkTotal.toFixed(2))!==parseFloat(cardTotal.toFixed(2))&&this.cardList[0].bankName){
-              this.$message({
-                message:'刷卡资料补充输入总金额=POS刷卡金额+转账金额'
-              })
-            }else if(this.files.length===0){
-              this.$message({
-                message:'收款凭证不能为空'
-              })
-            }else {
-              param.filePath = [].concat(this.files)
-              param.outAccount = cardListStatus?[]:[].concat(this.cardList)
-              param.inAccount = []
-              this.payList.forEach(item=>{
-                if(this.firstCreate.state||this.firstCreate.content.showAccount){
-                  this.account.find(card => {
-                    if (card.id === this.activeAdmin) {
-                      let obj = {
-                        bankName: card.bankBranchName,
-                        userName: card.bankAccountName,
-                        cardNumber: card.bankCard,
-                        accountId: card.id,
-                        storeId: card.storeId,
-                        storeName: card.storeName
-                      }
-                      param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
-                      return true
+    export default {
+        mixins: [MIXINS],
+        components: {
+            moneyTypePop,
+        },
+        data() {
+            return {
+                contId: '',
+                dep: {
+                    id: '',
+                    name: ''
+                },
+                inputPerson: false,//是否显示第三方输入框
+                billStatus: false,//线上或线下,false=线上，true=线下
+                form: {
+                    contId: '',
+                    remark: '',
+                    inObj: '',
+                    inObjId: '',
+                    // inObjType:'',
+                    outObj: '',
+                    outObjId: '',
+                    outObjType: '',
+                    moneyType: '',
+                    moneyTypePid: '',
+                    amount: '',
+                    createTime: '',
+                },
+                types: [
+                    {
+                        id: 1,
+                        name: '收入',
+                    },
+                    {
+                        id: 2,
+                        name: '代收代付'
                     }
-                  })
-                }else {
-                  let obj = Object.assign({},this.firstCreate.content.account[0])
-                  delete obj.amount
-                  delete obj.fee
-                  delete obj.orderNo
-                  delete obj.payMethod
-                  param.inAccount.push(Object.assign({},obj,{amount:item.amount,payMethod:item.payMethod}))
+                ],
+                activeType: 1,
+                moneyType: [],
+                moneyTypeName: '',
+                moneyTypeOther: [],
+                payList: [
+                    {
+                        payMethod: '',
+                        amount: '',
+                        activeAdmin: ''
+                    }
+                ],
+                cardList: [
+                    {
+                        bankName: '',
+                        userName: '',
+                        cardNumber: '',
+                        amount: '',
+                        orderNo: '',
+                        fee: ''
+                    }
+                ],
+                dictionary: {
+                    '534': ''
+                },
+                activeAdmin: '',
+                account: [],
+                dropdown: [],
+                receiptMan: [],
+                files: [],
+                imgList: [],
+                activeLi: '',
+                employeInfo: true,
+                employePage: 1,
+                collapseMsg: {
+                    total: 0,
+                    row: []
+                },
+                fullscreenLoading: false,//提交表单防抖
+                showAmount: false,//款类是否为代收代付
+                showCard: true,//是否显示刷卡补充
+                inObjPerson: true,//收款人是否可选
+                firstCreate: {
+                    state: true,
+                    content: {}
+                },//合同是否第一次创建
+                uploadScane: {path: 'sk', id: ''},//上传场景值
+                hasChose_receiptType: {
+                    state: false,
+                    version: 0,
+                },//合同是否第一次选择过收款方式
+            }
+        },
+        mounted() {
+            let urlParam=this.$route.query//id款单id,contId合同id,code合同编号
+            this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
+            this.getMoneyType()
+            this.getDictionary()
+            // this.remoteMethod()
+            this.getDropdown()
+            // this.getReceiptman()
+            // this.getAdmin()
+            this.getFirstTime_receipt(urlParam.contId)
+            this.addInit(urlParam.contId)
+            if (urlParam.code) {
+                this.uploadScane.id = urlParam.code
+            }
+            let arr = [];
+            if (urlParam.edit) {
+                this.inObjPerson = false
+                this.getDetails({type: 1, payId: urlParam.id})
+                arr = this.$tool.getRouter(['二手房', '财务', Number(urlParam.edit)===1?'收付款单':'收款审核'], Number(urlParam.edit)===1?'/bill':'/moneyCheck?type=1');
+                arr.push({name: '编辑收款', path: this.$route.fullPath});
+            } else {
+                arr = this.$tool.getRouter(['二手房', '合同', '合同列表'], '/contractList');
+                arr.push({name: '创建收款', path: this.$route.fullPath});
+                if (this.getUser) {
+                    this.getAcount(this.getUser && this.getUser.user.empId)
                 }
-              })
-              this.getResult(param,this.$route.query.edit?'edit':'')
             }
-          }).catch(error=>{
-            this.$message({
-              message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
-            })
-          })
-        }else {
-          Promise.all(arr).then(res=>{
-            this.getResult(param,this.$route.query.edit?'edit':'')
-          }).catch(error=>{
-            this.$message({
-              message:`${error.title}${error.msg}`
-            })
-          })
-        }
 
-        /*param.outAccount=[]
-        param.inAccount=[]
-        if (this.activeType === 2) {
-          param.outAccount = [].concat(this.cardList)
-          this.account.find(item => {
-            if (item.bankCard === this.activeAdmin) {
-              let obj = {
-                bankName: item.bankBranchName,
-                userName: item.bankAccountName,
-                cardNumber: item.bankCard,
-                amount: this.form.smallAmount
-              }
-              param.inAccount = [].concat(obj)
-              return true
-            }
-          })
-        }
-        this.$tool.checkForm(param,RULE).then(()=>{
-          // debugger
-          let state = false
-          if(this.activeType===2){
-            if(param.inAccount.length===0){
-              this.$message({
-                message:'收账账户不能为空'
-              })
-            }else {
-              // let state=false
-              let arr=[]
-              let moneyArr=[] //刷卡资料补充,输入金额集合
-              let feeArr=[] //刷卡资料补充,输入手续费集合
-
-              let count=0
-              param.outAccount.find((item,index)=>{
-                /!*if(!state){
-                  this.$tool.checkForm(item,RULE).then(()=>{
-                    let count=0
-                    param.outAccount.forEach(item=>{
-                      count = count+parseFloat(item.amount)
-                      // return count
-                    })
-                    if(count!==parseFloat(this.form.smallAmount)){
-                      this.$message({
-                        message:'刷卡金额要等于收款金额'
-                      })
-                      return true
+            this.setPath(arr);
+        },
+        methods: {
+            //判断用户该合同是否已经选择过收款方式
+            getFirstTime_receipt: function (id) {
+                this.$ajax.get('/api/payInfo/checkPayAccountType', {contId: id}).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        if (res.data) {
+                            this.billStatus = res.data.account.value === 3 ? false : true
+                            this.hasChose_receiptType.state = true
+                            this.hasChose_receiptType.version = res.data.version
+                        }
                     }
-                    if(index===param.outAccount.length-1){
-                      if(this.files.length===0){
-                        this.$message({
-                          message:'收款凭证不能为空'
+                })
+            },
+            //判断用户该合同是否第一次选择收款人部门
+            addInit: function (id) {
+                this.$ajax.get('/api/payInfo/toInsert', {contId: id}).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.firstCreate.content = Object.assign({}, res.data)
+                        if (!res.data.showAccount) {
+                            this.firstCreate.state = false
+
+                            if (!this.firstCreate.content.showAccount) {
+                                this.activeAdmin = res.data.account[0].accountId
+                            }
+                            this.getEmploye(res.data.storeId)
+                        } else {
+                            // console.log(this.getUser)
+                            this.firstCreate.state = true
+
+                            this.dep.id = this.getUser.user.depId
+                            this.dep.name = this.getUser.user.depName
+                            this.getEmploye(this.getUser.user.depId)
+                            this.form.inObjId = this.getUser.user.empId
+                            this.form.inObj = this.getUser.user.name
+                        }
+                    }
+                })
+            },
+            clearData: function () {
+                this.$tool.clearForm(this.form)
+                this.cardList = []
+                this.files = []
+                this.imgList = []
+            },
+            cutNum: function (val, item) {
+                if (val === 1) {
+                    this.form.amount = this.$tool.cutFloat({val: this.form.amount, max: 999999999.99})
+                } else {
+                    val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
+                }
+            },
+            inputOnly: function (type, index) {
+                if (type === 'userName') {
+                    this.cardList[index].userName = this.$tool.textInput(this.cardList[index].userName, 3)
+                } else if (type === 'orderNo') {
+                    this.cardList[index].orderNo = this.$tool.textInput(this.cardList[index].orderNo, 2)
+                } else {
+                    this.form.outObj = this.$tool.textInput(this.form.outObj)
+                }
+            },
+            getPicture: function () {
+                let arr = []
+                this.imgList.forEach(item => {
+                    arr.push(item.path)
+                })
+                this.fileSign(arr)
+            },
+            initDepList: function (val) {
+                if (!val) {
+                    this.remoteMethod()
+                }
+            },
+            searchDep: function (payload) {
+                /*this.DepList=payload.list
+                this.dep.name=payload.depName*/
+                this.form.inObjId = ''
+                this.clearSelect('emp')
+            },
+            //收款人下拉选项操作
+            clearSelect: function (type = 'dep') {
+                if (type === 'dep') {
+                    this.dep.name = ''
+                    this.EmployeList = []
+                    this.form.inObjId = ''
+                    this.form.inObj = ''
+                    this.employePage = 1
+                    /*if(this.DepList.length===0){
+                      let val=this.getUser.user
+                      this.dep.id=val.depId
+                      this.dep.name=val.depName
+                      this.getEmploye(val.depId)
+                      this.form.inObjId=val.empId
+                      this.form.inObj=val.name
+                    }*/
+                } else {
+                    this.form.inObj = ''
+                    /*this.employePage=1
+                    this.EmployeList=[]*/
+                }
+                //初始收账账户数据
+                this.payList.forEach(item => {
+                    item.activeAdmin = ''
+                })
+                if (this.firstCreate.state) {
+                    this.activeAdmin = ''
+                }
+                this.account = []
+            },
+            handleNodeClick(data) {
+                this.getEmploye(data.depId, 1, false)
+                this.clearSelect()
+                this.dep.id = data.depId
+                this.dep.name = data.name
+                /*if(data.subs.length===0){
+                  this.$refs.tree.blur()
+                }*/
+            },
+            //是否隐藏刷卡补充
+            hideCardList: function (val) {
+                let state = this.payList.every(item => {
+                    return item.payMethod === 3
+                })
+                if (state) {
+                    this.showCard = false
+                } else {
+                    this.showCard = true
+                }
+            },
+            //支付信息表单增减
+            payListOper: function (index) {
+                // this.hideCardList()
+                if (index === 0) {
+                    let cell = {
+                        payMethod: '',
+                        amount: '',
+                        activeAdmin: ''
+                    }
+                    this.payList = this.payList.concat(cell)
+                } else {
+                    this.payList.splice(index, 1)
+                }
+                this.hideCardList()
+            },
+            /**
+             * 修改款单，获取初始数据
+             */
+            getDetails: function (param) {
+                this.$ajax.get('/api/payInfo/selectRevDetail', param).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        let obj = {
+                            remark: res.data.remark,
+                            inObj: res.data.inObjName,
+                            inObjId: res.data.inObjId,
+                            // inObjType:'',
+                            outObj: res.data.outObj,
+                            outObjId: res.data.outObjId,
+                            outObjType: res.data.outObjType.value,
+                            moneyType: res.data.moneyType,
+                            moneyTypePid: res.data.moneyTypePid,
+                            amount: res.data.amount,
+                            id: res.data.id,
+                            createTime: this.$tool.timeFormat(res.data.createTime)
+                        }
+                        if (obj.outObjType === 3) {
+                            this.inputPerson = true
+                        }
+                        this.billStatus = res.data.inAccountType === 3 ? false : true
+                        this.moneyTypeName = res.data.moneyTypeName
+                        this.dep.id = res.data.inObjStoreId
+                        this.dep.name = res.data.inObjStore
+                        this.getEmploye(res.data.deptId)
+                        if (res.data.filePath) {
+                            this.imgList = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+                        }
+                        this.imgList.forEach(item => {
+                            this.files.push(`${item.path}?${item.name}`)
                         })
-                      }else {
-                        param.filePath = [].concat(this.files)
-                        this.getResult(param,this.$route.query.edit?'edit':'')
-                      }
+                        this.cardList = res.data.account //刷卡补充
+                        let arr = res.data.inAccount.map(item => Object.assign({}, item, {
+                            activeAdmin: item.cardNumber,
+                            payMethod: item.payMethod.value
+                        }))
+                        this.payList = [].concat(arr)
+                        if (res.data.inAccount && res.data.inAccount.length > 0) { //收账账户
+                            this.activeAdmin = res.data.inAccount[0].accountId
+                        }
+                        // }
+                        this.form = Object.assign({}, this.form, obj)
+                        this.getAcount(this.form.inObjId)
+                        this.hideCardList()
                     }
-                  }).catch(error=>{
-                    // debugger
-                    state=true
-                    this.$message({
-                      message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
-                    })
-                  })
-                }*!/
-                count = count+parseFloat(item.amount)
-                moneyArr.push(item.amount)
-                feeArr.push(item.fee)
-                arr.push(this.$tool.checkForm(item,RULE))
-              })
-              Promise.all(arr).then(res=>{
-                if(count!==parseFloat(this.form.smallAmount)){
-                  this.$message({
-                    message:'刷卡金额要等于收款金额'
-                  })
-                  return true
-                }else if(moneyArr.includes('0')){
-                  this.$message({
-                    message:'输入金额必须大于0'
-                  })
-                  return
-                }else if(feeArr.includes('0')){
-                  this.$message({
-                    message:'输入手续费必须大于0'
-                  })
-                  return
+                })
+            },
+            /**
+             * 获取所有款类
+             */
+            getMoneyType: function () {
+                let param = {}
+                if (this.$route.query.edit) {
+                    param.payId = this.$route.query.id
                 }
-                if(this.files.length===0){
-                  this.$message({
-                    message:'收款凭证不能为空'
-                  })
-                }else {
-                  param.filePath = [].concat(this.files)
-                  this.getResult(param,this.$route.query.edit?'edit':'')
-                }
-              }).catch(error=>{
-                this.$message({
-                  message:error.title==='刷卡银行'?'银行卡号输入有误':`${error.title}${error.msg}`
+                this.$ajax.get('/api/payInfo/selectMoneyType', param).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.moneyType = this.moneyType.concat(res.data)
+                        /*res.data.forEach((item, index) => {
+                          if (item.name === '代收代付') {
+                            // this.moneyType.splice(index, 1)
+                            this.moneyTypeOther = res.data.splice(index, 1)
+                          }
+                        })
+                        res.data.forEach(item=>{
+                          this.collapseMsg.total=this.collapseMsg.total+item.moneyTypes.length
+                          this.collapseMsg.row.push(item.moneyTypes.length)
+                          item.moneyTypes.forEach(cell=>{
+                            cell.pId=item.id
+                            cell.pName=item.name
+                          })
+                          this.moneyType = this.moneyType.concat(item.moneyTypes)
+                        })*/
+                    }
                 })
-              })
-            }
-          }
-          if(this.activeType===1){
-            this.getResult(param,this.$route.query.edit?'edit':'')
-          }
-        }).catch(error=>{
-          this.$message({
-            message:`${error.title}${error.msg}`
-          })
-        })*/
-      },
-      getResult:function (param,type='add') {
-        this.fullscreenLoading=true
-        if (type==='edit') {
-            this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
-              res=res.data
-              if(res.status===200){
-                this.fullscreenLoading=false
-                this.$router.replace({
-                  path: 'receiptResult',
-                  query:{
-                    type:this.billStatus?2:1,
-                    content:JSON.stringify(res.data),
-                    edit:1
-                  }
-                })
-              }
-            }).catch(error=>{
-              this.fullscreenLoading=false
-              this.$message({
-                message:error
-              })
-            })
-          } else {
-            this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
-              res = res.data
-              if (res.status === 200) {
-                this.fullscreenLoading=false
-                this.$router.replace({
-                  path: 'receiptResult',
-                  query:{
-                    type:this.billStatus?2:1,
-                    content:JSON.stringify(res.data)
-                  }
-                })
-              }
-            }).catch(error=>{
-              this.fullscreenLoading=false
-              if(error.message==='下一节点审批人不存在'){
-                this.$router.replace({
-                  path: 'receiptResult',
-                  query:{
-                    type:this.billStatus?2:1,
-                    content:JSON.stringify(error.data),
-                    errorCode:'dialog'
-                  }
-                })
-              }else {
-                this.$message({
-                  message:error
-                })
-              }
-            })
-          }
-      },
-      /*origin
-      choseType: function (item) {
-        let obj = {
-          moneyType: '',
-          moneyTypePid: '',
-          smallAmount: '',
-          proceedsType: '',
-        }
-        // this.activeAdmin = ''
-        this.activeType = item.id
-        this.form = Object.assign({},this.form,obj)
-      },*/
-      //合并单元格
-      /*collapseRow: function ({rowIndex, columnIndex}) {
-        // debugger
-        if (this.activeType === 1||this.moneyTypeOther.length===0) {//当款类为收入或代收代付的数据为0时
-          if(columnIndex >= 3){
-            if (rowIndex === 0) {
-              return [this.moneyType.length, 1]
-            } else {
-              return [0, 0]
-            }
-          }
-          if(columnIndex===0){
-            return this.$tool.collapseRow({
-              rowIndex:rowIndex,
-              rowTotal:this.collapseMsg.total,
-              collapse:this.collapseMsg.row
-            })
-          }
-        }
-        if (columnIndex === 0 && this.activeType === 2) {
-          if (rowIndex === 0) {
-            return [this.moneyTypeOther[0].moneyTypes.length, 1]
-          } else {
-            return [0, 0]
-          }
-        }
-      },*/
-      /**
-       * 获取下拉框数据
-       */
-      getDropdown: function () {
-        let param = {
-          contId: this.form.contId
-        }
-        this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.dropdown = res.data
-          }
-        })
-      },
-      /**
-       * 获取收款人
-       */
-      getReceiptman: function () {
-        this.$ajax.get('/api/organize/currentdep/employee').then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.receiptMan = res.data
-          }
-        })
-      },
-      /**
-       * 获取收款账户
-       */
-      getAcount: function (empId) {
-        let param={
-          contId:this.form.contId,
-          empId:empId
-        }
-        this.$ajax.get('/api/payInfo/selectProceedsAccount',param).then(res => {
-          res = res.data
-          if (res.status === 200) {
-            this.account = [].concat(res.data)
-          }
-        })
-      },
-      //选择收款类型操作
-      checkReceiptType:function (type) {
-        if(this.hasChose_receiptType.state){
-          let msg=''
-          switch (this.hasChose_receiptType.version){
-            case 1:
-              msg='请先作废之前的收款方式，作废后可重新选择其他收款方式~'
-              break;
-            case 2:
-              msg='因您的第一笔实收是线上收款，请根据第一笔实收的收款方式继续收款~'
-              break;
-            case 3:
-              msg='因您的第一笔实收是线下收款，请根据第一笔实收的收款方式继续收款~'
-              break;
-            default:
-              msg='结果异常'
-          }
-          this.$message({
-            message:msg
-          })
-          return
-        }
-        this.billStatus=false//线上收款
-        type!==1&&(this.billStatus=true)
-      },
-      getCell:function (label) {
-        /*if(label.accountType.value===3){
-          this.billStatus=false
-        }else {
-          this.billStatus=true
-        }*/
-        this.showAmount=label.pName==='代收代付'?false:true
-        this.form.moneyType=label.key
-        this.form.moneyTypePid = label.pId
-        // this.layer.content[0].moneyType=label.name
-        // this.getAmount()
-      },
-      clearMoneyType:function () {
-        this.form.moneyType=''
-        this.form.moneyTypePid = ''
-        this.moneyTypeName = ''
-        this.$tool.clearForm(this.amount,true)
-      },
-      /**
-       * 获取下拉框选择对象
-       * @param item
-       */
-      getOption: function (item, type) {
-        let obj = {}
-        let list = type === 1 ? this.dropdown : this.EmployeList
-        list.find(tip => {
-          if (tip[type === 1 ? 'value' : 'empId'] === item) {
-            if (type === 1) {
-              obj.outObjId = tip.custId
-              obj.outObj = tip.custName
-              if(item===3){
-                this.inputPerson = true
-              }else {
-                this.inputPerson = false
-              }
-            } else {
-              obj.inObj = tip.name
-              if(this.firstCreate.state){
-                this.activeAdmin=''
-                this.getAcount(this.form.inObjId)
-              }
-            }
-            return
-          }
-        })
+            },
+            /**
+             * 获取上传文件
+             */
+            getFiles: function (payload) {
+                this.files = this.files.concat(this.$tool.getFilePath(payload.param))
+                this.imgList = this.$tool.cutFilePath(this.files)
+            },
+            delFile: function () {
+                this.imgList.splice(this.activeLi, 1)
+                this.files.splice(this.activeLi, 1)
+            },
+            goCancel: function () {
+                this.$confirm('是否取消当前操作', {closeOnClickModal: false}).then(() => {
+                    this.$router.go(-1)
+                }).catch(() => {
 
-        this.form = Object.assign({}, this.form, obj)
-      },
-      /**
-       * 刷卡资料补充
-       */
-      cardOpera: function (type, row,index) {
-        if (type === 'add') {
-          let cell = {
-            bankName: '',
-            userName: '',
-            cardNumber: '',
-            amount: '',
-            orderNo: '',
-            fee: ''
-          }
-          this.cardList.push(cell)
-        } else {
-          this.cardList.splice(index, 1)
-        }
-      },
-      /**
-       * 根据卡号获取银行信息
-       */
-      getBank: function (row, index) {
-        row.cardNumber=this.$tool.numberInput(row.cardNumber)
-        let param = {
-          cardNumber: row.cardNumber
-        }
-        if(param.cardNumber.length>20){
-          row.cardNumber = row.cardNumber.substr(0,20)
-          return
-        }
-        if (param.cardNumber.length >= 16) {
-          this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
-            res = res.data
-            if (res.status === 200) {
-              this.cardList[index].bankName = res.data.bankName?res.data.bankName:''
+                })
+            },
+            goResult: function () {
+                let param = Object.assign({admin: this.activeAdmin}, this.form)
+                param.payAccountType = this.billStatus ? 4 : 3
+
+                //支付信息列表更新
+                let newPayList = this.payList.map(item => {
+                    return Object.assign({}, item)
+                })
+
+                let arr = []
+                let payTotal = 0
+                let cardTotal = 0
+                let checkTotal = 0
+                //收款信息验证
+                if (!this.billStatus) {
+                    delete param.admin
+                    delete param.createTime
+                }
+                if(!param.createTime){
+                    param.createTime=''
+                }
+                arr.push(this.$tool.checkForm(param, rule))
+                //支付信息验证
+                if (this.billStatus) {
+                    let cardListStatus = newPayList.every(item => item.payMethod === 3)
+                    newPayList.forEach(item => {
+                        if (item.payMethod !== 2) {
+                            delete item.activeAdmin
+                        }
+                        if (item.payMethod !== 3) {
+                            checkTotal += parseFloat(item.amount)
+                        }
+                        payTotal += parseFloat(item.amount)
+                        arr.push(this.$tool.checkForm(item, payRule))
+                    })
+                    if (!cardListStatus && this.cardList[0].bankName) {
+                        //刷卡资料验证
+                        this.cardList.forEach(item => {
+                            cardTotal += parseFloat(item.amount)
+                            arr.push(this.$tool.checkForm(item, cardRule))
+                        })
+                    }
+                    Promise.all(arr).then(res => {
+                        let total = parseFloat(this.form.amount)
+                        if (total !== parseFloat(payTotal.toFixed(2))) {
+                            this.$message({
+                                message: '收款金额=支付总金额'
+                            })
+                        } else if (parseFloat(checkTotal.toFixed(2)) !== parseFloat(cardTotal.toFixed(2)) && this.cardList[0].bankName) {
+                            this.$message({
+                                message: '刷卡资料补充输入总金额=POS刷卡金额+转账金额'
+                            })
+                        } else if (this.files.length === 0) {
+                            this.$message({
+                                message: '收款凭证不能为空'
+                            })
+                        } else {
+                            param.filePath = [].concat(this.files)
+                            param.outAccount = cardListStatus ? [] : [].concat(this.cardList)
+                            param.inAccount = []
+                            this.payList.forEach(item => {
+                                if (this.firstCreate.state || this.firstCreate.content.showAccount) {
+                                    this.account.find(card => {
+                                        if (card.id === this.activeAdmin) {
+                                            let obj = {
+                                                bankName: card.bankBranchName,
+                                                userName: card.bankAccountName,
+                                                cardNumber: card.bankCard,
+                                                accountId: card.id,
+                                                storeId: card.storeId,
+                                                storeName: card.storeName
+                                            }
+                                            param.inAccount.push(Object.assign({}, obj, {
+                                                amount: item.amount,
+                                                payMethod: item.payMethod
+                                            }))
+                                            return true
+                                        }
+                                    })
+                                } else {
+                                    let obj = Object.assign({}, this.firstCreate.content.account[0])
+                                    delete obj.amount
+                                    delete obj.fee
+                                    delete obj.orderNo
+                                    delete obj.payMethod
+                                    param.inAccount.push(Object.assign({}, obj, {
+                                        amount: item.amount,
+                                        payMethod: item.payMethod
+                                    }))
+                                }
+                            })
+                            this.getResult(param, this.$route.query.edit ? 'edit' : '')
+                        }
+                    }).catch(error => {
+                        this.$message({
+                            message: error.title === '刷卡银行' ? '银行卡号输入有误' : `${error.title}${error.msg}`
+                        })
+                    })
+                } else {
+                    Promise.all(arr).then(res => {
+                        this.getResult(param, this.$route.query.edit ? 'edit' : '')
+                    }).catch(error => {
+                        this.$message({
+                            message: `${error.title}${error.msg}`
+                        })
+                    })
+                }
+            },
+            getResult: function (param, type = 'add') {
+                this.fullscreenLoading = true
+                if (type === 'edit') {
+                    this.$ajax.put('/api/payInfo/updateProceedsInfo', param).then(res => {
+                        res = res.data
+                        if (res.status === 200) {
+                            this.fullscreenLoading = false
+                            this.$router.go(-1)
+                        }
+                    }).catch(error => {
+                        this.fullscreenLoading = false
+                        this.$message({
+                            message: error
+                        })
+                    })
+                } else {
+                    this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
+                        res = res.data
+                        if (res.status === 200) {
+                            this.fullscreenLoading = false
+                            this.$router.replace({
+                                path: 'receiptResult',
+                                query: {
+                                    type: this.billStatus ? 2 : 1,
+                                    content: JSON.stringify(res.data)
+                                }
+                            })
+                        }
+                    }).catch(error => {
+                        this.fullscreenLoading = false
+                        if (error.message === '下一节点审批人不存在') {
+                            this.$router.replace({
+                                path: 'receiptResult',
+                                query: {
+                                    type: this.billStatus ? 2 : 1,
+                                    content: JSON.stringify(error.data),
+                                    errorCode: 'dialog'
+                                }
+                            })
+                        } else {
+                            this.$message({
+                                message: error
+                            })
+                        }
+                    })
+                }
+            },
+            /**
+             * 获取下拉框数据
+             */
+            getDropdown: function () {
+                let param = {
+                    contId: this.form.contId
+                }
+                this.$ajax.get('/api/payInfo/selectValue', param).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.dropdown = res.data
+                    }
+                })
+            },
+            /**
+             * 获取收款人
+             */
+            getReceiptman: function () {
+                this.$ajax.get('/api/organize/currentdep/employee').then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.receiptMan = res.data
+                    }
+                })
+            },
+            /**
+             * 获取收款账户
+             */
+            getAcount: function (empId) {
+                let param = {
+                    contId: this.form.contId,
+                    empId: empId
+                }
+                this.$ajax.get('/api/payInfo/selectProceedsAccount', param).then(res => {
+                    res = res.data
+                    if (res.status === 200) {
+                        this.account = [].concat(res.data)
+                    }
+                })
+            },
+            //选择收款类型操作
+            checkReceiptType: function (type) {
+                if (this.hasChose_receiptType.state) {
+                    let msg = ''
+                    switch (this.hasChose_receiptType.version) {
+                        case 1:
+                            msg = '请先作废之前的收款方式，作废后可重新选择其他收款方式~'
+                            break;
+                        case 2:
+                            msg = '因您的第一笔实收是线上收款，请根据第一笔实收的收款方式继续收款~'
+                            break;
+                        case 3:
+                            msg = '因您的第一笔实收是线下收款，请根据第一笔实收的收款方式继续收款~'
+                            break;
+                        default:
+                            msg = '结果异常'
+                    }
+                    this.$message({
+                        message: msg
+                    })
+                    return
+                }
+                this.billStatus = false//线上收款
+                type !== 1 && (this.billStatus = true)
+            },
+            getCell: function (label) {
+                /*if(label.accountType.value===3){
+                  this.billStatus=false
+                }else {
+                  this.billStatus=true
+                }*/
+                this.showAmount = label.pName === '代收代付' ? false : true
+                this.form.moneyType = label.key
+                this.form.moneyTypePid = label.pId
+                // this.layer.content[0].moneyType=label.name
+                // this.getAmount()
+            },
+            clearMoneyType: function () {
+                this.form.moneyType = ''
+                this.form.moneyTypePid = ''
+                this.moneyTypeName = ''
+                this.$tool.clearForm(this.amount, true)
+            },
+            /**
+             * 获取下拉框选择对象
+             * @param item
+             */
+            getOption: function (item, type) {
+                let obj = {}
+                let list = type === 1 ? this.dropdown : this.EmployeList
+                list.find(tip => {
+                    if (tip[type === 1 ? 'value' : 'empId'] === item) {
+                        if (type === 1) {
+                            obj.outObjId = tip.custId
+                            obj.outObj = tip.custName
+                            if (item === 3) {
+                                this.inputPerson = true
+                            } else {
+                                this.inputPerson = false
+                            }
+                        } else {
+                            obj.inObj = tip.name
+                            if (this.firstCreate.state) {
+                                this.activeAdmin = ''
+                                this.getAcount(this.form.inObjId)
+                            }
+                        }
+                        return
+                    }
+                })
+
+                this.form = Object.assign({}, this.form, obj)
+            },
+            /**
+             * 刷卡资料补充
+             */
+            cardOpera: function (type, row, index) {
+                if (type === 'add') {
+                    let cell = {
+                        bankName: '',
+                        userName: '',
+                        cardNumber: '',
+                        amount: '',
+                        orderNo: '',
+                        fee: ''
+                    }
+                    this.cardList.push(cell)
+                } else {
+                    this.cardList.splice(index, 1)
+                }
+            },
+            /**
+             * 根据卡号获取银行信息
+             */
+            getBank: function (row, index) {
+                row.cardNumber = this.$tool.numberInput(row.cardNumber)
+                let param = {
+                    cardNumber: row.cardNumber
+                }
+                if (param.cardNumber.length > 20) {
+                    row.cardNumber = row.cardNumber.substr(0, 20)
+                    return
+                }
+                if (param.cardNumber.length >= 16) {
+                    this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
+                        res = res.data
+                        if (res.status === 200) {
+                            this.cardList[index].bankName = res.data.bankName ? res.data.bankName : ''
+                        }
+                    })
+                }
+            },
+        },
+        watch: {
+            cardList: function (val) {
+                if (val.length === 0) {
+                    this.cardList.push({
+                        bankName: '',
+                        userName: '',
+                        cardNumber: '',
+                        amount: '',
+                        orderNo: '',
+                        fee: ''
+                    })
+                }
+            },
+            getUser: function (val) {
+                this.getAcount(val.user.empId)
             }
-          })
         }
-      },
-      /*origin
-      getType: function (label, type = 'init',index) {
-        if(this.moneyTypeOther.length===0){
-          this.activeType=1
-        }
-        let obj = {
-          /!*moneyType: '',
-          moneyTypePid: '',*!/
-          smallAmount: '',
-          proceedsType: '',
-        }
-        this.activeAdmin = ''
-        this.form = Object.assign({},this.form,obj)
-        if (type === 'init'||type==='focus') {
-          this.form.moneyTypePid = label.pId
-        } else if(type==='other') {
-          this.form.moneyType=label.key
-          this.form.moneyTypePid = this.moneyTypeOther[0].id
-        }
-        if(type==='focus'){
-          this.form.moneyType=label.key
-        }
-      },*/
-    },
-    watch:{
-      cardList:function (val) {
-        if(val.length===0){
-          this.cardList.push({
-            bankName: '',
-            userName: '',
-            cardNumber: '',
-            amount: '',
-            orderNo: '',
-            fee: ''
-          })
-        }
-      },
-      /*userMsg:function (val) {
-        if(!this.$route.query.edit&&this.firstCreate.state){
-          this.dep.id=val.depId
-          this.dep.name=val.depName
-          this.getEmploye(val.depId)
-          this.form.inObjId=val.empId
-          this.form.inObj=val.name
-        }
-      },*/
-      getUser:function (val) {
-        this.getAcount(val.user.empId)
-      }
     }
-  }
 </script>
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
-  .h32{
+
+  .h32 {
     height: 32px;
     line-height: 32px;
     min-width: 118px;
-    &.other{
+
+    &.other {
       min-width: 300px;
     }
-    &.no-min{
+
+    &.no-min {
       min-width: initial;
     }
   }
-  .artice-margin{
+
+  .artice-margin {
     margin-bottom: 30px;
   }
-  .txt-title{
+
+  .txt-title {
     font-weight: bold;
     margin-bottom: @margin-15;
     font-size: @size-14;
   }
-  input[size='small']{
+
+  input[size='small'] {
     height: 32px;
   }
-  input.person{
+
+  input.person {
     margin-left: @margin-10;
   }
-  .flex-box{
+
+  .flex-box {
     display: flex;
-    &.tool-tip{
+
+    &.tool-tip {
       max-width: 200px;
       justify-content: space-between;
     }
-    &.no-max{
+
+    &.no-max {
       max-width: none;
     }
-    .tip-message{
+
+    .tip-message {
       margin-left: @margin-10;
       display: flex;
       align-items: center;
       cursor: pointer;
       font-weight: normal;
-      >i{
+
+      > i {
         margin-right: 4px;
         font-size: @size-14;
       }
     }
   }
-  /deep/.info-textarea{
+
+  /deep/ .info-textarea {
     width: 400px;
-    .el-textarea__inner{
+
+    .el-textarea__inner {
       height: 115px;
     }
   }
-  .col-other{
-    >p{
-      &:first-of-type{
+
+  .col-other {
+    > p {
+      &:first-of-type {
         margin-bottom: @margin-10;
       }
     }
-    >.input-group{
-      >p{
+
+    > .input-group {
+      > p {
         margin-bottom: @margin-10;
       }
     }
   }
-  .other-message{
-    .input-group{
+
+  .other-message {
+    .input-group {
       margin-right: 60px;
     }
   }
-  .bill-form{
+
+  .bill-form {
     margin-bottom: 30px;
-    >li{
+
+    > li {
       display: flex;
-      &:last-of-type{
-        .col{
+
+      &:last-of-type {
+        .col {
           margin-bottom: 0px;
         }
       }
-      .col{
+
+      .col {
         max-width: 210px;
         margin: 0 60px 21px 0;
-        &.no-max{
+
+        &.no-max {
           max-width: none;
         }
-        &.active-360{
+
+        &.active-360 {
           max-width: 360px;
         }
-        &.active-400{
+
+        &.active-400 {
           max-width: 400px;
         }
-        >label{
+
+        > label {
           display: block;
         }
-        >input{
+
+        > input {
           height: 32px;
           line-height: 32px;
         }
-        .text-height{
+
+        .text-height {
           height: 32px;
           line-height: 32px;
         }
       }
     }
   }
-  .pay-list{
+
+  .pay-list {
     margin: @margin-15 0 44px;
-    >li{
+
+    > li {
       display: flex;
       align-items: flex-end;
       /*justify-content: space-between;*/
       border-bottom: 1px @color-E9 dashed;
       /*padding-bottom: @margin-15;
       margin-bottom: @margin-15;*/
-      &:last-of-type{
+
+      &:last-of-type {
         /*border: 0px;*/
         margin-bottom: 0px;
       }
-      >i{
+
+      > i {
         color: @color-C8;
         font-size: @icon-size-30;
         margin-bottom: @margin-10;
       }
     }
-    .message-box{
-      >section{
+
+    .message-box {
+      > section {
         display: flex;
         flex-direction: column;
         margin-right: 60px;
-        &:nth-of-type(2){
-          >input{
+
+        &:nth-of-type(2) {
+          > input {
             height: 32px;
           }
         }
@@ -1460,14 +1188,18 @@
 
   /deep/ .collapse-cell {
     /*margin-top: 13px !important;*/
+
     .el-table__row {
       > td {
         padding: 0;
+
         .cell {
           padding: 0 @margin-10;
-          >input{
+
+          > input {
             text-align: center;
           }
+
           /*padding: 0;
           > ul {
             > li {
@@ -1488,6 +1220,7 @@
     display: flex;
     align-items: center;
     position: relative;
+
     &:before {
       content: '';
       display: inline-block;
@@ -1495,6 +1228,7 @@
       width: 16px;
       height: 16px;
     }
+
     &.active {
       &:before {
         content: 'A';
@@ -1503,6 +1237,7 @@
         align-items: center;
       }
     }
+
     > span {
       line-height: initial;
       margin-left: 10px;
@@ -1517,6 +1252,7 @@
 
   .box {
     padding: 0 @margin-base;
+
     &-left {
       text-align: left;
     }
@@ -1531,20 +1267,24 @@
         margin-left: 20px;
       }
     }*/
+
     .money-type-list {
       display: flex;
       background-color: @bg-grey;
       padding: 0 15px;
       margin-top: @margin-base;
+
       > li {
         height: 40px;
         min-width: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
+
         &.active {
           color: @color-blue;
           position: relative;
+
           &:after {
             content: '';
             position: absolute;
@@ -1556,23 +1296,28 @@
         }
       }
     }
+
     .table-total {
       margin: 0 0 47px;
       padding: 0;
+
       > li {
         display: inline-block;
         font-weight: bold;
         font-size: @size-base;
         margin-right: 20px;
+
         > span {
           color: @color-red;
         }
       }
     }
+
     .type-list {
       display: flex;
       flex-wrap: wrap;
       margin: 20px 0px;
+
       > li {
         width: 150px;
         padding: 10px;
@@ -1581,12 +1326,14 @@
         margin: 0 10px 10px 0;
         border: 1px solid @color-D6;
         color: @color-6c;
+
         &.active {
           color: @color-blue;
           border-color: @color-blue;
         }
       }
     }
+
     .span-join {
       display: flex;
       align-items: center;
@@ -1596,17 +1343,20 @@
       padding: 6px 8px;
       border: 1px solid @color-D6;
       border-radius: 4px;
+
       > input {
         flex: 1;
       }
     }
+
     .upload-list {
       display: flex;
       flex-wrap: nowrap;
       margin: @margin-base 0;
       width: 810px;
       overflow-x: auto;
-      >li{
+
+      > li {
         border: 1px dashed @color-D6;
         width: 115px;
         min-width: 115px;
@@ -1615,51 +1365,60 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        .span{
+
+        .span {
           width: 100px;
           text-align: center;
           /*word-break: break-all;*/
           white-space: nowrap;
           overflow: hidden;
-          text-overflow:ellipsis;
+          text-overflow: ellipsis;
         }
-        &:first-of-type{
-          .iconfont{
+
+        &:first-of-type {
+          .iconfont {
             color: @bg-th;
             font-size: 58px;
             position: relative;
             display: flex;
             align-items: center;
-            &:before{
+
+            &:before {
 
             }
           }
         }
-        &:nth-of-type(n+1){
+
+        &:nth-of-type(n+1) {
           margin-right: @margin-base;
           position: relative;
-          >p{
+
+          > p {
             position: absolute;
             top: 0;
             right: 0;
             color: @color-red;
-            .iconfont{
+
+            .iconfont {
               font-size: 20px;
             }
           }
         }
       }
     }
-    .upload-text{
+
+    .upload-text {
       color: @color-99A;
       padding: 0 @margin-base;
-      >span{
-        &:first-of-type{
+
+      > span {
+        &:first-of-type {
           color: @color-blue;
           margin: 0;
         }
       }
     }
+
     /deep/ .el-table, .el-textarea {
 
     }
@@ -1669,12 +1428,14 @@
     background-color: @bg-white;
     height: 100%;
     box-sizing: border-box;
-    &-context{
+
+    &-context {
       height: 100%;
       overflow: auto;
       padding: @margin-10 @margin-10 60px;
       box-sizing: border-box;
     }
+
     section {
       margin: @margin-10 0px;
       /*&:first-of-type {
@@ -1688,8 +1449,9 @@
         }
       }*/
     }
-    >p{
-      &:last-of-type{
+
+    > p {
+      &:last-of-type {
         position: absolute;
         bottom: @margin-10;
         right: @margin-15;
@@ -1697,20 +1459,25 @@
       }
     }
   }
-  p.block-receipt-type{
+
+  p.block-receipt-type {
     display: inline-block;
-    &.worth-list{
+
+    &.worth-list {
       font-size: 14px;
       margin-left: 40px;
-      &>span{
+
+      & > span {
         margin-right: 30px;
       }
     }
-    .icon-wenhao{
+
+    .icon-wenhao {
       margin-left: 10px;
     }
   }
-  .warning-text{
+
+  .warning-text {
     color: red;
   }
 </style>
