@@ -248,8 +248,10 @@
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="contractName" placement="bottom">
-                    <li v-show="companyForm.contractSign!==''">
-                      <div @click="getPicture(1)"><upload-cell type=".png"></upload-cell></div>
+                    <li v-show="companyForm.contractSign">
+                      <div @click="getPicture(1)">
+                        <img :src="preConFile[0]" width="90px" height="80px">
+                      </div>
                       <p class="pic-name">{{contractName}}</p>
                       <span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span>
                     </li>
@@ -267,9 +269,9 @@
                     <p class="text">点击上传</p>
                   </li>
                   <el-tooltip effect="dark" :content="financialName" placement="bottom">
-                    <li v-show="companyForm.financialSign!==''">
+                    <li v-show="companyForm.financialSign">
                       <div @click="getPicture(2)">
-                        <upload-cell type=".png"></upload-cell>
+                        <img :src="preFinFile[0]" width="90px" height="80px">
                       </div>
                       <p class="pic-name">{{financialName}}</p>
                       <span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span>
@@ -321,11 +323,11 @@
         <span>电子签章信息</span>
         <div class="stamp">
           <span>合同章: </span>
-          <div @click="getPicture(1)"><upload-cell type=".png" class="picture" v-show="companyForm.contractSign!==''"></upload-cell></div>
+          <div @click="getPicture(1)"><img :src="preConFile[0]" alt="" width="120px" height="120px"></div>
         </div>
         <div class="stamp">
           <span>财务章: </span>
-          <div @click="getPicture(2)"><upload-cell type=".png" class="picture" v-show="companyForm.financialSign!==''"></upload-cell></div>
+          <div @click="getPicture(2)"><img :src="preFinFile[0]" alt="" width="120px" height="120px"></div>
         </div>
       </div>
     </div>
@@ -444,7 +446,6 @@
         },
         contractName: "",
         financialName: "",
-        imgList: [],
         bankType:[
           {
             label:'个人账户',
@@ -471,7 +472,9 @@
         // 添加公司信息的门店
         storePage:1,
         storeTotal:0,
-        temKey: "" //门店搜索值
+        temKey: "", //门店搜索值
+        preConFile: [], //合同章缩略图
+        preFinFile: [] //财务章缩略图
       }
     },
     mounted() {
@@ -709,6 +712,8 @@
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = this.cityInfo.cityName
         this.clearStore('init')
+        this.preConFile = []
+        this.preFinFile = []
       },
       // 重置表单
       clearFn(type) {
@@ -767,6 +772,10 @@
           this.companyForm.financialSign = obj.param[0].path+`?${obj.param[0].name}`
           this.financialName = obj.param[0].name
         }
+        let preloadList = [obj.param[0].path]
+        this.fileSign(preloadList, 'preload').then(res => {
+            obj.btnId === 'imgcontract' ? this.preConFile = res : this.preFinFile = res
+        })
       },
       // 删除电子签章
       delStamp(type) {
@@ -965,8 +974,6 @@
           }
         })
         let currentRow = JSON.parse(JSON.stringify(row))
-        this.contractName = currentRow.contractSign.split('?')[1]
-        this.financialName = currentRow.financialSign.split('?')[1]
         let newForm = {
           id: currentRow.id,
           cityId: currentRow.cityId,
@@ -987,6 +994,17 @@
         }
         this.companyForm = newForm
         this.getStoreRadio(type)
+        //获取电子章文件名和签名展示缩略图
+        this.contractName = currentRow.contractSign.split('?')[1]
+        this.financialName = currentRow.financialSign.split('?')[1]
+        let arr1 = [currentRow.contractSign.split('?')[0]]
+        let arr2 = [currentRow.financialSign.split('?')[0]]
+        this.fileSign(arr1, 'preload').then(res => {
+            this.preConFile = res
+        })
+        this.fileSign(arr2, 'preload').then(res => {
+            this.preFinFile = res
+        })
       },
       // 获取平台费比例值
       getStoreRadio(type) {
@@ -1006,23 +1024,13 @@
       },
       // 合同章 财务章 点击预览
       getPicture(type) {
-        this.imgList = []
-        let pic1 = this.companyForm.contractSign
-        let pic2 = this.companyForm.financialSign
+        let img_arr = []
         if(type === 1) {
-          if(pic2 === "") {
-            this.imgList.push(pic1.split('?')[0])
-          } else {
-            this.imgList.push(pic1.split('?')[0],pic2.split('?')[0])
-          }
-        } else if(type === 2) {
-          if(pic1 === "") {
-            this.imgList.push(pic2.split('?')[0])
-          } else {
-            this.imgList.push(pic2.split('?')[0],pic1.split('?')[0])
-          }
+          img_arr.push(this.companyForm.contractSign.split('?')[0])
+        } else {
+          img_arr.push(this.companyForm.financialSign.split('?')[0])
         }
-        this.fileSign(this.imgList)
+        this.fileSign(img_arr)
       },
       handleSizeChange(val) {
         this.pageSize = val
@@ -1372,11 +1380,6 @@
                 position: relative;
                 cursor: pointer;
                 text-align: center;
-                > img {
-                  width: 60px;
-                  height: 60px;
-                  border-radius: 4px;
-                }
                 .text {
                   position: absolute;
                   font-size: @size-base;
@@ -1480,8 +1483,8 @@
         margin-top: 20px;
         span { margin-right: 5px; }
         > div {
-          width: 160px;
-          height: 160px;
+          width: 120px;
+          height: 120px;
           background-color: rgba(236,238,241,1);
           position: relative;
           border-radius: 8px;
@@ -1489,6 +1492,12 @@
             position: absolute;
             top: -6px;
             font-size: 160px!important;
+          }
+          img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
           }
         }
       }
