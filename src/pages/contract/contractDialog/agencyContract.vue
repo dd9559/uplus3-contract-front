@@ -23,7 +23,8 @@
                         size="small"
                         v-model="signDate"
                         type="datetime"
-                        value-format="yyyy-MM-dd HH:mm:ss"
+                        format="yyyy-MM-dd HH:mm"
+                        value-format="yyyy-MM-dd HH:mm"
                         placeholder="选择日期时间"
                         :picker-options="pickerOptions"
                         default-time="12:00:00">
@@ -106,8 +107,15 @@
         </div>
         </div>
         <div class="btn">
-            <el-button type="primary" round @click="isSave" v-loading.fullscreen.lock="fullscreenLoading">保存并进入下一步</el-button>
+            <el-button type="primary" round @click="isSave" v-loading.fullscreen.lock="fullscreenLoading">{{defaultInfo.recordType.value==2?'保存':'保存并进入下一步'}}</el-button>
         </div>
+        <!-- 单公司提示框 -->
+        <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+            <div class="single-company">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="toH5">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -134,32 +142,34 @@ export default {
                     return time.getTime() > Date.now();
                 }
             },
-            fullscreenLoading: false
+            fullscreenLoading: false,
+            singleCompany: false,
+            singleCompanyName: ""
         }
     },
     created() {
         this.clientHei= document.documentElement.clientHeight -190 + 'px'
-        // let _date = this.defaultInfo.contractEntrust.signDate
-        // if(_date){
-        //     this.signDate = _date
-        // }else{
-        //     this.getNewData()
-        // }
-        // this.tradeFee = this.defaultInfo.contractEntrust.tradeFee
+        // 判断有无录过委托合同
+        let _date = this.defaultInfo.contractEntrust.signDate ? this.defaultInfo.contractEntrust.signDate : ''
+        if(_date){
+            this.signDate = _date
+        }else{
+            this.getTimeNow()
+        }
+        this.tradeFee = this.defaultInfo.contractEntrust.tradeFee ? this.defaultInfo.contractEntrust.tradeFee : ''
         this.houseArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 1)
         this.guestArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 2)
     },
     methods: {
         //获取当前日期
-        getNewData(){
+        getTimeNow() {
             let time = new Date()
             let y = time.getFullYear()
             let M = time.getMonth() + 1
             let D = time.getDate()
             let h = time.getHours()
             let m = time.getMinutes()
-            let s = time.getSeconds()
-            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
             this.signDate = _time
         },
         cutNumber() {
@@ -176,6 +186,27 @@ export default {
                 this.$message("交易服务费不能为空")
                 return
             }
+            if(this.defaultInfo.recordType.value == 2) {
+                // 线下合同直接保存
+                this.saveCon(2)
+            } else {
+                // 线上合同保存前先验证是否有委托合同模板
+               this.$ajax.get('/api/contract/checkContTemplate',{
+                    type: 6, //委托合同类型
+                    recordType: 1 //线上合同
+                }).then(res => {
+                    if(res.data.status === 200) {
+                        this.saveCon()
+                    }
+                }).catch(error => {
+                    this.$message({
+                        message: error,
+                        type: "error"
+                    })
+                })
+            }
+        },
+        saveCon(type=1) {
             this.fullscreenLoading = true
             this.$ajax.post('/api/contract/entrust/addContract', {
                 signDate: this.signDate,
@@ -185,20 +216,39 @@ export default {
                 res = res.data
                 if(res.status === 200){
                     this.fullscreenLoading = false
-                    let contractMsg = res.data
-                    sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg))
-                    this.$router.push({
-                        path: "/extendParams"
-                    })
+                    if(type == 1) { //线上
+                        let contractMsg = res.data
+                        sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg))
+                        if(contractMsg.singleCompany){
+                            this.singleCompany = true
+                            this.singleCompanyName = contractMsg.singleCompany
+                        }else{
+                            this.$router.push({
+                                path: "/extendParams"
+                            })
+                        }
+                    } else { //线下
+                        this.$message({
+                            message: '保存成功',
+                            type: 'success'
+                        })
+                    }
                 }
             }).catch(error => {
                 this.fullscreenLoading = false
                 this.$message({
-                    message:error,
+                    message: error,
                     type: "error"
                 })
             })
-        }
+        },
+        //跳转H5页面
+        toH5() {
+            this.singleCompany = false
+            this.$router.push({
+                path: "/extendParams"
+            })
+        },
     }
 }
 </script>
@@ -241,6 +291,9 @@ export default {
         &:nth-child(-n+2) {
             border-bottom: 1px solid @border-ED;
         }
+    }
+    .single-company{
+        padding: 20px 0 10px 10px;
     }
     .btn {
         text-align: right;
