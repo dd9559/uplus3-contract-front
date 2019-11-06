@@ -13,7 +13,7 @@
               v-model="contractForm.signDate"
               type="datetime"
               format="yyyy-MM-dd HH:mm"
-              value-format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
               default-time="12:00:00">
@@ -608,7 +608,8 @@ export default {
         let D = time.getDate()
         let h = time.getHours()
         let m = time.getMinutes()
-        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
@@ -1841,7 +1842,8 @@ export default {
         if (res.status === 200) {
           this.contractForm = res.data;
           this.recordId = res.data.recordId;
-          this.contractForm.signDate = res.data.signDate.substr(0, 10);
+          // debugger
+          // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           //合同状态为已签约且未结算时只允许编辑房客源编号
           if(this.contractForm.recordType.value===1&&res.data.resultState.value===1&&res.data.contState.value===3){

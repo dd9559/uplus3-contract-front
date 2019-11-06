@@ -36,8 +36,8 @@
         <!-- <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button> -->
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5" @click="goChangeCancel(1)">变更</el-button>
-        <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5"  @click="goChangeCancel(2)">解约</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0"  @click="goChangeCancel(2)">解约</el-button>
         <!-- <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button> -->
         <el-popover
           v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)"
@@ -123,7 +123,7 @@
       </span>
     </el-dialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :contId="changeCancelId" :code="code" @closeChangeCancel="changeCancelDialog" v-if="changeCancel_"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :commission="commission" :cityCode="cityId" :contId="changeCancelId" :code="code" @close="changeCancelDialog" @success="freachChangeCancel" v-if="changeCancel_"></changeCancel>
      <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span>确定提审？</span>
@@ -281,6 +281,11 @@ export default {
       //变更解约
       contChangeState:'',
       laterStageState:'',
+      //变更解约审核状态
+      changeExamineState:"",
+      cancelExamineState:"",
+      //变更解约佣金
+      commission:"",
       //当前待审人id
       auditId:'',
       //当前登录人信息
@@ -785,6 +790,14 @@ export default {
           this.auditId=res.data.auditId;
           this.isSign=res.data.isRisk;
           this.isHaveData=res.data.isHaveData;
+          //变更解约状态
+          this.changeExamineState=res.data.changeExamineState;
+          this.cancelExamineState=res.data.cancelExamineState;
+          //变更解约佣金
+          this.commission={
+            owner:res.data.ownerCommission,
+            user:res.data.custCommission
+          }
           //咸宁买卖无签章
           if(res.data.cityId==8&&res.data.contType.value==2){
             this.companySigns=[{contractSign: null,name: null,storeId: null}]
@@ -923,19 +936,21 @@ export default {
     goChangeCancel(value) {
       this.changeCancelId = Number(this.id);
       if (value === 1) {
-        this.canceldialogType = "changeEdit";
+        this.canceldialogType = "bg";
         this.changeCancel_ = true;
       } else if (value === 2) {
-        this.canceldialogType = "cancelEdit";
+        this.canceldialogType = "jy";
         this.changeCancel_ = true;
       }
     },
     // 关闭变更解约弹窗
     changeCancelDialog() {
-      this.getContImg();
       this.changeCancel_ = false;
-      this.canceldialogType = "";
-      this.changeCancelId = "";
+    },
+    //关闭变更解约刷新
+    freachChangeCancel(){
+      this.changeCancel_ = false;
+      this.getContImg();
     },
     //撤单
     setInvalid(){
