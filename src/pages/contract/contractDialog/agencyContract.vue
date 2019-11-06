@@ -24,7 +24,7 @@
                         v-model="signDate"
                         type="datetime"
                         format="yyyy-MM-dd HH:mm"
-                        value-format="yyyy-MM-dd HH:mm"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         placeholder="选择日期时间"
                         :picker-options="pickerOptions"
                         default-time="12:00:00">
@@ -169,7 +169,8 @@ export default {
             let D = time.getDate()
             let h = time.getHours()
             let m = time.getMinutes()
-            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
+            let s = time.getSeconds()
+            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
             this.signDate = _time
         },
         cutNumber() {
