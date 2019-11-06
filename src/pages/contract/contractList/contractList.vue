@@ -1000,7 +1000,6 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      debugger
       this.commission = {
         owner:item.ownerCommission,
         user:item.custCommission
