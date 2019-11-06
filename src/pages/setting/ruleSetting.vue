@@ -1,7 +1,7 @@
 <template>
     <div class="view-container" >
     <ul class="tabs">
-      <li v-for="item in power" v-if="item.state==true" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
+      <li v-for="item in power" v-if="item.state" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
     <component :is="current" :systemArr="systemTagList"></component>
     </div>
@@ -16,30 +16,41 @@ export default{
     mixins: [MIXINS],
     data() {
         return {
-            activeItem: 1, //Tab当前项
-            current: "lowCommission", //当前组件
+            activeItem: '', //Tab当前项
+            current: "", //当前组件
             power: {
               'sign-set-dybl': {
                 id: 1,
                 state: false,
-                name: "低佣比例设置"
+                name: "低佣比例设置",
+                current: 'lowCommission'
               },
               'sign-set-vtime': {
                 id: 2,
                 state: false,
-                name: "申诉时间设置"
+                name: "申诉时间设置",
+                current: 'aplTime'
               },
               'sign-set-rule-query': {
                 id: 3,
                 state: false,
-                name: "合同附件库设置"
+                name: "合同附件库设置",
+                current: 'conAttachment'
               }
             }
         }
     },
-    created() {
+    mounted() {
         // 获取体系
         this.getSystemTag()
+        for(let item in this.power){
+          let type = this.power[item]
+          if(type.state) {
+            this.activeItem = type.id
+            this.current = type.current
+            break
+          }
+        }
     },
     methods:{
         checkTab(item) {

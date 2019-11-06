@@ -311,6 +311,7 @@ export default {
     white-space: nowrap;
   }
   .content {
+    min-width: 1100px;
     .one_ {
       margin-bottom: 10px;
       &:last-of-type {

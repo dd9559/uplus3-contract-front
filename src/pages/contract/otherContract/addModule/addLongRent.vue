@@ -5,8 +5,19 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker>
+          <el-form-item label="签约日期：" style="width:285px;text-align:right;" class="form-label">
+            <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker> -->
+            <el-date-picker
+              style="width:180px"
+              :disabled="operationType===2?true:false"
+              v-model="contractForm.signDate"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+              default-time="12:00:00">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="交易方式：" class="form-label" style="width:290px;text-align:right;">
             <el-select v-model="contractForm.transMode" placeholder="全部" :clearable="true" style="width:150px">
@@ -22,7 +33,7 @@
             <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="应收佣金：" class="form-label" style="width:280px;text-align:right;">
+          <el-form-item label="应收佣金：" class="form-label" style="width:320px;text-align:right;">
             <input type="text" v-model="contractForm.receivableCommission" @input="cutNumber('receivableCommission')" placeholder="请输入内容" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
@@ -318,6 +329,12 @@ export default {
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
       canNotInput:false,//带出的物业地址不能修改
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
     }
   },
   created () {
@@ -434,6 +451,18 @@ export default {
             let obj_ = Object.assign({}, element);
             this.guestList_.push(obj_);
           };
+          if(this.guestList.length===0){
+            this.guestList=[
+              {
+                cardCode: "",
+                mobile: "",
+                encryptionMobile: "",
+                relation: "",
+                cardType: "",
+                name: "",
+              }
+            ]
+          }
           console.log(contractDetail)
            delete contractDetail.contractInfo
            this.contractForm=contractDetail
@@ -446,7 +475,9 @@ export default {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
+      let h = time.getHours()
+      let m = time.getMinutes()
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
       this.contractForm.signDate=time_
     },
     //获取所在城市的人员关系

@@ -501,6 +501,9 @@
         tableData:[],
         adjustCheckFiles:[],//调佣详情附件缩略图
 
+        //当前调佣审核的合同类型
+        applyType:1,
+
         power: {
           'sign-ht-maid-query': {
             state: false,
@@ -596,7 +599,11 @@
       },
       // 选择审核人
       choseCheckPerson:function (row,type) {
-        this.checkPerson.flowType=4   //调佣的流程类型为4
+        if(row.tradeType===1){
+          this.checkPerson.flowType=8   //租赁调佣的流程类型为8
+        }else if(row.tradeType===2){
+          this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+        }
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true
         this.checkPerson.type=type
@@ -818,6 +825,8 @@
       auditApply(e) {
         this.dialogVisible = true
         this.auditForm.textarea = ''
+        // 当前合同的类型
+        this.applyType=e.tradeType
         let param = {
           checkId: e.checkId,
           contractCode: e.contractCode
@@ -914,7 +923,11 @@
             })
             if(error.status === 300 && error.data.checkId){
               // this.choseCheckPerson(error.data.checkId,'set')
-              this.checkPerson.flowType=4   //调佣的流程类型为4
+              if(this.applyType===1){
+                this.checkPerson.flowType=8   //租赁调佣的流程类型为8
+              }else if(this.applyType===2){
+                this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+              }
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true
               this.checkPerson.type=3

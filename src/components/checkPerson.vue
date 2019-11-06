@@ -17,7 +17,7 @@
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
-                :label="item.positionId===0?item.name:`${item.name}+${item.positionName}`"
+                :label="!item.positionName?`${item.name}`:item.positionId===0?item.name:`${item.name}+${item.positionName}`"
                 :value="item.flag">
               </el-option>
             </el-select>
@@ -59,7 +59,7 @@
         type:Boolean,
         // default:false
       },
-      type:{//1.设置当前审核人（设置），2.设置当前审核人（转交），3.设置下一个审核人
+      type:{//1和2设置当前审核人（设置|转交），3设置下一个审核人
         type:Number,
         default:1
       },
@@ -67,7 +67,7 @@
         type:[String,Number],
         default:''
       },
-      flowType:{//流程类型，提审时选择审批人传0；审批时选择审批人传1
+      flowType:{//流程类型，付款传0；收款传1
         type:Number,
       },
       showLabel:{//是否显示label文本
@@ -148,7 +148,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val, //部门名称关键字
-          type:this.type===3?1:0, //设置下一节点（或审核）为1，设置当前节点（或提审）为0
+          type:this.type===3?1:0, //设置下一节点（或审核）为1，设置当前节点（或创建后提审）为0
           bizCode:this.bizCode, //业务编码
           flowType:this.flowType  //流程类型
         }

@@ -116,29 +116,27 @@
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
                 </div> -->
                 <div class="table">
-                  <template>
-                    <el-table :data="ownerData" border header-row-class-name="theader-bg">
-                      <el-table-column prop="name" label="业主姓名"></el-table-column>
-                      <el-table-column label="电话">
-                        <template slot-scope="scope">
-                          {{scope.row.mobile}}
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="relation" label="关系"></el-table-column>
-                      <el-table-column label="产权比" v-if="contType!='1'">
-                        <template slot-scope="scope">
-                          {{scope.row.propertyRightRatio+'%'}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column min-width="150" label="证件号码">
-                        <!-- cardType -->
-                        <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </template>
+                  <el-table :data="ownerData" border header-row-class-name="theader-bg">
+                    <el-table-column prop="name" label="业主姓名"></el-table-column>
+                    <el-table-column label="电话">
+                      <template slot-scope="scope">
+                        {{scope.row.mobile}}
+                        <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="relation" label="关系"></el-table-column>
+                    <el-table-column label="产权比" v-if="contType!='1'">
+                      <template slot-scope="scope">
+                        {{scope.row.propertyRightRatio+'%'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" label="证件号码">
+                      <!-- cardType -->
+                      <template slot-scope="scope">
+                        {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
             </div>
@@ -158,28 +156,26 @@
                   <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
                 </div> -->
                 <div class="table">
-                  <template>
-                    <el-table :data="clientrData" border header-row-class-name="theader-bg">
-                      <el-table-column prop="name" label="客户姓名"></el-table-column>
-                      <el-table-column label="电话">
-                        <template slot-scope="scope">
-                          {{scope.row.mobile}}
-                          <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
-                        </template>
-                      </el-table-column>
-                      <el-table-column prop="relation" label="关系"></el-table-column>
-                      <el-table-column label="产权比" v-if="contType!='1'">
-                        <template slot-scope="scope">
-                          {{scope.row.propertyRightRatio+'%'}}
-                        </template>
-                      </el-table-column>
-                      <el-table-column min-width="150" label="证件号码">
-                        <template slot-scope="scope">
-                          {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                  </template>
+                  <el-table :data="clientrData" border header-row-class-name="theader-bg">
+                    <el-table-column prop="name" label="客户姓名"></el-table-column>
+                    <el-table-column label="电话">
+                      <template slot-scope="scope">
+                        {{scope.row.mobile}}
+                        <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state"></i>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="relation" label="关系"></el-table-column>
+                    <el-table-column label="产权比" v-if="contType!='1'">
+                      <template slot-scope="scope">
+                        {{scope.row.propertyRightRatio+'%'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" label="证件号码">
+                      <template slot-scope="scope">
+                        {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
+                      </template>
+                    </el-table-column>
+                  </el-table>
                 </div>
               </div>
             </div>
@@ -421,6 +417,113 @@
             </div>
           </div>
         </el-tab-pane>
+        <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
+          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow"></agency-contract>
+        </el-tab-pane>
+        <el-tab-pane label="应收实收" name="receipt">
+          <div class="receiptModule">
+            <div class="moduleTitle">
+              <span>应收/应付款项</span>
+              <el-button round type="primary" size="small" @click="receiptAdd('supposed')" v-if="power['sign-ht-xq-ys-add'].state">新增</el-button>
+            </div>
+            <div class="receiptList">
+              <el-table :data="supposedList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
+                <el-table-column label="录入时间" min-width="60">
+                  <template slot-scope="scope">
+                    {{scope.row.createTime|formatTime}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column label="应收/应付金额（元）" prop="amount" min-width="50">
+                </el-table-column>
+                <el-table-column label="收付方式" prop="payment" min-width="40">
+                </el-table-column>
+                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
+                </el-table-column> -->
+                <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="合同编号" prop="contCode" min-width="55">
+                </el-table-column>
+                <el-table-column label="备注" prop="remark" min-width="70" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column label="操作" min-width="50">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.operation!=1">
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptEdit('supposed',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-del'].state" @click="receiptDel(scope.row.payId,'supposed')">删除</span>
+                      <span v-if="!power['sign-ht-xq-ys-add'].state&&!power['sign-ht-xq-ys-del'].state">-</span>
+                    </div>
+                    <span v-else>-</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                v-if="supposedList.length>0"
+                class="pagination-info"
+                @current-change="supposedNumChange"
+                :current-page="supposedNum"
+                :page-size="receiptSize"
+                layout="total, prev, pager, next, jumper"
+                :total="supposedTotal">
+              </el-pagination>
+            </div>
+          </div>
+          <div class="receiptModule">
+            <div class="moduleTitle">
+              <span>实收/实付款项</span>
+              <el-button round type="primary" size="small" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptAdd('actual')">新增</el-button>
+            </div>
+            <div class="receiptList">
+              <el-table :data="actualList" border style="width: 100%" @row-dblclick='toReceiptDetail' header-row-class-name="theader-bg">
+                <el-table-column label="收付时间" min-width="60">
+                  <template slot-scope="scope">
+                    {{scope.row.skTime|formatTime}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="款类" prop="moneyName" min-width="50" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column label="实收/实付金额（元）" prop="amount" min-width="50">
+                </el-table-column>
+                <el-table-column label="收付方式" prop="payment" min-width="40">
+                </el-table-column>
+                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
+                </el-table-column> -->
+                <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
+                  <template slot-scope="scope">
+                    {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
+                  </template>
+                </el-table-column>
+                <el-table-column label="合同编号" prop="contCode" min-width="55">
+                </el-table-column>
+                <el-table-column label="备注" prop="remark" min-width="70" show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column label="操作" min-width="50">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.operation!=1">
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-add'].state" @click="receiptEdit('actual',scope.row.payId)">编辑</span>
+                      <span class="receipBtn" v-if="power['sign-ht-xq-ys-del'].state" @click="receiptDel(scope.row.payId,'actual')">删除</span>
+                      <span v-if="!power['sign-ht-xq-ys-add'].state&&!power['sign-ht-xq-ys-del'].state">-</span>
+                    </div>
+                    <span v-else>-</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                v-if="actualList.length>0"
+                class="pagination-info"
+                @current-change="actualNumChange"
+                :current-page="actualNum"
+                :page-size="receiptSize"
+                layout="total, prev, pager, next, jumper"
+                :total="actualTotal">
+              </el-pagination>
+            </div>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
             <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
@@ -477,39 +580,149 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
+            <el-pagination v-if="recordData.length>0" class="pagination-info" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize" layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
             <!-- <button @click="downloadRecord">下载</button> -->
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
         <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
-          <div class="record" v-if="power['sign-com-htdetail'].state">
-            <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
-              <el-table-column label="时间">
-                <template slot-scope="scope">
-                  {{scope.row.auditTime|formatTime}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="userName" label="姓名">
-              </el-table-column>
-              <el-table-column prop="roleName" label="职务">
-              </el-table-column>
-              <el-table-column prop="operate" label="操作">
-              </el-table-column>
-              <el-table-column label="备注" width="320">
-                <template slot-scope="scope">
-                    <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
-                      <div style="width:300px">
-                        {{scope.row.auditInfo}}
-                      </div>
-                      <div slot="reference" class="name-wrapper">
-                        {{scope.row.auditInfo}}
-                      </div>
-                    </el-popover>
-                  <span v-else>-</span>
-                </template>
-              </el-table-column>
-            </el-table>
+          <div class="firstDetail" :style="{ height: clientHei }">
+            <!-- 合同审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 委托合同审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>委托合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同变更审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同变更审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同解约审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同解约审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -614,6 +827,44 @@
         <el-button type="primary" @click="toUpload">完善资料库</el-button>
       </span>
     </el-dialog>
+    <!-- 应收实收弹窗 -->
+    <billDialog
+    :dialog-show="dialogState"
+    @close="dialogState=false"
+    @success="addEditSuccess"
+    v-if="dialogState"
+    :dialogOperation="dialogOperation"
+    :dialogType="dialogType"
+    :payId="payId"
+    :contId="id"
+    >
+    </billDialog>
+    <!-- 删除应收实收确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>确定删除本条数据吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDel = false">取 消</el-button>
+        <el-button type="primary" @click="delBillMsg">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 应收实收详情弹窗 -->
+    <!-- <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="receiptDetail">
+        <div>
+          <p>录入时间：2019/10/15 10:05:24</p>
+          <p>款类：交易服务费</p>
+          <p>收付方式：付款</p>
+        </div>
+        <div>
+          <p>合同编号：D0001191024004</p>
+          <p>应收金额（元）：2000</p>
+          <p>付款方：业主-大田</p>
+        </div>
+      </div>
+      <div class="receiptAccessory">
+        <p>附件：</p>
+      </div>
+    </el-dialog> -->
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
@@ -625,12 +876,12 @@
             <p>合同基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
-                <p class="w30"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
+                <p class="w30"><span>签约日期：</span><span>{{contractDetail.signDate}}</span></p>
+                <p class="w25"><span>合同编号：</span><span>{{contractDetail.code}}</span></p>
                 <p><span>交易类型：</span><span>{{contractDetail.contType.label}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
+                <p class="w30"><span>成交总价：</span><span>{{contractDetail.dealPrice/10000}}万元</span></p>
                 <p><span>应收佣金：</span><span>{{contractDetail.receivableCommission}}元</span></p>
               </li>
             </ul>
@@ -639,24 +890,25 @@
             <p>房屋基本信息</p>
             <ul>
               <li>
-                <p class="w25"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
-                <p class="w30"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
+                <p class="w30"><span>两证情况：</span><span>{{contractDetail.report.cardSituation===1?'合同':contractDetail.report.cardSituation===2?'两证':contractDetail.report.cardSituation===3?'不动产':'无'}}</span></p>
+                <p class="w25"><span>抵押情况：</span><span>{{contractDetail.report.mortgageSituation===1?'有抵押':'无抵押'}}</span></p>
                 <p><span>提前还款：</span><span>{{contractDetail.report.isEarlyRepayment==='0'?'否':'是'}}</span></p>
               </li>
               <li>
-                <p class="w25"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
-                <p class="w30"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
+                <p class="w30"><span>建筑面积：</span><span>{{contractDetail.houseInfo.Square}}㎡</span></p>
+                <p class="w25"><span>土地使用权面积：</span><span>{{contractDetail.report.landUseArea?contractDetail.report.landUseArea+'㎡':'--'}}</span></p>
                 <p><span>土地性质：</span><span>{{contractDetail.report.landNature?contractDetail.report.landNature===1?'划拨':'出让':'--'}}</span></p>
+              </li>
+              <li>
+                <p class="w30"><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
+                <p><span>建成年代：</span><span>{{contractDetail.houseInfo.CompleteYear?contractDetail.houseInfo.CompleteYear:'--'}}</span></p>
               </li>
               <li>
                 <p><span>产权地址：</span><span>{{contractDetail.propertyRightAddr}}</span></p>
               </li>
               <li>
-                <p><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
-              </li>
-              <li>
-                <p class="w25"><span>预缴税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
-                <p class="w30"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
+                <p class="w30"><span>预缴税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
+                <p class="w25"><span>房屋总楼层：</span><span>{{contractDetail.houseInfo.FloorAll}}层</span></p>
                 <p class="w25"><span>建筑结构：</span><span>{{contractDetail.report.buildingStructure?contractDetail.report.buildingStructure:'--'}}</span></p>
                 <p><span>评估值：</span><span>{{contractDetail.report.evaluationValue?contractDetail.report.evaluationValue+'万元':'--'}}</span></p>
               </li>
@@ -682,15 +934,22 @@
           </div>
           <div class="mai-mai resource">
             <div class="guest">
-              <div class="title">买方信息</div>
-              <div class="two-item">
-                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
-                <p><span>{{buyerFirst.cardType===1?"身份证":buyerFirst.cardType===2?"护照":buyerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+              <div class="title" style="border-bottom: 1px solid #ebeef5;">买方信息</div>
+              <div>
+                <p><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p></div>
-              <div class="two-item no-bottom" v-for="(item,index) in buyerInfo" :key="index">
-                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              <div class="two-item">
+                <p class="line"><span>{{getCardTypeVal(buyerFirst.cardType)}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+                <p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p>
+              </div>
+              <div class="no-bottom display-b" v-for="(item,index) in buyerInfo" :key="index">
+                <div>
+                  <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
+                </div>
+                <div class="two-item">
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                </div>
               </div>
               <div class="two-item no-bottom">
                 <p class="line"><span>付款方式：</span><span>{{contractDetail.report.buyerPaymentMethod?contractDetail.report.buyerPaymentMethod===1?'全款':'贷款':'--'}}</span></p>
@@ -705,15 +964,22 @@
               </div>
             </div>
             <div class="seller">
-              <div class="title">卖方信息</div>
-              <div class="two-item">
-                <p class="line"><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
-                <p><span>{{sellerFirst.cardType===1?"身份证":sellerFirst.cardType===2?"护照":sellerFirst.cardType===3?"营业执照":"军官证"}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+              <div class="title" style="border-bottom: 1px solid #ebeef5;">卖方信息</div>
+              <div>
+                <p><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
               </div>
-              <div><p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p></div>
-              <div class="two-item no-bottom" v-for="(item,index) in sellerInfo" :key="index">
-                <p class="line"><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
-                <p><span>电话：</span><span>{{item.mobile}}</span></p>
+              <div class="two-item">
+                <p class="line"><span>{{getCardTypeVal(sellerFirst.cardType)}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+                <p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p>
+              </div>
+              <div class="no-bottom display-b" v-for="(item,index) in sellerInfo" :key="index">
+                <div>
+                  <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
+                </div>
+                <div class="two-item">
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                </div>
               </div>
               <div class="last-item" style="border-top:1px solid #ebeef5;">
                 <p class="no-line"><span>是否析产（继承）：</span><span>{{contractDetail.report.isExtend==='0'?'否':'是'}}</span></p>
@@ -898,6 +1164,9 @@ import checkPerson from '@/components/checkPerson';
 import LayerPrint from '@/components/LayerPrint';
 import flowAccount from "@/components/flowAccount";
 import dealReport from "../contractDialog/dealReport";
+import billDialog from '@/components/billDialog';
+import agencyContract from '../contractDialog/agencyContract';
+
 const marriage = [
   {id:1,type:"已婚"},
   {id:2,type:"未婚"},
@@ -915,7 +1184,9 @@ export default {
     checkPerson,
     LayerPrint,
     flowAccount,
-    dealReport
+    dealReport,
+    billDialog,
+    agencyContract
   },
   data() {
     return {
@@ -1110,6 +1381,15 @@ export default {
           state: false,
           name: '查看备注'
         },
+        //应收实收
+        'sign-ht-xq-ys-add': {
+          state: false,
+          name: '新增/编辑'
+        },
+        'sign-ht-xq-ys-del': {
+          state: false,
+          name: '删除'
+        },
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin2.png')}`,
@@ -1126,6 +1406,23 @@ export default {
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
       attachmentList:[],//合同附件
+
+      supposedList:[],//应收应付
+      supposedTotal:0,
+      supposedNum:1,
+
+      actualList:[],//实收实付
+      actualTotal:0,
+      actualNum:1,
+
+      receiptSize:5,
+
+      dialogState:false,
+      payId:0,
+      dialogOperation:1,//1=新增,2=编辑,3=查看
+      dialogType:1,//1=应收/应付款项,2=实收/实付款项
+      dialogDel:false,
+      agencyShow:false, //委托合同组件显示
     };
   },
   created() {
@@ -1163,6 +1460,18 @@ export default {
     })
   },
   methods: {
+    // 成交报告打印页获取证件类型文本
+    getCardTypeVal(val) {
+      if(val==1){
+        return '身份证'
+      }else if(val==2){
+        return '护照'
+      }else if(val==3){
+        return '营业执照'
+      }else{
+        return '军官证'
+      }
+    },
     //控制 编辑 打印成交报告 保存 按钮显示隐藏
     editFn() {
       this.saveBtnShow = !this.saveBtnShow
@@ -1202,6 +1511,11 @@ export default {
         this.getAuditList();//合同审核信息
       }else if(tab.name==="fourth"){
         this.getRecordList();//电话录音
+      }else if(tab.name==="receipt"){
+        this.getSupposedList();//应收应付
+        this.getActualList();//实收实付
+      }else if(tab.name==="agency"){
+        this.agencyShow = true //委托合同
       }
     },
     //打电话
@@ -2128,20 +2442,144 @@ export default {
     },
     //附件下载
     downloadAttachment(item){
-      let url,title
-      url = item.path
-      title = item.enclosureName
-      var a = document.createElement("a");
-      a.setAttribute("href", url);
-      a.setAttribute("download", title);
-      a.setAttribute("id", "startTelMedicine");
-      // 防止反复添加
-      if (document.getElementById("startTelMedicine")) {
-        document.body.removeChild(document.getElementById("startTelMedicine"));
+      this.fileSign([item.path],'download')
+    },
+    //获取应收列表
+    getSupposedList(){
+      let param = {
+        contId:this.id,
+        pageNum: this.supposedNum,
+        pageSize:5
       }
-      document.body.appendChild(a);
-      a.click();
-    }
+      this.$ajax.get("/api/receivables/listRceivables",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.supposedList=res.data.list
+          this.supposedTotal=res.data.total
+        }
+      })
+    },
+    //获取实收列表
+    getActualList(){
+      let param = {
+        contId:this.id,
+        pageNum: this.actualNum,
+        pageSize:5
+      }
+      this.$ajax.get("/api/receivables/listReceipts",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.actualList=res.data.list
+          this.actualTotal=res.data.total
+        }
+      })
+    },
+    //翻页
+    supposedNumChange(val){
+      this.supposedNum=val
+      this.getSupposedList()
+    },
+    actualNumChange(val){
+      this.actualNum=val
+      this.getActualList()
+    },
+    //应收实收详情
+    toReceiptDetail(val){
+      this.payId=val.payId
+      this.dialogState=true
+      this.dialogOperation=3
+    },
+    //应收实收新增
+    receiptAdd(type){
+      this.dialogType = type==="supposed"?1:2
+      this.dialogState=true
+      this.dialogOperation=1
+    },
+    //应收实收编辑
+    receiptEdit(type,payId){
+      this.dialogType = type==="supposed"?1:2
+      this.dialogState=true
+      this.dialogOperation=2
+      this.payId=payId
+    },
+    //应收实收删除
+    receiptDel(payId,type){
+      this.dialogDel=true
+      this.payId=payId
+      this.dialogType = type==="supposed"?1:2
+    },
+    delBillMsg(){
+      let param = {
+        id:this.payId
+      }
+      this.$ajax.put("/api/receivables/deleteRceivables",param,2).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.$message({
+            message:"删除成功",
+            type:"success"
+          })
+          this.dialogDel=false
+          if(this.dialogType===1){
+            this.getSupposedList()
+          }else{
+            this.getActualList()
+          }
+        }
+      })
+    },
+    //新增/编辑成功刷新列表
+    addEditSuccess(){
+      this.$message({
+        message:this.dialogOperation===1?"新增成功":"编辑成功",
+        type:"success"
+      })
+      this.dialogState=false
+      if(this.dialogType===1){
+        this.getSupposedList()
+      }else{
+        this.getActualList()
+      }
+    },
+    // 委托合同审核信息
+    getEntrustMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
+    // 合同变更审核
+    getChangeMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
+    // 合同解约审核
+    getCancelMsg(){
+      // let param = {
+      //   flowType:3,
+      //   bizCode:this.contCode
+      // };
+      // this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+      //   res=res.data;
+      //   if(res.status===200){
+      //     this.checkData=res.data.data;
+      //   }
+      // })
+    },
   },
   mounted(){
     window.onresize = this.clientHeight;
@@ -2257,6 +2695,7 @@ export default {
       white-space: nowrap;
     }
     .content {
+      min-width: 1370px;
       .one_ {
         margin-bottom: 10px;
         &:last-of-type {
@@ -2334,7 +2773,7 @@ export default {
       }
       .table {
         padding: 10px 0;
-        width: 1050px;
+        width: 950px;
         /deep/ .theader-bg {
           > th {
             background-color: @bg-th;
@@ -2672,6 +3111,42 @@ export default {
       }
     }
   }
+  //应收实收
+  .receiptModule{
+    padding-top: 20px;
+    width: 950px;
+    .moduleTitle{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      span{
+        border-left: 3px solid #409EFF;
+        padding-left: 5px;
+      }
+    }
+    .receiptList{
+      .receipBtn{
+        color: #409EFF;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+    }
+  }
+  .receiptDetail{
+    display: flex;
+    padding: 10px;
+    div{
+      width: 50%;
+      p{
+        padding: 5px 0;
+      }
+    }
+  }
+  .receiptAccessory{
+    padding-left: 10px;
+    min-height: 150px;
+  }
 }
 //打印模块
 .printContent{
@@ -2740,6 +3215,9 @@ export default {
         &.title {
           justify-content: center;
           font-size: 16px;
+        }
+        &.display-b {
+          display: block;
         }
         p {
           padding-left: 5px;

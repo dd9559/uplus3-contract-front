@@ -129,11 +129,11 @@
         </el-table-column>
         <el-table-column label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="款类" prop="collectionType">
+        <!--<el-table-column label="款类" prop="collectionType">
           <template slot-scope="scope">
             佣金
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column min-width="160" label="物业地址" prop="propertyAddr">
           <!--<template slot-scope="scope">
             &#45;&#45;
@@ -145,12 +145,29 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
+        <!--<el-table-column label="应收款（元）" prop="receivableCommission" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="已收款（元）" prop="receivedCommission" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter">
-          <!--<template slot-scope="scope">
-            {{scope.row.receivableCommission-scope.row.receivedCommission|moneyFormatter}}
-          </template>-->
+        <el-table-column label="待收款（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>-->
+        <el-table-column label="实收/应收（佣金）">
+          <template slot-scope="scope">
+            {{scope.row.receivedCommission|formatNull}}/{{scope.row.receivableCommission|formatNull}}
+          </template>
+        </el-table-column>
+        <el-table-column label="待收款佣金（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>
+        <el-table-column label="实收/应收（交易服务费）" min-width="100">
+          <template slot-scope="scope">
+            {{scope.row.serviceMoney|formatNull}}
+          </template>
+        </el-table-column>
+        <el-table-column label="实收/应收（成交违约金）" min-width="100">
+          <template slot-scope="scope">
+            {{scope.row.penalMoney|formatNull}}
+          </template>
+        </el-table-column>
+        <el-table-column label="实收/应收（意向违约金）" min-width="100">
+          <template slot-scope="scope">
+            {{scope.row.intentionMoney|formatNull}}
+          </template>
         </el-table-column>
         <el-table-column min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
@@ -281,17 +298,24 @@
     methods: {
       getExcel:function () {
         this.getData('search')
-        let param = Object.assign({},this.searchForm)
-        if(Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
+
+        let param=Object.assign({},this.searchForm)
+        if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){
           param.beginDate = this.$tool.dateFormat(param.signTime[0])
           param.endDate = this.$tool.dateFormat(param.signTime[1])
-          delete param.signTime
         }
-        if(Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
+        if(typeof param.collectionTime==='object'&&Object.prototype.toString.call(param.collectionTime)==='[object Array]'&&param.collectionTime.length>0){
           param.beginProDate = this.$tool.dateFormat(param.collectionTime[0])
           param.endProDate = this.$tool.dateFormat(param.collectionTime[1])
-          delete param.collectionTime
         }
+
+        // delete param.moneyType
+        param.contTypes = param.contType.join(',')
+        param.pageNum=this.currentPage
+        param.pageSize=this.pageSize
+        delete param.signTime
+        delete param.collectionTime
+        delete param.contType
         this.excelCreate('/input/RceivablesExcel',param)
       },
       noScroll:function (payload) {
@@ -476,6 +500,9 @@
     /deep/ .theader-bg{
       >th{
         background-color: @bg-th;
+        .cell{
+          white-space: normal !important;
+        }
       }
     }
   }

@@ -63,7 +63,7 @@
 
   const receiptCheck_xf =()=>import('@/pages/finance/receiptCheck/receiptCheck_xf');
   const receiptCheck_cz =()=>import('@/pages/finance/receiptCheck/receiptCheck_cz');
-  const receiptCheck_jr =()=>import('@/pages/finance/receiptCheck/receiptCheck_jr')
+  const receiptCheck_jr =()=>import('@/pages/finance/receiptCheck/receiptCheck_jr');
 
   export default {
     name: "receipt-check",

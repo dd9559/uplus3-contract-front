@@ -47,6 +47,8 @@
           <img class="signImg" :src="signImg" alt="">
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
+        <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
@@ -543,12 +545,10 @@ export default {
         for(let i=0;i<signatures.length;i++){
           signatures[i].style.opacity=1
         }
-        // this.showTotal=this.total_r
       }else{
         this.count=1;
         this.showAddress=this.business;
         this.setSrc(this.showAddress,this.total_b);
-        // this.showTotal=this.total_b;
         var signatures=document.getElementsByClassName('signature')
         for(let i=0;i<signatures.length;i++){
           signatures[i].style.opacity=0
@@ -612,7 +612,6 @@ export default {
                 this.checkPerson.code=this.code;
                 this.checkPerson.state=true;
                 this.checkPerson.type=3;
-                // this.checkPerson.type=error.data.type===1?'set':'init';
                 this.checkPerson.label=true;
               }else{
                 this.$message({
@@ -644,17 +643,7 @@ export default {
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            // let pdfUrl=res.data;
-            // this.fullscreenLoading=false;
             this.getContImg()
-            // // debugger
-            // let pictureList = Array.from(document.getElementsByClassName('signature'))
-            // console.log(pictureList)
-            // pictureList.forEach(element => {
-            //   element.style.display="none"
-            // });
-            // this.getUrl(pdfUrl);
-            // this.haveUrl=true;
             this.pdfUrl=`${this.http}/api/contract/getSignPdf?id=${this.id}`
             this.haveUrl=true;
             this.fullscreenLoading=false;
@@ -783,10 +772,6 @@ export default {
       this.$ajax.get('/api/contract/preview', param).then(res=>{
         res=res.data;
         if(res.status===200){
-          // this.getContData();
-          // if(res.data.contState.value===2&&!type){
-          //   this.signature(2)
-          // }
           this.examineState=res.data.examineState.value;
           this.resultState=res.data.resultState.value;
           this.laterStageState=res.data.laterStageState.value;
@@ -800,17 +785,21 @@ export default {
           this.auditId=res.data.auditId;
           this.isSign=res.data.isRisk;
           this.isHaveData=res.data.isHaveData;
-          if(res.data.companySigns&&res.data.companySigns.length===1){
-            this.storeId=res.data.companySigns[0].storeId;
-            this.signImg=res.data.companySigns[0].contractSign;
+          //咸宁买卖无签章
+          if(res.data.cityId==8&&res.data.contType.value==2){
+            this.companySigns=[{contractSign: null,name: null,storeId: null}]
+          }else{
+            if(res.data.companySigns&&res.data.companySigns.length===1){
+              this.storeId=res.data.companySigns[0].storeId;
+              this.signImg=res.data.companySigns[0].contractSign;
+            }
+            this.companySigns=res.data.companySigns?res.data.companySigns:[];
           }
-          this.companySigns=res.data.companySigns?res.data.companySigns:[];
+          
           this.isNewTemplate=res.data.isNewTemplate;//是否是新合同模板
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
-          // if(res.data.cityId===1&&(res.data.contType.value===2||res.data.contType.value===3)){
-
             //1 武汉  2 合肥  11 襄阳
           if(res.data.isWuHanMM===1&&(res.data.contType.value===2)){
             this.isShowType=true;
@@ -821,14 +810,12 @@ export default {
             this.residence=res.data.imgAddress.residence;
             this.total_r=res.data.imgCount.residence;
             this.showAddress=res.data.imgAddress.residence;
-            // this.showTotal=res.data.imgCount.residence;
             this.setSrc(this.showAddress,res.data.imgCount.residence);
           }else {
             //其他
             this.address=res.data.imgAddress.address;
             this.total_a=res.data.imgCount.count;
             this.showAddress=res.data.imgAddress.address;
-            // this.showTotal=res.data.imgCount.count;
             this.setSrc(this.showAddress,res.data.imgCount.count);
           }
         }
@@ -836,7 +823,6 @@ export default {
     },
     //拼接地址
     setSrc(value,count){
-      // let src = value.substr(0,value.lastIndexOf('.'))+count+value.substr(value.lastIndexOf('.'));
       var arrSrc = [];
       for(let i=1;i<=count;i++){
         let src = value.substr(0,value.lastIndexOf('.'))+i+value.substr(value.lastIndexOf('.'));

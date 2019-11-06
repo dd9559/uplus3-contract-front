@@ -45,7 +45,6 @@ Vue.directive('focus', {
 })
 Vue.directive('loadmore', {
   bind(el, binding) {
-
     // 获取element-ui定义好的scroll盒子
     const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap');
 
