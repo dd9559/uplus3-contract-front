@@ -351,18 +351,12 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="60" fixed="right">
+        <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <!-- <div style="text-align:center"> -->
-              <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
-              <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
-              <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
-              <!-- <span v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4"> -->
-              <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
-              <!-- </span> -->
-              <div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
-              <!-- <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div> -->
-            <!-- </div> -->
+            <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
+            <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
+            <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
+            <!-- <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -386,7 +380,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" :code="uploadCode" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :commission="commission" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -473,6 +467,8 @@ export default {
       layerAudit:{},
       jiesuan: false,
       changeCancel: false,
+      dialogOperation:"details",
+      commission:'',
       dialogType: "",
       dictionary: {
         //数据字典
@@ -1004,14 +1000,18 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
+      debugger
+      this.commission = {
+        owner:item.ownerCommission,
+        user:item.custCommission
+      }
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
-        this.dialogType = "changeLook";
+        this.dialogType = "bg";
         this.contId=item.id;
-        console.log(this.contId)
       } else if (item.contChangeState.value === 2) {
         this.changeCancel = true;
-        this.dialogType = "cancelLook";
+        this.dialogType = "jy";
         this.contId=item.id;
       }
     },
@@ -1456,5 +1456,16 @@ export default {
 }
 /deep/ .el-table th {
   background: @bg-th;
+}
+/deep/ .null-formatter {
+  .cell:empty {
+    position: relative;
+
+    &:before {
+      content: '--';
+      width: 30px;
+      display: inline-block;
+    }
+  }
 }
 </style>

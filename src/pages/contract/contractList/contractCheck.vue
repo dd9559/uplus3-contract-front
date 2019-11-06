@@ -234,7 +234,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :current="checkPerson.current" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -306,14 +306,6 @@ export default {
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
-        },
-        'sign-com-house': {
-          state: false,
-          name: '房源详情'
-        },
-        'sign-com-cust': {
-          state: false,
-          name: '客源详情'
         },
         "sign-ht-htsh-export": {
           state: false,
