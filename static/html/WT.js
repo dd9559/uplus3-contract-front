@@ -40,7 +40,7 @@ contractConfig.inputListener(function(ev,tip){
   let spanAttr=tip.target.getAttribute('listen')
   if(spanAttr==='number'){
     ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-    let toChineseArr = ['val22','val25','val30','val73','val80']
+    let toChineseArr = []
     let chineseStr = tip.target.getAttribute('extendparam')
     if(toChineseArr.includes(chineseStr)){
         document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
@@ -59,23 +59,10 @@ contractConfig.inputListener(function(ev,tip){
   }else {
     tip.target.innerHTML=ev.target.value
   }
-  let val_40 = document.querySelector(`span[extendparam="val40"]`).innerHTML
-  if(val_40.length){
-    document.querySelector(`span[extendparam="val41"]`).setAttribute('systemParam','true')
-  }else{
-    document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-  }
-  let val_41 = document.querySelector(`span[extendparam="val41"]`).innerHTML
-  if(val_41.length){
-    document.querySelector(`span[extendparam="val40"]`).setAttribute('systemParam','true')
-  }else{
-    document.querySelector(`span[extendparam="val40"]`).removeAttribute('systemParam')
-  }
-
 },function(tip){
   //获取输入框的默认值
   let initVal=tip.target.innerHTML
-  let ArrCn = ['val22','val25','val30','val73','val80']
+  let ArrCn = []
   let strCn = tip.target.getAttribute('extendparam')
   if(ArrCn.includes(strCn)){
     if(initVal.length>0){
@@ -84,34 +71,14 @@ contractConfig.inputListener(function(ev,tip){
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
    }
    }
-   let cur_val = tip.target.getAttribute('extendparam')
-   if(cur_val == 'val40'|| cur_val == 'val41'){
-    document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-    document.querySelector(`span[extendparam="val40"]`).removeAttribute('systemParam')
-   }
-
 })
 
 // 勾选框逻辑
 contractConfig.checkboxListener(function(){},function(obj,index){
   let attr = obj.currentTarget.getAttribute('name')
-  if(attr){
-    contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
-  }
-  if(obj.currentTarget.getAttribute('name')==='zhizhao5'){
-    document.querySelector(`span[extendparam="val40"]`).innerHTML=''
-    document.querySelector(`span[extendparam="val41"]`).innerHTML=''
-    document.querySelector(`span[extendparam="val40"]`).classList.add("input-before")
-    document.querySelector(`span[extendparam="val41"]`).classList.add("input-before")
-    document.querySelector(`span[extendparam="val40"]`).removeAttribute('systemParam')
-    document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-    let proveTypeDoms = document.getElementsByName("zhizhao5")
-    if(proveTypeDoms[0].querySelector('p').getAttribute('checked')==='true'){
-      document.querySelector(`span[extendparam="val41"]`).setAttribute('systemParam','true')
-  }else{
-      document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-  }
-  }
+  // if(attr){
+  //   contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
+  // }
 })
 
 //给按钮添加点击事件
@@ -132,58 +99,11 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }
 
 let sub = {
-  'checkbox_zhizhao4': {
-    stateful:function (index) {
-      return index===3?{'val32':null}:null
-    },
-  },
+  'val5': null,
+  'val6': null,
+  'val7': null,
+  'checkbox_zhizhao4': null,
   'checkbox_zhizhao5': null,
-  'info_test':{
-    stateful:function() {
-      let flag= document.querySelector(`*[name="zhizhao5"]`).querySelector('p').getAttribute('checked')
-      let obj_40 = document.querySelector(`*[extendparam="val40"]`);
-       obj_40.classList.remove('BODERRED');
-       let obj_41 = document.querySelector(`*[extendparam="val41"]`);
-       obj_41.classList.remove('BODERRED');
-      if(flag){
-        return {'val40':null}
-      }else{
-        let inputVal=document.querySelector('*[extendparam=val40]').innerHTML;
-        if(inputVal.length===0){
-          return {'val41':null};
-        }else{
-          return null;
-        }
-      }
-    }
-  },
-  'val42': null,
-  'checkbox_zhizhao6': null,
-  'checkbox_facility': {
-    stateful:function (index) {
-      return index===5?{'val51':null}:null
-    },
-  },
-  'val52': null,
-  'time_val53': null,
-  'time_val56': null,
-  'val60': null,
-  'time_val61': null,
-  'val400': null,
-  'val65': null,
-  'val66': null,
-  'checkbox_zhizhao7': null,
-  'val73': null,
-  'checkbox_zhizhao8': null,
-  'val300': null,
-  'val80': null,
-  'time_val82': null,
-  'val83': null,
-  'val84': null,
-  'val92': null,
-  'val93': null,
-  'val94': null,
-  'val301': null,
 }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
@@ -245,7 +165,7 @@ for(let readonlyItem in msg){
     }
     if(readonlyItem==="companyNames"){
         if(msg[readonlyItem].length>0){
-            let companyName = document.querySelector(`*[extendParam="val25"]`)
+            let companyName = document.querySelector(`*[extendParam="val4"]`)
             let companyNameTxt = msg[readonlyItem].join(',')
             companyName.setAttribute('list',companyNameTxt)
         }
