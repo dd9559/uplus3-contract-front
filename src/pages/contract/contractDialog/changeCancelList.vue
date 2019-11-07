@@ -96,7 +96,7 @@
       <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
         <template slot-scope="scope">
           <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div>
-          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((getUserMsg&&scope.row.changeRecord.auditId===getUserMsg.empId)||((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))))" @click="goCheck(scope.row)">审核</div>
+          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
@@ -130,10 +130,12 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
+import changeCancel from "../contractDialog/changeCancel";
 export default{
   mixins: [MIXINS],
   components: {
-    checkPerson
+    checkPerson,
+    changeCancel
   },
   props:{
     tableDate:{
@@ -236,23 +238,35 @@ export default{
         bizCode:item.code,
         flowType:this.listType==="bg"?9:10
       }
-      this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
-        res = res.data
-        if(res.status===200){
-          this.changeCancel=true
-          this.contCode=item.code
-          this.contId=item.id
-          this.commission={
-            owner:item.ownerCommission,
-            user:item.custCommission
-          }
+      if(item.changeRecord.auditId===this.getUserMsg.empId){
+        debugger
+        this.changeCancel=true
+        this.contCode=item.code
+        this.contId=item.id
+        this.commission={
+          owner:item.ownerCommission,
+          user:item.custCommission
         }
-      }).catch(error=>{
-        this.$message({
-          message:error,
-          type: "error"
+      }else{
+        this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          if(res.status===200){
+            this.changeCancel=true
+            this.contCode=item.code
+            this.contId=item.id
+            this.commission={
+              owner:item.ownerCommission,
+              user:item.custCommission
+            }
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
         })
-      })
+      }
+      
     },
     //变更解约弹窗
     ChangeCancelDialog(){

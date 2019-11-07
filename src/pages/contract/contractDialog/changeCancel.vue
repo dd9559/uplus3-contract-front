@@ -95,7 +95,7 @@
       </div>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="closePerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -222,6 +222,10 @@
       },
       close(operation=1) {
         this.$emit(operation===1?"close":'success');
+      },
+      //设置审核人成功
+      closePerson(){
+        this.close(2)
       },
       //获取文件路径数组
       uploadSubject(data) {
@@ -402,6 +406,7 @@
               type:"success"
             })
             this.checkDialogState = false
+            this.close(2)
           }
         }).catch(error => {
           if (error.message === '下一节点审批人不存在') {

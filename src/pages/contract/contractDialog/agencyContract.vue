@@ -24,7 +24,7 @@
                         v-model="signDate"
                         type="datetime"
                         format="yyyy-MM-dd HH:mm"
-                        value-format="yyyy-MM-dd HH:mm"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         placeholder="选择日期时间"
                         :picker-options="pickerOptions"
                         default-time="12:00:00">
@@ -41,8 +41,8 @@
             <div class="title">房源信息</div>
             <div class="content">
                 <div v-for="(item,i) in houseArr" :key="i" class="one_">
-                    <p>
-                        <span>{{i==0?'业主':'共有人'}}姓名：</span>
+                    <p class="text-long">
+                        <span :class="[i==0?'':'w-84']">{{i==0?'业主':'共有人'}}姓名：</span>
                         <span>{{item.name}}</span>
                     </p>
                     <p>
@@ -50,7 +50,7 @@
                         <span>{{item.mobile}}</span>
                     </p>
                     <p>
-                        <span>{{i==0?'':'共有人'}}证件号码：</span>
+                        <span>证件号码：</span>
                         <span>{{item.encryptionCode}}</span>
                     </p>
                 </div>
@@ -69,7 +69,7 @@
                     </p>
                 </div>
                 <div class="one_">
-                    <p>
+                    <p class="text-long">
                         <span>物业地址：</span>
                         <span>{{defaultInfo.propertyAddr}}</span>
                     </p>
@@ -84,8 +84,8 @@
             <div class="title">客源信息</div>
             <div class="content">
                 <div v-for="(item,i) in guestArr" :key="i" class="one_">
-                    <p>
-                        <span>{{i==0?'客户':'共有人'}}姓名：</span>
+                    <p class="text-long">
+                        <span :class="[i==0?'':'w-84']">{{i==0?'客户':'共有人'}}姓名：</span>
                         <span>{{item.name}}</span>
                     </p>
                     <p>
@@ -93,7 +93,7 @@
                         <span>{{item.mobile}}</span>
                     </p>
                     <p>
-                        <span>{{i==0?'':'共有人'}}证件号码：</span>
+                        <span>证件号码：</span>
                         <span>{{item.encryptionCode}}</span>
                     </p>
                 </div>
@@ -150,13 +150,13 @@ export default {
     created() {
         this.clientHei= document.documentElement.clientHeight -190 + 'px'
         // 判断有无录过委托合同
-        let _date = this.defaultInfo.contractEntrust.signDate ? this.defaultInfo.contractEntrust.signDate : ''
+        let _date = this.defaultInfo.contractEntrust ? this.defaultInfo.contractEntrust.signDate : ''
         if(_date){
             this.signDate = _date
         }else{
             this.getTimeNow()
         }
-        this.tradeFee = this.defaultInfo.contractEntrust.tradeFee ? this.defaultInfo.contractEntrust.tradeFee : ''
+        this.tradeFee = this.defaultInfo.contractEntrust ? this.defaultInfo.contractEntrust.tradeFee : ''
         this.houseArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 1)
         this.guestArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 2)
     },
@@ -169,7 +169,8 @@ export default {
             let D = time.getDate()
             let h = time.getHours()
             let m = time.getMinutes()
-            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}`;
+            let s = time.getSeconds()
+            let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
             this.signDate = _time
         },
         cutNumber() {
@@ -267,13 +268,20 @@ export default {
         .content {
             padding-left: 10px;
             .one_ {
+                display: flex;
                 margin-bottom: 20px;
                 &:last-of-type {
                     margin-bottom: 0;
                 }
                 > p {
                     width: 300px;
-                    display: inline-block;
+                    padding-right: 20px;
+                }
+                .text-long {
+                    display: flex;
+                    .w-84 {
+                        min-width: 84px;
+                    }
                 }
                 &.input-val {
                     display: flex;
