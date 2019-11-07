@@ -72,7 +72,8 @@
                     </el-table-column>
                     <el-table-column label="品牌" prop="brandId" :formatter="nullFormatter">
                         <template slot-scope="scope">
-                            <span v-for="item in dictionary['735']" :key="item.key" v-if="item.key===scope.row.brandId">{{item.value}}</span>                            
+                            <span v-if="!scope.row.brandId">--</span>                            
+                            <span v-for="item in dictionary['735']" :key="item.key" v-else-if="scope.row.brandId&&item.key===scope.row.brandId">{{item.value}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
