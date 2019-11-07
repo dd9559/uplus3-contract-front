@@ -120,7 +120,7 @@
                             <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-35 ml-28" v-if="aduitForm.modularType==0">
+                    <div class="aduit-input must mr-35 ml-28">
                         <label class="mr-28">体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
                             <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -892,7 +892,7 @@
             },
             isSave() {
                 if(this.aduitForm.modularType !== '') {
-                    if(!this.aduitForm.systemTag&&this.aduitForm.modularType==0) {
+                    if(!this.aduitForm.systemTag) {
                         this.$message({message:"体系不能为空"})
                         return
                     }
