@@ -221,7 +221,15 @@
               </li>
               <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"
                   @click="previewPhoto(imgList,index)">
-                <upload-cell :type="item.type"></upload-cell>
+                <img
+                  :src="item|getSignImage(preloadFiles,_self)"
+                  alt=""
+                  v-if="isPictureFile(item.type)"
+                  height="90px"
+                  :key="item.path"
+                  :width="item.width"
+                >
+                <upload-cell :type="item.type" v-else></upload-cell>
                 <!--<span>{{item.name}}</span>-->
                 <el-tooltip :content="item.name" placement="top">
                   <div class="span">{{item.name}}</div>
@@ -410,6 +418,7 @@
                     state: false,
                     version: 0,
                 },//合同是否第一次选择过收款方式
+                preloadFiles: [],
             }
         },
         mounted() {
@@ -617,11 +626,9 @@
                         this.dep.name = res.data.inObjStore
                         this.getEmploye(res.data.deptId)
                         if (res.data.filePath) {
-                            this.imgList = this.$tool.cutFilePath(JSON.parse(res.data.filePath))
+                            this.files=[].concat(JSON.parse(res.data.filePath))
+                            this.getFiles()
                         }
-                        this.imgList.forEach(item => {
-                            this.files.push(`${item.path}?${item.name}`)
-                        })
                         this.cardList = res.data.account //刷卡补充
                         let arr = res.data.inAccount.map(item => Object.assign({}, item, {
                             activeAdmin: item.cardNumber,
@@ -672,8 +679,25 @@
              * 获取上传文件
              */
             getFiles: function (payload) {
-                this.files = this.files.concat(this.$tool.getFilePath(payload.param))
-                this.imgList = this.$tool.cutFilePath(this.files)
+                /*this.files = this.files.concat(this.$tool.getFilePath(payload.param))
+                this.imgList = this.$tool.cutFilePath(this.files)*/
+
+                if (payload) {
+                    this.files = this.files.concat(this.$tool.getFilePath(payload.param));
+                }
+                this.imgList = this.$tool.cutFilePath(this.files);
+                // this.preloadFiles=[].concat()
+                this.imgList.forEach(item => {
+                    if (this.isPictureFile(item.type)) {
+                        let hasImg = this.preloadFiles.find(imgData =>
+                            imgData.includes(item.path)
+                        );
+                        !hasImg &&
+                        this.fileSign([].concat(item.path), "preload").then(res => {
+                            this.preloadFiles.push(res[0]);
+                        });
+                    }
+                });
             },
             delFile: function () {
                 this.imgList.splice(this.activeLi, 1)
@@ -1009,6 +1033,49 @@
             },
             getUser: function (val) {
                 this.getAcount(val.user.empId)
+            }
+        },
+        filters:{
+            /**
+             * 过滤显示图片缩略图
+             * @param val后端返回的所有文件资源遍历的当前项
+             * @param list图片资源获取签名后的临时数组
+             * @vm 接收vue实例通过this._self传递才有效
+             */
+            getSignImage(val, list, vm) {
+                if (list.length === 0) {
+                    return "";
+                } else {
+                    let imgDir = list.find(item => {
+                        return item.includes(val.path);
+                    });
+                    let img = new Image();
+                    img.src = imgDir;
+                    img.onload = function() {
+                        let persent = parseFloat((img.width / img.height).toFixed(2));
+                        let imgWidth = 0;
+                        // console.log(persent)
+                        if (img.width > 100) {
+                            imgWidth = 100;
+                            // picture.style.height=`${800/this.persent}px`
+                            if (img.height > 90) {
+                                // picture.style.height=`${window.innerHeight}px`
+                                if (persent > 1) {
+                                    imgWidth = 90 * persent * 0.6;
+                                } else {
+                                    imgWidth = 90 * persent;
+                                }
+                            }
+                        } else {
+                            if (img.height > 90) {
+                                // picture.style.height=`${window.innerHeight}px`
+                                imgWidth = 90 * persent;
+                            }
+                        }
+                        vm.$set(val, "width", `${imgWidth}px`);
+                    };
+                    return imgDir;
+                }
             }
         }
     }

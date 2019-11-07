@@ -26,7 +26,7 @@
       <el-table-column label="合同类型" prop="contType.label" min-width="60">
       </el-table-column>
 
-      <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
+      <el-table-column label="物业地址" prop="propertyAddr" min-width="160" show-overflow-tooltip>
       </el-table-column>
       
       <el-table-column label="成交总价" prop="dealPrice" min-width="90">
@@ -45,7 +45,7 @@
 
       <el-table-column label="签约时间" min-width="110">
         <template slot-scope="scope">
-          {{scope.row.signDate}}
+          {{scope.row.signDate.substr(0, 10)}}
         </template>
       </el-table-column>
 
@@ -93,18 +93,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" min-width="90" fixed="right">
+      <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
         <template slot-scope="scope">
           <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div>
-          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</div>
+          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
     <!-- 设置/转交审核人 -->
     <checkPerson
     :show="checkPerson.state"
-    page="list" :type="checkPerson.type"
-    :current="checkPerson.current"
+    page="list"
+    :type="checkPerson.type"
     :showLabel="checkPerson.label"
     :bizCode="checkPerson.code"
     :flowType="checkPerson.flowType"
@@ -112,16 +112,30 @@
     @submit="closeCheckPerson"
     v-if="checkPerson.state">
     </checkPerson>
+    <!-- 变更/解约查看 合同主体上传弹窗 -->
+    <changeCancel
+    :dialogType="getListType"
+    :cancelDialog="changeCancel"
+    dialogOperation="details"
+    :contId="contId"
+    :commission="commission"
+    :code="contCode"
+    @close="ChangeCancelDialog"
+    @success="freachChangeCancel"
+    v-if="changeCancel">
+    </changeCancel>
   </div>
 </template>
            
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
+import changeCancel from "../contractDialog/changeCancel";
 export default{
   mixins: [MIXINS],
   components: {
-    checkPerson
+    checkPerson,
+    changeCancel
   },
   props:{
     tableDate:{
@@ -134,6 +148,10 @@ export default{
       type: Number,
       default:0
     },
+    listType:{
+      type:String,
+      default:""
+    }
   },
   data(){
     return{
@@ -141,14 +159,32 @@ export default{
         state:false,
         type:1,
         code:'',
-        flowType:3,
+        flowType:this.listType==='bg'?9:10,
         label:false,
-        current:false
       },
+      changeCancel:false,
+      contCode:"",
+      contId:"",
+      commission:"",
       dictionary: {
         //数据字典
         "507": "",
       },
+      //权限配置
+      power: {
+        'sign-ht-info-view': {
+          state: false,
+          name: '预览'
+        },
+        'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
+        "sign-ht-htsh-export": {
+          state: false,
+          name: '导出'
+        },
+      }
     }
   },
   created(){
@@ -169,7 +205,7 @@ export default{
     closeCheckPerson(){
       console.log('qweqw')
       this.checkPerson.state=false;
-      this.getContractList();
+      this.$emit("freach")
     },
     //合同详情
     toDetail(value) {
@@ -196,24 +232,71 @@ export default{
         this.noPower('合同详情查看')
       }
     },
+    //合同审核
+    goCheck(item) {
+      let param={
+        bizCode:item.code,
+        flowType:this.listType==="bg"?9:10
+      }
+      if(item.changeRecord.auditId===this.getUserMsg.empId){
+        debugger
+        this.changeCancel=true
+        this.contCode=item.code
+        this.contId=item.id
+        this.commission={
+          owner:item.ownerCommission,
+          user:item.custCommission
+        }
+      }else{
+        this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          if(res.status===200){
+            this.changeCancel=true
+            this.contCode=item.code
+            this.contId=item.id
+            this.commission={
+              owner:item.ownerCommission,
+              user:item.custCommission
+            }
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      }
+      
+    },
+    //变更解约弹窗
+    ChangeCancelDialog(){
+      this.changeCancel=false
+    },
+    freachChangeCancel(){
+      this.changeCancel=false
+      this.$emit("freach")
+    }
   },
   computed:{
     fawu:function(){
       let host=window.location.host
       let url = false
       switch (host){
-          case "localhost:8080":
-          case "sign2.jjw.com:28879":
-            url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
-                break
-          case "sign2.jjw.com":
-            url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
-                break
-        }
-        return url
+        case "localhost:8080":
+        case "sign2.jjw.com:28879":
+          url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
+              break
+        case "sign2.jjw.com":
+          url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
+              break
+      }
+      return url
     },
     getUserMsg(){
       return this.getUser.user
+    },
+    getListType(){
+      return this.listType
     }
   },
   filters: {
@@ -264,9 +347,11 @@ export default{
   .contract-msglist {
     > li {
       text-align: left;
-      .blueColor{
-        color: @color-blue;
-        cursor: pointer;
+      &:first-of-type{
+        > span{
+          color: @color-blue;
+          cursor: pointer;
+        }
       }
     }
   }
@@ -277,5 +362,16 @@ export default{
 }
 /deep/ .el-table th {
   background: @bg-th;
+}
+/deep/ .null-formatter {
+  .cell:empty {
+    position: relative;
+
+    &:before {
+      content: '--';
+      width: 30px;
+      display: inline-block;
+    }
+  }
 }
 </style>

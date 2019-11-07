@@ -59,7 +59,7 @@
         </div>
       </div>
       <!-- <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component> -->
-      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" :tableDate="list"></changeCancelList>
+      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" listType="jy" :tableDate="list" @freach="freachList"></changeCancelList>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
         <el-pagination
@@ -104,7 +104,7 @@ export default {
   created(){
     this.getDictionary();//字典
     this.remoteMethod();//部门
-    this.getChangeList()
+    this.getCancelList()
   },
   methods:{
     //查询
@@ -119,7 +119,7 @@ export default {
       this.EmployeList = []
     },
     //审核列表
-    getChangeList(type="init"){
+    getCancelList(type="init"){
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -196,6 +196,10 @@ export default {
       this.currentPage = val;
       // this.getContractList("page");
     },
+    //审核成功刷新列表
+    freachList(){
+      this.getCancelList("search");
+    }
   }
 };
 </script>

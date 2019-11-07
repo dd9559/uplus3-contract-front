@@ -59,7 +59,7 @@
         </div>
       </div>
       <!-- <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component> -->
-      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" :tableDate="list"></changeCancelList>
+      <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" listType="bg" :tableDate="list" @freach="freachList"></changeCancelList>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
         <el-pagination
@@ -109,8 +109,8 @@ export default {
   methods:{
     //查询
     queryFn(){
-      // this.currentPage=1
-      // this.getContractList("search")
+      this.currentPage=1
+      this.getChangeList("search")
     },
     //重置
     resetFormFn(){
@@ -194,8 +194,12 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.currentPage = val;
-      // this.getContractList("page");
+      this.getChangeList("page");
     },
+    //审核成功刷新列表
+    freachList(){
+      this.getChangeList("search");
+    }
   },
   
 };
