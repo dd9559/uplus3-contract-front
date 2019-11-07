@@ -1,28 +1,12 @@
 import {contractConfig,toChineseNumber} from "./base.js"
-//初始化时间控件
-// Calendar.create({
-//     classN: 'calendar-item',
-//     callBack: function(bindElem, dateObj) {
-//         // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
-//         if(bindElem.tagName.toLowerCase()==='input'){
-//             bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
-//             bindElem.setAttribute('value',bindElem.value)
-//             bindElem.setAttribute('random',dateObj.random)
-//         }
-//     }
-// })
 //初始化下拉控件
 Dropdown.create({
     classN: 'dropdown-item',
     callBack: function(bindElem, dateObj) {
-        // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
         if(bindElem.tagName.toLowerCase()==='input'){
+          // debugger
             bindElem.value=dateObj.value
             bindElem.setAttribute('value',bindElem.value)
-            // let attr = bindElem.getAttribute('inputmethod')
-            // f(attr){
-            //   // contractConfig.initForm(attr==='handle'?['val32']:[],0
-            // }
         }else{
           bindElem.innerHTML = dateObj.value
           bindElem.classList.remove('input-select')
@@ -50,40 +34,11 @@ contractConfig.inputListener(function(ev,tip){
         document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
     }
   }
-  if(spanAttr==='chinese'){
-    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-    if(ev.target.value.length>0){
-    let str = toChineseNumber(ev.target.value)
-    let value=str.split('元')[0]
-    tip.target.innerHTML=value
-    }else {
-    tip.target.innerHTML=''
-    tip.target.classList.add('input-before')
-    }
-  }else {
     tip.target.innerHTML=ev.target.value
-  }
-},function(tip){
-  //获取输入框的默认值
-  let initVal=tip.target.innerHTML
-  let ArrCn = []
-  let strCn = tip.target.getAttribute('extendparam')
-  if(ArrCn.includes(strCn)){
-    if(initVal.length>0){
-      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
-   }else{
-      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-   }
-   }
 })
 
 // 勾选框逻辑
-contractConfig.checkboxListener(function(){},function(obj,index){
-  let attr = obj.currentTarget.getAttribute('name')
-  // if(attr){
-  //   contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
-  // }
-})
+contractConfig.checkboxListener()
 
 //给按钮添加点击事件
   let mainBtn=document.querySelector('#submit');
@@ -161,43 +116,13 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
-    // if(readonlyItem==="companyNames"){
-    //     if(msg[readonlyItem].length>0){
-    //         let companyName = document.querySelector(`*[extendParam="val4"]`)
-    //         let companyNameTxt = msg[readonlyItem].join(',')
-    //         companyName.setAttribute('list',companyNameTxt)
-    //     }
-    // }
     if(onlyReadDom.length>0){
         onlyReadDom.forEach((element,index) => {
-            if(readonlyItem==='timeUnit'){
-                element.querySelector('p').removeAttribute('checked')
-                if(element.getAttribute('value')===msg[readonlyItem]){
-                    element.querySelector('p').setAttribute('checked', 'true')
-                }
-            }else if(readonlyItem==='signDate'){
-                element.value=msg[readonlyItem]
-                element.setAttribute('value', arr[index])
-            // }else if(readonlyItem==='propertyAddr'||readonlyItem==='guestTel'||readonlyItem==='square'||readonlyItem==='dealPrice'||readonlyItem==='dealPriceUpper'||readonlyItem==='ownerName'||readonlyItem==='guestName'){
-            }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
-                element.value=msg[readonlyItem]
-                element.setAttribute('value', msg[readonlyItem])
-            }
-            else{
-                // if(element.getAttribute("extendParam")==="val33"){
-                //     let value = msg["propertyAddr"]
-                //     if(value.substring(0,3)==="咸宁市"){
-                //         element.innerHTML=value.replace("咸宁市",'')
-                //     }else{
-                //         element.innerHTML=value
-                //     }
-                // }else{
-                    element.innerHTML=msg[readonlyItem]
-                // }
+           
+                element.innerHTML=msg[readonlyItem]
                 element.classList.remove('input-title')
                 element.classList.remove('input-title2')
                 element.classList.remove('input-before')
-            }
-        });
-    }
+            })
+        }
 }
