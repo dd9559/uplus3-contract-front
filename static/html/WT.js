@@ -1,16 +1,16 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 //初始化时间控件
-Calendar.create({
-    classN: 'calendar-item',
-    callBack: function(bindElem, dateObj) {
-        // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
-        if(bindElem.tagName.toLowerCase()==='input'){
-            bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
-            bindElem.setAttribute('value',bindElem.value)
-            bindElem.setAttribute('random',dateObj.random)
-        }
-    }
-})
+// Calendar.create({
+//     classN: 'calendar-item',
+//     callBack: function(bindElem, dateObj) {
+//         // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
+//         if(bindElem.tagName.toLowerCase()==='input'){
+//             bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
+//             bindElem.setAttribute('value',bindElem.value)
+//             bindElem.setAttribute('random',dateObj.random)
+//         }
+//     }
+// })
 //初始化下拉控件
 Dropdown.create({
     classN: 'dropdown-item',
@@ -19,6 +19,10 @@ Dropdown.create({
         if(bindElem.tagName.toLowerCase()==='input'){
             bindElem.value=dateObj.value
             bindElem.setAttribute('value',bindElem.value)
+            // let attr = bindElem.getAttribute('inputmethod')
+            // f(attr){
+            //   // contractConfig.initForm(attr==='handle'?['val32']:[],0
+            // }
         }else{
           bindElem.innerHTML = dateObj.value
           bindElem.classList.remove('input-select')
@@ -157,19 +161,13 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
-    if(readonlyItem==='signDate'){
-        let time = new Date(msg.signDate)
-        arr.push(time.getFullYear())
-        arr.push(time.getMonth()+1)
-        arr.push(time.getDate())
-    }
-    if(readonlyItem==="companyNames"){
-        if(msg[readonlyItem].length>0){
-            let companyName = document.querySelector(`*[extendParam="val4"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
-        }
-    }
+    // if(readonlyItem==="companyNames"){
+    //     if(msg[readonlyItem].length>0){
+    //         let companyName = document.querySelector(`*[extendParam="val4"]`)
+    //         let companyNameTxt = msg[readonlyItem].join(',')
+    //         companyName.setAttribute('list',companyNameTxt)
+    //     }
+    // }
     if(onlyReadDom.length>0){
         onlyReadDom.forEach((element,index) => {
             if(readonlyItem==='timeUnit'){
@@ -184,17 +182,18 @@ for(let readonlyItem in msg){
             }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', msg[readonlyItem])
-            }else{
-                if(element.getAttribute("extendParam")==="val33"){
-                    let value = msg["propertyAddr"]
-                    if(value.substring(0,3)==="咸宁市"){
-                        element.innerHTML=value.replace("咸宁市",'')
-                    }else{
-                        element.innerHTML=value
-                    }
-                }else{
+            }
+            else{
+                // if(element.getAttribute("extendParam")==="val33"){
+                //     let value = msg["propertyAddr"]
+                //     if(value.substring(0,3)==="咸宁市"){
+                //         element.innerHTML=value.replace("咸宁市",'')
+                //     }else{
+                //         element.innerHTML=value
+                //     }
+                // }else{
                     element.innerHTML=msg[readonlyItem]
-                }
+                // }
                 element.classList.remove('input-title')
                 element.classList.remove('input-title2')
                 element.classList.remove('input-before')
