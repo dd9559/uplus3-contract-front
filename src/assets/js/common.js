@@ -370,7 +370,7 @@ let TOOL = {
       name: "手续费设置",
       category:"commission",
       can:false,//是否可见
-      icon: "icon-caozuorizhi",
+      icon: "icon-caiwu",
       code: false,
       child: []
     },

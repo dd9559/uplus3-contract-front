@@ -133,7 +133,8 @@
                                 if (objType === '[object Boolean]') {
                                     // item.can = item.code
                                     this.$set(item, 'can', item.code)
-                                    if(item.id===7&&[15349,37109].includes(val.user.empId)){
+                                    let host=window.location.host
+                                    if(item.id===7&&((['localhost:8080','http://sign2.jjw.com:28879/'].includes(host)&&val.user.empId===15349)||(host==='http://sign2.jjw.com:28087/'&&val.user.empId===37109))){
                                         this.$set(item, 'can', true)
                                     }
                                 } else {
