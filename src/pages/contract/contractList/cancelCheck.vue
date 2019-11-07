@@ -124,6 +124,7 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         keyword:this.contractForm.keyword,
+        changeExamineState:this.contractForm.toExamineState,
         deptId:this.contractForm.deptId,
         empId:this.contractForm.dealAgentId,
       }
@@ -187,7 +188,7 @@ export default {
         keyword:this.contractForm.keyword,
         deptId:this.contractForm.deptId,
         empId:this.contractForm.empId,
-        receiveAmountState:this.contractForm.receiveAmountState
+        changeExamineState:this.contractForm.toExamineState,
       }
       this.excelCreate(url,param)
     },

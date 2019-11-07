@@ -45,7 +45,7 @@
 
       <el-table-column label="签约时间" min-width="110">
         <template slot-scope="scope">
-          {{scope.row.signDate.substr(0, 10)}}
+          {{scope.row.signDate.substr(0, 16)}}
         </template>
       </el-table-column>
 
@@ -95,8 +95,7 @@
 
       <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
         <template slot-scope="scope">
-          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div>
-          <div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</div>
+          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div><div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
