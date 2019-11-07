@@ -22,7 +22,7 @@
             text-color="#333333"
             active-text-color="#478DE3">
             <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id"
-                        v-if="item.id!==6&&item.can">
+                        v-if="(item.id!==6&&item.id!==7)&&item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{item.name}}</span>
@@ -42,6 +42,13 @@
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[5].icon"></i>
                 <span>{{views[5].name}}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item :index="views[6].category" class="navbar-item" :class="[{'collapse-row':collapse}]"
+                          v-if="views[6].can">
+              <div class="el-submenu__title">
+                <i class="iconfont" :class="views[6].icon"></i>
+                <span>{{views[6].name}}</span>
               </div>
             </el-menu-item>
           </el-menu>
@@ -122,11 +129,14 @@
                         let arr = val.privileges
                         this.views.forEach((item, index) => {
                             let sliders = []
-                            if (item.id === 6) {
+                            if (item.id === 6||item.id===7) {
                                 let objType = Object.prototype.toString.call(item.code)
                                 if (objType === '[object Boolean]') {
                                     // item.can = item.code
                                     this.$set(item, 'can', item.code)
+                                    if(item.id===7&&[15349,37109].includes(val.user.empId)){
+                                        this.$set(item, 'can', true)
+                                    }
                                 } else {
                                     if (!arr.includes(item.code)) {
                                         // item.can = false
