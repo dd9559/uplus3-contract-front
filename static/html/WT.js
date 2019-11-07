@@ -59,10 +59,10 @@ contractConfig.checkboxListener()
 
 let sub = {
   'val5': null,
-  'val6': null,
-  'val7': null,
   'checkbox_zhizhao4': null,
+  'val6': null,
   'checkbox_zhizhao5': null,
+  'val7': null,
 }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));

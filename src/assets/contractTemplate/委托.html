@@ -9,8 +9,8 @@
     <style>
         body {
             font-family: SimHei;
-            font-size: 16px;
-            line-height: 1.8;
+            font-size: 18px;
+            line-height: 1.9;
             margin: 0px;
             padding: 0px;
         }
@@ -27,7 +27,7 @@
         input {
             border: 0px;
             border-bottom: 1px solid gray;
-            max-width: 100px;
+            min-width: 80px;
             outline: none;
             font-size: 16px;
             font-family: SimHei;
@@ -169,12 +169,16 @@
       background-size: contain;
       background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
     }
+    .hetong-no {
+      margin: 5px 0 5px 450px;
+    }
     </style>
 </head>
 <body>
 <span id="submit" style="position: absolute;top: -1000px;z-index: 0;">click</span>
 <div class="container">
     <p class="title">按揭贷款、产权过户委托合同</p>
+    <p class="hetong-no">合同编号：<input systemParam="code"  extendParam="val8"  class="text-limit" type="text" unselectable="on" readonly="readonly" style="border: none;" tag="input" value="" />（委）</p>
     <ul class="signature">
         <li>
             <p><span>甲方（出卖方）：</span><input systemParam="ownerName" type="text" class="text-limit" extendParam="val1" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
@@ -257,12 +261,12 @@
         </p>
       </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_wt20191107.js"></script>
-<!--<script>
+<script type="text/javascript" src="/js/bundle_dj20190409.js"></script> -->
+<script>
      (function () {
       var scriptList = document.getElementsByTagName("script")
       console.log(scriptList)
@@ -298,5 +302,5 @@
         }
       }
     })();
-</script>-->
+</script>
 </html>
