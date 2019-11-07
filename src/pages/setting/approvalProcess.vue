@@ -16,7 +16,7 @@
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
-            <div class="input-search" v-else>
+            <div class="input-search">
                 <label class="mr-20">体系</label>
                 <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
                     <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -65,8 +65,7 @@
                             <span v-for="item in dictionary['711']" :key="item.key" v-if="item.key===scope.row.modularType">{{item.value}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
-                    <el-table-column label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
+                    <el-table-column label="体系" prop="systemTag" :formatter="nullFormatter">
                         <template slot-scope="scope">
                             <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                         </template>
@@ -76,6 +75,7 @@
                             <span v-for="item in dictionary['735']" :key="item.key" v-if="item.key===scope.row.brandId">{{item.value}}</span>                            
                         </template>
                     </el-table-column>
+                    <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
                     <el-table-column label="流程名称" prop="name"></el-table-column>
                     <el-table-column label="流程类型" prop="type">
                         <template slot-scope="scope">
@@ -120,13 +120,7 @@
                             <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
-                        <label>合作方式:</label>
-                        <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
-                            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                        </el-select>
-                    </div>
-                    <div class="aduit-input must ml-28" v-if="version==3">
+                    <div class="aduit-input must mr-35 ml-28" v-if="aduitForm.modularType==0">
                         <label class="mr-28">体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
                             <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
@@ -136,6 +130,12 @@
                         <label class="mr-28">品牌:</label>
                         <el-select size="small" v-model="aduitForm.brandId" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
+                    <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
+                        <label>合作方式:</label>
+                        <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
+                            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input must mr-35">
@@ -394,8 +394,8 @@
             }else{
                 this.getData()
             }
-            // 3.0环境获取体系
-            if(this.version == 3) this.getSystemTag()
+            // 获取体系
+            this.getSystemTag()
             this.remoteMethod()
             this.getAduitType()
             this.getDeps()
@@ -892,14 +892,13 @@
             },
             isSave() {
                 if(this.aduitForm.modularType !== '') {
+                    if(!this.aduitForm.systemTag&&this.aduitForm.modularType==0) {
+                        this.$message({message:"体系不能为空"})
+                        return
+                    }
                     if(this.version == 2) {
                         if(!this.aduitForm.deptAttr&&this.aduitForm.modularType==0) {
                             this.$message({message:"合作方式不能为空"})
-                            return
-                        }
-                    } else {
-                        if(!this.aduitForm.systemTag) {
-                            this.$message({message:"体系不能为空"})
                             return
                         }
                     }
@@ -1139,7 +1138,7 @@
         .mr-7 {
             margin-left: 6px;
         }
-        &:nth-child(-n+6) {
+        &:nth-child(-n+7) {
             /deep/ .el-input {
                 width: 246px;
             }
