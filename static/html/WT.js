@@ -59,70 +59,59 @@ contractConfig.checkboxListener()
 
 let sub = {
   'val5': null,
-  'val6': null,
-  'val7': null,
   'checkbox_zhizhao4': null,
+  'val6': null,
   'checkbox_zhizhao5': null,
+  'val7': null,
 }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // let msg={
-// cityId: 2,
-// code: "Z0002191023002",
-// commissionPayment: 0,
-// companyNames: ["周黑鸭", "正常测试"],
-// custCommission: 600,
-// custCommissionUpper: "陆佰",
-// custEnsure: 0,
-// dealPrice: 2400,
-// dealPriceUpper: "贰仟肆佰",
-// guestCardType: "护照",
-// guestCardTypes: "护照",
-// guestID: "111111222",
-// guestIDs: "222222332",
-// guestName: "熊桂兰",
-// guestNames: "二傻子",
-// guestTel: "18716810042",
-// guestTels: "18611909690",
-// guestinfoCode: "JGSD000020",
-// houseinfoCode: "Z7E5CSXD000004",
-// id: 3219,
-// isHaveData: 0,
-// isWuHanMM: 0,
-// moneyUnit: "元",
-// otherCooperationCost: 0,
-// ownerCardType: "护照",
-// ownerCardTypes: "护照",
-// ownerCommission: 600,
-// ownerCommissionUpper: "陆佰",
-// ownerID: "222222222",
-// ownerIDs: "111111111",
-// ownerName: "测试数据",
-// ownerNames: "跟恒",
-// ownerTel: "18771790771",
-// ownerTels: "18611909594",
-// propertyAddr: "咸宁市大兴区288号88楼8层",
-// propertyCard: "",
-// remarks: "",
-// signDate: 1571760000000,
-// singleCompany: "",
-// square: 100,
-// squareUse: 22,
-// subscriptionPrice: 0,
-// subscriptionPriceUpper: "零",
-// timeUnit: "月",
-// type: 1,
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "",
+//   guestName: "然爱迪生",
+//   guestNames: "",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "",
+//   ownerName: "熊先",
+//   ownerNames: "",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "",
 // }
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
     if(onlyReadDom.length>0){
-        onlyReadDom.forEach((element,index) => {
+  onlyReadDom.forEach((element,index) => {
+     if(readonlyItem==='guestName'||readonlyItem==='companyNames'||readonlyItem==='ownerName'||readonlyItem==='propertyAddr'||readonlyItem==='code'){
+        element.value=msg[readonlyItem]
+        element.setAttribute('value', msg[readonlyItem])
+    }else{
+        element.innerHTML=msg[readonlyItem]
+        element.classList.remove('input-title')
+        element.classList.remove('input-title2')
+        element.classList.remove('input-before')
+    }
+});
+
+        // onlyReadDom.forEach((element,index) => {
            
-                element.innerHTML=msg[readonlyItem]
-                element.classList.remove('input-title')
-                element.classList.remove('input-title2')
-                element.classList.remove('input-before')
-            })
+        //         element.innerHTML=msg[readonlyItem]
+        //         element.classList.remove('input-title')
+        //         element.classList.remove('input-title2')
+        //         element.classList.remove('input-before')
+        //     })
         }
 }
