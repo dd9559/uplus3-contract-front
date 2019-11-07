@@ -20,7 +20,7 @@
             @select="handleSelect"
             class="el-menu-demo"
             text-color="#333333"
-            active-text-color="#478DE3">
+            active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id"
                         v-if="(item.id!==6&&item.id!==7)&&item.can">
               <template slot="title">
@@ -235,6 +235,9 @@
         font-size: 12px;
       }
     }
+  }
+  .el-menu-demo{
+
   }
 
   .navbar-item {

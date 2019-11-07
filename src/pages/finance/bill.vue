@@ -283,7 +283,7 @@
                        scope.row.payStatusValue!==11">
               开票
             </el-button>
-            <el-button type="text" @click="btnOpera(scope.row,1)" v-if="(scope.row.payway.value!==4&&scope.row.payStatus.value!==5||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.type===1">编辑</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,1)" v-if="(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&scope.row.type===1">编辑</el-button>
             <template
               v-if="((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
               <el-button type="text" @click="btnOpera(scope.row,2)"
