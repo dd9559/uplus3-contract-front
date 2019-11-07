@@ -19,7 +19,6 @@
             @open="openAllNav"
             @select="handleSelect"
             class="el-menu-demo"
-            text-color="#333333"
             active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id"
                         v-if="(item.id!==6&&item.id!==7)&&item.can">
@@ -30,7 +29,7 @@
               <template>
                 <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
                             class="second-grade-menu" v-if="grade.can">
-                  <template slot="title">{{grade.name}}</template>
+                  <template slot="title"><i class="iconfont icon-icon-test2" v-if="!collapse"></i>{{grade.name}}</template>
                   <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
                     {{tip.name}}
                   </el-menu-item>
@@ -236,8 +235,48 @@
       }
     }
   }
-  .el-menu-demo{
-
+  /deep/.el-menu-demo{
+    .el-submenu{
+      .el-submenu__title{
+        font-weight: bold;
+        &:hover{
+          background-color: unset;
+        }
+      }
+      &.second-grade-menu{
+        .el-submenu__title{
+          font-weight: unset;
+          background-color: #F3F3F3;
+          display: flex;
+          align-items: center;
+          >i.iconfont{
+            font-size: @size-base !important;
+            margin-right: 8px;
+          }
+        }
+        .el-menu-item{
+          padding-left: 40px !important;
+          color: @color-6c;
+        }
+        .el-icon-arrow-down{
+          &:before{
+            content: '';
+          }
+        }
+      }
+      &.is-opened{
+        background-color: #DBE9F9;
+        &.second-grade-menu{
+          .el-submenu__title{
+            color: white !important;
+            background-color: #3a8ee6;
+            >i.iconfont{
+              color:white !important;
+            }
+          }
+        }
+      }
+    }
   }
 
   .navbar-item {
@@ -255,6 +294,7 @@
 
     .el-submenu__title {
       padding: 0 20px;
+      font-weight: bold;
 
       > i {
         color: #BBC1CD !important;
@@ -314,7 +354,7 @@
 
           .is-opened {
             .el-menu-item {
-              padding-left: 20px !important;
+              /*padding-left: 20px !important;*/
               background-color: @bg-grey;
             }
           }
