@@ -137,7 +137,6 @@
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
-            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
               <span v-else>-</span>
           </template>
@@ -172,7 +171,7 @@
         </el-table-column>
         <el-table-column label="审核时间" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditTime">{{Number(scope.row.auditTime)|formatTime}}</span>
+            <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|formatTime}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -243,7 +242,7 @@ import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
 let printParam={}
-let rows=0
+let rows={}
 
 export default {
   mixins: [MIXINS],
@@ -356,15 +355,17 @@ export default {
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
       if (columnIndex === 0) {
-        if (row.contractEntrust&&row.contractEntrust.id) {
-          rows=rowIndex
-          console.log(rows)
+        if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
+          rows={
+            index:rowIndex,
+            id:row.contractEntrust.id
+          }
           return {
             rowspan: 2,
             colspan: 1
           };
         }else {
-          if(rowIndex===rows+1&&columnIndex===0){
+          if(rowIndex===rows.index+1&&rows.id===row.contractEntrust.id){
             return{
               rowspan:0,
               colspan:0
@@ -570,17 +571,21 @@ export default {
      // 选择审核人
     choseCheckPerson:function (row,type) {
       this.checkPerson.code=row.code;
-      this.checkPerson.state=true;
       this.checkPerson.type=type;
       if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{
         this.checkPerson.label=true;
       }
+      if(row.isCombine){
+        this.checkPerson.flowType=11
+      }else{
+        this.checkPerson.flowType=3
+      }
+      this.checkPerson.state=true;
     },
     //关闭设置审核人弹窗
     closeCheckPerson(){
-      console.log('qweqw')
       this.checkPerson.state=false;
       this.getContractList();
     }
@@ -611,19 +616,27 @@ export default {
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))
           combineItem.isCombine=true//是否是插入的数据
-          combineItem.signDate=combineItem.contractEntrust.signDate
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee
-          combineItem.contState.value=combineItem.contractEntrust.entrustState
+          combineItem.signDate=combineItem.contractEntrust.signDate//签约日期
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
           combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
-          combineItem.toExamineState.value=combineItem.contractEntrust.examineState
+          combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
-          combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"
-          combineItem.achievementState.value=combineItem.contractEntrust.achievementState
+          combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"//合同主体上传时间
+          combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩转台
           combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
-          combineItem.contractEntrust.id=null
+          combineItem.auditTime=combineItem.contractEntrust.auditTime?combineItem.contractEntrust.auditTime:"-"//审核时间
+          //当前审核人信息
+          combineItem.auditId=combineItem.contractEntrust.auditId
+          combineItem.auditName=combineItem.contractEntrust.auditName
+          combineItem.auditStoreName=combineItem.contractEntrust.auditStoreName
+          //下一步审核人信息
+          combineItem.nextAuditId=combineItem.contractEntrust.nextAuditId
+          combineItem.nextAuditName=combineItem.contractEntrust.nextAuditName
+          combineItem.nextAuditStoreName=combineItem.contractEntrust.nextAuditStoreName
           arr.forEach((ele,i) => {
-            if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id){
+            if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
             }
           });
@@ -636,7 +649,7 @@ export default {
   filters: {
     timeFormat_: function (val) {
       if (!val) {
-        return '--'
+        return '-'
       } else {
         let time = new Date(val)
         let y = time.getFullYear()

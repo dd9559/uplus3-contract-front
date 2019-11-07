@@ -335,7 +335,7 @@
             <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
             <!-- <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div> -->
           </template>
-          <template slot-scope="scope" v-else>
+          <template slot-scope="scope" v-if="scope.row.isCombine">
             <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
           </template>
         </el-table-column>
@@ -419,7 +419,7 @@ import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from '@/components/PdfPrint';
 import checkPerson from '@/components/checkPerson';
 
-let rows=0
+let rows={}
 
 export default {
   mixins: [MIXINS],
@@ -657,15 +657,17 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
       // debugger
       if (columnIndex === 0) {
-        if (row.contractEntrust&&row.contractEntrust.id) {
-          rows=rowIndex
-          console.log(rows)
+        if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
+          rows={
+            index:rowIndex,
+            id:row.contractEntrust.id
+          }
           return {
             rowspan: 2,
             colspan: 1
           };
         }else {
-          if(rowIndex===rows+1&&columnIndex===0){
+          if(rowIndex===rows.index+1&&rows.id===row.contractEntrust.id){
             return{
               rowspan:0,
               colspan:0
@@ -1273,9 +1275,8 @@ export default {
           combineItem.achievementState.value=combineItem.contractEntrust.achievementState
           combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
-          combineItem.contractEntrust.id=null
           arr.forEach((ele,i) => {
-            if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id){
+            if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
             }
           });
