@@ -19,6 +19,10 @@ Dropdown.create({
         if(bindElem.tagName.toLowerCase()==='input'){
             bindElem.value=dateObj.value
             bindElem.setAttribute('value',bindElem.value)
+            // let attr = bindElem.getAttribute('inputmethod')
+            // f(attr){
+            //   // contractConfig.initForm(attr==='handle'?['val32']:[],0
+            // }
         }else{
           bindElem.innerHTML = dateObj.value
           bindElem.classList.remove('input-select')
