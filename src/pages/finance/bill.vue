@@ -218,6 +218,8 @@
             </ul>
           </template>
         </el-table-column>
+        <el-table-column min-width="160" label="票据编号" prop="billCode"
+                         :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="160" label="物业地址" prop="address"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
