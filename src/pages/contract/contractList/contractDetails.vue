@@ -305,7 +305,7 @@
         <el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">合同主体</p>
-            <ul class="ulData">
+            <ul class="ulData" style="margin-bottom:10px">
               <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
@@ -320,30 +320,32 @@
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'main')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
+            <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">委托合同主体</p>
-            <ul class="ulData">
+            <ul class="ulData" style="margin-bottom:10px">
               <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
               </li>
-              <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+              <li v-for="(item,index) in entrustUploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(uploadList,index,2)">
-                    <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt="" v-if="isPictureFile(item.fileType)">
+                    <img class="signImage" :src="item.path|getSignImage(entrustMainFiles)" alt="" v-if="isPictureFile(item.fileType)">
                     <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
+            <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
@@ -760,7 +762,7 @@
     </div>
     <div class="uploadBtn">
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">上传</el-button>  <!-- 合同主体上传 -->
+      <!-- <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">上传</el-button>  合同主体上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -1271,6 +1273,8 @@ export default {
       },
       //合同主体上传文件路径
       uploadList: [],
+      //委托合同主体
+      entrustUploadList:[],
       //买方类型
       buyerList: [],
       //卖方类型
@@ -1430,6 +1434,7 @@ export default {
       dialogSuccess:false,//提示上传资料库
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
+      entrustMainFiles:[],//委托主体图片缩略图
       attachmentList:[],//合同附件
 
       supposedList:[],//应收应付
@@ -1969,7 +1974,6 @@ export default {
           this.saveBtnShow = !res.data.dealReport ? true : false
           this.editBtnShow = res.data.dealReport ? true : false
           this.reportBtnShow = res.data.dealReport ? true : false
-          // this.contractDetail.extendParams=JSON.parse(res.data.extendParams);
           this.contractDetail.signDate = res.data.signDate.substr(0, 10);
           this.ownerData=[];
           this.clientrData=[];
@@ -1982,16 +1986,23 @@ export default {
               this.clientrData.push(this.contractDetail.contPersons[i]);
             }
           }
-          // this.contractDetail.extendParams.forEach(element => {
-          //   if(element.type===5){
-          //     element.value=element.value.join(',')
-          //   }
-          // });
           if(res.data.isHaveData){
             this.getContData()
           }
+          //合同主体
           if(res.data.contState.value===3){
-            this.getContractBody();//获取合同主体
+            let param = {
+              id:this.id
+            }
+            this.getContractBody(param);//获取合同主体
+          }
+          //委托合同主体
+          if(res.data.contractEntrust&&res.data.contractEntrust.entrustState===2){
+            let param = {
+              id:this.id,
+              isentrust:1
+            }
+            this.getContractBody(param);//获取委托合同主体
           }
         }
       }).catch(error=>{
@@ -2000,18 +2011,6 @@ export default {
           type:'error'
         })
       });
-    },
-     //获取合同扩展参数
-    getExtendParams(){
-      let param = {
-        type:Number(this.contType)
-      }
-      this.$ajax.get('/api/contract/getExtendParamsByType', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.parameterList=res.data;
-        }
-      })
     },
     //获取所在城市的交易类型
     getTransFlow() {
@@ -2036,20 +2035,25 @@ export default {
         }
       });
     },
-    //获取合同主体信息
-    getContractBody(){
-      let param = {
-        id:this.id
-      }
+    //获取合同主体信息 isentrust=1 委托合同主体
+    getContractBody(param){
+      // let param = {
+      //   id:this.id
+      // }
       this.$ajax.get('/api/contract/getContractBodyById', param).then(res=>{
-        res=res.data;
+        res=res.data
         if(res.status===200){
-          let uploadList_ = res.data;
+          let uploadList_ = res.data
           uploadList_.forEach(element => {
-            let fileType = this.$tool.get_suffix(element.name);
-            element.fileType=fileType;
+            let fileType = this.$tool.get_suffix(element.name)
+            element.fileType=fileType
           });
-          this.uploadList=uploadList_;
+          if(param.isentrust){
+            this.entrustUploadList=uploadList_  //委托
+          }else{
+            this.uploadList=uploadList_  //合同
+          }
+          
           let preloadList=[]
           uploadList_.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
             if(this.isPictureFile(item.fileType)){
@@ -2057,7 +2061,12 @@ export default {
             }
           })
           this.fileSign(preloadList,'preload').then(res=>{
-            this.mainDataFiles=res
+            if(param.isentrust){
+              this.entrustMainFiles=res
+            }else{
+              this.mainDataFiles=res
+            }
+            
           })
         }
       })
@@ -2829,7 +2838,7 @@ export default {
   }
   //合同主体
   .contractSubject {
-    padding: 0 40px 10px;
+    padding: 0 40px 20px;
     .mainTitle{
       padding: 20px 0 10px;
       font-size: 16px;

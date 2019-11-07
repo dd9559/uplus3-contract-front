@@ -124,13 +124,14 @@ export default {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         keyword:this.contractForm.keyword,
+        changeExamineState:this.contractForm.toExamineState,
         deptId:this.contractForm.deptId,
         empId:this.contractForm.dealAgentId,
       }
-      if(this.signDate){
-        if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+      if(this.signData){
+        if (this.signData.length > 0) {
+          param.signStart = this.signData[0];
+          param.signEnd = this.signData[1];
         }
       }
       if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
@@ -187,7 +188,7 @@ export default {
         keyword:this.contractForm.keyword,
         deptId:this.contractForm.deptId,
         empId:this.contractForm.empId,
-        receiveAmountState:this.contractForm.receiveAmountState
+        changeExamineState:this.contractForm.toExamineState,
       }
       this.excelCreate(url,param)
     },
@@ -224,5 +225,8 @@ export default {
       }
     }
   }
+}
+/deep/.margin-left{
+  margin-left: 0;
 }
 </style>
