@@ -1477,7 +1477,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contype:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1495,6 +1496,7 @@ export default {
     //     this.shows = true;
     // },
     editAch(value, index) {
+      debugger
       let newPage = this.$router.resolve({
         path: "/achPage",
         query: {
@@ -1504,7 +1506,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contype:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1519,7 +1522,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contype:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");

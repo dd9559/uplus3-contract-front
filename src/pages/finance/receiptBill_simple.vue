@@ -75,6 +75,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.closingDate"
               type="datetime"
+              @change="checkDate"
               placeholder="选择日期时间">
             </el-date-picker>
           </div>
@@ -203,6 +204,16 @@
       this.setPath(arr);
     },
     methods: {
+        checkDate:function(val){
+            // debugger
+            let date=new Date(val);
+            if(date.getTime()>Date.now()){
+                this.form.closingDate=''
+                this.$message({
+                    message:'不能选择未来时间'
+                })
+            }
+        },
       //判断用户该合同是否第一次选择收款人部门
       addInit: function (id) {
         this.$ajax.get('/api/payInfoRecord/toInsert', {contId: id}).then(res => {

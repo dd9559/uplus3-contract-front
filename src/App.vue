@@ -14,15 +14,14 @@
           <el-menu
             ref="menu"
             :router="true"
-            :unique-opened="true"
             :collapse-transition="false"
             :collapse="collapse"
+            @open="openAllNav"
             @select="handleSelect"
             class="el-menu-demo"
-            text-color="#333333"
-            active-text-color="#478DE3">
+            active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{'collapse-row':collapse}]" v-for="item in views" :key="item.id"
-                        v-if="item.id!==6&&item.can">
+                        v-if="(item.id!==6&&item.id!==7)&&item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{item.name}}</span>
@@ -30,15 +29,25 @@
               <template>
                 <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
                             class="second-grade-menu" v-if="grade.can">
-                  <template slot="title">{{grade.name}}</template>
-                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">{{tip.name}}</el-menu-item>
+                  <template slot="title"><i class="iconfont icon-icon-test2" v-if="!collapse"></i>{{grade.name}}</template>
+                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
+                    {{tip.name}}
+                  </el-menu-item>
                 </el-submenu>
               </template>
             </el-submenu>
-            <el-menu-item :index="views[5].category" class="navbar-item" :class="[{'collapse-row':collapse}]" v-if="views[5].can">
+            <el-menu-item :index="views[5].category" class="navbar-item" :class="[{'collapse-row':collapse}]"
+                          v-if="views[5].can">
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[5].icon"></i>
                 <span>{{views[5].name}}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item :index="views[6].category" class="navbar-item" :class="[{'collapse-row':collapse}]"
+                          v-if="views[6].can">
+              <div class="el-submenu__title">
+                <i class="iconfont" :class="views[6].icon"></i>
+                <span>{{views[6].name}}</span>
               </div>
             </el-menu-item>
           </el-menu>
@@ -51,132 +60,156 @@
 </template>
 
 <script>
-  import {mapMutations, mapGetters} from 'vuex'
+    import {mapMutations, mapGetters} from 'vuex'
 
-  export default {
-    name: "App",
-    data() {
-      return {
-        activeIndex: '',
-        views: this.$tool.pathList.map(item => Object.assign({}, item)),
-        collapse: true,//menu是否折叠
-        activeClass: [],//当前选择项的上级id
-      }
-    },
-    created() {
-      this.activeIndex = JSON.parse(localStorage.getItem('indexPath'))
-    },
-    methods: {
-      getImg: function (url) {
-        return require(`@/assets/img/${url}`)
-      },
-      /**
-       * 选择侧边导航栏
-       * @param key
-       * @param keyPath
-       */
-      handleSelect(key, keyPath) {
-        localStorage.setItem('indexPath', JSON.stringify(keyPath))
-      },
-      /**
-       * 折叠侧边栏
-       */
-      toCollapse: function () {
-        this.collapse = !this.collapse
-        this.setCollapse(this.collapse)
-      },
-      ...mapMutations([
-        'setPath',
-        'setCollapse',
-        'setUser'
-      ])
-    },
-    computed: {
-      ...mapGetters([
-        'getUser'
-      ])
-    },
-    watch: {
-      getUser: {
-        handler:function (val) {
-          if(val){
-            let arr = val.privileges
-            this.views.forEach((item, index) => {
-              let sliders = []
-              if (item.id === 6) {
-                let objType=Object.prototype.toString.call(item.code)
-                if(objType==='[object Boolean]'){
-                  // item.can = item.code
-                  this.$set(item,'can',item.code)
-                }else {
-                  if (!arr.includes(item.code)) {
-                    // item.can = false
-                    this.$set(item,'can',false)
-                  }
-                }
-              } else {
-                item.child.forEach(tip => {
-                  tip.child.forEach(grade => {
-                    let objType=Object.prototype.toString.call(grade.code)
-                    if(objType==='[object Array]'){
-                      let joinCell=true//父级导航是否子项组合的
-                      if(grade.code.length>0){
-                        joinCell=!grade.code.every(cell=>{
-                          return !arr.includes(cell)
-                        })
-                      }
-                      // grade.can = joinCell
-                      this.$set(grade,'can',joinCell)
-                    }else {
-                      if (!arr.includes(grade.code)) {
-                        // grade.can = false
-                        this.$set(grade,'can',false)
-                      }
-                    }
-                  })
-                  //遍历是否所有子项都无权限，是则父级导航也没有权限
-                  let status=tip.child.every(cell=>{
-                    return cell.can===false
-                  })
-                  // tip.can=!status
-                  this.$set(tip,'can',!status)
-                })
-              }
-              //遍历是否所有子项都无权限，是则父级导航也没有权限
-              if(item.child.length>0){
-                let status=item.child.every(cell=>{
-                  return cell.can===false
-                })
-                // item.can=!status
-                this.$set(item,'can',!status)
-              }
-              // item.child=sliders
-            })
-          }
+    export default {
+        name: "App",
+        data() {
+            return {
+                activeIndex: '',
+                views: this.$tool.pathList.map(item => Object.assign({}, item)),
+                collapse: false,//menu是否折叠
+                activeClass: [],//当前选择项的上级id
+                testIndex: '',
+            }
         },
-        immediate:true,
-        deep:true
-      }
+        created() {
+            this.activeIndex = JSON.parse(localStorage.getItem('indexPath'))
+        },
+        methods: {
+            getImg: function (url) {
+                return require(`@/assets/img/${url}`)
+            },
+            /**
+             * 选择侧边导航栏
+             * @param key
+             * @param keyPath
+             */
+            handleSelect(key, keyPath) {
+                localStorage.setItem('indexPath', JSON.stringify(keyPath))
+            },
+            /**
+             * 展开一级索引对应的二级导航
+             */
+            openAllNav(key,path){
+                if(!key.includes('-')){
+                    let regex=new RegExp(`^${key}`)
+                    let sub=[]
+                    for(let item in this.$refs.menu.submenus){
+                        if(regex.test(item)){
+                            sub.push(item)
+                        }
+                    }
+                    this.$refs.menu.openedMenus=[].concat(sub)
+                }
+            },
+            /**
+             * 折叠侧边栏
+             */
+            toCollapse: function () {
+                this.collapse = !this.collapse
+                this.setCollapse(this.collapse)
+            },
+            ...mapMutations([
+                'setPath',
+                'setCollapse',
+                'setUser'
+            ])
+        },
+        computed: {
+            ...mapGetters([
+                'getUser'
+            ])
+        },
+        watch: {
+            getUser: {
+                handler: function (val) {
+                    if (val) {
+                        let arr = val.privileges
+                        this.views.forEach((item, index) => {
+                            let sliders = []
+                            if (item.id === 6||item.id===7) {
+                                let objType = Object.prototype.toString.call(item.code)
+                                if (objType === '[object Boolean]') {
+                                    // item.can = item.code
+                                    this.$set(item, 'can', item.code)
+                                    if(item.id===7&&[15349,37109].includes(val.user.empId)){
+                                        this.$set(item, 'can', true)
+                                    }
+                                } else {
+                                    if (!arr.includes(item.code)) {
+                                        // item.can = false
+                                        this.$set(item, 'can', false)
+                                    }
+                                }
+                            } else {
+                                item.child.forEach(tip => {
+                                    tip.child.forEach(grade => {
+                                        let objType = Object.prototype.toString.call(grade.code)
+                                        if (objType === '[object Array]') {
+                                            let joinCell = true//父级导航是否子项组合的
+                                            if (grade.code.length > 0) {
+                                                joinCell = !grade.code.every(cell => {
+                                                    return !arr.includes(cell)
+                                                })
+                                            }
+                                            // grade.can = joinCell
+                                            this.$set(grade, 'can', joinCell)
+                                        } else {
+                                            if (!arr.includes(grade.code)) {
+                                                // grade.can = false
+                                                this.$set(grade, 'can', false)
+                                            }
+                                        }
+                                    })
+                                    //遍历是否所有子项都无权限，是则父级导航也没有权限
+                                    let status = tip.child.every(cell => {
+                                        return cell.can === false
+                                    })
+                                    // tip.can=!status
+                                    this.$set(tip, 'can', !status)
+                                })
+                            }
+                            //遍历是否所有子项都无权限，是则父级导航也没有权限
+                            if (item.child.length > 0) {
+                                let status = item.child.every(cell => {
+                                    return cell.can === false
+                                })
+                                // item.can=!status
+                                this.$set(item, 'can', !status)
+                            }
+                            // item.child=sliders
+                        })
+                    }
+                },
+                immediate: true,
+                deep: true
+            }
+        }
     }
-  }
 </script>
 <style lang="less" scoped>
   @import "~@/assets/common.less";
+
   /deep/ .collapse-row {
     &:first-of-type {
       padding-top: 20px;
     }
+
     padding-top: 30px;
+
     &.active {
       .el-submenu__title {
         > i {
           color: #478DE3;
         }
+
         > span {
           color: #478DE3;
         }
       }
     }
+
     .el-submenu__title {
       display: flex;
       justify-content: center;
@@ -184,12 +217,15 @@
       flex-direction: column;
       line-height: 1.4;
       height: auto;
+
       > i {
         color: #BBC1CD;
+
         &.iconfont {
           font-size: 22px;
         }
       }
+
       > span {
         width: auto !important;
         height: auto !important;
@@ -199,19 +235,68 @@
       }
     }
   }
-  .navbar-item{
+  /deep/.el-menu-demo{
+    .el-submenu{
+      .el-submenu__title{
+        font-weight: bold;
+        &:hover{
+          background-color: unset;
+        }
+      }
+      &.second-grade-menu{
+        .el-submenu__title{
+          font-weight: unset;
+          background-color: #F3F3F3;
+          display: flex;
+          align-items: center;
+          >i.iconfont{
+            font-size: @size-base !important;
+            margin-right: 8px;
+          }
+        }
+        .el-menu-item{
+          padding-left: 40px !important;
+          color: @color-6c;
+        }
+        .el-icon-arrow-down{
+          &:before{
+            content: '';
+          }
+        }
+      }
+      &.is-opened{
+        background-color: #DBE9F9;
+        &.second-grade-menu{
+          .el-submenu__title{
+            color: white !important;
+            background-color: #3a8ee6;
+            >i.iconfont{
+              color:white !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .navbar-item {
     height: auto;
     position: relative;
     padding-left: 0 !important;
-    &.collapse-row{
+
+    &.collapse-row {
       padding: 30px 0 0;
-      &:hover{
+
+      &:hover {
         background-color: white;
       }
     }
-    .el-submenu__title{
+
+    .el-submenu__title {
       padding: 0 20px;
-      >i{
+      font-weight: bold;
+
+      > i {
         color: #BBC1CD !important;
       }
     }
@@ -221,6 +306,7 @@
     min-width: 1000px;
     position: relative;
     height: 100%;
+
     .nav {
       height: 40px;
       background-color: @color-blue;
@@ -228,23 +314,28 @@
       display: flex;
       align-items: center;
       position: relative;
+
       > img {
         margin-left: @margin-15;
       }
+
       .navbar {
         position: absolute;
         top: 50%;
         right: 20px;
         transform: translateY(-50%);
         display: flex;
+
         > li {
           padding-right: @margin-15;
+
           &:last-of-type {
             padding: 0;
           }
         }
       }
     }
+
     .container {
       display: flex;
       position: absolute;
@@ -252,32 +343,40 @@
       left: 0;
       right: 0;
       bottom: 0;
+
       .slider {
         /*max-width: 160px;*/
         border-right: 1px solid @border-e6;
         position: relative;
+
         /deep/ .el-menu {
           border: 0px;
+
           .is-opened {
             .el-menu-item {
-              padding-left: 20px !important;
+              /*padding-left: 20px !important;*/
               background-color: @bg-grey;
             }
           }
+
           &-demo {
             height: 100%;
             overflow-x: hidden;
             overflow-y: auto;
           }
         }
+
         &.collapse-on { /*菜单栏展开样式*/
           width: 160px;
+
           .el-submenu {
             &.second-grade-menu {
               background-color: @bg-th;
             }
+
             /deep/ .el-submenu__title {
               padding-left: 20px !important;
+
               > i {
                 color: #BBC1CD;
                 font-size: 16px;
@@ -285,6 +384,7 @@
             }
           }
         }
+
         &-bar-control {
           width: 56px;
           height: 17px;
@@ -336,16 +436,19 @@
   input, .el-input__inner {
     font-size: @size-base;
     font-family: "Avenir", Helvetica, Arial, sans-serif;
+
     &::-webkit-input-placeholder, &:-ms-input-placeholder {
       font-family: "Avenir", Helvetica, Arial, sans-serif;
       font-size: @size-base;
       color: @color-C8;
     }
+
     &:-ms-input-placeholder {
       font-family: "Avenir", Helvetica, Arial, sans-serif;
       font-size: @size-base;
       color: @color-C8;
     }
+
     &::-moz-placeholder {
       font-family: "Avenir", Helvetica, Arial, sans-serif;
       font-size: @size-base;
@@ -399,10 +502,12 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+
     > label {
       &:first-of-type {
         min-width: 80px;
       }
+
       &.no-width {
         min-width: initial;
         margin-right: @margin-10;
@@ -421,6 +526,7 @@
 
   .form-label {
     position: relative;
+
     &:before {
       content: '*';
       display: inline-block;
@@ -455,6 +561,7 @@
 
   .money-type-radio[role='radio'] {
     display: flex;
+
     > span {
       &:last-of-type {
         white-space: normal;

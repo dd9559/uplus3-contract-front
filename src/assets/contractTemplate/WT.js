@@ -1,16 +1,16 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 //初始化时间控件
-Calendar.create({
-    classN: 'calendar-item',
-    callBack: function(bindElem, dateObj) {
-        // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
-        if(bindElem.tagName.toLowerCase()==='input'){
-            bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
-            bindElem.setAttribute('value',bindElem.value)
-            bindElem.setAttribute('random',dateObj.random)
-        }
-    }
-})
+// Calendar.create({
+//     classN: 'calendar-item',
+//     callBack: function(bindElem, dateObj) {
+//         // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
+//         if(bindElem.tagName.toLowerCase()==='input'){
+//             bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
+//             bindElem.setAttribute('value',bindElem.value)
+//             bindElem.setAttribute('random',dateObj.random)
+//         }
+//     }
+// })
 //初始化下拉控件
 Dropdown.create({
     classN: 'dropdown-item',
@@ -19,6 +19,10 @@ Dropdown.create({
         if(bindElem.tagName.toLowerCase()==='input'){
             bindElem.value=dateObj.value
             bindElem.setAttribute('value',bindElem.value)
+            // let attr = bindElem.getAttribute('inputmethod')
+            // f(attr){
+            //   // contractConfig.initForm(attr==='handle'?['val32']:[],0
+            // }
         }else{
           bindElem.innerHTML = dateObj.value
           bindElem.classList.remove('input-select')
@@ -40,7 +44,7 @@ contractConfig.inputListener(function(ev,tip){
   let spanAttr=tip.target.getAttribute('listen')
   if(spanAttr==='number'){
     ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-    let toChineseArr = ['val5']
+    let toChineseArr = []
     let chineseStr = tip.target.getAttribute('extendparam')
     if(toChineseArr.includes(chineseStr)){
         document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
@@ -59,11 +63,10 @@ contractConfig.inputListener(function(ev,tip){
   }else {
     tip.target.innerHTML=ev.target.value
   }
-
 },function(tip){
   //获取输入框的默认值
   let initVal=tip.target.innerHTML
-  let ArrCn = ['val5']
+  let ArrCn = []
   let strCn = tip.target.getAttribute('extendparam')
   if(ArrCn.includes(strCn)){
     if(initVal.length>0){
@@ -72,28 +75,13 @@ contractConfig.inputListener(function(ev,tip){
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
    }
    }
-
 })
 
 // 勾选框逻辑
 contractConfig.checkboxListener(function(){},function(obj,index){
   let attr = obj.currentTarget.getAttribute('name')
-  if(attr){
-    contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
-  }
-  // if(obj.currentTarget.getAttribute('name')==='zhizhao5'){
-  //   document.querySelector(`span[extendparam="val40"]`).innerHTML=''
-  //   document.querySelector(`span[extendparam="val41"]`).innerHTML=''
-  //   document.querySelector(`span[extendparam="val40"]`).classList.add("input-before")
-  //   document.querySelector(`span[extendparam="val41"]`).classList.add("input-before")
-  //   document.querySelector(`span[extendparam="val40"]`).removeAttribute('systemParam')
-  //   document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-  //   let proveTypeDoms = document.getElementsByName("zhizhao5")
-  //   if(proveTypeDoms[0].querySelector('p').getAttribute('checked')==='true'){
-  //     document.querySelector(`span[extendparam="val41"]`).setAttribute('systemParam','true')
-  // }else{
-  //     document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
-  // }
+  // if(attr){
+  //   contractConfig.initForm(attr==='zhizhao4'?['val32']:[],0)
   // }
 })
 
@@ -115,15 +103,11 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }
 
 let sub = {
-  'checkbox_zhizhao4': {
-    // stateful:function (index) {
-    //   return index===3?{'val32':null}:null
-    // },
-  },
+  'val5': null,
+  'val6': null,
+  'val7': null,
+  'checkbox_zhizhao4': null,
   'checkbox_zhizhao5': null,
-  'val42': null,
-
-
 }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
@@ -177,19 +161,13 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
-    if(readonlyItem==='signDate'){
-        let time = new Date(msg.signDate)
-        arr.push(time.getFullYear())
-        arr.push(time.getMonth()+1)
-        arr.push(time.getDate())
-    }
-    if(readonlyItem==="companyNames"){
-        if(msg[readonlyItem].length>0){
-            let companyName = document.querySelector(`*[extendParam="val25"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
-        }
-    }
+    // if(readonlyItem==="companyNames"){
+    //     if(msg[readonlyItem].length>0){
+    //         let companyName = document.querySelector(`*[extendParam="val4"]`)
+    //         let companyNameTxt = msg[readonlyItem].join(',')
+    //         companyName.setAttribute('list',companyNameTxt)
+    //     }
+    // }
     if(onlyReadDom.length>0){
         onlyReadDom.forEach((element,index) => {
             if(readonlyItem==='timeUnit'){
@@ -204,17 +182,18 @@ for(let readonlyItem in msg){
             }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
                 element.value=msg[readonlyItem]
                 element.setAttribute('value', msg[readonlyItem])
-            }else{
-                if(element.getAttribute("extendParam")==="val33"){
-                    let value = msg["propertyAddr"]
-                    if(value.substring(0,3)==="咸宁市"){
-                        element.innerHTML=value.replace("咸宁市",'')
-                    }else{
-                        element.innerHTML=value
-                    }
-                }else{
+            }
+            else{
+                // if(element.getAttribute("extendParam")==="val33"){
+                //     let value = msg["propertyAddr"]
+                //     if(value.substring(0,3)==="咸宁市"){
+                //         element.innerHTML=value.replace("咸宁市",'')
+                //     }else{
+                //         element.innerHTML=value
+                //     }
+                // }else{
                     element.innerHTML=msg[readonlyItem]
-                }
+                // }
                 element.classList.remove('input-title')
                 element.classList.remove('input-title2')
                 element.classList.remove('input-before')

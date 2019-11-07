@@ -132,6 +132,42 @@
       color: #FFFFFF;
       border-radius: 4px;
     }
+    .info-checkbox{
+      display: inline;
+      cursor: pointer;
+    }
+    .info-checkbox>span{
+      font-weight: bold;
+    }
+    .info-checkbox>p[type="check"]{
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border: 1px solid;
+      position: relative;
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+    }
+    .info-checkbox>p[type="check"][checked='true']:before{
+      content:'';
+      left:0;
+      position: absolute;
+      display: inline-block;
+      width: 100%;
+      height: 10px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVQ4T72TsUvDQBjF33cYUhfFP0GIVO7S1cXJxU3sIqiLuHSyOIg4Cro4OBW3jJ10EhcRdHcw2901f0BWh04OmvskpZVYqjYEvPl9v3v3vneEiocqzuP/AY1GY9k5F2VZ1kyS5LWUAynlihDigZnnmblprb2bGhCG4TqAWwCzzNwyxkR5fgNAEARzvu8fGWPOAXyMB6uU2iaiLoAZ51zbWns10gwAUsotIcQNM9/XarXNOI7fRwIp5QERdYiInHOn1tqz4gVfTwjDsAOgzcxP/X5/I03TN6XUBRGdDAcutdbH4+6KGQil1CMRrQF4BtADsJ8PMHNkjGlN6sy3EIdZvBDRUkHc1Vrv5Zw/AbmgXq8vep4XA1gAcK213gXgfmrsxDUqpVaJ6FBrvQMg+63uU/eglIMyH6yyg0+YpmgRBNEBzgAAAABJRU5ErkJggg==");
+    }
+    .info-checkbox>p[type="check"][checked='false']:after{
+      content:'';
+      position: absolute;
+      display: inline-block;
+      width: 100%;
+      height: 10px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
+    }
         /*  */
     </style>
 </head>
@@ -144,26 +180,27 @@
             <p><span>甲方（出卖方）：</span><input systemParam="ownerName" type="text" class="text-limit" extendParam="val1" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
         </li>
         <li>
-            <p><span>乙方（买受人）：</span><input systemParam="guestName" type="text" class="text-limit" extendParam="val3" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
+            <p><span>乙方（买受人）：</span><input systemParam="guestName" type="text" class="text-limit" extendParam="val2" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
         </li>
         <li>
-            <p>丙方 ：</span><input systemParam="guestName" type="text" class="text-limit" extendParam="val3" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
+            <p>丙方 ：</span><input systemParam="companyNames" type="text" class="text-limit" extendParam="val3" tag="input" readonly="readonly" style="max-width:none;border:none" value=""/></p>
         </li>
     </ul>
     <div class="textindent">
-        甲乙双方签订了位于<input systemParam="guestName" type="text" class="text-limit" extendParam="val3" tag="input" readonly="readonly" style="max-width:none" value=""/>房屋的买卖合同，现甲乙双方委托丙方协助办理房产交易后期衍生事宜，经协商一致订立以下合同条款，甲乙丙三方共同遵照执行：
+        甲乙双方签订了位于<input systemParam="propertyAddr" type="text" class="text-limit" extendParam="val4" tag="input" readonly="readonly" style="max-width:none" value=""/>房屋的买卖合同，现甲乙双方委托丙方协助办理房产交易后期衍生事宜，经协商一致订立以下合同条款，甲乙丙三方共同遵照执行：
     </div>
     <div class="textindent">
         <p class="son_title">一、服务事项</p>
-        <p>甲乙双方委托丙方协助办理下列<input type="text"> 项服务</p>
+        <p>甲乙双方委托丙方协助办理下列<input extendParam="val5" readonly="readonly" inputmethod="handle"  list="1,2,,1，2" class="text-limit dropdown-item" />项服务。 </p>
         <p>1、协助办理按揭贷款手续</p>
         <p>2、协助办理产权过户手续。</p>
     </div>
     <div class="textindent">
         <p class="son_title">二、服务费支付时间及标准</p>
-        <p>甲乙双方委托丙方协助办理下列<span extendParam="val27" listen="number" max="2" tag="input-auto" class="input-before"></span>项服务</p>
-        <p>1、甲乙双方委托丙方协助办理按揭贷款手续，<input type="checkbox" name="fee1">甲方<input type="checkbox" name="fee1"><span extendParam="val27" listen="number"  tag="input-auto" class="input-before"></span>元整。</p>
-        <p>2、甲乙双方委托丙方协助办理产权过户手续，<input type="checkbox" name="fee2">甲方<input type="checkbox" name="fee2">乙方应当于本合同签订当日支付丙方服务费人民币<span extendParam="val28" listen="number"  tag="input-auto" class="input-before"></span>元整。</p>
+        <ul>
+            <li> 1、甲乙双方委托丙方协助办理按揭贷款手续，<div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>甲方</span></div><div class="info-checkbox" name="zhizhao4"><p type="check"></p><span>乙方</span></div>应当于本合同签订当日支付丙方服务费人民币<span extendParam="val6" listen="number"  tag="input-auto" class="input-before"></span>元整。 </li>
+            <li> 2、甲乙双方委托丙方协助办理产权过户手续，<div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>甲方</span></div><div class="info-checkbox" name="zhizhao5"><p type="check"></p><span>乙方</span></div>应当于本合同签订当日支付丙方服务费人民币<span extendParam="val7" listen="number"  tag="input-auto" class="input-before"></span>元整。</li>
+        </ul>
     </div>
     <div class="textindent">
         <p class="son_title"> 三、权利义务</p>

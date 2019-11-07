@@ -87,6 +87,7 @@
               value-format="yyyy-MM-dd HH:mm:ss"
               v-model="form.createTime"
               type="datetime"
+              @change="checkDate"
               placeholder="选择日期时间">
             </el-date-picker>
           </div>
@@ -452,6 +453,16 @@
             this.setPath(arr);
         },
         methods: {
+            checkDate:function(val){
+                // debugger
+                let date=new Date(val);
+                if(date.getTime()>Date.now()){
+                    this.form.createTime=''
+                    this.$message({
+                        message:'不能选择未来时间'
+                    })
+                }
+            },
             //判断用户该合同是否已经选择过收款方式
             getFirstTime_receipt: function (id) {
                 this.$ajax.get('/api/payInfo/checkPayAccountType', {contId: id}).then(res => {
