@@ -335,7 +335,7 @@
             <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
             <!-- <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div> -->
           </template>
-          <template slot-scope="scope" v-if="scope.row.isCombine">
+          <template slot-scope="scope" v-else-if="scope.row.isCombine">
             <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
           </template>
         </el-table-column>
@@ -667,7 +667,7 @@ export default {
             colspan: 1
           };
         }else {
-          if(rowIndex===rows.index+1&&rows.id===row.contractEntrust.id){
+          if(rowIndex===rows.index+1&&row.contractEntrust&&(rows.id===row.contractEntrust.id)){
             return{
               rowspan:0,
               colspan:0
