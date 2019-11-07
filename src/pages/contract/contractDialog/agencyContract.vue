@@ -212,7 +212,8 @@ export default {
             this.$ajax.post('/api/contract/entrust/addContract', {
                 signDate: this.signDate,
                 tradeFee: this.tradeFee,
-                id: this.defaultInfo.id
+                id: this.defaultInfo.id,
+                code: this.defaultInfo.code
             }).then(res => {
                 res = res.data
                 if(res.status === 200){
