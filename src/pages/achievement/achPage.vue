@@ -1029,7 +1029,7 @@
               </li>
               <li v-for="(item,i) in filesList" :key="i">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="attach-box" @click="previewPhoto(attachList,i)">
+                  <div class="attach-box" @click="previewPhoto(filesList,i)">
                     <img
                       :src="item.path|getSignImage(contDataFiles)"
                       alt
@@ -2716,14 +2716,14 @@ export default {
       }
     },
     deleteFn(i) {
-      if (this.attachList.length == 1) {
+      if (this.filesList.length == 1) {
         this.$message({
           message: "至少保留一个，请勿删除",
           type: "warning"
         });
         return;
       }
-      this.attachList.splice(i, 1);
+      this.filesList.splice(i, 1);
     },
     addSubject(data) {
       let arr = data.param;
