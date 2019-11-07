@@ -626,7 +626,7 @@
                             moneyTypePid: res.data.moneyTypePid,
                             amount: res.data.amount,
                             id: res.data.id,
-                            createTime: this.$tool.timeFormat(res.data.createTime)
+                            createTime: this.$tool.timeFormat(res.data.payStartTime)
                         }
                         if (obj.outObjType === 3) {
                             this.inputPerson = true

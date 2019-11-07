@@ -245,6 +245,10 @@
         }
       }
       &.second-grade-menu{
+        margin-bottom: 2px;
+        &:last-of-type{
+          margin-bottom: 0;
+        }
         .el-submenu__title{
           font-weight: unset;
           background-color: #F3F3F3;
