@@ -71,9 +71,8 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="品牌" prop="brandId" :formatter="nullFormatter">
-                        <template slot-scope="scope">
-                            <span v-if="!scope.row.brandId">--</span>                            
-                            <span v-for="item in dictionary['735']" :key="item.key" v-else-if="scope.row.brandId&&item.key===scope.row.brandId">{{item.value}}</span>
+                        <template slot-scope="scope">                  
+                            <span>{{getBrandVal(scope.row.brandId)}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
@@ -404,6 +403,19 @@
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
+            getBrandVal(val) {
+                if(val) {
+                    let item = this.dictionary['735']
+                    for(let i = 0; i < item.length; i++) {
+                        if(val === item[i].key) {
+                            return item[i].value
+                            break
+                        }
+                    }
+                } else {
+                    return '--'
+                }
+            },
             // 分支节点选择
             aduitChange(val) {
                 if(this.aduitTitle === "添加") {

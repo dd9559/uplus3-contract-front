@@ -302,11 +302,11 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
+        <el-tab-pane label="合同主体" name="second">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
-              <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
+              <li>
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -323,13 +323,13 @@
                 <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'main')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
-              <li v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
-                <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
+              <li>
+                <file-up class="uploadSubject" @getUrl="uploadSubject_" :scane="entrustScane" id="WT">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
@@ -345,7 +345,7 @@
                 <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
@@ -1328,6 +1328,10 @@ export default {
         path:"zhuti",
         id:''
       },
+      entrustScane:{
+        path:"WTzhuti",
+        id:''
+      },
       //权限
       power: {
         'sign-com-htdetail': {
@@ -1531,12 +1535,12 @@ export default {
       console.log(tab.name);
       this.name=tab.name;
       if(tab.name==="second"){
-        if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
-          this.$message({
-            message:'合同未签章,不允许上传合同主体',
-            type:'warning'
-          })
-        }
+        // if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
+        //   this.$message({
+        //     message:'合同未签章,不允许上传合同主体',
+        //     type:'warning'
+        //   })
+        // }
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
         this.getEntrustMsg();//委托
@@ -1947,6 +1951,7 @@ export default {
           this.contCode=res.data.code
           this.dataScane.id=res.data.code
           this.uploadScane.id=res.data.code
+          this.entrustScane.id=res.data.code
           //变更解约佣金
           this.commission={
             owner:this.contractDetail.ownerCommission,
@@ -1997,7 +2002,7 @@ export default {
             this.getContractBody(param);//获取合同主体
           }
           //委托合同主体
-          if(res.data.contractEntrust&&res.data.contractEntrust.entrustState===2){
+          if(res.data.contractEntrust&&res.data.contractEntrust.entrustState===3){
             let param = {
               id:this.id,
               isentrust:1
@@ -2089,21 +2094,37 @@ export default {
         this.mainDataFiles=this.mainDataFiles.concat(res)
       })
     },
+    //委托合同主体获取文件路径数组
+    uploadSubject_(data){
+      let arr = data.param;
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+      this.entrustUploadList=this.entrustUploadList.concat(arr);
+      let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.entrustMainFiles=this.entrustMainFiles.concat(res)
+      })
+    },
     //合同主体的删除
-    ZTdelectData(index,path){
-      if(this.contractDetail.contState.value===3){
-        if(this.uploadList.length>1){
-          this.uploadList.splice(index,1);
-          //没必要删除缩略图数组
-          // let mainIndex
-          // this.mainDataFiles.forEach((element,index)=>{
-          //   if(element.includes(path)){
-          //     mainIndex=index
-          //   }
-          // })
+    ZTdelectData(index,path,type){
+      if(this.contractDetail.contState.value===3&&type==="main"||this.contractDetail.contractEntrust.entrustState===3&&type==="WT"){
+        if(this.uploadList.length>1&&type==="main"||this.entrustUploadList.length>1&&type==="WT"){
           let param = {
             contId:this.id,
             datas:this.uploadList
+          }
+          if(type==="main"){
+            this.uploadList.splice(index,1);
+          }else{
+            this.entrustUploadList.splice(index,1);
+            param.isentrust=1
           }
           this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
             res=res.data;
@@ -2121,18 +2142,25 @@ export default {
           })
         }
       }else{
-        this.uploadList.splice(index,1);
+        if(type==="main"){
+          this.uploadList.splice(index,1);
+        }else{
+          this.entrustUploadList.splice(index,1);
+        }
       }
     },
     //保存上传文件(合同主体)
-    saveFile() {
-      if(this.uploadList.length>0){
-        // this.uploadList.forEach(element => {
-        //   delete element.fileType
-        // });
+    saveFile(type) {
+      if(this.uploadList.length>0&&type==="main"||this.entrustUploadList.length>0&&type==="WT"){
         let param = {
           contId:this.id,
-          datas:this.uploadList
+          // datas:this.uploadList
+        }
+        if(type==="WT"){
+          param.isentrust=1
+          param.datas=this.entrustUploadList
+        }else{
+          param.datas=this.uploadList
         }
         this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
           res=res.data;
@@ -2142,7 +2170,7 @@ export default {
               message:'上传成功',
               type:'success'
             })
-            if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1){
+            if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1&&type==="main"){
               this.dialogSuccess=true
             }
           }
@@ -2154,7 +2182,7 @@ export default {
         })
       }else{
         this.$message({
-          message:'请上传合同主体资料',
+          message:type==="main"?'请上传合同主体资料':"请上传委托合同主体资料",
           type:'warning'
         })
       }
