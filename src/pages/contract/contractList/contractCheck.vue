@@ -475,7 +475,8 @@ export default {
         path: "/contractPreview",
         query: {
           id: item.id,
-          code:item.code
+          code:item.code,
+          isentrust:item.isCombine?1:0
         }
       });
     },

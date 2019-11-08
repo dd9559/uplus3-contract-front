@@ -1342,13 +1342,17 @@ export default {
     padding-left: 30px !important;
   }
 }
+// /deep/.el-table tbody tr:hover>td { 
+//     background-color:#ffffff!important
+// }
 /deep/.el-table__body{
-  // .bgc{
-  //   &:nth-of-type(2n){
-  //     background-color: red !important;
-  //   }
-  // }
   .el-table__row{
+    &.hover-row{
+      background-color: #fff !important;
+      td{
+         background-color: #fff !important;
+      }
+    }
     &.collapseRow{
       .bgc{
         background-color: #ECF5FF !important;
