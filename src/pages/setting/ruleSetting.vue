@@ -3,7 +3,7 @@
     <ul class="tabs">
       <li v-for="item in power" v-if="item.state" :class="[activeItem===item.id?'active':'']" @click="checkTab(item)" :key="item.id">{{item.name}}</li>
     </ul>
-    <component :is="current" :systemArr="systemTagList"></component>
+    <component :is="current" :systemArr="systemTagList" :systemOpt="systemTagSelect"></component>
     </div>
 </template>
            
@@ -43,6 +43,7 @@ export default{
     mounted() {
         // 获取体系
         this.getSystemTag()
+        this.getSystemTagSelect()
         for(let item in this.power){
           let type = this.power[item]
           if(type.state) {

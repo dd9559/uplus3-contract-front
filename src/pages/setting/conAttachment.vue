@@ -7,7 +7,7 @@
                 </el-form-item>
                 <el-form-item label="体系">
                     <el-select class="w240" v-model="searchForm.systemId">
-                        <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="添加时间">
@@ -68,7 +68,7 @@
         <div class="dialog-body">
             <p class="item-title"><i>*</i>体系：</p>
             <el-select class="w400 item-title" v-model="addSystemTag" size="small">
-                <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
             </el-select>
             <p class="item-title"><i>*</i>附件：</p>
             <ul class="ulData">
@@ -124,6 +124,12 @@
         mixins: [MIXINS,FILTER],
         props: {
             systemArr: {
+                type: Array,
+                default: function() {
+                    return []
+                }
+            },
+            systemOpt: {
                 type: Array,
                 default: function() {
                     return []

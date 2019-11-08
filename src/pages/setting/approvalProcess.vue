@@ -19,7 +19,7 @@
             <div class="input-search">
                 <label class="mr-20">体系</label>
                 <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
-                    <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
             <div class="input-search">
@@ -123,7 +123,7 @@
                     <div class="aduit-input must mr-35 ml-28">
                         <label class="mr-28">体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
-                            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                            <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input mr-35 ml-28" v-if="aduitForm.modularType==0">
@@ -396,6 +396,7 @@
             }
             // 获取体系
             this.getSystemTag()
+            this.getSystemTagSelect()
             this.remoteMethod()
             this.getAduitType()
             this.getDeps()
@@ -1047,6 +1048,7 @@
                 this.getData('search')
             },
             resetFormFn() {
+                this.searchForm.brandId = ""
                 this.searchForm.modularType = ""
                 this.searchForm.systemTag = ""
                 this.searchForm.deptAttr = ""
