@@ -274,7 +274,7 @@
         &.second-grade-menu{
           .el-submenu__title{
             color: white !important;
-            background-color: #3a8ee6;
+            background-color: #468DE3;
             >i.iconfont{
               color:white !important;
             }

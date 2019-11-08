@@ -260,7 +260,7 @@
         <el-table-column label="操作" fixed="right" min-width="120" class-name="null-formatter">
           <template slot-scope="scope">
             <el-button type="text" @click="cellOpera(scope.row,'edit')"
-                       v-if="(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&scope.row.type===1">编辑
+                       v-if="(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&scope.row.type===1&&scope.row.edit===1">编辑
             </el-button><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button><el-button type="text" @click="cellOpera(scope.row,'del')"
                        v-if="((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&
                        scope.row.isDel===1&&
