@@ -7,7 +7,7 @@
       <el-form :inline="true" :model="searchForm" class="form-head" size="small">
          <el-form-item label="体系">
           <el-select v-model="searchForm.sysid" filterable :clearable="true">
-            <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+            <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
             <!-- <el-option v-for="item in dictionary['638']" :key="item.key" :label="item.value" :value="item.key"></el-option> -->
           </el-select>
         </el-form-item>
@@ -100,7 +100,7 @@
         <el-form :inline="true" size="medium">
         <el-form-item label="体系：" >
           <el-select v-model="formSys" :disabled="title=='编辑'?true:false" placeholder="请选择体系" :clearable="true">
-           <el-option v-for="item in systemArr" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+           <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
             <!-- <el-option v-for="item in dictionary['638']" :key="item.key" :label="item.value" :value="item.key"></el-option> -->
           </el-select>
         </el-form-item>
@@ -131,6 +131,12 @@
     mixins: [MIXINS],
     props: {
         systemArr: {
+            type: Array,
+            default: function() {
+                return []
+            }
+        },
+        systemOpt: {
             type: Array,
             default: function() {
                 return []

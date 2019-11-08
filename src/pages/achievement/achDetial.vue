@@ -205,7 +205,7 @@
 
         <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
         </h1>
-        <div class="ach-divide-list" v-if="contype==2||contype==3">
+        <div class="ach-divide-list" v-if="contType==2||contType==3">
           <el-table
             :data="serviceach"
             style="width: 100%"
@@ -463,8 +463,8 @@
                 </el-table-column>
             </el-table>
            </div>
-      </div>
-      <h1 class="f14" v-if="fujian">业绩分成协议</h1>
+
+      <h1 class="f14"  v-if="fujian">业绩分成协议</h1>
       <ul class="ulData" style="margin-top:10px" v-if="fujian">
               <!-- <li>
                 <file-up class="upload-box" @getUrl="addSubject">
@@ -489,6 +489,8 @@
                 <!-- <i class="iconfont icon-tubiao-6" @click="deleteFn(i)"></i> -->
               </li>
             </ul>
+      </div>
+
 
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
       <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
@@ -600,12 +602,15 @@ export default{
       
     },
     created() {
+          // debugger
       this.contType=this.$route.query.contType
       this.contCode=this.$route.query.contCode
       this.entrance=this.$route.query.entrance
       this.aId=this.$route.query.aId
       this.contractId2=this.$route.query.contractId2
       //合同边和获取业绩详情
+ 
+
      this.getData()
     },
     methods: {
