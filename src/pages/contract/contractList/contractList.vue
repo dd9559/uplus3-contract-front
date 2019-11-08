@@ -317,7 +317,7 @@
         <el-table-column label="结算状态" min-width="80">
           <template slot-scope="scope">
             <!-- <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button> -->
-            <span v-if="scope.row.contType.value<4">{{scope.row.resultState.label}}</span>
+            <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">{{scope.row.resultState.label}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
