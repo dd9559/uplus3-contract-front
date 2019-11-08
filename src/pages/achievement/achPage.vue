@@ -630,7 +630,7 @@
             </el-table>
           </div>
 
-          <div  class="house-divide top20">
+          <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
               <h1 class="f14">交易服务费分成</h1>
               <p class="f_l delive">合计:{{feetotal}}%</p>
@@ -640,7 +640,7 @@
             </div>
           </div>
 <!-- v-if="contype==1||contype==2" -->
-          <div  class="ach-divide-list">
+          <div  class="ach-divide-list" v-if="contType==2||contType==3">
             <el-table :data="serviceAgents" style="width: 100%">
               <el-table-column label="角色类型" width="125">
                 <template slot-scope="scope">
@@ -1386,7 +1386,7 @@ export default {
       state2: "",
       auditIds: "",
       filesList: [],
-      contType:[]
+      contType:''
     };
   },
   components: {
