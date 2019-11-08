@@ -2040,39 +2040,48 @@ export default {
         this.houseArr[i].sortNum = i + 1;
         this.houseArr[i].contractId = this.achObj.contractId;
         this.houseArr[i].contractCode = this.contractCode;
+        this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
       }
       for (let i = 0; i < this.clientArr.length; i++) {
         this.clientArr[i].sortNum = i + 1;
         this.clientArr[i].contractId = this.achObj.contractId;
         this.clientArr[i].contractCode = this.contractCode;
+        this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
+      }
+      for (let i = 0; i < this.serviceAgents.length; i++) {
+        this.serviceAgents[i].sortNum = i + 1;
+        this.serviceAgents[i].contractId = this.achObj.contractId;
+        this.serviceAgents[i].contractCode = this.contractCode;
+        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
       }
       let resultArr = this.houseArr.concat(this.clientArr);
+      let resultArr2 = resultArr.concat(this.serviceAgents);
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
         if (this.$route.query.version == "0") {
           // 旧版本 总监 副总 必填
           if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === "" ||
+            resultArr2[i].level4 === "" ||
+            resultArr2[i].amaldar === "" ||
+            resultArr2[i].manager === ""
           ) {
             flag = false;
           }
         } else {
           // 新版本 总监 副总 非必填
           if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === ""
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === ""
           ) {
             flag = false;
           }
@@ -2092,7 +2101,7 @@ export default {
         // 新版本时参数添加level4和storefront4Id字段
         if (this.$route.query.version == "1") {
 
-          resultArr.forEach(item => {
+          resultArr2.forEach(item => {
             item.level4 = item.level3;
             item.storefront4Id = item.storefront3Id;
           });
@@ -2100,7 +2109,7 @@ export default {
         let param = {
           id: this.aId,
           remark: this.remark,
-          distributions: resultArr,
+          distributions: resultArr2,
           agendIds: this.agendIds,
           contractId: this.achObj.contractId
         };
@@ -2178,39 +2187,48 @@ export default {
         this.houseArr[i].sortNum = i + 1;
         this.houseArr[i].contractId = this.achObj.contractId;
         this.houseArr[i].contractCode = this.contractCode;
+        this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
       }
       for (let i = 0; i < this.clientArr.length; i++) {
         this.clientArr[i].sortNum = i + 1;
         this.clientArr[i].contractId = this.achObj.contractId;
         this.clientArr[i].contractCode = this.contractCode;
+        this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
+      }
+      for (let i = 0; i < this.serviceAgents.length; i++) {
+        this.serviceAgents[i].sortNum = i + 1;
+        this.serviceAgents[i].contractId = this.achObj.contractId;
+        this.serviceAgents[i].contractCode = this.contractCode;
+        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
       }
       let resultArr = this.houseArr.concat(this.clientArr);
+      let resultArr2 = resultArr.concat(this.serviceAgents);
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
         if (this.$route.query.version == "0") {
           // 旧版本 总监 副总 必填
           if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === "" ||
+            resultArr2[i].level4 === "" ||
+            resultArr2[i].amaldar === "" ||
+            resultArr2[i].manager === ""
           ) {
             flag = false;
           }
         } else {
           // 新版本 总监 副总 非必填
           if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === ""
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === ""
           ) {
             flag = false;
           }
@@ -2225,7 +2243,7 @@ export default {
         this.loading = true;
         // 新版本时参数添加level4和storefront4Id字段
         if (this.$route.query.version == "1") {
-          resultArr.forEach(item => {
+          resultArr2.forEach(item => {
             item.level4 = item.level3;
             item.storefront4Id = item.storefront3Id;
           });
@@ -2233,7 +2251,7 @@ export default {
         let param = {
           id: this.aId,
           remark: this.remark,
-          distributions: resultArr,
+          distributions: resultArr2,
           agendIds: this.agendIds,
           contractId: this.achObj.contractId
         };
