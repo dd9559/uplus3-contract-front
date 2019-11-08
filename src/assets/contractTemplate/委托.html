@@ -256,24 +256,24 @@
         </p>
       </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
-<script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_wt20191107.js"></script>
-<!--<script>
+<script type="text/javascript" src="/dropdown.js"></script> -->
+<!-- <script type="text/javascript" src="/js/bundle_wt20191107.js"></script> -->
+<script>
      (function () {
       var scriptList = document.getElementsByTagName("script")
       console.log(scriptList)
       if(!scriptList[0].src){
         var host='https://sign2.jjw.com'
         var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_dj20190402.js","datepicker.css"]
+        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_wt20191107.js","datepicker.css"]
         for (let i = 0; i < addrList.length; i++) {
           if(window.location.host==='localhost:8080'){
             if(addrList[i].indexOf('bundle')>-1){
-            //   addrList[i]=host_other+'/'+addrList[i]
-              addrList[i]='./WT.js'
+              addrList[i]=host_other+'/'+addrList[i]
+              // addrList[i]='./WT.js'
             }else{
               addrList[i]=host_other+'/'+addrList[i]
             }
@@ -297,5 +297,5 @@
         }
       }
     })();
-</script>-->
+</script>
 </html>

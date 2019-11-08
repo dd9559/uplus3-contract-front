@@ -491,7 +491,8 @@ export default {
           query:{
             code:item.code,
             id:item.id,
-            operationType:2
+            operationType:2,
+            isentrust:item.isCombine?1:0
           }
         })
       }else{

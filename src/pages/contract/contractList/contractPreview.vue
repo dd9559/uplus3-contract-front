@@ -8,13 +8,7 @@
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
-      <div class="btn" v-if="contType<4">
-        <!-- <el-button round><i class="iconfont icon-icon-test3"></i></el-button> -->
-        <!-- <el-button round><i class="iconfont icon-yuanjiaojuxing1"></i></el-button> -->
-        <!-- <div class="blowUp">
-          <div @click="blowUp">放大</div>
-          <div @click="shrink">缩小</div>
-        </div> -->
+      <div class="btn" v-if="contType<4&&!isentrust">
         <el-button-group>
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
@@ -54,6 +48,32 @@
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
       </div>
+      <!-- 委托合同按钮组 -->
+      <div class="btn" v-else-if="isentrust">
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1" @mouseover="showList" @mouseout="closeList">
+          <span class="signAddr" @click="showList_">签章选择</span>
+          <div class="signList">
+            <ul>
+              <li v-for="item in companySigns" :key="item.storeId" @click="chooseSign(item)">
+                {{item.name}}
+              </li>
+              <li v-if="companySigns.length===0" class="noCompanySigns">该门店暂未设置签章！</li>
+            </ul>
+          </div>
+        </div>
+        <el-popover
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&storeId"
+          placement="top-start"
+          width="140"
+          trigger="hover">
+          <img class="signImg" :src="signImg" alt="">
+          <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        </el-popover>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
+      </div>
       <div class="btn" v-else>
         <el-button-group>
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
@@ -66,22 +86,8 @@
     <div class="yulan" :style="{ height: clientHei }">
       <div class="content">
         <div class="signaturewrap">
-            <img v-for="(item,index) in src" :key="index" :src="item" alt="" :style="{width:getWidth}">
-            <!-- <div class="signature">
-                <img src="../../../assets/img/yz.png" class="yuanzhang" alt="">
-                <i class="el-icon-close"></i>
-            </div> -->
-
+          <img v-for="(item,index) in src" :key="index" :src="item" alt="" :style="{width:getWidth}">
         </div>
-        <!-- <div class="btnList">
-          <el-button class="paging iconfont icon-tubiao_shiyong-20" @click="del"></el-button>
-          <div class="tally"><span>{{count}}</span>/<span>{{showTotal}}</span></div>
-          <el-button class="paging iconfont icon-tubiao_shiyong-22" @click="add"></el-button>
-        </div> -->
-        <!-- <div class="blowUp">
-          <button @click="blowUp">放大</button>
-          <button @click="shrink">缩小</button>
-        </div> -->
       </div>
     </div>
 
@@ -119,7 +125,21 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="checked(2)">驳回</el-button>
-        <el-button round type="success" @click="checked(1)">通过</el-button>
+        <el-button round type="primary" @click="checked(1)">通过</el-button>
+      </span>
+    </el-dialog>
+    <!-- 委托合同审核 -->
+    <el-dialog title="合同审核" :visible.sync="dialogEntrust" width="665px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="checkBottom" style="padding-top:10px;padding-left:10px;">
+        <div class="reason">
+          <el-input type="textarea" :rows="5" placeholder="请输入通过或者驳回原因" v-model="entrustReason" resize='none' style="width:624px" maxlength="100">
+          </el-input>
+          <span>{{entrustReason.length}}/100</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="checked(2,'entrust')">驳回</el-button>
+        <el-button round type="primary" @click="checked(1,'entrust')">通过</el-button>
       </span>
     </el-dialog>
     <!-- 变更/解约编辑弹窗 -->
@@ -381,7 +401,10 @@ export default {
       },
       countnum:0,//创建拖拽元素个数
       contDataFiles:[],//资料库图片缩略图
-    };
+      isentrust:0,//是否是委托合同 1 是 0不是
+      dialogEntrust:false,//委托合同审核弹窗
+      entrustReason:"",//委托合同审核备注
+    }; 
   },
   created() {
     if (!window.location.origin) {
@@ -390,10 +413,14 @@ export default {
     this.http = window.location.origin
     this.id = this.$route.query.id;
     this.code = this.$route.query.code;
+    this.isentrust = Number(this.$route.query.isentrust)
     if (this.$route.query.operationType) {
       this.operationType = this.$route.query.operationType;
     }
-    this.getContDataType();//获取合同集料库类型
+    if(!Number(this.$route.query.isentrust)){
+      this.getContDataType();//获取合同集料库类型
+    }
+    
     this.getContImg();
     this.getAdmin();//获取当前登录人信息
     let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
@@ -401,7 +428,7 @@ export default {
     this.setPath(arr);
   },
   methods: {
-      tuozhuai(sign,countnum){
+    tuozhuai(sign,countnum){
         var oDiv=document.getElementsByClassName('signature')[countnum]
         var that=this
         oDiv.onmousedown = function(ev){
@@ -593,45 +620,71 @@ export default {
       }
     },
     //通过驳回
-    toChecked(param){
-      let param_ = {
-        id:this.id
-      }
-       //验证此合同是否正在编辑
-      this.$ajax.get("/api/contract/audit",param_).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
-            res=res.data
-            if(res.status===200){
-              this.dialogCheck=false;
-              this.isSignature=true;
-              this.getContImg();
+    toChecked(param,type){
+      if(type==="entrust"){
+        this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.dialogEntrust=false;
+            this.getContImg();
+            this.$message({
+              message:'审核成功',
+              type:'success'
+            })
+          }
+        }).catch(error => {
+            if(error.message==='下一节点审批人不存在'){
+              this.checkPerson.code=this.code;
+              this.checkPerson.state=true;
+              this.checkPerson.type=3;
+              this.checkPerson.label=true;
+              this.checkPerson.flowType=11
+            }else{
               this.$message({
-                message:'审核成功',
-                type:'success'
+                message:error,
+                type: "error"
               })
             }
-          }).catch(error => {
-              if(error.message==='下一节点审批人不存在'){
-                this.checkPerson.code=this.code;
-                this.checkPerson.state=true;
-                this.checkPerson.type=3;
-                this.checkPerson.label=true;
-              }else{
+          })
+      }else{
+        let param_ = {
+          id:this.id
+        }
+        //验证此合同是否正在编辑
+        this.$ajax.get("/api/contract/audit",param_).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.$ajax.postJSON('/api/machine/audit', param).then(res=>{
+              res=res.data
+              if(res.status===200){
+                this.dialogCheck=false;
+                this.getContImg();
                 this.$message({
-                  message:error,
-                  type: "error"
+                  message:'审核成功',
+                  type:'success'
                 })
               }
+            }).catch(error => {
+                if(error.message==='下一节点审批人不存在'){
+                  this.checkPerson.code=this.code;
+                  this.checkPerson.state=true;
+                  this.checkPerson.type=3;
+                  this.checkPerson.label=true;
+                }else{
+                  this.$message({
+                    message:error,
+                    type: "error"
+                  })
+                }
+              })
+          }
+        }).catch(error =>{
+            this.$message({
+              message:error,
+              type: "error"
             })
-        }
-      }).catch(error =>{
-          this.$message({
-            message:error,
-            type: "error"
           })
-        })
+      }
     },
     //签章
     signature(value){
@@ -643,13 +696,16 @@ export default {
           storeId:this.storeId
           // reduce:this.reduce//合同页数是否减少 0无  1有
         }
+        if(this.isentrust){
+          param.isentrust=1
+        }
         this.fullscreenLoading=true;
         //签章
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
             this.getContImg()
-            this.pdfUrl=`${this.http}/api/contract/getSignPdf?id=${this.id}`
+            this.pdfUrl=this.isentrust ? `${this.http}/api/contract/getSignPdf?id=${this.id}&isentrust=1` : `${this.http}/api/contract/getSignPdf?id=${this.id}`
             this.haveUrl=true;
             this.fullscreenLoading=false;
           }
@@ -665,10 +721,13 @@ export default {
           id:this.id,
           type:value
         }
+        if(this.isentrust){
+          param.isentrust=1
+        }
         this.$ajax.post('/api/contract/signture', param).then(res=>{
           res=res.data;
           if(res.status===200){
-            this.pdfUrl=`${this.http}/api/contract/getSignPdf?id=${this.id}`
+            this.pdfUrl=this.isentrust ? `${this.http}/api/contract/getSignPdf?id=${this.id}&isentrust=1` : `${this.http}/api/contract/getSignPdf?id=${this.id}`
             this.haveUrl=true;
           }
         })
@@ -696,65 +755,103 @@ export default {
     },
     //审核弹窗
     toCheck(){
-      let param = {
-        id:this.id
-      }
-      //验证此合同是否正在编辑
-      this.$ajax.get("/api/contract/audit",param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          this.dialogCheck = true
+      if(this.isentrust){
+        this.dialogEntrust = true
+      }else{
+        let param = {
+          id:this.id
         }
-      }).catch(error =>{
-          this.$message({
-            message:error,
-            type: "error"
+        //验证此合同是否正在编辑
+        this.$ajax.get("/api/contract/audit",param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            this.dialogCheck = true
+          }
+        }).catch(error =>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
           })
-        })
-      
-    },
-    checked(num) {
-      //驳回/风险单
-      if (num===2 || this.isSign) {
-        if (this.textarea.length>0) {
-          this.textarea=this.textarea.replace(/\s/g,"");
-          if(this.textarea.length>0){
+        }
+      },
+    checked(num,type) {
+      if(type==="entrust"){
+        if(num===2){
+          this.entrustReason=this.entrustReason.replace(/\s/g,"");
+          if(this.entrustReason.length>0){
             let param = {
               bizCode:this.code,
-              flowType:3,
+              flowType:11,
               modularType:0,//合同类型
               approvalForm:{
                 result: num,
-                isRisk: this.isSign, //风险单
-                remark: this.textarea
+                remark: this.entrustReason
               }
-            };
-            this.toChecked(param);
+            }
+            this.toChecked(param,type)
+          }else{
+            this.$message({
+              message: '请填写审核原因',
+              type: 'warning'
+            });
+          }
+        }else{
+          let param = {
+            bizCode:this.code,
+            flowType:11,
+            modularType:0,//合同类型
+            approvalForm:{
+              result: num,
+              remark: this.entrustReason
+            }
+          }
+          this.toChecked(param,type)
+        }
+      }else{
+        //驳回/风险单
+        if (num===2 || this.isSign) {
+          if (this.textarea.length>0) {
+            this.textarea=this.textarea.replace(/\s/g,"");
+            if(this.textarea.length>0){
+              let param = {
+                bizCode:this.code,
+                flowType:3,
+                modularType:0,//合同类型
+                approvalForm:{
+                  result: num,
+                  isRisk: this.isSign, //风险单
+                  remark: this.textarea
+                }
+              };
+              this.toChecked(param);
+            }else{
+              this.$message({
+                message: '请填写审核原因以及风险单原因',
+                type: 'warning'
+              });
+            }
           }else{
             this.$message({
               message: '请填写审核原因以及风险单原因',
               type: 'warning'
             });
           }
-        }else{
-          this.$message({
-            message: '请填写审核原因以及风险单原因',
-            type: 'warning'
-          });
+        } else {
+          let param = {
+            bizCode:this.code,
+            flowType:3,
+            modularType:0,//合同类型
+            approvalForm:{
+              result: num,
+              isRisk: this.isSign, //风险单
+              remark: this.textarea
+            }
+          };
+          this.toChecked(param);
         }
-      } else {
-        let param = {
-          bizCode:this.code,
-          flowType:3,
-          modularType:0,//合同类型
-          approvalForm:{
-            result: num,
-            isRisk: this.isSign, //风险单
-            remark: this.textarea
-          }
-        };
-        this.toChecked(param);
       }
+      
     },
     //获取当前待审节点
     // getAuditNode(){
@@ -772,32 +869,37 @@ export default {
     //获取合同预览图片
     getContImg(type){
       let param = {
-        id:this.id
+        id:this.id,
+        isentrust:this.isentrust
       };
       this.$ajax.get('/api/contract/preview', param).then(res=>{
-        res=res.data;
+        res=res.data
         if(res.status===200){
-          this.examineState=res.data.examineState.value;
-          this.resultState=res.data.resultState.value;
-          this.laterStageState=res.data.laterStageState.value;
-          this.contState=res.data.contState.value;
-          this.contType=res.data.contType.value;
-          this.recordId=res.data.recordId;
+          if(this.isentrust){//委托合同
+            this.examineState=res.data.examineState
+            this.contState=res.data.entrustState
+          }else{
+            this.examineState=res.data.examineState.value
+            this.resultState=res.data.resultState.value
+            this.laterStageState=res.data.laterStageState.value
+            this.contState=res.data.contState.value;
+            this.contChangeState=res.data.contChangeState.value
+            this.isSign=res.data.isRisk
+            this.isHaveData=res.data.isHaveData;
+            //变更解约状态
+            this.changeExamineState=res.data.changeExamineState;
+            this.cancelExamineState=res.data.cancelExamineState;
+            //变更解约佣金
+            this.commission={
+              owner:res.data.ownerCommission,
+              user:res.data.custCommission
+            }
+          }
+          
           this.isCanAudit=res.data.isCanAudit;
-          this.guestStoreId=res.data.guestStoreId;
-          this.contChangeState=res.data.contChangeState.value;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
-          this.isSign=res.data.isRisk;
-          this.isHaveData=res.data.isHaveData;
-          //变更解约状态
-          this.changeExamineState=res.data.changeExamineState;
-          this.cancelExamineState=res.data.cancelExamineState;
-          //变更解约佣金
-          this.commission={
-            owner:res.data.ownerCommission,
-            user:res.data.custCommission
-          }
+          this.contType=res.data.contType.value
           //咸宁买卖无签章
           if(res.data.cityId==8&&res.data.contType.value==2){
             this.companySigns=[{contractSign: null,name: null,storeId: null}]
@@ -858,39 +960,49 @@ export default {
     },
     //编辑
     toEdit(){
-      //锁定合同
-      if((this.contState===1&&this.examineState===0)||this.contState===2){
-        let param = {
-          id:this.id
-        }
-        this.$ajax.put("/api/contract/lock",param,2).then(res=>{
-
-        })
-      }
-      let arr = this.getPath
-      arr.splice(3,1)
-      arr.push({name:'合同预览',path:''})
-      this.setPath(arr);
-      if(this.contType>3){
+      if(this.isentrust){
         this.$router.replace({
-          path: "/newIntention",
+          path: "/contractDetails",
           query: {
             id: this.id,
-            contType: this.contType,
-            operateType: 2
+            type:"agency",
+            contType:this.contType
           }
         });
       }else{
-        this.$router.replace({
-          path: "/addContract",
-          query: {
-            id: this.id,
-            operateType: 2,
-            type: this.contType
+        //锁定合同
+        if((this.contState===1&&this.examineState===0)||this.contState===2){
+          let param = {
+            id:this.id
           }
-        });
-      }
+          this.$ajax.put("/api/contract/lock",param,2).then(res=>{
 
+          })
+        }
+        // let arr = this.getPath
+        // arr.splice(3,1)
+        // arr.push({name:'合同预览',path:''})
+        // this.setPath(arr);
+        if(this.contType>3){
+          this.$router.replace({
+            path: "/newIntention",
+            query: {
+              id: this.id,
+              contType: this.contType,
+              operateType: 2
+            }
+          });
+        }else{
+          this.$router.replace({
+            path: "/addContract",
+            query: {
+              id: this.id,
+              operateType: 2,
+              type: this.contType
+            }
+          });
+        }
+      }
     },
      //提审
     submitAudit(){
