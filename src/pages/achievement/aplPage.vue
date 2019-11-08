@@ -1479,7 +1479,8 @@
               var houseArr2 = res.data.data.houseAgents;
               this.clientArr = res.data.data.customerAgents;
               for(let i=0;i< this.houseArr.length;i++){
-                this.houseArr[i].checkbox=[],
+                // this.houseArr[i].checkbox=[],
+                this.$set(this.houseArr[i],'checkbox',[])
                 this.houseArr[i].checkbox.push(this.houseArr[i].place)
               }
               console.log(this.houseArr);

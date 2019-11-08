@@ -2487,25 +2487,34 @@ export default {
         this.houseArr[i].sortNum = i + 1;
         this.houseArr[i].contractId = this.achObj.contractId;
         this.houseArr[i].contractCode = this.contractCode;
+        this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
       }
       for (let i = 0; i < this.clientArr.length; i++) {
         this.clientArr[i].sortNum = i + 1;
         this.clientArr[i].contractId = this.achObj.contractId;
         this.clientArr[i].contractCode = this.contractCode;
+        this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
+      }
+      for (let i = 0; i < this.serviceAgents.length; i++) {
+        this.serviceAgents[i].sortNum = i + 1;
+        this.serviceAgents[i].contractId = this.achObj.contractId;
+        this.serviceAgents[i].contractCode = this.contractCode;
+        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
       }
       let resultArr = this.houseArr.concat(this.clientArr);
+      let resultArr2 = resultArr.concat(this.serviceAgents);
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
         if (
-          resultArr[i].roleType === "" ||
-          resultArr[i].ratio === "" ||
-          resultArr[i].assignor === "" ||
-          resultArr[i].isJob === "" ||
-          resultArr[i].level3 === "" ||
-          resultArr[i].shopkeeper === "" ||
-          resultArr[i].level4 === "" ||
-          resultArr[i].amaldar === "" ||
-          resultArr[i].manager === ""
+          resultArr2[i].roleType === "" ||
+          resultArr2[i].ratio === "" ||
+          resultArr2[i].assignor === "" ||
+          resultArr2[i].isJob === "" ||
+          resultArr2[i].level3 === "" ||
+          resultArr2[i].shopkeeper === "" ||
+          resultArr2[i].level4 === "" ||
+          resultArr2[i].amaldar === "" ||
+          resultArr2[i].manager === ""
         ) {
           flag = false;
         } else if (sum == 100) {
@@ -2521,7 +2530,7 @@ export default {
         let param = {};
         if (type == 2) {
           param = {
-            distributions: resultArr,
+            distributions: resultArr2,
             contractCode: this.contractCode,
             contractId: this.achObj.contractId, //合同id需要详情页面带过来
             houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
@@ -2534,7 +2543,7 @@ export default {
         }
         if (type == 1) {
           param = {
-            distributions: resultArr,
+            distributions: resultArr2,
             contractCode: this.contractCode,
             contractId: this.achObj.contractId, //合同id需要详情页面带过来
             houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
@@ -2602,7 +2611,8 @@ export default {
         if (res.status === 200) {
           this.houseArr = res.data.data.houseAgents;
           for(let i=0;i< this.houseArr.length;i++){
-            this.houseArr[i].checkbox=[],
+            // this.houseArr[i].checkbox=[],
+            this.$set(this.houseArr[i],'checkbox',[])
             this.houseArr[i].checkbox.push(this.houseArr[i].place)
           }
           var houseArr2 = res.data.data.houseAgents;
