@@ -292,7 +292,7 @@
 
           
 
-          <el-table-column label="操作"  min-width="120">
+          <el-table-column label="操作"  min-width="70" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
                 <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1&&scope.row.appealStatus.value!=0"

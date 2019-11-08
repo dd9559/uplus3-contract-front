@@ -404,7 +404,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作"  min-width="120">
+          <el-table-column label="操作"  min-width="90" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
                 <div v-if="scope.row.achievementState==-1" class="check-btn">
