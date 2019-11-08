@@ -113,7 +113,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人工号" width="100">
+              <el-table-column label="经纪人工号" width="150">
                 <template slot-scope="scope">
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -417,7 +417,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人工号" width="100">
+              <el-table-column label="经纪人工号" width="150">
                 <template slot-scope="scope">
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -694,7 +694,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人工号" width="100">
+              <el-table-column label="经纪人工号" width="150">
                 <template slot-scope="scope">
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -1386,14 +1386,14 @@ export default {
       state2: "",
       auditIds: "",
       filesList: [],
-      contype:[]
+      contType:[]
     };
   },
   components: {
     checkPerson
   },
   created() {
-    this.contype = this.$route.query.contype;
+    this.contType = this.$route.query.contType;
     this.dialogType = this.$route.query.dialogType;
     this.contractCode = this.$route.query.contractCode;
     this.aId = this.$route.query.aId;
@@ -2091,6 +2091,7 @@ export default {
         this.loading = true;
         // 新版本时参数添加level4和storefront4Id字段
         if (this.$route.query.version == "1") {
+
           resultArr.forEach(item => {
             item.level4 = item.level3;
             item.storefront4Id = item.storefront3Id;
@@ -2349,13 +2350,12 @@ export default {
           sumFlag = false;
         }
       }
-      //  debugger;
       // console.log(sumFlag);
       if (flag && sumFlag) {
         this.loading = true;
         // 新版本时参数添加level4和storefront4Id字段
         if (this.$route.query.version == "1") {
-          resultArr.forEach(item => {
+          resultArr2.forEach(item => {
             item.level4 = item.level3;
             item.storefront4Id = item.storefront3Id;
           });

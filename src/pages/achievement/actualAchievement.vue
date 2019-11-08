@@ -331,6 +331,20 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="上传业绩分成协议时间"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.agreementUploadTime">{{scope.row.agreementUploadTime|formatTime(false)}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="变更/解约"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.statusChange">{{scope.row.statusChange.label}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+
           <el-table-column label="平台费比例（%）"  min-width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
