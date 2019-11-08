@@ -56,7 +56,7 @@
                     </div>
                     <div style="margin-right: 50px">
                         <span class="mark">建成年代：</span>
-                        <span>{{dealBasicInfo.CompleteYear}}年</span>
+                        <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
                         <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
@@ -335,6 +335,17 @@ export default {
         }
     },
     methods: {
+        yearFormatFn(val) {
+            if(val) {
+                if(val.includes('年')) {
+                    return val
+                } else {
+                    return `${val}年`
+                }
+            } else {
+                return '--'
+            }
+        },
         getContractDetail() {
             this.$ajax.get('/api/contract/detail',{id:this.id}).then(res => {
                 res = res.data
