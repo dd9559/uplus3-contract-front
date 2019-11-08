@@ -905,7 +905,7 @@
               </li>
               <li>
                 <p class="w30"><span>权属证号：</span><span>{{contractDetail.report.ownershipNumber}}</span></p>
-                <p><span>建成年代：</span><span>{{contractDetail.houseInfo.CompleteYear?contractDetail.houseInfo.CompleteYear:'--'}}</span></p>
+                <p><span>建成年代：</span><span>{{yearFormatFn(contractDetail.houseInfo.CompleteYear)}}</span></p>
               </li>
               <li>
                 <p><span>产权地址：</span><span>{{contractDetail.propertyRightAddr}}</span></p>
@@ -1480,6 +1480,17 @@ export default {
     })
   },
   methods: {
+    yearFormatFn(val) {
+        if(val) {
+            if(val.includes('年')) {
+                return val
+            } else {
+                return `${val}年`
+            }
+        } else {
+            return '--'
+        }
+    },
     // 成交报告打印页获取证件类型文本
     getCardTypeVal(val) {
       if(val==1){
