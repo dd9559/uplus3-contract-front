@@ -340,7 +340,7 @@ export default {
                 if(val.includes('年')) {
                     return val
                 } else {
-                    return `${val}年`
+                    return val=='0' ? '--' : `${val}年`
                 }
             } else {
                 return '--'

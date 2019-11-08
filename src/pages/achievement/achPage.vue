@@ -2602,9 +2602,9 @@ export default {
         infoType == "getEditInfo" ||
         infoType == "getBackExamineInfo"
       ) {
-        var param = { contId: contCode, entrance: entrance, aId: this.aId };
+        var param = { contId: contCode, entrance: entrance, aId: this.aId, distributionAgreement:this.filesList};
       } else {
-        var param = { contCode: contCode, entrance: entrance, aId: this.aId };
+        var param = { contCode: contCode, entrance: entrance, aId: this.aId,distributionAgreement:this.filesList };
       }
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
@@ -2702,6 +2702,10 @@ export default {
         });
         if (hflag) {
           this.houseArr = this.houseArr.concat(this.addManList);
+            for(let i=0;i< this.houseArr.length;i++){
+            this.$set(this.houseArr[i],'checkbox',[])
+            this.houseArr[i].checkbox.push(this.houseArr[i].place)
+          }
         }
       } else {
         var kflag = true;
@@ -2716,6 +2720,11 @@ export default {
         });
         if (kflag) {
           this.clientArr = this.clientArr.concat(this.addManList);
+            for(let i=0;i< this.clientArr.length;i++){
+            this.$set(this.clientArr[i],'checkbox',[])
+            this.clientArr[i].checkbox.push(this.clientArr[i].place)
+          }
+
         }
       }
       this.showTips1 = false;

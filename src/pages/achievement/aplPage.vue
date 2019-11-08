@@ -1189,6 +1189,7 @@
                 type="date"
                 placeholder="选择日期"
                 value-format="timestamp"
+                @change="checkDate"
               ></el-date-picker>
             </p>
             <div class="footer-btn-layout f_r">
@@ -1791,6 +1792,16 @@
           this.serviceAgents[index].platformFeeRatio = "";
         }
       }
+    },
+    checkDate:function(val){
+        // debugger
+            let date=new Date(val);
+            if(date.getTime()>Date.now()){
+                this.examineDate=''
+                this.$message({
+                    message:'不能选择未来时间'
+                })
+            }
     },
       // 获取门店，单组信息  type=3(门店)  type=4(单组)
       getLevel(type) {
@@ -2644,6 +2655,10 @@
           })
           if(hflag){
             this.houseArr= this.houseArr.concat(this.addManList); 
+            for(let i=0;i< this.houseArr.length;i++){
+            this.$set(this.houseArr[i],'checkbox',[])
+            this.houseArr[i].checkbox.push(this.houseArr[i].place)
+          }
           }     
         } else {
           var kflag=true
@@ -2658,6 +2673,10 @@
           })
           if(hflag){
             this.clientArr= this.clientArr.concat(this.addManList); 
+            for(let i=0;i< this.clientArr.length;i++){
+            this.$set(this.clientArr[i],'checkbox',[])
+            this.clientArr[i].checkbox.push(this.clientArr[i].place)
+          }
           }
         }
         this.showTips1 = false;
