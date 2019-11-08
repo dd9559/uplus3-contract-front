@@ -239,7 +239,7 @@
                   <div class="span">{{item.name}}</div>
                 </el-tooltip>
                 <p
-                  v-show="activeLi===index"
+                  v-show="activeLi===index&&dialogOperation!==3"
                   @click.stop="delFile"
                 ><i class="iconfont icon-tubiao-6"></i></p>
               </li>

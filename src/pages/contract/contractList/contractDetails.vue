@@ -217,25 +217,6 @@
               </div>
             </div>
 
-            <!-- <div class="msg" v-if="contractDetail.extendParams">
-              <div class="title">扩展参数</div>
-              <div class="content">
-                <div class="one_ extendParams"> -->
-                  <!-- <p v-for="(item,index) in parameterList" :key="index" v-if="contractDetail.extendParams[item.name]"> -->
-                  <!-- <p v-for="(item,index) in contractDetail.extendParams" :key="index" v-if="item.value">
-                    <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-                      <span class="tag tagHidden">{{item.name}}</span>
-                    </el-tooltip>
-                      <span class="colon">  ：</span>
-                    <el-tooltip class="item" effect="dark" :content="item.value" placement="top">
-                      <span class="text tagHidden">{{item.value}} </span>
-                    </el-tooltip>
-                    <span class="extendUnit">{{item.unit}}</span>
-                  </p>
-                </div>
-              </div>
-            </div> -->
-
             <div class="msg">
               <div class="title">业绩分成</div>
               <div class="content">
@@ -441,7 +422,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
-          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow"></agency-contract>
+          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail"></agency-contract>
         </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
@@ -1457,6 +1438,7 @@ export default {
       dialogType:1,//1=应收/应付款项,2=实收/实付款项
       dialogDel:false,
       agencyShow:false, //委托合同组件显示
+      isHaveDetail:false,//合同详情已返回
     };
   },
   created() {
@@ -1475,6 +1457,10 @@ export default {
     }else if(this.$route.query.type === "contBody"){
       this.activeName = "second";
       this.name="second";
+    }else if(this.$route.query.type === "agency"){
+      this.activeName = "agency";
+      this.name="agency";
+      this.agencyShow = true
     }
     this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
@@ -1535,12 +1521,12 @@ export default {
       console.log(tab.name);
       this.name=tab.name;
       if(tab.name==="second"){
-        // if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
-        //   this.$message({
-        //     message:'合同未签章,不允许上传合同主体',
-        //     type:'warning'
-        //   })
-        // }
+        if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
+          this.$message({
+            message:'合同未签章,不允许上传合同主体',
+            type:'warning'
+          })
+        }
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
         this.getEntrustMsg();//委托
@@ -1947,6 +1933,7 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.contractDetail = res.data;
+          this.isHaveDetail=true
           this.recordId = res.data.recordId;
           this.contCode=res.data.code
           this.dataScane.id=res.data.code
@@ -2748,7 +2735,7 @@ export default {
       white-space: nowrap;
     }
     .content {
-      min-width: 1370px;
+      min-width: 1630px;
       .one_ {
         margin-bottom: 10px;
         &:last-of-type {

@@ -28,7 +28,8 @@ const MIXINS = {
       employeTotal:0,
       tableBoxCom:null,
       tableNumberCom:null,
-      systemTagList: []
+      systemTagList: [],
+      systemTagSelect: []
     }
   },
   watch:{
@@ -99,13 +100,22 @@ const MIXINS = {
       })
     },
     /**
-     * 获取体系
+     * 获取所有体系
      */
     getSystemTag:function () {
       this.$ajax.get('/api/organize/getSystemTag').then(res=>{
         res=res.data
         if(res.status===200){
           this.systemTagList = res.data
+        }
+      })
+    },
+    // 获取当前登录人权限范围内的体系
+    getSystemTagSelect:function () {
+      this.$ajax.get('/api/organize/getSystemTagSelect').then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.systemTagSelect = res.data
         }
       })
     },

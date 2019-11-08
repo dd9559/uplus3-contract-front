@@ -329,14 +329,8 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
-          <template slot-scope="scope" v-if="!scope.row.isCombine">
-            <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
-            <!-- <el-button type="text" size="medium" v-if="power['sign-ht-xq-main-add'].state&&(scope.row.contState.value>1||scope.row.contState.value!=0&&scope.row.recordType.value===2)" @click="upload(scope.row)">上传</el-button> 2.4需求去掉-->
-            <!-- <el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button> -->
-            <!-- <div class="btn" v-if="scope.row.contState.value===3&&scope.row.contType.value===1&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div> -->
-          </template>
-          <template slot-scope="scope" v-else-if="scope.row.isCombine">
-            <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div>
+          <template slot-scope="scope">
+            <template v-if="!scope.row.isCombine"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div></template><template v-else><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div></template>
           </template>
         </el-table-column>
       </el-table>
@@ -820,6 +814,9 @@ export default {
       let param = {
         contId:item.id
       }
+      if(item.isCombine){
+        param.isentrust=1
+      }
       this.$ajax.get("/api/contract/selectPrintInfo", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -938,7 +935,8 @@ export default {
         path: "/contractPreview",
         query: {
           id: item.id,
-          code:item.code
+          code:item.code,
+          isentrust:item.isCombine?1:0
         }
       });
     },
@@ -1053,7 +1051,7 @@ export default {
     submitAudit(){
       let param = {
         cityId:this.submitAuditData.cityCode,
-        flowType:3,
+        flowType:this.submitAuditData.isCombine?11:3,
         bizCode:this.submitAuditData.code,
         modularType:0//合同类型
       }
@@ -1076,6 +1074,7 @@ export default {
           if(error.message==='下一节点审批人不存在'){
             this.checkPerson.code=this.submitAuditData.code;
             this.checkPerson.state=true;
+            this.checkPerson.flowType=this.submitAuditData.isCombine?11:3
             // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
           }else{
@@ -1266,6 +1265,7 @@ export default {
           let combineItem = JSON.parse(JSON.stringify(element))
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
+          combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
           combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee
           combineItem.contState.value=combineItem.contractEntrust.entrustState
           combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
