@@ -226,7 +226,7 @@
             <p>客：{{scope.row.guestStoreName+"-"+scope.row.guestShopOwner}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约日期" min-width="90">
+        <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
             <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
@@ -1342,13 +1342,17 @@ export default {
     padding-left: 30px !important;
   }
 }
+// /deep/.el-table tbody tr:hover>td { 
+//     background-color:#ffffff!important
+// }
 /deep/.el-table__body{
-  // .bgc{
-  //   &:nth-of-type(2n){
-  //     background-color: red !important;
-  //   }
-  // }
   .el-table__row{
+    &.hover-row{
+      background-color: #fff !important;
+      td{
+         background-color: #fff !important;
+      }
+    }
     &.collapseRow{
       .bgc{
         background-color: #ECF5FF !important;

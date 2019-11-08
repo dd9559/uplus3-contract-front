@@ -29,7 +29,7 @@
                       </div>
                     </el-tooltip>
                   </p>
-                  <p><span class="tag">签约日期：</span><span class="text">{{contractDetail.signDate}}</span></p>
+                  <p><span class="tag">签约时间：</span><span class="text">{{contractDetail.signDate}}</span></p>
                   <p>
                     <span class="tag">合同类型：</span>
                     <span class="text" v-if="contractDetail.contType.value===1">租赁</span>
@@ -1486,7 +1486,7 @@ export default {
             if(val.includes('年')) {
                 return val
             } else {
-                return `${val}年`
+                return val=='0' ? '--' : `${val}年`
             }
         } else {
             return '--'

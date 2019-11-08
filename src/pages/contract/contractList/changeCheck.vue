@@ -181,16 +181,26 @@ export default {
     },
     //导出
     getExcel(){
-      let url,param
-      param = {
+      let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         keyword:this.contractForm.keyword,
-        deptId:this.contractForm.deptId,
-        empId:this.contractForm.empId,
         changeExamineState:this.contractForm.toExamineState,
+        deptId:this.contractForm.deptId,
+        empId:this.contractForm.dealAgentId,
       }
-      this.excelCreate(url,param)
+      if(this.signData){
+        if (this.signData.length > 0) {
+          param.signStart = this.signData[0];
+          param.signEnd = this.signData[1];
+        }
+      }
+      if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
+        param.contTypes=this.contractForm.contTypes.join(',')
+      }else{
+        param.contTypes=''
+      }
+      this.excelCreate("/input/changeAuditExcel",param)
     },
     //翻页
     handleCurrentChange(val) {

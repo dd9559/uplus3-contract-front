@@ -5,7 +5,7 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" style="text-align:right;width:285px;" class="form-label">
+          <el-form-item label="签约时间：" style="text-align:right;width:285px;" class="form-label">
             <!-- <el-date-picker type="date" value-format="yyyy/MM/dd/HH/mm" placeholder="选择日期" :disabled="type===2?true:false" v-model="contractForm.signDate" style="width:140px"></el-date-picker> -->
             <el-date-picker
               style="width:180px"

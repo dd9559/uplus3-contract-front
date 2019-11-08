@@ -9,7 +9,7 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="签约日期">
+        <el-form-item label="签约时间">
           <el-date-picker v-model="signData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
@@ -181,16 +181,26 @@ export default {
     },
     //导出
     getExcel(){
-      let url,param
-      param = {
+      let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
         keyword:this.contractForm.keyword,
-        deptId:this.contractForm.deptId,
-        empId:this.contractForm.empId,
         changeExamineState:this.contractForm.toExamineState,
+        deptId:this.contractForm.deptId,
+        empId:this.contractForm.dealAgentId,
       }
-      this.excelCreate(url,param)
+      if(this.signDate){
+        if (this.signDate.length > 0) {
+          param.beginDate = this.signDate[0];
+          param.endDate = this.signDate[1];
+        }
+      }
+      if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
+        param.contTypes=this.contractForm.contTypes.join(',')
+      }else{
+        param.contTypes=''
+      }
+      this.excelCreate("/input/cancelAuditExcel",param)
     },
     //翻页
     handleCurrentChange(val) {
