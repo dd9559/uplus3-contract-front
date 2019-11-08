@@ -27,12 +27,13 @@
                         value-format="yyyy-MM-dd HH:mm:ss"
                         placeholder="选择日期时间"
                         :picker-options="pickerOptions"
-                        default-time="12:00:00">
+                        default-time="12:00:00"
+                        :disabled="entrustBtn">
                         </el-date-picker>
                     </p>
                     <p>
                         <span><i>*</i>交易服务费(元)：</span>
-                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFee" @input="cutNumber"></el-input>  
+                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFee" @input="cutNumber" :disabled="entrustBtn"></el-input>  
                     </p>
                 </div>
             </div>
@@ -106,7 +107,7 @@
             </div>
         </div>
         </div>
-        <div class="btn">
+        <div class="btn" v-if="!entrustBtn">
             <el-button type="primary" round @click="isSave" v-loading.fullscreen.lock="fullscreenLoading">{{defaultInfo.recordType.value==2?'保存':'保存并进入下一步'}}</el-button>
         </div>
         <!-- 单公司提示框 -->
@@ -144,7 +145,8 @@ export default {
             },
             fullscreenLoading: false,
             singleCompany: false,
-            singleCompanyName: ""
+            singleCompanyName: "",
+            entrustBtn: false
         }
     },
     created() {
@@ -156,7 +158,10 @@ export default {
         }else{
             this.getTimeNow()
         }
-        this.tradeFee = this.defaultInfo.contractEntrust ? this.defaultInfo.contractEntrust.tradeFee : ''
+        let bool = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.id
+        this.tradeFee = bool ? this.defaultInfo.contractEntrust.tradeFee : ''
+        // 判断委托合同状态是否为已签约
+        this.entrustBtn = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.entrustState===3
         this.houseArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 1)
         this.guestArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 2)
     },
