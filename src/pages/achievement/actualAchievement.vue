@@ -1363,7 +1363,7 @@ export default {
           aId: row.aId,
           contractId2: row.id,
           version: this.selectAchList[0].version,
-          contType:this.contType.value
+          contType:row.contType.value
         }
       });
       window.open(newPage.href, "_blank");
