@@ -203,9 +203,9 @@
           </el-table>
         </div>
 
-        <h1 class="f14">交易服务费分成
+        <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
         </h1>
-        <div class="ach-divide-list">
+        <div class="ach-divide-list" v-if="contype==2||contype==3">
           <el-table
             :data="serviceach"
             style="width: 100%"
@@ -595,10 +595,12 @@ export default{
         serviceach:[],
         filesList:[],
         fujian:false,
+        contType:''
       };
       
     },
     created() {
+      this.contType=this.$route.query.contType
       this.contCode=this.$route.query.contCode
       this.entrance=this.$route.query.entrance
       this.aId=this.$route.query.aId
