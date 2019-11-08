@@ -25,7 +25,7 @@
                   </template>
                   <span v-else class="info-cell">{{moneyData.owner}}元<i class="iconfont icon-xiugai1" @click.stop="showInput(scope.row,'ownerState')"></i></span>
                 </div>
-                <span v-else class="info-cell">{{commission.owner}}元</span>
+                <span v-else class="info-cell">{{scope.$index===1?moneyData.owner:commission.owner}}元</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="客户佣金">
@@ -37,7 +37,7 @@
                   </template>
                   <span v-else class="info-cell">{{moneyData.user}}元<i class="iconfont icon-xiugai1" @click.stop="showInput(scope.row,'userState')"></i></span>
                 </div>
-                <span v-else class="info-cell">{{commission.user}}元</span>
+                <span v-else class="info-cell">{{scope.$index===1?moneyData.user:commission.user}}元</span>
               </template>
             </el-table-column>
           </el-table>
@@ -360,7 +360,9 @@
           res = res.data;
           if (res.status === 200) {
             this.textarea = res.data.changeReason;
-
+            // this.moneyData newCustCommission
+            debugger
+            Object.assign(this.moneyData,{owner:res.data.newOwnerCommission,user:res.data.newCustCommission})
             let address_ = JSON.parse(res.data.changeAtta);
             //console.log(address_);
             // let fileType = this.$tool.get_suffix(arr[0].name);

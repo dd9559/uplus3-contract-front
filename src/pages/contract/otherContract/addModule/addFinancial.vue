@@ -5,21 +5,21 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="放款日期：" style="text-align:right;width:285px;" class="form-label">
+          <el-form-item label="放款日期：" class="form-label width-250">
             <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.loanDate" style="width:140px"></el-date-picker> -->
             <el-date-picker
-              style="width:180px"
+              style="width:140px"
               :disabled="operationType===2?true:false"
               v-model="contractForm.loanDate"
               type="datetime"
-              format="yyyy-MM-dd HH:mm"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               placeholder="选择日期时间"
               :picker-options="pickerOptions"
               default-time="12:00:00">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="纸质合同编号：" style="width:340px;text-align:right;">
+          <el-form-item label="纸质合同编号：" style="width:380px;text-align:right;">
             <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.pCode" @input="inputCode('pCode')" placeholder="请输入" class="dealPrice">
           </el-form-item>
           <el-form-item label="项目类型：" style="width:320px;text-align:right;">
