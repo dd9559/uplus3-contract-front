@@ -205,7 +205,7 @@
 
         <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
         </h1>
-        <div class="ach-divide-list" v-if="contype==2||contype==3">
+        <div class="ach-divide-list" v-if="contType==2||contType==3">
           <el-table
             :data="serviceach"
             style="width: 100%"
