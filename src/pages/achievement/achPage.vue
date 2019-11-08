@@ -2626,12 +2626,12 @@ export default {
           console.log(this.houseArr, "houseArr");
           this.clientArr = res.data.data.customerAgents;
           for(let i=0;i< this.clientArr.length;i++){
-            this.clientArr[i].checkbox=[]
+            this.$set(this.clientArr[i],'checkbox',[])
             this.clientArr[i].checkbox.push(this.clientArr[i].place)
           }
           this.serviceAgents = res.data.data.serviceAgents;
           for(let i=0;i< this.serviceAgents.length;i++){
-            this.serviceAgents[i].checkbox=[]
+            this.$set(this.serviceAgents[i],'checkbox',[])
             this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place)
           }
           if (res.data.data.distributionAgreement) {
