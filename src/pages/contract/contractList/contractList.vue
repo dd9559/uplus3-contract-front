@@ -156,8 +156,8 @@
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
-      <el-table :span-method="objectSpanMethod" ref="tableCom" class="info-scrollbar" :data="combineList" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
-        <el-table-column label="合同信息" label-class-name="pdl" min-width="250" fixed>
+      <el-table :span-method="objectSpanMethod" :row-class-name="rowStyle" ref="tableCom" class="info-scrollbar" :data="combineList" style="width: 100%" @row-dblclick='toDetail' border :max-height="tableNumberCom">
+        <el-table-column label="合同信息" label-class-name="pdl" class-name="bgc" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -647,6 +647,12 @@ export default {
     }
   },
   methods: {
+    rowStyle(val){
+      if(val.row.bgc){
+        return 'collapseRow'
+      }
+      return
+    },
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
       // debugger
@@ -1258,6 +1264,11 @@ export default {
   computed:{
     combineList(){
       let arr = JSON.parse(JSON.stringify(this.tableData))
+      arr.forEach((element,index) => {
+        if((index+1) % 2 ===0){
+          this.$set(element,"bgc",true)
+        }
+      });
       this.tableData.forEach((element,index)=>{
         // debugger
         if(element.contractEntrust&&element.contractEntrust.id){
@@ -1281,6 +1292,7 @@ export default {
             }
           });
         }
+        
       })
       console.log(arr)
       return arr
@@ -1328,6 +1340,20 @@ export default {
 /deep/.pdl{
   &.cell{
     padding-left: 30px !important;
+  }
+}
+/deep/.el-table__body{
+  // .bgc{
+  //   &:nth-of-type(2n){
+  //     background-color: red !important;
+  //   }
+  // }
+  .el-table__row{
+    &.collapseRow{
+      .bgc{
+        background-color: #ECF5FF !important;
+      }
+    }
   }
 }
 .percent{

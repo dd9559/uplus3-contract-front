@@ -275,7 +275,7 @@
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(contractDetail.recordType.value===1&&contractDetail.contState.value===2)" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0" @click="goChangeCancel(1)">变更</el-button>
               <!-- <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))" @click="goEdit">编辑</el-button> -->
-              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&!getUserMsg))" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
@@ -1471,6 +1471,7 @@ export default {
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
     this.getAttachment()//合同附件列表
+    console.log(this.getUser)
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
@@ -1977,7 +1978,7 @@ export default {
           this.saveBtnShow = !res.data.dealReport ? true : false
           this.editBtnShow = res.data.dealReport ? true : false
           this.reportBtnShow = res.data.dealReport ? true : false
-          this.contractDetail.signDate = res.data.signDate.substr(0, 10);
+          this.contractDetail.signDate = res.data.signDate.substr(0, 16);
           this.ownerData=[];
           this.clientrData=[];
           for (var i = 0; i < this.contractDetail.contPersons.length; i++) {
@@ -2634,6 +2635,11 @@ export default {
   },
   mounted(){
     window.onresize = this.clientHeight;
+  },
+  computed:{
+    getUserMsg(){
+      return this.getUser.isBusiness
+    }
   },
   beforeUpdate() {
     this.clientHeight();

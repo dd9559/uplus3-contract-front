@@ -350,7 +350,7 @@ export default {
             this.$ajax.get('/api/contract/detail',{id:this.id}).then(res => {
                 res = res.data
                 if(res.status === 200) {
-                    this.dealBasicInfo.signDate = res.data.signDate.substr(0, 10)
+                    this.dealBasicInfo.signDate = res.data.signDate.substr(0, 16)
                     this.dealBasicInfo.code = res.data.code
                     this.dealBasicInfo.contType = res.data.contType.label
                     this.dealBasicInfo.dealPrice = res.data.dealPrice
