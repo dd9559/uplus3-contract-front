@@ -99,6 +99,7 @@
                  <div v-if="scope.row.place==-1">--</div>
                  <div v-if="scope.row.place==0">门店公共业绩</div>
                  <div v-if="scope.row.place==1">公司公共业绩</div>
+                 <div v-if="scope.row.place==2">大区公共业绩</div>
               </template>
             </el-table-column>
           </el-table>
@@ -196,6 +197,101 @@
                  <div v-if="scope.row.place==-1">--</div>
                  <div v-if="scope.row.place==0">门店公共业绩</div>
                  <div v-if="scope.row.place==1">公司公共业绩</div>
+                 <div v-if="scope.row.place==2">大区公共业绩</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
+        <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
+        </h1>
+        <div class="ach-divide-list" v-if="contype==2||contype==3">
+          <el-table
+            :data="serviceach"
+            style="width: 100%"
+            border
+          >
+            <!-- roleType 分成人角色类型 :
+                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
+                客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
+            <el-table-column
+
+              label="角色类型"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <p>{{scope.row.roleName}}</p>
+                </div>
+              </template>
+            </el-table-column>
+
+            <!-- ratio -->
+            <el-table-column
+              prop="ratio"
+              label="分成比例(%)"
+            >
+            </el-table-column>
+
+            <!-- assignor -->
+            <el-table-column
+              prop="assignor"
+              label="经纪人"
+            >
+            </el-table-column>
+
+            <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
+            <el-table-column
+              label="在职状况"
+            >
+              <template slot-scope="scope">
+                <div v-if="scope.row.isJob">
+                  <p>{{scope.row.isJob.label}}</p>
+                </div>
+              </template>
+            </el-table-column>
+
+            <!-- shopkeeper -->
+            <el-table-column
+              prop="shopkeeper"
+              label="店长"
+            >
+            </el-table-column>
+            <!-- level4 -->
+            <el-table-column
+              prop="level4"
+              label="单组"
+              v-if="$route.query.version=='0'"
+            >
+            </el-table-column>
+            <!-- level3 -->
+            <el-table-column
+              prop="level3"
+              label="门店"
+            >
+            </el-table-column>
+
+            <!-- amaldar -->
+            <el-table-column
+              prop="amaldar"
+              label="总监"
+              :formatter="nullFormatter"
+            >
+            </el-table-column>
+
+            <!-- manager -->
+            <el-table-column
+              prop="manager"
+              label="副总"
+              :formatter="nullFormatter"
+            >
+            </el-table-column>
+            <el-table-column
+              label="公共业绩">
+              <template slot-scope="scope">
+                 <div v-if="scope.row.place==-1">--</div>
+                 <div v-if="scope.row.place==0">门店公共业绩</div>
+                 <div v-if="scope.row.place==1">公司公共业绩</div>
+                 <div v-if="scope.row.place==2">大区公共业绩</div>
               </template>
             </el-table-column>
           </el-table>
@@ -368,6 +464,32 @@
             </el-table>
            </div>
       </div>
+      <h1 class="f14" v-if="fujian">业绩分成协议</h1>
+      <ul class="ulData" style="margin-top:10px" v-if="fujian">
+              <!-- <li>
+                <file-up class="upload-box" @getUrl="addSubject">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li> -->
+              <li v-for="(item,i) in filesList" :key="i">
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                  <div class="attach-box" @click="previewPhoto(filesList,i)">
+                    <img
+                      :src="item.path|getSignImage(contDataFiles)"
+                      alt
+                      v-if="isPictureFile(item.fileType)"
+                      width="70%"
+                      height="62px"
+                    />
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
+                    <p>{{item.name}}</p>
+                  </div>
+                </el-tooltip>
+                <!-- <i class="iconfont icon-tubiao-6" @click="deleteFn(i)"></i> -->
+              </li>
+            </ul>
+
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
       <el-dialog class="record-table-dialog" :closeOnClickModal="$tool.closeOnClickModal" width="770px"  title="房源价格变更记录（近三天历史记录）" :visible.sync="recordShow">
             <el-table :data="recordData" class="recordtable" border max-height="300">
@@ -440,6 +562,10 @@ export default{
     mixins: [FILTER,MIXINS],
     data() {
       return {
+        contDataFiles: [], //资料库图片缩略图
+        mainDataFiles: [], //合同主体图片缩略图
+        preloadList: [],
+        preloadFiles: [],
         auditIds:'',
         aplremark:'',
         inputMax:200,
@@ -465,11 +591,16 @@ export default{
         entrance:'',
         aId:'',
         checkArr:[],
-        contractId2:''
+        contractId2:'',
+        serviceach:[],
+        filesList:[],
+        fujian:false,
+        contType:''
       };
       
     },
     created() {
+      this.contType=this.$route.query.contType
       this.contCode=this.$route.query.contCode
       this.entrance=this.$route.query.entrance
       this.aId=this.$route.query.aId
@@ -490,6 +621,22 @@ export default{
               }
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
+            this.serviceach=data.data.serviceAgents
+            if (res.data.data.distributionAgreement) {
+            this.fujian=true
+            let pathList = JSON.parse(res.data.data.distributionAgreement);
+            this.filesList = pathList;
+            let preloadList = [];
+            pathList.forEach((item, index) => {
+              //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if (this.isPictureFile(item.fileType)) {
+                preloadList.push(item.path);
+              }
+            });
+            this.fileSign(preloadList, "preload").then(res => {
+              this.contDataFiles = res;
+            });
+          }
             if(data.data.achievements){
                 this.checkArr = data.data.achievements;  //详情的审核信息
 
@@ -565,6 +712,27 @@ export default{
           }
         })
       },
+      addSubject(data) {
+      let arr = data.param;
+      arr.forEach(item => {
+        let fileType = this.$tool.get_suffix(item.name);
+        item.fileType = fileType;
+      });
+      this.filesList = this.filesList.concat(arr);
+      arr.forEach(item => {
+        if (this.isPictureFile(item.fileType)) {
+          this.preloadList.push(item.path);
+        }
+      });
+      //   this.fileSign(preloadList,'preload').then(res=>{
+      //   this.contDataFiles=res
+      // })
+      if (this.preloadList.length) {
+        this.fileSign(this.preloadList, "preload").then(res => {
+          this.contDataFiles = this.contDataFiles.concat(res);
+        });
+      }
+    },
       houseRecode(){
         let param={
           contId: this.contractId2,
@@ -577,6 +745,17 @@ export default{
         })
       },
     },
+    filters: {
+    getSignImage(val, list) {
+      if (list.length === 0) {
+        return "";
+      } else {
+        return list.find(item => {
+          return item.includes(val);
+        });
+      }
+    }
+  },
     computed:{
         validInput() {
                 return this.aplremark.length
@@ -585,6 +764,7 @@ export default{
 }
 </script>
 <style scoped lang="less">
+@import "~@/assets/common.less";
       .color-red {
         background-color: #f56c6c;
         margin-left: 20px;
@@ -595,6 +775,65 @@ export default{
     .preview{
       z-index:2220!important
     }
+    .ulData {
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    margin-right: 10px;
+    position: relative;
+    margin-bottom: 10px;
+    > i {
+      display: none;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      color: @color-warning;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    &:hover > i {
+      display: block;
+    }
+  }
+}
+.upload-box {
+  display: inline-block;
+  text-align: center;
+  margin:10px;
+  width: 120px;
+  height: 120px;
+  box-sizing: border-box;
+  padding-top: 28px;
+  border: 1px dashed @border-DE;
+  border-radius: 2px;
+  i {
+    color: @bg-th;
+    font-size: 50px;
+  }
+  p {
+    padding-top: 10px;
+    color: @color-324;
+    font-size: 12px;
+  }
+}
+.attach-box {
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: @color-F2;
+  > p {
+    padding-top: 5px;
+    display: inline-block;
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
      .link{
           color: #478de3;
           cursor:pointer
@@ -673,6 +912,7 @@ export default{
        padding: 10px 20px;
      }
    }
+   
    .recordtable{
     // min-height: 200px;
     /deep/ th {
