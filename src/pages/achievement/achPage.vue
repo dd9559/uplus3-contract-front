@@ -118,8 +118,9 @@
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -127,8 +128,9 @@
                   <el-input
                     v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
                     v-model="scope.row.assignorLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="销售经理级别" width="100">
@@ -136,8 +138,9 @@
                   <el-input
                     v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
                     v-model="scope.row.salesManagerLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
 
@@ -419,8 +422,9 @@
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -428,8 +432,9 @@
                   <el-input
                     v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
                     v-model="scope.row.assignorLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="销售经理级别" width="100">
@@ -437,8 +442,9 @@
                   <el-input
                     v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
                     v-model="scope.row.salesManagerLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
 
@@ -693,8 +699,9 @@
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -702,8 +709,9 @@
                   <el-input
                     v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
                     v-model="scope.row.assignorLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="销售经理级别" width="100">
@@ -711,8 +719,9 @@
                   <el-input
                     v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
                     v-model="scope.row.salesManagerLevel"
+                    disabled
                   ></el-input>
-                  <el-input v-else v-model="hx"></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
                 </template>
               </el-table-column>
 
@@ -1623,7 +1632,6 @@ export default {
               this.clientArr[index].assignorLevel = data.assignorLevel;
               this.clientArr[index].salesManagerLevel = data.salesManagerLevel;
             } else {
-              debugger;
               this.serviceAgents[index].assignor = data.assignor;
               this.serviceAgents[index].isJob = data.isJob;
               this.serviceAgents[index].level3 = data.level3; //门店
@@ -2363,7 +2371,6 @@ export default {
             distributionAgreement: this.filesList
           };
         }
-        debugger;
         if (type == 2) {
           param = {
             id: this.aId,

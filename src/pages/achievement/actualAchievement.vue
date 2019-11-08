@@ -1348,7 +1348,8 @@ export default {
           entrance: 3,
           aId: row.aId,
           contractId2: row.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:this.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1478,7 +1479,7 @@ export default {
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
           version: this.selectAchList[0].version,
-          contype:value.contType.value
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1507,7 +1508,7 @@ export default {
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
           version: this.selectAchList[0].version,
-          contype:value.contType.value
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1523,7 +1524,7 @@ export default {
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
           version: this.selectAchList[0].version,
-          contype:value.contType.value
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
