@@ -952,27 +952,6 @@ export default {
         }
       });
     },
-    //合同审核
-    goCheck(item) {
-      if(this.power['sign-ht-info-view'].state){
-        let pathArr = this.getPath.concat([{name:"合同预览"}])
-        this.setPath(pathArr)
-        this.$router.push({
-          path:'/contractPreview',
-          query:{
-            code:item.code,
-            id:item.id,
-            operationType:2
-          }
-        })
-      }else{
-        this.$message({
-          message:"没有合同预览权限",
-          type:"warning"
-        })
-      }
-
-    },
     //调佣弹窗
     toLayerAudit(item) {
       let param = {

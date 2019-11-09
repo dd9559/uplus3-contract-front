@@ -423,7 +423,6 @@ export default {
   components: {
     houseGuest,
     checkPerson,
-    contractBasics
   },
   data() {
     return {
