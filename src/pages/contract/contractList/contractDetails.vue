@@ -589,10 +589,10 @@
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
-        <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
+        <el-tab-pane label="审核记录" name="fifth">
           <div class="firstDetail" :style="{ height: clientHei }">
             <!-- 合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
               <div class="moduleTitle">
                 <span>合同审核</span>
               </div>
@@ -626,7 +626,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>

@@ -20,6 +20,10 @@
               :label="item.value"
               :value="item.key">
             </el-option>
+            <el-option
+              label="委托合同"
+              value="6">
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -211,7 +215,9 @@
               <div class="btn" @click="gathering(scope.row)">收款</div>
               <div class="btn" @click="payment(scope.row)">付款</div>
             </div>
-            <span v-else>-</span>
+            <span v-else>
+              <div class="btn" @click="gathering(scope.row)">收款</div>
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" min-width="120">
@@ -310,7 +316,7 @@
         <el-table-column label="实收/应收(佣金)" min-width="80">
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
-            <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4&&!scope.row.isCombine">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
+            <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -1277,14 +1283,16 @@ export default {
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
           combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee
-          combineItem.contState.value=combineItem.contractEntrust.entrustState
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.receivableCommission=combineItem.contractEntrust.receivableCommission?combineItem.contractEntrust.receivableCommission:0//应收
+          combineItem.receivedCommission=combineItem.contractEntrust.receivedCommission?combineItem.contractEntrust.receivedCommission:0//实收
+          combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
           combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
-          combineItem.toExamineState.value=combineItem.contractEntrust.examineState
+          combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
           combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"
-          combineItem.achievementState.value=combineItem.contractEntrust.achievementState
-          combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
+          // combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩状态
+          // combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
