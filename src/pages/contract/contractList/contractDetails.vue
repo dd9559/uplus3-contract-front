@@ -1627,7 +1627,8 @@ export default {
         path: "/contractPreview",
         query: {
           id: this.id,
-          code: this.contractDetail.code
+          code: this.contractDetail.code,
+          isentrust:0
         }
       });
     },

@@ -72,6 +72,7 @@
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
@@ -1003,7 +1004,7 @@ export default {
     submitAudit(){
       let param = {
         cityId:this.cityId,
-        flowType:3,
+        flowType:this.isentrust?11:3,
         bizCode:this.code,
         modularType:0//合同类型
       }
@@ -1029,8 +1030,8 @@ export default {
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
             this.checkPerson.type=1;
-            // this.checkPerson.type=error.data.type===1?'set':'init';
             this.checkPerson.label=true;
+            this.checkPerson.flowType=this.isentrust?11:3;
           }else{
             this.$message({
               message:error,

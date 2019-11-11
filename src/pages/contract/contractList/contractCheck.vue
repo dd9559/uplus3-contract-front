@@ -12,16 +12,16 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <!-- <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==4&&item.key!==5">
-            </el-option>
-          </el-select> -->
           <el-select v-model="contractForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':contractForm.contTypes&&contractForm.contTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
+            </el-option>
+            <el-option
+              label="委托合同"
+              value="6">
             </el-option>
           </el-select>
         </el-form-item>
