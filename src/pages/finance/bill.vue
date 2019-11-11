@@ -233,13 +233,13 @@
         </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column label="收款人" min-width="120">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
-            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
+            <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收款方式" prop="payway" :formatter="nullFormatter"></el-table-column>
@@ -275,7 +275,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="btnOpera(scope.row,3)"
                        v-if="power['sign-cw-bill-invoice'].state&&
-                       scope.row.type===1&&
+                       (scope.row.type===1||scope.row.type===8)&&
                        scope.row.isDel===1&&
                        scope.row.billStatus&&
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
@@ -283,7 +283,7 @@
                        scope.row.payStatusValue!==11">
               开票
             </el-button><el-button type="text" @click="btnOpera(scope.row,1)" v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1">编辑</el-button><template
-              v-if="((scope.row.type===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
+              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
               <el-button type="text" @click="btnOpera(scope.row,2)"
                          v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
               </el-button>
@@ -313,20 +313,20 @@
       :closeOnClickModal="$tool.closeOnClickModal"
       width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
-        <p>是否作废该{{layer.content[0].type===1?'收款单':'付款单'}}</p>
+        <p>是否作废该{{(layer.content[0].type===1||layer.content[0].type===8)?'收款单':'付款单'}}</p>
         <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
           <el-table-column align="center" min-width="120" label="收付编号" prop="payCode"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column align="center" :label="layer.content[0].type===1?'收款金额':'付款金额'" prop="cityName"
+          <el-table-column align="center" :label="(layer.content[0].type===1||layer.content[0].type===8)?'收款金额':'付款金额'" prop="cityName"
                            :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="layer.content[0].type===1?'付款方':'收款方'" prop="cityName"
+          <el-table-column align="center" :label="(layer.content[0].type===1||layer.content[0].type===8)?'付款方':'收款方'" prop="cityName"
                            :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}{{scope.row.type===1?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
+              <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType.label:scope.row.inObjType.label}}{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -626,7 +626,7 @@
              * @param row
              */
             toDetails: function (row) {
-                if (!this.power['sign-cw-debt-rev'].state && row.type === 1) {
+                if (!this.power['sign-cw-debt-rev'].state && (row.type === 1||row.type===8)) {
                     this.$message({
                         message: '无收款详情查看权限'
                     })
@@ -641,12 +641,12 @@
                 /*if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
                   this.btnOpera(row, 1)
                 } else {*/
-                this.setPath(this.getPath.concat({name: row.type === 1 ? '收款详情' : '付款详情'}))
+                this.setPath(this.getPath.concat({name: (row.type === 1||row.type===8) ? '收款详情' : '付款详情'}))
                 this.$router.push({
                     path: 'billDetails',
                     query: {
                         id: row.id,
-                        tab: row.type === 1 ? '收款信息' : '付款信息',
+                        tab: (row.type === 1||row.type===8) ? '收款信息' : '付款信息',
                         power: this.getUser.user.empId === row.auditBy,
                         bill: this.power['sign-cw-bill-invoice'].state,
                         contId: row.contId,
