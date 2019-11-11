@@ -371,7 +371,8 @@
                 ],
                 activeType: 1,
                 moneyType: [],
-                moneyTypeName: '',
+                moneyTypeName: '',//款类初始化值
+                moneyTypeActiveName:'',//款类当前选中name
                 moneyTypeOther: [],
                 payList: [
                     {
@@ -742,6 +743,12 @@
                 if(param.createTime===null){
                     param.createTime=''
                 }
+                if(!this.billStatus&&this.moneyTypeActiveName==='交易服务费'){
+                    this.$message({
+                        message:'交易服务费的收款方式只能选择线下收款'
+                    })
+                    return
+                }
                 arr.push(this.$tool.checkForm(param, rule))
                 //支付信息验证
                 if (this.billStatus) {
@@ -942,6 +949,7 @@
                 type !== 1 && (this.billStatus = true)
             },
             getCell: function (label) {
+                this.moneyTypeActiveName=label.name
                 if(label.name==='交易服务费'&&!this.billStatus){
                   this.$message({
                       message:'交易服务费的收款方式只能选择线下收款'
