@@ -1355,6 +1355,7 @@ export default {
     //获取应收列表详情
     enterDetail(row) {
       this.code = row.code;
+      debugger
       let newPage = this.$router.resolve({
         path: "/achDetial",
         query: {

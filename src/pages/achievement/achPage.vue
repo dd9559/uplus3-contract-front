@@ -633,7 +633,7 @@
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
               <h1 class="f14">交易服务费分成</h1>
-              <p class="f_l delive">合计:{{feetotal}}%</p>
+              <p class="f_l delive">合计:{{tradeFee}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -1386,7 +1386,8 @@ export default {
       state2: "",
       auditIds: "",
       filesList: [],
-      contType:''
+      contType:'',
+      tradeFee:0
     };
   },
   components: {
@@ -2649,6 +2650,7 @@ export default {
             });
           }
           this.comm = res.data.data.comm;
+          this.tradeFee = res.data.data.tradeFee;
           this.state2 = res.data.data.state;
           if (this.state2 === 0) {
             if (infoType == "getEditInfo") {

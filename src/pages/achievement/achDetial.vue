@@ -2,8 +2,8 @@
     <div>
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
-        <p class="f14" style="font-weight:bold;">
-          可分配业绩：<span class="orange">{{comm}}元</span>
+        <p class="f14" style="font-weight:bold;color:red">
+          可分配业绩：<span>{{comm}}元</span>
           <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
         </p>
       </div>
@@ -205,6 +205,9 @@
 
         <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
         </h1>
+         <p class="f14" v-if="contType==2||contType==3" style="font-weight:bold;color:red">
+          交易服务费：<span >{{tradeFee}}元</span>
+        </p>
         <div class="ach-divide-list" v-if="contType==2||contType==3">
           <el-table
             :data="serviceach"
@@ -597,7 +600,8 @@ export default{
         serviceach:[],
         filesList:[],
         fujian:false,
-        contType:''
+        contType:'',
+        tradeFee:0
       };
       
     },
@@ -627,8 +631,10 @@ export default{
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             this.serviceach=data.data.serviceAgents
-            if (res.data.data.distributionAgreement) {
+            if (data.data.distributionAgreement) {
             this.fujian=true
+            this.tradeFee=res.data.data.tradeFee
+            // this.tradeFee=
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];

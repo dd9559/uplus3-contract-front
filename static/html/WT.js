@@ -65,37 +65,37 @@ let sub = {
   'val7': null,
 }
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg={
-//   code: "S0001191107007",
-//   companyNames: ["金银湖三级门店哦"],
-//   guestCardType: "军官证",
-//   guestCardTypes: "",
-//   guestID: "132",
-//   guestIDs: "",
-//   guestName: "然爱迪生",
-//   guestNames: "",
-//   guestTel: "13011111111",
-//   guestTels: "",
-//   id: 3354,
-//   isentrust: 1,
-//   ownerCardType: "营业执照",
-//   ownerCardTypes: "",
-//   ownerID: "123",
-//   ownerIDs: "",
-//   ownerName: "熊先",
-//   ownerNames: "",
-//   ownerTel: "18888888888",
-//   ownerTels: "",
-//   propertyAddr: "a市b区c",
-//   singleCompany: "",
-// }
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg={
+  code: "S0001191107007",
+  companyNames: ["金银湖三级门店哦"],
+  guestCardType: "军官证",
+  guestCardTypes: "",
+  guestID: "132",
+  guestIDs: "",
+  guestName: "然爱迪生",
+  guestNames: "",
+  guestTel: "13011111111",
+  guestTels: "",
+  id: 3354,
+  isentrust: 1,
+  ownerCardType: "营业执照",
+  ownerCardTypes: "",
+  ownerID: "123",
+  ownerIDs: "",
+  ownerName: "熊先",
+  ownerNames: "",
+  ownerTel: "18888888888",
+  ownerTels: "",
+  propertyAddr: "a市b区c",
+  singleCompany: "",
+}
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
     if(onlyReadDom.length>0){
   onlyReadDom.forEach((element,index) => {
-     if(readonlyItem==='guestName'||readonlyItem==='companyNames'||readonlyItem==='ownerName'||readonlyItem==='propertyAddr'||readonlyItem==='code'){
+     if(readonlyItem==='code'){
         element.value=msg[readonlyItem]
         element.setAttribute('value', msg[readonlyItem])
     }else{
