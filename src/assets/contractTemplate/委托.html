@@ -133,6 +133,11 @@
       color: #FFFFFF;
       border-radius: 4px;
     }
+    .alert-viwer>p>span:last-of-type{
+      background: #fff;
+      color: #606266;
+      border: 1px solid #dcdfe6;
+    }
     .info-checkbox{
       display: inline;
       cursor: pointer;
@@ -181,17 +186,17 @@
     <p class="hetong-no">合同编号：<input systemParam="code"  extendParam="val8"  class="text-limit" type="text" unselectable="on" readonly="readonly" style="border: none;" tag="input" value="" />（委）</p>
     <ul class="signature">
         <li>
-            <p><span>甲方（出卖方）：</span><input systemParam="ownerName" type="text" class="text-limit" extendParam="val1" tag="input" readonly="readonly" style="max-width:none;width:60%;border:none" value=""/></p>
+            <p><span>甲方（出卖方）：</span><span systemParam="ownerName"  class="text-limit" tag="input-auto" extendParam="val1" readonly="readonly" style="max-width:none;border:none"></span></p>
         </li>
         <li>
-            <p><span>乙方（买受人）：</span><input systemParam="guestName" type="text" class="text-limit" extendParam="val2" tag="input" readonly="readonly" style="max-width:none;width:60%;border:none" value=""/></p>
+            <p><span>乙方（买受人）：</span><span systemParam="guestName"  class="text-limit" extendParam="val2" tag="input-auto" readonly="readonly" style="max-width:none;border:none"></span></p>
         </li>
         <li>
-            <p style="position: relative;"><span>丙方 ：</span><img class="SignatureLocation" style="position:absolute;left:68px;top:10px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /><input systemParam="companyNames" type="text" class="text-limit" extendParam="val3" tag="input" readonly="readonly" style="max-width:none;width:60%;border:none" value=""/></p>
+            <p style="position: relative;"><span>丙方 ：</span><img class="SignatureLocation" style="position:absolute;left:68px;top:10px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /><span systemParam="companyNames"  class="text-limit" extendParam="val3" tag="input-auto" readonly="readonly"></span></p>
         </li>
     </ul>
     <div class="textindent">
-        甲乙双方签订了位于<input systemParam="propertyAddr" type="text" class="text-limit" extendParam="val4" tag="input" readonly="readonly" style="max-width:none" value=""/>房屋的买卖合同，现甲乙双方委托丙方协助办理房产交易后期衍生事宜，经协商一致订立以下合同条款，甲乙丙三方共同遵照执行：
+        甲乙双方签订了位于<span systemParam="propertyAddr"  class="text-limit" extendParam="val4" tag="input-auto" readonly="readonly"></span>房屋的买卖合同，现甲乙双方委托丙方协助办理房产交易后期衍生事宜，经协商一致订立以下合同条款，甲乙丙三方共同遵照执行：
     </div>
     <div class="textindent">
         <p class="son_title">一、服务事项</p>
@@ -266,41 +271,41 @@
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
  <script type="text/javascript" src="/js/bundle_wt20191107.js"></script>
-<!--<script>
-     (function () {
-      var scriptList = document.getElementsByTagName("script")
-      console.log(scriptList)
-      if(!scriptList[0].src){
-        var host='https://sign2.jjw.com'
-        var host_other="http://sign2.jjw.com:28879"
-        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_wt20191107.js","datepicker.css"]
-        for (let i = 0; i < addrList.length; i++) {
-          if(window.location.host==='localhost:8080'){
-            if(addrList[i].indexOf('bundle')>-1){
-              addrList[i]=host_other+'/'+addrList[i]
-              // addrList[i]='./WT.js'
-            }else{
-              addrList[i]=host_other+'/'+addrList[i]
-            }
-          }else{
-            addrList[i]='/'+addrList[i]
-          }
-          if(addrList[i].indexOf('.css')>-1){
-          var hm = document.createElement("link");
-          hm.rel="stylesheet"
-          hm.href = addrList[i];
-          /*var s = document.getElementsByTagName("link")[0];
-          s.parentNode.insertBefore(hm,s);*/
-          document.head.appendChild(hm);
-        }else{
-          var hm = document.createElement("script");
-          addrList[i].includes('WT')&&(hm.type = 'module');
-          hm.src = addrList[i];
-          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
-          s.parentNode.insertBefore(hm,s);
-        }
-        }
-      }
-    })();
-</script>-->
+<script>
+    //  (function () {
+    //   var scriptList = document.getElementsByTagName("script")
+    //   console.log(scriptList)
+    //   if(!scriptList[0].src){
+    //     var host='https://sign2.jjw.com'
+    //     var host_other="http://sign2.jjw.com:28879"
+    //     var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_dj20190402.js","datepicker.css"]
+    //     for (let i = 0; i < addrList.length; i++) {
+    //       if(window.location.host==='localhost:8080'){
+    //         if(addrList[i].indexOf('bundle')>-1){
+    //         //   addrList[i]=host_other+'/'+addrList[i]
+    //           addrList[i]='./WT.js'
+    //         }else{
+    //           addrList[i]=host_other+'/'+addrList[i]
+    //         }
+    //       }else{
+    //         addrList[i]='/'+addrList[i]
+    //       }
+    //       if(addrList[i].indexOf('.css')>-1){
+    //       var hm = document.createElement("link");
+    //       hm.rel="stylesheet"
+    //       hm.href = addrList[i];
+    //       /*var s = document.getElementsByTagName("link")[0];
+    //       s.parentNode.insertBefore(hm,s);*/
+    //       document.head.appendChild(hm);
+    //     }else{
+    //       var hm = document.createElement("script");
+    //       addrList[i].includes('WT')&&(hm.type = 'module');
+    //       hm.src = addrList[i];
+    //       var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+    //       s.parentNode.insertBefore(hm,s);
+    //     }
+    //     }
+    //   }
+    // })();
+</script>
 </html>
