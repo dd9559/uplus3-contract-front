@@ -707,7 +707,7 @@
            <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
               <h1 class="f14">交易服务费分成</h1>
-              <p class="f_l delive">合计:{{feetotal}}%</p>
+              <p class="f_l delive">合计:{{tradeFee}}%</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -1392,6 +1392,7 @@
         roleType0: [], //房源角色类型
         roleType1: [], //客源角色类型
         comm: "", //可分配业绩
+        tradeFee:0,
         addManList: [],
         dictionary: {
           //数据字典
@@ -1509,6 +1510,7 @@
             });
           }
               this.comm = res.data.data.comm;
+              this.tradeFee = res.data.data.tradeFee;
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
