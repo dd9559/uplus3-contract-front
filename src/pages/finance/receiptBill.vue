@@ -33,7 +33,7 @@
                 <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
               </el-tooltip>
             </div>
-            <moneyTypePop :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
+            <moneyTypePop ref="moneyType" :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
                           @clear="clearMoneyType"></moneyTypePop>
           </div>
           <div class="input-group col" :class="[inputPerson?'active-360':'']">
@@ -272,6 +272,9 @@
     import moneyTypePop from '@/components/moneyTypePop'
 
     const rule = {
+        moneyType: {
+            name: '款类',
+        },
         outObjId: {
             name: '付款方',
             type: 'negativeNum'
@@ -284,9 +287,6 @@
         },
         createTime: {
             name: '收款时间'
-        },
-        moneyType: {
-            name: '款类',
         },
         amount: {
             name: '收款金额',
@@ -371,7 +371,8 @@
                 ],
                 activeType: 1,
                 moneyType: [],
-                moneyTypeName: '',
+                moneyTypeName: '',//款类初始化值
+                moneyTypeActiveName:'',//款类当前选中name
                 moneyTypeOther: [],
                 payList: [
                     {
@@ -739,8 +740,14 @@
                     delete param.admin
                     delete param.createTime
                 }
-                if(!param.createTime){
+                if(param.createTime===null){
                     param.createTime=''
+                }
+                if(!this.billStatus&&this.moneyTypeActiveName==='交易服务费'){
+                    this.$message({
+                        message:'交易服务费的收款方式只能选择线下收款'
+                    })
+                    return
                 }
                 arr.push(this.$tool.checkForm(param, rule))
                 //支付信息验证
@@ -942,11 +949,15 @@
                 type !== 1 && (this.billStatus = true)
             },
             getCell: function (label) {
-                /*if(label.accountType.value===3){
-                  this.billStatus=false
-                }else {
-                  this.billStatus=true
-                }*/
+                this.moneyTypeActiveName=label.name
+                if(label.name==='交易服务费'&&!this.billStatus){
+                  this.$message({
+                      message:'交易服务费的收款方式只能选择线下收款'
+                  })
+                    // this.clearMoneyType()
+                    this.$refs.moneyType.opera('clear')
+                    return
+                }
                 this.showAmount = label.pName === '代收代付' ? false : true
                 this.form.moneyType = label.key
                 this.form.moneyTypePid = label.pId

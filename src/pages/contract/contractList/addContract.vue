@@ -83,6 +83,12 @@
             </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
+          <el-form-item label="建成年代：" :class="{'form-label':type===1}" style="width:250px;text-align:right">
+            <span class="CompleteYear" style="width:150px;" v-if="contractForm.houseInfo.CompleteYear">
+              {{contractForm.houseInfo.CompleteYear}}
+            </span>
+            <span class="CompleteYear color_" style="width:150px;" v-else>建成年代</span>
+          </el-form-item>
           <br>
           <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
             <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
@@ -416,7 +422,7 @@ export default {
   mixins: [MIXINS],
   components: {
     houseGuest,
-    checkPerson
+    checkPerson,
   },
   data() {
     return {
@@ -1527,6 +1533,7 @@ export default {
         if (res.status === 200) {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          houseMsg.CompleteYear=houseMsg.CompleteYear?houseMsg.CompleteYear:"--"
           if(!this.canInput){//正常编辑
             if(houseMsg.TradeInt===2){
               // this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
@@ -2330,6 +2337,19 @@ export default {
     .propertyAddress{
       cursor:not-allowed;
       min-width: 500px;
+      display: inline-block;
+      box-sizing: border-box;
+      text-align: left;
+      font-size: 14px;
+      padding-left: 15px;
+      color: #C0C4CC;
+      border-radius: 4px;
+      background: #F5F7FA;
+      border: 1px solid #dcdfe6;
+    }
+    .CompleteYear{
+      cursor:not-allowed;
+      width: 150px;
       display: inline-block;
       box-sizing: border-box;
       text-align: left;

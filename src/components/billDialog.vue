@@ -428,7 +428,7 @@ export default {
       if (type === "amount") {
         this.form.amount = this.$tool.cutFloat({
           val: this.form.amount,
-          max: 999999999999
+          max: 999999999.99
         });
       } else {
         this.form.objName = this.$tool.textInput(this.form.objName);

@@ -306,7 +306,7 @@
             </ul>
             <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li>
@@ -589,10 +589,10 @@
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
-        <el-tab-pane label="审核记录" name="fifth" v-if="contractDetail.recordType.value===1">
+        <el-tab-pane label="审核记录" name="fifth">
           <div class="firstDetail" :style="{ height: clientHei }">
             <!-- 合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
               <div class="moduleTitle">
                 <span>合同审核</span>
               </div>
@@ -626,7 +626,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>

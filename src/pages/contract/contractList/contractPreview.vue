@@ -265,8 +265,6 @@ export default {
       invalidReason: "",
       textarea:"",
       isSign: 0,
-      //审核
-      operationType: "",
       //合同id
       id:'',
       code:'',
@@ -414,9 +412,6 @@ export default {
     this.id = this.$route.query.id;
     this.code = this.$route.query.code;
     this.isentrust = Number(this.$route.query.isentrust)
-    if (this.$route.query.operationType) {
-      this.operationType = this.$route.query.operationType;
-    }
     if(!Number(this.$route.query.isentrust)){
       this.getContDataType();//获取合同集料库类型
     }
