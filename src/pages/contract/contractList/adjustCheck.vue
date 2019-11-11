@@ -616,8 +616,8 @@
       choseCheckPerson:function (row,type) {
         if(row.tradeType===1){
           this.checkPerson.flowType=8   //租赁调佣的流程类型为8
-        }else if(row.tradeType===2){
-          this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+        }else if(row.tradeType===2||row.tradeType===3){
+          this.checkPerson.flowType=7   //买卖代办调佣的流程类型为7
         }
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true
@@ -940,8 +940,8 @@
               // this.choseCheckPerson(error.data.checkId,'set')
               if(this.applyType===1){
                 this.checkPerson.flowType=8   //租赁调佣的流程类型为8
-              }else if(this.applyType===2){
-                this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+              }else if(this.applyType===2||this.applyType===3){
+                this.checkPerson.flowType=7   //买卖代办调佣的流程类型为7
               }
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true
@@ -1140,18 +1140,7 @@
     .el-table{
       th{
         background-color: #EEF2FB;
-        &:first-child{
-          /*padding-left: 20px;*/
-        }
       }
-      tr{
-        td{
-          &:first-child{
-            /*padding-left: 20px;*/
-          }
-        }
-      }
-
     }
   }
 
