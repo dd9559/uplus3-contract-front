@@ -363,6 +363,7 @@
             // this.moneyData newCustCommission
             debugger
             Object.assign(this.moneyData,{owner:res.data.newOwnerCommission,user:res.data.newCustCommission})
+            Object.assign(this.commission,{owner:res.data.ownerCommission,user:res.data.custCommission})
             let address_ = JSON.parse(res.data.changeAtta);
             //console.log(address_);
             // let fileType = this.$tool.get_suffix(arr[0].name);

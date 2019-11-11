@@ -360,7 +360,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :commission="commission" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -450,7 +450,6 @@ export default {
       jiesuan: false,
       changeCancel: false,
       dialogOperation:"details",
-      commission:'',
       dialogType: "",
       dictionary: {
         //数据字典
@@ -989,10 +988,6 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      this.commission = {
-        owner:item.ownerCommission,
-        user:item.custCommission
-      }
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "bg";
