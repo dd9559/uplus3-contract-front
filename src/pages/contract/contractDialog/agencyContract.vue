@@ -41,6 +41,32 @@
         <div class="msg">
             <div class="title">房源信息</div>
             <div class="content">
+                <div class="one_">
+                    <p>
+                        <span>房源编号：</span>
+                        <span class="color-blue">{{defaultInfo.houseinfoCode}}</span>
+                    </p>
+                    <div class="text-long" style="width: 600px;">
+                        <span class="w-70">物业地址：</span>
+                        <span>{{defaultInfo.propertyAddr}}</span>
+                    </div>
+                </div>
+                <div class="one_">
+                    <div class="text-long">
+                        <span class="w-70">产权地址：</span>
+                        <span>{{defaultInfo.propertyRightAddr}}</span>
+                    </div>
+                </div>
+                <div class="one_">
+                    <p>
+                        <span>建筑面积：</span>
+                        <span>{{defaultInfo.houseInfo.Square}} m²</span>
+                    </p>
+                    <p>
+                        <span>套内面积：</span>
+                        <span>{{defaultInfo.houseInfo.SquareUse}} m²</span>
+                    </p>
+                </div>
                 <div v-for="(item,i) in houseArr" :key="i" class="one_">
                     <p class="text-long">
                         <span :class="[i==0?'':'w-84']">{{i==0?'业主':'共有人'}}姓名：</span>
@@ -51,32 +77,8 @@
                         <span>{{item.mobile}}</span>
                     </p>
                     <p>
-                        <span>证件号码：</span>
+                        <span>{{getCardLabel(item.cardType)}}：</span>
                         <span>{{item.encryptionCode}}</span>
-                    </p>
-                </div>
-                <div class="one_">
-                    <p>
-                        <span>房源编号：</span>
-                        <span class="color-blue">{{defaultInfo.houseinfoCode}}</span>
-                    </p>
-                    <p>
-                        <span>建筑面积：</span>
-                        <span>{{defaultInfo.houseInfo.Square}} m²</span>
-                    </p>
-                    <p>
-                        <span>套内面积：</span>
-                        <span>{{defaultInfo.houseInfo.SquareUse}} m²</span>
-                    </p>
-                </div>
-                <div class="one_">
-                    <p class="text-long">
-                        <span class="w-70">物业地址：</span>
-                        <span>{{defaultInfo.propertyAddr}}</span>
-                    </p>
-                    <p class="text-long">
-                        <span class="w-70">产权地址：</span>
-                        <span>{{defaultInfo.propertyRightAddr}}</span>
                     </p>
                 </div>
             </div>
@@ -84,6 +86,12 @@
         <div class="msg">
             <div class="title">客源信息</div>
             <div class="content">
+                <div class="one_">
+                    <p>
+                        <span>客源编号：</span>
+                        <span class="color-blue">{{defaultInfo.guestinfoCode}}</span>
+                    </p>
+                </div>
                 <div v-for="(item,i) in guestArr" :key="i" class="one_">
                     <p class="text-long">
                         <span :class="[i==0?'':'w-84']">{{i==0?'客户':'共有人'}}姓名：</span>
@@ -94,14 +102,8 @@
                         <span>{{item.mobile}}</span>
                     </p>
                     <p>
-                        <span>证件号码：</span>
+                        <span>{{getCardLabel(item.cardType)}}：</span>
                         <span>{{item.encryptionCode}}</span>
-                    </p>
-                </div>
-                <div class="one_">
-                    <p>
-                        <span>客源编号：</span>
-                        <span class="color-blue">{{defaultInfo.guestinfoCode}}</span>
                     </p>
                 </div>
             </div>
@@ -166,6 +168,17 @@ export default {
         this.guestArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 2)
     },
     methods: {
+        getCardLabel(val) {
+            if(val==1){
+                return '身份证'
+            }else if(val==2){
+                return '护照'
+            }else if(val==3){
+                return '营业执照'
+            }else{
+                return '军官证'
+            }
+        },
         //获取当前日期
         getTimeNow() {
             let time = new Date()
