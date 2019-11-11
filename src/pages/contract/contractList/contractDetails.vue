@@ -1628,7 +1628,7 @@ export default {
         query: {
           id: this.id,
           code: this.contractDetail.code,
-          isentrust:this.isentrust
+          isentrust:0
         }
       });
     },
@@ -1956,12 +1956,6 @@ export default {
           this.commission={
             owner:this.contractDetail.ownerCommission,
             user:this.contractDetail.custCommission
-          }
-          // 是否有委托合同
-          if(res.data.contractEntrust&&res.data.contractEntrust.id){
-            this.isentrust=1
-          }else{
-            this.isentrust=0
           }
           //成交报告
           this.buyerInfo = []

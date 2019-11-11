@@ -793,7 +793,8 @@ export default {
           path:'/receiptBill',
           query:{
             contId:item.id,
-            code:item.code
+            code:item.code,
+            isentrust:item.isCombine?1:0
           }
         })
       }else{
