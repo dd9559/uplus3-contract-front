@@ -269,9 +269,9 @@
 
           <el-table-column prop="propertyAddr" label="物业地址"  min-width="120"></el-table-column>
 
-          <el-table-column prop="date" label="签约日期"  min-width="90">
+          <el-table-column prop="date" label="签约时间"  min-width="90">
             <template slot-scope="scope">
-              <p>{{scope.row.signDate|formatDate}}</p>
+              <p>{{scope.row.signDate|formatTime(false)}}</p>
             </template>
           </el-table-column>
 

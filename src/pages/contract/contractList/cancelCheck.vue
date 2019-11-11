@@ -109,8 +109,8 @@ export default {
   methods:{
     //查询
     queryFn(){
-      // this.currentPage=1
-      // this.getContractList("search")
+      this.currentPage=1
+      this.getCancelList("search")
     },
     //重置
     resetFormFn(){
