@@ -728,7 +728,8 @@
                             edit: 2,
                             id: item.id,
                             contId: item.contId,
-                            code: item.contCode
+                            code: item.contCode,
+                            isentrust:item.type===8?1:0
                         }
                     })
                 } else {

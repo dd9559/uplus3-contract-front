@@ -664,7 +664,8 @@
                             edit: 1,
                             id: row.id,
                             contId: row.contId,
-                            code: row.contCode
+                            code: row.contCode,
+                            isentrust: row.type===8?1:0
                         }
                     })
                 } else if (type === 2) {

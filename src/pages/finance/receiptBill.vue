@@ -33,8 +33,9 @@
                 <p class="tip-message"><i class="iconfont icon-wenhao"></i>填写帮助</p>
               </el-tooltip>
             </div>
-            <moneyTypePop ref="moneyType" :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
+            <moneyTypePop v-if="!isentrust" ref="moneyType" :data="moneyType" :init="moneyTypeName" @checkCell="getCell"
                           @clear="clearMoneyType"></moneyTypePop>
+            <el-input v-else type="text" size="small" class="w200" disabled placeholder="交易服务费"></el-input>
           </div>
           <div class="input-group col" :class="[inputPerson?'active-360':'']">
             <label class="form-label no-width f14 margin-bottom-base">付款方</label>
@@ -274,6 +275,7 @@
     const rule = {
         moneyType: {
             name: '款类',
+            type: 'negativeNum'
         },
         outObjId: {
             name: '付款方',
@@ -373,6 +375,7 @@
                 moneyType: [],
                 moneyTypeName: '',//款类初始化值
                 moneyTypeActiveName:'',//款类当前选中name
+                isentrust:false,//是否为委托合同创建收款
                 moneyTypeOther: [],
                 payList: [
                     {
@@ -432,8 +435,11 @@
             this.getDropdown()
             // this.getReceiptman()
             // this.getAdmin()
-            this.getFirstTime_receipt(urlParam.contId)
             this.addInit(urlParam.contId)
+            this.isentrust=Number(urlParam.isentrust)===0?false:true
+            this.billStatus=this.isentrust
+            !this.isentrust&&this.getFirstTime_receipt(urlParam.contId)//非委托合同才调用
+
             if (urlParam.code) {
                 this.uploadScane.id = urlParam.code
             }
@@ -743,11 +749,8 @@
                 if(param.createTime===null){
                     param.createTime=''
                 }
-                if(!this.billStatus&&this.moneyTypeActiveName==='交易服务费'){
-                    this.$message({
-                        message:'交易服务费的收款方式只能选择线下收款'
-                    })
-                    return
+                if(this.isentrust){
+                    Object.assign(param,{moneyType:0,moneyTypePid:0,type:8})
                 }
                 arr.push(this.$tool.checkForm(param, rule))
                 //支付信息验证
@@ -925,6 +928,12 @@
             },
             //选择收款类型操作
             checkReceiptType: function (type) {
+                if(type===1&&this.isentrust){
+                    this.$message({
+                        message:'交易服务费的收款方式只能选择线下收款'
+                    })
+                    return
+                }
                 if (this.hasChose_receiptType.state) {
                     let msg = ''
                     switch (this.hasChose_receiptType.version) {
@@ -950,14 +959,6 @@
             },
             getCell: function (label) {
                 this.moneyTypeActiveName=label.name
-                if(label.name==='交易服务费'&&!this.billStatus){
-                  this.$message({
-                      message:'交易服务费的收款方式只能选择线下收款'
-                  })
-                    // this.clearMoneyType()
-                    this.$refs.moneyType.opera('clear')
-                    return
-                }
                 this.showAmount = label.pName === '代收代付' ? false : true
                 this.form.moneyType = label.key
                 this.form.moneyTypePid = label.pId
