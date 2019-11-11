@@ -122,12 +122,19 @@
 
               <el-table-column label="经纪人工号" width="120">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="90">
@@ -461,12 +468,19 @@
 
               <el-table-column label="经纪人工号" width="120">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -773,12 +787,19 @@
 
               <el-table-column label="经纪人工号" width="120">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
