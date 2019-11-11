@@ -95,7 +95,7 @@ for(let readonlyItem in msg){
     let arr= []
     if(onlyReadDom.length>0){
   onlyReadDom.forEach((element,index) => {
-     if(readonlyItem==='guestName'||readonlyItem==='companyNames'||readonlyItem==='ownerName'||readonlyItem==='propertyAddr'||readonlyItem==='code'){
+     if(readonlyItem==='code'){
         element.value=msg[readonlyItem]
         element.setAttribute('value', msg[readonlyItem])
     }else{

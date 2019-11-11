@@ -108,6 +108,12 @@
                   label="经纪人"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignor"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.assignor"
                       filterable
@@ -127,17 +133,25 @@
                         :value="item.empId"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
-                <el-table-column label="经纪人工号" width="150">
+                <el-table-column label="经纪人工号" width="120">
                 <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -238,6 +252,12 @@
                   label="店长"
                 >
                   <template slot-scope="scope">
+                      <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.shopkeeper"
                       filterable
@@ -257,6 +277,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                      </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -266,6 +287,12 @@
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.level4"
                       filterable
@@ -284,6 +311,7 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -292,6 +320,12 @@
                   label="总监"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.amaldar"
                       filterable
@@ -311,6 +345,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -319,6 +354,12 @@
                   label="副总"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.manager"
                       filterable
@@ -338,6 +379,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -448,6 +490,12 @@
                   label="经纪人"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignor"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.assignor"
                       filterable
@@ -467,17 +515,25 @@
                         :value="item.empId"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
-              <el-table-column label="经纪人工号" width="150">
+              <el-table-column label="经纪人工号" width="120">
                 <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -577,6 +633,12 @@
                   label="店长"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.shopkeeper"
                       filterable
@@ -595,6 +657,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -604,6 +667,12 @@
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.level4"
                       filterable
@@ -622,6 +691,7 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -630,6 +700,12 @@
                   label="总监"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.amaldar"
                       filterable
@@ -649,6 +725,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -657,6 +734,12 @@
                   label="副总"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.manager"
                       filterable
@@ -676,6 +759,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -746,6 +830,12 @@
 
               <el-table-column label="经纪人">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignor"
+                    placement="top"
+                  >
                   <el-select
                     v-model="scope.row.assignor"
                     filterable
@@ -765,17 +855,25 @@
                       :value="item.empId"
                     ></el-option>
                   </el-select>
+                  </el-tooltip>
                 </template>
               </el-table-column>
 
               <el-table-column label="经纪人工号" width="150">
                 <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum"
+                    placement="top"
+                  >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
                     v-model="scope.row.assignorNum"
                     disabled
                   ></el-input>
                   <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
                 </template>
               </el-table-column>
               <el-table-column label="经纪人级别" width="100">
@@ -866,6 +964,12 @@
               <!-- 店长，可输入，可下拉 -->
               <el-table-column label="店长">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper"
+                    placement="top"
+                  >
                   <el-select
                     v-model="scope.row.shopkeeper"
                     filterable
@@ -884,12 +988,19 @@
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
+                  </el-tooltip>
                 </template>
               </el-table-column>
 
               <!-- 单组，可输入，可下拉 -->
               <el-table-column label="单组" v-if="$route.query.version=='0'">
                 <template slot-scope="scope">
+                 <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4"
+                    placement="top"
+                  >                 
                   <el-select
                     v-model="scope.row.level4"
                     filterable
@@ -908,12 +1019,19 @@
                       :value="item.id+'-'+item.name"
                     ></el-option>
                   </el-select>
+                 </el-tooltip>
                 </template>
               </el-table-column>
 
               <!-- 区经，可输入，可下拉 -->
               <el-table-column label="总监">
                 <template slot-scope="scope">
+                   <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar"
+                    placement="top"
+                  >                 
                   <el-select
                     v-model="scope.row.amaldar"
                     filterable
@@ -933,12 +1051,19 @@
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
+                   </el-tooltip>
                 </template>
               </el-table-column>
 
               <!-- 区总，可输入，可下拉 -->
               <el-table-column label="副总">
                 <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager"
+                    placement="top"
+                  >
                   <el-select
                     v-model="scope.row.manager"
                     filterable
@@ -958,6 +1083,7 @@
                       :value="item.depId+'-'+item.name"
                     ></el-option>
                   </el-select>
+                  </el-tooltip>
                 </template>
               </el-table-column>
 
@@ -1495,7 +1621,7 @@
                   this.$set(this.serviceAgents[i],'checkbox',[])
                   this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place)
               }
-            if (res.data.data.distributionAgreement) {
+            if (res.data.data.distributionAgreement.length>0) {
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];
