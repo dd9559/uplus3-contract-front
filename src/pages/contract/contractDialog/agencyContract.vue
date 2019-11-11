@@ -71,11 +71,11 @@
                 </div>
                 <div class="one_">
                     <p class="text-long">
-                        <span>物业地址：</span>
+                        <span class="w-70">物业地址：</span>
                         <span>{{defaultInfo.propertyAddr}}</span>
                     </p>
-                    <p>
-                        <span>产权地址：</span>
+                    <p class="text-long">
+                        <span class="w-70">产权地址：</span>
                         <span>{{defaultInfo.propertyRightAddr}}</span>
                     </p>
                 </div>
@@ -287,6 +287,9 @@ export default {
                     display: flex;
                     .w-84 {
                         min-width: 84px;
+                    }
+                    .w-70 {
+                        min-width: 70px;
                     }
                 }
                 &.input-val {
