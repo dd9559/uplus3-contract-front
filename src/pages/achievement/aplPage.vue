@@ -1629,7 +1629,7 @@
                   this.$set(this.serviceAgents[i],'checkbox',[])
                   this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place)
               }
-            if (res.data.data.distributionAgreement.length>0) {
+            if (data.data.distributionAgreement&&JSON.parse(data.data.distributionAgreement).length>0) {
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];
