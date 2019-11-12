@@ -26,7 +26,11 @@
       <el-table-column label="合同类型" prop="contType.label" min-width="60">
       </el-table-column>
 
-      <el-table-column label="物业地址" prop="propertyAddr" min-width="160" show-overflow-tooltip>
+      <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
+        <template slot-scope="scope">
+          <p>{{scope.row.LPName}}</p>
+          <p>{{scope.row.detailName}}</p>
+        </template>
       </el-table-column>
       
       <el-table-column label="成交总价" prop="dealPrice" min-width="90">

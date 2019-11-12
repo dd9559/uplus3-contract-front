@@ -112,6 +112,10 @@
           </template>
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
+          <template slot-scope="scope">
+            <p>{{scope.row.LPName}}</p>
+            <p>{{scope.row.detailName}}</p>
+          </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
           <template slot-scope="scope">
@@ -611,8 +615,20 @@ export default {
     },
     combineList(){
       let arr = JSON.parse(JSON.stringify(this.tableData))
+      arr.forEach((element,index) => {
+        //切割物业地址 楼盘名称和具体地址分开
+        let num = element.propertyAddr.indexOf(' ')
+        //楼盘名称
+        let LPName = element.propertyAddr.substring(0,num)
+        //具体地址
+        let detailName = element.propertyAddr.substring(num)
+        this.$set(element,"LPName",LPName)
+        this.$set(element,"detailName",detailName)
+        if((index+1) % 2 ===0){
+          this.$set(element,"bgc",true)
+        }
+      });
       this.tableData.forEach((element,index)=>{
-        // debugger
         if(element.contractEntrust&&element.contractEntrust.id){
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))

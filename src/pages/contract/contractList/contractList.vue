@@ -192,6 +192,10 @@
         <el-table-column label="签约方式" prop="recordType.label" min-width="50">
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
+          <template slot-scope="scope">
+            <p>{{scope.row.LPName}}</p>
+            <p>{{scope.row.detailName}}</p>
+          </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90">
           <template slot-scope="scope">
@@ -1245,6 +1249,14 @@ export default {
     combineList(){
       let arr = JSON.parse(JSON.stringify(this.tableData))
       arr.forEach((element,index) => {
+        //切割物业地址 楼盘名称和具体地址分开
+        let num = element.propertyAddr.indexOf(' ')
+        //楼盘名称
+        let LPName = element.propertyAddr.substring(0,num)
+        //具体地址
+        let detailName = element.propertyAddr.substring(num)
+        this.$set(element,"LPName",LPName)
+        this.$set(element,"detailName",detailName)
         if((index+1) % 2 ===0){
           this.$set(element,"bgc",true)
         }
