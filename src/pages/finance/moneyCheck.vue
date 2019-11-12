@@ -196,13 +196,13 @@
         </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="activeView===1?'收款人':'付款人'" min-width="120">
           <template slot-scope="scope">
-            <span>{{scope.row.type===1?scope.row.inObjStore:scope.row.store}}</span>
-            <p>{{scope.row.type===1?scope.row.inObjName:scope.row.createByName}}</p>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
+            <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">
@@ -260,7 +260,7 @@
         <el-table-column label="操作" fixed="right" min-width="120" class-name="null-formatter">
           <template slot-scope="scope">
             <el-button type="text" @click="cellOpera(scope.row,'edit')"
-                       v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&scope.row.type===1&&scope.row.edit===1">编辑
+                       v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1">编辑
             </el-button><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button><el-button type="text" @click="cellOpera(scope.row,'del')"
                        v-if="((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&
                        scope.row.isDel===1&&
@@ -313,7 +313,7 @@
           <el-table-column align="center" :label="activeView===1?'付款方':'收款方'" prop="cityName"
                            :formatter="nullFormatter">
             <template slot-scope="scope">
-              <span>{{scope.row.type===1?scope.row.outObjType.label:scope.row.inObjType.label}}{{scope.row.type===1?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
+              <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType.label:scope.row.inObjType.label}}{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -703,7 +703,7 @@
                         bill: this.power['sign-cw-debt-invoice'].state,
                         listName: 2
                     }
-                    this.setPath(this.getPath.concat({name: '收款详情'}))
+                    // this.setPath(this.getPath.concat({name: '收款详情'}))
                 } else {
                     param.query = {
                         tab: '付款信息',
@@ -713,7 +713,7 @@
                         bill: this.power['sign-cw-debt-invoice'].state,
                         listName: 3
                     }
-                    this.setPath(this.getPath.concat({name: '付款详情'}))
+                    // this.setPath(this.getPath.concat({name: '付款详情'}))
                 }
                 this.$router.push(param)
             },

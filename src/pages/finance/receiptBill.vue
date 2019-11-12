@@ -18,7 +18,7 @@
               </el-tooltip>-->
             </p>
             <p class="block-receipt-type worth-list" v-if="firstCreate.content.contCommission">
-              <span>应收佣金（元）：{{firstCreate.content.contCommission.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.contCommission.receivedCommission}}</span><span
+              <span>{{isentrust?"应收交易服务费":"应收佣金"}}（元）：{{firstCreate.content.contCommission.receivableCommission}}</span><span>已收（元）：{{firstCreate.content.contCommission.receivedCommission}}</span><span
               class="warning-text">未收（元）：{{firstCreate.content.contCommission.uncollected}}</span>
             </p>
           </div>
@@ -485,7 +485,7 @@
             },
             //判断用户该合同是否第一次选择收款人部门
             addInit: function (id) {
-                this.$ajax.get('/api/payInfo/toInsert', {contId: id}).then(res => {
+                this.$ajax.get('/api/payInfo/toInsert', {contId: id,type:this.isentrust?8:1}).then(res => {
                     res = res.data
                     if (res.status === 200) {
                         this.firstCreate.content = Object.assign({}, res.data)
@@ -750,7 +750,7 @@
                     param.createTime=''
                 }
                 if(this.isentrust){
-                    Object.assign(param,{moneyType:0,moneyTypePid:0,type:8})
+                    Object.assign(param,{moneyType:-1,moneyTypePid:-1,type:8})
                 }
                 arr.push(this.$tool.checkForm(param, rule))
                 //支付信息验证
