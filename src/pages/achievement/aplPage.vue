@@ -7,26 +7,16 @@
           <div class="ach-header">
             <h1
               v-if="dialogType==0"
-            >业绩申诉审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1
-              v-if="dialogType==3"
-              style="fontSize:20px;"
-            >业绩分成</h1>
-            <p style="font-weight:bold;">
-              可分配业绩：
-              <span class="orange">{{comm}}元</span>
-              <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
-            </p>
+            >业绩申诉审核
+            </h1>
           </div>
 
           <!-- 房源列表 -->
           <div class="ach-body">
             <div class="house-divide">
               <div class="house-left f_l">
-                <h1 class="f14">房源方分成</h1>
-                <p class="f_l delive">合计:{{housetotal}}%</p>
+              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
                 class="house-right f_r"
@@ -111,7 +101,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignor"
+                    :disabled="scope.row.assignor?false:true"
+                    :content="scope.row.assignor+''"
                     placement="top"
                   >
                     <el-select
@@ -142,7 +133,7 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignorNum"
+                    :content="scope.row.assignorNum+''"
                     placement="top"
                   >
                   <el-input
@@ -204,7 +195,8 @@
                     v-if="scope.row.level3"
                     class="item"
                     effect="dark"
-                    :content="scope.row.level3"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
                     placement="top">
                       <el-select
                       v-model="scope.row.level3"
@@ -255,7 +247,8 @@
                       <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.shopkeeper"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
                   >
                     <el-select
@@ -290,7 +283,8 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.level4"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
                     placement="top"
                   >
                     <el-select
@@ -323,7 +317,8 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.amaldar"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
                     placement="top"
                   >
                     <el-select
@@ -357,7 +352,8 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.manager"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
                     placement="top"
                   >
                     <el-select
@@ -409,8 +405,8 @@
 
             <div class="house-divide top20">
               <div class="house-left f_l">
-                <h1 class="f14">客源方分成</h1>
-                <p class="f_l delive">合计:{{clienttotal}}%</p>
+              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
                 class="house-right f_r"
@@ -493,7 +489,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignor"
+                    :content="scope.row.assignor+''"
+                    :disabled="scope.row.assignor?false:true"
                     placement="top"
                   >
                     <el-select
@@ -524,7 +521,7 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignorNum"
+                    :content="scope.row.assignorNum+''"
                     placement="top"
                   >
                   <el-input
@@ -585,7 +582,8 @@
                     v-if="scope.row.level3"
                     class="item"
                     effect="dark"
-                    :content="scope.row.level3"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
                     placement="top">
                       <el-select
                       v-model="scope.row.level3"
@@ -636,7 +634,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.shopkeeper"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
                   >
                     <el-select
@@ -670,7 +669,8 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.level4"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
                     placement="top"
                   >
                     <el-select
@@ -703,7 +703,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.amaldar"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
                     placement="top"
                   >
                     <el-select
@@ -737,7 +738,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.manager"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
                     placement="top"
                   >
                     <el-select
@@ -790,8 +792,8 @@
 
            <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成</h1>
-              <p class="f_l delive">合计:{{tradeFee}}%</p>
+              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -833,7 +835,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignor"
+                    :content="scope.row.assignor+''"
+                    :disabled="scope.row.assignor?false:true"
                     placement="top"
                   >
                   <el-select
@@ -864,7 +867,7 @@
                     <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.assignorNum"
+                    :content="scope.row.assignorNum+''"
                     placement="top"
                   >
                   <el-input
@@ -917,7 +920,8 @@
                     v-if="scope.row.level3"
                     class="item"
                     effect="dark"
-                    :content="scope.row.level3"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
                     placement="top"
                   >
                     <el-select
@@ -967,7 +971,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.shopkeeper"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
                   >
                   <el-select
@@ -998,7 +1003,8 @@
                  <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.level4"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
                     placement="top"
                   >                 
                   <el-select
@@ -1029,7 +1035,8 @@
                    <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.amaldar"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
                     placement="top"
                   >                 
                   <el-select
@@ -1061,7 +1068,8 @@
                   <el-tooltip
                     class="item"
                     effect="dark"
-                    :content="scope.row.manager"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
                     placement="top"
                   >
                   <el-select
