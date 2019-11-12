@@ -151,10 +151,10 @@
               </template>
             </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
-            <!--<el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>-->
-            <el-table-column align="center" label="手续费（元）">
-              <template slot-scope="scope">{{billMsg.systemFee?billMsg.systemFee:'--'}}</template>
-            </el-table-column>
+            <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
+            <!--<el-table-column align="center" label="手续费（元）" prop="fee">
+              <template slot-scope="scope">{{(scope.row.fee||scope.row.fee===0)?scope.row.fee:'&#45;&#45;'}}</template>
+            </el-table-column>-->
           </el-table>
         </li>
         <li v-if="activeItem==='付款信息'">

@@ -165,7 +165,14 @@
         </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" min-width="160" :formatter="nullFormatter">
         </el-table-column>
-        <el-table-column prop="address" label="物业地址" min-width="160">
+        <el-table-column label="物业地址" min-width="160">
+          <template slot-scope="scope">
+            <span v-if="scope.row.address.length===0">--</span>
+            <template v-else>
+              <p>{{scope.row.address.split(' ')[0]}}</p>
+              <p>{{scope.row.address.split(' ')[1]}}</p>
+            </template>
+          </template>
         </el-table-column>
         <el-table-column prop="cName" label="客户姓名" min-width="80">
         </el-table-column>

@@ -220,8 +220,15 @@
         </el-table-column>
         <el-table-column min-width="160" label="票据编号" prop="billCode"
                          :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="160" label="物业地址" prop="address"
-                         :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="160" label="物业地址">
+          <template slot-scope="scope">
+            <span v-if="scope.row.address.length===0">--</span>
+            <template v-else>
+              <p>{{scope.row.address.split(' ')[0]}}</p>
+              <p>{{scope.row.address.split(' ')[1]}}</p>
+            </template>
+          </template>
+        </el-table-column>
         <el-table-column min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="60" label="签约方式" prop="recordType.label"
                          :formatter="nullFormatter"></el-table-column>

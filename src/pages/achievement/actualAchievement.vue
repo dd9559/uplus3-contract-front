@@ -267,7 +267,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="propertyAddr" label="物业地址"  min-width="120"></el-table-column>
+          <el-table-column prop="propertyAddr" label="物业地址"  min-width="120">
+            <template slot-scope="scope">
+              <span v-if="scope.row.propertyAddr.length===0">--</span>
+              <template v-else>
+                <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+                <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+              </template>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="date" label="签约时间"  min-width="90">
             <template slot-scope="scope">

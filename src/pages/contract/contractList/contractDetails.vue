@@ -422,7 +422,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
-          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail"></agency-contract>
+          <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail" @goToMainData="goToMainData"></agency-contract>
         </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
           <div class="receiptModule">
@@ -1481,6 +1481,11 @@ export default {
     })
   },
   methods: {
+    goToMainData() {
+      this.activeName = "second";
+      this.name="second";
+      this.getContractDetail()
+    },
     yearFormatFn(val) {
         if(val) {
             if(val.includes('年')) {
