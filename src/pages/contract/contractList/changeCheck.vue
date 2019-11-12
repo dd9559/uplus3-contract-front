@@ -153,6 +153,16 @@ export default {
         if (res.status === 200) {
           this.list = res.data.list;
           this.total = res.data.total;
+          this.list.forEach(element=>{
+            //切割物业地址 楼盘名称和具体地址分开
+            let num = element.propertyAddr.indexOf(' ')
+            //楼盘名称
+            let LPName = element.propertyAddr.substring(0,num)
+            //具体地址
+            let detailName = element.propertyAddr.substring(num)
+            this.$set(element,"LPName",LPName)
+            this.$set(element,"detailName",detailName)
+          })
         }
       });
     },

@@ -102,9 +102,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约日期" min-width="90">
+                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约时间" min-width="90">
                     <template slot-scope="scope">
-                        {{dateFormat(scope.row.signDate)}}
+                        {{scope.row.signDate|formatTime(false)}}
                     </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="后期状态" min-width="80">
