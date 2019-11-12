@@ -825,7 +825,7 @@
                   <el-input
                     v-model="scope.row.ratio"
                     placeholder="请输入"
-                    @input="filterClientNumber(scope.row.ratio,scope.$index)"
+                    @input="filterFeeNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -1751,17 +1751,30 @@
           }
         })
       },
-      //判断分成比例只能输入1-100的正整数
-      filterHouseNumber(val, index) {
-         this.$nextTick(() =>{
-                    this.houseArr[index].ratio=this.$tool.cutFloat({val:this.houseArr[index].ratio,max:100})
-                })
-      },
-      filterClientNumber(val, index) {
-          this.$nextTick(() =>{
-                     this.clientArr[index].ratio=this.$tool.cutFloat({val: this.clientArr[index].ratio,max:100})
-                })
-      },
+    filterHouseNumber(val, index) {
+      this.$nextTick(() => {
+        this.houseArr[index].ratio = this.$tool.cutFloat({
+          val: this.houseArr[index].ratio,
+          max: 100
+        });
+      });
+    },
+    filterClientNumber(val, index) {
+      this.$nextTick(() => {
+        this.clientArr[index].ratio = this.$tool.cutFloat({
+          val: this.clientArr[index].ratio,
+          max: 100
+        });
+      });
+    },
+  filterFeeNumber(val, index) {
+      this.$nextTick(() => {
+        this.serviceAgents[index].ratio = this.$tool.cutFloat({
+          val: this.serviceAgents[index].ratio,
+          max: 100
+        });
+      });
+    },
       // 获取经纪人
       getAssignors(queryString) {
         if (queryString !== "") {

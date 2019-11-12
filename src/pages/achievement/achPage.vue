@@ -762,7 +762,7 @@
                   <el-input
                     v-model="scope.row.ratio"
                     placeholder="请输入"
-                    @input="filterClientNumber(scope.row.ratio,scope.$index)"
+                    @input="filterFeeNumber(scope.row.ratio,scope.$index)"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -1673,6 +1673,14 @@ export default {
       this.$nextTick(() => {
         this.clientArr[index].ratio = this.$tool.cutFloat({
           val: this.clientArr[index].ratio,
+          max: 100
+        });
+      });
+    },
+  filterFeeNumber(val, index) {
+      this.$nextTick(() => {
+        this.serviceAgents[index].ratio = this.$tool.cutFloat({
+          val: this.serviceAgents[index].ratio,
           max: 100
         });
       });
