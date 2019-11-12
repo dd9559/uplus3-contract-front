@@ -237,7 +237,6 @@ export default{
         flowType:this.listType==="bg"?9:10
       }
       if(item.changeRecord.auditId===this.getUserMsg.empId){
-        debugger
         this.changeCancel=true
         this.contCode=item.code
         this.contId=item.id

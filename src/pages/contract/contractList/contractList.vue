@@ -660,7 +660,6 @@ export default {
     },
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
-      // debugger
       if (columnIndex === 0) {
         if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
           rows={
@@ -1251,7 +1250,6 @@ export default {
         }
       });
       this.tableData.forEach((element,index)=>{
-        // debugger
         if(element.contractEntrust&&element.contractEntrust.id){
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))

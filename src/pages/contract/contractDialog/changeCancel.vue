@@ -7,7 +7,7 @@
           <p :class="{'form-label':!getContentHidden}">{{getDialogType}}原因：</p>
           <!-- <el-input type="textarea" :rows="3" placeholder="请填写合同变更原因，最多100字" class="textarea" maxlength=100></el-input> -->
           <div class="reason">
-            <el-input type="textarea" :rows="4" :placeholder="`请填写合同${getDialogType}原因`" :disabled="getContentHidden" v-model="textarea" resize='none' maxlength="100">
+            <el-input type="textarea" :rows="4" :placeholder="`请填写合同${getDialogType}原因`" :disabled="getContentHidden" v-model="textarea" @input.native="inputOnly('textarea')" resize='none' maxlength="100">
             </el-input>
             <span>{{textarea.length}}/100</span>
           </div>
@@ -83,7 +83,7 @@
       <div class="audit-box">
         <div class="textareabox">
           <div class="reason">
-            <el-input type="textarea" :rows="6" placeholder="请输入通过或者驳回原因" v-model.trim="checkDialogReasion" resize='none' maxlength="200">
+            <el-input type="textarea" :rows="6" placeholder="请输入通过或者驳回原因" v-model.trim="checkDialogReasion" @input="inputOnly('check')" resize='none' maxlength="200">
             </el-input>
             <span>{{checkDialogReasion.length}}/200</span>
           </div>
@@ -204,6 +204,14 @@
     methods: {
       cutNum:function (prop) {
         this.$set(this.moneyData,prop,this.$tool.cutFloat({val:this.moneyData[prop],max:999999999.99}))
+      },
+      inputOnly(type){
+        let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+        if(type==="textarea"){
+          this.textarea=this.textarea.replace(/\s+/g,"").replace(addrReg,'')
+        }else{
+          this.checkDialogReasion=this.checkDialogReasion.replace(/\s+/g,"").replace(addrReg,'')
+        }
       },
       showInput:function(row,state){//编辑佣金
         if(row==='init'){
@@ -360,8 +368,6 @@
           res = res.data;
           if (res.status === 200) {
             this.textarea = res.data.changeReason;
-            // this.moneyData newCustCommission
-            debugger
             Object.assign(this.moneyData,{owner:res.data.newOwnerCommission,user:res.data.newCustCommission})
             Object.assign(this.commission,{owner:res.data.ownerCommission,user:res.data.custCommission})
             let address_ = JSON.parse(res.data.changeAtta);
