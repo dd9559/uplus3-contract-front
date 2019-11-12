@@ -1026,6 +1026,7 @@ export default {
         }
       }).catch(error => {
           if(error.message==='下一节点审批人不存在'){
+            this.getContImg();
             this.isSubmitAudit=false
             this.checkPerson.code=this.code;
             this.checkPerson.state=true;
