@@ -634,7 +634,6 @@ export default{
             if (res.data.data.distributionAgreement&&JSON.parse(res.data.data.distributionAgreement).length>0) {
             this.fujian=true
             this.tradeFee=res.data.data.tradeFee
-            // this.tradeFee=
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];
