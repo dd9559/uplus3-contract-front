@@ -40,7 +40,7 @@
             <el-table :data="LayoutData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
                 <el-table-column label="体系" prop="systemtag">
                     <template slot-scope="scope">
-                        <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemtag">{{item.value}}</span>
+                        <span v-for="item in systemTagSelect" :key="item.key" v-if="item.key===scope.row.systemtag">{{item.value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="页面版式" prop="version">
@@ -49,14 +49,14 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="设置时间" prop="createTime">
-                    <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+                    <template slot-scope="scope">{{scope.row.createTime|formatTime(false)}}</template>
                 </el-table-column>
                 <el-table-column label="最新修改时间" prop="updateTime">
-                    <template slot-scope="scope">{{scope.row.updateTime|formatTime}}</template>
+                    <template slot-scope="scope">{{scope.row.updateTime|formatTime(false)}}</template>
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="medium" @click="operationFn('查看')">查看</el-button>
+                        <el-button type="text" size="medium" @click="operationFn('查看',scope.row)">查看</el-button>
                         <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)">编辑</el-button>
                     </template>
                 </el-table-column>
