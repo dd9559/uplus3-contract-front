@@ -191,10 +191,10 @@
         </el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" min-width="50">
         </el-table-column>
-        <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
+        <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
-            <p>{{scope.row.LPName}}</p>
-            <p>{{scope.row.detailName}}</p>
+            <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+            <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
           </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90">
@@ -358,7 +358,7 @@
 
     </div>
     <!-- 流水明细弹框 -->
-    <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
+    <flowAccount :dialogTableVisible="water" :flowType="flowType" :contCode="contCode" :contId="waterContId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 调佣弹框 -->
     <layerAudit :dialogVisible="tiaoyong" :layerAudit="layerAudit" @closeCentCommission="closeCommission" v-if='tiaoyong'></layerAudit>
     <!-- 结算弹窗 -->
@@ -447,7 +447,9 @@ export default {
       total: 0,
       currentPage: 1,
       pageSize: 10,
+      //流水弹窗
       water: false,
+      flowType: 1,
       // contractCode: "",
       tiaoyong: false,
       layerAudit:{},
@@ -772,6 +774,11 @@ export default {
     //流水
     runningWater(item) {
       if(this.power['sign-com-bill'].state){
+        if(item.isCombine){
+          this.flowType=8
+        }else{
+          this.flowType=1
+        }
         this.water = true;
         this.contCode=item.code;
         this.waterContId=item.id;
@@ -1249,14 +1256,6 @@ export default {
     combineList(){
       let arr = JSON.parse(JSON.stringify(this.tableData))
       arr.forEach((element,index) => {
-        //切割物业地址 楼盘名称和具体地址分开
-        let num = element.propertyAddr.indexOf(' ')
-        //楼盘名称
-        let LPName = element.propertyAddr.substring(0,num)
-        //具体地址
-        let detailName = element.propertyAddr.substring(num)
-        this.$set(element,"LPName",LPName)
-        this.$set(element,"detailName",detailName)
         if((index+1) % 2 ===0){
           this.$set(element,"bgc",true)
         }
