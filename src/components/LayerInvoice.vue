@@ -482,12 +482,20 @@
     computed: {
       getPro: function () {
         let types = [
+            {
+                name: '信息咨询服务费',
+                list: [1, 2, 3]
+            },
           {
-            name: '服务费',
-            list: [1, 2, 3, 4, 5]
+            name: '代办服务费',
+            list: [4]
           },
+            {
+                name: '交易服务费',
+                list: [5]
+            },
           {
-            name: '违约服务费',
+            name: '违约金',
             list: [6]
           },
           {

@@ -2788,7 +2788,7 @@ export default {
             this.$set(this.serviceAgents[i],'checkbox',[])
             this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place)
           }
-          if (res.data.data.distributionAgreement.length>0) {
+          if (res.data.data.distributionAgreement&&JSON.parse(res.data.data.distributionAgreement).length>0) {
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];
@@ -2860,6 +2860,7 @@ export default {
             for(let i=0;i< this.houseArr.length;i++){
             this.$set(this.houseArr[i],'checkbox',[])
             this.houseArr[i].checkbox.push(this.houseArr[i].place)
+            this.$set(this.houseArr[i],'isService',0)
           }
         }
       } else {
@@ -2877,6 +2878,7 @@ export default {
           this.clientArr = this.clientArr.concat(this.addManList);
             for(let i=0;i< this.clientArr.length;i++){
             this.$set(this.clientArr[i],'checkbox',[])
+            this.$set(this.clientArr[i],'isService',0)
             this.clientArr[i].checkbox.push(this.clientArr[i].place)
           }
 
