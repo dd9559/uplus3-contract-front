@@ -429,6 +429,9 @@
         mounted() {
             let urlParam=this.$route.query//id款单id,contId合同id,code合同编号
             this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
+            this.isentrust=Number(urlParam.isentrust)===0?false:true
+            this.billStatus=this.isentrust
+
             this.getMoneyType()
             this.getDictionary()
             // this.remoteMethod()
@@ -436,8 +439,6 @@
             // this.getReceiptman()
             // this.getAdmin()
             this.addInit(urlParam.contId)
-            this.isentrust=Number(urlParam.isentrust)===0?false:true
-            this.billStatus=this.isentrust
             !this.isentrust&&this.getFirstTime_receipt(urlParam.contId)//非委托合同才调用
 
             if (urlParam.code) {

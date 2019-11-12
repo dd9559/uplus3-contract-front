@@ -134,7 +134,7 @@
             佣金
           </template>
         </el-table-column>-->
-        <el-table-column min-width="160" label="物业地址" prop="propertyAddr">
+        <el-table-column min-width="160" label="物业地址">
           <template slot-scope="scope">
             <span v-if="scope.row.propertyAddr.length===0">--</span>
             <template v-else>
