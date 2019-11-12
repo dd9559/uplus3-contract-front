@@ -135,9 +135,13 @@
           </template>
         </el-table-column>-->
         <el-table-column min-width="160" label="物业地址" prop="propertyAddr">
-          <!--<template slot-scope="scope">
-            &#45;&#45;
-          </template>-->
+          <template slot-scope="scope">
+            <span v-if="scope.row.propertyAddr.length===0">--</span>
+            <template v-else>
+              <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+              <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+            </template>
+          </template>
         </el-table-column>
         <el-table-column min-width="160" label="成交经纪人" prop="broker">
           <template slot-scope="scope">
