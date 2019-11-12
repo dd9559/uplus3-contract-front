@@ -360,7 +360,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :commission="commission" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -450,7 +450,6 @@ export default {
       jiesuan: false,
       changeCancel: false,
       dialogOperation:"details",
-      commission:'',
       dialogType: "",
       dictionary: {
         //数据字典
@@ -661,7 +660,6 @@ export default {
     },
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
-      // debugger
       if (columnIndex === 0) {
         if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
           rows={
@@ -989,10 +987,6 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      this.commission = {
-        owner:item.ownerCommission,
-        user:item.custCommission
-      }
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "bg";
@@ -1256,7 +1250,6 @@ export default {
         }
       });
       this.tableData.forEach((element,index)=>{
-        // debugger
         if(element.contractEntrust&&element.contractEntrust.id){
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))

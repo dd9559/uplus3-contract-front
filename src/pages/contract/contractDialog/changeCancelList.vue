@@ -117,7 +117,6 @@
     :cancelDialog="changeCancel"
     dialogOperation="details"
     :contId="contId"
-    :commission="commission"
     :code="contCode"
     @close="ChangeCancelDialog"
     @success="freachChangeCancel"
@@ -238,14 +237,9 @@ export default{
         flowType:this.listType==="bg"?9:10
       }
       if(item.changeRecord.auditId===this.getUserMsg.empId){
-        debugger
         this.changeCancel=true
         this.contCode=item.code
         this.contId=item.id
-        this.commission={
-          owner:item.ownerCommission,
-          user:item.custCommission
-        }
       }else{
         this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
           res = res.data
