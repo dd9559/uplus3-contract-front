@@ -28,8 +28,8 @@
 
       <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
         <template slot-scope="scope">
-          <p>{{scope.row.LPName}}</p>
-          <p>{{scope.row.detailName}}</p>
+          <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+          <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
         </template>
       </el-table-column>
       
