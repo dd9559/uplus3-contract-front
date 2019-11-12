@@ -631,7 +631,7 @@ export default{
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             this.serviceach=data.data.serviceAgents
-            if (data.data.distributionAgreement&&JSON.parse(data.data.distributionAgreement).length>0) {
+            if (res.data.data.distributionAgreement&&JSON.parse(res.data.data.distributionAgreement).length>0) {
             this.fujian=true
             this.tradeFee=res.data.data.tradeFee
             // this.tradeFee=
