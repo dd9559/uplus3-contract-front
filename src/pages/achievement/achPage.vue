@@ -1264,6 +1264,7 @@
               type="date"
               placeholder="选择日期"
               value-format="timestamp"
+              @change="checkDate"
             ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
@@ -2439,6 +2440,16 @@ export default {
       } else {
         this.$message.error("请完善信息");
       }
+    },
+    checkDate:function(val){
+        // debugger
+            let date=new Date(val);
+            if(date.getTime()>Date.now()){
+                this.examineDate=''
+                this.$message({
+                    message:'不能选择未来时间'
+                })
+            }
     },
     // 反审核，编辑的保存
     keepAch(type, status, editStr) {
