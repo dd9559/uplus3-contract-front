@@ -2806,6 +2806,7 @@
             this.houseArr= this.houseArr.concat(this.addManList); 
             for(let i=0;i< this.houseArr.length;i++){
             this.$set(this.houseArr[i],'checkbox',[])
+            this.$set(this.houseArr[i],'isService',0)
             this.houseArr[i].checkbox.push(this.houseArr[i].place)
           }
           }     
@@ -2824,6 +2825,7 @@
             this.clientArr= this.clientArr.concat(this.addManList); 
             for(let i=0;i< this.clientArr.length;i++){
             this.$set(this.clientArr[i],'checkbox',[])
+            this.$set(this.clientArr[i],'isService',0)
             this.clientArr[i].checkbox.push(this.clientArr[i].place)
           }
           }
