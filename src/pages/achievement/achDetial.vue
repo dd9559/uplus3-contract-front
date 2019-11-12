@@ -631,9 +631,9 @@ export default{
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             this.serviceach=data.data.serviceAgents
+            this.tradeFee=data.data.tradeFee
             if (res.data.data.distributionAgreement&&JSON.parse(res.data.data.distributionAgreement).length>0) {
             this.fujian=true
-            this.tradeFee=res.data.data.tradeFee
             let pathList = JSON.parse(res.data.data.distributionAgreement);
             this.filesList = pathList;
             let preloadList = [];
