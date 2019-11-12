@@ -344,6 +344,13 @@ let TOOL = {
               can:true,//是否可见
               path: "postProcess",
               code: 'sign-set-hq'
+            },
+            {
+              name: "合同页面设置",
+              category:"5-2-5",
+              can:true,//是否可见
+              path: "contractLayout",
+              code: 'sign-set-hq'
             }
           ]
         }
