@@ -780,7 +780,6 @@ export default {
     },
     //流水
     runningWater(item) {
-      debugger
       if(this.power['sign-com-bill'].state){
         if(item.isCombine){
           this.flowType=8

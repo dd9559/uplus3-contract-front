@@ -1722,7 +1722,6 @@ export default {
             message:"提审成功",
             type:'success'
           })
-          // this.getContractList()
           this.getContractDetail()
         }else{
           this.$message({
@@ -1758,6 +1757,7 @@ export default {
     // 关闭变更解约弹窗
     changeCancelDialog() {
       this.changeCancel_ = false;
+      this.getContractDetail();
     },
     freshChangeCancel(){
       this.changeCancel_ = false;
