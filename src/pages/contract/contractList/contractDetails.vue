@@ -421,7 +421,7 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
+        <el-tab-pane label="委托合同" v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state" name="agency">
           <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail" @goToMainData="goToMainData"></agency-contract>
         </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
@@ -1404,6 +1404,10 @@ export default {
           state: false,
           name: '删除'
         },
+        'sign-ht-xq-entrust-edit': {
+          state: false,
+          name: '委托合同'
+        }
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin2.png')}`,
