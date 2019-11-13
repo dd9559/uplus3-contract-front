@@ -250,7 +250,8 @@ export default {
 				})
 			}else if(tab.name==='sixth'){
 				let param = {
-          contractId: this.contId
+          contractId: this.contId,
+          type: this.flowType
 				};
 				this.$ajax.get("/api/flows/bill", param).then(res => {
 					 res = res.data;
@@ -264,8 +265,7 @@ export default {
     //流水明细
     getFlowwater() {
       let param = {
-        contractCode: this.contCode,
-        type: this.flowType
+        contractCode: this.contCode
       };
       this.$ajax.get("/api/flows/account", param).then(res => {
         res = res.data;
