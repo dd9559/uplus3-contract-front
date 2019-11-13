@@ -54,11 +54,9 @@
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
         </div>
         <div>
-          <!-- <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button> -->
-          <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button v-if="power['sign-ht-jysh-export'].state" class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
-      <!-- <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="contractType" :tableDate="list" @getMoney="getMoney" @goDetail="goDetail"></component> -->
       <changeCancelList ref="tableCom" :tableHeight="tableNumberCom" listType="jy" :tableDate="list" @freach="freachList"></changeCancelList>
       <!-- 固定滚动条 -->
       <div class="pagination" v-if="list.length>0">
@@ -98,6 +96,10 @@ export default {
         //数据字典
         "10": "", //合同类型
         "51": "", //审核状态
+      },
+      'sign-ht-jysh-export': {
+        state: false,
+        name: '导出'
       },
     }
   },
