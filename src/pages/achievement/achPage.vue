@@ -730,7 +730,7 @@
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
               <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
-              <p class="f_l delive">房客源可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
+              <p class="f_l delive">交易服务费：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -1264,6 +1264,7 @@
               type="date"
               placeholder="选择日期"
               value-format="timestamp"
+              @change="checkDate"
             ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
@@ -2265,7 +2266,9 @@ export default {
           remark: this.remark,
           distributions: resultArr2,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId
+          contractId: this.achObj.contractId,
+          distributionAgreement: this.filesList
+
         };
         this.$ajax
           .postJSON("/api/achievement/examineAdopt", param)
@@ -2407,7 +2410,8 @@ export default {
           remark: this.remark,
           distributions: resultArr2,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId
+          contractId: this.achObj.contractId,
+          distributionAgreement: this.filesList
         };
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
@@ -2439,6 +2443,16 @@ export default {
       } else {
         this.$message.error("请完善信息");
       }
+    },
+    checkDate:function(val){
+        // debugger
+            let date=new Date(val);
+            if(date.getTime()>Date.now()){
+                this.examineDate=''
+                this.$message({
+                    message:'不能选择未来时间'
+                })
+            }
     },
     // 反审核，编辑的保存
     keepAch(type, status, editStr) {
