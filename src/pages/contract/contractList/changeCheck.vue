@@ -97,10 +97,13 @@ export default {
         "10": "", //合同类型
         "51": "", //审核状态
       },
-      'sign-ht-bgsh-export': {
-        state: false,
-        name: '导出'
-      },
+      power:{
+        'sign-ht-bgsh-export': {
+          state: false,
+          name: '导出'
+        },
+      }
+      
     }
   },
   created(){
