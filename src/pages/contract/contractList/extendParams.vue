@@ -31,7 +31,7 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)">保存</el-button><br>
-        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3||Msg.isentrust)&&power['sign-ht-info-toverify'].state" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3)&&power['sign-ht-info-toverify'].state||power['sign-ht-xq-entrust-edit'].state&&Msg.isentrust" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
@@ -121,6 +121,10 @@ export default {
 				'sign-ht-info-toverify': {
           state: false,
           name: '提交审核'//编辑+提审
+				},
+				'sign-ht-xq-entrust-edit': {
+          state: false,
+          name: '委托合同'
         },
         'sign-ht-info-sverify': {
           state: false,
