@@ -2266,7 +2266,9 @@ export default {
           remark: this.remark,
           distributions: resultArr2,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId
+          contractId: this.achObj.contractId,
+          distributionAgreement: this.filesList
+
         };
         this.$ajax
           .postJSON("/api/achievement/examineAdopt", param)
@@ -2408,7 +2410,8 @@ export default {
           remark: this.remark,
           distributions: resultArr2,
           agendIds: this.agendIds,
-          contractId: this.achObj.contractId
+          contractId: this.achObj.contractId,
+          distributionAgreement: this.filesList
         };
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
