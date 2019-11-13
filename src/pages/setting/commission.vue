@@ -2,7 +2,7 @@
     <div ref="tableComView">
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <div class="content">
-                <div v-if="adminYes">
+                <div>
                     <label>城市选择</label>
                     <el-select size="small" v-model="searchForm.cityId" @change="getTixi($event,1)">
                         <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
@@ -92,7 +92,7 @@
             <div class="com-select">
                 <div class="mark-red com-select-city">
                     <label>城市：</label>
-                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'||!this.adminYes">
+                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'">
                         <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
                     </el-select>
                 </div>
@@ -254,25 +254,12 @@
                     cityId: ''
                 },
                 rowId: 0,
-                com_title: '',
-                adminYes: false //是否超级管理员账号
+                com_title: ''
             }
         },
         created() {
-            if((this.isProd==0&&this.userInfo.empId==15349)||(this.isProd==1&&this.userInfo.empId==37109)) this.adminYes = true
             // 获取城市
             this.getCity()
-            // 非超级管理员获取体系
-            if(!this.adminYes) {
-                this.searchForm.cityId = this.userInfo.cityId
-                this.$ajax.get('/api/organize/getSystemTag',{cityId: this.searchForm.cityId}).then(res => {
-                    res = res.data
-                    if(res.status === 200){
-                        this.systemArr1 = res.data
-                        this.systemArr2 = res.data
-                    }
-                })
-            }
             let res = this.getDataList
             if(res&&(res.route === this.$route.path)){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
@@ -282,11 +269,6 @@
                 this.list = res.data
                 this.settingTime = query.settingTimeStart ? [query.settingTimeStart,query.settingTimeEnd] : []
                 this.updateTime = query.updateTimeStart ? [query.updateTimeStart,query.updateTimeEnd] : []
-            }else{
-                // 非超级管理员列表
-                if(!this.adminYes) {
-                    this.getData()
-                }
             }
         },
         methods: {
@@ -313,7 +295,7 @@
             },
             // 超级管理员列表
             selectTixi() {
-                if(this.adminYes) this.getData()
+                this.getData()
             },
             addSignFn(n,i) {
                 return `${n}${i}%`
@@ -359,12 +341,11 @@
                 if(type == 1) {
                     this.com_title = "新增"
                     this.$tool.clearForm(this.commissionForm)
-                    if(this.adminYes) this.systemArr2 = []
-                    if(!this.adminYes) this.commissionForm.cityId = this.userInfo.cityId
+                    this.systemArr2 = []
                 }else{
                     this.com_title = "编辑"
                     this.rowId = row.id
-                    if(this.adminYes) this.getTixi(row.cityId,2)
+                    this.getTixi(row.cityId,2)
                     this.commissionForm = {
                         cityId: row.cityId,
                         systemTag: row.systemTag,
@@ -443,7 +424,7 @@
                         this.$message(res.message)
                         this.saveDialog = false
                         this.addVisible = false
-                        if(this.adminYes&&!this.searchForm.cityId) return
+                        if(!this.searchForm.cityId) return
                         this.getData()
                     }
                 }).catch(error => {
@@ -452,30 +433,15 @@
             },
             // 查询
             queryFn() {
-                if(this.adminYes) {
-                    if(this.searchForm.cityId&&this.searchForm.systemTag) this.getData('search')
-                }else{
-                    this.getData('search')
-                }
+                if(this.searchForm.cityId&&this.searchForm.systemTag) this.getData('search')
             },
             // 重置
             resetFormFn() {
                 this.searchForm.systemTag = ''
                 this.settingTime = []
                 this.updateTime = []
-                if(this.adminYes) {
-                    this.searchForm.cityId = ''
-                    this.list = []
-                }
-            }
-        },
-        computed: {
-            userInfo() {
-                return this.getUser.user
-            },
-            // 测试环境0 超级管理员15349;正式环境1 超级管理员37109
-            isProd() {
-                return this.getUser.isProd
+                this.searchForm.cityId = ''
+                this.list = []
             }
         }
     }
