@@ -134,7 +134,7 @@
                                     // item.can = item.code
                                     this.$set(item, 'can', item.code)
                                     let host=window.location.host
-                                    if(item.id===7&&((['localhost:8080','sign2.jjw.com:28879'].includes(host)&&val.user.empId===15349)||(host==='sign2.jjw.com:28087'&&val.user.empId===37109))){
+                                    if(item.id===7&&((['localhost:8080','sign2.jjw.com:28879'].includes(host)&&(val.user.empId===15349||val.user.empId===100778))||(host==='sign2.jjw.com:28087'&&val.user.empId===37109))){
                                         this.$set(item, 'can', true)
                                     }
                                 } else {
