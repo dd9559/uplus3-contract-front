@@ -50,7 +50,7 @@
       </div>
       <!-- 委托合同按钮组 -->
       <div class="btn" v-else-if="isentrust">
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-xq-entrust-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
         <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">签章选择</span>
           <div class="signList">
@@ -72,7 +72,7 @@
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-entrust-edit'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
@@ -360,6 +360,10 @@ export default {
         'sign-ht-info-edit': {
           state: false,
           name: '编辑'
+        },
+        'sign-ht-xq-entrust-edit': {
+          state: false,
+          name: '委托合同编辑'
         },
         'sign-ht-xq-void': {
           state: false,
