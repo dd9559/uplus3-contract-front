@@ -113,8 +113,11 @@
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
           <template slot-scope="scope">
-            <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
-            <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+            <span v-if="!scope.row.propertyAddr">-</span>
+            <template>
+              <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+              <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+            </template>
           </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>

@@ -306,7 +306,7 @@
             </ul>
             <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li>
@@ -421,7 +421,7 @@
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="委托合同" v-if="contType==='2'||contType==='3'" name="agency">
+        <el-tab-pane label="委托合同" v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state" name="agency">
           <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail" @goToMainData="goToMainData"></agency-contract>
         </el-tab-pane>
         <el-tab-pane label="应收实收" name="receipt">
@@ -1367,6 +1367,10 @@ export default {
           state: false,
           name: '下载合同主体'
         },
+        'sign-ht-xq-main-upload': {
+          state: false,
+          name: '委托合同主体'
+        },
         'sign-ht-xq-data': {
           state: false,
           name: '资料库权限'
@@ -1404,6 +1408,10 @@ export default {
           state: false,
           name: '删除'
         },
+        'sign-ht-xq-entrust-edit': {
+          state: false,
+          name: '委托合同'
+        }
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin2.png')}`,
