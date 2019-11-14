@@ -1882,13 +1882,21 @@ export default {
         let level3Arr = val.split("-");
         if (type1 == 0 && type2 == 0) {
           this.houseArr[index].storefront3Id = level3Arr[0];
-          this.houseArr[index].level3 = level3Arr[1];
+          if(level3Arr[2]){
+            this.houseArr[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.houseArr[index].level3 = level3Arr[1]
+          }
         } else if (type1 == 0 && type2 == 1) {
           this.houseArr[index].storefront4Id = level3Arr[0];
           this.houseArr[index].level4 = level3Arr[1];
         } else if (type1 == 1 && type2 == 0) {
           this.clientArr[index].storefront3Id = level3Arr[0];
-          this.clientArr[index].level3 = level3Arr[1];
+          if(level3Arr[2]){
+            this.clientArr[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.clientArr[index].level3 = level3Arr[1]
+          }
         } else {
           this.clientArr[index].storefront4Id = level3Arr[0];
           this.clientArr[index].level4 = level3Arr[1];
