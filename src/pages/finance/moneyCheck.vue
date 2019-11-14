@@ -243,7 +243,7 @@
         <el-table-column :label="activeView===1?'收款时间':'付款时间'" prop="createTime" :formatter="nullFormatter"
                          min-width="90">
           <template slot-scope="scope">
-            <span>{{scope.row.createTime|formatTime}}</span>
+            <span>{{scope.row.payStartTime|formatTime}}</span>
           </template>
         </el-table-column>
         <el-table-column label="入账时间" prop="toAccountTime" :formatter="nullFormatter" v-if="activeView===1"
