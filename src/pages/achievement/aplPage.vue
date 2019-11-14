@@ -808,7 +808,7 @@
                   <el-select
                     v-model="scope.row.roleType"
                     placeholder="请选择"
-                    @change="clentcli(scope.row.roleType0,scope.$index)"
+                    @change="feecli(scope.row.roleType0,scope.$index)"
                   >
                     <el-option
                       v-for="item in roleType1"
@@ -984,7 +984,7 @@
                     placeholder="请输入内容"
                     :loading="loading1"
                     :remote-method="getShopInfo(2)"
-                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,1)"
+                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
                   >
                     <el-option
                       v-for="item in shopkeepers"
@@ -1049,7 +1049,7 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(1)"
                     v-loadmore="moreAmaldars"
-                    @change="changeAmaldar(scope.row.amaldar,scope.$index,1)"
+                    @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
                   >
                     <el-option
                       v-for="item in amaldars"
@@ -1082,7 +1082,7 @@
                     :loading="loading1"
                     :remote-method="getShopInfo(0)"
                     v-loadmore="moreManagers"
-                    @change="changeManager(scope.row.manager,scope.$index,1)"
+                    @change="changeManager(scope.row.manager,scope.$index,2)"
                   >
                     <el-option
                       v-for="item in managers"
@@ -1718,6 +1718,17 @@
          }
        }
       },
+      feecli(val,index){
+        let arr1=JSON.parse(JSON.stringify(this.serviceAgents))
+            arr1.splice(index,1)
+        for(let i=0;i<arr1.length;i++){
+         if(arr1[i].roleType==this.serviceAgents[index].roleType){
+           this.$message.error("角色已经存在，请勿重新添加")
+           this.serviceAgents[index].roleType=''
+           return false;
+         }
+       }
+      },
       housecli(val,index){
         let arr1=JSON.parse(JSON.stringify(this.houseArr))
             arr1.splice(index,1)
@@ -2118,7 +2129,10 @@
           }else if(type1 == 1){
             this.clientArr[index].shopkeeperId = idName[0];
             this.clientArr[index].shopkeeper = idName[1];
-          }
+          }else if (type1 == 2){
+          this.serviceAgents[index].shopkeeperId = idName[0];
+          this.serviceAgents[index].shopkeeper = idName[1];
+        }
         }
       },
       // 改变区经
@@ -2131,7 +2145,10 @@
           }else if(type1 == 1){
             this.clientArr[index].amaldarId = idName[0];
             this.clientArr[index].amaldar = idName[1];
-          }
+          }else if (type1 == 2) {
+          this.serviceAgents[index].amaldarId = idName[0];
+          this.serviceAgents[index].amaldar = idName[1];
+        }
         }
       },
       // 改变区总
@@ -2145,6 +2162,9 @@
           }else if(type1 == 1){
             this.clientArr[index].managerId = idName[0];
             this.clientArr[index].manager = idName[1];
+          }else if(type1 == 2){
+            this.serviceAgents[index].managerId = idName[0];
+            this.serviceAgents[index].manager = idName[1];
           }
         }
 
