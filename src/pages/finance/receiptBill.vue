@@ -265,12 +265,24 @@
       </el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <checkPerson
+    :show="checkPerson.state"
+    :type="checkPerson.type"
+    page="list"
+    :showLabel="checkPerson.label"
+    :bizCode="checkPerson.code"
+    :flowType="checkPerson.flowType"
+    @submit="personChose"
+    @close="personChose"
+    v-if="checkPerson.state">
+    </checkPerson>
   </div>
 </template>
 
 <script>
     import {MIXINS} from "@/assets/js/mixins";
     import moneyTypePop from '@/components/moneyTypePop'
+    import checkPerson from '@/components/checkPerson'
 
     const rule = {
         moneyType: {
@@ -337,9 +349,18 @@
         mixins: [MIXINS],
         components: {
             moneyTypePop,
+            checkPerson
         },
         data() {
             return {
+              checkPerson: {
+                  state: false,
+                  type: 'init',
+                  code: '',
+                  flowType: 0,
+                  label: false,
+                  current: false
+              },
                 contId: '',
                 dep: {
                     id: '',
@@ -851,9 +872,21 @@
                         }
                     }).catch(error => {
                         this.fullscreenLoading = false
-                        this.$message({
-                            message: error
-                        })
+                        if(error.message==='下一节点审批人不存在'){
+                          this.checkPerson.code=error.data.payCode;
+                          this.checkPerson.state=true;
+                          this.checkPerson.flowType=1
+                          this.checkPerson.label=true;
+                          this.checkPerson.type=1;
+                        }else{
+                          this.$message({
+                            message:error,
+                            type: "error"
+                          })
+                        }
+                        // this.$message({
+                        //     message: error
+                        // })
                     })
                 } else {
                     this.$ajax.postJSON('/api/payInfo/saveProceeds', param).then(res => {
@@ -886,6 +919,10 @@
                         }
                     })
                 }
+            },
+            //关闭设置审核人弹窗
+            personChose(){
+              this.$router.go(-1)
             },
             /**
              * 获取下拉框数据
