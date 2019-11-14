@@ -870,7 +870,7 @@
                       placeholder="请输入内容"
                       :loading="loading1"
                       :remote-method="getLevel(3)"
-                      @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
                     >
                       <el-option
                         v-for="item in level3s"
@@ -890,7 +890,7 @@
                     placeholder="请输入内容"
                     :loading="loading1"
                     :remote-method="getLevel(3)"
-                    @change="changeLevel3(scope.row.level3,scope.$index,1,0)"
+                    @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
                   >
                     <el-option
                       v-for="item in level3s"
@@ -953,7 +953,7 @@
                     placeholder="请输入内容"
                     :loading="loading1"
                     :remote-method="getLevel(4)"
-                    @change="changeLevel3(scope.row.level4,scope.$index,1,1)"
+                    @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
                   >
                     <el-option
                       v-for="item in level4s"
@@ -1897,9 +1897,19 @@ export default {
           }else{
             this.clientArr[index].level3 = level3Arr[1]
           }
-        } else {
+        } else if (type1 == 1 && type2 == 1) {
           this.clientArr[index].storefront4Id = level3Arr[0];
           this.clientArr[index].level4 = level3Arr[1];
+        }else if (type1 == 2 && type2 == 0) {
+          this.clientArr[index].storefront3Id = level3Arr[0];
+          if(level3Arr[2]){
+            this.serviceAgents[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.serviceAgents[index].level3 = level3Arr[1]
+          }
+        } else if (type1 == 2 && type2 == 1) {
+          this.serviceAgents[index].storefront4Id = level3Arr[0];
+          this.serviceAgents[index].level4 = level3Arr[1];
         }
       }
     },
