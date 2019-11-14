@@ -1179,7 +1179,7 @@ export default {
       this.uploadScane.id=row.code
       this.htbh=row.code
       this.yjId=row.aId
-      this.qysj=this.$tool.dateFormat(row.signDate)
+      this.qysj=this.$tool.timeFormat(row.signDate,false)
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.isSS=true
