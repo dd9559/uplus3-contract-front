@@ -51,6 +51,10 @@
         type: String,
         default: 'none'
       },
+      systemKey: {
+        type: String,
+        default: ''
+      }
     },
     data() {
       return {
@@ -151,7 +155,15 @@
             isControl=false
           }
         }
-        this.$ajax.get(url, {keyword: keyword,isControl: isControl}).then(res => {
+        let param = {
+          keyword: keyword,
+          isControl: isControl
+        }
+        if(this.systemKey){ //如果是审核流程页面根据选择的体系请求树形数据
+          url = "/api/access/systemtag/deps/tree"
+          param.systemTag = this.systemKey
+        }
+        this.$ajax.get(url, param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list=res.data
