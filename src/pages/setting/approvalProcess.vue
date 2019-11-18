@@ -46,7 +46,6 @@
         <div class="aduit-list">
             <p v-if="power['sign-set-verify'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-                <!-- <el-button @click="operation('添加',1)" type="primary">添加</el-button> -->
                 <el-dropdown placement="bottom" @command="addFn">
                     <el-button round type="primary" size="small">
                     添加<i class="el-icon-arrow-down el-icon--right"></i>
@@ -122,7 +121,7 @@
                     </div>
                     <div class="aduit-input must mr-35 ml-28">
                         <label class="mr-28">体系:</label>
-                        <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
+                        <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled" @change="changeSystemFn">
                             <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
@@ -166,13 +165,13 @@
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
-                               <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
-                                <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型">
+                                <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
+                                <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型" @change="checkSystemFn(index)">
                                     <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
                                 </el-select>
                                 <!-- 人员 -->
                                 <div v-if="item.type===0" class="person">
-                                    <select-tree :data="DepList" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
+                                    <select-tree :systemKey="String(aduitForm.systemTag)" :init="item.depName" @checkCell="depHandleClick($event,index)" @clear="clearDep(index)" @search="searchDep($event,index)"></select-tree>
                                     <el-select class="person-right" :clearable="true" v-loadmore="moreEmploye1" size="small"
                                     v-model="item.personArr" placeholder="请选择" filterable multiple @change="multiSelect(item.type,index)" @focus="getNodeIndex(index)">
                                         <el-option
@@ -218,7 +217,7 @@
                                     :value="option.key"
                                     ></el-option>
                                 </el-select>
-                                <!-- 部门类型 -->
+                                <!-- 部门类型+职级 -->
                                 <div v-if="item.type===4&&version==3">
                                     <div class="person">
                                         <el-select size="small" placeholder="请选择部门类型" v-model="item.depType" filterable @change="getDepStr($event,index,item.type)">
@@ -240,7 +239,7 @@
                                 </div>
                             </div>
                             <div class="default" v-show="item.choice&&item.choice.length>0&&index!==0">
-                                <div class="mo-ren">选择默认审核人:<span v-if="version==3">（温馨提示：建议添加不少于两个审核人）</span></div>
+                                <div class="mo-ren">选择默认审核人:<span>（温馨提示：建议添加不少于两个审核人）</span></div>
                                 <div class="multiple" ref="curChoice">
                                     <span
                                     v-for="(ele,m) in item.choice"
@@ -278,7 +277,6 @@
             isAudit: "1",
             userId: "",
             userName: "",
-            depName: "",
             personArr: [],
             depArr: [],
             depTypeArr: [],
@@ -286,28 +284,28 @@
             choice: []
         },
         {
-            name: "",
-            type: "",
+            name: "", //节点名称
+            type: "", //节点审批人类型
             sort: "",
             isAudit: "1",
-            depName: "",
-            personArr: [],
-            depArr: [],
-            depTypeArr: [],
-            roleArr: [],
-            choice: [],
-            peopleTime: 1,
-            depsTime: 1,
-            depTypeTime: 1,
-            rolesTime: 1,
-            employeList:[],
+            depId: "", //人员=>部门id
+            depName: "", //人员=>部门name
+            personArr: [], //人员多选数组
+            depArr: [], //部门多选数组
+            depTypeArr: [], //3.0部门类型+职级多选数组
+            roleArr: [], //角色多选数组
+            choice: [], //默认审核人数组
+            peopleTime: 1, //人员多选次数
+            depsTime: 1, //部门多选次数
+            depTypeTime: 1, //3.0部门类型+职级多选次数
+            rolesTime: 1, //角色多选次数
+            employeList:[], //人员列表
             employeeTotal:0,
             employeePage:1,
-            currentDep: null,
-            depID: "", //部门id
-            depStr: "", //部门名称
-            depType: "",
-            depTypeStr: ""
+            depID: "", //3.0部门id
+            depStr: "", //3.0部门名称
+            depType: "", //3.0部门类型+职级id
+            depTypeStr: "" //3.0部门类型+职级名称
         }
     ]
 
@@ -397,9 +395,7 @@
             // 获取体系
             this.getSystemTag()
             this.getSystemTagSelect()
-            this.remoteMethod()
             this.getAduitType()
-            this.getDeps()
             // 2.0环境且登录城市不是温州才请求角色数据
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
@@ -432,6 +428,23 @@
                         this.nodeList = this.tempNodeList
                     }
                 }
+            },
+            // 判断是否选择了体系
+            checkSystemFn(i) {
+                if(!this.aduitForm.systemTag) {
+                    this.nodeList[i].type = ""
+                    this.$message('请先选择体系')
+                }else{
+                    let type = this.nodeList[i].type //当前节点选择的审批人类型
+                    let key = this.aduitForm.systemTag //选择的体系
+                    if(type == 1) { //部门
+                        this.getDeps(key)
+                    }
+                }
+            },
+            // 改变体系初始化节点数据
+            changeSystemFn() {
+                this.nodeList = JSON.parse(JSON.stringify(arr))
             },
             getData(type="init") {
                 let param = {
@@ -472,8 +485,8 @@
                 })
             },
             // 部门数据
-            getDeps() {
-                this.$ajax.get('/api/organize/deps').then(res => {
+            getDeps(key) {
+                this.$ajax.get('/api/organize/systemtag/deps', {systemTag:key}).then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.depsList = res.data
@@ -490,6 +503,7 @@
                 })
             },
             clearDep: function (index) {
+                this.nodeList[index].depId = ""
                 this.nodeList[index].depName = ""
                 this.nodeList[index].employeList = []
                 this.nodeList[index].employeePage = 1
@@ -503,18 +517,19 @@
                 if(this.nodeList[this.nodeIndex].employeList.length>=this.nodeList[this.nodeIndex].employeeTotal){
                     return
                 }else {
-                    this.depHandleClick(this.nodeList[this.nodeIndex].currentDep,this.nodeIndex,++this.nodeList[this.nodeIndex].employeePage)
+                    this.depHandleClick(this.nodeList[this.nodeIndex],this.nodeIndex,++this.nodeList[this.nodeIndex].employeePage)
                 }
             },
             // 审批人类型为人员时 选中部门后 人员列表请求
             depHandleClick(data,index,page=1) {
-                if(this.dep.id&&this.dep.id!==data.depId){
+                // 重新选择了部门后清空人员列表 下拉加载更多人员不清空
+                if(this.dep.id&&this.dep.id!==data.depId) {
                     this.nodeList[index].employeList = []
                     this.nodeList[index].employeePage = 1
                 }
-                this.nodeList[index].currentDep = data
                 this.dep.id = data.depId
                 this.dep.name = data.name
+                this.nodeList[index].depId = data.depId
                 this.nodeList[index].depName = data.name
                 this.$ajax.get('/api/organize/employees/pages',{depId:data.depId,pageNum:page,selectSubs:false}).then(res=>{
                     res=res.data
@@ -525,8 +540,8 @@
                 })
             },
             searchDep:function (payload,index) {
-                this.DepList = payload.list
-                this.nodeList[index].depName = payload.depName
+                // this.DepList = payload.list
+                // this.nodeList[index].depName = payload.depName
             },
             addFn(command) {
                 this.aduitDialog = true
@@ -541,65 +556,59 @@
             operation(row) {
                 this.aduitDialog = true
                 this.aduitTitle = '编辑'
-                let {...currentRow} = row
-                this.currentFlowId = currentRow.id
-                this.aduitForm.modularType = currentRow.modularType
-                this.aduitForm.deptAttr = currentRow.deptAttr ? currentRow.deptAttr.value : ""
-                this.aduitForm.systemTag = currentRow.systemTag ? currentRow.systemTag : ""
-                this.aduitForm.brandId = currentRow.brandId ? currentRow.brandId : ""
-                this.aduitForm.name = currentRow.name
-                this.aduitForm.type = currentRow.type
-                this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
-                this.isAudit = currentRow.branch[0].isAudit.toString()
+                let {...c_row} = row
+                this.currentFlowId = c_row.id
+                this.aduitForm.modularType = c_row.modularType
+                this.aduitForm.deptAttr = c_row.deptAttr ? c_row.deptAttr.value : ""
+                this.aduitForm.systemTag = c_row.systemTag ? c_row.systemTag : ""
+                this.aduitForm.brandId = c_row.brandId ? c_row.brandId : ""
+                this.aduitForm.name = c_row.name
+                this.aduitForm.type = c_row.type
+                this.aduitForm.branchCondition = +c_row.branchCondition.split('=')[1]
+                this.isAudit = c_row.branch[0].isAudit.toString()
                 this.tempAudit = this.isAudit
-                this.aduitForm.flowDesc = currentRow.flowDesc
-                this.setConditionList(currentRow.type,2)
+                this.aduitForm.flowDesc = c_row.flowDesc
+                this.setConditionList(c_row.type,2)
                 this.editDisabled = true
                 this.dep.id = ""
                 this.dep.name = ""
-                //获取节点信息
-                let editRow = JSON.parse(JSON.stringify(currentRow.branch))
-                if(this.isAudit === "1") {
-                    editRow[0].choice = JSON.parse(editRow[0].choice)
-                    editRow[0].personArr = JSON.parse(editRow[0].personArr)
-                    editRow[0].depArr = JSON.parse(editRow[0].depArr)
-                    editRow[0].depTypeArr = editRow[0].depTypeArr?JSON.parse(editRow[0].depTypeArr):[]
-                    editRow[0].roleArr = JSON.parse(editRow[0].roleArr)
-                    editRow[0].depName = ""
-                    editRow[0].userId = ""
-                    delete editRow[0].code
-                }
+                let item = JSON.parse(JSON.stringify(c_row.branch)) //节点数据
                 let array = []
-                array.unshift(editRow[0])
-                for(var i = 1; i < editRow.length; i++) {
+                array.unshift(item[0])
+                for(let i = 1; i < item.length; i++) { //需要审核即有节点时处理数据
                     array.push({
-                        name: editRow[i].name,
-                        type: editRow[i].type,
-                        sort: editRow[i].sort,
-                        isAudit: editRow[i].isAudit,
+                        name: item[i].name,
+                        type: item[i].type,
+                        sort: item[i].sort,
+                        isAudit: item[i].isAudit,
+                        depId: "",
                         depName: "",
-                        personArr: JSON.parse(editRow[i].personArr),
-                        depArr: JSON.parse(editRow[i].depArr),
-                        depTypeArr: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr):[],
-                        roleArr: JSON.parse(editRow[i].roleArr),
-                        choice: JSON.parse(editRow[i].choice),
-                        depID: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userId:'',
-                        depStr: JSON.parse(editRow[i].choice).filter(e => e.type===1).length?JSON.parse(editRow[i].choice).filter(e => e.type===1)[(JSON.parse(editRow[i].choice).filter(e => e.type===1).length)-1].userName:'',
-                        depType: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userId:'',
-                        depTypeStr: JSON.parse(editRow[i].choice).filter(e => e.type===4).length?JSON.parse(editRow[i].choice).filter(e => e.type===4)[(JSON.parse(editRow[i].choice).filter(e => e.type===4).length)-1].userName:'',
-                        lastChoice: (JSON.parse(editRow[i].choice).filter(e => e.isDefault===1))[0],
-                        peopleTime: JSON.parse(editRow[i].personArr).length + 1,
-                        depsTime: JSON.parse(editRow[i].depArr).length + 1,
-                        depTypeTime: editRow[i].depTypeArr?JSON.parse(editRow[i].depTypeArr).length + 1:1,
-                        rolesTime: JSON.parse(editRow[i].roleArr).length + 1,
+                        personArr: JSON.parse(item[i].personArr),
+                        depArr: JSON.parse(item[i].depArr),
+                        depTypeArr: item[i].depTypeArr?JSON.parse(item[i].depTypeArr):[],
+                        roleArr: JSON.parse(item[i].roleArr),
+                        choice: JSON.parse(item[i].choice),
                         employeList:[],
                         employeeTotal:0,
-                        employeePage:1,
-                        currentDep:null
+                        employeePage:1
+                    })
+                }
+                for(let i = 1; i < array.length; i++) { //需要审核即有节点时处理数据
+                    Object.assign(array[i],{
+                        peopleTime: array[i].personArr.length + 1,
+                        depsTime: array[i].depArr.length + 1,
+                        depTypeTime: array[i].depTypeArr.length + 1,
+                        rolesTime: array[i].roleArr.length + 1,
+                        depID: array[i].choice.filter(e => e.type===1).length?array[i].choice.filter(e => e.type===1)[array[i].choice.filter(e => e.type===1).length-1].userId:'',
+                        depStr: array[i].choice.filter(e => e.type===1).length?array[i].choice.filter(e => e.type===1)[array[i].choice.filter(e => e.type===1).length-1].userName:'',
+                        depType: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userId:'',
+                        depTypeStr: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userName:'',
+                        lastChoice: array[i].choice.filter(e => e.isDefault===1)[0],
                     })
                 }
                 this.nodeList = array
                 this.tempNodeList = JSON.parse(JSON.stringify(array))
+                this.getDeps(this.aduitForm.systemTag)
             },
             setConditionList(val,type=1) {
                 this[type==1?'homeConditionList':'conditionList'] = this.dictionary[val==0?'586':val==1?'597':val==2?'603':val==3?'580':val==7?'722':val==8?'724':val==9?'729':val==10?'731':'733']
@@ -874,33 +883,11 @@
                     }
                 })
             },
+            // 新增节点
             addRow() {
-                let row = {
-                    name: "",
-                    type: "",
-                    sort: "",
-                    isAudit: "1",
-                    depName: "",
-                    personArr: [],
-                    depArr: [],
-                    depTypeArr: [],
-                    roleArr: [],
-                    choice: [],
-                    peopleTime: 1,
-                    depsTime: 1,
-                    depTypeTime: 1,
-                    rolesTime: 1,
-                    employeList:[],
-                    employeeTotal:0,
-                    employeePage:1,
-                    currentDep: null,
-                    depID: "",
-                    depStr: "",
-                    depType: "",
-                    depTypeStr: ""
-                }
-                this.nodeList.push(row)
+                this.nodeList.push(JSON.parse(JSON.stringify(arr[1])))
             },
+            // 删除节点
             removeRow(index) {
                 this.nodeList.splice(index,1)
             },
@@ -940,7 +927,7 @@
                     return false
                 }
                 let isOk
-                if(this.isAudit === '0') {
+                if(this.isAudit === '0') { //无需审核
                     let arr1 = [{
                         name: "",
                         type: "",
@@ -950,26 +937,13 @@
                         isAudit: "0"
                     }]
                     this.nodeList = arr1
-                } else {
+                } else { //需要审核
                     this.copyNodeList = JSON.parse(JSON.stringify(this.nodeList))
                     let item = this.nodeList
                     for(let i = 1; i < item.length; i++) {
                         isOk = false
                         if(item[i].name) {
                             if(item[i].type !== "") {
-                                // if(this.version == 3) {
-                                //     if(item[i].type == 1) {
-                                //         if(!item[i].depID) {
-                                //             this.$message({message:"请选择部门"})
-                                //             break
-                                //         } 
-                                //     } else if(item[i].type == 4) {
-                                //         if(!item[i].depType) {
-                                //             this.$message({message:"请选择部门类型"})
-                                //             break
-                                //         } 
-                                //     }
-                                // }
                                 if(item[i].choice.length>0) {
                                     if(item[i].lastChoice) {
                                         isOk = true
@@ -992,6 +966,7 @@
                     }
                     if(isOk) {
                         for(let i = 1; i < item.length; i++) {
+                            delete item[i].depId
                             delete item[i].depName
                             delete item[i].peopleTime
                             delete item[i].depsTime
@@ -1000,7 +975,6 @@
                             delete item[i].employeList
                             delete item[i].employeeTotal
                             delete item[i].employeePage
-                            delete item[i].currentDep
                             delete item[i].depID
                             delete item[i].depStr
                             delete item[i].depType
@@ -1010,7 +984,6 @@
                             item[i].userId = item[i].lastChoice.userId
                             delete item[i].lastChoice
                         }
-                        delete this.nodeList[0].depName
                     }
                 }
                 let param = {
@@ -1019,20 +992,19 @@
                 param = Object.assign({},this.aduitForm,param)
                 param.cityId = this.searchForm.cityId
 
-                const url = "/api/auditflow/operateFlow"
                 if(isOk || this.isAudit === '0') {
                     if(this.aduitTitle === "添加") {
                         const msg = "添加成功"
-                        this.aduitPost(url,param,msg)
+                        this.aduitPost(param,msg)
                     } else {
                         param.id = this.currentFlowId
                         const msg = "修改成功"
-                        this.aduitPost(url,param,msg)
+                        this.aduitPost(param,msg)
                     }
                 }
             },
-            aduitPost(url,param,msg) {
-                this.$ajax.postJSON(url,param).then(res => {
+            aduitPost(param,msg) {
+                this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.aduitDialog = false
@@ -1101,9 +1073,6 @@
         align-items: center;
         margin-right: 20px;
         margin-bottom: 10px;
-        label {
-            font-size: 14px;
-        }
         .w-70 {
             min-width: 70px;
         }
