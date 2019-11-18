@@ -134,7 +134,7 @@
                 },
                 power: {
                     'sign-set-bl-htym-update': {
-                        state: true,
+                        state: false,
                         name: '新增/编辑'
                     }
                 }
