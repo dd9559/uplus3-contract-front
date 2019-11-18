@@ -29,11 +29,11 @@
             </el-form-item>
             <br>
             <el-form-item label="客户佣金：" class="width-250">
-              <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+              <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
               <i class="yuan">元</i>
             </el-form-item>
             <el-form-item label="业主佣金：" style="text-align:right;width:285px;">
-              <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+              <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
               <i class="yuan">元</i>
             </el-form-item>
             <el-form-item label="总佣金：" style="text-align:right;width:280px;">
@@ -1478,7 +1478,7 @@ export default {
               }else{
                 unit = 1
               }
-              this.$set(this.contractForm,'timeUnit',unit);
+              // this.$set(this.contractForm,'timeUnit',unit);
             }
             this.contractForm.houseInfo = houseMsg;
             //重新选择房源时清空产权地址
@@ -1534,7 +1534,7 @@ export default {
             id:houseMsg.PropertyCode,
             type:1
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1587,7 +1587,7 @@ export default {
             id:guestMsg.InquiryCode,
             type:2
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({

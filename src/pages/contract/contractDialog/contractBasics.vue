@@ -155,14 +155,34 @@
           <i class="iconfont icon-tubiao_shiyong-1"></i>
           <span>请确认客户和业主的姓名与证件上的一致？</span>
         </p>
-        <ul>
-          <li v-for="item in t_ownerList" :key="'owner'+item.encryptionCode">
+        <div class="personalStyle">
+          <div class="ownerStyle">
+            <div>
+              业主姓名：
+            </div>
+            <div>
+              <span v-for="(item,index) in t_ownerList" :key="'owner'+index">{{item.name}}{{index===t_ownerList.length-1?"":"，"}}</span>
+            </div>
+          </div>
+          <div class="ownerStyle">
+            <div>
+              客户姓名：
+            </div>
+            <div>
+              <span v-for="(item,index) in t_guestList" :key="'owner'+index">{{item.name}}{{index===t_guestList.length-1?"":"，"}}</span>
+            </div>
+          </div>
+        </div>
+        <!-- <ul>
+          <li>业主姓名：</li>
+          <li v-for="item in t_ownerList" :key="'owner'+item.encryptionCode" style="padding-left:85px;">
             {{item.name}}
           </li>
-          <li v-for="item in t_guestList" :key="'guets'+item.encryptionCode">
+          <li>客户姓名：</li>
+          <li v-for="item in t_guestList" :key="'guets'+item.encryptionCode" style="padding-left:85px;">
             {{item.name}}
           </li>
-        </ul>
+        </ul> -->
         <p>否则合同将无效，之后收款所开票据无效！！！</p>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -965,7 +985,6 @@ export default {
               }else{
                 unit = 1
               }
-              this.$set(this.contractForm,'timeUnit',unit);
             }
             this.contractForm.houseInfo = houseMsg;
             if(houseMsg.OwnerInfoList.length>0){
@@ -1010,7 +1029,7 @@ export default {
             id:houseMsg.PropertyCode,
             type:1
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1060,7 +1079,7 @@ export default {
             id:guestMsg.InquiryCode,
             type:2
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1280,6 +1299,21 @@ export default {
 .personalMsg{
   /deep/.el-dialog__header{
     border: none !important;
+  }
+  .personalStyle{
+    box-sizing: border-box;
+    padding-left: 65px;
+    margin-bottom: 10px;
+    .ownerStyle{
+      display: flex;
+      width: 305px;
+      margin-bottom: 5px;
+      div{
+        &:first-of-type{
+          width: 42%;
+        }
+      }
+    }
   }
 }
 .singleCompany{
