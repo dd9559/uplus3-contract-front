@@ -357,7 +357,7 @@ let TOOL = {
               category:"5-2-5",
               can:true,//是否可见
               path: "contractLayout",
-              code: 'sign-set-bl-htym-qurey'
+              code: 'sign-set-bl-htym-query'
             }
           ]
         }
