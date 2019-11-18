@@ -224,9 +224,9 @@ const rule = {
   houseinfoCode: {
     name: "房源"
   },
-  guestinfoCode: {
-    name: "客源"
-  }
+  // guestinfoCode: {
+  //   name: "客源"
+  // }
 };
 
 export default {
@@ -247,6 +247,11 @@ export default {
     isOffline:{
       type:Number,
       default: 1
+    },
+    //是否能输入
+    canInput:{
+      type:Boolean,
+      default:false
     },
     //合同类型
     // contType:{
@@ -371,8 +376,6 @@ export default {
       agentsDialog:false,
       agentsList:[],//分成人列表
       sourceBtnCheck:true,//房客源是否可选择
-      //是否能输入
-      canInput:false,
       //日期选择器禁止选择未来时间
       pickerOptions: {
         disabledDate(time) {
@@ -386,6 +389,7 @@ export default {
   created() {
     this.getDictionary();//字典
     this.getRelation();//人员关系
+    this.countTotal()
   },
   methods: {
     //计算总佣金
@@ -415,18 +419,6 @@ export default {
         s += "0";
       }
       return s;
-    },
-    //获取当前日期
-    getNewData(){
-      let time = new Date()
-      let y = time.getFullYear()
-      let M = time.getMonth() + 1
-      let D = time.getDate()
-      let h = time.getHours()
-      let m = time.getMinutes()
-      let s = time.getSeconds()
-      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-      this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
@@ -550,7 +542,7 @@ export default {
             let ownerArr = this.t_ownerList.map(item=>Object.assign({},item));
             ownerArr.forEach((element,index) => {
               if(element.isEncryption){
-                element.encryptionMobile=this.ownerList_[index].encryptionMobile
+                element.encryptionMobile=this.t_ownerList_[index].encryptionMobile
               }else{
                 element.encryptionMobile=element.mobile;
               }
@@ -617,7 +609,7 @@ export default {
               let guestArr = this.t_guestList.map(item=>Object.assign({},item));
               guestArr.forEach((element,index) => {
                 if(element.isEncryption){
-                  element.encryptionMobile=this.guestList_[index].encryptionMobile
+                  element.encryptionMobile=this.t_guestList_[index].encryptionMobile
                 }else{
                   element.encryptionMobile=element.mobile;
                 }
@@ -757,15 +749,19 @@ export default {
         delete element.isEncryption;
         this.contractForm.contPersons.push(element);
       });
+      // propertyRightAddr
+      let detail = JSON.parse(JSON.stringify(this.contractForm))
+      delete detail.propertyRightAddr
+      delete detail.otherCooperationInfo
       if (this.contractForm.type === 1) {//租赁合同
         var param = {
-          leaseCont: this.contractForm,
+          leaseCont: detail,
           type: this.operationType,
           haveExamine:this.haveExamine
         };
       }else if(this.contractForm.type === 2 || this.contractForm.type === 3){//买卖代办合同
         var param = {
-          saleCont: this.contractForm,
+          saleCont: detail,
           type: this.operationType,
           haveExamine:this.haveExamine
         };
@@ -775,6 +771,7 @@ export default {
       }else{
         param.recordType=1
       }
+      param.recordVersion=1//温州简单/复杂版  1简单 2复杂
       if(this.operationType===1){//新增
         var url = '/api/contract/addContract';
         if(this.isOffline===1){
@@ -1217,30 +1214,30 @@ export default {
       var len, re;
       len = num.length;
       if (len == 15) {
-          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
-          var arrSplit = num.match(re);
-          //检查生日日期是否正确
-          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
-          var bGoodDay;
-          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
-                      && (dtmBirth.getDate() == Number(arrSplit[4]));
-          if (!bGoodDay) {
-              // alert('输入的身份证号里出生日期不对！');
-              return false;
-          } else {
-              //将15位身份证转成18位
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-              var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-              var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-              var nTemp = 0, i;
-              num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
-              for (i = 0; i < 17; i++) {
-                  nTemp += num.substr(i, 1) * arrInt[i];
-              }
-              num += arrCh[nTemp % 11];
-              return true;
-          }
+        re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+        var arrSplit = num.match(re);
+        //检查生日日期是否正确
+        var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+        var bGoodDay;
+        bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
+                    && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
+                    && (dtmBirth.getDate() == Number(arrSplit[4]));
+        if (!bGoodDay) {
+            // alert('输入的身份证号里出生日期不对！');
+            return false;
+        } else {
+            //将15位身份证转成18位
+            //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+            var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+            var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+            var nTemp = 0, i;
+            num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
+            for (i = 0; i < 17; i++) {
+                nTemp += num.substr(i, 1) * arrInt[i];
+            }
+            num += arrCh[nTemp % 11];
+            return true;
+        }
       }
       if (len == 18) {
           re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);

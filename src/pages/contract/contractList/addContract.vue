@@ -1,13 +1,23 @@
 <template>
   <div class="view-container">
-    <div>
+    <div v-if="false">
       <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
         <!-- 合同信息 -->
         <div class="contractMsg">
           <p>合同信息</p>
           <div class="form-content">
-            <el-form-item label="签约日期：" class="width-250 form-label">
-              <el-date-picker type="date" value-format="yyyy/MM/dd" placeholder="选择日期" :disabled="canInput" v-model="contractForm.signDate" style="width:140px" @clear="clearData"></el-date-picker>
+            <el-form-item label="签约日期：" style="text-align:right;width:285px;" class="form-label">
+              <el-date-picker
+                style="width:180px"
+                :disabled="type===2?true:false"
+                v-model="contractForm.signDate"
+                type="datetime"
+                format="yyyy-MM-dd HH:mm"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期时间"
+                :picker-options="pickerOptions"
+                default-time="12:00:00">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="合同类型：" class="width-250">
               <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
@@ -373,7 +383,7 @@
       <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
       <a id="add" href="" v-show="false" target="_blank"></a>
     </div>
-    <!-- <contractBasics
+    <contractBasics
     :contractForm="contractForm"
     v-if="isHaveDetail&&type===2"
     :isOffline="isOffline"
@@ -382,6 +392,7 @@
     :guestList_="guestList_"
     :ownerList="ownerList"
     :guestList="guestList"
+    :canInput="canInput"
     >
     </contractBasics>
     <contractBasics
@@ -390,7 +401,7 @@
     :isOffline="isOffline"
     :operationType="type"
     >
-    </contractBasics> -->
+    </contractBasics>
   </div>
 </template>
 
@@ -568,6 +579,12 @@ export default {
       //是否能输入
       canInput:false,
       isHaveDetail:false,
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
     };
   },
   created() {
@@ -605,12 +622,15 @@ export default {
   methods: {
     //获取当前日期
     getNewData(){
-        let time = new Date()
-        let y = time.getFullYear()
-        let M = time.getMonth() + 1
-        let D = time.getDate()
-        let time_ = `${y}/${M > 9 ? M : '0' + M}/${D > 9 ? D : '0' + D}`;
-        this.contractForm.signDate=time_
+      let time = new Date()
+      let y = time.getFullYear()
+      let M = time.getMonth() + 1
+      let D = time.getDate()
+      let h = time.getHours()
+      let m = time.getMinutes()
+      let s = time.getSeconds()
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+      this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
@@ -1847,7 +1867,7 @@ export default {
           this.contractForm = res.data;
           this.isHaveDetail=true
           this.recordId = res.data.recordId;
-          this.contractForm.signDate = res.data.signDate.substr(0, 10);
+          // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           //合同状态为已签约且未结算时只允许编辑房客源编号
           if(res.data.resultState.value===1&&res.data.contState.value===3){
