@@ -117,14 +117,6 @@
       <div class="listTitle">
         <div>
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
-          <!-- <span class="text">有效成分汇总 </span>
-          <span class="text">租赁：</span> <span class="data">123165</span>
-          <span class="text">买卖：</span> <span class="data">75454</span>
-          <span class="text">代办：</span> <span class="data">5565</span>
-          <span class="text">意向：</span> <span class="data">0</span>
-          <span class="text">定金：</span> <span class="data">0</span>
-          <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
-          <span class="text">单数：</span> <span class="data">13</span> -->
         </div>
         <div>
           <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
@@ -673,7 +665,9 @@ export default {
       this.$ajax.get("/api/cont/version/getVersion").then(res=>{
         res=res.data
         if(res.status===200){
-          this.contVersion=res.data
+          if(res.data){
+            this.contVersion=res.data
+          }
         }
       })
     },
