@@ -64,7 +64,11 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg = {
+    ownerCommission: '100',
+    ownerCommissionUpper: '两百'
+}
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
@@ -111,7 +115,7 @@ for(let readonlyItem in msg){
                     element.innerHTML=msg[readonlyItem]
                 }
                 element.classList.remove('input-before')
-            }else if(readonlyItem==='ownerCommission'||readonlyItem==='ownerCommission'||readonlyItem==='ownerCommission'||readonlyItem==='ownerCommission'){
+            }else if(readonlyItem==='ownerCommission'||readonlyItem==='ownerCommissionUpper'||readonlyItem==='custCommission'||readonlyItem==='custCommissionUpper'){
                 element.innerHTML=msg[readonlyItem]
             }else{
                 element.value=msg[readonlyItem]
