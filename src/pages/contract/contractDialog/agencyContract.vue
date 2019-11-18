@@ -76,7 +76,7 @@
                         <span>{{i==0?'业主':'共有人'}}电话：</span>
                         <span>{{item.mobile}}</span>
                     </p>
-                    <p>
+                    <p v-if="defaultInfo.recordVersion==2">
                         <span>{{getCardLabel(item.cardType)}}：</span>
                         <span>{{item.encryptionCode}}</span>
                     </p>
@@ -101,7 +101,7 @@
                         <span>{{i==0?'客户':'共有人'}}电话：</span>
                         <span>{{item.mobile}}</span>
                     </p>
-                    <p>
+                    <p v-if="defaultInfo.recordVersion==2">
                         <span>{{getCardLabel(item.cardType)}}：</span>
                         <span>{{item.encryptionCode}}</span>
                     </p>
