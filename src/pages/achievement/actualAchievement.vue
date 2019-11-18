@@ -1524,14 +1524,14 @@ export default {
       let newPage = this.$router.resolve({
         path: "/achPage",
         query: {
-          aId: value.aId,
-          contractCode: value.code,
-          dialogType: 1,
+          aId: value.aId,   //业绩id
+          contractCode: value.code, //合同编号
+          dialogType: 1,  // 类型  编辑的话就是1
           achIndex: index,
-          achObj: JSON.stringify({ contractId: value.id }),
+          achObj: JSON.stringify({ contractId: value.id }),  //合同id
           contractId: value.id,
-          version: this.selectAchList[0].version,
-          contType:value.contType.value
+          version: this.selectAchList[0].version,  //版本
+          contType:value.contType.value   //合同类型
         }
       });
       window.open(newPage.href, "_blank");
