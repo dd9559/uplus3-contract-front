@@ -79,7 +79,7 @@
                     <span class="text">{{contractDetail.houseInfo.RoomNo}}</span> -->
                   </p>
                 </div>
-                <div class="one_">
+                <div class="one_" v-if="contractDetail.recordVersion===2">
                    <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
                 </div>
                 <div class="one_">
@@ -125,12 +125,12 @@
                       </template>
                     </el-table-column>
                     <el-table-column prop="relation" label="关系"></el-table-column>
-                    <el-table-column label="产权比" v-if="contType!='1'">
+                    <el-table-column label="产权比" v-if="contType!='1'&&contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.propertyRightRatio+'%'}}
                       </template>
                     </el-table-column>
-                    <el-table-column min-width="150" label="证件号码">
+                    <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2">
                       <!-- cardType -->
                       <template slot-scope="scope">
                         {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
@@ -144,7 +144,7 @@
               <div class="title">客源信息</div>
               <div class="content">
                 <div class="one_">
-                  <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
+                  <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
                   <!-- <p>
                     <span class="tag">付款方式：</span>
                     <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
@@ -165,12 +165,12 @@
                       </template>
                     </el-table-column>
                     <el-table-column prop="relation" label="关系"></el-table-column>
-                    <el-table-column label="产权比" v-if="contType!='1'">
+                    <el-table-column label="产权比" v-if="contType!='1'&&contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.propertyRightRatio+'%'}}
                       </template>
                     </el-table-column>
-                    <el-table-column min-width="150" label="证件号码">
+                    <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
                       </template>
@@ -424,7 +424,7 @@
         <el-tab-pane label="委托合同" v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state" name="agency">
           <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail" @goToMainData="goToMainData"></agency-contract>
         </el-tab-pane>
-        <el-tab-pane label="应收实收" name="receipt">
+        <el-tab-pane label="应收实收" name="receipt" v-if="power['sign-ht-xq-ys-qurey'].state">
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
@@ -759,31 +759,10 @@
       </div>
     </el-dialog>
 
-    <!-- 资金监管弹窗(暂缓) -->
-    <!-- <el-dialog title="资金监管" :visible.sync="dialogSupervise" width="740px">
-      <div class="download">
-        <p>资金监管合同模板下载</p>
-      </div>
-      <div class="upload">
-        <p>资金监管合同上传</p>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogSupervise = false">取 消</el-button>
-        <el-button type="primary" @click="dialogSupervise = false">确 定</el-button>
-      </span>
-    </el-dialog> -->
-
     <!-- 合同撤单弹窗 -->
     <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="400px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="top">
         <p class="invalid">是否确认撤单！</p>
-        <!-- <div class="reason">
-          <el-input type="textarea" :rows="6" placeholder="请填写合同撤单原因，最多100字 " v-model="invalidReason" resize='none' style="width:590px;overflow-y:hidden" maxlength="100"></el-input>
-          <span class="invalidReasonLength">{{invalidReason.length}}/100</span>
-          <p v-if="contractDetail.toExamineState.value>-1&&contractDetail.contState.value!=2"><span>注：</span>您的合同{{contractDetail.toExamineState.value===1?'已审核通过':'正在审核中'}}，是否确认要做撤单？撤单后，合同需要重新提审！</p>
-          <p v-if="contractDetail.contState.value===2"><span>注：</span>您的合同已签章，是否确认要做撤单？撤单后，合同需要重新提审！</p>
-          <p v-if="contractDetail.toExamineState.value<0"><span>注：</span>您的合同是否确认要做撤单？撤单后，合同需要重新提审！</p>
-        </div> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogInvalid = false">取消</el-button>
@@ -851,24 +830,6 @@
         <el-button type="primary" @click="delBillMsg">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 应收实收详情弹窗 -->
-    <!-- <el-dialog title="详情" :visible.sync="dialogReceipt" width="700px" :closeOnClickModal="$tool.closeOnClickModal">
-      <div class="receiptDetail">
-        <div>
-          <p>录入时间：2019/10/15 10:05:24</p>
-          <p>款类：交易服务费</p>
-          <p>收付方式：付款</p>
-        </div>
-        <div>
-          <p>合同编号：D0001191024004</p>
-          <p>应收金额（元）：2000</p>
-          <p>付款方：业主-大田</p>
-        </div>
-      </div>
-      <div class="receiptAccessory">
-        <p>附件：</p>
-      </div>
-    </el-dialog> -->
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
       <LayerPrint ref="easyPrint" class="easyPrint_">
@@ -1400,6 +1361,10 @@ export default {
           name: '查看备注'
         },
         //应收实收
+        'sign-ht-xq-ys-qurey': {
+          state: false,
+          name: '应收实收查询'
+        },
         'sign-ht-xq-ys-add': {
           state: false,
           name: '新增/编辑'
@@ -1411,7 +1376,7 @@ export default {
         'sign-ht-xq-entrust-edit': {
           state: false,
           name: '委托合同'
-        }
+        },
       },
       // url:`url(${require('@/assets/img/shuiyin.png')})`,
       url:`${require('@/assets/img/shuiyin2.png')}`,

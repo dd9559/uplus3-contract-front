@@ -17,6 +17,7 @@ const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
 const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
+const contractLayout = () => import('@/pages/setting/contractLayout')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -105,6 +106,14 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "业务设置","后期流程设置"]
+          }
+        },
+        {
+          path: "contractLayout",
+          component: contractLayout,
+          meta: {
+            root: true,
+            list: ["设置", "业务设置","合同页面设置"]
           }
         },
         {
