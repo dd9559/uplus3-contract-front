@@ -64,11 +64,7 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-    ownerCommission: '100',
-    ownerCommissionUpper: '两百'
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
