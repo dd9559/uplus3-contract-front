@@ -157,10 +157,10 @@
         </p>
         <ul>
           <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
-            {{item.name}}：{{item.encryptionCode}}
+            {{item.name}}
           </li>
           <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
-            {{item.name}}：{{item.encryptionCode}}
+            {{item.name}}
           </li>
         </ul>
         <p>否则合同将无效，之后收款所开票据无效！！！</p>
@@ -224,9 +224,6 @@ const rule = {
   houseinfoCode: {
     name: "房源"
   },
-  // guestinfoCode: {
-  //   name: "客源"
-  // }
 };
 
 export default {
@@ -253,11 +250,6 @@ export default {
       type:Boolean,
       default:false
     },
-    //合同类型
-    // contType:{
-    //   type:Number,
-    //   default: 1
-    // },
     //操作类型  新增编辑
     operationType:{
       type:Number,
@@ -309,27 +301,9 @@ export default {
       t_ownerList_:JSON.parse(JSON.stringify(this.ownerList_)),
       t_guestList:JSON.parse(JSON.stringify(this.guestList)),
       t_guestList_:JSON.parse(JSON.stringify(this.guestList_)),
-      // contractForm: {
-      //   // type: 2,
-      //   houseinfoCode: "",
-      //   guestinfoCode: "",
-      //   signDate: "",
-      //   dealPrice: "",
-      //   contPersons: [],
-      //   houseInfo: {
-      //     HouseStoreCode: "",
-      //     ShopOwnerMobile:'',
-      //     ShopOwnerName:'',
-      //   },
-      //   guestInfo: {
-      //     ShopOwnerMobile:'',
-      //     ShopOwnerName:''
-      //   },
-      // },
       dialogType: "",
       isShowDialog: false,
       dialogSave: false,
-      // isOffline:'',//判断创建合同为0=线上，1=线下
       dictionary: {
         //数据字典
         "507": "", //时间单位
@@ -728,7 +702,6 @@ export default {
     },
     // 新增/编辑合同
     addContract(){
-      debugger
       this.fullscreenLoading=true
       this.dialogSave=false
       this.contractForm.contPersons=[];
@@ -1350,8 +1323,6 @@ export default {
   p{
     line-height: 1.4;
     &:first-of-type{
-      // display:flex;
-      // align-items:center;
       i{
         color:orange;
         font-size:48px;
@@ -1374,7 +1345,6 @@ export default {
   }
 }
 .view-container {
-  // padding: 0 0 20px 0;
   .add-form {
     padding: 10px;
     font-size: 14px;
@@ -1542,7 +1512,6 @@ export default {
           width: 100px;
           cursor: pointer;
           text-align: right;
-          // padding-right: 10px;
           color: #606266;
           text-overflow:ellipsis;
           white-space:nowrap;
