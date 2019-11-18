@@ -279,7 +279,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="成交报告" min-width="80">
+        <el-table-column label="成交报告" min-width="80" v-if="contVersion===2">
           <template slot-scope="scope">
             <span v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine">{{scope.row.dealReportState.label}}</span>
             <span v-else>-</span>

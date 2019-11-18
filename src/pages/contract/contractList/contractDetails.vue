@@ -144,7 +144,7 @@
               <div class="title">客源信息</div>
               <div class="content">
                 <div class="one_">
-                  <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode}}</span></p>
+                  <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
                   <!-- <p>
                     <span class="tag">付款方式：</span>
                     <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>

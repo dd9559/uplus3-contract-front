@@ -156,10 +156,10 @@
           <span>请确认客户和业主的姓名与证件上的一致？</span>
         </p>
         <ul>
-          <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
+          <li v-for="item in t_ownerList" :key="'owner'+item.encryptionCode">
             {{item.name}}
           </li>
-          <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
+          <li v-for="item in t_guestList" :key="'guets'+item.encryptionCode">
             {{item.name}}
           </li>
         </ul>
