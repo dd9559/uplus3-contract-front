@@ -33,7 +33,7 @@
         </ScreeningTop>
         <!-- 表格 -->
         <div class="table-box">
-            <p>
+            <p v-if="power['sign-set-bl-htym-update'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button icon="el-icon-plus" @click="operationFn('新增')" round type="primary">新增合同页面</el-button>
             </p>
@@ -57,7 +57,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button type="text" size="medium" @click="operationFn('查看',scope.row)">查看</el-button>
-                        <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)">编辑</el-button>
+                        <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)" v-if="power['sign-set-bl-htym-update'].state">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,8 +78,8 @@
         :closeOnClickModal="$tool.closeOnClickModal"
         :close-on-press-escape="$tool.closeOnClickModal"
         :visible.sync="addVisible"
-        width="740px">
-        <div class="dialog-body" :style="{ height: clientHei }">
+        width="900px">
+        <div class="dialog-body">
             <div class="item-set" v-if="layoutTitle!='查看'">
                 <div>
                     <span><i class="color-red">*</i>体系：</span>
@@ -94,7 +94,7 @@
                     </el-radio-group>
                 </div>
             </div>
-            <div class="item-layout">
+            <div class="item-layout" :style="{ height: clientHei }">
                 <img src="../../assets/img/基础版.png" alt="" v-if="layoutType==1">
                 <img src="../../assets/img/复杂版.png" alt="" v-else>
             </div>
@@ -132,10 +132,16 @@
                 dictionary: {
                     '746':'页面版式'
                 },
+                power: {
+                    'sign-set-bl-htym-update': {
+                        state: false,
+                        name: '新增/编辑'
+                    }
+                }
             }
         },
         created() {
-            this.clientHei= document.documentElement.clientHeight -400 + 'px'
+            this.clientHei= document.documentElement.clientHeight -500 + 'px'
             this.getDictionary()
             // 获取体系
             this.getSystemTagSelect()
@@ -281,7 +287,6 @@
     .dialog-body {
         padding: 10px 20px 10px;
         border-bottom: 1px solid #EDECF0;
-        overflow-y: auto;
         .item-set {
             display: flex;
             margin-bottom: 10px;
@@ -292,12 +297,11 @@
             }
         }
         .item-layout {
-            height: calc(100% - 45px);
             border: 10px solid #f5f5f5;
             box-sizing: border-box;
+            overflow-y: auto;
             img {
                 width: 100%;
-                height: 100%;
             }
         }
         .color-red {
