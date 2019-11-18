@@ -1526,7 +1526,7 @@ export default {
       dialogType: "",
       contractCode: "",
       aId: "",
-      achIndex: "",
+      // achIndex: "",
       achObj: "",
       contractId2: "",
       state2: "",
@@ -1544,7 +1544,7 @@ export default {
     this.dialogType = this.$route.query.dialogType;
     this.contractCode = this.$route.query.contractCode;
     this.aId = this.$route.query.aId;
-    this.achIndex = this.$route.query.achIndex;
+    // this.achIndex = this.$route.query.achIndex;
     this.achObj = JSON.parse(this.$route.query.achObj);
     this.contractId2 = this.$route.query.contractId;
   },
@@ -2324,7 +2324,7 @@ export default {
               this.loading = false;
               this.$message({ message: "操作成功", type: "success" });
               this.codeBaseInfo(this.contractId2, 1, null, "getEditInfo");
-              this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
+              // this.$emit("adoptData", this.achIndex, resultArr, res.data.data);
             }
           })
           .catch(error => {
@@ -2467,7 +2467,7 @@ export default {
               this.$emit("close");
               this.loading = false;
               this.$message({ message: "操作成功", type: "success" });
-              this.$emit("rejectData", this.achIndex, resultArr);
+              // this.$emit("rejectData", this.achIndex, resultArr);
             }
           })
           .catch(error => {
@@ -2613,10 +2613,10 @@ export default {
                 agendIds: this.agendIds
               };
               if (type == 1) {
-                this.$emit("saveData", this.achIndex, resultArr);
+                // this.$emit("saveData", this.achIndex, resultArr);
               }
               if (type == 2 && status == 2) {
-                this.$emit("saveData", this.achIndex, resultArr, -1);
+                // this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
                 if (this.state2 === 1) {
@@ -2630,7 +2630,7 @@ export default {
                   paperBtn2.disabled = true;
                   paperBtn2.classList.remove("color-blue");
                   paperBtn2.classList.add("grey");
-                  this.$emit("saveData", this.achIndex, resultArr, 0);
+                  // this.$emit("saveData", this.achIndex, resultArr, 0);
                 }
               }
               this.loading = false;
@@ -2655,7 +2655,7 @@ export default {
               paperBtn2.disabled = true;
               paperBtn2.classList.remove("color-blue");
               paperBtn2.classList.add("grey");
-              this.$emit("saveData", this.achIndex, resultArr, 0);
+              // this.$emit("saveData", this.achIndex, resultArr, 0);
             } else {
               this.$message({
                 message: error,

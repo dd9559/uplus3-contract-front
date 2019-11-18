@@ -146,14 +146,14 @@
       }
     },
     created() {
-        if(localStorage.getItem('cityId')&&localStorage.getItem('tixiId')){
-          this.selectCity=parseInt(localStorage.getItem('cityId'))
-          this.$ajax.get('/api/organize/getSystemTagByCityId',{cityId:this.selectCity}).then(res=>{
+        if(sessionStorage.getItem('cityId')&&sessionStorage.getItem('tixiId')){
+          this.selectCity=parseInt(sessionStorage.getItem('cityId'))
+          this.$ajax.get('/api/organize/getSystemTagSelect',{cityId:this.selectCity}).then(res=>{
                 if(res.status==200){
                     this.tixi=res.data.data
             }
           })
-          this.tixiid=parseInt(localStorage.getItem('tixiId'))
+          this.tixiid=parseInt(sessionStorage.getItem('tixiId'))
           this.getList()
         }
           // this.cityName='武汉'
@@ -182,19 +182,19 @@
         }
       },
       selCity(){
-        localStorage.setItem('cityId',this.selectCity)
+        sessionStorage.setItem('cityId',this.selectCity)
         let param={
           cityId:this.selectCity
         }
         this.tixiid=''
-            this.$ajax.get('/api/organize/getSystemTagByCityId',param).then(res=>{
+            this.$ajax.get('/api/organize/getSystemTagSelect',param).then(res=>{
                 if(res.status==200){
                     this.tixi=res.data.data
             }
           })
       },
       selSys(){
-        localStorage.setItem('tixiId',this.tixiid)
+        sessionStorage.setItem('tixiId',this.tixiid)
         this.getList()
       },
       popMsg(msg,callback){

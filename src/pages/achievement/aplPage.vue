@@ -2375,7 +2375,7 @@
           this.loading=true;
           // 新版本时参数添加level4和storefront4Id字段
           if(this.$route.query.version == '1') {
-            resultArr.forEach(item => {
+            resultArr2.forEach(item => {
               item.level4 = item.level3
               item.storefront4Id = item.storefront3Id
             })
