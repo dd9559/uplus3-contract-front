@@ -298,7 +298,7 @@
               <div v-else>
                 <div v-for="item in scope.row.distributions">
                   <el-tooltip
-                  v-if="(item.level4+item.assignor).length>15"
+                  v-if="(item.level4+item.assignor).length>12"
                   class="item"
                   effect="dark"
                   :content="item.level4+'-'+item.assignor"
