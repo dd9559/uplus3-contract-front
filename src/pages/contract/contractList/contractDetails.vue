@@ -79,7 +79,7 @@
                     <span class="text">{{contractDetail.houseInfo.RoomNo}}</span> -->
                   </p>
                 </div>
-                <div class="one_">
+                <div class="one_" v-if="contractDetail.recordVersion===2">
                    <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
                 </div>
                 <div class="one_">
@@ -125,12 +125,12 @@
                       </template>
                     </el-table-column>
                     <el-table-column prop="relation" label="关系"></el-table-column>
-                    <el-table-column label="产权比" v-if="contType!='1'">
+                    <el-table-column label="产权比" v-if="contType!='1'&&contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.propertyRightRatio+'%'}}
                       </template>
                     </el-table-column>
-                    <el-table-column min-width="150" label="证件号码">
+                    <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2">
                       <!-- cardType -->
                       <template slot-scope="scope">
                         {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
@@ -165,12 +165,12 @@
                       </template>
                     </el-table-column>
                     <el-table-column prop="relation" label="关系"></el-table-column>
-                    <el-table-column label="产权比" v-if="contType!='1'">
+                    <el-table-column label="产权比" v-if="contType!='1'&&contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.propertyRightRatio+'%'}}
                       </template>
                     </el-table-column>
-                    <el-table-column min-width="150" label="证件号码">
+                    <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2">
                       <template slot-scope="scope">
                         {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
                       </template>

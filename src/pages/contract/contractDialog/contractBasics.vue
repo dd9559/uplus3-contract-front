@@ -390,6 +390,9 @@ export default {
     this.getDictionary();//字典
     this.getRelation();//人员关系
     this.countTotal()
+    if(this.operationType===2){
+      this.countTotal()
+    }
   },
   methods: {
     //计算总佣金

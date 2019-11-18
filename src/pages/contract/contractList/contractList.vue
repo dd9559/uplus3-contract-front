@@ -39,7 +39,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="成交报告">
+        <el-form-item label="成交报告" v-if="contVersion===2">
           <el-select v-model="contractForm.reportRecord" placeholder="全部" :clearable="true" style="width:150px">
             <el-option label="已录" value="1"></el-option>
             <el-option label="未录" value="2"></el-option>
@@ -76,7 +76,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="结算状态">
+        <el-form-item label="结算状态" v-if="contVersion===2">
           <el-select v-model="contractForm.resultState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['14']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
@@ -100,7 +100,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="后期状态">
+        <el-form-item label="后期状态" v-if="contVersion===2">
           <el-select v-model="contractForm.laterStageState" placeholder="全部" :clearable="true">
             <el-option v-for="item in dictionary['11']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
@@ -293,13 +293,13 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="90">
+        <el-table-column label="上传合同主体时间" min-width="90" v-if="contVersion===2">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期状态" min-width="80">
+        <el-table-column label="后期状态" min-width="80" v-if="contVersion===2">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine">
               <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
@@ -308,7 +308,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期进度" min-width="80">
+        <el-table-column label="后期进度" min-width="80" v-if="contVersion===2">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">
               <span v-if="scope.row.stepInstanceName==='-'">-</span>
@@ -327,7 +327,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="结算状态" min-width="80">
+        <el-table-column label="结算状态" min-width="80" v-if="contVersion===2">
           <template slot-scope="scope">
             <!-- <el-button v-if="scope.row.contType.value<4" type="text" size="medium" @click="closeAccount(scope.row)">{{scope.row.resultState.label}}</el-button> -->
             <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">{{scope.row.resultState.label}}</span>
@@ -538,6 +538,8 @@ export default {
       },
       printData:'',//打印次数详情
       isHavePrint:false,
+      //合同基本信息版式 1 基础  2 复杂
+      contVersion:2,
       //权限配置
       power: {
         'sign-com-bill': {
@@ -629,6 +631,7 @@ export default {
     this.getDictionary();//字典
     this.getHousePurpose();//用途
     this.remoteMethod();//部门
+    this.getVersion();//获取合同基本信息版式
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
@@ -665,6 +668,16 @@ export default {
     }
   },
   methods: {
+    //获取合同基本信息版式（1 基础版  2 复杂版）
+    getVersion(){
+      this.$ajax.get("/api/cont/version/getVersion").then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.contVersion=res.data
+        }
+      })
+    },
+    //表格第一例用蓝色背景区分
     rowStyle(val){
       if(val.row.bgc){
         return 'collapseRow'
