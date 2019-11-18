@@ -15,6 +15,18 @@ Dropdown.create({
     }
 })
 
+Calendar.create({
+  classN: 'calendar-item',
+  callBack: function(bindElem, dateObj) {
+      // bindElem.innerHTML = dateObj.year + '-' + dateObj.month + '-' + dateObj.date;
+      if(bindElem.tagName.toLowerCase()==='input'){
+          bindElem.value=`${dateObj.year}年${dateObj.month}月${dateObj.date}日`
+          bindElem.setAttribute('value',bindElem.value)
+          bindElem.setAttribute('random',dateObj.random)
+      }
+  }
+})
+
 //输入自适应
 contractConfig.inputListener(function(ev,tip){
   let max=tip.target.getAttribute('max')
@@ -28,13 +40,37 @@ contractConfig.inputListener(function(ev,tip){
   let spanAttr=tip.target.getAttribute('listen')
   if(spanAttr==='number'){
     ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-    let toChineseArr = []
+    let toChineseArr = ['val14','val16']
     let chineseStr = tip.target.getAttribute('extendparam')
     if(toChineseArr.includes(chineseStr)){
         document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
     }
   }
+  if(spanAttr==='chinese'){
+    ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+    if(ev.target.value.length>0){
+    let str = toChineseNumber(ev.target.value)
+    let value=str.split('元')[0]
+    tip.target.innerHTML=value
+    }else {
+    tip.target.innerHTML=''
+    tip.target.classList.add('input-before')
+    }
+  }else {
     tip.target.innerHTML=ev.target.value
+  }
+},function(tip){
+  //获取输入框的默认值
+  let initVal=tip.target.innerHTML
+  let ArrCn = ['val16','val14']
+  let strCn = tip.target.getAttribute('extendparam')
+  if(ArrCn.includes(strCn)){
+    if(initVal.length>0){
+      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+   }else{
+      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+   }
+   }
 })
 
 // 勾选框逻辑
@@ -58,38 +94,50 @@ contractConfig.checkboxListener()
   }
 
 let sub = {
+  'val1': null,
+  'val2': null,
+  'val3': null,
+  'val4': null,
   'val5': null,
-  'checkbox_zhizhao4': null,
   'val6': null,
-  'checkbox_zhizhao5': null,
   'val7': null,
+  'val8': null,
+  'val9': null,
+  'val10': null,
+  'val11': null,
+  'val12': null,
+  'val13': null,
+  'val14': null,
+  'time_val5': null,
+  'val16': null,
+  'val17': null,
 }
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg={
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "",
-  guestName: "然爱迪生",
-  guestNames: "",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "",
-  ownerName: "熊先",
-  ownerNames: "",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "",
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg={
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "",
+//   guestName: "然爱迪生",
+//   guestNames: "",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "",
+//   ownerName: "熊先",
+//   ownerNames: "",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "",
+// }
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
