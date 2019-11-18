@@ -151,6 +151,11 @@ export default {
     contId: {
       type: Number,
       default: 0
+    },
+    //委托合同为8，其他类型为1
+    flowType: {
+      type: Number,
+      default: 1,
     }
   },
   data() {
@@ -245,7 +250,8 @@ export default {
 				})
 			}else if(tab.name==='sixth'){
 				let param = {
-          contractId: this.contId
+          contractId: this.contId,
+          type: this.flowType
 				};
 				this.$ajax.get("/api/flows/bill", param).then(res => {
 					 res = res.data;
@@ -303,7 +309,7 @@ export default {
   }
   /deep/.el-dialog {
     width: 800px;
-    height: 580px;
+    height: 590px;
     overflow-y: auto;
   }
   /deep/.el-dialog__body {

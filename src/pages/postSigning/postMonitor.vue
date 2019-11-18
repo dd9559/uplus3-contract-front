@@ -172,7 +172,14 @@
                         {{dateFormat(scope.row.receiveTime)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="160">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.propertyAddr.length===0">--</span>
+                        <template v-else>
+                            <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+                            <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+                        </template>
+                    </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="200">
                 </el-table-column>

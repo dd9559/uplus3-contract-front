@@ -102,9 +102,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约日期" min-width="90">
+                <el-table-column :formatter="nullFormatterData" prop="signDate" label="签约时间" min-width="90">
                     <template slot-scope="scope">
-                        {{dateFormat(scope.row.signDate)}}
+                        {{scope.row.signDate|formatTime(false)}}
                     </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" label="后期状态" min-width="80">
@@ -112,7 +112,14 @@
                         {{statusLaterStageFn(scope.row.statusLaterStage.value)}}
                     </template>
                 </el-table-column>
-                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="120">
+                <el-table-column :formatter="nullFormatterData" prop="propertyAddr" label="物业地址" min-width="160">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.propertyAddr.length===0">--</span>
+                        <template v-else>
+                            <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+                            <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+                        </template>
+                    </template>
                 </el-table-column>
                 <el-table-column :formatter="nullFormatterData" prop="transFlowName" label="交易流程" min-width="260">
                 </el-table-column>

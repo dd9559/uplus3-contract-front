@@ -107,9 +107,9 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约日期" min-width="90">
+        <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
-            <p>{{scope.row.signDate | getDate}}</p>
+            <p>{{scope.row.signDate | timeFormat_}}</p>
           </template>
         </el-table-column>
         <el-table-column label="发起日期" min-width="90">
@@ -545,6 +545,21 @@
          }
          return TOOL.timeFormat(val)
        },
+       timeFormat_: function (val) {
+        if (!val) {
+          return '--'
+        } else {
+          let time = new Date(val)
+          let y = time.getFullYear()
+          let M = time.getMonth() + 1
+          let D = time.getDate()
+          let h = time.getHours()
+          let m = time.getMinutes()
+          let s = time.getSeconds()
+          let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+          return time_.substr(0, 16)
+        }
+      },
         /**
      * 过滤显示图片缩略图
      * @param val后端返回的所有文件资源遍历的当前项
@@ -601,8 +616,8 @@
       choseCheckPerson:function (row,type) {
         if(row.tradeType===1){
           this.checkPerson.flowType=8   //租赁调佣的流程类型为8
-        }else if(row.tradeType===2){
-          this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+        }else if(row.tradeType===2||row.tradeType===3){
+          this.checkPerson.flowType=7   //买卖代办调佣的流程类型为7
         }
         this.checkPerson.code=row.checkId  //业务编码为checkId
         this.checkPerson.state=true
@@ -925,8 +940,8 @@
               // this.choseCheckPerson(error.data.checkId,'set')
               if(this.applyType===1){
                 this.checkPerson.flowType=8   //租赁调佣的流程类型为8
-              }else if(this.applyType===2){
-                this.checkPerson.flowType=7   //买卖调佣的流程类型为7
+              }else if(this.applyType===2||this.applyType===3){
+                this.checkPerson.flowType=7   //买卖代办调佣的流程类型为7
               }
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true
@@ -1125,18 +1140,7 @@
     .el-table{
       th{
         background-color: #EEF2FB;
-        &:first-child{
-          /*padding-left: 20px;*/
-        }
       }
-      tr{
-        td{
-          &:first-child{
-            /*padding-left: 20px;*/
-          }
-        }
-      }
-
     }
   }
 

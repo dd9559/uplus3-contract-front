@@ -12,16 +12,16 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
-          <!-- <el-select v-model="contractForm.contType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==4&&item.key!==5">
-            </el-option>
-          </el-select> -->
           <el-select v-model="contractForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':contractForm.contTypes&&contractForm.contTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
               :key="item.key"
               :label="item.value"
               :value="item.key">
+            </el-option>
+            <el-option
+              label="委托合同"
+              value="6">
             </el-option>
           </el-select>
         </el-form-item>
@@ -83,7 +83,7 @@
         <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
         <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-htsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
       </div>
-      <el-table ref="tableCom" class="info-scrollbar" :data="tableData" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
+      <el-table ref="tableCom" class="info-scrollbar" :span-method="objectSpanMethod" :data="combineList" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column label="合同信息" min-width="200" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -97,18 +97,6 @@
                   v-if="scope.row.isRisk">
                   <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
                 </el-popover>
-                <!-- 代办 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-2 replace" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
-                <!-- 低佣 -->
-                <!-- <i class="iconfont icon-tubiao_shiyong-3 low" v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1"></i> -->
-                <!-- <el-popover
-                  placement="top-start"
-                  width="10"
-                  trigger="hover"
-                  content="低佣"
-                  v-if="scope.row.contMarkState&&scope.row.contMarkState.value===1">
-                  <i slot="reference" class="iconfont icon-tubiao_shiyong-3 low"></i>
-                </el-popover> -->
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
@@ -118,14 +106,27 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" prop="contType.label" min-width="60" fixed>
+        <el-table-column label="合同类型" min-width="60" fixed>
+          <template slot-scope="scope">
+            {{scope.row.isCombine?"委托合同":scope.row.contType.label}}
+          </template>
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
+          <template slot-scope="scope">
+            <span v-if="!scope.row.propertyAddr">-</span>
+            <template>
+              <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+              <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+            </template>
+          </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
           <template slot-scope="scope">
-            <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+            <div v-if="!scope.row.isCombine">
+              <span>{{scope.row.dealPrice}} 元</span>
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+            </div>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" min-width="120">
@@ -134,15 +135,15 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约日期" min-width="90">
+        <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
-            <!-- {{scope.row.signDate.substr(0, 10)}} -->
-            {{Number(scope.row.signDate)|timeFormat_}}
+            <!-- {{Number(scope.row.signDate)|timeFormat_}} -->
+            <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
           </template>
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
-            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
               <span v-else>-</span>
           </template>
@@ -177,7 +178,7 @@
         </el-table-column>
         <el-table-column label="审核时间" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditTime">{{Number(scope.row.auditTime)|formatTime}}</span>
+            <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|formatTime}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -204,18 +205,18 @@
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
-            <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
+            <div v-if="!scope.row.isCombine">
+              <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
+              <el-button type="text" size="medium" v-else @click="goChangeCancel(scope.row)">{{scope.row.contChangeState.label}}</el-button>
+            </div>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="90" fixed="right">
           <template slot-scope="scope">
-            <!-- <div style="text-align:center"> -->
-              <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
-              <!--<el-button type="text" size="medium" v-if="scope.row.toExamineState.value===0&&scope.row.contType.value<4&&userMsg&&scope.row.auditId===userMsg.empId" @click="goCheck(scope.row)">审核</el-button>-->
+            <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
             <div class="btn" v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</div>
-            <!-- </div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -234,7 +235,7 @@
     <!-- 变更/解约查看 合同主体上传弹窗 -->
     <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :current="checkPerson.current" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -245,6 +246,7 @@ import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from '@/components/checkPerson';
 let printParam={}
+let rows={}
 
 export default {
   mixins: [MIXINS],
@@ -276,7 +278,7 @@ export default {
         "53": "", //合作方式
         "54": "", //业绩状态
         "538": "", //用途
-        "507": ""
+        "507": "",//租赁时间单位
       },
       //部门选择列表
       options:[],
@@ -306,14 +308,6 @@ export default {
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
-        },
-        'sign-com-house': {
-          state: false,
-          name: '房源详情'
-        },
-        'sign-com-cust': {
-          state: false,
-          name: '客源详情'
         },
         "sign-ht-htsh-export": {
           state: false,
@@ -362,6 +356,38 @@ export default {
     }
   },
   methods:{
+    //委托合同合并单元格
+    objectSpanMethod({ row, column, rowIndex, columnIndex }){
+      if (columnIndex === 0) {
+        if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
+          rows={
+            index:rowIndex,
+            id:row.contractEntrust.id
+          }
+          return {
+            rowspan: 2,
+            colspan: 1
+          };
+        }else {
+          if(rowIndex===rows.index+1&&rows.id===row.contractEntrust.id){
+            return{
+              rowspan:0,
+              colspan:0
+            }
+          }else{
+            return {
+              rowspan: 1,
+              colspan: 1
+            };
+          }
+        }
+      }else{
+        return {
+          rowspan: 1,
+          colspan: 1
+        };
+      }
+    },
     getExcel:function () {
       this.excelCreate('/input/contractAuditExcel',printParam)
     },
@@ -453,7 +479,8 @@ export default {
         path: "/contractPreview",
         query: {
           id: item.id,
-          code:item.code
+          code:item.code,
+          isentrust:item.isCombine?1:0
         }
       });
     },
@@ -469,7 +496,7 @@ export default {
           query:{
             code:item.code,
             id:item.id,
-            operationType:2
+            isentrust:item.isCombine?1:0
           }
         })
       }else{
@@ -482,7 +509,7 @@ export default {
                 query:{
                   code:item.code,
                   id:item.id,
-                  operationType:2
+                  isentrust:item.isCombine?1:0
                 }
               })
             }else{
@@ -549,17 +576,21 @@ export default {
      // 选择审核人
     choseCheckPerson:function (row,type) {
       this.checkPerson.code=row.code;
-      this.checkPerson.state=true;
       this.checkPerson.type=type;
       if(row.nextAuditId>=0){
         this.checkPerson.label=false;
       }else{
         this.checkPerson.label=true;
       }
+      if(row.isCombine){
+        this.checkPerson.flowType=11
+      }else{
+        this.checkPerson.flowType=3
+      }
+      this.checkPerson.state=true;
     },
     //关闭设置审核人弹窗
     closeCheckPerson(){
-      console.log('qweqw')
       this.checkPerson.state=false;
       this.getContractList();
     }
@@ -581,12 +612,48 @@ export default {
     },
     getUserMsg(){
       return this.getUser.user
+    },
+    combineList(){
+      let arr = JSON.parse(JSON.stringify(this.tableData))
+      this.tableData.forEach((element,index)=>{
+        if(element.contractEntrust&&element.contractEntrust.id){
+          //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
+          let combineItem = JSON.parse(JSON.stringify(element))
+          combineItem.isCombine=true//是否是插入的数据
+          combineItem.signDate=combineItem.contractEntrust.signDate//签约日期
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
+          combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
+          combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
+          combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
+          combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"//合同主体上传时间
+          combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩转台
+          combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
+          combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
+          combineItem.auditTime=combineItem.contractEntrust.auditTime?combineItem.contractEntrust.auditTime:"-"//审核时间
+          //当前审核人信息
+          combineItem.auditId=combineItem.contractEntrust.auditId
+          combineItem.auditName=combineItem.contractEntrust.auditName
+          combineItem.auditStoreName=combineItem.contractEntrust.auditStoreName
+          //下一步审核人信息
+          combineItem.nextAuditId=combineItem.contractEntrust.nextAuditId
+          combineItem.nextAuditName=combineItem.contractEntrust.nextAuditName
+          combineItem.nextAuditStoreName=combineItem.contractEntrust.nextAuditStoreName
+          arr.forEach((ele,i) => {
+            if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
+              arr.splice(i+1,0,combineItem)
+            }
+          });
+        }
+      })
+      console.log(arr)
+      return arr
     }
   },
   filters: {
     timeFormat_: function (val) {
       if (!val) {
-        return '--'
+        return '-'
       } else {
         let time = new Date(val)
         let y = time.getFullYear()
@@ -596,7 +663,7 @@ export default {
         let m = time.getMinutes()
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-        return time_.substr(0, 10)
+        return time_.substr(0, 16)
       }
     }
   }

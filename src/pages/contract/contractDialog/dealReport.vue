@@ -50,12 +50,16 @@
                     </div>
                 </div>
                 <div class="item">
+                    <div>
+                        <span class="mark">权属证号：</span>
+                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="45" :disabled="!saveBtnShow" class="quanshu w300" @input="inputOnly('ownershipNumber')"></el-input>
+                    </div>
+                    <div style="margin-right: 50px">
+                        <span class="mark">建成年代：</span>
+                        <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
+                    </div>
                     <div class="text-long">
                         <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
-                    </div>
-                    <div class="number">
-                        <span class="mark">权属证号：</span>
-                        <el-input size="small" v-model.trim="report.ownershipNumber" maxlength="45" :disabled="!saveBtnShow" class="quanshu" @input="inputOnly('ownershipNumber')"></el-input>
                     </div>
                 </div>
                 <div class="item">
@@ -71,7 +75,7 @@
                         <span>建筑结构：</span>
                         <el-input size="small" v-model="report.buildingStructure" maxlength="10" :disabled="!saveBtnShow" class="jianzhu" @input="inputOnly('buildingStructure')"></el-input>
                     </div>
-                    <div class="position">
+                    <div class="position" style="text-align: right;">
                         <span>评估值：</span>
                         <el-input size="small" v-model="report.evaluationValue" :disabled="!saveBtnShow" @input="cutNumber('evaluationValue')"></el-input>
                         <i>万元</i>
@@ -101,17 +105,11 @@
             <div>
                 <p class="bold">买方信息</p>
                 <div class="guest msg info">
-                    <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstBuyer.name}}</span></p>
-                        <p style="width:220px;"><span style="white-space:nowrap;">{{firstBuyer.cardType===1?"身份证":firstBuyer.cardType===2?"护照":firstBuyer.cardType===3?"营业执照":"军官证"}}：</span><span>{{firstBuyer.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstBuyer.mobile}}</span></p>
+                    <div class="text mai-mai" v-for="(item,i) in buyerArr" :key="i">
+                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:125px;word-wrap:break-word;">{{item.name}}</span></p>
+                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{item.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{item.mobile}}</span></p>
                     </div>
-                    <ul class="text gongyouren" v-if="buyerArr.length !== 1">
-                        <li v-for="(item,index) in buyerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:260px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
-                        </li>
-                    </ul>
                     <div class="input">
                         <p>
                             <span class="mark">付款方式：</span>
@@ -149,17 +147,11 @@
             <div>
                 <p class="bold">卖方信息</p>
                 <div class="owner msg info">
-                    <div class="text mai-mai">
-                        <p><span>姓名：</span><span style="width:130px;word-wrap:break-word;">{{firstSeller.name}}</span></p>
-                        <p style="width:220px;"><span style="white-space:nowrap;">{{firstSeller.cardType===1?"身份证":firstSeller.cardType===2?"护照":firstSeller.cardType===3?"营业执照":"军官证"}}：</span><span>{{firstSeller.encryptionCode}}</span></p>
-                        <p><span>电话：</span><span>{{firstSeller.mobile}}</span></p>
+                    <div class="text mai-mai" v-for="(item,i) in sellerArr" :key="i">
+                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:125px;word-wrap:break-word;">{{item.name}}</span></p>
+                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{item.encryptionCode}}</span></p>
+                        <p><span>电话：</span><span>{{item.mobile}}</span></p>
                     </div>
-                    <ul class="text gongyouren" v-if="sellerArr.length !== 1">
-                        <li v-for="(item,index) in sellerArr" :key="index">
-                            <p><span style="min-width:84px;">共有人姓名：</span><span style="min-width:260px;">{{item.name}}</span></p>
-                            <p><span style="min-width:42px;">电话：</span><span>{{item.mobile}}</span></p>
-                        </li>
-                    </ul>
                     <div class="input">
                         <p style="margin-right:15px;">
                             <span style="min-width:126px;" class="mark">是否析产（继承）：</span>
@@ -267,7 +259,8 @@ export default {
                 receivableCommission: "",
                 Square: "",
                 propertyRightAddr: "",
-                FloorAll: ""
+                FloorAll: "",
+                CompleteYear: ""
             },
             report: {
                 cardSituation: "",
@@ -329,19 +322,7 @@ export default {
                 { id: 13, name: "平安银行" },
                 { id: 14, name: "华夏银行" }
             ],
-            firstBuyer: {
-                name: "",
-                encryptionCode: "",
-                mobile: "",
-                cardType: ""
-            },
             buyerArr: [],
-            firstSeller: {
-                name: "",
-                encryptionCode: "",
-                mobile: "",
-                cardType: ""
-            },
             sellerArr: [],
             noStageBank: true
         }
@@ -354,16 +335,28 @@ export default {
         }
     },
     methods: {
+        yearFormatFn(val) {
+            if(val) {
+                if(val.includes('年')) {
+                    return val
+                } else {
+                    return val=='0'||val=='--' ? '--' : `${val}年`
+                }
+            } else {
+                return '--'
+            }
+        },
         getContractDetail() {
             this.$ajax.get('/api/contract/detail',{id:this.id}).then(res => {
                 res = res.data
                 if(res.status === 200) {
-                    this.dealBasicInfo.signDate = res.data.signDate.substr(0, 10)
+                    this.dealBasicInfo.signDate = res.data.signDate.substr(0, 16)
                     this.dealBasicInfo.code = res.data.code
                     this.dealBasicInfo.contType = res.data.contType.label
                     this.dealBasicInfo.dealPrice = res.data.dealPrice
                     this.dealBasicInfo.receivableCommission = res.data.receivableCommission
                     this.dealBasicInfo.Square = res.data.houseInfo.Square
+                    this.dealBasicInfo.CompleteYear = res.data.houseInfo.CompleteYear
                     this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
@@ -377,14 +370,6 @@ export default {
                     }
                     this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
                     this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
-                    this.firstBuyer.name = this.buyerArr[0].name
-                    this.firstBuyer.encryptionCode = this.buyerArr[0].encryptionCode
-                    this.firstBuyer.mobile = this.buyerArr[0].mobile
-                    this.firstBuyer.cardType = this.buyerArr[0].cardType
-                    this.firstSeller.name = this.sellerArr[0].name
-                    this.firstSeller.encryptionCode = this.sellerArr[0].encryptionCode
-                    this.firstSeller.mobile = this.sellerArr[0].mobile
-                    this.firstSeller.cardType = this.sellerArr[0].cardType
                 }
             }).catch(error => {
                 this.$message({
@@ -723,23 +708,16 @@ export default {
             color: @color-blank;
         }
         &.mai-mai {
-            p {
-                margin-right: 15px;
-            }
             p:nth-child(odd) {
-                span:first-child {
-                    min-width: 42px;
-                }
+                width: 190px;
+            }
+            p:nth-child(even) {
+                width: 220px;
             }
         }
     }
     .text-long {
         min-width: 373px;
-    }
-    .number {
-        .el-input {
-            min-width: 352px;
-        }
     }
     .square {
         min-width: 120px;
@@ -759,18 +737,6 @@ export default {
         }
         &.shui-fei {
             margin-left: 6px!important;
-        }
-    }
-    .gongyouren {
-        // display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
-        max-width: 600px;
-        li {
-            display: flex;
-            &:first-child {
-                display: none;
-            }
         }
     }
 }
@@ -801,7 +767,6 @@ export default {
                 > span {
                     min-width: 70px;
                     line-height: 32px;
-                    text-align: right;
                     &.use {
                         min-width: 112px;
                     }
@@ -863,7 +828,7 @@ export default {
     .owner {
         > div {
             display: flex;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             > p {
                 display: flex;
             }

@@ -239,7 +239,7 @@
                   <div class="span">{{item.name}}</div>
                 </el-tooltip>
                 <p
-                  v-show="activeLi===index"
+                  v-show="activeLi===index&&dialogOperation!==3"
                   @click.stop="delFile"
                 ><i class="iconfont icon-tubiao-6"></i></p>
               </li>
@@ -428,7 +428,7 @@ export default {
       if (type === "amount") {
         this.form.amount = this.$tool.cutFloat({
           val: this.form.amount,
-          max: 999999999999
+          max: 999999999.99
         });
       } else {
         this.form.objName = this.$tool.textInput(this.form.objName);

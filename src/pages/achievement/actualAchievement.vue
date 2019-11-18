@@ -267,11 +267,19 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="propertyAddr" label="物业地址"  min-width="120"></el-table-column>
-
-          <el-table-column prop="date" label="签约日期"  min-width="90">
+          <el-table-column prop="propertyAddr" label="物业地址"  min-width="120">
             <template slot-scope="scope">
-              <p>{{scope.row.signDate|formatDate}}</p>
+              <span v-if="scope.row.propertyAddr.length===0">--</span>
+              <template v-else>
+                <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
+                <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+              </template>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="date" label="签约时间"  min-width="90">
+            <template slot-scope="scope">
+              <p>{{scope.row.signDate|formatTime(false)}}</p>
             </template>
           </el-table-column>
 
@@ -328,6 +336,20 @@
                   <p>{{item.ratio}}%</p>
                 </div>
               </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="上传业绩分成协议时间"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.agreementUploadTime">{{scope.row.agreementUploadTime|formatTime(false)}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="变更/解约"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.statusChange">{{scope.row.statusChange.label}}</p>
+              <p v-else>-</p>
             </template>
           </el-table-column>
 
@@ -390,7 +412,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作"  min-width="120">
+          <el-table-column label="操作"  min-width="90" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
                 <div v-if="scope.row.achievementState==-1" class="check-btn">
@@ -1157,7 +1179,7 @@ export default {
       this.uploadScane.id=row.code
       this.htbh=row.code
       this.yjId=row.aId
-      this.qysj=this.$tool.dateFormat(row.signDate)
+      this.qysj=this.$tool.timeFormat(row.signDate,false)
       this.$ajax.get("/api/appeal/launchAppeal",{aId:`${this.yjId}`}).then(res=>{
       if(res.data.status==200){
         this.isSS=true
@@ -1341,6 +1363,7 @@ export default {
     //获取应收列表详情
     enterDetail(row) {
       this.code = row.code;
+      debugger
       let newPage = this.$router.resolve({
         path: "/achDetial",
         query: {
@@ -1348,7 +1371,8 @@ export default {
           entrance: 3,
           aId: row.aId,
           contractId2: row.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:row.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1477,7 +1501,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1495,6 +1520,7 @@ export default {
     //     this.shows = true;
     // },
     editAch(value, index) {
+      debugger
       let newPage = this.$router.resolve({
         path: "/achPage",
         query: {
@@ -1504,7 +1530,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -1519,7 +1546,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");

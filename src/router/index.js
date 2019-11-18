@@ -71,6 +71,9 @@ const extendParams = () => import("@/pages/contract/contractList/extendParams");
 const otherContractList = () => import("@/pages/contract/otherContract/otherContractList")
 const addOtherContract = () => import("@/pages/contract/otherContract/addOtherContract")
 const otherContractDetail = () => import("@/pages/contract/otherContract/otherContractDetail")
+//变更解约审核
+const changeCheck = () => import("@/pages/contract/contractList/changeCheck")
+const cancelCheck = () => import("@/pages/contract/contractList/cancelCheck")
 
 const Login = () => import("@/login")
 const iframTest = () => import("@/pages/iframe/iframeTest")
@@ -403,6 +406,23 @@ export default new Router({
           meta: {
             root: true,
             list: ["二手房","合同", "合同审核"]
+          }
+        },
+        //变更解约审核
+        {
+          path: "changeCheck",
+          component: changeCheck,
+          meta: {
+            root: true,
+            list: ["二手房","合同", "变更审核"]
+          }
+        },
+        {
+          path: "cancelCheck",
+          component: cancelCheck,
+          meta: {
+            root: true,
+            list: ["二手房","合同", "解约审核"]
           }
         },
         //分账/打款详情

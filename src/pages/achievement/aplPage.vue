@@ -7,26 +7,16 @@
           <div class="ach-header">
             <h1
               v-if="dialogType==0"
-            >业绩申诉审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1 v-if="dialogType==1">业绩编辑<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1 v-if="dialogType==2">业绩反审核<span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span></h1>
-            <h1
-              v-if="dialogType==3"
-              style="fontSize:20px;"
-            >业绩分成</h1>
-            <p style="font-weight:bold;">
-              可分配业绩：
-              <span class="orange">{{comm}}元</span>
-              <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
-            </p>
+            >业绩申诉审核
+            </h1>
           </div>
 
           <!-- 房源列表 -->
           <div class="ach-body">
             <div class="house-divide">
               <div class="house-left f_l">
-                <h1 class="f14">房源方分成</h1>
-                <p class="f_l delive">合计:{{housetotal}}%</p>
+              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
                 class="house-right f_r"
@@ -108,6 +98,13 @@
                   label="经纪人"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :disabled="scope.row.assignor?false:true"
+                    :content="scope.row.assignor+''"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.assignor"
                       filterable
@@ -127,8 +124,47 @@
                         :value="item.empId"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
+
+                <el-table-column label="经纪人工号" width="120">
+                <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum+''"
+                    placement="top"
+                  >
+                  <el-input
+                    v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                    v-model="scope.row.assignorNum"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="经纪人级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
+                    v-model="scope.row.assignorLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="销售经理级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
+                    v-model="scope.row.salesManagerLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
 
                 <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
                 <el-table-column
@@ -159,7 +195,8 @@
                     v-if="scope.row.level3"
                     class="item"
                     effect="dark"
-                    :content="scope.row.level3"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
                     placement="top">
                       <el-select
                       v-model="scope.row.level3"
@@ -207,6 +244,13 @@
                   label="店长"
                 >
                   <template slot-scope="scope">
+                      <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.shopkeeper"
                       filterable
@@ -226,6 +270,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                      </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -235,6 +280,13 @@
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.level4"
                       filterable
@@ -253,6 +305,7 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -261,6 +314,13 @@
                   label="总监"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.amaldar"
                       filterable
@@ -280,6 +340,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -288,6 +349,13 @@
                   label="副总"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.manager"
                       filterable
@@ -307,20 +375,17 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="公共业绩"
-                  width="155"
-                >
-                  <template slot-scope="scope">
-                    <el-radio-group v-model="scope.row.place">
-                      <el-radio :label="0" @click.native="selectRadio(scope.$index,$event,0,0)" style="margin-top:6px;font-size:12px">门店</el-radio>
-                      <el-radio :label="1" @click.native="selectRadio(scope.$index,$event,0,1)" style="margin-top:3px;;font-size:12px">公司</el-radio>
-                    </el-radio-group>
-                  </template>
-                </el-table-column>
+               <el-table-column label="公共业绩" width="280">
+                <template slot-scope="scope">
+                  <el-checkbox-group @change="text2(scope.row)" v-model="scope.row.checkbox">
+                        <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
+                  </el-checkbox-group>
+                </template>
+              </el-table-column>
 
                 <el-table-column
                   prop="manager"
@@ -340,8 +405,8 @@
 
             <div class="house-divide top20">
               <div class="house-left f_l">
-                <h1 class="f14">客源方分成</h1>
-                <p class="f_l delive">合计:{{clienttotal}}%</p>
+              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
                 class="house-right f_r"
@@ -421,6 +486,13 @@
                   label="经纪人"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignor+''"
+                    :disabled="scope.row.assignor?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.assignor"
                       filterable
@@ -440,8 +512,47 @@
                         :value="item.empId"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
+
+              <el-table-column label="经纪人工号" width="120">
+                <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum+''"
+                    placement="top"
+                  >
+                  <el-input
+                    v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                    v-model="scope.row.assignorNum"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="经纪人级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
+                    v-model="scope.row.assignorLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="销售经理级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
+                    v-model="scope.row.salesManagerLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
 
                 <el-table-column
                   label="在职状况"
@@ -471,7 +582,8 @@
                     v-if="scope.row.level3"
                     class="item"
                     effect="dark"
-                    :content="scope.row.level3"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
                     placement="top">
                       <el-select
                       v-model="scope.row.level3"
@@ -519,6 +631,13 @@
                   label="店长"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.shopkeeper"
                       filterable
@@ -537,6 +656,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -546,6 +666,13 @@
                   v-if="$route.query.version=='0'"
                 >
                   <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.level4"
                       filterable
@@ -564,6 +691,7 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -572,6 +700,13 @@
                   label="总监"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.amaldar"
                       filterable
@@ -591,6 +726,7 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
@@ -599,6 +735,13 @@
                   label="副总"
                 >
                   <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
+                    placement="top"
+                  >
                     <el-select
                       v-model="scope.row.manager"
                       filterable
@@ -618,20 +761,17 @@
                         :value="item.depId+'-'+item.name"
                       ></el-option>
                     </el-select>
+                  </el-tooltip>
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="公共业绩"
-                  width="155"
-                >
-                  <template slot-scope="scope">
-                    <el-radio-group v-model="scope.row.place">
-                      <el-radio :label="0" @click.native.stop="selectRadio(scope.$index, $event,1,0)" style="margin-top:6px;font-size:12px;">门店</el-radio>
-                      <el-radio :label="1" @click.native.stop="selectRadio(scope.$index, $event,1,1)" style="margin-top:3px;font-size:12px;">公司</el-radio>
-                    </el-radio-group>
-                  </template>
-                </el-table-column>
+                <el-table-column label="公共业绩" width="280">
+                <template slot-scope="scope">
+                  <el-checkbox-group @change="text3(scope.row)" v-model="scope.row.checkbox">
+                        <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
+                  </el-checkbox-group>
+                </template>
+              </el-table-column>
 
                 <el-table-column
                   prop="manager"
@@ -649,6 +789,331 @@
               </el-table>
             
            </div>
+
+           <div  class="house-divide top20" v-if="contType==2||contType==3">
+            <div class="house-left f_l">
+              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
+              <p class="f_l delive">房客源可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
+            </div>
+            <div class="house-right f_r">
+              <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
+            </div>
+          </div>
+
+          <div  class="ach-divide-list" v-if="contType==2||contType==3">
+            <el-table :data="serviceAgents" style="width: 100%">
+              <el-table-column label="角色类型" width="125">
+                <template slot-scope="scope">
+                  <!-- filterable -->
+                  <el-select
+                    v-model="scope.row.roleType"
+                    placeholder="请选择"
+                    @change="feecli(scope.row.roleType0,scope.$index)"
+                  >
+                    <el-option
+                      v-for="item in roleType1"
+                      :key="item.id"
+                      :label="item.description"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="分成比例(%)" width="95">
+                <template slot-scope="scope">
+                  <el-input
+                    v-model="scope.row.ratio"
+                    placeholder="请输入"
+                    @input="filterFeeNumber(scope.row.ratio,scope.$index)"
+                  ></el-input>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="经纪人">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignor+''"
+                    :disabled="scope.row.assignor?false:true"
+                    placement="top"
+                  >
+                  <el-select
+                    v-model="scope.row.assignor"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :remote-method="getAssignors"
+                    :loading="loading1"
+                    v-loadmore="moreAssignors"
+                    @change="changeAssignors(scope.row.assignor,scope.$index,2)"
+                  >
+                    <el-option
+                      v-for="item in assignors"
+                      :key="item.empId"
+                      :label="item.name+'-'+item.depName"
+                      :value="item.empId"
+                    ></el-option>
+                  </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="经纪人工号" width="150">
+                <template slot-scope="scope">
+                    <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum+''"
+                    placement="top"
+                  >
+                  <el-input
+                    v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                    v-model="scope.row.assignorNum"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="经纪人级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
+                    v-model="scope.row.assignorLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="销售经理级别" width="100">
+                <template slot-scope="scope">
+                  <el-input
+                    v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
+                    v-model="scope.row.salesManagerLevel"
+                    disabled
+                  ></el-input>
+                  <el-input v-else v-model="hx" disabled></el-input>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="在职状况" width="110">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.isJob" placeholder="请选择">
+                    <el-option
+                      v-for="item in dictionary['20']"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="{'label':item.value,'value':item.key}"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <!-- 门店，可输入，可下拉 -->
+              <el-table-column label="门店">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    v-if="scope.row.level3"
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level3+''"
+                    :disabled="scope.row.level3?false:true"
+                    placement="top"
+                  >
+                    <el-select
+                      v-model="scope.row.level3"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :loading="loading1"
+                      :remote-method="getLevel(3)"
+                      @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                    >
+                      <el-option
+                        v-for="item in level3s"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-tooltip>
+                  <el-select
+                    v-else
+                    v-model="scope.row.level3"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :loading="loading1"
+                    :remote-method="getLevel(3)"
+                    @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                  >
+                    <el-option
+                      v-for="item in level3s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <!-- 店长，可输入，可下拉 -->
+              <el-table-column label="店长">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.shopkeeper+''"
+                    :disabled="scope.row.shopkeeper?false:true"
+                    placement="top"
+                  >
+                  <el-select
+                    v-model="scope.row.shopkeeper"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :loading="loading1"
+                    :remote-method="getShopInfo(2)"
+                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
+                  >
+                    <el-option
+                      v-for="item in shopkeepers"
+                      :key="item.empId"
+                      :label="item.name+'-'+item.depName"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <!-- 单组，可输入，可下拉 -->
+              <el-table-column label="单组" v-if="$route.query.version=='0'">
+                <template slot-scope="scope">
+                 <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.level4+''"
+                    :disabled="scope.row.level4?false:true"
+                    placement="top"
+                  >                 
+                  <el-select
+                    v-model="scope.row.level4"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :loading="loading1"
+                    :remote-method="getLevel(4)"
+                    @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
+                  >
+                    <el-option
+                      v-for="item in level4s"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id+'-'+item.name"
+                    ></el-option>
+                  </el-select>
+                 </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <!-- 区经，可输入，可下拉 -->
+              <el-table-column label="总监">
+                <template slot-scope="scope">
+                   <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.amaldar+''"
+                    :disabled="scope.row.amaldar?false:true"
+                    placement="top"
+                  >                 
+                  <el-select
+                    v-model="scope.row.amaldar"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :loading="loading1"
+                    :remote-method="getShopInfo(1)"
+                    v-loadmore="moreAmaldars"
+                    @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
+                  >
+                    <el-option
+                      v-for="item in amaldars"
+                      :key="item.empId"
+                      :label="item.name+'-'+item.depName"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
+                   </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <!-- 区总，可输入，可下拉 -->
+              <el-table-column label="副总">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.manager+''"
+                    :disabled="scope.row.manager?false:true"
+                    placement="top"
+                  >
+                  <el-select
+                    v-model="scope.row.manager"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :clearable="true"
+                    placeholder="请输入内容"
+                    :loading="loading1"
+                    :remote-method="getShopInfo(0)"
+                    v-loadmore="moreManagers"
+                    @change="changeManager(scope.row.manager,scope.$index,2)"
+                  >
+                    <el-option
+                      v-for="item in managers"
+                      :key="item.empId"
+                      :label="item.name+'-'+item.depName"
+                      :value="item.depId+'-'+item.name"
+                    ></el-option>
+                  </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="公共业绩" width="280">
+               <template slot-scope="scope">
+                  <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox">
+                        <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
+                  </el-checkbox-group>
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="manager" label="操作">
+                <template slot-scope="scope">
+                  <a
+                    class="delete"
+                    style="color:#478de3;text-decoration:underline;cursor:pointer;"
+                    @click="deletefee(scope.$index,serviceAgents,scope.row.id)"
+                  >删除</a>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
 
            <div class="house-divide top20" style="height:38px">
              <div class="house-left f_l">
@@ -773,6 +1238,38 @@
            
           </div>
       <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+          
+            <div class="top20">
+            <div class="house-left">
+              <h1 class="f14">上传业绩分成协议</h1>
+            </div>
+            <ul class="ulData" style="margin-top:10px">
+              <li>
+                <file-up class="upload-box" @getUrl="addSubject">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li>
+              <li v-for="(item,i) in filesList" :key="i">
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                  <div class="attach-box" @click="previewPhoto(filesList,i)">
+                    <img
+                      :src="item.path|getSignImage(contDataFiles)"
+                      alt
+                      v-if="isPictureFile(item.fileType)"
+                      width="70%"
+                      height="62px"
+                    />
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
+                    <p>{{item.name}}</p>
+                  </div>
+                </el-tooltip>
+                <i class="iconfont icon-tubiao-6" @click="deleteFn(i)"></i>
+              </li>
+            </ul>
+          </div>
+        </div>
+
           <!-- 业绩审核底部 -->
           <div
             class="ach-footer"
@@ -826,6 +1323,7 @@
                 type="date"
                 placeholder="选择日期"
                 value-format="timestamp"
+                @change="checkDate"
               ></el-date-picker>
             </p>
             <div class="footer-btn-layout f_r">
@@ -886,6 +1384,8 @@
                         <p>{{scope.row.assignor}}</p>
                       </template>
                     </el-table-column>
+
+                    
 
                     <el-table-column
                       label="角色类型"
@@ -1000,6 +1500,8 @@
     name: "achDialog",
     data() {
       return {
+        serviceAgents:[],
+        hx:'-',
         aplid:'',
         aplman:'',
         aplrole:'',
@@ -1024,6 +1526,7 @@
         roleType0: [], //房源角色类型
         roleType1: [], //客源角色类型
         comm: "", //可分配业绩
+        tradeFee:0,
         addManList: [],
         dictionary: {
           //数据字典
@@ -1065,13 +1568,22 @@
         state2:'',
         aplDialog:false,
         shenname:[],
-        auditIds:''
+        auditIds:'',
+        filesList:[],
+        contDataFiles: [], //资料库图片缩略图
+        mainDataFiles: [], //合同主体图片缩略图
+        // distributionAgreement: [],
+        // attachList: [], //上传附件数组
+        preloadList: [],
+        preloadFiles: [],
+        contType:'',
       };
     },
     components:{
       checkPerson
     },
-    created() {
+    created() {  
+      this.contType=this.$route.query.contType
       this.dialogType=this.$route.query.dialogType
       this.contractCode=this.$route.query.contractCode
       this.aId=this.$route.query.aId
@@ -1102,7 +1614,37 @@
               }
               var houseArr2 = res.data.data.houseAgents;
               this.clientArr = res.data.data.customerAgents;
+              for(let i=0;i< this.houseArr.length;i++){
+                // this.houseArr[i].checkbox=[],
+                this.$set(this.houseArr[i],'checkbox',[])
+                this.houseArr[i].checkbox.push(this.houseArr[i].place)
+              }
+              console.log(this.houseArr);
+              for(let i=0;i< this.clientArr.length;i++){
+                this.$set(this.clientArr[i],'checkbox',[])
+                this.clientArr[i].checkbox.push(this.clientArr[i].place)
+              }
+              this.serviceAgents = res.data.data.serviceAgents;
+                for(let i=0;i< this.serviceAgents.length;i++){
+                  this.$set(this.serviceAgents[i],'checkbox',[])
+                  this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place)
+              }
+            if (res.data.data.distributionAgreement&&JSON.parse(res.data.data.distributionAgreement).length>0) {
+            let pathList = JSON.parse(res.data.data.distributionAgreement);
+            this.filesList = pathList;
+            let preloadList = [];
+            pathList.forEach((item, index) => {
+              //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if (this.isPictureFile(item.fileType)) {
+                preloadList.push(item.path);
+              }
+            });
+            this.fileSign(preloadList, "preload").then(res => {
+              this.contDataFiles = res;
+            });
+          }
               this.comm = res.data.data.comm;
+              this.tradeFee = res.data.data.tradeFee;
               if (res.data.data.examineDate) {
                 this.examineDate = res.data.data.examineDate;
               }
@@ -1176,6 +1718,17 @@
          }
        }
       },
+      feecli(val,index){
+        let arr1=JSON.parse(JSON.stringify(this.serviceAgents))
+            arr1.splice(index,1)
+        for(let i=0;i<arr1.length;i++){
+         if(arr1[i].roleType==this.serviceAgents[index].roleType){
+           this.$message.error("角色已经存在，请勿重新添加")
+           this.serviceAgents[index].roleType=''
+           return false;
+         }
+       }
+      },
       housecli(val,index){
         let arr1=JSON.parse(JSON.stringify(this.houseArr))
             arr1.splice(index,1)
@@ -1209,17 +1762,30 @@
           }
         })
       },
-      //判断分成比例只能输入1-100的正整数
-      filterHouseNumber(val, index) {
-         this.$nextTick(() =>{
-                    this.houseArr[index].ratio=this.$tool.cutFloat({val:this.houseArr[index].ratio,max:100})
-                })
-      },
-      filterClientNumber(val, index) {
-          this.$nextTick(() =>{
-                     this.clientArr[index].ratio=this.$tool.cutFloat({val: this.clientArr[index].ratio,max:100})
-                })
-      },
+    filterHouseNumber(val, index) {
+      this.$nextTick(() => {
+        this.houseArr[index].ratio = this.$tool.cutFloat({
+          val: this.houseArr[index].ratio,
+          max: 100
+        });
+      });
+    },
+    filterClientNumber(val, index) {
+      this.$nextTick(() => {
+        this.clientArr[index].ratio = this.$tool.cutFloat({
+          val: this.clientArr[index].ratio,
+          max: 100
+        });
+      });
+    },
+  filterFeeNumber(val, index) {
+      this.$nextTick(() => {
+        this.serviceAgents[index].ratio = this.$tool.cutFloat({
+          val: this.serviceAgents[index].ratio,
+          max: 100
+        });
+      });
+    },
       // 获取经纪人
       getAssignors(queryString) {
         if (queryString !== "") {
@@ -1275,11 +1841,13 @@
       },
       // 改变经纪人
       changeAssignors(val, index, type) {
-        if (val) {
-          let param={
-            id:val
-          };
-          this.$ajax.get("/api/organize/employee/agent/details",param).then(res => {
+      if (val) {
+        let param = {
+          id: val
+        };
+        this.$ajax
+          .get("/api/organize/employee/agent/details", param)
+          .then(res => {
             let data = res.data.data;
             if (type == 0) {
               this.houseArr[index].assignor = data.assignor;
@@ -1296,7 +1864,10 @@
               this.houseArr[index].amaldarId = data.amaldarId; //区经id
               this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
               this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-            } else {
+              this.houseArr[index].assignorNum = data.assignorNum;
+              this.houseArr[index].assignorLevel = data.assignorLevel;
+              this.houseArr[index].salesManagerLevel = data.salesManagerLevel;
+            } else if (type == 1) {
               this.clientArr[index].assignor = data.assignor;
               this.clientArr[index].isJob = data.isJob;
               this.clientArr[index].level3 = data.level3; //门店
@@ -1311,40 +1882,87 @@
               this.clientArr[index].amaldarId = data.amaldarId; //区经id
               this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
               this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
+              this.clientArr[index].assignorNum = data.assignorNum;
+              this.clientArr[index].assignorLevel = data.assignorLevel;
+              this.clientArr[index].salesManagerLevel = data.salesManagerLevel;
+            } else {
+              this.serviceAgents[index].assignor = data.assignor;
+              this.serviceAgents[index].isJob = data.isJob;
+              this.serviceAgents[index].level3 = data.level3; //门店
+              this.serviceAgents[index].shopkeeper = data.shopkeeper; //店长
+              this.serviceAgents[index].level4 = data.level4; //单组
+              this.serviceAgents[index].amaldar = data.amaldar; //区经
+              this.serviceAgents[index].manager = data.manager; //区总
+              this.serviceAgents[index].assignorId = data.assignorId; //经纪人id
+              this.serviceAgents[index].storefront3Id = data.storefront3Id; //三级门店
+              this.serviceAgents[index].storefront4Id = data.storefront4Id; //四级门店
+              this.serviceAgents[index].managerId = data.managerId; //区总id
+              this.serviceAgents[index].amaldarId = data.amaldarId; //区经id
+              this.serviceAgents[index].shopkeeperId = data.shopkeeperId; //店长id
+              this.serviceAgents[index].platformFeeRatio =
+                data.platformFeeRatio; //平台费比率
+              this.serviceAgents[index].assignorNum = data.assignorNum;
+              this.serviceAgents[index].assignorLevel = data.assignorLevel;
+              this.serviceAgents[index].salesManagerLevel =
+                data.salesManagerLevel;
             }
           });
+      } else {
+        if (type == 0) {
+          this.houseArr[index].isJob = "";
+          this.houseArr[index].level3 = "";
+          this.houseArr[index].shopkeeper = "";
+          this.houseArr[index].level4 = "";
+          this.houseArr[index].amaldar = "";
+          this.houseArr[index].manager = "";
+          this.houseArr[index].assignorId = "";
+          this.houseArr[index].storefront3Id = "";
+          this.houseArr[index].storefront4Id = "";
+          this.houseArr[index].managerId = "";
+          this.houseArr[index].amaldarId = "";
+          this.houseArr[index].shopkeeperId = "";
+          this.houseArr[index].platformFeeRatio = "";
+        } else if (type == 1) {
+          this.clientArr[index].isJob = "";
+          this.clientArr[index].level3 = "";
+          this.clientArr[index].shopkeeper = "";
+          this.clientArr[index].level4 = "";
+          this.clientArr[index].amaldar = "";
+          this.clientArr[index].manager = "";
+          this.clientArr[index].assignorId = "";
+          this.clientArr[index].storefront3Id = "";
+          this.clientArr[index].storefront4Id = "";
+          this.clientArr[index].managerId = "";
+          this.clientArr[index].amaldarId = "";
+          this.clientArr[index].shopkeeperId = "";
+          this.clientArr[index].platformFeeRatio = "";
         } else {
-          if (type == 0) {
-            this.houseArr[index].isJob = "";
-            this.houseArr[index].level3 = "";
-            this.houseArr[index].shopkeeper = "";
-            this.houseArr[index].level4 = "";
-            this.houseArr[index].amaldar = "";
-            this.houseArr[index].manager = "";
-            this.houseArr[index].assignorId = "";
-            this.houseArr[index].storefront3Id = "";
-            this.houseArr[index].storefront4Id = "";
-            this.houseArr[index].managerId = "";
-            this.houseArr[index].amaldarId = "";
-            this.houseArr[index].shopkeeperId = "";
-            this.houseArr[index].platformFeeRatio = "";
-          } else {
-            this.clientArr[index].isJob = "";
-            this.clientArr[index].level3 = "";
-            this.clientArr[index].shopkeeper = "";
-            this.clientArr[index].level4 = "";
-            this.clientArr[index].amaldar = "";
-            this.clientArr[index].manager = "";
-            this.clientArr[index].assignorId = "";
-            this.clientArr[index].storefront3Id = "";
-            this.clientArr[index].storefront4Id = "";
-            this.clientArr[index].managerId = "";
-            this.clientArr[index].amaldarId = "";
-            this.clientArr[index].shopkeeperId = "";
-            this.clientArr[index].platformFeeRatio = "";
-          }
+          this.serviceAgents[index].isJob = "";
+          this.serviceAgents[index].level3 = "";
+          this.serviceAgents[index].shopkeeper = "";
+          this.serviceAgents[index].level4 = "";
+          this.serviceAgents[index].amaldar = "";
+          this.serviceAgents[index].manager = "";
+          this.serviceAgents[index].assignorId = "";
+          this.serviceAgents[index].storefront3Id = "";
+          this.serviceAgents[index].storefront4Id = "";
+          this.serviceAgents[index].managerId = "";
+          this.serviceAgents[index].amaldarId = "";
+          this.serviceAgents[index].shopkeeperId = "";
+          this.serviceAgents[index].platformFeeRatio = "";
         }
-      },
+      }
+    },
+    checkDate:function(val){
+        // debugger
+            let date=new Date(val);
+            if(date.getTime()>Date.now()){
+                this.examineDate=''
+                this.$message({
+                    message:'不能选择未来时间'
+                })
+            }
+    },
       // 获取门店，单组信息  type=3(门店)  type=4(单组)
       getLevel(type) {
         return queryString => {
@@ -1369,24 +1987,60 @@
         };
       },
       // 改变门店,单组
-      changeLevel3(val, index, type1, type2) {
-        if (val) {
-          let level3Arr = val.split("-");
-          if (type1 == 0 && type2 == 0) {
-            this.houseArr[index].storefront3Id = level3Arr[0];
-            this.houseArr[index].level3 = level3Arr[1];
-          } else if (type1 == 0 && type2 == 1) {
-            this.houseArr[index].storefront4Id = level3Arr[0];
-            this.houseArr[index].level4 = level3Arr[1];
-          } else if (type1 == 1 && type2 == 0) {
-            this.clientArr[index].storefront3Id = level3Arr[0];
-            this.clientArr[index].level3 = level3Arr[1];
-          } else {
-            this.clientArr[index].storefront4Id = level3Arr[0];
-            this.clientArr[index].level4 = level3Arr[1];
+    changeLevel3(val, index, type1, type2) {
+      if (val) {
+        let level3Arr = val.split("-");
+        if (type1 == 0 && type2 == 0) {
+          this.houseArr[index].storefront3Id = level3Arr[0];
+          if(level3Arr[2]){
+            this.houseArr[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.houseArr[index].level3 = level3Arr[1]
           }
+        } else if (type1 == 0 && type2 == 1) {
+          this.houseArr[index].storefront4Id = level3Arr[0];
+          this.houseArr[index].level4 = level3Arr[1];
+        } else if (type1 == 1 && type2 == 0) {
+          this.clientArr[index].storefront3Id = level3Arr[0];
+          if(level3Arr[2]){
+            this.clientArr[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.clientArr[index].level3 = level3Arr[1]
+          }
+        } else if (type1 == 1 && type2 == 1) {
+          this.clientArr[index].storefront4Id = level3Arr[0];
+          this.clientArr[index].level4 = level3Arr[1];
+        }else if (type1 == 2 && type2 == 0) {
+          this.clientArr[index].storefront3Id = level3Arr[0];
+          if(level3Arr[2]){
+            this.serviceAgents[index].level3 = level3Arr[1]+'-'+level3Arr[2]
+          }else{
+            this.serviceAgents[index].level3 = level3Arr[1]
+          }
+        } else if (type1 == 2 && type2 == 1) {
+          this.serviceAgents[index].storefront4Id = level3Arr[0];
+          this.serviceAgents[index].level4 = level3Arr[1];
         }
-      },
+      }
+    },
+          text2(row){
+      if(row.checkbox.length==0){
+        return
+      }
+        row.checkbox=row.checkbox.slice(-1)
+    },
+    text3(row){
+      if(row.checkbox.length==0){
+        return
+      }
+        row.checkbox=row.checkbox.slice(-1)
+    },
+    text4(row){
+      if(row.checkbox.length==0){
+        return
+      }
+        row.checkbox=row.checkbox.slice(-1)
+    },
       // 获取店长，区经,区总
       getShopInfo(roleId){
         return (queryString) => {
@@ -1475,7 +2129,10 @@
           }else if(type1 == 1){
             this.clientArr[index].shopkeeperId = idName[0];
             this.clientArr[index].shopkeeper = idName[1];
-          }
+          }else if (type1 == 2){
+          this.serviceAgents[index].shopkeeperId = idName[0];
+          this.serviceAgents[index].shopkeeper = idName[1];
+        }
         }
       },
       // 改变区经
@@ -1488,7 +2145,10 @@
           }else if(type1 == 1){
             this.clientArr[index].amaldarId = idName[0];
             this.clientArr[index].amaldar = idName[1];
-          }
+          }else if (type1 == 2) {
+          this.serviceAgents[index].amaldarId = idName[0];
+          this.serviceAgents[index].amaldar = idName[1];
+        }
         }
       },
       // 改变区总
@@ -1502,6 +2162,9 @@
           }else if(type1 == 1){
             this.clientArr[index].managerId = idName[0];
             this.clientArr[index].manager = idName[1];
+          }else if(type1 == 2){
+            this.serviceAgents[index].managerId = idName[0];
+            this.serviceAgents[index].manager = idName[1];
           }
         }
 
@@ -1539,57 +2202,60 @@
       },
       // 添加房源经纪人
       addMansHouse() {
-        let obj = {
-          amaldar: "",
-          assignor: "",
-          isJob: {
-            label: "",
-            value: ""
-          },
-          level3: "",
-          level4: "",
-          manager: "",
-          place: -1,
-          ratio: "",
-          roleType: "",
-          shopkeeper: "",
-          amaldarId: "",
-          managerId: "",
-          shopkeeperId: "",
-          platformFeeRatio: "",
-          contractId: this.achObj.contractId,
-          contractCode: this.contractCode
-        };
-        this.houseArr.push(obj);
-        this.addArr.push(obj);
-      },
+      let obj = {
+        amaldar: "",
+        assignor: "",
+        isJob: {
+          label: "",
+          value: ""
+        },
+        level3: "",
+        level4: "",
+        manager: "",
+        place: -1,
+        checkbox:[],
+        ratio: "",
+        roleType: "",
+        isService: 0,
+        shopkeeper: "",
+        amaldarId: "",
+        managerId: "",
+        shopkeeperId: "",
+        platformFeeRatio: "",
+        contractId: this.achObj.contractId,
+        contractCode: this.contractCode
+      };
+      this.houseArr.push(obj);
+      this.addArr.push(obj);
+    },
       // 添加客源经纪人
       addMansClient() {
-        console.log(this.clientArr);
-        let obj = {
-          amaldar: "",
-          assignor: "",
-          isJob: {
-            label: "",
-            value: ""
-          },
-          level3: null,
-          level4: "",
-          manager: "",
-          place: -1,
-          ratio: "",
-          roleType: "",
-          shopkeeper: "",
-          amaldarId: "",
-          managerId: "",
-          shopkeeperId: "",
-          platformFeeRatio: "",
-          contractId: this.achObj.contractId,
-          contractCode: this.contractCode
-        };
-        this.clientArr.push(obj);
-        this.addArr.push(obj);
-      },
+      let obj = {
+        amaldar: "",
+        assignor: "",
+        isJob: {
+          label: "",
+          value: ""
+        },
+        level3: null,
+        level4: "",
+        manager: "",
+        place: -1,
+        checkbox:[],
+        ratio: "",
+        isService: 0,
+        roleType: "",
+        shopkeeper: "",
+        amaldarId: "",
+        managerId: "",
+        shopkeeperId: "",
+        platformFeeRatio: "",
+        contractId: this.achObj.contractId,
+        contractCode: this.contractCode
+      };
+      this.clientArr.push(obj);
+      this.addArr.push(obj);
+    },
       // 删除按钮
       deleteHouse(index, rows, id) {
         this.agendIds.push(id);
@@ -1650,39 +2316,48 @@
           this.houseArr[i].sortNum=i+1
           this.houseArr[i].contractId=this.achObj.contractId
           this.houseArr[i].contractCode=this.contractCode
+          this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
         }
         for(let i=0;i<this.clientArr.length;i++){
           this.clientArr[i].sortNum=i+1
           this.clientArr[i].contractId=this.achObj.contractId
           this.clientArr[i].contractCode=this.contractCode
+          this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
         }
+        for (let i = 0; i < this.serviceAgents.length; i++) {
+        this.serviceAgents[i].sortNum = i + 1;
+        this.serviceAgents[i].contractId = this.achObj.contractId;
+        this.serviceAgents[i].contractCode = this.contractCode;
+        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
+      }
         let resultArr = this.houseArr.concat(this.clientArr);
+        let resultArr2 = resultArr.concat(this.serviceAgents);
         for (var i = 0; i < resultArr.length; i++) {
           sum = this.toDecimal(sum,resultArr[i].ratio);
           if (this.$route.query.version == '0') {
             // 旧版本 总监 副总 必填
             if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === "" ||
-              resultArr[i].level4 === "" ||
-              resultArr[i].amaldar === "" ||
-              resultArr[i].manager === ""
+              resultArr2[i].roleType === "" ||
+              resultArr2[i].ratio === "" ||
+              resultArr2[i].assignor === "" ||
+              resultArr2[i].isJob === "" ||
+              resultArr2[i].level3 === "" ||
+              resultArr2[i].shopkeeper === "" ||
+              resultArr2[i].level4 === "" ||
+              resultArr2[i].amaldar === "" ||
+              resultArr2[i].manager === ""
             ) {
               flag = false;
             }
           } else {
             // 新版本 总监 副总 非必填
             if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === ""
+              resultArr2[i].roleType === "" ||
+              resultArr2[i].ratio === "" ||
+              resultArr2[i].assignor === "" ||
+              resultArr2[i].isJob === "" ||
+              resultArr2[i].level3 === "" ||
+              resultArr2[i].shopkeeper === ""
             ) {
               flag = false;
             }
@@ -1708,9 +2383,10 @@
           let param = {
             id: this.aId,
             remark: this.remark,
-            distributions: resultArr,
+            distributions: resultArr2,
             agendIds: this.agendIds,
-            contractId: this.achObj.contractId
+            contractId: this.achObj.contractId,
+            distributionAgreement: this.filesList
           };
           this.$ajax
             .postJSON("/api/appeal/saveAgents", param)
@@ -1832,108 +2508,122 @@
         this.aplremark=''
       },
       // 反审核，编辑的保存
-      keepAch(type, status,editStr) {
-        if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-          this.$message.error("房源至少保留一人");
-          return false;
-        }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
-          this.$message.error("客源至少保留一人");
-          return false;
+       keepAch(type, status, editStr) {
+      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+        this.$message.error("房源至少保留一人");
+        return false;
+      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+        this.$message.error("客源至少保留一人");
+        return false;
+      }
+      var arr1 = this.unique(this.houseArr);
+      if (arr1.length < this.houseArr.length) {
+        this.$message.error("房源方有重复角色存在，请核实");
+        return;
+      }
+      var arr2 = this.unique(this.clientArr);
+      if (arr2.length < this.clientArr.length) {
+        this.$message.error("客源方有重复角色存在，请核实");
+        return;
+      }
+      for (let i = 0; i < this.houseArr.length; i++) {
+        this.houseArr[i].sortNum = i + 1;
+        this.houseArr[i].contractId = this.achObj.contractId;
+        this.houseArr[i].contractCode = this.contractCode;
+        this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
+      }
+      for (let i = 0; i < this.clientArr.length; i++) {
+        this.clientArr[i].sortNum = i + 1;
+        this.clientArr[i].contractId = this.achObj.contractId;
+        this.clientArr[i].contractCode = this.contractCode;
+        this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
+      }
+      for (let i = 0; i < this.serviceAgents.length; i++) {
+        this.serviceAgents[i].sortNum = i + 1;
+        this.serviceAgents[i].contractId = this.achObj.contractId;
+        this.serviceAgents[i].contractCode = this.contractCode;
+        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
+      }
+      //resultArr表示房源客源加在一起之后组成的数组
+      let resultArr = this.houseArr.concat(this.clientArr);
+      let resultArr2 = resultArr.concat(this.serviceAgents);
+      console.log(this.serviceAgents);
+      let arr = [],
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        sumFlag = false;
+      for (var i = 0; i < resultArr.length; i++) {
+        sum = this.toDecimal(sum, resultArr[i].ratio);
+        if (this.$route.query.version == "0") {
+          // 旧版本 总监 副总 必填
+          if (
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === "" ||
+            resultArr2[i].level4 === "" ||
+            resultArr2[i].amaldar === "" ||
+            resultArr2[i].manager === ""
+          ) {
+            flag = false;
+          }
+        } else {
+          // 新版本 总监 副总 非必填
+          if (
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === ""
+          ) {
+            flag = false;
+          }
         }
-        var arr1=this.unique(this.houseArr)
-        if(arr1.length<this.houseArr.length){
-          this.$message.error("房源方有重复角色存在，请核实")
-          return
-        }
-        var arr2=this.unique(this.clientArr)
-        if(arr2.length<this.clientArr.length){
-          this.$message.error("客源方有重复角色存在，请核实")
-          return
-        }
-        for(let i=0;i<this.houseArr.length;i++){
-          this.houseArr[i].sortNum=i+1
-          this.houseArr[i].contractId=this.achObj.contractId
-          this.houseArr[i].contractCode=this.contractCode
-        }
-        for(let i=0;i<this.clientArr.length;i++){
-          this.clientArr[i].sortNum=i+1
-          this.clientArr[i].contractId=this.achObj.contractId
-          this.clientArr[i].contractCode=this.contractCode
-        }
-        //resultArr表示房源客源加在一起之后组成的数组
-        let resultArr = this.houseArr.concat(this.clientArr);
-        let arr = [],
-          roleFlag = true,
-          flag = true,
-          sum = 0,
+        if (sum == 100) {
+          sumFlag = true;
+        } else {
           sumFlag = false;
-        for (var i = 0; i < resultArr.length; i++) {
-          sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (this.$route.query.version == '0') {
-            // 旧版本 总监 副总 必填
-            if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === "" ||
-              resultArr[i].level4 === "" ||
-              resultArr[i].amaldar === "" ||
-              resultArr[i].manager === ""
-            ) {
-              flag = false;
-            }
-          } else {
-            // 新版本 总监 副总 非必填
-            if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === ""
-            ) {
-              flag = false;
-            }
-          }
-          if (sum == 100) {
-            sumFlag = true;
-          } else {
-            sumFlag = false;
-          }
         }
-        // console.log(sumFlag);
-        if (flag && sumFlag) {
-          this.loading=true;
-          // 新版本时参数添加level4和storefront4Id字段
-          if(this.$route.query.version == '1') {
-            resultArr.forEach(item => {
-              item.level4 = item.level3
-              item.storefront4Id = item.storefront3Id
-            })
-          }
-          console.log(this.examineDate);
-          let param = {};
-          if (type == 1) {
-            param = {
-              id: this.aId,
-              examineDate: this.examineDate,
-              distributions: resultArr,
-              agendIds: this.agendIds,
-              contractId: this.achObj.contractId
-            };
-          }
-          if (type == 2) {
-            param = {
-              id: this.aId,
-              distributions: resultArr,
-              agendIds: this.agendIds,
-              status: status,
-              contractId: this.achObj.contractId
-            };
-          }
-          this.$ajax.postJSON("/api/achievement/"+editStr, param).then(res => {
+      }
+      //  debugger;
+      // console.log(sumFlag);
+      if (flag && sumFlag) {
+        this.loading = true;
+        // 新版本时参数添加level4和storefront4Id字段
+        if (this.$route.query.version == "1") {
+          resultArr.forEach(item => {
+            item.level4 = item.level3;
+            item.storefront4Id = item.storefront3Id;
+          });
+        }
+        let param = {};
+        if (type == 1) {
+          param = {
+            id: this.aId,
+            examineDate: this.examineDate,
+            distributions: resultArr2,
+            agendIds: this.agendIds,
+            contractId: this.achObj.contractId,
+            distributionAgreement: this.filesList
+          };
+        }
+        if (type == 2) {
+          param = {
+            id: this.aId,
+            distributions: resultArr2,
+            agendIds: this.agendIds,
+            status: status,
+            contractId: this.achObj.contractId,
+            distributionAgreement: this.filesList
+          };
+        }
+        this.$ajax
+          .postJSON("/api/achievement/" + editStr, param)
+          .then(res => {
             if (res.data.status == 200) {
               let sendObj = {
                 agendIds: this.agendIds
@@ -1945,44 +2635,57 @@
                 this.$emit("saveData", this.achIndex, resultArr, -1);
               }
               if (type == 2 && status == 1) {
-                if(this.state2===1){
-                  var paperBtn2=document.getElementById('savebtn2')
-                  paperBtn2.disabled=true
-                  paperBtn2.classList.remove('color-blue')
-                  paperBtn2.classList.add('grey')
+                if (this.state2 === 1) {
+                  this.codeBaseInfo(
+                    this.contractId2,
+                    1,
+                    null,
+                    "getExamineInfo"
+                  );
+                  var paperBtn2 = document.getElementById("savebtn2");
+                  paperBtn2.disabled = true;
+                  paperBtn2.classList.remove("color-blue");
+                  paperBtn2.classList.add("grey");
                   this.$emit("saveData", this.achIndex, resultArr, 0);
                 }
               }
-              this.loading=false;
+              this.loading = false;
               this.$emit("close");
               this.$message({ message: "操作成功", type: "success" });
             }
-          }).catch(error => {
+          })
+          .catch(error => {
             // if(this.state2==0){
             //   var paperBtn2=document.getElementById('savebtn2')
             //       paperBtn2.disabled=true
             //       paperBtn2.classList.remove('color-blue')
             //       paperBtn2.classList.add('grey')
             // }
-            if(error.message==='下一节点审批人不存在'){
-              this.checkPerson.flowType=2;
-              this.checkPerson.code= this.aId;
-              this.checkPerson.state=true
-              this.checkPerson.type=1;
-            }else{
+            if (error.message === "下一节点审批人不存在") {
+              this.checkPerson.flowType = 2;
+              this.checkPerson.code = this.aId;
+              this.checkPerson.state = true;
+              this.checkPerson.type = 1;
+              this.codeBaseInfo(this.contractId2, 1, null, "getExamineInfo");
+              var paperBtn2 = document.getElementById("savebtn2");
+              paperBtn2.disabled = true;
+              paperBtn2.classList.remove("color-blue");
+              paperBtn2.classList.add("grey");
+              this.$emit("saveData", this.achIndex, resultArr, 0);
+            } else {
               this.$message({
-                message:error,
+                message: error,
                 type: "error"
-              })
+              });
             }
-            this.loading=false;
-          });;
-        } else if (!sumFlag && flag) {
-          this.$message.error("请输入正确的分成比例");
-        } else {
-          this.$message.error("请完善信息");
-        }
-      },
+            this.loading = false;
+          });
+      } else if (!sumFlag && flag) {
+        this.$message.error("请输入正确的分成比例");
+      } else {
+        this.$message.error("请完善信息");
+      }
+    },
       // 业绩分成的保存
       keepAchDivide(type) {
         if (this.houseArr.length == 0 && this.clientArr.length != 0) {
@@ -2139,6 +2842,11 @@
           })
           if(hflag){
             this.houseArr= this.houseArr.concat(this.addManList); 
+            for(let i=0;i< this.houseArr.length;i++){
+            this.$set(this.houseArr[i],'checkbox',[])
+            this.$set(this.houseArr[i],'isService',0)
+            this.houseArr[i].checkbox.push(this.houseArr[i].place)
+          }
           }     
         } else {
           var kflag=true
@@ -2153,6 +2861,11 @@
           })
           if(hflag){
             this.clientArr= this.clientArr.concat(this.addManList); 
+            for(let i=0;i< this.clientArr.length;i++){
+            this.$set(this.clientArr[i],'checkbox',[])
+            this.$set(this.clientArr[i],'isService',0)
+            this.clientArr[i].checkbox.push(this.clientArr[i].place)
+          }
           }
         }
         this.showTips1 = false;
@@ -2178,6 +2891,65 @@
           setTimeout(function(){_this.$emit("close");},50);
         }
       },
+      addserviceAgents() {
+      let obj = {
+        amaldar: "",
+        assignor: "",
+        isJob: {
+          label: "",
+          value: ""
+        },
+        level3: null,
+        level4: "",
+        manager: "",
+        place: -1,
+        checkbox:[],
+        ratio: "",
+        roleType: "",
+        shopkeeper: "",
+        isService: 1,
+        amaldarId: "",
+        managerId: "",
+        shopkeeperId: "",
+        platformFeeRatio: "",
+        storefront3Id : "",
+        contractId: this.achObj.contractId,
+        contractCode: this.contractCode
+      };
+      this.serviceAgents.push(obj);
+      this.addArr.push(obj);
+    },
+    addSubject(data) {
+      let arr = data.param;
+      arr.forEach(item => {
+        let fileType = this.$tool.get_suffix(item.name);
+        item.fileType = fileType;
+      });
+      this.filesList = this.filesList.concat(arr);
+      arr.forEach(item => {
+        if (this.isPictureFile(item.fileType)) {
+          this.preloadList.push(item.path);
+        }
+      });
+      //   this.fileSign(preloadList,'preload').then(res=>{
+      //   this.contDataFiles=res
+      // })
+      if (this.preloadList.length) {
+        this.fileSign(this.preloadList, "preload").then(res => {
+          this.contDataFiles = this.contDataFiles.concat(res);
+        });
+      }
+    },
+    deleteFn(i) {
+      if (this.filesList.length == 1) {
+        this.$message({
+          message: "至少保留一个，请勿删除",
+          type: "warning"
+        });
+        return;
+      }
+      this.filesList.splice(i, 1);
+    },
       closeCheckPerson(){
         this.checkPerson.state=false;
         let _this=this;
@@ -2218,6 +2990,17 @@
       return Math.round(num1 * baseNum + num2 * baseNum) / baseNum;
     },
     },
+  filters: {
+    getSignImage(val, list) {
+      if (list.length === 0) {
+        return "";
+      } else {
+        return list.find(item => {
+          return item.includes(val);
+        });
+      }
+    }
+  },
     computed:{
         validInput() {
                 return this.aplremark.length
@@ -2236,6 +3019,17 @@
             })
               return sum
         },
+      feetotal() {
+      var sum = 0;
+      if (this.serviceAgents) {
+        this.serviceAgents.forEach((item, index) => {
+          sum = this.accAdd(sum, item.ratio == "" ? 0 : item.ratio);
+        });
+        return sum;
+      } else {
+        return 0;
+      }
+    },
         fctotal(){
           return this.accAdd(this.housetotal,this.clienttotal)
         },
@@ -2248,6 +3042,7 @@
 </script>
 
 <style lang="less" scoped>
+@import "~@/assets/common.less";
   // 相关人员弹框
    .link{
     color: #478de3;
@@ -2261,6 +3056,64 @@
   .preview{
       z-index:2220!important
     }
+    .ulData {
+  display: flex;
+  flex-wrap: wrap;
+  li {
+    margin-right: 10px;
+    position: relative;
+    margin-bottom: 10px;
+    > i {
+      display: none;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      color: @color-warning;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    &:hover > i {
+      display: block;
+    }
+  }
+}
+.upload-box {
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  box-sizing: border-box;
+  padding-top: 28px;
+  border: 1px dashed @border-DE;
+  border-radius: 2px;
+  i {
+    color: @bg-th;
+    font-size: 50px;
+  }
+  p {
+    padding-top: 10px;
+    color: @color-324;
+    font-size: 12px;
+  }
+}
+.attach-box {
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: @color-F2;
+  > p {
+    padding-top: 5px;
+    display: inline-block;
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;
@@ -2284,6 +3137,7 @@
       height: 250px;
       // width: 450px !important;
     }
+
     /deep/ tr td:first-of-type,
     th:first-of-type {
       padding-left: 20px;

@@ -31,7 +31,7 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)">保存</el-button><br>
-        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3)&&power['sign-ht-info-toverify'].state" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3)&&power['sign-ht-info-toverify'].state||power['sign-ht-xq-entrust-edit'].state&&Msg.isentrust" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
@@ -121,6 +121,10 @@ export default {
 				'sign-ht-info-toverify': {
           state: false,
           name: '提交审核'//编辑+提审
+				},
+				'sign-ht-xq-entrust-edit': {
+          state: false,
+          name: '委托合同'
         },
         'sign-ht-info-sverify': {
           state: false,
@@ -173,8 +177,8 @@ export default {
 				this.isShowType=false;
 				this.isActive=2;
 				this.src2=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`//买卖
+				// entrust
 			}
-
     }else if(this.Msg.type===3){
       //代办
       this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
@@ -184,6 +188,9 @@ export default {
     }else if(this.Msg.type===5){
       //定金
       this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
+		}else if(this.Msg.isentrust){
+			//委托
+			this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=entrust`
 		}
   },
   methods: {
@@ -305,6 +312,17 @@ export default {
 						},
 						isCanAudit:isFull//1.完整 0.否
 					}
+				}
+			}else if(this.Msg.isentrust){
+				iframebox1.contentWindow.document.querySelector("#submit").click()
+				emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
+				param = {
+					id:this.Msg.id,
+					isClick:isClick,
+					html:{
+						entrust:htmlTxt1
+					},
+					isCanAudit:isFull//1.完整 0.否
 				}
 			}else{
 				iframebox1.contentWindow.document.querySelector("#submit").click()
@@ -477,7 +495,16 @@ export default {
 						cityId:this.Msg.cityId,
 						bizCode:this.Msg.code,
 						id:this.Msg.id,
-						html:{
+						// html:{
+						// 	address:htmlTxt1
+						// }
+					}
+					if(this.Msg.isentrust){
+						param.html = {
+							entrust:htmlTxt1
+						}
+					}else{
+						param.html = {
 							address:htmlTxt1
 						}
 					}
@@ -530,7 +557,7 @@ export default {
 						message:'提审成功',
 						type:'success'
 					})
-					if(this.Msg.isHaveData){
+					if(this.Msg.isHaveData||this.Msg.isentrust){
 						this.$router.push('/contractList');
 					}else{
 						this.dialogSuccess=true
@@ -541,7 +568,10 @@ export default {
 				if(error.message==='下一节点审批人不存在'){
             this.checkPerson.code=this.Msg.code;
             this.checkPerson.state=true;
-            this.checkPerson.label=true;
+						this.checkPerson.label=true;
+						if(this.Msg.isentrust){
+							this.checkPerson.flowType=11;
+						}
           }else{
             this.$message({
               message:error,
@@ -557,7 +587,7 @@ export default {
 		//关闭设置审核人弹窗
 		closeCheckPerson(){
 			this.checkPerson.state=false;
-			if(this.Msg.isHaveData){
+			if(this.Msg.isHaveData||this.Msg.isentrust){
 				this.$router.push('/contractList');
 			}else{
 				this.dialogSuccess=true

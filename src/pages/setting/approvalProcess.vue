@@ -16,10 +16,16 @@
                     <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
-            <div class="input-search" v-else>
+            <div class="input-search">
                 <label class="mr-20">体系</label>
                 <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
-                    <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                </el-select>
+            </div>
+            <div class="input-search">
+                <label class="mr-20">品牌</label>
+                <el-select size="small" v-model="searchForm.brandId" :clearable="true">
+                    <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
             <div class="input-search">
@@ -59,13 +65,18 @@
                             <span v-for="item in dictionary['711']" :key="item.key" v-if="item.key===scope.row.modularType">{{item.value}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="流程名称" prop="name"></el-table-column>
-                    <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
-                    <el-table-column label="体系" prop="systemTag" :formatter="nullFormatter" v-else>
+                    <el-table-column label="体系" prop="systemTag" :formatter="nullFormatter">
                         <template slot-scope="scope">
                             <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                         </template>
                     </el-table-column>
+                    <el-table-column label="品牌" prop="brandId" :formatter="nullFormatter">
+                        <template slot-scope="scope">                  
+                            <span>{{getBrandVal(scope.row.brandId)}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="合作方式" prop="deptAttr" :formatter="nullFormatter" v-if="version==2"></el-table-column>
+                    <el-table-column label="流程名称" prop="name"></el-table-column>
                     <el-table-column label="流程类型" prop="type">
                         <template slot-scope="scope">
                             <span v-for="item in dictionary['573']" :key="item.key" v-if="item.key===scope.row.type">{{item.value}}</span>                            
@@ -109,16 +120,22 @@
                             <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
+                    <div class="aduit-input must mr-35 ml-28">
+                        <label class="mr-28">体系:</label>
+                        <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
+                            <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
+                    <div class="aduit-input mr-35 ml-28" v-if="aduitForm.modularType==0">
+                        <label class="mr-28">品牌:</label>
+                        <el-select size="small" v-model="aduitForm.brandId" :disabled="editDisabled">
+                            <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        </el-select>
+                    </div>
                     <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
                         <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                        </el-select>
-                    </div>
-                    <div class="aduit-input must ml-28" v-if="version==3">
-                        <label class="mr-28">体系:</label>
-                        <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled">
-                            <el-option v-for="item in systemTagList" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input must mr-35">
@@ -135,7 +152,7 @@
                     </div>
                     <div class="aduit-input must">
                         <label>流程名称:</label>
-                        <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                        <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
                     </div>
                 </div>
                 <div class="aduit-node">
@@ -149,7 +166,7 @@
                     <ul v-if="isAudit==='1'">
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
-                               <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
+                               <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
                                 <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型">
                                     <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
                                 </el-select>
@@ -306,7 +323,8 @@
                     type: "",
                     branchCondition: "",
                     systemTag: "",
-                    modularType: ""
+                    modularType: "",
+                    brandId: ""
                 },
                 tableData: [],
                 aduitDialog: false,
@@ -318,7 +336,8 @@
                     type: "",
                     branchCondition: "",
                     flowDesc: "",
-                    systemTag: ""
+                    systemTag: "",
+                    brandId: ""
                 },
                 isAudit: "",
                 nodeList: [],
@@ -335,7 +354,11 @@
                     '660':'部门类型',
                     '711':'交易类型',
                     '722':'',
-                    '724':''
+                    '724':'',
+                    '729':'',
+                    '731':'',
+                    '733':'',
+                    '735':''
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -371,8 +394,9 @@
             }else{
                 this.getData()
             }
-            // 3.0环境获取体系
-            if(this.version == 3) this.getSystemTag()
+            // 获取体系
+            this.getSystemTag()
+            this.getSystemTagSelect()
             this.remoteMethod()
             this.getAduitType()
             this.getDeps()
@@ -380,6 +404,19 @@
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
+            getBrandVal(val) {
+                if(val) {
+                    let item = this.dictionary['735']
+                    for(let i = 0; i < item.length; i++) {
+                        if(val === item[i].key) {
+                            return item[i].value
+                            break
+                        }
+                    }
+                } else {
+                    return '--'
+                }
+            },
             // 分支节点选择
             aduitChange(val) {
                 if(this.aduitTitle === "添加") {
@@ -509,6 +546,7 @@
                 this.aduitForm.modularType = currentRow.modularType
                 this.aduitForm.deptAttr = currentRow.deptAttr ? currentRow.deptAttr.value : ""
                 this.aduitForm.systemTag = currentRow.systemTag ? currentRow.systemTag : ""
+                this.aduitForm.brandId = currentRow.brandId ? currentRow.brandId : ""
                 this.aduitForm.name = currentRow.name
                 this.aduitForm.type = currentRow.type
                 this.aduitForm.branchCondition = +currentRow.branchCondition.split('=')[1]
@@ -564,7 +602,7 @@
                 this.tempNodeList = JSON.parse(JSON.stringify(array))
             },
             setConditionList(val,type=1) {
-                this[type==1?'homeConditionList':'conditionList'] = this.dictionary[val==0?'586':val==1?'597':val==2?'603':val==3?'580':val==7?'722':'724']
+                this[type==1?'homeConditionList':'conditionList'] = this.dictionary[val==0?'586':val==1?'597':val==2?'603':val==3?'580':val==7?'722':val==8?'724':val==9?'729':val==10?'731':'733']
             },
             changeFlowTypeOne(val) {
                 this.searchForm.branchCondition = ""
@@ -868,14 +906,13 @@
             },
             isSave() {
                 if(this.aduitForm.modularType !== '') {
+                    if(!this.aduitForm.systemTag) {
+                        this.$message({message:"体系不能为空"})
+                        return
+                    }
                     if(this.version == 2) {
                         if(!this.aduitForm.deptAttr&&this.aduitForm.modularType==0) {
                             this.$message({message:"合作方式不能为空"})
-                            return
-                        }
-                    } else {
-                        if(!this.aduitForm.systemTag) {
-                            this.$message({message:"体系不能为空"})
                             return
                         }
                     }
@@ -1011,6 +1048,7 @@
                 this.getData('search')
             },
             resetFormFn() {
+                this.searchForm.brandId = ""
                 this.searchForm.modularType = ""
                 this.searchForm.systemTag = ""
                 this.searchForm.deptAttr = ""
@@ -1115,7 +1153,7 @@
         .mr-7 {
             margin-left: 6px;
         }
-        &:nth-child(-n+5) {
+        &:nth-child(-n+7) {
             /deep/ .el-input {
                 width: 246px;
             }

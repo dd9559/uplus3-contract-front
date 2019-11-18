@@ -300,7 +300,7 @@ export default {
         let m = time.getMinutes()
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-        return time_.substr(0, 10)
+        return time_.substr(0, 16)
       }
     }
   },
@@ -344,6 +344,7 @@ export default {
     white-space: nowrap;
   }
   .content {
+    min-width: 1100px;
     .one_ {
       margin-bottom: 10px;
       &:last-of-type {

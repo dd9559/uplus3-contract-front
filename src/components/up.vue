@@ -264,6 +264,9 @@
           case 'zhuti':
             path = `contract/${this.scane.id}/${this.scane.path}`
             break;
+          case 'WTzhuti':
+            path = `contract/${this.scane.id}/${this.scane.path}`
+            break;
           case 'jiesuan':
             path = `contract/${this.scane.id}/${this.scane.path}`
             break;

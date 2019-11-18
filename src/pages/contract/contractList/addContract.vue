@@ -1,407 +1,393 @@
 <template>
   <div class="view-container">
-    <div v-if="false">
-      <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
-        <!-- 合同信息 -->
-        <div class="contractMsg">
-          <p>合同信息</p>
-          <div class="form-content">
-            <el-form-item label="签约日期：" style="text-align:right;width:285px;" class="form-label">
-              <el-date-picker
-                style="width:180px"
-                :disabled="type===2?true:false"
-                v-model="contractForm.signDate"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间"
-                :picker-options="pickerOptions"
-                default-time="12:00:00">
-              </el-date-picker>
-            </el-form-item>
-            <el-form-item label="合同类型：" class="width-250">
-              <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
-              <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
-              <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
-            </el-form-item>
-            <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
-              <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
-            </el-form-item>
-            <br>
-            <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
-              <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
-              <i class="yuan">元</i>
-            </el-form-item> -->
-            <el-form-item label="客户佣金：" class="width-250">
-              <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-              <i class="yuan">元</i>
-            </el-form-item>
-            <el-form-item label="业主佣金：" class="width-250">
-              <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-              <i class="yuan">元</i>
-            </el-form-item>
-            <!-- <el-form-item label="佣金支付费：" class="width-250">
-              <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
-              <i class="yuan">元</i>
-            </el-form-item> -->
-            <br>
-            <!-- <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
-              <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
-                <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item> -->
-          </div>
-        </div>
-        <!-- 房源信息 -->
-        <div class="houseMsg">
-          <p>房源信息</p>
-          <div class="form-content">
-            <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
-              <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
-              <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
-            </el-form-item>
-            <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
-              <input type="text" :disabled="canInput" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-              <i class="yuan" v-if="contractForm.type!==1">元</i>
-              <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
-            </el-form-item>
-            <el-form-item v-if="contractForm.type===1">
-              <el-select :disabled="canInput" v-model="contractForm.timeUnit" placeholder="请选择" style="width:105px">
-                <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
-            </el-form-item>
-            <br>
-            <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
-              <span class="propertyAddress" v-if="contractForm.houseinfoCode">
-                <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
-                <!-- {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}} -->
-                {{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}
-              </span>
-              <span class="propertyAddress color_" v-else>物业地址</span>
-            </el-form-item>
-            <br>
-            <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
-              <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
-              <input v-model="rightAddrCity" :disabled="canInput" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" :class="{'disabled':canInput}" style="width:100px" /> 市
-              <input v-model="rightAddrArea" :disabled="canInput" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" :class="{'disabled':canInput}" style="width:100px" /> 区
-              <input v-model="rightAddrDetail" :disabled="canInput" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" :class="{'disabled':canInput}" style="width:400px" />
-            </el-form-item>
-            <br>
-            <el-form-item label="建筑面积：" class="width-250">
-              <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-              <input type="text" v-model="contractForm.houseInfo.Square" :disabled="canInput" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-              <i class="yuan">㎡</i>
-            </el-form-item>
-            <el-form-item label="套内面积：" class="width-250">
-              <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
-              <input type="text" v-model="contractForm.houseInfo.SquareUse" :disabled="canInput" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-              <i class="yuan">㎡</i>
-            </el-form-item>
-            <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
-              <span class="propertyAddress shopName" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.HouseStoreName}}</span>
-              <span class="propertyAddress color_ shopName" v-else>门店</span>
-            </el-form-item> -->
-            <!-- <el-form-item label="店长：">
-              {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
-            </el-form-item> -->
-            <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
-            <!-- <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
-              <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
-                <el-option  label="无" :value="0"></el-option>
-                <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-              </el-select>
-            </el-form-item> -->
-            <!-- <el-form-item label="按揭银行：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
-              <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px" :clearable="true">
-                <el-option label="中国工商银行" value="中国工商银行"></el-option>
-                <el-option label="中国建设银行" value="中国建设银行"></el-option>
-                <el-option label="中国银行" value="中国银行"></el-option>
-                <el-option label="中国农业银行" value="中国农业银行"></el-option>
-                <el-option label="交通银行" value="交通银行"></el-option>
-                <el-option label="招商银行" value="招商银行"></el-option>
-                <el-option label="中信银行" value="中信银行"></el-option>
-                <el-option label="中国民生银行" value="中国民生银行"></el-option>
-                <el-option label="兴业银行" value="兴业银行"></el-option>
-                <el-option label="上海浦东发展银行" value="上海浦东发展银行"></el-option>
-                <el-option label="中国邮政储蓄银行" value="中国邮政储蓄银行"></el-option>
-                <el-option label="中国光大银行" value="中国光大银行"></el-option>
-                <el-option label="平安银行" value="平安银行"></el-option>
-                <el-option label="华夏银行" value="华夏银行"></el-option>
-              </el-select>
-            </el-form-item> -->
-            <!-- <el-form-item label="按揭欠款：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
-              <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
-              <i class="yuan">元</i>
-            </el-form-item> -->
-            <!-- <el-form-item>
-              <span class="chineseNum" v-if="contractForm.type===2||contractForm.type===3">{{contractForm.houseInfo.stagesArrears|moneyFormat}}</span>
-            </el-form-item> -->
-            <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
-            <!-- <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
-              <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
-            </el-form-item>
-            <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:300px;text-align:right">
-              <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
-            </el-form-item> -->
-            <br>
-            <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
-              <ul class="peopleMsg">
-                <li v-for="(item,index) in ownerList" :key="index">
-                  <span class="merge">
-                    <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_" :class="{'disabled':canInput}">
-                    <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
-                  </span>
-                  <!-- :disabled="type===2&&!item.edit?true:false" -->
-                  <el-select v-model="item.relation" placeholder="关系" :disabled="canInput" class="relation_">
-                    <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
-                    </el-option>
-                  </el-select>
-                  <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" :disabled="canInput" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :class="{'disabled':canInput}"></span>
-                  <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')">
-                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
-                    </el-option>
-                  </el-select>
-                  <!-- :class="{'disabled':type===2&&!item.edit}" -->
-                  <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
-                  <span @click.stop="addcommissionData" class="icon" v-if="!canInput">
-                    <i class="iconfont icon-tubiao_shiyong-14"></i>
-                  </span>
-                  <span @click.stop="delPeople(index,'owner')" v-if="ownerList.length>1&&!canInput" class="icon">
-                    <i class="iconfont icon-tubiao_shiyong-4"></i>
-                  </span>
-                </li>
-              </ul>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 客源信息 -->
-        <div class="houseMsg">
-          <p>客源信息</p>
-          <div class="form-content">
-            <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
-              <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
-              <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
-            </el-form-item>
-            <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
-              <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
-                <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
-                </el-option>
-              </el-select>
-            </el-form-item> -->
-            <!-- <el-form-item label="客源方门店：" class="form-label">
-              <span class="propertyAddress shopName" v-if="contractForm.guestinfoCode">{{contractForm.guestInfo.GuestStoreName}}</span>
-              <span class="propertyAddress color_ shopName" v-else>门店</span>
-            </el-form-item>
-            <el-form-item label="店长：">
-              {{contractForm.guestInfo.ShopOwnerName}}{{contractForm.guestInfo.ShopOwnerMobile}}
-            </el-form-item> -->
-            <br>
-            <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
-              <ul class="peopleMsg">
-                <li v-for="(item,index) in guestList" :key="index">
-                  <span class="merge">
-                    <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_" :class="{'disabled':canInput}">
-                    <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
-                  </span>
-                  <el-select v-model="item.relation" :disabled="canInput" placeholder="关系" class="relation_">
-                    <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
-                    </el-option>
-                  </el-select>
-                  <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" :disabled="canInput" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :class="{'disabled':canInput}"></span>
-                  <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
-                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
-                    </el-option>
-                  </el-select>
-                  <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
-                  <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
-                    <i class="iconfont icon-tubiao_shiyong-14"></i>
-                  </span>
-                  <span @click.stop="delPeople(index,'guest')" v-if="guestList.length>1&&!canInput" class="icon">
-                    <i class="iconfont icon-tubiao_shiyong-4"></i>
-                  </span>
-                </li>
-              </ul>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 三方合作 -->
-        <div class="houseMsg">
-          <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
-          <div class="cooperation" v-show="cooperation">
-            <div>
-              <el-form-item label="扣合作费：" class="width-250">
-                <input type="text" v-model="contractForm.otherCooperationCost" :disabled="canInput" @input="cutNumber('otherCooperationCost')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
-                <i class="yuan">元</i>
-              </el-form-item>
-              <el-form-item label="类型：" class="width-250">
-                <el-select v-model="contractForm.otherCooperationInfo.type" :disabled="canInput" placeholder="请选择" style="width:140px">
-                  <el-option label="无" :value="0">
-                  </el-option>
-                  <el-option v-for="item in dictionary['517']" :key="item.key" :label="item.value" :value="item.key">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <br>
-              <el-form-item label="合作方姓名：" class="width-250">
-                <!-- <el-input v-model="contractForm.otherCooperationInfo.name" maxlength="6" placeholder="请输入姓名" style="width:140px"></el-input> -->
-                <input type="text" v-model="contractForm.otherCooperationInfo.name" :disabled="canInput" maxlength="6" @input="inputOnly(999,'other')" placeholder="请输入姓名" class="dealPrice" :class="{'disabled':canInput}">
-              </el-form-item>
-              <el-form-item label="联系方式：" class="width-250">
-                <el-input v-model="contractForm.otherCooperationInfo.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
-              </el-form-item>
-              <el-form-item label="身份证号：" style="width:310px;text-align:right">
-                <el-input v-model="contractForm.otherCooperationInfo.identifyCode" :disabled="canInput" maxlength="18" placeholder="请输入身份证号" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"></el-input>
-              </el-form-item>
-              <br>
-              <el-form-item label="备注：" style="padding-left:51px">
-                <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
-              </el-form-item>
-            </div>
-          </div>
-        </div>
-        <!-- <div class="houseMsg">
-          <p>扩展参数</p> -->
-          <!-- {{contractForm.extendParams}}
-          <div class="form-content" v-if="parameterList.length>0">
-            <ul class="parameter">
-              <li v-for="(item,index) in parameterList" :key="index"> -->
-                <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
-
-                <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-                  <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
-                </el-tooltip>
-                <span class="colon">: </span> -->
-                <!-- class="form-label" -->
-                <!-- 输入框 -->
-                <!-- <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input> -->
-                <!-- 下拉框 -->
-                <!-- <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
-                  <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
-                  </el-option>
-                </el-select> -->
-                <!-- 日期选择器 -->
-                <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker> -->
-                <!-- 下拉多选 -->
-                <!-- <el-select
-                  v-if="item.inputType.value===5&&contractForm.extendParams[index]"
-                  size="small"
-                  v-model="contractForm.extendParams[index].value"
-                  multiple
-                  collapse-tags
-                  style="margin-left: 20px;"
-                  placeholder="请选择">
-                  <el-option
-                    v-for="item_ in item.options"
-                    :key="item_"
-                    :label="item_"
-                    :value="item_">
-                  </el-option>
-                </el-select>
-                <span class="unit">{{item.unit}}</span>
-              </li>
-            </ul>
-          </div>
-        </div> -->
-      </el-form>
-      <div class="btn">
-        <div>
-          <div v-if="type===2">
-            <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
-            <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
-            <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
-          </div>
-        </div>
-        <div>
-          <!-- 新增+提审 -->
-          <!-- <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button> -->
-          <!-- 编辑+提审 -->
-          <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
-          <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
-          <el-button type="primary" round @click="isSave(0)" :disabled="canClick">{{canInput?"保存":"保存并进入下一步"}}</el-button>
+    <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
+      <!-- 合同信息 -->
+      <div class="contractMsg">
+        <p>合同信息</p>
+        <div class="form-content">
+          <el-form-item label="签约时间：" style="text-align:right;width:285px;" class="form-label">
+            <!-- <el-date-picker type="date" value-format="yyyy/MM/dd/HH/mm" placeholder="选择日期" :disabled="type===2?true:false" v-model="contractForm.signDate" style="width:140px"></el-date-picker> -->
+            <el-date-picker
+              style="width:180px"
+              :disabled="type===2?true:false"
+              v-model="contractForm.signDate"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+              default-time="12:00:00">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="合同类型：" class="width-250">
+            <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
+            <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
+            <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
+          </el-form-item>
+          <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
+            <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
+          </el-form-item>
+          <br>
+          <!-- <el-form-item label="客户保证金：" class="width-250" v-if="contractForm.type===2||contractForm.type===3">
+            <input type="text" v-model="contractForm.custEnsure" @input="cutNumber('custEnsure')" placeholder="请输入内容" class="dealPrice" :disabled="type===2?true:false" :class="{'forbid':type===2}">
+            <i class="yuan">元</i>
+          </el-form-item> -->
+          <el-form-item label="客户佣金：" class="width-250">
+            <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+            <i class="yuan">元</i>
+          </el-form-item>
+          <el-form-item label="业主佣金：" style="text-align:right;width:285px;">
+            <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+            <i class="yuan">元</i>
+          </el-form-item>
+          <!-- <el-form-item label="佣金支付费：" class="width-250">
+            <input type="text" v-model="contractForm.commissionPayment" @input="cutNumber('commissionPayment')" placeholder="请输入内容" class="dealPrice">
+            <i class="yuan">元</i>
+          </el-form-item> -->
+          <br>
+          <!-- <el-form-item label="交易流程：" class="form-label" style="width:325px;text-align:right" v-if="contractForm.type===1">
+            <el-select v-model="contractForm.transFlowCode" placeholder="请选择交易流程" :clearable="true" style="width:220px">
+              <el-option v-for="item in transFlowList" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item> -->
         </div>
       </div>
+      <!-- 房源信息 -->
+      <div class="houseMsg">
+        <p>房源信息</p>
+        <div class="form-content">
+          <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
+            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+            <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
+          </el-form-item>
+          <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
+            <input type="text" :disabled="canInput" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+            <i class="yuan" v-if="contractForm.type!==1">元</i>
+            <!-- <el-input :value="contractForm.dealPrice" type="text" maxlength="13" placeholder="请输入内容" style="width:140px" @change="cutNumber"><i slot="suffix" v-if="contractForm.type!=1">元</i></el-input> -->
+          </el-form-item>
+          <el-form-item v-if="contractForm.type===1">
+            <el-select :disabled="canInput" v-model="contractForm.timeUnit" placeholder="请选择" style="width:105px">
+              <el-option v-for="item in dictionary['507']" :key="item.key" :label="`元 / ${item.value}`" :value="item.key"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
+          </el-form-item>
+          <br>
+          <el-form-item label="物业地址：" :class="{'form-label':type===1}" style="width:605px;text-align:right">
+            <span class="propertyAddress" v-if="contractForm.houseinfoCode">
+              <!-- {{contractForm.houseInfo.EstateName+contractForm.houseInfo.BuildingName+contractForm.houseInfo.Unit+contractForm.houseInfo.RoomNo}} -->
+              <!-- {{type===1?contractForm.houseInfo.EstateName:contractForm.propertyAddr}} -->
+              {{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}
+            </span>
+            <span class="propertyAddress color_" v-else>物业地址</span>
+          </el-form-item>
+          <el-form-item label="建成年代：" :class="{'form-label':type===1}" style="width:250px;text-align:right">
+            <span class="CompleteYear" style="width:150px;" v-if="contractForm.houseInfo.CompleteYear">
+              {{contractForm.houseInfo.CompleteYear}}
+            </span>
+            <span class="CompleteYear color_" style="width:150px;" v-else>建成年代</span>
+          </el-form-item>
+          <br>
+          <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
+            <!-- <el-input v-model="contractForm.propertyRightAddr" maxlength="70" placeholder="请输入内容" style="width:700px"></el-input> -->
+            <input v-model="rightAddrCity" :disabled="canInput" maxlength="10" placeholder="请输入" @input="cutAddress('city')" class="dealPrice" :class="{'disabled':canInput}" style="width:100px" /> 市
+            <input v-model="rightAddrArea" :disabled="canInput" maxlength="10" placeholder="请输入" @input="cutAddress('area')" class="dealPrice" :class="{'disabled':canInput}" style="width:100px" /> 区
+            <input v-model="rightAddrDetail" :disabled="canInput" maxlength="70" placeholder="详细地址" @input="cutAddress('detail')" class="dealPrice" :class="{'disabled':canInput}" style="width:400px" />
+          </el-form-item>
+          <br>
+          <el-form-item label="建筑面积：" class="width-250">
+            <!-- <el-input v-model="contractForm.houseInfo.Square" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
+            <input type="text" v-model="contractForm.houseInfo.Square" :disabled="canInput" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+            <i class="yuan">㎡</i>
+          </el-form-item>
+          <el-form-item label="套内面积：" class="width-250">
+            <!-- <el-input v-model="contractForm.houseInfo.SquareUse" placeholder="请输入内容" :disabled="type===2?true:false" style="width:140px"><i slot="suffix">㎡</i></el-input> -->
+            <input type="text" v-model="contractForm.houseInfo.SquareUse" :disabled="canInput" @input="cutNumber('SquareUse')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+            <i class="yuan">㎡</i>
+          </el-form-item>
+          <!-- <el-form-item label="房源方门店：" class="form-label" style="width:310px;text-align:right">
+            <span class="propertyAddress shopName" v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.HouseStoreName}}</span>
+            <span class="propertyAddress color_ shopName" v-else>门店</span>
+          </el-form-item> -->
+          <!-- <el-form-item label="店长：">
+            {{contractForm.houseInfo.ShopOwnerName}} {{contractForm.houseInfo.ShopOwnerMobile}}
+          </el-form-item> -->
+          <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
+          <!-- <el-form-item label="产权状态：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
+            <el-select v-model="contractForm.houseInfo.propertyRightStatus" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
+              <el-option  label="无" :value="0"></el-option>
+              <el-option v-for="item in dictionary['514']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+            </el-select>
+          </el-form-item> -->
+          <!-- <el-form-item label="按揭银行：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
+            <el-select v-model="contractForm.houseInfo.stagesBankName" placeholder="请选择银行" :disabled="type===2?true:false" style="width:140px" :clearable="true">
+              <el-option label="中国工商银行" value="中国工商银行"></el-option>
+              <el-option label="中国建设银行" value="中国建设银行"></el-option>
+              <el-option label="中国银行" value="中国银行"></el-option>
+              <el-option label="中国农业银行" value="中国农业银行"></el-option>
+              <el-option label="交通银行" value="交通银行"></el-option>
+              <el-option label="招商银行" value="招商银行"></el-option>
+              <el-option label="中信银行" value="中信银行"></el-option>
+              <el-option label="中国民生银行" value="中国民生银行"></el-option>
+              <el-option label="兴业银行" value="兴业银行"></el-option>
+              <el-option label="上海浦东发展银行" value="上海浦东发展银行"></el-option>
+              <el-option label="中国邮政储蓄银行" value="中国邮政储蓄银行"></el-option>
+              <el-option label="中国光大银行" value="中国光大银行"></el-option>
+              <el-option label="平安银行" value="平安银行"></el-option>
+              <el-option label="华夏银行" value="华夏银行"></el-option>
+            </el-select>
+          </el-form-item> -->
+          <!-- <el-form-item label="按揭欠款：" v-if="contractForm.type===2||contractForm.type===3" class="width-250">
+            <input type="text" v-model="contractForm.houseInfo.stagesArrears" :disabled="type===2?true:false" @input="cutNumber('stagesArrears')" placeholder="请输入内容" class="dealPrice" :class="{'forbid':type===2}">
+            <i class="yuan">元</i>
+          </el-form-item> -->
+          <!-- <el-form-item>
+            <span class="chineseNum" v-if="contractForm.type===2||contractForm.type===3">{{contractForm.houseInfo.stagesArrears|moneyFormat}}</span>
+          </el-form-item> -->
+          <!-- <br v-if="contractForm.type===2||contractForm.type===3"> -->
+          <!-- <el-form-item label="产权地址：" v-if="contractForm.type===2||contractForm.type===3" style="width:520px;text-align:right">
+            <el-input v-model="contractForm.houseInfo.propertyRightAddr" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:416px"></el-input>
+          </el-form-item>
+          <el-form-item label="房产证号：" v-if="contractForm.type===2||contractForm.type===3" :class="{'form-label':type===1}" style="width:300px;text-align:right">
+            <el-input v-model="contractForm.propertyCard" maxlength="30" placeholder="请输入内容" :disabled="type===2?true:false" style="width:200px"></el-input>
+          </el-form-item> -->
+          <br>
+          <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
+            <ul class="peopleMsg">
+              <li v-for="(item,index) in ownerList" :key="index">
+                <span class="merge">
+                  <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_" :class="{'disabled':canInput}">
+                  <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
+                </span>
+                 <!-- :disabled="type===2&&!item.edit?true:false" -->
+                <el-select v-model="item.relation" placeholder="关系" :disabled="canInput" class="relation_">
+                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
+                  </el-option>
+                </el-select>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" :disabled="canInput" @input="cutNumber_(index,'owner')" placeholder="产权比" class="propertyRight" :class="{'disabled':canInput}"></span>
+                <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'owner')">
+                  <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
+                  </el-option>
+                </el-select>
+                 <!-- :class="{'disabled':type===2&&!item.edit}" -->
+                <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                <span @click.stop="addcommissionData" class="icon" v-if="!canInput">
+                  <i class="iconfont icon-tubiao_shiyong-14"></i>
+                </span>
+                <span @click.stop="delPeople(index,'owner')" v-if="ownerList.length>1&&!canInput" class="icon">
+                  <i class="iconfont icon-tubiao_shiyong-4"></i>
+                </span>
+              </li>
+            </ul>
+          </el-form-item>
+        </div>
+      </div>
+      <!-- 客源信息 -->
+      <div class="houseMsg">
+        <p>客源信息</p>
+        <div class="form-content">
+          <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
+            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+            <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
+          </el-form-item>
+          <!-- <el-form-item label="付款方式：" :class="{'form-label':type===1}">
+            <el-select v-model="contractForm.guestInfo.paymentMethod" placeholder="请选择" :disabled="type===2?true:false" style="width:140px" :clearable="true">
+              <el-option v-for="item in dictionary['556']" :key="item.key" :label="item.value" :value="item.key">
+              </el-option>
+            </el-select>
+          </el-form-item> -->
+          <!-- <el-form-item label="客源方门店：" class="form-label">
+            <span class="propertyAddress shopName" v-if="contractForm.guestinfoCode">{{contractForm.guestInfo.GuestStoreName}}</span>
+            <span class="propertyAddress color_ shopName" v-else>门店</span>
+          </el-form-item>
+          <el-form-item label="店长：">
+            {{contractForm.guestInfo.ShopOwnerName}}{{contractForm.guestInfo.ShopOwnerMobile}}
+          </el-form-item> -->
+          <br>
+          <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
+            <ul class="peopleMsg">
+              <li v-for="(item,index) in guestList" :key="index">
+                <span class="merge">
+                  <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_" :class="{'disabled':canInput}">
+                  <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                </span>
+                <el-select v-model="item.relation" :disabled="canInput" placeholder="关系" class="relation_">
+                  <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
+                  </el-option>
+                </el-select>
+                <span class="shell" v-if="contractForm.type!=1"><input type="text" v-model="item.propertyRightRatio" :disabled="canInput" @input="cutNumber_(index,'guest')" placeholder="产权比" class="propertyRight" :class="{'disabled':canInput}"></span>
+                <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                  <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
+                  </el-option>
+                </el-select>
+                <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
+                  <i class="iconfont icon-tubiao_shiyong-14"></i>
+                </span>
+                <span @click.stop="delPeople(index,'guest')" v-if="guestList.length>1&&!canInput" class="icon">
+                  <i class="iconfont icon-tubiao_shiyong-4"></i>
+                </span>
+              </li>
+            </ul>
+          </el-form-item>
+        </div>
+      </div>
+      <!-- 三方合作 -->
+      <div class="houseMsg">
+        <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
+        <div class="cooperation" v-show="cooperation">
+          <div>
+            <el-form-item label="扣合作费：" class="width-250">
+              <input type="text" v-model="contractForm.otherCooperationCost" :disabled="canInput" @input="cutNumber('otherCooperationCost')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+              <i class="yuan">元</i>
+            </el-form-item>
+            <el-form-item label="类型：" class="width-250">
+              <el-select v-model="contractForm.otherCooperationInfo.type" :disabled="canInput" placeholder="请选择" style="width:140px">
+                <el-option label="无" :value="0">
+                </el-option>
+                <el-option v-for="item in dictionary['517']" :key="item.key" :label="item.value" :value="item.key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <br>
+            <el-form-item label="合作方姓名：" class="width-250">
+              <!-- <el-input v-model="contractForm.otherCooperationInfo.name" maxlength="6" placeholder="请输入姓名" style="width:140px"></el-input> -->
+              <input type="text" v-model="contractForm.otherCooperationInfo.name" :disabled="canInput" maxlength="6" @input="inputOnly(999,'other')" placeholder="请输入姓名" class="dealPrice" :class="{'disabled':canInput}">
+            </el-form-item>
+            <el-form-item label="联系方式：" class="width-250">
+              <el-input v-model="contractForm.otherCooperationInfo.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证号：" style="width:310px;text-align:right">
+              <el-input v-model="contractForm.otherCooperationInfo.identifyCode" :disabled="canInput" maxlength="18" placeholder="请输入身份证号" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"></el-input>
+            </el-form-item>
+            <br>
+            <el-form-item label="备注：" style="padding-left:51px">
+              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
+            </el-form-item>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="houseMsg">
+        <p>扩展参数</p> -->
+        <!-- {{contractForm.extendParams}}
+        <div class="form-content" v-if="parameterList.length>0">
+          <ul class="parameter">
+            <li v-for="(item,index) in parameterList" :key="index"> -->
+              <!-- <span class="title" :class="{'form-label':item.isRequired}">{{item.name+':'}}</span> -->
 
-      <!-- 房源客源弹窗 -->
-      <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
-      </houseGuest>
-      <!-- 保存合同确认框 -->
-      <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-        <div class="warning-box">
-          <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
-          <ul>
-            <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
-              {{item.name}}：{{item.encryptionCode}}
-            </li>
-            <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
-              {{item.name}}：{{item.encryptionCode}}
+              <!-- <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+                <span class="title" :class="{'form-label':item.inputType.value!=4}">{{item.name}}</span>
+              </el-tooltip>
+              <span class="colon">: </span> -->
+              <!-- class="form-label" -->
+              <!-- 输入框 -->
+              <!-- <el-input v-model="contractForm.extendParams[index].value" placeholder="请输入内容" style="width:140px" v-if="item.inputType.value===1&&contractForm.extendParams[index]" size="small"></el-input> -->
+              <!-- 下拉框 -->
+              <!-- <el-select v-model="contractForm.extendParams[index].value" :clearable="true" placeholder="请选择" style="width:140px" v-if="(item.inputType.value===2||item.inputType.value===3)&&contractForm.extendParams[index]" size="small">
+                <el-option v-for="item_ in item.options" :key="item_" :label="item_" :value="item_">
+                </el-option>
+              </el-select> -->
+              <!-- 日期选择器 -->
+              <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.extendParams[index].value" style="width:140px" v-if="item.inputType.value===4&&contractForm.extendParams[index]" size="small"></el-date-picker> -->
+              <!-- 下拉多选 -->
+              <!-- <el-select
+                v-if="item.inputType.value===5&&contractForm.extendParams[index]"
+                size="small"
+                v-model="contractForm.extendParams[index].value"
+                multiple
+                collapse-tags
+                style="margin-left: 20px;"
+                placeholder="请选择">
+                <el-option
+                  v-for="item_ in item.options"
+                  :key="item_"
+                  :label="item_"
+                  :value="item_">
+                </el-option>
+              </el-select>
+              <span class="unit">{{item.unit}}</span>
             </li>
           </ul>
-          <p>否则合同将无效，之后收款所开票据无效！！！</p>
         </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogSave = false" size="small">不确认</el-button>
-          <el-button type="primary" size="small" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
-        </span>
-      </el-dialog>
-      <!-- 删除人员确认框 -->
-      <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-        <span>确定删除当前联系人吗？</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogDel = false">取 消</el-button>
-          <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!-- 创建合同成功提示框 -->
-      <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
-        <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="toContract">取 消</el-button>
-          <el-button type="primary" @click="toUpload">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!-- 单公司提示框 -->
-      <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
-        <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="toH5">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!-- 分成人信息弹窗 -->
-      <el-dialog :title="dialogType==='house'?'当前房源分成人':'当前客源分成人'" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
-        <div class="agentsDialog">
-          <!-- <p>当前房源分成人</p> -->
-          <ul>
-            <li v-for="(item, index) in agentsList" :key="index" :title="`${item.roleText} ${item.empName}·${item.deptName}`"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
-          </ul>
+      </div> -->
+    </el-form>
+    <div class="btn">
+      <div>
+        <div v-if="type===2">
+          <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
+          <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
+          <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
         </div>
-      </el-dialog>
-      <!-- 设置/转交审核人 -->
-      <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
-      <a id="add" href="" v-show="false" target="_blank"></a>
+      </div>
+      <div>
+        <!-- 新增+提审 -->
+        <!-- <el-button type="success" v-if="power['sign-ht-info-sverify'].state&&type===1" round @click="isSave(1)">提交审核</el-button> -->
+        <!-- 编辑+提审 -->
+        <!-- <el-button type="success" v-if="power['sign-ht-info-toverify'].state&&type===2&&userMsg&&userMsg.empId===recordId" round @click="isSave(1)">提交审核</el-button> -->
+        <!-- <el-button type="primary" round @click="isSave(0)">保存</el-button> -->
+        <el-button type="primary" round @click="isSave(0)" :disabled="canClick">{{canInput?"保存":"保存并进入下一步"}}</el-button>
+      </div>
     </div>
-    <contractBasics
-    :contractForm="contractForm"
-    v-if="isHaveDetail&&type===2"
-    :isOffline="isOffline"
-    :operationType="type"
-    :ownerList_="ownerList_"
-    :guestList_="guestList_"
-    :ownerList="ownerList"
-    :guestList="guestList"
-    :canInput="canInput"
-    >
-    </contractBasics>
-    <contractBasics
-    :contractForm="contractForm"
-    v-if="isHaveDetail&&type===1"
-    :isOffline="isOffline"
-    :operationType="type"
-    >
-    </contractBasics>
+
+    <!-- 房源客源弹窗 -->
+    <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
+    </houseGuest>
+    <!-- 保存合同确认框 -->
+    <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="warning-box">
+        <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+        <ul>
+          <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
+            {{item.name}}：{{item.encryptionCode}}
+          </li>
+          <li v-for="item in guestList" :key="'guets'+item.encryptionCode">
+            {{item.name}}：{{item.encryptionCode}}
+          </li>
+        </ul>
+        <p>否则合同将无效，之后收款所开票据无效！！！</p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogSave = false" size="small">不确认</el-button>
+        <el-button type="primary" size="small" @click="saveCont" v-loading.fullscreen.lock="fullscreenLoading">确认</el-button>
+      </span>
+    </el-dialog>
+    <!-- 删除人员确认框 -->
+    <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
+      <span>确定删除当前联系人吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDel = false">取 消</el-button>
+        <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 创建合同成功提示框 -->
+    <el-dialog title="提示" :visible.sync="dialogSuccess" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <span>是否继续上传附件？如果不上传附件权证将无法办理！（你也可以以后再上传，上传附件后权证将接收办理）</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="toContract">取 消</el-button>
+        <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 单公司提示框 -->
+    <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="toH5">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 分成人信息弹窗 -->
+    <el-dialog :title="dialogType==='house'?'当前房源分成人':'当前客源分成人'" :visible.sync="agentsDialog" width="500px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="agentsDialog">
+        <!-- <p>当前房源分成人</p> -->
+        <ul>
+          <li v-for="(item, index) in agentsList" :key="index" :title="`${item.roleText} ${item.empName}·${item.deptName}`"><span>{{item.roleText}}</span>{{item.empName+"·"+item.deptName}}</li>
+        </ul>
+      </div>
+    </el-dialog>
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <a id="add" href="" v-show="false" target="_blank"></a>
   </div>
 </template>
 
@@ -410,7 +396,6 @@ import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
 import checkPerson from '@/components/checkPerson';
-import contractBasics from "../contractDialog/contractBasics";
 const rule = {
   signDate: {
     name: "签约日期"
@@ -438,11 +423,11 @@ export default {
   components: {
     houseGuest,
     checkPerson,
-    contractBasics
   },
   data() {
     return {
       clientHei:'',
+      htType:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
@@ -576,15 +561,17 @@ export default {
       agentsDialog:false,
       agentsList:[],//分成人列表
       sourceBtnCheck:true,//房客源是否可选择
-      //是否能输入
+      //是否能输入（已签约 未结算）
       canInput:false,
-      isHaveDetail:false,
+      //线下合同已签约状态编辑
+      offLine:false,
       //日期选择器禁止选择未来时间
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
         }
       },
+
     };
   },
   created() {
@@ -605,7 +592,6 @@ export default {
           this.getContractDetail();
         }else if(this.type == 1){
           this.getNewData()
-          this.isHaveDetail=true
         }
       }
     }
@@ -622,15 +608,15 @@ export default {
   methods: {
     //获取当前日期
     getNewData(){
-      let time = new Date()
-      let y = time.getFullYear()
-      let M = time.getMonth() + 1
-      let D = time.getDate()
-      let h = time.getHours()
-      let m = time.getMinutes()
-      let s = time.getSeconds()
-      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-      this.contractForm.signDate=time_
+        let time = new Date()
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        this.contractForm.signDate=time_
     },
     // 控制弹框body内容高度，超过显示滚动条
     clientHeight() {
@@ -680,9 +666,6 @@ export default {
     // deleteRowcommissionData1(index) {
     //   this.guestList.splice(index, 1);
     // },
-    clearData(){
-      console.log('111')
-    },
     //删除联系人确认框
     delPeople(index,type){
       this.peopleIndex=index;
@@ -1550,6 +1533,7 @@ export default {
         if (res.status === 200) {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
+          houseMsg.CompleteYear=houseMsg.CompleteYear?houseMsg.CompleteYear:"--"
           if(!this.canInput){//正常编辑
             if(houseMsg.TradeInt===2){
               // this.contractForm.dealPrice = houseMsg.ListingPrice*10000;//成交总价
@@ -1863,17 +1847,19 @@ export default {
       this.$ajax.get("/api/contract/detail", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-          
           this.contractForm = res.data;
-          this.isHaveDetail=true
           this.recordId = res.data.recordId;
+          // debugger
           // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           //合同状态为已签约且未结算时只允许编辑房客源编号
-          if(res.data.resultState.value===1&&res.data.contState.value===3){
+          if(this.contractForm.recordType.value===1&&res.data.resultState.value===1&&res.data.contState.value===3){
             this.canInput=true
           }
-          // this.resultState=res.data.resultState.value
+          //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
+          if(this.contractForm.recordType.value===2&&this.contractForm.contState.value===3){
+            this.offLine=true
+          }
           this.sourceBtnCheck=(res.data.contState.value===3)?false:true
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
@@ -2036,73 +2022,69 @@ export default {
       num = num.toUpperCase();
       //身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X。
       if (!(/(^\d{15}$)|(^\d{17}([0-9]|X)$)/.test(num))) {
-          // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
-          return false;
+        // alert('输入的身份证号长度不对，或者号码不符合规定！\n15位号码应全为数字，18位号码末位可以为数字或X。');
+        return false;
       }
       //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
       //下面分别分析出生日期和校验位
       var len, re;
       len = num.length;
       if (len == 15) {
-          re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
-          var arrSplit = num.match(re);
-          //检查生日日期是否正确
-          var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
-          var bGoodDay;
-          bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2]))
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
-                      && (dtmBirth.getDate() == Number(arrSplit[4]));
-          if (!bGoodDay) {
-              // alert('输入的身份证号里出生日期不对！');
-              return false;
-          } else {
-              //将15位身份证转成18位
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-              var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-              var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-              var nTemp = 0, i;
-              num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
-              for (i = 0; i < 17; i++) {
-                  nTemp += num.substr(i, 1) * arrInt[i];
-              }
-              num += arrCh[nTemp % 11];
-              return true;
+        re = new RegExp(/^(\d{6})(\d{2})(\d{2})(\d{2})(\d{3})$/);
+        var arrSplit = num.match(re);
+        //检查生日日期是否正确
+        var dtmBirth = new Date('19' + arrSplit[2] + '/' + arrSplit[3] + '/' + arrSplit[4]);
+        var bGoodDay;
+        bGoodDay = (dtmBirth.getYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
+        if (!bGoodDay) {
+          // alert('输入的身份证号里出生日期不对！');
+          return false;
+        } else {
+          //将15位身份证转成18位
+          //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+          var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+          var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+          var nTemp = 0, i;
+          num = num.substr(0, 6) + '19' + num.substr(6, num.length - 6);
+          for (i = 0; i < 17; i++) {
+            nTemp += num.substr(i, 1) * arrInt[i];
           }
+          num += arrCh[nTemp % 11];
+          return true;
+        }
       }
       if (len == 18) {
-          re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
-          var arrSplit = num.match(re);
-          //检查生日日期是否正确
-          var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
-          var bGoodDay;
-          bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2]))
-                      && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3]))
-                      && (dtmBirth.getDate() == Number(arrSplit[4]));
-          if (!bGoodDay) {
-              // alert(dtmBirth.getYear());
-              // alert(arrSplit[2]);
-              // alert('输入的身份证号里出生日期不对！');
-              return false;
-          } else {
-              //检验18位身份证的校验码是否正确。
-              //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-              // var valnum;
-              // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-              // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-              // var nTemp = 0, i;
-              // for (i = 0; i < 17; i++) {
-              //     nTemp += num.substr(i, 1) * arrInt[i];
-              // }
-              // valnum = arrCh[nTemp % 11];
-              // if (valnum != num.substr(17, 1)) {
-              //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
-              //     return false;
-              // }
-              return true;
-          }
+        re = new RegExp(/^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X)$/);
+        var arrSplit = num.match(re);
+        //检查生日日期是否正确
+        var dtmBirth = new Date(arrSplit[2] + "/" + arrSplit[3] + "/" + arrSplit[4]);
+        var bGoodDay;
+        bGoodDay = (dtmBirth.getFullYear() == Number(arrSplit[2])) && ((dtmBirth.getMonth() + 1) == Number(arrSplit[3])) && (dtmBirth.getDate() == Number(arrSplit[4]));
+        if (!bGoodDay) {
+          // alert(dtmBirth.getYear());
+          // alert(arrSplit[2]);
+          // alert('输入的身份证号里出生日期不对！');
+          return false;
+        } else {
+          //检验18位身份证的校验码是否正确。
+          //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
+          // var valnum;
+          // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
+          // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
+          // var nTemp = 0, i;
+          // for (i = 0; i < 17; i++) {
+          //     nTemp += num.substr(i, 1) * arrInt[i];
+          // }
+          // valnum = arrCh[nTemp % 11];
+          // if (valnum != num.substr(17, 1)) {
+          //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
+          //     return false;
+          // }
+          return true;
+        }
       }
       return false;
-  }
+    }
   },
    mounted(){
     window.onresize = this.clientHeight;
@@ -2351,6 +2333,19 @@ export default {
     .propertyAddress{
       cursor:not-allowed;
       min-width: 500px;
+      display: inline-block;
+      box-sizing: border-box;
+      text-align: left;
+      font-size: 14px;
+      padding-left: 15px;
+      color: #C0C4CC;
+      border-radius: 4px;
+      background: #F5F7FA;
+      border: 1px solid #dcdfe6;
+    }
+    .CompleteYear{
+      cursor:not-allowed;
+      width: 150px;
       display: inline-block;
       box-sizing: border-box;
       text-align: left;

@@ -42,7 +42,21 @@ let TOOL = {
               can:true,//是否可见
               path: "settleCheck",
               code: "sign-ht-js-query"
-            }
+            },
+            {
+              name: "变更审核",
+              category:"1-1-5",
+              can:true,//是否可见
+              path: "changeCheck",
+              code: "sign-ht-bgsh-query"
+            },
+            {
+              name: "解约审核",
+              category:"1-1-6",
+              can:true,//是否可见
+              path: "cancelCheck",
+              code: "sign-ht-jysh-query"
+            },
           ]
         },
         {
@@ -297,13 +311,6 @@ let TOOL = {
               code: "sign-set-kl-query"
             },
             {
-              name: "手续费设置",
-              category:"5-1-2",
-              can:true,//是否可见
-              path: "commission",
-              code: "sign-set-sxf"
-            },
-            {
               name: "合同模板设置",
               category:"5-1-3",
               can:true,//是否可见
@@ -364,7 +371,16 @@ let TOOL = {
       icon: "icon-caozuorizhi",
       code: "sign-set-log-query",
       child:[]
-    }
+    },
+    {
+      id: 7,
+      name: "手续费设置",
+      category:"commission",
+      can:false,//是否可见
+      icon: "icon-caiwu",
+      code: false,
+      child: []
+    },
   ], //侧边栏导航
   closeOnClickModal: false,
   contType: {

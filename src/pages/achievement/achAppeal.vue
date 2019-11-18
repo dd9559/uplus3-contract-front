@@ -276,9 +276,23 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="上传业绩分成协议时间"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.agreementUploadTime">{{scope.row.agreementUploadTime|formatTime(false)}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="变更/解约"  min-width="90">
+            <template slot-scope="scope">
+              <p v-if="scope.row.statusChange">{{scope.row.statusChange.label}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+
           
 
-          <el-table-column label="操作"  min-width="120">
+          <el-table-column label="操作"  min-width="70" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
                 <span @click.stop="checkAch(scope.row,scope.$index)" v-if="scope.row.auditIds==1&&scope.row.appealStatus.value!=0"
@@ -678,7 +692,8 @@ export default {
           entrance: 3,
           aId: row.aId,
           contractId2: row.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:row.contType.value
         }
       });
       window.open(newPage.href, "_blank");
@@ -792,7 +807,8 @@ export default {
           achIndex: index,
           achObj: JSON.stringify({ contractId: value.id }),
           contractId: value.id,
-          version: this.selectAchList[0].version
+          version: this.selectAchList[0].version,
+          contType:value.contType.value
         }
       });
       window.open(newPage.href, "_blank");

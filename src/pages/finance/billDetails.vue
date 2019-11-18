@@ -151,10 +151,10 @@
               </template>
             </el-table-column>
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
-            <!--<el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>-->
-            <el-table-column align="center" label="手续费（元）">
-              <template slot-scope="scope">{{billMsg.systemFee?billMsg.systemFee:'--'}}</template>
-            </el-table-column>
+            <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
+            <!--<el-table-column align="center" label="手续费（元）" prop="fee">
+              <template slot-scope="scope">{{(scope.row.fee||scope.row.fee===0)?scope.row.fee:'&#45;&#45;'}}</template>
+            </el-table-column>-->
           </el-table>
         </li>
         <li v-if="activeItem==='付款信息'">
@@ -367,8 +367,8 @@
       }
       let _listName={
         1:{name:'收付款单',url:'/Bill'},
-        2:{name:'付款审核',url:'/moneyCheck?type=1'},
-        3:{name:'收款审核',url:'/moneyCheck?type=2'}
+        2:{name:'收款审核',url:'/moneyCheck?type=1'},
+        3:{name:'付款审核',url:'/moneyCheck?type=2'}
       }
       let arr=this.$tool.getRouter(['二手房','财务',_listName[Number(this.$route.query.listName)].name],_listName[Number(this.$route.query.listName)].url);
       arr.push({name:`${this.$route.query.tab==='收款信息'?'收款':'付款'}详情`,path:this.$route.fullPath});

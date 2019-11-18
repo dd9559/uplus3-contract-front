@@ -5,8 +5,19 @@
       <div class="contractMsg">
         <p>合同信息</p>
         <div class="form-content">
-          <el-form-item label="签约日期：" class="width-250 form-label">
-            <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker>
+          <el-form-item label="签约日期：" style="text-align:right;width:285px;" class="form-label">
+            <!-- <el-date-picker type="date" value-format="yyyy-MM-dd" placeholder="选择日期" v-model="contractForm.signDate" style="width:140px"></el-date-picker> -->
+            <el-date-picker
+              style="width:180px"
+              :disabled="operationType===2?true:false"
+              v-model="contractForm.signDate"
+              type="datetime"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+              default-time="12:00:00">
+            </el-date-picker>
           </el-form-item>
           <el-form-item label="项目名称：" class="width-250 form-label" style="width:340px;">
             <input style="width:200px;" type="text" maxlength="30" v-model="contractForm.projectName" @input="inputCode('projectName')" placeholder="请输入" class="dealPrice">
@@ -19,7 +30,7 @@
             <input type="text" v-model="contractForm.dealPrice" @input="cutNumber('dealPrice')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
-          <el-form-item label="应收佣金：" class="form-label" style="width:280px;text-align:right;">
+          <el-form-item label="应收佣金：" class="form-label" style="width:320px;text-align:right;">
             <input type="text" v-model="contractForm.receivableCommission" @input="cutNumber('receivableCommission')" placeholder="请输入" class="dealPrice">
             <i class="yuan">元</i>
           </el-form-item>
@@ -286,13 +297,12 @@ export default {
       choseHcode:0,
       choseGcode:0,
       fullscreenLoading:false,//加载loading动画
-      // 权限
-      // power:{
-      //   'sign-cz-ht-xq-ly': {
-      //     state: false,
-      //     name: '拨打电话'
-      //   },
-      // },
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      },
     }
   },
   created () {
@@ -410,7 +420,10 @@ export default {
       let y = time.getFullYear()
       let M = time.getMonth() + 1
       let D = time.getDate()
-      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D}`;
+      let h = time.getHours()
+      let m = time.getMinutes()
+      let s = time.getSeconds()
+      let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
       this.contractForm.signDate=time_
     },
     //获取所在城市的人员关系
@@ -1102,6 +1115,7 @@ export default {
     font-weight: bold;
   }
   .form-content {
+    min-width: 1100px;
     padding-left: 30px;
   }
 }
