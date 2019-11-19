@@ -1311,7 +1311,7 @@ export default {
       margin-bottom: 5px;
       div{
         &:first-of-type{
-          width: 42%;
+          min-width: 75px;
         }
       }
     }

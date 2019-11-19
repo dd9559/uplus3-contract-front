@@ -232,7 +232,7 @@
               </li>
               <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(uploadList,index,2)">
+                  <div class="namePath" @click="previewPhoto(uploadList,index)">
                     <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt="" v-if="isPictureFile(item.fileType)">
                     <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
@@ -263,7 +263,7 @@
                 <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
