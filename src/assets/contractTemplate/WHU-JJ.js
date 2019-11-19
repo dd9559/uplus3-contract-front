@@ -1,6 +1,7 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 
 let sub = {
+    'val3': null,
     'time_val5': null,
     'val8': null,
     'val10': null
