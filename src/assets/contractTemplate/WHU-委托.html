@@ -318,13 +318,13 @@
         <div class="code fontBold"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
         <div class="cw_message">
             <ul>
-                <li>委托方（甲方）: <span systemparam="ownerName" tag="input-auto"></span></li>
-                <li>身份证号（工商注册号）: <span systemparam="ownerID" tag="input-auto"></span></li>
+                <li>委托方（甲方）: <span class="text-limit input-before" extendparam="val-1" tag="input-auto"></span></li>
+                <li>身份证号（工商注册号）: <span class="text-limit input-before" extendparam="val0" tag="input-auto"></span></li>
                 <li>代理人: <span tag="input-auto" class="text-limit input-before" extendparam="val1"></span></li>
                 <li>联系电话: <span tag="input-auto" listen="number" class="text-limit input-before" extendparam="val2"></span></li>
-                <li>受托方（以下简称乙方）: <span systemparam="guestName" tag="input-auto"></span></li>
-                <li>工商注册号: <span tag="input-auto" class="text-limit input-before" extendparam="val3"></span>法定代表人: <span tag="input-auto" class="text-limit input-before" extendparam="val4"></span></li>
-                <li>公司住所: <span tag="input-auto" class="text-limit input-before" extendparam="val5"></span></li>
+                <li>受托方（以下简称乙方）: <span systemparam="name" tag="input-auto"></span></li>
+                <li>工商注册号: <span tag="input-auto" systemparam="registerCode"></span>法定代表人: <span tag="input-auto"  systemparam="lepName"></span></li>
+                <li>公司住所: <span tag="input-auto"  class="text-limit input-before" extendparam="val5"></span></li>
                 <li>联系人: <span tag="input-auto" class="text-limit input-before" extendparam="val6"></span></li>
                 <li>联系电话: <span tag="input-auto" listen="number" class="text-limit input-before" extendparam="val7"></span></li>
             </ul>
