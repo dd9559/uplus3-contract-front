@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
+                        <span class="mark">产权地址：<span>{{recordVersion==2?dealBasicInfo.propertyRightAddr:'--'}}</span></span>
                     </div>
                 </div>
                 <div class="item">
@@ -86,7 +86,7 @@
         <div class="house-from resource">
             <div>
                 <p class="bold">客源方信息</p>
-                <div class="info text">
+                <div class="info" :class="recordVersion==2?'version-mark':''">
                     <p><span>店长：</span><el-input size="small" v-model.trim="report.guestShopOwnerName" maxlength="10" :disabled="!saveBtnShow" class="kezhang" @input="inputOnly('guestShopOwnerName')"></el-input></p>
                     <p style="margin:0 10px;" class="store"><span>门店：</span><el-input size="small" v-model.trim="report.guestStoreName" maxlength="20" :disabled="!saveBtnShow" class="kedian" @input="inputOnly('guestStoreName')"></el-input></p>
                     <p><span>联系电话：</span><el-input size="small" v-model.trim="report.guestShopOwnerMobile" :disabled="!saveBtnShow" oninput="if(value.length>11)value=value.slice(0,11)" class="kelian" @input="inputOnly('guestShopOwnerMobile')"></el-input></p>
@@ -107,8 +107,8 @@
                 <div class="guest msg info">
                     <div class="text mai-mai" v-for="(item,i) in buyerArr" :key="i">
                         <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:125px;word-wrap:break-word;">{{item.name}}</span></p>
-                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{item.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{recordVersion==2?item.encryptionCode:'--'}}</span></p>
                     </div>
                     <div class="input">
                         <p>
@@ -149,8 +149,8 @@
                 <div class="owner msg info">
                     <div class="text mai-mai" v-for="(item,i) in sellerArr" :key="i">
                         <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:125px;word-wrap:break-word;">{{item.name}}</span></p>
-                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{item.encryptionCode}}</span></p>
                         <p><span>电话：</span><span>{{item.mobile}}</span></p>
+                        <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span>{{recordVersion==2?item.encryptionCode:'--'}}</span></p>
                     </div>
                     <div class="input">
                         <p style="margin-right:15px;">
@@ -324,7 +324,8 @@ export default {
             ],
             buyerArr: [],
             sellerArr: [],
-            noStageBank: true
+            noStageBank: true,
+            recordVersion: '' //合同页面版式
         }
     },
     created() {
@@ -360,6 +361,7 @@ export default {
                     this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
+                    this.recordVersion = res.data.recordVersion
                     if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = res.data.guestInfo.GuestStoreName
@@ -406,85 +408,39 @@ export default {
             }
         },
         saveFn() {
-            if(this.report.cardSituation) {
-                if(this.report.mortgageSituation) {
-                    if(this.report.isEarlyRepayment) {
-                        if(this.report.ownershipNumber) {
-                            if(this.report.guestShopOwnerName) {
-                                if(this.report.guestStoreName) {
-                                    if(this.report.guestShopOwnerMobile) {
-
-                                    } else {
-                                        this.$message({message:"客源方联系电话不能为空"})
-                                        addRedBorder('kelian')
-                                        return
-                                    }
-                                } else {
-                                    this.$message({message:"客源方门店不能为空"})
-                                    addRedBorder('kedian')
-                                    return
-                                }
-                            } else {
-                                this.$message({message:"客源方店长不能为空"})
-                                addRedBorder('kezhang')
-                                return
-                            }
-                        } else {
-                            this.$message({message:"权属证号不能为空"})
-                            addRedBorder('quanshu')
-                            return
-                        }
-                    } else {
-                        this.$message({message:"是否提前还款不能为空"})
-                        addRedBorder('huankuan',2)
-                        return
-                    }
-                } else {
-                    this.$message({message:"抵押情况不能为空"})
-                    addRedBorder('diya',2)
-                    return
-                }
-            } else {
-                this.$message({message:"两证情况不能为空"})
-                addRedBorder('liangzheng',2)
-                return
+            let arr_basic = [
+                { val: this.report.cardSituation, className: 'liangzheng', msg: '两证情况', type: 2 },
+                { val: this.report.mortgageSituation, className: 'diya', msg: '抵押情况', type: 2 },
+                { val: this.report.isEarlyRepayment, className: 'huankuan', msg: '是否提前还款', type: 2 },
+                { val: this.report.ownershipNumber, className: 'quanshu', msg: '权属证号', type: 1 },
+            ]
+            let arr_cus = [
+                { val: this.report.guestShopOwnerName, className: 'kezhang', msg: '客源方店长', type: 1 },
+                { val: this.report.guestStoreName, className: 'kedian', msg: '客源方门店', type: 1 },
+                { val: this.report.guestShopOwnerMobile, className: 'kelian', msg: '客源方联系电话', type: 1 }
+            ]
+            let arr_hou = [
+                { val: this.report.houseShopOwnerName, className: 'fangzhang', msg: '房源方店长', type: 1 },
+                { val: this.report.houseStoreName, className: 'fangdian', msg: '房源方门店', type: 1 },
+                { val: this.report.houseShopOwnerMobile, className: 'fanglian', msg: '房源方联系电话', type: 1 }
+            ]
+            let arr_deal = [
+                { val: this.report.buyerPaymentMethod, className: 'fukuan', msg: '付款方式', type: 2 },
+                { val: this.report.transFlowName, className: 'liucheng', msg: '交易流程', type: 2 },
+                { val: this.report.isExtend, className: 'xichan', msg: '是否析产（继承）', type: 2 }
+            ]
+            let arr = []
+            if(this.recordVersion==2){ //复杂版
+                arr = [].concat(arr_basic,arr_cus,arr_hou,arr_deal)
+            } else { //温州基础版客源方信息非必填
+                arr = [].concat(arr_basic,arr_hou,arr_deal)
             }
-            if(this.report.houseShopOwnerName) {
-                if(this.report.houseStoreName) {
-                    if(this.report.houseShopOwnerMobile) {
-                        if(this.report.buyerPaymentMethod) {
-                            if(this.report.transFlowName) {
-                                if(this.report.isExtend) {
-
-                                } else {
-                                    this.$message({message:"是否析产（继承）不能为空"})
-                                    addRedBorder('xichan',2)
-                                    return
-                                }
-                            } else {
-                                this.$message({message:"交易流程不能为空"})
-                                addRedBorder('liucheng',2)
-                                return
-                            }
-                        } else {
-                            this.$message({message:"付款方式不能为空"})
-                            addRedBorder('fukuan',2)
-                            return
-                        }
-                    } else {
-                        this.$message({message:"房源方联系电话不能为空"})
-                        addRedBorder('fanglian')
-                        return
-                    }
-                } else {
-                    this.$message({message:"房源方门店不能为空"})
-                    addRedBorder('fangdian')
+            for(let i = 0; i < arr.length; i++) {
+                if(!arr[i].val) {
+                    this.$message(`${arr[i].msg}不能为空`)
+                    addRedBorder(arr[i].className,arr[i].type)
                     return
                 }
-            } else {
-                this.$message({message:"房源方店长不能为空"})
-                addRedBorder('fangzhang')
-                return
             }
             if(!checkPhone(this.report.guestShopOwnerMobile)) {
                 this.$message({message:"请输入11位正确的客源方联系电话",type:"warning"})
@@ -504,12 +460,6 @@ export default {
                             return
                         }
                     }
-                    // else if(type === 2) {
-                    //     if(!checkPassPort(val)) {
-                    //         this.$message({message:'买方代理人护照不正确',type:'warning'})
-                    //         return
-                    //     }
-                    // }
                     if(!this.report.buyerAgentName) {
                         this.$message("买方代理人姓名不能为空")
                         return
@@ -529,12 +479,6 @@ export default {
                             return
                         }
                     }
-                    // else if(type === 2) {
-                    //     if(!checkPassPort(val)) {
-                    //         this.$message({message:'卖方代理人护照不正确',type:'warning'})
-                    //         return
-                    //     }
-                    // }
                     if(!this.report.sellerAgentName) {
                         this.$message("卖方代理人姓名不能为空")
                         return
@@ -805,6 +749,12 @@ export default {
             margin-bottom: 10px;
             span:first-child {
                 color: @color-6c;
+            }
+            &.version-mark p::before {
+                content: "*";
+                color: red;
+                position: relative;
+                top: 3px;
             }
         }
     }

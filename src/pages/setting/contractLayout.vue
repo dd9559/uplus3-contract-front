@@ -105,6 +105,13 @@
             <el-button type="primary" @click="submitFn" round>保 存</el-button>
         </div>
         </el-dialog>
+        <!-- 确认保存弹窗 -->
+        <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
+            <div class="btn-box btn">
+                <el-button @click="saveDialog=false" round>取 消</el-button>
+                <el-button type="primary" @click="sureFn" round>确 认</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -137,7 +144,8 @@
                         state: false,
                         name: '新增/编辑'
                     }
-                }
+                },
+                saveDialog: false
             }
         },
         created() {
@@ -149,7 +157,7 @@
             if(res&&(res.route === this.$route.path)){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 let query = session.query
-                this.LayoutData = res.data
+                this.LayoutData = res.data.list
                 this.searchSystemTag = query.systemtag
                 this.createTime = query.createStartTime ? [query.createStartTime,query.createEndTime] : []
                 this.updateTime = query.updateStartTime ? [query.updateStartTime,query.updateEndTime] : []
@@ -213,6 +221,10 @@
                     this.$message({message:'体系不能为空'})
                     return
                 }
+                this.saveDialog = true
+            },
+            // 确定保存
+            sureFn() {
                 let param = {
                     systemtag: this.addSystemTag,
                     version: this.layoutType
@@ -226,6 +238,7 @@
                     res = res.data
                     if(res.status === 200) {
                         this.$message(res.message)
+                        this.saveDialog = false
                         this.addVisible = false
                         this.getData()
                     }
@@ -311,6 +324,9 @@
     .btn {
         padding: 10px 20px 10px 0;
         text-align: right;
+        &-box {
+            margin-top: 50px;
+        }
     }
     /deep/ .el-dialog__body {
         padding: 0;
