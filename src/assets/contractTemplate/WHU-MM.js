@@ -10,6 +10,7 @@ let Obj={
   }
 
   let sub = {
+    'val13': null,
     'checkbox_houseType': null,
     'val26': null,
     'val30': null,
