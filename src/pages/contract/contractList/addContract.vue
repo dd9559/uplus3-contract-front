@@ -635,31 +635,6 @@ export default {
         this.contractForm.isHaveCooperation = 1;
       }
     },
-    //获取合同扩展参数
-    getExtendParams(){
-      let param = {
-        type:Number(this.$route.query.type)
-      }
-      this.$ajax.get('/api/contract/getExtendParamsByType', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.parameterList=res.data;
-          res.data.forEach(element => {
-            let name_ = element.name;
-            // this.parameterRule[name_]={name:element.name};
-            if(this.type===1){
-              // this.$set(this.contractForm.extendParams,name_,'')
-              this.contractForm.extendParams.push({
-                name:name_,
-                value:'',
-                type:element.inputType.value,
-                unit:element.unit
-              })
-            }
-          });
-        }
-      })
-    },
     //证件类型切换
     changeCadrType(value,index,type){
       // console.log(value,index,type)
@@ -1478,7 +1453,7 @@ export default {
               }else{
                 unit = 1
               }
-              // this.$set(this.contractForm,'timeUnit',unit);
+              this.$set(this.contractForm,'timeUnit',unit);
             }
             this.contractForm.houseInfo = houseMsg;
             //重新选择房源时清空产权地址
@@ -2029,19 +2004,6 @@ export default {
   beforeDestroy(){
     localStorage.removeItem('backMsg')
   },
-  // watch:{
-  //   ownerList:function(){
-  //     let arr = this.ownerList.map(item=>Object.assign({},item))
-  //     this.ownerList.forEach(item=>{
-  //       // item=JSON.parse(JSON.stringify(item))
-  //       debugger
-  //       if(item.isEncryption){
-  //         this.$set(item,'mobile',item.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2"))
-  //       }
-  //     })
-  //     this.ownerList_=[].concat(arr)
-  //   }
-  // },
   filters: {
     moneyFormat: function(val) {
       if (!val) {

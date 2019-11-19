@@ -985,6 +985,7 @@ export default {
               }else{
                 unit = 1
               }
+              this.$set(this.contractForm,'timeUnit',unit);
             }
             this.contractForm.houseInfo = houseMsg;
             if(houseMsg.OwnerInfoList.length>0){
