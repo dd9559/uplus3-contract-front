@@ -29,11 +29,11 @@
             </el-form-item>
             <br>
             <el-form-item label="客户佣金：" class="width-250">
-              <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+              <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
               <i class="yuan">元</i>
             </el-form-item>
             <el-form-item label="业主佣金：" style="text-align:right;width:285px;">
-              <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
+              <input type="text" :disabled="canInput" v-model="contractForm.ownerCommission" @input="cutNumber('ownerCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
               <i class="yuan">元</i>
             </el-form-item>
             <el-form-item label="总佣金：" style="text-align:right;width:280px;">
@@ -634,31 +634,6 @@ export default {
       } else {
         this.contractForm.isHaveCooperation = 1;
       }
-    },
-    //获取合同扩展参数
-    getExtendParams(){
-      let param = {
-        type:Number(this.$route.query.type)
-      }
-      this.$ajax.get('/api/contract/getExtendParamsByType', param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          this.parameterList=res.data;
-          res.data.forEach(element => {
-            let name_ = element.name;
-            // this.parameterRule[name_]={name:element.name};
-            if(this.type===1){
-              // this.$set(this.contractForm.extendParams,name_,'')
-              this.contractForm.extendParams.push({
-                name:name_,
-                value:'',
-                type:element.inputType.value,
-                unit:element.unit
-              })
-            }
-          });
-        }
-      })
     },
     //证件类型切换
     changeCadrType(value,index,type){
@@ -1534,7 +1509,7 @@ export default {
             id:houseMsg.PropertyCode,
             type:1
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -1587,7 +1562,7 @@ export default {
             id:guestMsg.InquiryCode,
             type:2
           }
-          this.getAgentMsg(param)
+          // this.getAgentMsg(param)
         }
       }).catch(error=>{
         this.$message({
@@ -2029,19 +2004,6 @@ export default {
   beforeDestroy(){
     localStorage.removeItem('backMsg')
   },
-  // watch:{
-  //   ownerList:function(){
-  //     let arr = this.ownerList.map(item=>Object.assign({},item))
-  //     this.ownerList.forEach(item=>{
-  //       // item=JSON.parse(JSON.stringify(item))
-  //       debugger
-  //       if(item.isEncryption){
-  //         this.$set(item,'mobile',item.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2"))
-  //       }
-  //     })
-  //     this.ownerList_=[].concat(arr)
-  //   }
-  // },
   filters: {
     moneyFormat: function(val) {
       if (!val) {

@@ -18,7 +18,6 @@
                         {{contractDetail.code}}
                       </div>
                     </el-tooltip>
-                    <!-- <span class="tag">合同编号：</span><span class="serialNumber">{{contractDetail.code}}</span> -->
                   </p>
                   <p style="position:relative;" v-if="contractDetail.recordType.value===2">
                     <span class="tag">纸质合同编号：</span>
@@ -49,20 +48,11 @@
                 <div class="one_">
                   <p><span class="tag">客户佣金：</span><span class="text">{{contractDetail.custCommission}} 元</span></p>
                   <p><span class="tag">业主佣金：</span><span class="text">{{contractDetail.ownerCommission}} 元</span></p>
-                  <!-- <p><span class="tag">佣金支付费：</span><span class="text">{{contractDetail.commissionPayment}} 元</span></p> -->
                   <p v-if="contType!='1'">
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <!-- <p class="address" v-if="contType==='1'">
-                    <span class="tag">交易流程：</span>
-                    <span class="text" v-for="item in transFlowList" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
-                  </p> -->
                 </div>
-                <!-- <div class="one_">
-                  <p><span class="tag">按揭手续费：</span><span class="text">另外出-客户-300 元</span></p>
-                  <p><span class="tag">按揭员：</span><span class="text">夏雨天</span></p>
-                </div> -->
               </div>
             </div>
             <div class="msg">
@@ -73,10 +63,6 @@
                   <p class="address">
                     <span class="tag">物业地址：</span>
                     <span class="text">{{contractDetail.propertyAddr}}</span>
-                    <!-- <span class="text">{{contractDetail.houseInfo.EstateName}}</span>
-                    <span class="text">{{contractDetail.houseInfo.BuildingName}}</span>
-                    <span class="text">{{contractDetail.houseInfo.Unit}}</span>
-                    <span class="text">{{contractDetail.houseInfo.RoomNo}}</span> -->
                   </p>
                 </div>
                 <div class="one_" v-if="contractDetail.recordVersion===2">
@@ -85,36 +71,7 @@
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
                   <p><span class="tag">套内面积：</span><span class="text">{{contractDetail.houseInfo.SquareUse}} m²</span></p>
-                  <!-- <p><span class="tag">用 途：</span><span class="text">{{contractDetail.houseInfo.HousePurpose?contractDetail.houseInfo.HousePurpose:'--'}}</span></p> -->
-                  <!-- <p v-if="contType!='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
                 </div>
-                <!-- <div class="one_"> -->
-                  <!-- <p><span class="tag">朝 向：</span><span class="text">{{contractDetail.houseInfo.Orientation?contractDetail.houseInfo.Orientation:'--'}}</span></p> -->
-                  <!-- <p><span class="tag">装 修：</span><span class="text">{{contractDetail.houseInfo.DecorateType?contractDetail.houseInfo.DecorateType:'--'}}</span></p> -->
-                  <!-- <p style="width:500px" v-if="contType!='1'">
-                    <span class="tag">房产证号：</span>
-                    <span class="text">{{contractDetail.propertyCard?contractDetail.propertyCard:'--'}}</span>
-                  </p> -->
-                  <!-- <p v-if="contType==='1'"><span class="tag">房 型：</span><span class="text">{{contractDetail.houseInfo.HouseType?contractDetail.houseInfo.HouseType:'--'}}</span></p> -->
-                <!-- </div> -->
-                <!-- <div class="one_" v-if="contType!='1'">
-                  <p>
-                    <span class="tag">产权状态：</span>
-                    <span class="text" v-for="item in dictionary['514']" :key="item.key" v-if="item.key===contractDetail.houseInfo.propertyRightStatus">{{item.value}}</span>
-                    <span class="text" v-if="contractDetail.houseInfo.propertyRightStatus===0">无</span>
-                  </p>
-                  <p><span class="tag">按揭银行：</span><span class="text">{{contractDetail.houseInfo.stagesBankName?contractDetail.houseInfo.stagesBankName:'--'}}</span></p>
-
-                  <p style="width:530px">
-                    <span class="tag">按揭欠款：</span>
-                    <span class="text dealPrice">{{contractDetail.houseInfo.stagesArrears}} 元 <i>{{contractDetail.houseInfo.stagesArrears|moneyFormat}}</i></span>
-                  </p>
-                </div> -->
-                <!-- <div class="one_">
-                  <p><span class="tag">房源方门店：</span><span class="text">{{contractDetail.houseInfo.HouseStoreName}}</span></p>
-                  <p><span class="tag">店 长：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerName?contractDetail.houseInfo.ShopOwnerName:'--'}}</span></p>
-                  <p><span class="tag">手 机：</span><span class="text">{{contractDetail.houseInfo.ShopOwnerMobile?contractDetail.houseInfo.ShopOwnerMobile:'--'}}</span></p>
-                </div> -->
                 <div class="table">
                   <el-table :data="ownerData" border header-row-class-name="theader-bg">
                     <el-table-column prop="name" label="业主姓名"></el-table-column>
@@ -131,7 +88,6 @@
                       </template>
                     </el-table-column>
                     <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2">
-                      <!-- cardType -->
                       <template slot-scope="scope">
                         {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}
                       </template>
@@ -145,16 +101,7 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
-                  <!-- <p>
-                    <span class="tag">付款方式：</span>
-                    <span class="text" v-for="item in dictionary['556']" :key="item.key" v-if="contractDetail.guestInfo.paymentMethod===item.key">{{item.value}}</span>
-                  </p> -->
                 </div>
-                <!-- <div class="one_">
-                  <p><span class="tag">客源方门店：</span><span class="text">{{contractDetail.guestInfo.GuestStoreName}}</span></p>
-                  <p><span class="tag">店 长：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerName}}</span></p>
-                  <p><span class="tag">手 机：</span><span class="text">{{contractDetail.guestInfo.ShopOwnerMobile}}</span></p>
-                </div> -->
                 <div class="table">
                   <el-table :data="clientrData" border header-row-class-name="theader-bg">
                     <el-table-column prop="name" label="客户姓名"></el-table-column>
@@ -210,9 +157,7 @@
                 </div>
                 <div class="remark">
                   <span style="display:inline-block;width:50px">备注：</span>
-                  <!-- <p v-if="contractDetail.otherCooperationInfo.remarks">{{contractDetail.otherCooperationInfo.remarks}}</p> -->
                   <el-input type="textarea" :rows="6" maxlength="200" disabled resize='none' v-model="contractDetail.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
-                  <!-- <p v-else>暂无备注</p> -->
                 </div>
               </div>
             </div>
@@ -263,18 +208,10 @@
               <p><span>最后修改：</span>{{contractDetail.updateTime|formatTime}}</p>
             </div>
             <div v-if="contractDetail.contChangeState.value!=2">
-              <!-- <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(2)">解约</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.contState.value!=3&&contractDetail.contState.value!=0)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.contState.value!=3&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5" @click="goChangeCancel(1)">变更</el-button>
-              <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&(contractDetail.toExamineState.value<0||contractDetail.toExamineState.value===2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&contractDetail.contState.value!=3)" @click="goEdit">编辑</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button> -->
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5&&contractDetail.cancelExamineState!=0" @click="goChangeCancel(2)">解约</el-button>
-              <!-- <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&((contractDetail.recordType.value===1&&contractDetail.contState.value===2)||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0&&contractDetail.contState.value!=3&&contractDetail.laterStageState.value===1&&contractDetail.achievementState.value!=1))" @click="invalid">撤单</el-button> -->
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(contractDetail.recordType.value===1&&contractDetail.contState.value===2)" @click="invalid">撤单</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0" @click="goChangeCancel(1)">变更</el-button>
-              <!-- <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&contractDetail.contChangeState.value!=2))" @click="goEdit">编辑</el-button> -->
               <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
@@ -330,7 +267,6 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
-          <!-- <div class="dataBank" v-if="contractDetail.contChangeState.value!=2||contractDetail.isHaveData"> -->
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">业主</p>
@@ -443,8 +379,6 @@
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
-                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
-                </el-table-column> -->
                 <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
                   <template slot-scope="scope">
                     {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
@@ -494,8 +428,6 @@
                 </el-table-column>
                 <el-table-column label="收付方式" prop="payment" min-width="40">
                 </el-table-column>
-                <!-- <el-table-column label="付款方" prop="payer" min-width="50">
-                </el-table-column> -->
                 <el-table-column label="收款人" min-width="60" show-overflow-tooltip>
                   <template slot-scope="scope">
                     {{scope.row.payment==='收款'?scope.row.payee:scope.row.payer}}
@@ -731,19 +663,14 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <!-- <div class="functionTable" v-if="contractDetail.contChangeState.value!=2"> -->
     <div class="functionTable">
       <el-button round class="search_btn" v-if="power['sign-com-bill'].state&&name==='first'" @click="runningWater">合同流水</el-button>
       <el-button round v-if="power['sign-ht-info-edit'].state&&name==='deal-report'&&editBtnShow" style="background:#478DE3;color:white;" @click="editFn">编辑</el-button>
       <el-button round class="search_btn" v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow" @click="printDemo">打印成交报告</el-button>
-      <!-- <el-button type="primary" round class="search_btn" @click="dialogSupervise = true">资金监管</el-button> -->
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
-      <!-- <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  合同资料库上传 -->
-      <!-- <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&contractDetail.contState.value>1">上传</el-button>  合同主体上传 -->
     </div>
     <div class="uploadBtn">
       <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
-      <!-- <el-button type="primary" round class="search_btn" @click="saveFile" v-if="power['sign-ht-xq-main-add'].state&&name==='second'&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">上传</el-button>  合同主体上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -1259,7 +1186,6 @@ export default {
       water:false,//流水
       waterId:'',
       previewType:'none',
-      userMsg:{}, //当前登录人信息
       recordId:'',//合同创建人id
       isReady:false,
       dataScane:{
@@ -1444,7 +1370,6 @@ export default {
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
     this.getAttachment()//合同附件列表
-    console.log(this.getUser)
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
@@ -2144,12 +2069,44 @@ export default {
           res=res.data;
           if(res.status===200){
             this.getContractDetail();
-            this.$message({
-              message:'上传成功',
-              type:'success'
-            })
-            if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1&&type==="main"){
-              this.dialogSuccess=true
+            if(type==="main"){
+              //若为温州合同且第一次上传合同主体 需跳转到业绩编辑页面
+              if((this.contractDetail.cityCode===16||this.contractDetail.cityCode===19||this.contractDetail.cityCode===40)&&this.contractDetail.contState.value!=3){
+                let that = this
+                this.$message({
+                  message:'即将跳转到业绩页面',
+                  type:'success',
+                  onClose(){
+                    let newPage = that.$router.resolve({
+                      path: "/achPage",
+                      query: {
+                        aId: that.contractDetail.achievementId,
+                        contractCode: that.contractDetail.code,
+                        dialogType: 1,
+                        achObj: JSON.stringify({ contractId: that.contractDetail.id }),
+                        contractId: that.contractDetail.id,
+                        version: that.getUser.version,
+                        contType:that.contractDetail.contType.value
+                      }
+                    });
+                    window.open(newPage.href, "_blank");
+                  }
+                })
+              }else{
+                this.$message({
+                  message:'上传成功',
+                  type:'success'
+                })
+                //提示上传资料库
+                if(this.contractDetail.recordType.value===2&&this.contractDetail.isHaveData!=1&&type==="main"){
+                  this.dialogSuccess=true
+                }
+              }
+            }else{
+              this.$message({
+                message:'上传成功',
+                type:'success'
+              })
             }
           }
         }).catch(error=>{
@@ -2431,41 +2388,6 @@ export default {
           type: "error"
         })
       })
-      // if(this.invalidReason.length>0){
-      //   this.invalidReason=this.invalidReason.replace(/\s/g,"");
-      //   if(this.invalidReason.length>0){
-      //     let param = {
-      //       id: this.id,
-      //       reason: this.invalidReason
-      //     };
-      //     this.$ajax.post('/api/contract/invalid', param).then(res=>{
-      //       res=res.data;
-      //       if(res.status===200){
-      //         this.getContractDetail();
-      //         this.dialogInvalid=false;
-      //         this.$message({
-      //           message:'操作成功',
-      //           type:'success'
-      //         })
-      //       }
-      //     }).catch(error=>{
-      //       this.$message({
-      //         message:error,
-      //         type: "error"
-      //       })
-      //     })
-      //   }else{
-      //     this.$message({
-      //       message:'请填写撤单原因',
-      //       type:'warning'
-      //     })
-      //   }
-      // }else{
-      //   this.$message({
-      //     message:'请填写撤单原因',
-      //     type:'warning'
-      //   })
-      // }
     },
     //合同审核信息
     getAuditList(type=3){
@@ -2616,6 +2538,7 @@ export default {
     window.onresize = this.clientHeight;
   },
   computed:{
+    //非业务人员的判断
     getUserMsg(){
       return this.getUser.isBusiness
     }

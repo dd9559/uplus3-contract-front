@@ -221,8 +221,11 @@
         </el-table-column>
         <el-table-column label="成交经纪人" min-width="120">
           <template slot-scope="scope">
-            <p>{{scope.row.dealAgentStoreName}}</p>
-            <p>{{scope.row.dealAgentName}}</p>
+            <div v-if="scope.row.dealAgentStoreName||scope.row.dealAgentName">
+              <p>{{scope.row.dealAgentStoreName}}</p>
+              <p>{{scope.row.dealAgentName}}</p>
+            </div>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="房客源店长" min-width="150">
