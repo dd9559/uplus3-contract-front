@@ -89,7 +89,7 @@
                 <div class="one_">
                     <p>
                         <span>客源编号：</span>
-                        <span class="color-blue">{{defaultInfo.guestinfoCode}}</span>
+                        <span class="color-blue">{{defaultInfo.guestinfoCode?defaultInfo.guestinfoCode:'--'}}</span>
                     </p>
                 </div>
                 <div v-for="(item,i) in guestArr" :key="i" class="one_">

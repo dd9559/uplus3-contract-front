@@ -3,16 +3,22 @@ import {contractConfig,toChineseNumber} from "./base.js"
 Dropdown.create({
     classN: 'dropdown-item',
     callBack: function(bindElem, dateObj) {
-        if(bindElem.tagName.toLowerCase()==='input'){
-          // debugger
-            bindElem.value=dateObj.value
-            bindElem.setAttribute('value',bindElem.value)
-        }else{
-          bindElem.innerHTML = dateObj.value
-          bindElem.classList.remove('input-select')
-          bindElem.classList.remove('input-before')
-        }
-    }
+      if(bindElem.tagName.toLowerCase()==='input'){
+          bindElem.value=dateObj.value
+          bindElem.setAttribute('value',bindElem.value)
+          document.querySelector(`*[extendparam="val14"]`).innerHTML=''
+          document.querySelector(`*[extendparam="val14_add"]`).innerHTML=''
+          if(dateObj.value=='2'){
+            document.querySelector(`*[extendparam="val14"]`).setAttribute("systemParam","true")
+          }else{
+            document.querySelector(`*[extendparam="val14"]`).removeAttribute('systemParam')
+          }
+      }else{
+        bindElem.innerHTML = dateObj.value
+        bindElem.classList.remove('input-select')
+        bindElem.classList.remove('input-before')
+      }
+  }
 })
 
 Calendar.create({
@@ -104,7 +110,22 @@ let sub = {
   'val10': null,
   'val11': null,
   'val12': null,
-  'drapdown_handle': null,
+  'drapdown_handle': {
+    stateful: function (val) {
+      let res = null;
+      switch (val) {
+        case '1':
+          res = {'val14': null};
+          break;
+        case '2':
+          break;
+        case '1，2':
+          res = {'val14': null};
+          break
+      }
+      return res;
+    }
+  },
   'val14': null,
   'time_val15': null,
   'val16': null,

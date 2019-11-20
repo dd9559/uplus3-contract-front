@@ -134,6 +134,7 @@
                     class="item"
                     effect="dark"
                     :content="scope.row.assignorNum+''"
+                    :disabled="scope.row.assignorNum?false:true"
                     placement="top"
                   >
                   <el-input
@@ -522,6 +523,7 @@
                     class="item"
                     effect="dark"
                     :content="scope.row.assignorNum+''"
+                    :disabled="scope.row.assignorNum?false:true"
                     placement="top"
                   >
                   <el-input
@@ -868,6 +870,7 @@
                     class="item"
                     effect="dark"
                     :content="scope.row.assignorNum+''"
+                    :disabled="scope.row.assignorNum?false:true"
                     placement="top"
                   >
                   <el-input
@@ -1922,6 +1925,9 @@
           this.houseArr[index].amaldarId = "";
           this.houseArr[index].shopkeeperId = "";
           this.houseArr[index].platformFeeRatio = "";
+          this.houseArr[index].assignorNum = "";
+          this.houseArr[index].assignorLevel = "";
+          this.houseArr[index].salesManagerLevel = "";
         } else if (type == 1) {
           this.clientArr[index].isJob = "";
           this.clientArr[index].level3 = "";
@@ -1936,6 +1942,9 @@
           this.clientArr[index].amaldarId = "";
           this.clientArr[index].shopkeeperId = "";
           this.clientArr[index].platformFeeRatio = "";
+          this.clientArr[index].assignorNum = "";
+          this.clientArr[index].assignorLevel = "";
+          this.clientArr[index].salesManagerLevel = "";
         } else {
           this.serviceAgents[index].isJob = "";
           this.serviceAgents[index].level3 = "";
@@ -1950,6 +1959,9 @@
           this.serviceAgents[index].amaldarId = "";
           this.serviceAgents[index].shopkeeperId = "";
           this.serviceAgents[index].platformFeeRatio = "";
+          this.serviceAgents[index].assignorNum = "";
+          this.serviceAgents[index].assignorLevel = "";
+          this.serviceAgents[index].salesManagerLevel = "";
         }
       }
     },
