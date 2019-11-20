@@ -158,6 +158,7 @@
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 let query = session.query
                 this.LayoutData = res.data.list
+                this.total = res.data.total
                 this.searchSystemTag = query.systemtag
                 this.createTime = query.createStartTime ? [query.createStartTime,query.createEndTime] : []
                 this.updateTime = query.updateStartTime ? [query.updateStartTime,query.updateEndTime] : []
