@@ -65,8 +65,8 @@
           browse_button: that.getId, //选择文件按钮
           multi_selection: that.more,
           drop_element: document.getElementById(that.getParentId),
-          flash_swf_url: './static/js/Moxie.swf',
-          silverlight_xap_url: './static/js/Moxie.xap',
+          /*flash_swf_url: '',
+          silverlight_xap_url: '',*/
           // url: 'http://oss.aliyuncs.com',
 
           filters: {
