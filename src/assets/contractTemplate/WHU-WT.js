@@ -8,6 +8,9 @@ Dropdown.create({
           bindElem.setAttribute('value',bindElem.value)
           document.querySelector(`*[extendparam="val14"]`).innerHTML=''
           document.querySelector(`*[extendparam="val14_add"]`).innerHTML=''
+          document.querySelector(`*[extendparam="val14"]`).classList.add('input-before')
+          let inputArea = document.querySelector('.alert-viwer')
+          inputArea.style.display = 'none'
           if(dateObj.value=='2'){
             document.querySelector(`*[extendparam="val14"]`).setAttribute("systemParam","true")
           }else{
