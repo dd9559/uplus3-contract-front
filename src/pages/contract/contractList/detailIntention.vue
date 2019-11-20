@@ -11,7 +11,7 @@
                                 <li>
                                     <div class="div1"><span>合同编号：</span><em class="blue">{{detailData.code}}</em></div>
                                     <div class="div1" v-if="detailData.recordType.value===2"><span>纸质合同编号：</span><em class="blue">{{detailData.pCode}}</em></div>
-                                    <div class="div2"><span>签约日期：</span>{{detailData.signDate | subStrFn}}</div>
+                                    <div class="div2"><span>签约日期：</span>{{detailData.signDate.substr(0, 16)}}</div>
                                     <div class="div3"><span>认购期限：</span>{{detailData.subscriptionTerm | subStrFn}}</div>
                                 </li>
                                 <li>
