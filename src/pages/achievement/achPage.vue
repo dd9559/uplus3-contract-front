@@ -97,6 +97,7 @@
                     :disabled="scope.row.assignor?false:true"
                     :content="scope.row.assignor+''"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.assignor"
@@ -129,6 +130,7 @@
                     :content="scope.row.assignorNum+''"
                     :disabled="scope.row.assignorNum?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -184,6 +186,7 @@
                     :disabled="scope.row.level3?false:true"
                     :content="scope.row.level3+''"
                     placement="top"
+                    open-delay="300"
                   >
                     <el-select
                       v-model="scope.row.level3"
@@ -235,6 +238,7 @@
                     :content="scope.row.shopkeeper+''"
                     :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.shopkeeper"
@@ -268,6 +272,7 @@
                     :content="scope.row.level4+''"
                      :disabled="scope.row.level4?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.level4"
@@ -300,6 +305,7 @@
                     :content="scope.row.amaldar+''"
                     :disabled="scope.row.amaldar?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.amaldar"
@@ -333,6 +339,7 @@
                     :content="scope.row.manager+''"
                     :disabled="scope.row.manager?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.manager"
@@ -450,6 +457,7 @@
                     :content="scope.row.assignor+''"
                     :disabled="scope.row.assignor?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.assignor"
@@ -482,6 +490,7 @@
                     :content="scope.row.assignorNum+''"
                     :disabled="scope.row.assignorNum?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -536,6 +545,7 @@
                     :content="scope.row.level3+''"
                     :disabled="scope.row.level3?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                     <el-select
                       v-model="scope.row.level3"
@@ -587,6 +597,7 @@
                     :content="scope.row.shopkeeper+''"
                     :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.shopkeeper"
@@ -619,6 +630,7 @@
                     :content="scope.row.level4+''"
                     :disabled="scope.row.level4?false:true"
                     placement="top"
+                    open-delay="300"
                   >                 
                   <el-select
                     v-model="scope.row.level4"
@@ -651,6 +663,7 @@
                     :content="scope.row.amaldar+''"
                     :disabled="scope.row.amaldar?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.amaldar"
@@ -684,6 +697,7 @@
                     :content="scope.row.manager+''"
                     :disabled="scope.row.manager?false:true"
                     placement="top"
+                    open-delay="300"
                   >                  
                   <el-select
                     v-model="scope.row.manager"
@@ -776,6 +790,7 @@
                     :content="scope.row.assignor+''"
                     :disabled="scope.row.assignor?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.assignor"
@@ -808,6 +823,7 @@
                     :content="scope.row.assignorNum+''"
                     :disabled="scope.row.assignorNum?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-input
                     v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
@@ -862,6 +878,7 @@
                     :content="scope.row.level3+''"
                     :disabled="scope.row.level3?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                     <el-select
                       v-model="scope.row.level3"
@@ -913,6 +930,7 @@
                     :content="scope.row.shopkeeper+''"
                     :disabled="scope.row.shopkeeper?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.shopkeeper"
@@ -945,6 +963,7 @@
                     :content="scope.row.level4+''"
                     :disabled="scope.row.level4?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.level4"
@@ -977,6 +996,7 @@
                     :content="scope.row.amaldar+''"
                     :disabled="scope.row.amaldar?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.amaldar"
@@ -1010,6 +1030,7 @@
                     :content="scope.row.manager+''"
                     :disabled="scope.row.manager?false:true"
                     placement="top"
+                    open-delay="300"
                   >
                   <el-select
                     v-model="scope.row.manager"
