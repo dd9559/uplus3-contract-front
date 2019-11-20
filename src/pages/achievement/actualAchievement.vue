@@ -1176,6 +1176,10 @@ export default {
         return this.$tool.cutFilePath(item)
       },
     shenSu(row,index){
+      if((!row.dealName||row.dealName=='-')&&(!row.dealStorefront||row.dealStorefront=='-')) {
+        this.$message({message: '无成交经纪人不能发起申诉', type: 'error'})
+        return
+      }
       this.uploadScane.id=row.code
       this.htbh=row.code
       this.yjId=row.aId
