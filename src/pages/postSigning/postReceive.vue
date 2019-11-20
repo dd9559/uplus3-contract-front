@@ -552,7 +552,7 @@
                     return false
                 }
                 this.receive = {
-                    show: true,
+                    // show: true,
                     tit: '接收',
                     proWidth: '1000px',
                     rabbet: true,
@@ -582,6 +582,7 @@
                 }).then(res => {
                     res = res.data
                     if (res.status === 200) {
+                        this.receive.show = true
                         let arr = [...res.data];
                         arr.map(e => {
                             if(e.roleId == 0) {

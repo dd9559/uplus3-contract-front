@@ -442,7 +442,7 @@ export default {
                     return
                 }
             }
-            if(!checkPhone(this.report.guestShopOwnerMobile)) {
+            if(!checkPhone(this.report.guestShopOwnerMobile)&&this.recordVersion==2) {
                 this.$message({message:"请输入11位正确的客源方联系电话",type:"warning"})
                 return
             }
