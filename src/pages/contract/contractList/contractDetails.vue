@@ -232,7 +232,7 @@
               </li>
               <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(uploadList,index,2)">
+                  <div class="namePath" @click="previewPhoto(uploadList,index)">
                     <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt="" v-if="isPictureFile(item.fileType)">
                     <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
@@ -263,7 +263,7 @@
                 <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
@@ -796,7 +796,7 @@
                 <p><span>建成年代：</span><span>{{yearFormatFn(contractDetail.houseInfo.CompleteYear)}}</span></p>
               </li>
               <li>
-                <p><span>产权地址：</span><span>{{contractDetail.propertyRightAddr}}</span></p>
+                <p><span>产权地址：</span><span>{{contractDetail.recordVersion==2?contractDetail.propertyRightAddr:'--'}}</span></p>
               </li>
               <li>
                 <p class="w30"><span>预缴税费：</span><span>{{contractDetail.report.payTaxation?contractDetail.report.payTaxation+'万元':'--'}}</span></p>
@@ -831,7 +831,7 @@
                 <p><span style="min-width:42px;">姓名：</span><span>{{buyerFirst.name}}</span></p>
               </div>
               <div class="two-item">
-                <p class="line"><span>{{getCardTypeVal(buyerFirst.cardType)}}：</span><span>{{buyerFirst.encryptionCode}}</span></p>
+                <p class="line"><span>{{getCardTypeVal(buyerFirst.cardType)}}：</span><span>{{contractDetail.recordVersion==2?buyerFirst.encryptionCode:'--'}}</span></p>
                 <p><span>电话：</span><span>{{buyerFirst.mobile}}</span></p>
               </div>
               <div class="no-bottom display-b" v-for="(item,index) in buyerInfo" :key="index">
@@ -839,7 +839,7 @@
                   <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
                 </div>
                 <div class="two-item">
-                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{contractDetail.recordVersion==2?item.encryptionCode:'--'}}</span></p>
                   <p><span>电话：</span><span>{{item.mobile}}</span></p>
                 </div>
               </div>
@@ -861,7 +861,7 @@
                 <p><span style="min-width:42px;">姓名：</span><span>{{sellerFirst.name}}</span></p>
               </div>
               <div class="two-item">
-                <p class="line"><span>{{getCardTypeVal(sellerFirst.cardType)}}：</span><span>{{sellerFirst.encryptionCode}}</span></p>
+                <p class="line"><span>{{getCardTypeVal(sellerFirst.cardType)}}：</span><span>{{contractDetail.recordVersion==2?sellerFirst.encryptionCode:'--'}}</span></p>
                 <p><span>电话：</span><span>{{sellerFirst.mobile}}</span></p>
               </div>
               <div class="no-bottom display-b" v-for="(item,index) in sellerInfo" :key="index">
@@ -869,7 +869,7 @@
                   <p><span style="min-width:84px;">共有人姓名：</span><span>{{item.name}}</span></p>
                 </div>
                 <div class="two-item">
-                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{item.encryptionCode}}</span></p>
+                  <p class="line"><span>{{getCardTypeVal(item.cardType)}}：</span><span>{{contractDetail.recordVersion==2?item.encryptionCode:'--'}}</span></p>
                   <p><span>电话：</span><span>{{item.mobile}}</span></p>
                 </div>
               </div>

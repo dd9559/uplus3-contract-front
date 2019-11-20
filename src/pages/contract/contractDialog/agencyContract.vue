@@ -51,7 +51,7 @@
                         <span>{{defaultInfo.propertyAddr}}</span>
                     </div>
                 </div>
-                <div class="one_">
+                <div class="one_" v-if="defaultInfo.recordVersion==2">
                     <div class="text-long">
                         <span class="w-70">产权地址：</span>
                         <span>{{defaultInfo.propertyRightAddr}}</span>
