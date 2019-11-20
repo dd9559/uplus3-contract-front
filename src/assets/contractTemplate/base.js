@@ -36,7 +36,7 @@ let contractConfig = {
           contractConfig.errorArr.push(item.split('_')[1]);
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex),storage)
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
@@ -49,7 +49,7 @@ let contractConfig = {
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal))
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal),storage)
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
@@ -63,7 +63,7 @@ let contractConfig = {
           break;
         }
       } else if (item.includes('info')) {
-        contractConfig.submit(e, obj[item]['stateful']());
+        contractConfig.submit(e, obj[item]['stateful'](),storage);
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
         input.classList.remove('BODERRED');

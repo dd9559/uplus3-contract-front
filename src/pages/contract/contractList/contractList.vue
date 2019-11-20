@@ -282,19 +282,19 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="成交报告" min-width="80" v-if="contVersion===2">
+        <el-table-column label="成交报告" min-width="80" v-if="contVersion===2" key="dealReportState">
           <template slot-scope="scope">
             <span v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine">{{scope.row.dealReportState.label}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="90">
+        <el-table-column label="上传合同主体时间" min-width="90" key="uploadTime">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期状态" min-width="80" v-if="contVersion===2">
+        <el-table-column label="后期状态" min-width="80" v-if="contVersion===2" key="laterStageState">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine">
               <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
@@ -303,7 +303,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期进度" min-width="80" v-if="contVersion===2">
+        <el-table-column label="后期进度" min-width="80" v-if="contVersion===2" key="stepInstanceName">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">
               <span v-if="scope.row.stepInstanceName==='-'">-</span>
@@ -315,7 +315,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="实收/应收(佣金)" min-width="80">
+        <el-table-column label="实收/应收(佣金)" min-width="80" key='received'>
           <template slot-scope="scope">
             <!-- <div class="btn" @click="runningWater(scope.row)">流水</div> -->
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
@@ -612,11 +612,6 @@ export default {
       }
     };
   },
-  // mounted() {
-  //   this.$nextTick(()=>{
-  //     this.tableBox=this.$refs.dataList;
-  //   })
-  // },
   created() {
     if (!window.location.origin) {
       window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
@@ -683,6 +678,7 @@ export default {
     },
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
+      console.log(this.contVersion,columnIndex)
       if (columnIndex === 0) {
         if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
           rows={
