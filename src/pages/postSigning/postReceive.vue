@@ -547,12 +547,16 @@
             },
             // 接收
             receiveFn(e) {
+                if(!e.dealAgentId) {
+                    this.$message({message:'当前合同没有成交经纪人', type: 'error'})
+                    return
+                }
                 if(!this.power['sign-qh-rev-receive'].state){
                     this.noPower(this.power['sign-qh-rev-receive'].name);
                     return false
                 }
                 this.receive = {
-                    // show: true,
+                    show: true,
                     tit: '接收',
                     proWidth: '1000px',
                     rabbet: true,
@@ -582,7 +586,6 @@
                 }).then(res => {
                     res = res.data
                     if (res.status === 200) {
-                        this.receive.show = true
                         let arr = [...res.data];
                         arr.map(e => {
                             if(e.roleId == 0) {
