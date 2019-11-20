@@ -95,8 +95,8 @@
                 </div>
             </div>
             <div class="item-layout" :style="{ height: clientHei }">
-                <img src="/var/qianyue/www/html/static/img/基础版.png" alt="" v-if="layoutType==1">
-                <img src="/var/qianyue/www/html/static/img/复杂版.png" alt="" v-else>
+                <img :src="getImg('基础版.png')" alt="" v-if="layoutType==1">
+                <img :src="getImg('复杂版.png')" alt="" v-else>
             </div>
             <p class="color-red" v-if="layoutTitle!='查看'">注：设置新的页面版式成功后，新创建的合同以新设置的页面版式为准。</p>
         </div>
@@ -269,6 +269,9 @@
             handleCurrentChange(val) {
                 this.pageNum = val
                 this.getData('pagination')
+            },
+            getImg: function (url) {
+                return require(`@/assets/img/${url}`)
             }
         },
         computed: {
