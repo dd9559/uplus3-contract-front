@@ -107,6 +107,11 @@
         </el-dialog>
         <!-- 确认保存弹窗 -->
         <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
+            <div class="save-txt">
+                <p style="margin-bottom:10px;">确认保存新的合同页面版式？</p>
+                <p class="color-red">新创建的合同以新设置的页面版式为准</p>
+                <p>当前合同页面版式为{{layoutType==1?'基础版':'复杂版'}}</p>
+            </div>
             <div class="btn-box btn">
                 <el-button @click="saveDialog=false" round>取 消</el-button>
                 <el-button type="primary" @click="sureFn" round>确 认</el-button>
@@ -325,9 +330,14 @@
     .btn {
         padding: 10px 20px 10px 0;
         text-align: right;
-        &-box {
-            margin-top: 50px;
-        }
+    }
+    .save-txt {
+        padding: 40px 0;
+        text-align: center;
+        border-bottom: 1px solid #EDECF0;
+    }
+    .color-red {
+        color: @color-red;
     }
     /deep/ .el-dialog__body {
         padding: 0;
