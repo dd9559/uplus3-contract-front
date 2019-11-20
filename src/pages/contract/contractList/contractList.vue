@@ -678,7 +678,6 @@ export default {
     },
     //委托合同合并单元格
     objectSpanMethod({ row, column, rowIndex, columnIndex }){
-      console.log(this.contVersion,columnIndex)
       if (columnIndex === 0) {
         if (row.contractEntrust&&row.contractEntrust.id&&!row.isCombine) {
           rows={
