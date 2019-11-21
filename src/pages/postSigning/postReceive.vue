@@ -247,7 +247,7 @@
                                             <ul class="steps-img">
                                                 <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name+i">
                                                     <li @click="previewPhoto(item.value,i)">
-                                                        <img class="suolue-img" :src="preloadFiles[getSrcIndex(ies.path)]" alt="" v-if="isPictureFile(ies.fileType)" width="70%">
+                                                        <img class="suolue-img" :src="ies.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(ies.fileType)" width="70%">
                                                         <div class="img" v-else>
                                                             <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
                                                         </div>
@@ -529,21 +529,6 @@
             currentChangeFn(e) {
                 this.pageNum = e;
                 this.getListData('pagination');
-            },
-            getSrcIndex(path) {
-                let item = this.preloadFiles
-                if(item.length) {
-                    let index
-                    for(let i = 0; i < item.length; i++) {
-                        item[i] = item[i].split('?')[0]
-                    }
-                    item.find((e,i) => {
-                        if(path == e) {
-                            index = i
-                        }
-                    })
-                    return index
-                }
             },
             // 接收
             receiveFn(e) {
