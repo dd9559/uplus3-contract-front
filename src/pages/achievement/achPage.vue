@@ -1570,15 +1570,8 @@ export default {
     // this.achIndex = this.$route.query.achIndex;
     this.achObj = JSON.parse(this.$route.query.achObj);
     this.contractId2 = this.$route.query.contractId;
+    this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩'],'actualAchievement'));
   },
-  // props: {
-  //   shows: Boolean,
-  //   dialogType: Number, //弹框类型
-  //   contractCode: String, //合同编号
-  //   aId: Number, //业绩Id
-  //   achIndex: Number, //当前索引
-  //   achObj: Object //合同详情传过来的对象（首次业绩录入需要用）
-  // },
   methods: {
     close() {
       this.aplremark = "";
