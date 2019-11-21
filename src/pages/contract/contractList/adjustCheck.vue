@@ -137,13 +137,11 @@
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">
           <template slot-scope="scope">
-
             <span v-if="scope.row.checkby>0&&scope.row.checkState===0">
               <p>{{scope.row.checkByDepName}}</p>
               <p>{{scope.row.checkByName}}</p>
             </span>
             <p v-else>--</p>
-
             <p class="btn-text-info" type="text" v-if="getUserMsg&& (scope.row.preAuditId === getUserMsg.empId || scope.row.checkby === getUserMsg.empId) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,getUserMsg.empId===scope.row.checkby?2:1)">{{getUserMsg.empId===scope.row.checkby?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
@@ -154,23 +152,22 @@
               <p>{{scope.row.nextAuditName}}</p>
             </span>
             <p v-else>--</p>
-
             <p class="btn-text-info color-red" type="text" v-if="getUserMsg && (scope.row.checkby === getUserMsg.empId&& scope.row.nextAuditId!==0) && scope.row.checkState===0" @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column label="审核备注" min-width="120">
           <template slot-scope="scope">
-              <span v-if="scope.row.checkRemark&&(scope.row.checkRemark).trim().length > 0">
-                <el-popover trigger="hover" placement="top">
-                  <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
-                    {{scope.row.checkRemark}}
-                  </div>
-                  <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
-                    {{scope.row.checkRemark}}
-                  </div>
-                </el-popover>
-              </span>
-              <span v-else>--</span>
+            <span v-if="scope.row.checkRemark&&(scope.row.checkRemark).trim().length > 0">
+              <el-popover trigger="hover" placement="top">
+                <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
+                  {{scope.row.checkRemark}}
+                </div>
+                <div slot="reference" class="name-wrapper" :class="{'isFlex':scope.row.checkRemark.length<16}">
+                  {{scope.row.checkRemark}}
+                </div>
+              </el-popover>
+            </span>
+            <span v-else>--</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="120" fixed="right">
@@ -180,7 +177,6 @@
             </template>
             <span v-else>--</span>
           </template>
-
         </el-table-column>
       </el-table>
       <el-pagination
@@ -254,17 +250,16 @@
           <div class="uploadfile">
             <div class="uploadtitle">附件:</div>
             <ul class="ulData">
-
-                <li v-for="(item,index) in uploadList" :key="item.index">
-                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="previewPhoto(uploadList,index)">
-                        <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
-                        <upload-cell :type="item.fileType" v-else></upload-cell>
-                        <p>{{item.name}}</p>
-                    </div>
-                  </el-tooltip>
-                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
-                </li>
+              <li v-for="(item,index) in uploadList" :key="item.index">
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(uploadList,index)">
+                    <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
+                    <p>{{item.name}}</p>
+                  </div>
+                </el-tooltip>
+                <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
+              </li>
             </ul>
           </div>
         </div>
@@ -343,26 +338,23 @@
           <div class="uploadfile">
             <div class="uploadtitle">附件:</div>
             <ul class="ulData">
-
-                <li v-for="(item,index) in uploadList" :key="item.index">
-                  <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                    <div class="namePath" @click="previewPhoto(uploadList,index)">
-                        <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
-                        <upload-cell :type="item.fileType" v-else></upload-cell>
-                        <p>{{item.name}}</p>
-                    </div>
-                  </el-tooltip>
-                  <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
-                </li>
+              <li v-for="(item,index) in uploadList" :key="item.index">
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(uploadList,index)">
+                    <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)"> 
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
+                    <p>{{item.name}}</p>
+                  </div>
+                </el-tooltip>
+                <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
+              </li>
             </ul>
           </div>
-
         </div>
 
         <div class="audit-col bordernone">
           <!-- 表格 -->
           <div class="mb20">审核信息：</div>
-
           <el-table :data="checkInfo" border style="width: 100%" class="table table2 mt20">
             <el-table-column label="时间" width=160 align=center>
               <template slot-scope="scope">
@@ -396,7 +388,6 @@
             </el-table-column>
           </el-table>
         </div>
-
       </div>
 
       <!-- 图片放大 -->
@@ -421,6 +412,11 @@
     name: "adjust-check",
     // mixins: [FILTER],
     mixins: [FILTER,MIXINS],
+    components: {
+      ScreeningTop,
+      Message,
+      checkPerson
+    },
     data(){
       return{
         checkPerson: {
@@ -521,59 +517,48 @@
       }
     },
 
-    computed: {
-      relieveFn() {
-        if(this.layerAudit.relieve === 1){
-          return true
-        }else if(this.layerAudit.relieve === 0){
-          return false
-        }
-      },
-      getUserMsg(){
-        return this.getUser.user
-      }
-
-    },
-
-    filters: {
-       getDate(val) {
-         return TOOL.dateFormat(val);
-       },
-       getTime(val) {
-         if(val === ''){
-           return '-'
-         }
-         return TOOL.timeFormat(val)
-       },
-       timeFormat_: function (val) {
-        if (!val) {
-          return '--'
-        } else {
-          let time = new Date(val)
-          let y = time.getFullYear()
-          let M = time.getMonth() + 1
-          let D = time.getDate()
-          let h = time.getHours()
-          let m = time.getMinutes()
-          let s = time.getSeconds()
-          let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-          return time_.substr(0, 16)
-        }
-      },
-        /**
-     * 过滤显示图片缩略图
-     * @param val后端返回的所有文件资源遍历的当前项
-     * @param list图片资源获取签名后的临时数组
-     */
-      getSignImage(val,list){
-        if(list.length===0){
-          return '';
-        }else {
-          return list.find(item=>{
-            return item.includes(val)
+    created() {
+      let res=this.getDataList
+      if(res&&(res.route===this.$route.path)){
+        this.tableData = res.data
+        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
+        this.adjustForm = Object.assign({},this.adjustForm,session.query,{contractTypes:session.query.contractTypes.length>0?session.query.contractTypes.split(','):''})
+        if(this.adjustForm.contractTypes){
+          this.adjustForm.contractTypes = this.adjustForm.contractTypes.map(item=>{
+            return Number(item)
           })
         }
+        delete this.adjustForm.pageNum
+        delete this.adjustForm.startTime
+        delete this.adjustForm.endTime
+        this.pageNum=session.query.pageNum
+        if(session.query.startTime){
+          this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
+        }
+        if(this.adjustForm.empId){
+        this.dep=Object.assign({},this.dep,{id:this.adjustForm.deptId,empId:this.adjustForm.empId,empName:this.adjustForm.empName})
+        this.EmployeList.unshift({
+          empId:this.adjustForm.empId,
+          name:this.adjustForm.empName
+        })
+        this.getEmploye(this.adjustForm.deptId)
       }
+        // this.adjustForm.empId=''
+        // this.adjustForm.deptId=''
+      }else{
+        this.queryFn();
+      }
+      // this.getDepNameFn();
+      this.getDictionary();
+      // this.getAdmin();
+      this.remoteMethod()
+    },
+
+    mounted() {
+      var _this = this;
+       window.onresize = function(){
+         _this.clientHei = document.documentElement.clientHeight;
+       }
     },
 
     methods:{
@@ -1012,55 +997,59 @@
 
     },
 
-    created() {
-      let res=this.getDataList
-      if(res&&(res.route===this.$route.path)){
-        this.tableData = res.data
-        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        this.adjustForm = Object.assign({},this.adjustForm,session.query,{contractTypes:session.query.contractTypes.length>0?session.query.contractTypes.split(','):''})
-        if(this.adjustForm.contractTypes){
-          this.adjustForm.contractTypes = this.adjustForm.contractTypes.map(item=>{
-            return Number(item)
+    computed: {
+      relieveFn() {
+        if(this.layerAudit.relieve === 1){
+          return true
+        }else if(this.layerAudit.relieve === 0){
+          return false
+        }
+      },
+      getUserMsg(){
+        return this.getUser.user
+      }
+    },
+
+    filters: {
+       getDate(val) {
+         return TOOL.dateFormat(val);
+       },
+       getTime(val) {
+         if(val === ''){
+           return '-'
+         }
+         return TOOL.timeFormat(val)
+       },
+       timeFormat_: function (val) {
+        if (!val) {
+          return '--'
+        } else {
+          let time = new Date(val)
+          let y = time.getFullYear()
+          let M = time.getMonth() + 1
+          let D = time.getDate()
+          let h = time.getHours()
+          let m = time.getMinutes()
+          let s = time.getSeconds()
+          let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+          return time_.substr(0, 16)
+        }
+      },
+        /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+      getSignImage(val,list){
+        if(list.length===0){
+          return '';
+        }else {
+          return list.find(item=>{
+            return item.includes(val)
           })
         }
-        delete this.adjustForm.pageNum
-        delete this.adjustForm.startTime
-        delete this.adjustForm.endTime
-        this.pageNum=session.query.pageNum
-        if(session.query.startTime){
-          this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
-        }
-        if(this.adjustForm.empId){
-        this.dep=Object.assign({},this.dep,{id:this.adjustForm.deptId,empId:this.adjustForm.empId,empName:this.adjustForm.empName})
-        this.EmployeList.unshift({
-          empId:this.adjustForm.empId,
-          name:this.adjustForm.empName
-        })
-        this.getEmploye(this.adjustForm.deptId)
       }
-        // this.adjustForm.empId=''
-        // this.adjustForm.deptId=''
-      }else{
-        this.queryFn();
-      }
-      // this.getDepNameFn();
-      this.getDictionary();
-      // this.getAdmin();
-      this.remoteMethod()
     },
-
-    mounted() {
-      var _this = this;
-       window.onresize = function(){
-         _this.clientHei = document.documentElement.clientHeight;
-       }
-    },
-
-    components: {
-          ScreeningTop,
-          Message,
-          checkPerson
-      }
   };
 </script>
 <style lang="less">
@@ -1077,7 +1066,7 @@
     }
   }
   .el-textarea.is-disabled .el-textarea__inner{
-        color:#233241;
+      color:#233241;
     }
   .fl{
     float: left;
@@ -1110,29 +1099,21 @@
     font-size: 14px;
   }
   .el-pagination{
-      text-align: right;
-      // padding: 30px 0 20px;
+    text-align: right;
   }
-
-  // .adjustbox{
-  //   box-shadow:0px 1px 6px 0px rgba(7,47,116,0.1);
-  // }
-
   .adjust-form {
     margin-bottom: 10px;
     background-color: #fff;
     border-radius:2px;
     box-sizing: border-box;
   }
-
   .contract-list {
-      background-color: #fff;
-      padding: 10px 12px 0;
+    background-color: #fff;
+    padding: 10px 12px 0;
     .form-title-fl{
       font-size: 14px;
       color: #233241;
       padding: 6px 0;
-
       .mr8{
         margin-right: 8px;
       }
@@ -1195,22 +1176,20 @@
       border-bottom: 1px solid #EDECF0;
       padding: 16px 20px 15px;
       span{
-          color: #233241;
-          font-size: 20px;
-
-
+        color: #233241;
+        font-size: 20px;
       }
       .el-dialog__headerbtn{
-          top: 16px;
-          .el-dialog__close{
-              font-size: 24px;
-              color: #32485F;
-          }
+        top: 16px;
+        .el-dialog__close{
+          font-size: 24px;
+          color: #32485F;
+        }
       }
     }
     .el-dialog__body{
-          padding: 0;
-      }
+      padding: 0;
+    }
   }
   .audit-box{
     padding: 0 20px 0px 20px;
@@ -1323,54 +1302,51 @@
           }
         }
         .ulData{
-
-            width: 100%;
-            overflow: hidden;
-            li{
-                margin-right: 20px;
-                margin-bottom: 20px;
-                position: relative;
-                float: left;
-                &:nth-child(5n){
-                  margin-right: 0;
-                }
-                > i{
-                    position: absolute;
-                    top: 5px;
-                    right: 5px;
-                    color: #F56C6C;
-                    font-size: 20px;
-                    cursor: pointer;
-                }
+          width: 100%;
+          overflow: hidden;
+          li{
+            margin-right: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            float: left;
+            &:nth-child(5n){
+              margin-right: 0;
             }
+            > i{
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              color: #F56C6C;
+              font-size: 20px;
+              cursor: pointer;
+            }
+          }
         }
 
         .namePath{
+          display: inline-block;
+          text-align: center;
+          width: 120px;
+          height: 120px;
+          padding-top: 20px;
+          box-sizing: border-box;
+          border-radius:4px;
+          background: #F2F3F8;
+          .signImage{
+            width:60px;
+            height: 60px;
+            margin: 1px 0;
+          }
+          > p{
+            padding-top: 5px;
             display: inline-block;
-            text-align: center;
-            width: 120px;
-            height: 120px;
-            padding-top: 20px;
-            box-sizing: border-box;
-            border-radius:4px;
-            background: #F2F3F8;
-            .signImage{
-              width:60px;
-              height: 60px;
-              margin: 1px 0;
-            }
-            > p{
-              padding-top: 5px;
-              display: inline-block;
-              width: 100px;
-              overflow: hidden;
-              text-overflow:ellipsis;
-              white-space: nowrap;
-            }
+            width: 100px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+          }
         }
-
       }
-
     }
     .bordernone{
       border-bottom: none;
@@ -1422,20 +1398,14 @@
     align-items: center;
   }
   .textlengthbox{
-      position: relative;
+    position: relative;
   }
   .textLength{
-      position: absolute;
-      bottom: 10px;
-      right: 20px;
-      color: #6C7986;
-      text-align: right;
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: #6C7986;
+    text-align: right;
   }
-
 }
-
-
-
-
-
 </style>

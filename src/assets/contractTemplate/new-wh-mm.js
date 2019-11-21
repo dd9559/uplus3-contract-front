@@ -39,12 +39,12 @@ let sub = {
   'val12': null,
   'checkbox_delivery': {
     stateful: function(index) {
-      return index===0?{'val13': null} : null
+      return index===1?{'val13': null} : null
     }
   },
   'val14': null,
   'checkbox_ownerCost': null,
-  'checkbox_guestCost': null,
+  // 'checkbox_guestCost': null,
   'checkbox_incomeTax': null,
   'checkbox_otherCost': null,
 }
@@ -114,7 +114,7 @@ contractConfig.inputListener(function(ev,tip){
 // 勾选框逻辑
 contractConfig.checkboxListener(function(){},function(obj,index){
   let attr = obj.currentTarget.getAttribute('name')
-  if(attr == 'houseType') {
+  if(attr == 'houseType') {//第一条 房屋属性 其他类型输入框能否输入逻辑
     let boxArray = document.getElementsByName(attr);
     let _val1 = document.querySelector(`span[extendparam="val1"]`)
     for(let i = 0; i < boxArray.length; i++) {
@@ -134,7 +134,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
         }
       }
     }
-  }else if(attr == 'guaranty'){
+  }else if(attr == 'guaranty'){//第二条  抵押人是否可输入逻辑
     let boxArray = document.getElementsByName(attr);
     let _val4 = document.querySelector(`span[extendparam="val4"]`)
     for(let i = 0; i < boxArray.length; i++) {
@@ -151,6 +151,74 @@ contractConfig.checkboxListener(function(){},function(obj,index){
           _val4.innerHTML = ''
           _val4.classList.add("input-before")
           _val4.removeAttribute('systemParam')
+        }
+      }
+    }
+  }else if(attr == 'delivery'){//第八条第一小条输入框能否输入逻辑
+    let boxArray = document.getElementsByName(attr);
+    let _val13 = document.querySelector(`span[extendparam="val13"]`)
+    for(let i = 0; i < boxArray.length; i++) {
+      if(boxArray[i] == obj.currentTarget) {
+        if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
+          if(i==boxArray.length-1) {
+            _val13.removeAttribute('systemParam')
+          } else {
+            _val13.innerHTML = ''
+            _val13.classList.add("input-before")
+            _val13.setAttribute('systemParam','true')
+          }
+        } else {
+          _val13.innerHTML = ''
+          _val13.classList.add("input-before")
+          _val13.removeAttribute('systemParam')
+        }
+      }
+    }
+  }else if(attr == 'lease'){//第二条 房屋是否带租约勾选逻辑
+    let boxArray = document.getElementsByName(attr);
+    let leaseSon = document.querySelectorAll(`*[name='leaseSon']`)
+    for(let i = 0; i < boxArray.length; i++) {
+      if(boxArray[i] == obj.currentTarget) {
+        if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
+          if(i==boxArray.length-1) {
+            for (let index = 0; index < leaseSon.length; index++) {
+              leaseSon[index].removeAttribute('readonly')
+            }
+          } else {
+            for (let index = 0; index < leaseSon.length; index++) {
+              leaseSon[index].setAttribute('readonly','readonly')
+              leaseSon[index].querySelector('p').removeAttribute('checked')
+            }
+          }
+        } else {
+          for (let index = 0; index < leaseSon.length; index++) {
+            leaseSon[index].removeAttribute('readonly')
+            leaseSon[index].querySelector('p').removeAttribute('checked')
+          }
+        }
+      }
+    }
+  }else if(attr == 'leakage'){//第二条 房屋是否带租约勾选逻辑
+    let boxArray = document.getElementsByName(attr);
+    let leakagePlace = document.querySelectorAll(`*[name='leakagePlace']`)
+    for(let i = 0; i < boxArray.length; i++) {
+      if(boxArray[i] == obj.currentTarget) {
+        if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
+          if(i==boxArray.length-1) {
+            for (let index = 0; index < leakagePlace.length; index++) {
+              leakagePlace[index].removeAttribute('readonly')
+            }
+          } else {
+            for (let index = 0; index < leakagePlace.length; index++) {
+              leakagePlace[index].setAttribute('readonly','readonly')
+              leakagePlace[index].querySelector('p').removeAttribute('checked')
+            }
+          }
+        } else {
+          for (let index = 0; index < leakagePlace.length; index++) {
+            leakagePlace[index].removeAttribute('readonly')
+            leakagePlace[index].querySelector('p').removeAttribute('checked')
+          }
         }
       }
     }

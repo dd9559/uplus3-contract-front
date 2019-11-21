@@ -70,7 +70,7 @@
               <span class="propertyAddress color_" v-else>物业地址</span>
             </el-form-item>
             <!-- 温州不需要建成年代 -->
-            <el-form-item label="建成年代：" :class="{'form-label':type===1}" style="width:250px;text-align:right" v-if="userMsg.cityId!=16&&userMsg.cityId!=19&&userMsg.cityId!=40">
+            <el-form-item label="建成年代：" :class="{'form-label':type===1}" style="width:250px;text-align:right" v-if="userMsg.cityId!=16">
               <span class="CompleteYear" style="width:150px;" v-if="contractForm.houseInfo.CompleteYear">
                 {{contractForm.houseInfo.CompleteYear}}
               </span>
