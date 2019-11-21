@@ -113,7 +113,7 @@
                                         <li 
                                         @click="previewPhoto(item.val,n)"
                                         >
-                                            <img class="suolue-img" :src="preloadFiles[getSrcIndex(i.path)]" alt="" v-if="isPictureFile(i.type)" width="70%">
+                                            <img class="suolue-img" :src="i.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(i.type)" width="70%">
                                             <div class="img" v-else><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                             <p class="p">{{i.name}}</p>
                                         </li>
@@ -361,21 +361,6 @@
                     });
                     this.$message.error(err);
                 })
-            },
-            getSrcIndex(path) {
-                let item = this.preloadFiles
-                if(item.length) {
-                    let index
-                    for(let i = 0; i < item.length; i++) {
-                        item[i] = item[i].split('?')[0]
-                    }
-                    item.find((e,i) => {
-                        if(path == e) {
-                            index = i
-                        }
-                    })
-                    return index
-                }
             },
             // 图片格式状态判定
             stepsTypeImg(type){

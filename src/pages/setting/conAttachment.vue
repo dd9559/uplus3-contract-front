@@ -81,7 +81,7 @@
                 <li v-for="(item,i) in attachList" :key="i">
                     <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                         <div class="attach-box" @click="previewPhoto(attachList,i)">
-                            <img :src="preloadFiles[getSrcIndex(item.path)]" alt="" v-if="isPictureFile(item.fileType)" width="70%" height="62px">
+                            <img :src="item.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(item.fileType)" width="70%" height="62px">
                             <upload-cell :type="item.fileType" v-else></upload-cell>
                             <p>{{item.name}}</p>
                         </div>
@@ -257,18 +257,6 @@
                     this.fileSign(this.preloadList,'preload').then(res=>{
                         this.preloadFiles = res
                     }) 
-                }
-            },
-            getSrcIndex(path) {
-                let item = this.preloadList
-                if(item.length) {
-                    let index
-                    item.find((e,i) => {
-                        if(path == e) {
-                            index = i
-                        }
-                    })
-                    return index
                 }
             },
             deleteFn(i) {
