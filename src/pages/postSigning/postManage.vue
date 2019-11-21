@@ -605,7 +605,8 @@
                                                     @click="previewPhoto(item.val,n)"
                                                     >
                                                         <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
-                                                        <div class="img"><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
+                                                        <img class="suolue-img" :src="i.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(i.type)" width="70%">
+                                                        <div class="img" v-else><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                                         <p class="p">{{i.name}}</p>
                                                     </li>
                                                 </el-tooltip>
@@ -625,7 +626,7 @@
                                                     <li
                                                     @click="previewPhoto(item.val,n)"
                                                     >
-                                                        <img class="suolue-img" :src="preloadFiles[getSrcIndex(i.path)]" alt="" v-if="isPictureFile(i.type)" width="70%">
+                                                        <img class="suolue-img" :src="i.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(i.type)" width="70%">
                                                         <div class="img" v-else><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                                         <p class="p">{{i.name}}</p>
                                                     </li>
@@ -1289,21 +1290,6 @@
                     this.errMeFn(err);
                 })
             },
-            getSrcIndex(path) {
-                let item = this.preloadFiles
-                if(item.length) {
-                    let index
-                    for(let i = 0; i < item.length; i++) {
-                        item[i] = item[i].split('?')[0]
-                    }
-                    item.find((e,i) => {
-                        if(path == e) {
-                            index = i
-                        }
-                    })
-                    return index
-                }
-            },
             // 数字改变的时候
             checkNumberFn(rule, value, callback){
                 if(!rule.bool && this.inputFocus){
@@ -1810,9 +1796,24 @@
                 // console.log(e)
                 // debugger
                 let index = e.btnId.slice(6);
-                let arr = e.param[e.param.length - 1];
-                this.stepsFrom.list[index].val.push(arr);
+                let arr = e.param
+                arr.forEach(item => {
+                    let type = this.$tool.get_suffix(item.name)
+                    item.type = type
+                })
+                this.stepsFrom.list[index].val = arr
                 this.$refs['stepsFrom'].validate((bool)=>{});
+                let pre_arr = []
+                arr.forEach(item => {
+                    if(this.isPictureFile(item.type)){
+                        pre_arr.push(item.path)
+                    }
+                })
+                if(pre_arr.length){
+                    this.fileSign(pre_arr,'preload').then(res=>{
+                        this.preloadFiles = res
+                    })
+                }
             },
             // 删除
             clearFn(i,n){
@@ -2172,7 +2173,7 @@
                     this.getData()
                 } 
             })
-        },
+        }
     }
 </script>
 <style lang="less" scoped>

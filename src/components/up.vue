@@ -61,12 +61,12 @@
       this.filePath = []
       this.$nextTick(() => {
         this.uploader = new plupload.Uploader({
-          runtimes: 'html5,flash,silverlight,html4',
+          // runtimes: 'flash,html5',
           browse_button: that.getId, //选择文件按钮
           multi_selection: that.more,
           drop_element: document.getElementById(that.getParentId),
-          flash_swf_url: 'http://sign2.jjw.com:28879/Moxie.swf',
-          silverlight_xap_url: 'http://sign2.jjw.com:28879/Moxie.xap',
+          // flash_swf_url: 'http://sign2.jjw.com:28879/js/Moxie.swf',
+          // silverlight_xap_url: 'http://sign2.jjw.com:28879/js/Moxie.xap',
           // url: 'http://oss.aliyuncs.com',
 
           filters: {
@@ -251,7 +251,6 @@
        * 上传操作
        */
       up: function () {
-        // console.log(uploader)
         let path = ''
         if(this.scane.id){
           let addrReg=/\\|\/|\@|\#|\%|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
