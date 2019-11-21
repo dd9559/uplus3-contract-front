@@ -36,6 +36,15 @@ let FILTER={
   filters:{
     getLabel:function (val) {
       return getVal(val)
+    },
+    getSignImage(val,list){
+      if(list.length===0){
+          return '';
+      }else {
+          return list.find(item=>{
+              return item.includes(val)
+          })
+      }
     }
   },
 }
