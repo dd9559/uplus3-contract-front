@@ -16,7 +16,7 @@
         <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button> -->
         <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(contState!=3||contState===3&&resultState===1&&contChangeState!=2)" @click="toEdit">编辑</el-button> -->
         <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)" @mouseover="showList" @mouseout="closeList">
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
@@ -351,6 +351,7 @@ export default {
       signImg:'',
       showSignList:false,
       isNewTemplate:true,//是否是新模板
+      showChooseSign: true,//是否显示选择签章位置按钮(咸宁用)
       dataScane:{
         path:"ziliaoku",
         id:this.$route.query.code
@@ -902,6 +903,8 @@ export default {
           this.contType=res.data.contType.value
           //咸宁买卖无签章
           if(res.data.cityId==8&&res.data.contType.value==2&&this.isentrust!=1){
+            //若为咸宁买卖 需要隐藏选择签章的按钮
+            this.showChooseSign=false
             this.companySigns=[{contractSign: null,name: null,storeId: null}]
           }else{
             if(res.data.companySigns&&res.data.companySigns.length===1){
