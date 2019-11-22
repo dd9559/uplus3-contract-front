@@ -13,8 +13,8 @@
               <el-button  class="el-icon-caret-bottom paper-next" @click="add(1)"></el-button>
           </div>
           <img id='ht' src="" alt="">
-          <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow'>
-              <img src="../../assets/img/yz.png" alt="">
+          <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow3'>
+              <!-- <img src="../../assets/img/yz.png" alt=""> -->
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
@@ -25,8 +25,8 @@
               <el-button  class="el-icon-caret-bottom paper-next" @click="add(2)"></el-button>
           </div>
           <img id='ht2' src="" alt="">
-          <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow2'>
-              <img src="../../assets/img/yz.png" alt="">
+          <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow3'>
+              <!-- <img src="../../assets/img/yz.png" alt=""> -->
           </div>
         </div>
       </div>
@@ -92,6 +92,7 @@ export default{
     mixins: [MIXINS],
         data(){
           return{
+            sigtureShow3:false,
             saveBtn:true,
             position:true,
             position2:true,
@@ -269,7 +270,7 @@ export default{
                            this.sigtureShow=false
                            for(let i=0;i<this.signPositions.length;i++){
                             if(this.count==this.signPositions[i].pageIndex){
-                             this.sigtureShow=true
+                             this.sigtureShow=false
                              let dropbtn=document.getElementsByClassName('signatureone')[0]
                              dropbtn.style.left=(this.signPositions[i].x*this.divWidth)+'px'
                              dropbtn.style.top=(this.signPositions[i].y*this.divHeight)+'px'
@@ -311,90 +312,90 @@ export default{
                 .catch(() => {});
                 } 
             },
-            showPos(){
-                // 根据this.sigtureShow判断执行创建或删除
-                // false:创建
-                // true:根据this.count遍历签章数组，获取当前展示页的签章信息，再执行删除签章对象
-                if(this.showSed){
-                    if(this.sigtureShow2==false){
-                        //创建
-                        this.sigtureShow2=true
-                        var sign={x:0,y:0,pageIndex:this.count2}
-                        let dropbtn=document.getElementsByClassName('signaturetwo')[0]
-                             dropbtn.style.left='0px'
-                             dropbtn.style.top='0px'
-                        this.signPositions.push(JSON.parse(JSON.stringify(sign)))
-                        this.signPositions.forEach((item,index)=>{
-                            if(item.pageIndex==this.count2){
-                                this.tuozhuai(this.signPositions[index])
-                            }
-                        })
+            // showPos(){
+            //     // 根据this.sigtureShow判断执行创建或删除
+            //     // false:创建
+            //     // true:根据this.count遍历签章数组，获取当前展示页的签章信息，再执行删除签章对象
+            //     if(this.showSed){
+            //         if(this.sigtureShow2==false){
+            //             //创建
+            //             this.sigtureShow2=true
+            //             var sign={x:0,y:0,pageIndex:this.count2}
+            //             let dropbtn=document.getElementsByClassName('signaturetwo')[0]
+            //                  dropbtn.style.left='0px'
+            //                  dropbtn.style.top='0px'
+            //             this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+            //             this.signPositions.forEach((item,index)=>{
+            //                 if(item.pageIndex==this.count2){
+            //                     this.tuozhuai(this.signPositions[index])
+            //                 }
+            //             })
                         
-                    }else{
-                        //签章已存在，删除
-                        for(let i=0;i<this.signPositions.length;i++){
-                            if(this.count2==this.signPositions[i].pageIndex){
-                                this.signPositions.splice(i,1)
-                                this.sigtureShow2=false
-                            }
-                        }
-                    }
-                }else{
-                    if(this.sigtureShow==false){
-                        //创建
-                        this.sigtureShow=true
-                        var sign={x:0,y:0,pageIndex:this.count}
-                        let dropbtn=document.getElementsByClassName('signatureone')[0]
-                             dropbtn.style.left='0px'
-                             dropbtn.style.top='0px'
-                        this.signPositions.push(JSON.parse(JSON.stringify(sign)))
-                        this.signPositions.forEach((item,index)=>{
-                            if(item.pageIndex==this.count){
-                                this.tuozhuai(this.signPositions[index])
-                            }
-                        })
+            //         }else{
+            //             //签章已存在，删除
+            //             for(let i=0;i<this.signPositions.length;i++){
+            //                 if(this.count2==this.signPositions[i].pageIndex){
+            //                     this.signPositions.splice(i,1)
+            //                     this.sigtureShow2=false
+            //                 }
+            //             }
+            //         }
+            //     }else{
+            //         if(this.sigtureShow==false){
+            //             //创建
+            //             this.sigtureShow=true
+            //             var sign={x:0,y:0,pageIndex:this.count}
+            //             let dropbtn=document.getElementsByClassName('signatureone')[0]
+            //                  dropbtn.style.left='0px'
+            //                  dropbtn.style.top='0px'
+            //             this.signPositions.push(JSON.parse(JSON.stringify(sign)))
+            //             this.signPositions.forEach((item,index)=>{
+            //                 if(item.pageIndex==this.count){
+            //                     this.tuozhuai(this.signPositions[index])
+            //                 }
+            //             })
                         
-                    }else{
-                        //签章已存在，删除
-                        // debugger
-                        for(let i=0;i<this.signPositions.length;i++){
-                            if(this.count==this.signPositions[i].pageIndex){
-                                this.signPositions.splice(i,1)
-                                this.sigtureShow=false
-                            }
-                        }
-                    }
+            //         }else{
+            //             //签章已存在，删除
+            //             // debugger
+            //             for(let i=0;i<this.signPositions.length;i++){
+            //                 if(this.count==this.signPositions[i].pageIndex){
+            //                     this.signPositions.splice(i,1)
+            //                     this.sigtureShow=false
+            //                 }
+            //             }
+            //         }
                     
-                }
-            },
-            tuozhuai(sign){
-                    if(this.showSed){
-                    var oDiv=document.getElementsByClassName('signature')[1]
-                    }else{
-                    var oDiv=document.getElementsByClassName('signature')[0]
-                    }
-                    var This =this
-                        oDiv.onmousedown = function(ev){
-                            var disX = ev.clientX -oDiv.offsetLeft;
-                            var disY = ev.clientY - oDiv.offsetTop;
-                            document.onmousemove = function(ev){
-                            var l = ev.clientX-disX;
-                            var t = ev.clientY-disY;
-                            l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
-                            l < 0 ? l = 0 : l
-                            t < 0 ? t = 0 : t
-                            t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
-                            sign.x=(l/706).toFixed(2)
-                            sign.y=(t/993).toFixed(2)
-                            oDiv.style.left = l+'px';
-                            oDiv.style.top = t+'px';
-                            };
-                            document.onmouseup = function(){
-                            document.onmousemove=null;
-                            document.onmouseup=null;
-                            };
-                        };
-                },
+            //     }
+            // },
+            // tuozhuai(sign){
+            //         if(this.showSed){
+            //         var oDiv=document.getElementsByClassName('signature')[1]
+            //         }else{
+            //         var oDiv=document.getElementsByClassName('signature')[0]
+            //         }
+            //         var This =this
+            //             oDiv.onmousedown = function(ev){
+            //                 var disX = ev.clientX -oDiv.offsetLeft;
+            //                 var disY = ev.clientY - oDiv.offsetTop;
+            //                 document.onmousemove = function(ev){
+            //                 var l = ev.clientX-disX;
+            //                 var t = ev.clientY-disY;
+            //                 l > oDiv.parentNode.offsetWidth-130 ? l = oDiv.parentNode.offsetWidth-130 : l
+            //                 l < 0 ? l = 0 : l
+            //                 t < 0 ? t = 0 : t
+            //                 t > oDiv.parentNode.offsetHeight-130 ? t = oDiv.parentNode.offsetHeight-130 : t
+            //                 sign.x=(l/706).toFixed(2)
+            //                 sign.y=(t/993).toFixed(2)
+            //                 oDiv.style.left = l+'px';
+            //                 oDiv.style.top = t+'px';
+            //                 };
+            //                 document.onmouseup = function(){
+            //                 document.onmousemove=null;
+            //                 document.onmouseup=null;
+            //                 };
+            //             };
+            //     },
             saveAll(){
                 // if(this.signPositions.length==0){
                 //     this.$message({
@@ -529,7 +530,7 @@ export default{
                      this.sigtureShow2=false
                      for(let i=0;i<this.signPositions.length;i++){
                          if(this.count2==this.signPositions[i].pageIndex){
-                                this.sigtureShow2=true
+                                this.sigtureShow2=false
                                 if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
@@ -554,7 +555,7 @@ export default{
                      this.sigtureShow=false
                     for(let i=0;i<this.signPositions.length;i++){
                          if(this.count==this.signPositions[i].pageIndex){
-                             this.sigtureShow=true
+                             this.sigtureShow=false
                              if(this.showSed){
                                   this.sigtureShow=false
                              }
@@ -578,7 +579,7 @@ export default{
                     this.sigtureShow2=false
                     for(let i=0;i<this.signPositions.length;i++){
                         if(this.count2==this.signPositions[i].pageIndex){
-                                this.sigtureShow2=true
+                                this.sigtureShow2=false
                                 if(this.show==1||this.show==3){
                                     this.tuozhuai(this.signPositions[i])
                                 }
