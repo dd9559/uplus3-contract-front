@@ -81,7 +81,7 @@
                     <el-button type="primary paper-btn" @click="numSave">保存</el-button>
                 </div>
           </div>
-      </el-dialog> --> 
+      </el-dialog> -->
     </div>
 </template>
 
@@ -230,8 +230,8 @@ export default{
                     this.$nextTick(()=>{
                       this.loading=false
                     })
-                    console.log(this.tableDate) 
-                    
+                    console.log(this.tableDate)
+
                      let resadd=res.data.data
                      if(resadd.businessImg && resadd.businessImg!==''){
                             this.showSed=true
@@ -286,7 +286,7 @@ export default{
                            htImg.style.width='706px'
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
-                        
+
                      }
                 })
             }
@@ -311,7 +311,7 @@ export default{
                     done();
                 })
                 .catch(() => {});
-                } 
+                }
             },
             // showPos(){
             //     // 根据this.sigtureShow判断执行创建或删除
@@ -331,7 +331,7 @@ export default{
             //                     this.tuozhuai(this.signPositions[index])
             //                 }
             //             })
-                        
+
             //         }else{
             //             //签章已存在，删除
             //             for(let i=0;i<this.signPositions.length;i++){
@@ -355,7 +355,7 @@ export default{
             //                     this.tuozhuai(this.signPositions[index])
             //                 }
             //             })
-                        
+
             //         }else{
             //             //签章已存在，删除
             //             // debugger
@@ -366,7 +366,7 @@ export default{
             //                 }
             //             }
             //         }
-                    
+
             //     }
             // },
             // tuozhuai(sign){
@@ -438,8 +438,8 @@ export default{
                                 },
                                     this.modalDialog=true
                                 ),
-                        
-                        )  
+
+                        )
                 }else if(this.show==3){
                     let param={
                         id:this.enableTemplateId,
@@ -466,7 +466,7 @@ export default{
                                 },
                                 this.modalDialog=true
                                 ),
-                        
+
                         )
                 }
             },
@@ -668,7 +668,7 @@ export default{
                     center:true,
                     message: error
                     })
-          
+
                     setTimeout(() => {
                         this.$nextTick(()=>{
                             this.loading=false
@@ -761,7 +761,7 @@ export default{
     .tip{
         position: absolute;
         top: 30px;
-        left: 250px; 
+        left: 250px;
         color:#6d95bd;
         font-size: 14px
     }
