@@ -14,7 +14,7 @@
           </div>
           <img id='ht' src="" alt="">
           <div class='signature signatureone'  ref='dropBtn'  v-show='sigtureShow3'>
-              <img src="../../assets/img/yz.png" alt="">
+              <img :src="src" alt="">
           </div>
       </div>
        <div class="ht-list listone" v-show='showSed' ref='htlist'>
@@ -26,7 +26,7 @@
           </div>
           <img id='ht2' src="" alt="">
           <div class='signature signaturetwo' ref='dropBtn' v-show='sigtureShow3'>
-              <img src="../../assets/img/yz.png" alt="">
+              <img :src="src" alt="">
           </div>
         </div>
       </div>
@@ -92,6 +92,7 @@ export default{
     mixins: [MIXINS],
         data(){
           return{
+            src:`${require('@/assets/img/yz.png')}`,
             sigtureShow3:false,
             saveBtn:true,
             position:true,
