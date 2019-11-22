@@ -901,7 +901,7 @@ export default {
           this.auditId=res.data.auditId;
           this.contType=res.data.contType.value
           //咸宁买卖无签章
-          if(res.data.cityId==8&&res.data.contType.value==2){
+          if(res.data.cityId==8&&res.data.contType.value==2&&this.isentrust!=1){
             this.companySigns=[{contractSign: null,name: null,storeId: null}]
           }else{
             if(res.data.companySigns&&res.data.companySigns.length===1){

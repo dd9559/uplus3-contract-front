@@ -22,7 +22,7 @@
             </el-option>
             <el-option
               label="委托合同"
-              value="6">
+              :value="6">
             </el-option>
           </el-select>
         </el-form-item>
