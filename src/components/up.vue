@@ -61,7 +61,7 @@
       this.filePath = []
       this.$nextTick(() => {
         this.uploader = new plupload.Uploader({
-          // runtimes: 'flash,html5',
+          runtimes: 'html5',
           browse_button: that.getId, //选择文件按钮
           multi_selection: that.more,
           drop_element: document.getElementById(that.getParentId),
