@@ -27,6 +27,12 @@
             <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
               <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
             </el-form-item>
+            <!-- <el-form-item label="付款方式：" class="width-250 form-label" v-if="userMsg.cityId===1&&isOffline===0&&contractForm.type===2">
+              <el-select :disabled="type===2?true:false" v-model="contractForm.payType" placeholder="请选择" style="width:105px">
+                <el-option :value="1" label="全款买卖"></el-option>
+                <el-option :value="2" label="贷款买卖"></el-option>
+              </el-select>
+            </el-form-item> -->
             <br>
             <el-form-item label="客户佣金：" class="width-250">
               <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
@@ -328,6 +334,7 @@ export default {
         houseinfoCode: "",
         guestinfoCode: "",
         signDate: "",
+        payType:1,
         // transFlowCode: "",
         dealPrice: "",
         contPersons: [],
@@ -1995,7 +2002,7 @@ export default {
       return false;
     }
   },
-   mounted(){
+  mounted(){
     window.onresize = this.clientHeight;
   },
   beforeUpdate() {
