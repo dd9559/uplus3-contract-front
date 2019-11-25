@@ -26,7 +26,6 @@
     </el-form>
     <div class="data-list">
       <el-table :data="list" style="width: 100%" @row-dblclick="getRowDetails" border :default-sort = "{prop: 'uploadTime', order: 'descending'}">
-        <!-- <el-table-column  label="城市" prop="cityName" :formatter="nullFormatter"></el-table-column> -->
         <el-table-column  label="合同类型" prop="type.label" :formatter="nullFormatter"></el-table-column>
         <el-table-column  label="合同名称" prop="name" :formatter="nullFormatter"></el-table-column>
         <el-table-column  label="合同版本号" prop="version" :formatter="nullFormatter"></el-table-column>
@@ -41,7 +40,6 @@
           <template slot-scope="scope">
             <el-button @click="rowOperation(scope.row,1)" type="text" size="small">上传</el-button>
             <el-button @click="rowOperation(scope.row,2,1)" type="text" size="small" v-if="scope.row.name!=='-'">预览</el-button>
-            <!-- <el-button @click="rowOperation(scope.row,3)" type="text" size="small">编辑</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -57,7 +55,23 @@
           <div class="file-upload">
             <label>上传：</label>
             <div class="file-upload-opera">
-              <div v-if="uploadType">
+              <div v-if="uploadType==3">
+                <p style="display:inline-block;width:140px">
+                  <fileUp @getUrl='getAdd("qkmm",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='qkmm' class='fileup'>全款买卖</fileUp>
+                  <span v-show="qkAddress!==''">上传成功！  {{qkAddress.name}}</span>
+                </p>
+                <p style="display:inline-block;width:140px">
+                  <fileUp @getUrl='getAdd("dkmm",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='dkmm' class='fileup'>贷款买卖</fileUp>
+                  <span v-show="dkAddress!==''">上传成功！  {{dkAddress.name}}</span>
+                </p>
+                <p> 
+                   <fileUp id='jjian2' :rules="mbrules" :more="false"  :scane="{path:'template'}"  @getUrl='getAdd("jjian2",arguments)' class='fileup' >居间</fileUp>
+                   <span v-show="jjianAddress2!==''">上传成功！  {{jjianAddress2.name}}</span>
+                </p>
+                <span class="wordtip">温馨提示：只支持HTML格式</span>
+                <el-button class="sureUp" @click='sureUp'>确定</el-button>
+              </div>
+              <div v-if="uploadType==2">
                 <p>
                   <fileUp @getUrl='getAdd("mmai",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='mmai' class='fileup'>买卖</fileUp>
                   <span v-show="mmaiAddress!==''">上传成功！  {{mmaiAddress.name}}</span>
@@ -69,7 +83,7 @@
                 <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
               </div>
-              <div v-else>
+              <div v-else-if="uploadType==1">
                 <p> 
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' :scane="{path:'template'}" :more="false"  class='fileup'>模板</fileUp>
                   <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
@@ -125,7 +139,7 @@
         rowData: [],
         modal: false,
         template: '',//弹窗内容
-        uploadType: false,//是否显示两个上传
+        uploadType: '',//是否显示两个上传
         titleStr:'',
         contraName:'',
         cityName:'',
@@ -135,6 +149,9 @@
         mmaiAddress:'',
         jjianAddress:'',
         mbanAddress:'',
+        jjianAddress2:'',
+        qkAddress:'',
+        dkAddress:'',
         towFlag:0, 
         id:'',
         power: {
@@ -173,8 +190,14 @@
             return 'linestyle'
        },
       getAdd(type,obj){
-        if(type=='mmai'){
-           this.mmaiAddress=obj[0].param[obj[0].param.length-1];
+        if(type=='qkmm'){
+          this.qkAddress=obj[0].param[obj[0].param.length-1];
+        }else if(type=='dkmm'){
+          this.dkAddress=obj[0].param[obj[0].param.length-1];
+        }else if(type=='jjian2'){
+          this.jjianAddress2=obj[0].param[obj[0].param.length-1]
+        }else if(type=='mmai'){
+          this.mmaiAddress=obj[0].param[obj[0].param.length-1];
         }else if(type=='jjian'){
           this.jjianAddress=obj[0].param[obj[0].param.length-1]
         }else if(type=='mban'){
@@ -242,7 +265,15 @@
                 })
               return
           }
-        if(this.uploadType){
+        if(this.uploadType==3){
+             if(this.qkAddress=='' || this.dkAddress==''||this.jjianAddress2==''){
+                this.$message({
+                    type: 'error',
+                    message: '请上传全款买卖，贷款买卖以及居间模板！'
+                    })
+                  return
+              }
+        }else if(this.uploadType==2){
               if(this.mmaiAddress=='' || this.jjianAddress==''){
                 this.$message({
                     type: 'error',
@@ -250,7 +281,7 @@
                     })
                   return
               }
-        }else{
+        }else if(this.uploadType==1){
               if(this.mbanAddress==''){
                 this.$message({
                     type: 'error',
@@ -260,15 +291,12 @@
               }
             }
         this.modal=false
-        if(this.uploadType){
-          this.towFlag=1
-        }
-        // localStorage.setItem('cityId',this.selectCity)
-        // localStorage.setItem('tixiId',this.tixiid)
-        this.setPath(this.$tool.getRouter(['设置','合同模板设置','合同模板预览'],'contractTemplate'))
         this.$router.push({
         path: "/contraPreview",
         query: {
+          qkAddress: this.qkAddress,
+          dkAddress: this.dkAddress,
+          jjianAddress2:this.jjianAddress2,
           mmaiAddress: this.mmaiAddress,
           jjianAddress:this.jjianAddress,
           mbanAddress:this.mbanAddress,
@@ -276,7 +304,7 @@
           type:this.contraType,
           cityName:this.cityName,
           contraName:this.contraName,
-          towFlag:this.towFlag,
+          uploadType:this.uploadType,
           show:1,
           id:this.id
         }
@@ -329,7 +357,6 @@
         //上传
         this.modal = true
         if(type===1){
-          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板上传'],'contractTemplate'))
             this.contraName=''
             this.mbanAddress=''
             this.mmaiAddress=''
@@ -338,27 +365,17 @@
             this.id=row.id
             this.contraType=row.type.value
             this.titleStr='上传合同模板'
-            this.uploadType = row.flag==1
-
+            this.uploadType = row.flag
         }
         //预览
         else if(type===2){
-          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板预览'],'contractTemplate'))
+          this.uploadType = row.flag
           this.$router.push({
             path: "/contraPreview",
             query: {
               enableTemplateId:showType==2?row.id:row.enableTemplateId,
               show:2,
-            }
-          });
-        }
-        else if(type==3){
-          // this.setPath(this.$tool.getRouter(['设置','后台设置','合同模板设置','合同模板修改'],'contractTemplate'))
-           this.$router.push({
-            path: "/contraPreview",
-            query: {
-              enableTemplateId:row.enableTemplateId,
-              show:3,
+              uploadType:row.flag
             }
           });
         }
