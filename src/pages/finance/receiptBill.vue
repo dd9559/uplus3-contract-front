@@ -4,7 +4,7 @@
       <p class="f14 txt-title">收款信息</p>
       <ul class="bill-form">
         <li>
-          <div class="input-group">
+          <div class="input-group" style="white-space: nowrap;">
             <label class="form-label no-width f14 margin-bottom-base">收款方式:</label>
             <p class="block-receipt-type">
               <el-button size="small" class="btn-info" :type="!billStatus?'primary':''" @click="checkReceiptType(1)">
@@ -130,12 +130,17 @@
               <section>
                 <label class="form-label f14 margin-bottom-base">支付方式</label>
                 <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择" @change="hideCardList">
-                  <el-option
-                    v-for="item in dictionary['534']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key">
-                  </el-option>
+                  <el-option-group
+                    v-for="group in getDir"
+                    :key="group.label"
+                    :label="group.label">
+                    <el-option
+                      v-for="item in group.options"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="item.key">
+                    </el-option>
+                  </el-option-group>
                 </el-select>
               </section>
               <section>
@@ -145,6 +150,13 @@
                 </div>
                 <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount"
                        @input="cutNum(item,'amount')">
+              </section>
+              <section>
+                <div class="flex-box tool-tip w200 no-max">
+                  <label class="form-label f14 margin-bottom-base">手续费金额（元）</label>
+                </div>
+                <input type="text" class="w200 el-input__inner" placeholder="请输入" v-model="item.fee"
+                       @input="cutNum(item,'fee')">
               </section>
               <!--<section v-if="item.payMethod===2">
                 <label class="f14 margin-bottom-base">收账账户</label>
@@ -159,55 +171,55 @@
                 </el-select>
               </section>-->
             </div>
+            <div class="bankCard-list" v-if="billStatus&&payList[index].payMethod!==3">
+              <p><label class="f14">刷卡资料补充</label></p>
+              <el-table border :data="[cardList[index]]" style="width: 100%" header-row-class-name="theader-bg">
+                <el-table-column align="center" label="刷卡银行">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.bankName|formatNull}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="户名">
+                  <template slot-scope="scope">
+                    <input type="text" v-model.trim="scope.row.userName" class="no-style" placeholder="请输入"
+                           @input="inputOnly('userName',index)">
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="账户 ">
+                  <template slot-scope="scope">
+                    <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入"
+                           @input="getBank(scope.row,index)">
+                  </template>
+                </el-table-column>
+                <!--<el-table-column align="center" label="金额（元）">
+                  <template slot-scope="scope">
+                    <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')"
+                           placeholder="请输入">
+                  </template>
+                </el-table-column>-->
+                <el-table-column align="center" label="订单编号">
+                  <template slot-scope="scope">
+                    <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入"
+                           @input="inputOnly('orderNo',index)">
+                  </template>
+                </el-table-column>
+                <!--<el-table-column align="center" label="手续费（元）">
+                  <template slot-scope="scope">
+                    <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')"
+                           placeholder="请输入">
+                  </template>
+                </el-table-column>-->
+                <!--<el-table-column align="center" label="操作">
+                  <template slot-scope="scope">
+                    <el-button type="text" @click="cardOpera('add')">新增</el-button>
+                    <el-button type="text" @click="cardOpera('delete',scope.row,scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>-->
+              </el-table>
+            </div>
             <i class="iconfont" :class="[index===0?'icon-icon-test':'icon-del']" @click="payListOper(index)"></i>
           </li>
         </ul>
-      </div>
-      <div class="input-group col-other artice-margin" v-if="billStatus&&showCard">
-        <p><label class="f14">刷卡资料补充</label></p>
-        <el-table border :data="cardList" style="width: 100%" header-row-class-name="theader-bg">
-          <el-table-column align="center" label="刷卡银行">
-            <template slot-scope="scope">
-              <span>{{scope.row.bankName|formatNull}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="户名">
-            <template slot-scope="scope">
-              <input type="text" v-model.trim="scope.row.userName" class="no-style" placeholder="请输入"
-                     @input="inputOnly('userName',scope.$index)">
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="账户 ">
-            <template slot-scope="scope">
-              <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入"
-                     @input="getBank(scope.row,scope.$index)">
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="金额（元）">
-            <template slot-scope="scope">
-              <input type="text" v-model="scope.row.amount" class="no-style" @input="cutNum(scope.row,'amount')"
-                     placeholder="请输入">
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="订单编号">
-            <template slot-scope="scope">
-              <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入"
-                     @input="inputOnly('orderNo',scope.$index)">
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="手续费（元）">
-            <template slot-scope="scope">
-              <input type="text" v-model="scope.row.fee" class="no-style" @input="cutNum(scope.row,'fee')"
-                     placeholder="请输入">
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="操作">
-            <template slot-scope="scope">
-              <el-button type="text" @click="cardOpera('add')">新增</el-button>
-              <el-button type="text" @click="cardOpera('delete',scope.row,scope.$index)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
       </div>
       <section>
         <p class="txt-title">其他信息</p>
@@ -317,20 +329,9 @@
         cardNumber: {
             name: '账户'
         },
-        bankName: {
-            name: '刷卡银行'
-        },
-        amount: {
-            name: '金额',
-            type: 'money'
-        },
         orderNo: {
             name: '订单号'
         },
-        fee: {
-            name: '手续费',
-            type: 'zeroNum'
-        }
     }
     const payRule = {
         payMethod: {
@@ -340,9 +341,10 @@
             name: '金额',
             type: 'money'
         },
-        /*activeAdmin:{
-          name:'收帐账户'
-        }*/
+        fee: {
+            name: '手续费',
+            type: 'zeroNum'
+        }
     }
 
     export default {
@@ -402,7 +404,8 @@
                     {
                         payMethod: '',
                         amount: '',
-                        activeAdmin: ''
+                        activeAdmin: '',
+                        fee:''
                     }
                 ],
                 cardList: [
@@ -416,7 +419,8 @@
                     }
                 ],
                 dictionary: {
-                    '534': ''
+                    '534': [],
+                    '644': []
                 },
                 activeAdmin: '',
                 account: [],
@@ -612,14 +616,14 @@
             },
             //是否隐藏刷卡补充
             hideCardList: function (val) {
-                let state = this.payList.every(item => {
+                /*let state = this.payList.every(item => {
                     return item.payMethod === 3
                 })
                 if (state) {
                     this.showCard = false
                 } else {
                     this.showCard = true
-                }
+                }*/
             },
             //支付信息表单增减
             payListOper: function (index) {
@@ -628,11 +632,14 @@
                     let cell = {
                         payMethod: '',
                         amount: '',
-                        activeAdmin: ''
+                        activeAdmin: '',
+                        fee:''
                     }
                     this.payList = this.payList.concat(cell)
+                    this.cardOpera('add')
                 } else {
                     this.payList.splice(index, 1)
+                    this.cardOpera('delete',index)
                 }
                 this.hideCardList()
             },
@@ -778,7 +785,7 @@
                 //支付信息验证
                 if (this.billStatus) {
                     let cardListStatus = newPayList.every(item => item.payMethod === 3)
-                    newPayList.forEach(item => {
+                    newPayList.forEach((item,index) => {
                         if (item.payMethod !== 2) {
                             delete item.activeAdmin
                         }
@@ -786,22 +793,26 @@
                             checkTotal += parseFloat(item.amount)
                         }
                         payTotal += parseFloat(item.amount)
-                        arr.push(this.$tool.checkForm(item, payRule))
+                        arr.push(this.$tool.checkForm(item, payRule));
+                          if(!cardListStatus&&this.cardList[index].bankName){
+                              arr.push(this.$tool.checkForm(this.cardList[index], cardRule))
+                          }
+                        // (!cardListStatus&&this.cardList[index].bankName)&&arr.push(this.$tool.checkForm(this.cardList[index], cardRule))
                     })
-                    if (!cardListStatus && this.cardList[0].bankName) {
+                    /*if (!cardListStatus) {
                         //刷卡资料验证
                         this.cardList.forEach(item => {
                             cardTotal += parseFloat(item.amount)
-                            arr.push(this.$tool.checkForm(item, cardRule))
+                            item.bankName&&arr.push(this.$tool.checkForm(item, cardRule))
                         })
-                    }
+                    }*/
                     Promise.all(arr).then(res => {
                         let total = parseFloat(this.form.amount)
                         if (total !== parseFloat(payTotal.toFixed(2))) {
                             this.$message({
                                 message: '收款金额=支付总金额'
                             })
-                        } else if (parseFloat(checkTotal.toFixed(2)) !== parseFloat(cardTotal.toFixed(2)) && this.cardList[0].bankName) {
+                        } else if (parseFloat(checkTotal.toFixed(2)) !== parseFloat(cardTotal.toFixed(2)) && this.cardList[0].bankName&&false) {
                             this.$message({
                                 message: '刷卡资料补充输入总金额=POS刷卡金额+转账金额'
                             })
@@ -827,7 +838,8 @@
                                             }
                                             param.inAccount.push(Object.assign({}, obj, {
                                                 amount: item.amount,
-                                                payMethod: item.payMethod
+                                                payMethod: item.payMethod,
+                                                fee:item.fee,//新增手续费项
                                             }))
                                             return true
                                         }
@@ -840,7 +852,8 @@
                                     delete obj.payMethod
                                     param.inAccount.push(Object.assign({}, obj, {
                                         amount: item.amount,
-                                        payMethod: item.payMethod
+                                        payMethod: item.payMethod,
+                                        fee:item.fee,//新增手续费项
                                     }))
                                 }
                             })
@@ -1042,7 +1055,7 @@
             /**
              * 刷卡资料补充
              */
-            cardOpera: function (type, row, index) {
+            cardOpera: function (type, index) {
                 if (type === 'add') {
                     let cell = {
                         bankName: '',
@@ -1078,6 +1091,32 @@
                     })
                 }
             },
+        },
+        computed:{
+          getDir:function () {
+              // debugger
+              let arr=this.dictionary['534'].slice(1)
+              let dir=[
+                  {
+                      label:'POS刷卡',
+                      options:this.dictionary['644'].map(item=>{
+                          if(item.value==='微信'){
+                              return {'key':10,'value':item.value}
+                          }else if(item.value==='支付宝'){
+                              return {'key':9,'value':item.value}
+                          }else {
+                              return {'key':item.key+7,'value':item.value}
+                          }
+                      })
+                  },
+                  {
+                      label: '',
+                      options: arr
+                  }
+              ]
+
+              return dir
+          }
         },
         watch: {
             cardList: function (val) {
@@ -1277,15 +1316,19 @@
   }
 
   .pay-list {
-    margin: @margin-15 0 44px;
+    margin: @margin-15 0 30px;
 
     > li {
       display: flex;
-      align-items: flex-end;
+      /*align-items: flex-end;*/
       /*justify-content: space-between;*/
       border-bottom: 1px @color-E9 dashed;
-      /*padding-bottom: @margin-15;
-      margin-bottom: @margin-15;*/
+      position: relative;
+      flex-direction: column;
+      width: 920px;
+      background-color: @bg-grey;
+      padding: @margin-base @margin-10;
+      margin-bottom: @margin-15;
 
       &:last-of-type {
         /*border: 0px;*/
@@ -1296,6 +1339,16 @@
         color: @color-C8;
         font-size: @icon-size-30;
         margin-bottom: @margin-10;
+        position: absolute;
+        right: -40px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .bankCard-list{
+        >p{
+          margin-bottom: @margin-base;
+        }
       }
     }
 
@@ -1305,7 +1358,7 @@
         flex-direction: column;
         margin-right: 60px;
 
-        &:nth-of-type(2) {
+        &:nth-of-type(n+1) {
           > input {
             height: 32px;
           }
