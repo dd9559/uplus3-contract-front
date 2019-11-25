@@ -2507,10 +2507,8 @@ export default {
       }
     },
     checkDate:function(val){
-        // debugger
             let date=new Date(val);
             if(date.getTime()>Date.now()){
-                this.examineDate=''
                 this.$message({
                     message:'不能选择未来时间'
                 })
