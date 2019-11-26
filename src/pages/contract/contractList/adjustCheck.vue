@@ -76,6 +76,7 @@
             <p v-if="scope.row.tradeType === 1">租赁</p>
             <p v-if="scope.row.tradeType === 2">
               <span v-if="scope.row.loanType">{{scope.row.loanType===7?'全款买卖':"贷款买卖"}}</span>
+              <span v-else>买卖</span>
             </p>
             <p v-if="scope.row.tradeType === 3">代办</p>
             <p v-if="scope.row.tradeType === 4">意向</p>
