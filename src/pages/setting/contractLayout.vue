@@ -4,7 +4,7 @@
             <el-form :inline="true" size="small">
                 <el-form-item label="体系">
                     <el-select class="w240" v-model="searchSystemTag">
-                        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="设置时间">
@@ -40,7 +40,7 @@
             <el-table :data="LayoutData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
                 <el-table-column label="体系" prop="systemtag">
                     <template slot-scope="scope">
-                        <span v-for="item in systemTagSelect" :key="item.key" v-if="item.key===scope.row.systemtag">{{item.value}}</span>
+                        <span v-for="item in systemOpt" :key="item.key" v-if="item.key===scope.row.systemtag">{{item.value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="页面版式" prop="version">
@@ -84,7 +84,7 @@
                 <div>
                     <span><i class="color-red">*</i>体系：</span>
                     <el-select v-model="addSystemTag" size="small" :disabled="layoutTitle=='编辑'">
-                        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div>
@@ -126,6 +126,14 @@
     export default {
         name: "contractLayout",
         mixins: [MIXINS,FILTER],
+        props: {
+            systemOpt: {
+                type: Array,
+                default: function() {
+                    return []
+                }
+            }
+        },
         data() {
             return {
                 clientHei: '',
@@ -156,8 +164,6 @@
         created() {
             this.clientHei= document.documentElement.clientHeight -500 + 'px'
             this.getDictionary()
-            // 获取体系
-            this.getSystemTagSelect()
             let res = this.getDataList
             if(res&&(res.route === this.$route.path)){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))

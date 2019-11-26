@@ -42,7 +42,7 @@
         </ScreeningTop>
         <!-- table表格 -->
         <div class="table-box">
-            <p v-if="power['sign-set-sxf'].state">
+            <p>
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button icon="el-icon-plus" @click="openFn(1)" round type="primary">新增手续费</el-button>
             </p>
@@ -313,7 +313,8 @@
                     settingTimeStart: bool1 ? this.settingTime[0] : '',
                     settingTimeEnd: bool1 ? this.settingTime[1] : '',
                     updateTimeStart: bool2 ? this.updateTime[0] : '',
-                    updateTimeEnd: bool2 ? this.updateTime[1] : ''
+                    updateTimeEnd: bool2 ? this.updateTime[1] : '',
+                    tradeType: 0 //线上
                 }
 
                 //点击查询时，缓存筛选条件
@@ -406,7 +407,8 @@
                     cityId: this.commissionForm.cityId,
                     systemTag: this.commissionForm.systemTag,
                     commissionFee: arr1,
-                    sepaFee: arr2
+                    sepaFee: arr2,
+                    tradeType: 0 //线上
                 }
 
                 let url

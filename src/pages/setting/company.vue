@@ -99,7 +99,6 @@
       <el-pagination
         v-show="tableData.length"
         class="pagination-info"
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="pageNum"
         :page-size="pageSize"
@@ -1031,10 +1030,6 @@
           img_arr.push(this.companyForm.financialSign.split('?')[0])
         }
         this.fileSign(img_arr)
-      },
-      handleSizeChange(val) {
-        this.pageSize = val
-        this.getCompanyList()
       },
       handleCurrentChange(val) {
         this.pageNum = val

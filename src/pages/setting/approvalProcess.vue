@@ -34,7 +34,7 @@
             </div>
             <div class="input-search">
                 <label class="w-70">流程类型</label>
-                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition">
+                <el-select size="small" v-model="searchForm.type" @change="changeFlowTypeOne" :clearable="true" @clear="clearCondition" filterable>
                     <el-option v-for="item in dictionary['573']" v-if="item.key!=4" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
                 <el-select size="small" v-model="searchForm.branchCondition" :clearable="true" class="w200 ml-10">
@@ -101,7 +101,6 @@
             <el-pagination
             v-show="tableData.length>0"
             class="pagination-info"
-            @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
             :page-size="pageSize"
@@ -127,7 +126,7 @@
                     </div>
                     <div class="aduit-input mr-35 ml-28" v-if="aduitForm.modularType==0">
                         <label class="mr-28">品牌:</label>
-                        <el-select size="small" v-model="aduitForm.brandId" :disabled="editDisabled">
+                        <el-select size="small" v-model="aduitForm.brandId" :disabled="editDisabled" :clearable="true">
                             <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
@@ -139,7 +138,7 @@
                     </div>
                     <div class="aduit-input must mr-35">
                         <label>流程类型:</label>
-                        <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled">
+                        <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled" @clear="clearCondition(2)" :clearable="true" filterable>
                             <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?item.key!=4:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
@@ -166,8 +165,8 @@
                         <li v-for="(item,index) in nodeList" :key="index">
                             <div class="node-body">
                                 <el-input size="small" class="w143" v-model.trim="item.name" maxlength="15" placeholder="设置节点名称" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
-                                <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型" @change="checkSystemFn(index)">
-                                    <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key"></el-option>
+                                <el-select size="small" class="w143" v-model="item.type" placeholder="请选择审批人类型" @change="checkSystemFn(index)" clearable @clear="clearFn(index)">
+                                    <el-option v-for="m in aduitTypeArr" :key="m.key" :label="m.value" :value="m.key" :disabled="forbidFn(item.type,m.key)"></el-option>
                                 </el-select>
                                 <!-- 人员 -->
                                 <div v-if="item.type===0" class="person">
@@ -182,24 +181,9 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <!-- 部门 -->
+                                <!-- 部门名称 -->
                                 <div v-if="item.type===1">
-                                    <!-- 3.0环境 -->
-                                    <div class="person" v-if="version==3">
-                                        <el-select size="small" placeholder="请选择部门" v-model="item.depID" filterable @change="getDepStr($event,index,item.type)">
-                                            <el-option
-                                            v-for="option in depsList"
-                                            :key="option.id"
-                                            :label="option.name"
-                                            :value="option.id"
-                                            ></el-option>
-                                        </el-select>
-                                        <el-select class="person-right" size="small" placeholder="请选择职级类型" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
-                                            <el-option v-for="item in dictionary['659']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                                        </el-select>
-                                    </div>
-                                    <!-- 2.0环境 -->
-                                    <el-select size="small" v-else class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
+                                    <el-select size="small" class="other" v-model="item.depArr" filterable multiple @change="multiSelect(item.type,index)">
                                         <el-option
                                         v-for="option in depsList"
                                         :key="option.id"
@@ -220,7 +204,7 @@
                                 <!-- 部门类型+职级 -->
                                 <div v-if="item.type===4&&version==3">
                                     <div class="person">
-                                        <el-select size="small" placeholder="请选择部门类型" v-model="item.depType" filterable @change="getDepStr($event,index,item.type)">
+                                        <el-select size="small" placeholder="请选择部门类型" v-model="item.depType" filterable @change="getDepStr($event,index)">
                                             <el-option
                                             v-for="option in dictionary['660']"
                                             :key="option.key"
@@ -246,7 +230,7 @@
                                     :key="m"
                                     @click="defaultChoice(index,m,ele)"
                                     :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":""}}{{ele.temp?version==3&&(ele.type===1||ele.type===4)?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
+                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":""}}{{ele.temp?ele.type===4?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
                                         <i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
@@ -302,8 +286,6 @@
             employeList:[], //人员列表
             employeeTotal:0,
             employeePage:1,
-            depID: "", //3.0部门id
-            depStr: "", //3.0部门名称
             depType: "", //3.0部门类型+职级id
             depTypeStr: "" //3.0部门类型+职级名称
         }
@@ -342,21 +324,10 @@
                 dictionary: {
                     '39':'', //合作方式
                     '573':'', //流程类型
-                    '580':'',
-                    '586':'',
-                    '597':'',
-                    '599':'',
-                    '601':'',
-                    '603':'',
                     '659':'职级类型',
                     '660':'部门类型',
                     '711':'交易类型',
-                    '722':'',
-                    '724':'',
-                    '729':'',
-                    '731':'',
-                    '733':'',
-                    '735':''
+                    '735':'品牌'
                 },
                 aduitTypeArr: [], // 审批人类型
                 pageSize: 10,
@@ -377,7 +348,8 @@
                         state: false,
                         name: '查询'
                     }
-                }
+                },
+                branchObj: {} //分支条件
             }
         },
         mounted() {
@@ -389,6 +361,9 @@
                 this.total = res.data.total
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 this.searchForm = session.query
+                this.pageNum = session.query.pageNum
+                delete this.searchForm.pageNum
+                delete this.searchForm.pageSize
             }else{
                 this.getData()
             }
@@ -396,10 +371,22 @@
             this.getSystemTag()
             this.getSystemTagSelect()
             this.getAduitType()
+            this.getBranchObj()
             // 2.0环境且登录城市不是温州才请求角色数据
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
+            clearFn(i) {
+                this.$set(this.nodeList,[i],JSON.parse(JSON.stringify(arr[1])))
+            },
+            forbidFn(type,k) {
+                // 添加审核人 部门不能和其他类型组合
+                if(type===1) {
+                    return k!==1?true:false
+                } else {
+                    return k===1&&type!==''?true:false
+                }
+            },
             getBrandVal(val) {
                 if(val) {
                     let item = this.dictionary['735']
@@ -479,6 +466,17 @@
                     res = res.data
                     if(res.status === 200) {
                         this.aduitTypeArr = res.data.children
+                    }
+                }).catch(error => {
+                    this.$message({message:error})
+                })
+            },
+            // 分支条件数据
+            getBranchObj() {
+                this.$ajax.get('/api/auditflow/getAuditBranch').then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.branchObj = res.data
                     }
                 }).catch(error => {
                     this.$message({message:error})
@@ -599,8 +597,6 @@
                         depsTime: array[i].depArr.length + 1,
                         depTypeTime: array[i].depTypeArr.length + 1,
                         rolesTime: array[i].roleArr.length + 1,
-                        depID: array[i].choice.filter(e => e.type===1).length?array[i].choice.filter(e => e.type===1)[array[i].choice.filter(e => e.type===1).length-1].userId:'',
-                        depStr: array[i].choice.filter(e => e.type===1).length?array[i].choice.filter(e => e.type===1)[array[i].choice.filter(e => e.type===1).length-1].userName:'',
                         depType: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userId:'',
                         depTypeStr: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userName:'',
                         lastChoice: array[i].choice.filter(e => e.isDefault===1)[0],
@@ -611,7 +607,12 @@
                 this.getDeps(this.aduitForm.systemTag)
             },
             setConditionList(val,type=1) {
-                this[type==1?'homeConditionList':'conditionList'] = this.dictionary[val==0?'586':val==1?'597':val==2?'603':val==3?'580':val==7?'722':val==8?'724':val==9?'729':val==10?'731':'733']
+                for(let key in this.branchObj) {
+                    if(val == key) {
+                        this[type==1?'homeConditionList':'conditionList'] = this.branchObj[key]
+                        break
+                    }
+                }
             },
             changeFlowTypeOne(val) {
                 this.searchForm.branchCondition = ""
@@ -621,29 +622,17 @@
                 this.aduitForm.branchCondition = ""
                 this.setConditionList(val,2)
             },
-            // 3.0环境获取部门类型/部门名称
-            getDepStr(e,i,type) {
-                if(type === 1) {
-                    this.depsList.find(item => {
-                        if(e == item.id) {
-                            this.nodeList[i].depStr = item.name
-                        }
-                    })
-                    this.nodeList[i].depArr = []
-                    let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depID)
-                    arr.forEach(item => this.nodeList[i].depArr.push(item.positionId))
-                    this.nodeList[i].depsTime = arr.length + 1 
-                } else {
-                    this.dictionary['660'].find(item => {
-                        if(e == item.key) {
-                            this.nodeList[i].depTypeStr = item.value
-                        }
-                    })
-                    this.nodeList[i].depTypeArr = []
-                    let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depType)
-                    arr.forEach(item => this.nodeList[i].depTypeArr.push(item.positionId))
-                    this.nodeList[i].depTypeTime = arr.length + 1 
-                }
+            // 3.0环境获取部门类型
+            getDepStr(e,i) {
+                this.dictionary['660'].find(item => {
+                    if(e == item.key) {
+                        this.nodeList[i].depTypeStr = item.value
+                    }
+                })
+                this.nodeList[i].depTypeArr = []
+                let arr = this.nodeList[i].choice.filter(item => item.userId === this.nodeList[i].depType)
+                arr.forEach(item => this.nodeList[i].depTypeArr.push(item.positionId))
+                this.nodeList[i].depTypeTime = arr.length + 1
             },
             // 选中默认审核人
             defaultChoice(index,e,curItem) {
@@ -667,9 +656,6 @@
                 if(choiceArr[m].type === 1) {
                     s_arr = 'depArr'
                     s_t = 'depsTime'
-                    if(this.version == 3) {
-                        s_id = 'positionId'
-                    }
                 } else if(choiceArr[m].type === 2) {
                     s_arr = 'roleArr'
                     s_t = 'rolesTime'
@@ -731,60 +717,49 @@
                         })
                     }
                 } else if(type === 1) {
-                    // 部门
+                    // 部门名称
                     if(this.nodeList[index].depsTime === this.nodeList[index].depArr.length) {
-                        // 2.0环境
-                        if(this.version == 2) {
-                            for(var i = 0; i < this.depsList.length; i++) {
-                                if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
+                        for(var i = 0; i < this.depsList.length; i++) {
+                            if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
+                                if(this.version == 2) {
                                     this.nodeList[index].choice.push({
                                         type: 1,
                                         userName: this.depsList[i].name,
                                         userId: this.depsList[i].id,
                                         isDefault: 0,
                                         temp: ""
+                                    })  
+                                } else {
+                                    // 3.0环境后台要求多两个属性
+                                    this.nodeList[index].choice.push({
+                                        type: 1,
+                                        userName: this.depsList[i].name,
+                                        userId: this.depsList[i].id,
+                                        isDefault: 0,
+                                        temp: "",
+                                        positionId: null,
+                                        positionName: null
                                     })
-                                    break
                                 }
+                                break
                             }
-                            ++this.nodeList[index].depsTime
-                        } else {
-                            // 3.0环境
-                            let url = "/api/organize/selectEmpByDepAndPosition"
-                            this.checkEmp(url,type,index,'depArr','depsTime','depID','depStr')
                         }
+                        ++this.nodeList[index].depsTime
                     } else {
-                        if(this.version == 2) {
-                            let arr = this.nodeList[index].choice.filter(item => {
-                                return item.type === 1
-                            })
-                            let arr1 = []
-                            arr.forEach(item => {
-                                arr1.push(item.userId)
-                            })
-                            let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
-                            this.nodeList[index].choice.forEach((item,i) => {
-                                if(item.userId === arr2[0]) {
-                                    this.nodeList[index].choice.splice(i,1)
-                                    this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                                }
-                            })
-                        } else {
-                            let arr = this.nodeList[index].choice.filter(item => {
-                                return item.type === 1 && item.userId === this.nodeList[index].depID
-                            })
-                            let arr1 = []
-                            arr.forEach(item => {
-                                arr1.push(item.positionId)
-                            })
-                            let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
-                            this.nodeList[index].choice.forEach((item,i) => {
-                                if(item.positionId === arr2[0] && item.userId === this.nodeList[index].depID) {
-                                    this.nodeList[index].choice.splice(i,1)
-                                    this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                                }
-                            })
-                        }
+                        let arr = this.nodeList[index].choice.filter(item => {
+                            return item.type === 1
+                        })
+                        let arr1 = []
+                        arr.forEach(item => {
+                            arr1.push(item.userId)
+                        })
+                        let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
+                        this.nodeList[index].choice.forEach((item,i) => {
+                            if(item.userId === arr2[0]) {
+                                this.nodeList[index].choice.splice(i,1)
+                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
+                            }
+                        })
                     }
                 } else if(type === 2) {
                     // 角色
@@ -855,12 +830,8 @@
                     }
                 }
                 let param = {
-                    positionId: zhijiArr.key
-                }
-                if(type === 1) {
-                    param.depId = this.nodeList[index][id_]
-                } else {
-                    param.depTypeId = this.nodeList[index][id_]
+                    positionId: zhijiArr.key,
+                    depTypeId: this.nodeList[index][id_]
                 }
                 this.$ajax.get(url, param).then(res => {
                     res = res.data
@@ -975,8 +946,6 @@
                             delete item[i].employeList
                             delete item[i].employeeTotal
                             delete item[i].employeePage
-                            delete item[i].depID
-                            delete item[i].depStr
                             delete item[i].depType
                             delete item[i].depTypeStr
                             item[i].type = item[i].lastChoice.type
@@ -1017,25 +986,16 @@
                 })
             },
             queryFn() {
+                this.pageNum = 1
                 this.getData('search')
             },
             resetFormFn() {
-                this.searchForm.brandId = ""
-                this.searchForm.modularType = ""
-                this.searchForm.systemTag = ""
-                this.searchForm.deptAttr = ""
-                this.searchForm.name = ""
-                this.searchForm.type = ""
-                this.searchForm.branchCondition = ""
+                this.$tool.clearForm(this.searchForm)
                 this.homeConditionList = []
                 this.pageNum = 1
             },
-            clearCondition() {
-                this.homeConditionList = []
-            },
-            handleSizeChange(val) {
-                this.pageSize = val
-                this.getData()
+            clearCondition(type=1) {
+                type === 1 ? this.homeConditionList = [] : this.conditionList = []
             },
             handleCurrentChange(val) {
                 this.pageNum = val
