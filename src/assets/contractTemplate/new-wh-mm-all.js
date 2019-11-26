@@ -117,6 +117,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   if(attr == 'houseType') {//第一条 房屋属性 其他类型输入框能否输入逻辑
     let boxArray = document.getElementsByName(attr);
     let _val1 = document.querySelector(`span[extendparam="val1"]`)
+    _val1.classList.remove("BODERRED")
     for(let i = 0; i < boxArray.length; i++) {
       if(boxArray[i] == obj.currentTarget) {
         if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
@@ -137,6 +138,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }else if(attr == 'guaranty'){//第二条  抵押人是否可输入逻辑
     let boxArray = document.getElementsByName(attr);
     let _val4 = document.querySelector(`span[extendparam="val4"]`)
+    _val4.classList.remove("BODERRED")
     for(let i = 0; i < boxArray.length; i++) {
       if(boxArray[i] == obj.currentTarget) {
         if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
@@ -157,6 +159,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }else if(attr == 'delivery'){//第八条第一小条输入框能否输入逻辑
     let boxArray = document.getElementsByName(attr);
     let _val13 = document.querySelector(`span[extendparam="val13"]`)
+    _val13.classList.remove("BODERRED")
     for(let i = 0; i < boxArray.length; i++) {
       if(boxArray[i] == obj.currentTarget) {
         if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
@@ -198,7 +201,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
         }
       }
     }
-  }else if(attr == 'leakage'){//第二条 房屋是否带租约勾选逻辑
+  }else if(attr == 'leakage'){//第六条 房屋是否漏水勾选逻辑
     let boxArray = document.getElementsByName(attr);
     let leakagePlace = document.querySelectorAll(`*[name='leakagePlace']`)
     for(let i = 0; i < boxArray.length; i++) {
