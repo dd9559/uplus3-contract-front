@@ -312,14 +312,14 @@ let TOOL = {
             },
             {
               name: "合同模板设置",
-              category:"5-1-3",
+              category:"5-1-2",
               can:true,//是否可见
               path: "contractTemplate",
               code: "sign-set-ht-query"
             },
             {
               name: "线下手续费设置",
-              category:"5-1-4",
+              category:"5-1-3",
               can:true,//是否可见
               path: "commissionOff",
               code: "sign-set-bg-sxf-query"

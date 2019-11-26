@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <el-form ref="form"  style="padding-left:10px" :inline="true">
-      <el-form-item label="城市选择" class="selectCity" >
+      <!-- <el-form-item label="城市选择" class="selectCity" >
         <el-select v-model="selectCity" placeholder="请选择" value-key='label' @change='selCity'>
           <el-option
               v-for="(item) in citys"
@@ -11,7 +11,7 @@
               >
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="体系" class="selectCity">
         <el-select v-model="tixiid" placeholder="请选择" value-key='label' @change='selSys'>
           <el-option
@@ -163,23 +163,13 @@
       }
     },
     created() {
-        if(sessionStorage.getItem('cityId')&&sessionStorage.getItem('tixiId')){
-          this.selectCity=parseInt(sessionStorage.getItem('cityId'))
+        this.selectCity=this.userInfo.cityId
           this.$ajax.get('/api/organize/getSystemTagSelect',{cityId:this.selectCity}).then(res=>{
                 if(res.status==200){
                     this.tixi=res.data.data
             }
           })
-          this.tixiid=parseInt(sessionStorage.getItem('tixiId'))
           this.getList()
-        }
-          // this.cityName='武汉'
-      this.$ajax.get('/api/organize/cities').then((res)=>{
-                if(res.status==200){
-                    this.citys=res.data.data
-          }
-      })
-      // this.getList()
     },
     methods: {
       rowClick(){
@@ -204,20 +194,8 @@
           this.mbanAddress=obj[0].param[obj[0].param.length-1]
         }
       },
-      selCity(){
-        sessionStorage.setItem('cityId',this.selectCity)
-        let param={
-          cityId:this.selectCity
-        }
-        this.tixiid=''
-            this.$ajax.get('/api/organize/getSystemTagSelect',param).then(res=>{
-                if(res.status==200){
-                    this.tixi=res.data.data
-            }
-          })
-      },
       selSys(){
-        sessionStorage.setItem('tixiId',this.tixiid)
+        // sessionStorage.setItem('tixiId',this.tixiid)
         this.getList()
       },
       popMsg(msg,callback){
@@ -238,7 +216,6 @@
           cityId:this.selectCity,
           systemTag:this.tixiid
         }
-        if(this.tixiid!=''){
             this.$ajax.get('/api/setting/contractTemplate/list', param).then(res => {
                           res = res.data
                           if (res.status === 200) {
@@ -248,7 +225,6 @@
                         }).catch(error => {
                           console.log(error)
                         })
-                  }
         },
       trim(str){
             return str.replace(/(^\s*)|(\s*$)/g, "")
@@ -386,6 +362,11 @@
         if(newdata==''){
           this.list=[]
         }
+      }
+    },
+    computed:{
+      userInfo(){
+        return this.getUser.user
       }
     }
   }

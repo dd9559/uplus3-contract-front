@@ -6,15 +6,12 @@
         <div class="ach-header">
           <h1 v-if="dialogType==0">
             业绩审核
-            <!-- <span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span> -->
           </h1>
           <h1 v-if="dialogType==1">
             业绩编辑
-            <!-- <span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span> -->
           </h1>
           <h1 v-if="dialogType==2">
             业绩反审核
-            <!-- <span class="orange" style="margin-left:20px">分成总计：{{fctotal}}%</span> -->
           </h1>
           <h1 v-if="dialogType==3" style="fontSize:20px;">业绩分成</h1>
           <!-- <p style="font-weight:bold;">
@@ -751,7 +748,6 @@
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
             </div>
           </div>
-<!-- v-if="contype==1||contype==2" -->
           <div  class="ach-divide-list" v-if="contType==2||contType==3">
             <el-table :data="serviceAgents" style="width: 100%">
               <el-table-column label="角色类型" width="125">
