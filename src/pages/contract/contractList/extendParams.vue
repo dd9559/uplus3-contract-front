@@ -10,21 +10,6 @@
       <div class="nav" :class="{'hid':isActive===2}">
         <ul>
 					<li v-for="item in navTag" :key="item.id" :class="{'navBlue':navId===item.id}"  @click="goNav(item.id)"><span :title="item.title">{{item.title}}</span></li>
-          <!-- <li><span :class="{'navBlue':navId==='#one'}" @click="goNav('#one')">第一条、房屋基本情况</span></li>
-          <li><span :class="{'navBlue':navId==='#two'}" @click="goNav('#two')">第二条、房屋交易流程</span></li>
-          <li><span :class="{'navBlue':navId==='#three'}" @click="goNav('#three')">第三条、房屋权属情况</span></li>
-          <li><span :class="{'navBlue':navId==='#four'}" @click="goNav('#four')">第四条、成交方式</span></li>
-          <li><span :class="{'navBlue':navId==='#five'}" @click="goNav('#five')">第五条、房产转让价格</span></li>
-          <li><span :class="{'navBlue':navId==='#six'}" @click="goNav('#six')">第六条、付款约定</span></li>
-          <li><span :class="{'navBlue':navId==='#seven'}" @click="goNav('#seven')">第七条、房屋产权及具体状况的承诺</span></li>
-          <li><span :class="{'navBlue':navId==='#eight'}" @click="goNav('#eight')">第八条、房产过户</span></li>
-          <li><span :class="{'navBlue':navId==='#nine'}" @click="goNav('#nine')">第九条、房产交付</span></li>
-          <li><span :class="{'navBlue':navId==='#ten'}" @click="goNav('#ten')">第十条、户口迁移及学籍、学位</span></li>
-          <li><span :class="{'navBlue':navId==='#eleven'}" @click="goNav('#eleven')">第十一条、违约责任</span></li>
-          <li><span :class="{'navBlue':navId==='#twelve'}" @click="goNav('#twelve')">第十二条、不可抗力</span></li>
-          <li><span :class="{'navBlue':navId==='#thirteen'}" @click="goNav('#thirteen')">第十三条、其他</span></li>
-          <li><span :class="{'navBlue':navId==='#fourteen'}" @click="goNav('#fourteen')">第十四条、争议解决</span></li>
-          <li><span :class="{'navBlue':navId==='#fifteen'}" @click="goNav('#fifteen')">第十五条、生效要件</span></li> -->
         </ul>
       </div>
       <iframe :src="src1" frameborder="0" ref='iframeFirst' :style="{ height: clientHei }" v-show="isActive===1"></iframe>
@@ -36,7 +21,7 @@
       </div>
     </div>
 		<!-- 买卖合同提审弹窗 -->
-		<el-dialog title="" :visible.sync="dialogSub" width="460px" :closeOnClickModal="$tool.closeOnClickModal" center>
+		<el-dialog title="" :visible.sync="dialogSub" class="signDialog" width="460px" :closeOnClickModal="$tool.closeOnClickModal" center>
 			<div class="submitBox">
 				<p>是否需要打印草签合同？</p>
 				<p>温馨提示：草签合同无公章，仅供买卖双方确认合同条款使用</p>
@@ -265,7 +250,6 @@ export default {
 			var param={};
 			var isClick=0
 			if(operation===1){
-				// this.fullscreenLoading=true
 				isClick=1
 				loading=this.$loading({
 					lock: true,
@@ -342,14 +326,12 @@ export default {
       this.$ajax.postJSON('/api/contract/updateHtml', param).then(res => {
 				res=res.data
 				if(res.status===200){
-					// this.fullscreenLoading=false
 					loading.close()
 					if(operation===1){
 						this.$message({
 							message:'保存成功',
 							type:'success'
 						})
-						// this.$router.push('/contractList');
 					}else if(operation===4){
 						this.pdfUrl=`${this.http}/api/contract/generateContPdf?id=${this.Msg.id}`
 						this.haveUrl=true;
@@ -357,7 +339,6 @@ export default {
 					}
 				}
       }).catch(error=>{
-				// this.fullscreenLoading=false
 				loading.close()
 				this.$message({
 					message:error,
@@ -409,7 +390,6 @@ export default {
 							}else{
 								inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
 							}
-							// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
 							iframebox2.contentWindow.scrollTo(0,inputHeight2)
 						}else if(emptyInput1.length>0){
 							this.$message({
@@ -419,7 +399,6 @@ export default {
 						}
 					}
 				}else{//非武汉买卖
-				// debugger
 					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					if(emptyInput2.length>0){
 						this.$message({
@@ -434,7 +413,6 @@ export default {
 						}else{
 							inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
 						}
-						// let inputHeight2 = iframebox2.contentWindow.document.querySelector(`input[name=${emptyInput2[0]}]`).offsetTop
 						iframebox2.contentWindow.scrollTo(0,inputHeight2)
 					}
 				}
@@ -495,9 +473,6 @@ export default {
 						cityId:this.Msg.cityId,
 						bizCode:this.Msg.code,
 						id:this.Msg.id,
-						// html:{
-						// 	address:htmlTxt1
-						// }
 					}
 					if(this.Msg.isentrust){
 						param.html = {
@@ -515,33 +490,10 @@ export default {
 				}else{
 					this.otherDialogSub=true
 				}
-				
-				// this.$ajax.postJSON('/api/contract/updateContractAudit', param).then(res => {
-				// 	res=res.data
-				// 	if(res.status===200){
-				// 		this.fullscreenLoading=false
-				// 		this.$message({
-				// 			message:'提审成功',
-				// 			type:'success'
-				// 		})
-				// 		if(this.Msg.isHaveData){
-				// 			this.$router.push('/contractList');
-				// 		}else{
-				// 			this.dialogSuccess=true
-				// 		}
-				// 	}
-				// }).catch(error=>{
-				// 	this.fullscreenLoading=false
-				// 	this.$message({
-				// 		message:error,
-				// 		type:'error'
-				// 	})
-				// })
 			}
 		},
 		//确定提审
 		toSubmit(){
-			debugger
 			loading=this.$loading({
 					lock: true,
 					text: 'Loading',
@@ -578,10 +530,6 @@ export default {
               type: "error"
             })
           }
-				// this.$message({
-				// 	message:error,
-				// 	type:'error'
-				// })
 			})
 		},
 		//关闭设置审核人弹窗
@@ -606,10 +554,6 @@ export default {
 			return	!!(ele.querySelector('p').getAttribute('checked'))
 		},
 	},
-	// beforeDestroy(){
-	// 	console.log(document.body)
-	// 	this.isSave(2)
-	// },
   mounted(){
 		var iframe1 = this.$refs.iframeFirst;
 		var iframe2 = this.$refs.iframeSecond;
@@ -618,28 +562,7 @@ export default {
 			if(this.Msg.isWuHanMM){
 				iframe2.onload=function(){
 					that.iframe2State=true
-					if(that.getUserMsg.cityId===1){//武汉
-						// console.log('wh')
-						let nav = [
-							{title:"第一条、房屋基本情况",id:"one"},
-							{title:"第二条、房屋交易流程",id:"two"},
-							{title:"第三条、房屋权属情况",id:"three"},
-							{title:"第四条、成交方式",id:"four"},
-							{title:"第五条、房产转让价格",id:"five"},
-							{title:"第六条、付款约定",id:"six"},
-							{title:"第七条、房屋产权及具体状况的承诺",id:"seven"},
-							{title:"第八条、房产过户",id:"eight"},
-							{title:"第九条、房产交付",id:"nine"},
-							{title:"第十条、户口迁移及学籍、学位",id:"ten"},
-							{title:"第十一条、违约责任",id:"eleven"},
-							{title:"第十二条、不可抗力",id:"twelve"},
-							{title:"第十三条、其他",id:"thirteen"},
-							{title:"第十四条、争议解决",id:"fourteen"},
-							{title:"第十五条、生效要件",id:"fifteen"},
-						]
-						that.navTag=[].concat(nav)
-					}else if(that.getUserMsg.cityId===11){//襄阳
-						// console.log('xy')
+					if(that.getUserMsg.cityId===11){//襄阳
 						let nav = [
 							{title:"第一条、房屋基本情况",id:"one"},
 							{title:"第二条、房屋权属情况",id:"two"},
@@ -673,7 +596,6 @@ export default {
 					that.iframe1State=true
 				}
 			}else{
-				// debugger
 				iframe2.onload=function(e){
 					that.isSave(2)
 					let iframeBox=this.contentDocument
@@ -716,6 +638,11 @@ export default {
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.signDialog{
+	/deep/.el-dialog__header{
+		border: none !important;
+	}
+}
 .submitBox{
 	padding-top: 10px;
 	text-align: center;
