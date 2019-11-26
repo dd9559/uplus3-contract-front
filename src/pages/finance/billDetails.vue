@@ -72,90 +72,100 @@
         <li v-if="activeItem==='收款信息'">
           <h4 class="f14">合计金额</h4>
           <p class="total-text">合计：<span>{{billMsg.amount}}</span>元</p>
-          <el-table border :data="!billMsg.inAccount?[{}]:billMsg.inAccount" header-row-class-name="theader-bg" :span-method="collapseRow" v-if="billMsg.inAccount||!billMsg.inAccount">
-            <el-table-column align="center" label="款类">
-              <template slot-scope="scope">
-                <span>{{billMsg.moneyTypeName}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="票据">
-              <template slot-scope="scope">
-                <span class="span-cursor" @click="getPaper('details')" v-if="billMsg.billCode">{{billMsg.billCode}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="支付方式">
-              <template slot-scope="scope">
-                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
-                <span v-else>{{billMsg.method}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="金额（元）">
-              <template slot-scope="scope">
-                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.amount}}</span>
-                <span v-else>{{billMsg.amount}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column min-width="200" align="center" label="收款账户">
-              <template slot-scope="scope">
-                <p v-if="scope.row.cardNumber&&scope.row.cardNumber.length>0">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
-                <span v-else>-</span>
-              </template>
-            </el-table-column>
+          <div class="card-list-item" v-for="(item,index) in billMsg.inAccount">
+            <el-table border :data="[billMsg.inAccount[index]]" header-row-class-name="theader-bg">
+              <el-table-column align="center" label="款类">
+                <template slot-scope="scope">
+                  <span>{{billMsg.moneyTypeName}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="票据">
+                <template slot-scope="scope">
+                  <span class="span-cursor" @click="getPaper('details')" v-if="billMsg.billCode">{{billMsg.billCode}}</span>
+                  <span v-else>--</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="支付方式">
+                <template slot-scope="scope">
+                  <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
+                  <span v-else>{{billMsg.method}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="金额（元）">
+                <template slot-scope="scope">
+                  <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.amount}}</span>
+                  <span v-else>{{billMsg.amount}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="手续费金额（元）">
+                <template slot-scope="scope">
+                  <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.fee}}</span>
+<!--                  <span v-else>{{billMsg.amount}}</span>-->
+                </template>
+              </el-table-column>
+              <el-table-column min-width="200" align="center" label="收款账户">
+                <template slot-scope="scope">
+                  <p v-if="scope.row.cardNumber&&scope.row.cardNumber.length>0">{{scope.row.userName}} {{scope.row.bankName}} {{scope.row.cardNumber}}</p>
+                  <span v-else>-</span>
+                </template>
+              </el-table-column>
 
-            <el-table-column align="center" label="状态">
-              <template slot-scope="scope">
-                <!--{{billMsg.checkStatus|getLabel}}-->
-                <span>{{billMsg.statusName}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="到账时间">
-              <template slot-scope="scope">
-                {{billMsg.toAccountTime|formatTime}}
-              </template>
-            </el-table-column>
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4&&billMsg.payStatusValue!==11">开票</el-button>
-                <el-button type="text" @click="getPaper('client')" v-else-if="btnBill&&billMsg.billStatus&&billMsg.billStatus.value===2">打印客户联</el-button>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-          </el-table>
+              <el-table-column align="center" label="状态">
+                <template slot-scope="scope">
+                  <!--{{billMsg.checkStatus|getLabel}}-->
+                  <span>{{billMsg.statusName}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="到账时间">
+                <template slot-scope="scope">
+                  {{billMsg.toAccountTime|formatTime}}
+                </template>
+              </el-table-column>
+              <!--<el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button type="text" @click="getPaper('create')" v-if="btnBill&&billMsg.billStatus&&billMsg.isDel===1&&(billMsg.billStatus.value===1||billMsg.billStatus.value===4)&&billMsg.payStatusValue!==4&&billMsg.payStatusValue!==11">开票</el-button>
+                  <el-button type="text" @click="getPaper('client')" v-else-if="btnBill&&billMsg.billStatus&&billMsg.billStatus.value===2">打印客户联</el-button>
+                  <span v-else>&#45;&#45;</span>
+                </template>
+              </el-table-column>-->
+            </el-table>
+            <template v-if="billMsg.account[index].cardNumber.length>0">
+              <h4 class="f14">资料补充：</h4>
+              <el-table border :data="[billMsg.account[index]]" header-row-class-name="theader-bg">
+                <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
+                    <span v-else>--</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" prop="userName" label="户名">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.userName.length>0">{{scope.row.userName}}</span>
+                    <span v-else>--</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" prop="cardNumber" label="账户">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.cardNumber.length>0">{{scope.row.cardNumber}}</span>
+                    <span v-else>--</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" prop="orderNo" label="订单编号">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.orderNo.length>0">{{scope.row.orderNo}}</span>
+                    <span v-else>--</span>
+                  </template>
+                </el-table-column>
+                <!--<el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
+                <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>-->
+                <!--<el-table-column align="center" label="手续费（元）" prop="fee">
+                  <template slot-scope="scope">{{(scope.row.fee||scope.row.fee===0)?scope.row.fee:'&#45;&#45;'}}</template>
+                </el-table-column>-->
+              </el-table>
+            </template>
+          </div>
         </li>
         <li v-if="activeItem==='收款信息'">
-          <h4 class="f14">刷卡信息</h4>
-          <el-table border :data="billMsg.account" header-row-class-name="theader-bg">
-            <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
-              <template slot-scope="scope">
-                <span v-if="scope.row.bankName.length>0">{{scope.row.bankName}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="userName" label="户名">
-              <template slot-scope="scope">
-                <span v-if="scope.row.userName.length>0">{{scope.row.userName}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="cardNumber" label="账户">
-              <template slot-scope="scope">
-                <span v-if="scope.row.cardNumber.length>0">{{scope.row.cardNumber}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="orderNo" label="订单编号">
-              <template slot-scope="scope">
-                <span v-if="scope.row.orderNo.length>0">{{scope.row.orderNo}}</span>
-                <span v-else>--</span>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
-            <el-table-column align="center" prop="fee" label="手续费（元）"></el-table-column>
-            <!--<el-table-column align="center" label="手续费（元）" prop="fee">
-              <template slot-scope="scope">{{(scope.row.fee||scope.row.fee===0)?scope.row.fee:'&#45;&#45;'}}</template>
-            </el-table-column>-->
-          </el-table>
         </li>
         <li v-if="activeItem==='付款信息'">
           <h4 class="f14">账户信息</h4>
@@ -246,7 +256,7 @@
           :total="total">
         </el-pagination>-->
       </li>
-      <li v-if="activeItem==='收款信息'">
+      <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
         <h4 class="f14">收款二维码</h4>
         <img :src="billMsg.RQcode" alt="">
       </li>
@@ -656,6 +666,25 @@
 <style scoped lang="less">
   @import "~@/assets/common.less";
   @import "~@/assets/less/lsx.less";
+
+  .card-list-item{
+    position: relative;
+    &:not(:last-of-type){
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px dashed @border-D8;
+      /*&:after{
+        content: '';
+        display: inline-block;
+        width: 100%;
+        border: 1px dashed grey;
+      }*/
+    }
+    >h4{
+      margin-top: @margin-10 !important;
+      font-weight: inherit !important;
+    }
+  }
 
   .input-group {
     align-items: flex-start;

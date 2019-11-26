@@ -1567,7 +1567,6 @@ export default {
     this.dialogType = this.$route.query.dialogType;
     this.contractCode = this.$route.query.contractCode;
     this.aId = this.$route.query.aId;
-    // this.achIndex = this.$route.query.achIndex;
     this.achObj = JSON.parse(this.$route.query.achObj);
     this.contractId2 = this.$route.query.contractId;
     this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩'],'actualAchievement'));
@@ -1937,7 +1936,7 @@ export default {
           this.clientArr[index].storefront4Id = level3Arr[0];
           this.clientArr[index].level4 = level3Arr[1];
         }else if (type1 == 2 && type2 == 0) {
-          this.clientArr[index].storefront3Id = level3Arr[0];
+          this.serviceAgents[index].storefront3Id = level3Arr[0];
           if(level3Arr[2]){
             this.serviceAgents[index].level3 = level3Arr[1]+'-'+level3Arr[2]
           }else{
@@ -2508,10 +2507,8 @@ export default {
       }
     },
     checkDate:function(val){
-        // debugger
             let date=new Date(val);
             if(date.getTime()>Date.now()){
-                this.examineDate=''
                 this.$message({
                     message:'不能选择未来时间'
                 })
