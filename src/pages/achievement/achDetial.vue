@@ -3,8 +3,8 @@
       <div class="ach-header">
         <h1 class="f14">业绩详情</h1>
         <p class="f14" style="font-weight:bold;color:red">
-          可分配业绩：<span>{{comm}}元</span>
-          <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
+          <!-- 可分配业绩：<span>{{comm}}元</span>
+          <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span> -->
         </p>
       </div>
       <div class="ach-body">
@@ -14,6 +14,7 @@
                   @click="houseRecode"
                 >房源价格变更记录</el-button>
         </h1>
+        <p class="f_l delive" style="position:relative;color:red;top:-14px">房客源可分配业绩总计：{{comm?comm:0}}元</p>
         <div class="ach-divide-list">
           <el-table
             :data="houseArr"
@@ -111,6 +112,7 @@
                   @click="ammanger"
                 >{{$route.query.version=='0'?'AM管理关系':'师徒管理关系'}}</el-button>
         </h1>
+        <p class="f_l delive" style="position:relative;color:red;top:-14px">房客源可分配业绩总计：{{comm?comm:0}}元</p>
         <div class="ach-divide-list">
           <el-table
             :data="clientArr"
@@ -205,8 +207,8 @@
 
         <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
         </h1>
-         <p class="f14" v-if="contType==2||contType==3" style="font-weight:bold;color:red">
-          交易服务费：<span >{{tradeFee}}元</span>
+         <p class="f14" v-if="contType==2||contType==3" style="color:red">
+          交易服务费可分配业绩：<span >{{tradeFee}}元</span>
         </p>
         <div class="ach-divide-list" v-if="contType==2||contType==3">
           <el-table
@@ -606,7 +608,6 @@ export default{
       
     },
     created() {
-          // debugger
       this.contType=this.$route.query.contType
       this.contCode=this.$route.query.contCode
       this.entrance=this.$route.query.entrance

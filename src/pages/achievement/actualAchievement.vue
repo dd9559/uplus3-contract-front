@@ -1280,7 +1280,7 @@ export default {
     getExcel() {
       this.queryFn();
       // this.ajaxParam.is_Receivable=1;
-      let param = Object.assign({}, this.ajaxParam);
+      let param = Object.assign({}, this.ajaxParam,{'strStartTime':this.ajaxParam.startTime},{'strEndTIme':this.ajaxParam.endTime});
       this.excelCreate("/input/achievementExcel", param);
     },
     closeDialog() {
