@@ -126,7 +126,7 @@
                     </div>
                     <div class="aduit-input mr-35 ml-28" v-if="aduitForm.modularType==0">
                         <label class="mr-28">品牌:</label>
-                        <el-select size="small" v-model="aduitForm.brandId" :disabled="editDisabled" :clearable="true">
+                        <el-select size="small" v-model="aduitForm.brandId" :clearable="true">
                             <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>

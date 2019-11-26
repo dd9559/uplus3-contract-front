@@ -322,7 +322,7 @@ let TOOL = {
               category:"5-1-4",
               can:true,//是否可见
               path: "commissionOff",
-              code: "sign-set-ht-query"
+              code: "sign-set-bg-sxf-query"
             }
           ]
         },
