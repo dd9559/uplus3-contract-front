@@ -155,8 +155,9 @@
                 <div class="flex-box tool-tip w200 no-max">
                   <label class="form-label f14 margin-bottom-base">手续费金额（元）</label>
                 </div>
-                <input type="text" class="w200 el-input__inner" placeholder="请输入" v-model="item.fee"
-                       @input="cutNum(item,'fee')">
+                <el-input size="small" :disabled="![2,3].includes(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>
+                <!--<input type="text" class="w200 el-input__inner" :disabled="![2,3].includes(item.payMethod)" placeholder="请输入" v-model="item.fee"
+                       @input="cutNum(item,'fee')">-->
               </section>
               <!--<section v-if="item.payMethod===2">
                 <label class="f14 margin-bottom-base">收账账户</label>
@@ -546,6 +547,9 @@
                     this.form.amount = this.$tool.cutFloat({val: this.form.amount, max: 999999999.99})
                 } else {
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
+                    if(![2,3].includes(val.payMethod)&&item==='amount'){
+                        val.fee=val[item]*0.1
+                    }
                 }
             },
             inputOnly: function (type, index) {

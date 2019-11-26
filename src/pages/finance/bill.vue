@@ -251,7 +251,9 @@
         </el-table-column>
         <el-table-column min-width="80" label="收款方式" prop="payway" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="80" label="线下手续费（元）" prop="xxFee" :formatter="nullFormatter"></el-table-column>
+<!--        <el-table-column min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>-->
         <el-table-column label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
