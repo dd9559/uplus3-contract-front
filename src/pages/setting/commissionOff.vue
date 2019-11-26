@@ -3,15 +3,9 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <div class="content">
                 <div>
-                    <label>城市选择</label>
-                    <el-select size="small" v-model="searchForm.cityId" @change="getTixi($event,1)">
-                        <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
-                    </el-select>
-                </div>
-                <div>
                     <label>体系</label>
-                    <el-select size="small" v-model="searchForm.systemTag" @change="selectTixi">
-                        <el-option v-for="item in systemArr1" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-select size="small" v-model="searchForm.systemTag">
+                        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
                 <div>
@@ -54,17 +48,12 @@
             :max-height="tableNumberCom">
                 <el-table-column label="体系" prop="systemTag">
                     <template slot-scope="scope">
-                        <span v-for="item in systemArr1" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
+                        <span v-for="item in systemTagSelect" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="收佣手续费" width="350">
                     <template slot-scope="scope">
                         <span :class="i!=scope.row.commissionFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.commissionFee" :key="i">{{addSignFn(item.payType.label,item.fee)}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="分账/付款手续费" width="350">
-                    <template slot-scope="scope">
-                        <span :class="i!=scope.row.sepaFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.sepaFee" :key="i">{{addTextFn(item.accountType.label,item.feeMoney)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="设置时间" prop="settingTime">
@@ -90,16 +79,10 @@
         >
         <div class="com-box">
             <div class="com-select">
-                <div class="mark-red com-select-city">
-                    <label>城市：</label>
-                    <el-select size="small" class="w240" v-model="commissionForm.cityId" @change="getTixi($event,2)" :disabled="this.com_title=='编辑'">
-                        <el-option v-for="item in cityList" :key="item.cityId" :label="item.name" :value="item.cityId"></el-option>
-                    </el-select>
-                </div>
                 <div class="mark-red">
                     <label>体系：</label>
                     <el-select size="small" class="w240" v-model="commissionForm.systemTag" :disabled="this.com_title=='编辑'">
-                        <el-option v-for="item in systemArr2" v-if="item.isDel==0" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </div>
             </div>
@@ -138,35 +121,6 @@
                     </table>
                 </div>
             </div>
-            <div>
-                <p class="mark-blue">
-                    <span class="size-16">分账/付款手续费</span>
-                    <span class="color-red">分账/付款手续费分对公和对私账户，按每笔来计算</span>
-                </p>
-                <div>
-                    <div class="mark-red">手续费金额：</div>
-                    <div class="table-box">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>账户类型</th>
-                                    <th>手续费金额（元/笔）</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>对公账户</td>
-                                    <td><input type="text" v-model="commissionForm.public" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'public')"></td>
-                                </tr>
-                                <tr>
-                                    <td>对私账户</td>
-                                    <td><input type="text" v-model="commissionForm.private" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'private')"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>  
-                </div>
-            </div>
             <div class="color-red tip-msg"> 注：设置新的手续费值成功后，原来的手续费值被替换。</div>
         </div>
         <div class="btn">
@@ -180,7 +134,6 @@
                 <p style="margin-bottom:10px;">确认保存新的手续费设置？</p>
                 <p class="color-red">新的手续费率会覆盖原来的手续费率</p>
                 <p>当前收佣手续费率 储蓄卡{{commissionForm.cash}}% 信用卡{{commissionForm.credit}}% 微信{{commissionForm.wechat}}% 支付宝{{commissionForm.aliPay}}%</p>
-                <p>当前分账/付款手续费 对公{{commissionForm.public}}元/笔 对私{{commissionForm.private}}元/笔</p>
             </div>
             <div class="save-btn">
                 <el-button @click="saveDialog=false" round>取 消</el-button>
@@ -194,9 +147,6 @@
     import {FILTER} from "@/assets/js/filter";
     import {MIXINS} from "@/assets/js/mixins";
     const RULE = {
-        cityId: {
-            name: '城市'
-        },
         systemTag: {
             name: '体系'
         },
@@ -211,21 +161,14 @@
         },
         aliPay: {
             name: '收佣支付宝手续费率'
-        },
-        public: {
-            name: '分账/付款对公账户手续费金额'
-        },
-        private: {
-            name: '分账/付款对私账户手续费金额'
         }
     }
     export default {
-        name: "commission",
+        name: "commissionOff",
         mixins: [MIXINS, FILTER],
         data() {
             return {
                 searchForm: {
-                    cityId: '',
                     systemTag: ''
                 },
                 settingTime: [],
@@ -237,9 +180,6 @@
                         state: false
                     }
                 },
-                cityList: [],
-                systemArr1: [], //筛选体系
-                systemArr2: [], //新增编辑体系
                 addVisible: false, //新增编辑弹窗
                 saveDialog: false, //确认保存弹窗
                 // 新增编辑 表单
@@ -248,85 +188,56 @@
                     cash: '',
                     credit: '',
                     wechat: '',
-                    aliPay: '',
-                    public: '',
-                    private: '',
-                    cityId: ''
+                    aliPay: ''
                 },
                 rowId: 0,
                 com_title: ''
             }
         },
         created() {
-            // 获取城市
-            this.getCity()
+            //获取体系
+            this.getSystemTagSelect()
             let res = this.getDataList
             if(res&&(res.route === this.$route.path)){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 let query = session.query
-                this.searchForm.cityId = query.cityId
                 this.searchForm.systemTag = query.systemTag
                 this.list = res.data
                 this.settingTime = query.settingTimeStart ? [query.settingTimeStart,query.settingTimeEnd] : []
                 this.updateTime = query.updateTimeStart ? [query.updateTimeStart,query.updateTimeEnd] : []
+            } else {
+                // 列表
+                this.getData()
             }
         },
         methods: {
-            getCity() {
-                this.$ajax.get('/api/organize/cities').then(res => {
-                    res = res.data
-                    if(res.status === 200) {
-                        this.cityList = res.data
-                    }
-                })
-            },
-            // 超级管理员获取体系
-            getTixi(e,type) {
-                if(type===1) {
-                    this.searchForm.systemTag = ""
-                    this.list = []
-                }
-                this.$ajax.get('/api/organize/getSystemTag',{cityId: e}).then(res => {
-                    res = res.data
-                    if(res.status === 200){
-                        type==1 ? this.systemArr1 = res.data : this.systemArr2 = res.data
-                    }
-                })
-            },
-            // 超级管理员列表
-            selectTixi() {
-                this.getData()
-            },
             addSignFn(n,i) {
                 return `${n}${i}%`
-            },
-            addTextFn(n,i) {
-                return `${n}${i}元/笔`
             },
             // 列表
             getData(type='init') {
                 let bool1 = this.settingTime!=null&&this.settingTime.length
                 let bool2 = this.updateTime!=null&&this.updateTime.length
                 let param = {
-                    cityId: this.searchForm.cityId,
+                    cityId: this.userInfo.cityId,
                     systemTag: this.searchForm.systemTag,
                     settingTimeStart: bool1 ? this.settingTime[0] : '',
                     settingTimeEnd: bool1 ? this.settingTime[1] : '',
                     updateTimeStart: bool2 ? this.updateTime[0] : '',
                     updateTimeEnd: bool2 ? this.updateTime[1] : '',
-                    tradeType: 0 //线上
+                    tradeType: 1 //线下
                 }
 
                 //点击查询时，缓存筛选条件
                 if(type==='search'){
                     sessionStorage.setItem('sessionQuery',JSON.stringify({
-                        path:'/commission',
-                        url:'/feesetting/operateQry',
+                        path:'/commissionOff',
+                        url:'/offlinefeesetting/operateQry',
                         query:param
                     }))
                 }
 
-                this.$ajax.get('/api/feesetting/operateQry',
+                this.$ajax.get('/api/offlinefeesetting/operateQry',
                     param
                 ).then(res => {
                     res = res.data
@@ -342,20 +253,15 @@
                 if(type == 1) {
                     this.com_title = "新增"
                     this.$tool.clearForm(this.commissionForm)
-                    this.systemArr2 = []
                 }else{
                     this.com_title = "编辑"
                     this.rowId = row.id
-                    this.getTixi(row.cityId,2)
                     this.commissionForm = {
-                        cityId: row.cityId,
                         systemTag: row.systemTag,
                         cash: row.commissionFee[0].fee,
                         credit: row.commissionFee[1].fee,
                         wechat: row.commissionFee[2].fee,
-                        aliPay: row.commissionFee[3].fee,
-                        public: row.sepaFee[0].feeMoney,
-                        private: row.sepaFee[1].feeMoney
+                        aliPay: row.commissionFee[3].fee
                     }
                 }
             },
@@ -375,7 +281,7 @@
                 })
             },
             sureFn() {
-                let arr1 = [
+                let arr = [
                     {
                         payType: 0,
                         fee: this.commissionForm.cash
@@ -393,29 +299,18 @@
                         fee: this.commissionForm.aliPay
                     }
                 ]
-                let arr2 = [
-                    {
-                        accountType: 0,
-                        feeMoney: this.commissionForm.public
-                    },
-                    {
-                        accountType: 1,
-                        feeMoney: this.commissionForm.private
-                    }
-                ]
                 let param = {
-                    cityId: this.commissionForm.cityId,
+                    cityId: this.userInfo.cityId,
                     systemTag: this.commissionForm.systemTag,
-                    commissionFee: arr1,
-                    sepaFee: arr2,
-                    tradeType: 0 //线上
+                    commissionFee: arr,
+                    tradeType: 1 //线下
                 }
 
                 let url
                 if(this.com_title==='新增'){
-                    url = '/api/feesetting/operateInsert'
+                    url = '/api/offlinefeesetting/operateInsert'
                 }else{
-                    url = '/api/feesetting/operateUpdate'
+                    url = '/api/offlinefeesetting/operateUpdate'
                     param.id = this.rowId
                 }
                 this.$ajax.postJSON(url,
@@ -426,7 +321,6 @@
                         this.$message(res.message)
                         this.saveDialog = false
                         this.addVisible = false
-                        if(!this.searchForm.cityId) return
                         this.getData()
                     }
                 }).catch(error => {
@@ -435,15 +329,18 @@
             },
             // 查询
             queryFn() {
-                if(this.searchForm.cityId&&this.searchForm.systemTag) this.getData('search')
+                this.getData('search')
             },
             // 重置
             resetFormFn() {
                 this.searchForm.systemTag = ''
                 this.settingTime = []
                 this.updateTime = []
-                this.searchForm.cityId = ''
-                this.list = []
+            }
+        },
+        computed: {
+            userInfo() {
+                return this.getUser.user
             }
         }
     }

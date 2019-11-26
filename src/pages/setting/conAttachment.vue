@@ -166,6 +166,7 @@
                 this.searchForm.keyword = query.keyword
                 this.searchForm.systemId = query.systemId
                 this.addTime = query.staDate ? [query.staDate,query.endDate] : []
+                this.pageNum = query.pageNum
             }else{
                 // 列表
                 this.getData()
