@@ -23,7 +23,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="合同类型" prop="contType.label" min-width="60">
+      <el-table-column label="合同类型" min-width="60">
+        <template slot-scope="scope">
+          <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+          <span v-else>{{scope.row.contType.label}}</span>
+        </template>
       </el-table-column>
 
       <el-table-column label="物业地址" prop="propertyAddr" min-width="160">
