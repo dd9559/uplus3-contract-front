@@ -58,15 +58,15 @@
               <div v-if="uploadType==3">
                 <p style="display:inline-block;width:140px">
                   <fileUp @getUrl='getAdd("qkmm",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='qkmm' class='fileup'>全款买卖</fileUp>
-                  <span v-show="qkAddress!==''">上传成功！  {{qkAddress.name}}</span>
+                  <el-tooltip effect="dark" :content='qkAddress.name' placement="top"><span v-show="qkAddress!==''" class="dot">上传成功！  {{qkAddress.name}}</span></el-tooltip>
                 </p>
                 <p style="display:inline-block;width:140px">
                   <fileUp @getUrl='getAdd("dkmm",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='dkmm' class='fileup'>贷款买卖</fileUp>
-                  <span v-show="dkAddress!==''">上传成功！  {{dkAddress.name}}</span>
+                  <el-tooltip effect="dark" :content='dkAddress.name' placement="top"><span v-show="dkAddress!==''" class="dot">>上传成功！  {{dkAddress.name}}</span></el-tooltip>
                 </p>
                 <p> 
                    <fileUp id='jjian2' :rules="mbrules" :more="false"  :scane="{path:'template'}"  @getUrl='getAdd("jjian2",arguments)' class='fileup' >居间</fileUp>
-                   <span v-show="jjianAddress2!==''">上传成功！  {{jjianAddress2.name}}</span>
+                   <el-tooltip effect="dark" :content='jjianAddress2.name' placement="top"><span v-show="jjianAddress2!==''" class="dot">>上传成功！  {{jjianAddress2.name}}</span></el-tooltip>
                 </p>
                 <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
@@ -74,11 +74,11 @@
               <div v-if="uploadType==2">
                 <p>
                   <fileUp @getUrl='getAdd("mmai",arguments)' :scane="{path:'template'}" :more="false" :rules="mbrules" id='mmai' class='fileup'>买卖</fileUp>
-                  <span v-show="mmaiAddress!==''">上传成功！  {{mmaiAddress.name}}</span>
+                  <el-tooltip effect="dark" :content='mmaiAddress.name' placement="top"><span v-show="mmaiAddress!==''">上传成功！  {{mmaiAddress.name}}</span></el-tooltip>
                 </p>
                 <p> 
                    <fileUp id='jjian' :rules="mbrules" :more="false"  :scane="{path:'template'}"  @getUrl='getAdd("jjian",arguments)' class='fileup' >居间</fileUp>
-                   <span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span>
+                   <el-tooltip effect="dark" :content='jjianAddress.name' placement="top"><span v-show="jjianAddress!==''">上传成功！  {{jjianAddress.name}}</span></el-tooltip>
                 </p>
                 <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
@@ -86,7 +86,7 @@
               <div v-else-if="uploadType==1">
                 <p> 
                   <fileUp id='mban' :rules="mbrules" @getUrl='getAdd("mban",arguments)' :scane="{path:'template'}" :more="false"  class='fileup'>模板</fileUp>
-                  <span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span>
+                  <el-tooltip effect="dark" :content='mbanAddress.name' placement="top"><span v-show="mbanAddress!==''">上传成功！  {{mbanAddress.name}}</span></el-tooltip>
                 </p>
                 <span class="wordtip">温馨提示：只支持HTML格式</span>
                 <el-button class="sureUp" @click='sureUp'>确定</el-button>
@@ -167,6 +167,7 @@
           this.$ajax.get('/api/organize/getSystemTagSelect',{cityId:this.selectCity}).then(res=>{
                 if(res.status==200){
                     this.tixi=res.data.data
+                    this.tixiid=res.data.data[0].key
             }
           })
           this.getList()
@@ -195,7 +196,6 @@
         }
       },
       selSys(){
-        // sessionStorage.setItem('tixiId',this.tixiid)
         this.getList()
       },
       popMsg(msg,callback){
@@ -359,8 +359,8 @@
     },
     watch:{
       tixiid(newdata){
-        if(newdata==''){
-          this.list=[]
+        if(newdata!=''){
+          this.getList()
         }
       }
     },
@@ -374,6 +374,13 @@
 
 <style scoped lang="less">
  @import "~@/assets/common.less";
+   .dot{
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      width: 130px;
+      display: inline-block;
+      overflow: hidden
+  }
 .view-container{
   /deep/
   .el-form {
@@ -505,7 +512,7 @@
         flex-direction: column;
         p{
           position: relative;
-          height: 70px;
+          min-height: 70px;
           width: 391px;
           /deep/
           .fileup{
