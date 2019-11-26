@@ -642,7 +642,7 @@
                 if(this.getPayMethod(val.payMethod)){
                     this.$set(val,'fee','')
                 }else{
-                    this.$set(val,'fee',this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod]))
+                    val.amount&&this.$set(val,'fee',this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod]))
                 }
                 /*let state = this.payList.every(item => {
                     return item.payMethod === 3
