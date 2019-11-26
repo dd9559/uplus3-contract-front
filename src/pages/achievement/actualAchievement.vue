@@ -256,7 +256,9 @@
 
           <el-table-column label="合同类型"  min-width="60">
             <template slot-scope="scope">
-              <p>{{scope.row.contType.label}}</p>
+              <p v-if="scope.row.loanType==7">全款买卖</p>
+              <p v-if="scope.row.loanType==8">打款买卖</p>
+              <p v-else>{{scope.row.contType.label}}</p>
             </template>
           </el-table-column>
 

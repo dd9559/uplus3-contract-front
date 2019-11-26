@@ -1290,7 +1290,7 @@
             <el-button
               type="primary"
               round
-              @click="keepAch(1,null,'examineSave')"
+              @click="keepAch(1,2,'examineSave')"
               class="color-blue"
               style="margin-top:20px;"
               v-dbClick
@@ -2637,7 +2637,12 @@ export default {
                 agendIds: this.agendIds
               };
               if (type == 1) {
-                // this.$emit("saveData", this.achIndex, resultArr);
+                  this.codeBaseInfo(
+                    this.contractId2,
+                    1,
+                    null,
+                    "getExamineInfo"
+                  );
               }
               if (type == 2 && status == 2) {
                 // this.$emit("saveData", this.achIndex, resultArr, -1);
