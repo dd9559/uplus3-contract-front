@@ -175,7 +175,7 @@
                 updateTime: [],
                 list: [], //列表
                 power: {
-                    'sign-set-sxf': {
+                    'sign-set-bg-sxf-query': {
                         name: '查询',
                         state: false
                     }

@@ -143,7 +143,7 @@ export default new Router({
           component: commission,
           meta: {
             root: true,
-            list: ["设置", "后台设置","手续费设置"]
+            list: ["手续费设置"]
           }
         },
         {
