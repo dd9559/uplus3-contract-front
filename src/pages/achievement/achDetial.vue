@@ -614,7 +614,7 @@ export default{
       this.aId=this.$route.query.aId
       this.contractId2=this.$route.query.contractId2
       //合同边和获取业绩详情
-      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩'],'actualAchievement'));
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩详情'],'actualAchievement'));
 
      this.getData()
     },

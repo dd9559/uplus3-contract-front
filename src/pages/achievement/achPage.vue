@@ -1569,7 +1569,13 @@ export default {
     this.aId = this.$route.query.aId;
     this.achObj = JSON.parse(this.$route.query.achObj);
     this.contractId2 = this.$route.query.contractId;
-    this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩'],'actualAchievement'));
+    if(this.dialogType==="0"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩审核'],'actualAchievement'));
+    }else if(this.dialogType==="1"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩编辑'],'actualAchievement'));
+    }else if(this.dialogType==="2"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩反审核'],'actualAchievement'));
+    }
   },
   methods: {
     close() {
