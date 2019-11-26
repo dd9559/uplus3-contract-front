@@ -745,7 +745,7 @@
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
               <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
-              <p class="f_l delive">交易服务费：{{tradeFee?tradeFee:0}}元</p>
+              <p class="f_l delive">交易服务费可分配业绩：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -1569,7 +1569,13 @@ export default {
     this.aId = this.$route.query.aId;
     this.achObj = JSON.parse(this.$route.query.achObj);
     this.contractId2 = this.$route.query.contractId;
-    this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩'],'actualAchievement'));
+    if(this.dialogType==="0"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩审核'],'actualAchievement'));
+    }else if(this.dialogType==="1"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩编辑'],'actualAchievement'));
+    }else if(this.dialogType==="2"){
+      this.setPath(this.$tool.getRouter(['二手房','业绩','应收业绩','业绩反审核'],'actualAchievement'));
+    }
   },
   methods: {
     close() {

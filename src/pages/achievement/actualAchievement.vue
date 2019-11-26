@@ -1280,7 +1280,7 @@ export default {
     getExcel() {
       this.queryFn();
       // this.ajaxParam.is_Receivable=1;
-      let param = Object.assign({}, this.ajaxParam);
+      let param = Object.assign({}, this.ajaxParam,{'strStartTime':this.ajaxParam.startTime},{'strEndTIme':this.ajaxParam.endTime});
       this.excelCreate("/input/achievementExcel", param);
     },
     closeDialog() {
@@ -1511,18 +1511,6 @@ export default {
       });
       window.open(newPage.href, "_blank");
     },
-    // editAch(value,index) {            //编辑时触发
-    //     this.beginData = true;
-    //     this.code2 =  value.code;
-    //     this.aId =  value.aId;
-    //     this.contractId =  value.id;
-    //     this.dialogType = 1;
-    //     this.achIndex=index
-    //     this.achObj={
-    //       contractId:value.id,//合同id
-    //     }
-    //     this.shows = true;
-    // },
     editAch(value, index) {
       let newPage = this.$router.resolve({
         path: "/achPage",
