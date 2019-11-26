@@ -328,14 +328,12 @@ export default {
   data() {
     return {
       clientHei:'',
-      htType:'',
       contractForm: {
         // type: 2,
         houseinfoCode: "",
         guestinfoCode: "",
         signDate: "",
         payType:1,
-        // transFlowCode: "",
         dealPrice: "",
         contPersons: [],
         propertyRightAddr:'',
@@ -352,7 +350,6 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        // extendParams:[],
         isHaveCooperation: 0
       },
       //业主信息
@@ -476,6 +473,7 @@ export default {
       isHaveDetail:false,
       contVersion:2,//合同基本信息版式（1 基础版  2 复杂版）
       commissionTotal:0,//总佣金
+      loanType:0,//7 全款买卖 8 贷款买卖
     };
   },
   created() {
@@ -487,7 +485,10 @@ export default {
       this.id=parseInt(contMsg.id)
       this.getContractDetail();
     }else{
-      this.contractForm.type = Number(this.$route.query.type);
+      this.contractForm.type = Number(this.$route.query.type)
+      if(this.$route.query.loanType){
+        this.loanType=Number(this.$route.query.loanType)
+      }
       this.isOffline = parseInt(this.$route.query.isOffline)
       if (this.$route.query.operateType) {
         this.type = parseInt(this.$route.query.operateType);
@@ -1227,6 +1228,9 @@ export default {
           type: this.type,
           haveExamine:this.haveExamine
         };
+        if(this.loanType){//武汉买卖分贷款 全款
+          param.loanType=this.loanType
+        }
       }
       if(this.isOffline===1){
         param.recordType=2

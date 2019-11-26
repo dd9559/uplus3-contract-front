@@ -119,16 +119,22 @@
           <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
         </div>
         <div>
-          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-add'].state">
-            <el-button round type="primary" size="small">
-              创建线上合同<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
-                {{item.value}}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <div class="haveSon" :class="{'showOnLine':showOnLine}" @mouseover="moveIn('online')" @mouseout="moveOut('online')" v-if="power['sign-ht-info-add'].state">
+            创建线上合同<i class="el-icon-arrow-down el-icon--right"></i>
+            <div class="holderPlace" v-if="dictionary['71']">
+              <ul class="mainList">
+                <li v-for="item in dictionary['71']" :key="item.key" @click="addOnLine(item)" style="position:relative;">
+                  {{item.value}}
+                  <i class="el-icon-caret-right" v-if="item.key===2&&item.children" style="position:absolute;top:10px;left:55px;"></i>
+                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                    <ul class="childrenList">
+                      <li v-for="item_ in item.children" :key="item_.key" @click="addOnLine(item_)">{{item_.value}}</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-addoffline'].state">
             <el-button round type="primary" size="small">
               录入线下合同<i class="el-icon-arrow-down el-icon--right"></i>
@@ -139,16 +145,22 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-dropdown placement="bottom" @command="printCont" v-if="power['sign-ht-info-print'].state"><!--  @command="printCont" -->
-            <el-button round size="small">
-              打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in dictionary['10']" :key="item.key" :command="item.key">
-                {{item.value}}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <div class="haveSon printStyle" :class="{'showOnLine':showPrint}" @mouseover="moveIn('print')" @mouseout="moveOut('print')" v-if="power['sign-ht-info-print'].state">
+            打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
+            <div class="holderPlace" v-if="dictionary['71']">
+              <ul class="mainList">
+                <li v-for="item in dictionary['71']" :key="item.key" @click="printCont(item)" style="position:relative;">
+                  {{item.value}}
+                  <i class="el-icon-caret-right" v-if="item.key===2&&item.children" style="position:absolute;top:10px;left:55px;"></i>
+                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                    <ul class="childrenList">
+                      <li v-for="item_ in item.children" :key="item_.key" @click="printCont(item_)">{{item_.value}}</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <el-button class="btn-info" v-if="power['sign-ht-info-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
         </div>
       </div>
@@ -451,7 +463,9 @@ export default {
       dialogType: "",
       dictionary: {
         //数据字典
-        "10": "", //合同类型
+        "10": "", //合同类型（创建线上  打印空白）
+        "65":"",//线下合同类型
+        "71":"",//合同类型（筛选条件）
         "9": "", //合同状态
         "51": "", //审核状态
         "6": "", //变更/解约
@@ -462,7 +476,6 @@ export default {
         "538": "", //用途
         "507": "", //租赁时间单位
         "11": "",//后期状态
-        "65":"",//线下合同类型
         "64":"",//签约方式  线上线下
       },
       loading:false,
@@ -603,7 +616,9 @@ export default {
           state: false,
           name: '导出'
         }
-      }
+      },
+      showOnLine:false,
+      showPrint:false
     };
   },
   created() {
@@ -652,6 +667,20 @@ export default {
     }
   },
   methods: {
+    moveIn(type){
+      if(type==="online"){
+        this.showOnLine=true
+      }else{
+        this.showPrint=true
+      }
+    },
+    moveOut(type){
+      if(type==="online"){
+        this.showOnLine=false
+      }else{
+        this.showPrint=false
+      }
+    },
     //获取合同基本信息版式（1 基础版  2 复杂版）
     getVersion(){
       this.$ajax.get("/api/cont/version/getVersion").then(res=>{
@@ -908,54 +937,84 @@ export default {
       this.currentPage = val;
       this.getContractList("page");
     },
-    //新增合同
-    toAddcontract(command) {
-      let isOffline = 0;
-      let recordType=1;
-      if(typeof(command)==="string"){
-        isOffline=1;
-        recordType=2;
-        command=Number(command.replace("offline",""))
-      }
-      let param = {
-        type:command,
-        recordType:recordType
-      };
-      this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
-        res=res.data;
-        if(res.status===200){
-          localStorage.removeItem('backMsg')
-          if (command === 1 || command === 2 || command === 3) {
-            this.$router.push({
-              path: "/addContract",
-              query: {
-                type: command,
-                operateType:1,
-                isOffline:isOffline
-              }
-            });
-          } else if (command === 4 || command === 5) {
-            this.$router.push({
-              path: "/newIntention",
-              query: {
-                contType: command,
-                operateType:1,
-                isOffline:isOffline
-              }
-            });
-          }
-        }else{
-          this.$message({
-            message:'该类型合同模板未上传,请上传后再创建',
-            type: "warning"
-          })
+    //新增线上合同
+    addOnLine(val){
+      if(val.key!=2||val.key===2&&!val.children){
+        this.showOnLine=false
+        let param = {
+          recordType:1,
+          type:val.key
         }
-      }).catch(error => {
-          this.$message({
-            message: error,
-            type: "error"
+        this.$ajax.get('/api/contract/checkContTemplate',param).then(res=>{
+          res=res.data;
+          if(res.status===200){
+            localStorage.removeItem('backMsg')
+            if (val.key === 1 || val.key === 2 || val.key === 3) {
+              this.$router.push({
+                path: "/addContract",
+                query: {
+                  type: val.key,
+                  operateType:1,
+                  isOffline:0
+                }
+              });
+            } else if(val.key === 7 || val.key === 8){
+              this.$router.push({
+                path: "/addContract",
+                query: {
+                  type: 2,
+                  operateType:1,
+                  isOffline:0,
+                  loanType:val.key
+                }
+              });
+            }else if (val.key === 4 || val.key === 5) {
+              this.$router.push({
+                path: "/newIntention",
+                query: {
+                  contType: val.key,
+                  operateType:1,
+                  isOffline:0
+                }
+              });
+            }
+          }else{
+            this.$message({
+              message:'该类型合同模板未上传,请上传后再创建',
+              type: "warning"
+            })
+          }
+        }).catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
+            });
           });
+        }
+    },
+    //新增线下合同
+    toAddcontract(command) {
+      command=Number(command.replace("offline",""))
+      localStorage.removeItem('backMsg')
+      if (command === 1 || command === 2 || command === 3) {
+        this.$router.push({
+          path: "/addContract",
+          query: {
+            type: command,
+            operateType:1,
+            isOffline:1
+          }
         });
+      } else if (command === 4 || command === 5) {
+        this.$router.push({
+          path: "/newIntention",
+          query: {
+            contType: command,
+            operateType:1,
+            isOffline:1
+          }
+        });
+      }
     },
     //合同预览
     goPreview(item) {
@@ -1013,14 +1072,6 @@ export default {
         this.dialogType = "jy";
         this.contId=item.id;
       }
-    },
-    //上传合同主体
-    upload(item) {
-      this.changeCancel = true;
-      this.dialogType = "upload";
-      this.contId = item.id,
-      this.uploadCode=item.code,
-      this.contState=item.contState.value
     },
     //获取当前部门
     initDepList:function (val) {
@@ -1096,12 +1147,6 @@ export default {
     closeAccount(item){
       if(this.power['sign-ht-info-end'].state){
         if(item.contChangeState.value!==2){
-          // if(item.resultState.value===2){
-          // this.$message({
-          //   message:'已结算完成，无需发起结算'
-          // })
-        // }else{
-          // if(item.isCanChangeCommission===1){
           let param = {
             id: item.id
           }
@@ -1119,13 +1164,6 @@ export default {
                 type: "warning"
               })
             })
-          // }else{
-          //   this.$message({
-          //     message:"存在未审核的调佣,无法发起结算",
-          //     type: "warning"
-          //   })
-          // }
-          // }
         }else{
           this.$message({
             message:'合同已解约，无法发起结算',
@@ -1166,66 +1204,26 @@ export default {
        this.haveUrl=false;
     },
     //打印空白合同
-    printCont(command){
-      // this.pdfUrl='';
-      // this.haveUrl=false;
-      let param = {
-        type:command
-      }
-      this.$ajax.get("/api/setting/contractTemplate/checkBlankPdf",param).then(res=>{
-        res=res.data
-        if(res.status===200){
-          let dayRandomTime=new Date().getTime()
-          this.pdfUrl=`${this.http}/api/setting/contractTemplate/getBlankPdf?type=${command}&dayRandomTime=${dayRandomTime}`
-          this.haveUrl=true
+    printCont(val){
+      if(val.key!=2||val.key===2&&!val.children){
+        this.showPrint=false
+        let param = {
+          type:val.key
         }
-      }).catch(error=>{
-        this.$message({
-          message:error,
-          type:"error"
-        })
-      })
-    },
-    //获取空白合同pdf
-    getBlankPdf(){
-      this.$ajax.get('/api/setting/contractTemplate/getBlankPdf').then(res=>{
-        res=res.data;
-        if(res.status===200){
-          if(res.data){
-            let addData = res.data;
-            addData.forEach(element => {
-              if(element.type.value===1){
-                this.blankPdf1=element.blankPdf;
-              }else if(element.type.value===2){
-                this.blankPdf2=element.blankPdf;
-              }else if(element.type.value===3){
-                this.blankPdf3=element.blankPdf;
-              }else if(element.type.value===4){
-                this.blankPdf4=element.blankPdf;
-              }else if(element.type.value===5){
-                this.blankPdf5=element.blankPdf;
-              }
-            });
+        this.$ajax.get("/api/setting/contractTemplate/checkBlankPdf",param).then(res=>{
+          res=res.data
+          if(res.status===200){
+            let dayRandomTime=new Date().getTime()
+            this.pdfUrl=`${this.http}/api/setting/contractTemplate/getBlankPdf?type=${val.key}&dayRandomTime=${dayRandomTime}`
+            this.haveUrl=true
           }
-        }
-      }).catch(error=>{
-        this.$message({
-          message:error
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type:"error"
+          })
         })
-      })
-    },
-    //获取签名
-    getUrl(url){
-      let param = {
-        url:url
       }
-      this.$ajax.get("/api/load/generateAccessURL",param).then(res=>{
-        res = res.data
-        if(res.status ===200){
-          this.pdfUrl = res.data.url;
-          this.haveUrl=true;
-        }
-      })
     },
     //导出
     getExcel(){
@@ -1248,14 +1246,7 @@ export default {
       }
 
       delete param.depName
-      //console.log(param)
       this.excelCreate("/input/contractExcel",param)
-      // this.$ajax.postJSON("/api/input/contractExcel", param).then(res => {
-      //   res = res.data;
-      //   if (res.status === 200) {
-
-      //   }
-      // });
     }
   },
   computed:{
@@ -1426,6 +1417,82 @@ export default {
       font-size: 14px;
       color: @color-blue;
     }
+    .showOnLine{
+      .holderPlace{
+        display: inline-block !important;
+      }
+    }
+    .printStyle{
+      background-color: #fff !important;
+      color: #606266 !important;
+      border: 1px solid #dcdfe6;
+    }
+    .haveSon{
+      cursor: pointer;
+      display: inline-block;
+      width: 120px;
+      line-height: 2.7;
+      border-radius: 20px;
+      // font-size: 14px;
+      background-color: #409EFF;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      .holderPlace{
+        display: none;
+        z-index: 999;
+        position: absolute;
+        top: 25px;
+        left: 25px;
+        padding-top: 20px;
+        .mainList{
+          line-height: 1;
+          padding: 10px 0;
+          background-color: #fff;
+          color: #606266;
+          display: inline-block;
+          width: 73px;
+          box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+          border-radius: 3px;
+          >li{
+            cursor: pointer;
+            padding: 10px 5px;
+            font-size: 14px;
+            text-align: center;
+            position: relative;
+            &:hover{
+              color: @color-blue;
+              background-color: #ECF5FF;
+            }
+            .childrenModule{
+              padding-left: 20px;
+              position: absolute;
+              top: 0;
+              left: 60px;
+              .childrenList{
+                padding: 5px 0;
+                display: inline-block;
+                background-color: #fff;
+                width: 73px;
+                box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
+                >li{
+                  cursor: pointer;
+                  padding: 10px 5px;
+                  font-size: 14px;
+                  color: #606266;
+                  text-align: center;
+                  &:hover{
+                    color: @color-blue;
+                    background-color: #ECF5FF;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
   }
   .name-wrapper {
     // min-width: 80px;
