@@ -188,7 +188,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" min-width="50">
+        <el-table-column label="合同类型" min-width="70">
           <template slot-scope="scope">
             {{scope.row.isCombine?"委托合同":scope.row.contType.label}}
           </template>

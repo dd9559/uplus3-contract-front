@@ -32,7 +32,8 @@
                   <p>
                     <span class="tag">合同类型：</span>
                     <span class="text" v-if="contractDetail.contType.value===1">租赁</span>
-                    <span class="text" v-if="contractDetail.contType.value===2">买卖</span>
+                    <span class="text" v-if="contractDetail.contType.value===2&&!contractDetail.loanType">买卖</span>
+                    <span class="text" v-else>{{contractDetail.loanType===7?"全款买卖":"贷款买卖"}}</span>
                     <span class="text" v-if="contractDetail.contType.value===3">代办</span>
                     <span class="text" v-if="contractDetail.contType.value===4">意向</span>
                     <span class="text" v-if="contractDetail.contType.value===5">定金</span>
