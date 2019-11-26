@@ -11,13 +11,11 @@ const contraPreview = () => import('@/pages/setting/contraPreview')
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
 const moneyType = () => import('@/pages/setting/moneyType')
-const aplTime = () => import('@/pages/setting/aplTime')
 const ruleSetting = () => import('@/pages/setting/ruleSetting')
 const operationLog = () => import('@/pages/setting/operationLog')
 const approvalProcess = () => import('@/pages/setting/approvalProcess')
-const lowCommission = () => import('@/pages/setting/lowCommission')
 const commission = () => import('@/pages/setting/commission')
-const contractLayout = () => import('@/pages/setting/contractLayout')
+const commissionOff = () => import('@/pages/setting/commissionOff')
 
 //票据管理
 const paperSet = () => import('@/pages/finance/paperSet')
@@ -109,14 +107,6 @@ export default new Router({
           }
         },
         {
-          path: "contractLayout",
-          component: contractLayout,
-          meta: {
-            root: true,
-            list: ["设置", "业务设置","合同页面设置"]
-          }
-        },
-        {
           path: "company",
           component: Company,
           meta: {
@@ -154,6 +144,14 @@ export default new Router({
           meta: {
             root: true,
             list: ["设置", "后台设置","手续费设置"]
+          }
+        },
+        {
+          path: "commissionOff",
+          component: commissionOff,
+          meta: {
+            root: true,
+            list: ["设置", "后台设置","线下手续费设置"]
           }
         },
         //设置模块 end

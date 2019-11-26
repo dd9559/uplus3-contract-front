@@ -316,6 +316,13 @@ let TOOL = {
               can:true,//是否可见
               path: "contractTemplate",
               code: "sign-set-ht-query"
+            },
+            {
+              name: "线下手续费设置",
+              category:"5-1-4",
+              can:true,//是否可见
+              path: "commissionOff",
+              code: "sign-set-ht-query"
             }
           ]
         },
@@ -343,7 +350,7 @@ let TOOL = {
               category:"5-2-3",
               can:true,//是否可见
               path: "ruleSetting",
-              code: ['sign-set-rule-query','sign-set-vtime','sign-set-dybl']
+              code: ['sign-set-rule-query','sign-set-vtime','sign-set-dybl','sign-set-bl-htym-query']
             },
             {
               name: "后期流程设置",
@@ -351,13 +358,6 @@ let TOOL = {
               can:true,//是否可见
               path: "postProcess",
               code: 'sign-set-hq'
-            },
-            {
-              name: "合同页面设置",
-              category:"5-2-5",
-              can:true,//是否可见
-              path: "contractLayout",
-              code: 'sign-set-bl-htym-query'
             }
           ]
         }

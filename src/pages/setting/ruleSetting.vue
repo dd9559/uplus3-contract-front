@@ -12,6 +12,7 @@
   import aplTime from "./aplTime";
   import lowCommission from "./lowCommission";
   import conAttachment from "./conAttachment";
+  import contractLayout from "./contractLayout";
 export default{
     mixins: [MIXINS],
     data() {
@@ -36,6 +37,12 @@ export default{
                 state: false,
                 name: "合同附件库设置",
                 current: 'conAttachment'
+              },
+              'sign-set-bl-htym-query': {
+                id: 4,
+                state: false,
+                name: "合同页面设置",
+                current: 'contractLayout'
               }
             }
         }
@@ -56,19 +63,14 @@ export default{
     methods:{
         checkTab(item) {
             this.activeItem = item.id;
-            if (item.id == 1) {
-              this.current = "lowCommission";
-            } else if (item.id == 2) {
-              this.current = "aplTime";
-            } else {
-              this.current = "conAttachment";
-            }
+            this.current = item.current;
         }
     },
     components:{
         aplTime,
         lowCommission,
-        conAttachment
+        conAttachment,
+        contractLayout
     }
 }
 </script>
