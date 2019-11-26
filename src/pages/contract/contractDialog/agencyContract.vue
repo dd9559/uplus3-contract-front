@@ -11,7 +11,8 @@
                     </p>
                     <p>
                         <span>合同类型：</span>
-                        <span v-if="defaultInfo.contType.value===2">买卖</span>
+                        <span v-if="defaultInfo.contType.value===2&&!defaultInfo.loanType">买卖</span>
+                        <span v-if="defaultInfo.contType.value===2&&defaultInfo.loanType">{{defaultInfo.loanType===7?"全款买卖":"贷款买卖"}}</span>
                         <span v-if="defaultInfo.contType.value===3">代办</span>
                     </p>
                 </div>
@@ -197,6 +198,12 @@ export default {
             })
         },
         isSave() {
+            if(this.tradeFee.includes('.')) {
+                if(!/\d\.\d/.test(this.tradeFee)){
+                    this.$message({message: '请输入正确的交易服务费',type:'error'})
+                    return
+                }
+            }
             if(!this.signDate){
                 this.$message("签约时间不能为空")
                 return
