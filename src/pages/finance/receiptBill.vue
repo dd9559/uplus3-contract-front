@@ -324,6 +324,9 @@
         }
     }
     const cardRule = {
+        bankName: {
+            name: '刷卡银行'
+        },
         userName: {
             name: '户名'
         },
@@ -820,7 +823,7 @@
                         }
                         payTotal += parseFloat(item.amount)
                         arr.push(this.$tool.checkForm(item, payRule));
-                          if(!cardListStatus&&this.cardList[index].bankName){
+                          if(!cardListStatus&&this.cardList[index].cardNumber){
                               arr.push(this.$tool.checkForm(this.cardList[index], cardRule))
                           }
                         // (!cardListStatus&&this.cardList[index].bankName)&&arr.push(this.$tool.checkForm(this.cardList[index], cardRule))
