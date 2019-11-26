@@ -66,19 +66,6 @@
     </ScreeningTop>
     <!-- 合同列表 -->
     <div class="contract-list">
-      <!-- <p> -->
-        <!-- <span> -->
-          <!-- <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span> -->
-          <!-- <span class="text">有效成分汇总 </span>
-          <span class="text">租赁：</span> <span class="data">123165</span>
-          <span class="text">买卖：</span> <span class="data">75454</span>
-          <span class="text">代办：</span> <span class="data">5565</span>
-          <span class="text">意向：</span> <span class="data">0</span>
-          <span class="text">定金：</span> <span class="data">0</span>
-          <span class="text">可分配业绩汇总：</span> <span class="data">564654</span>
-          <span class="text">单数：</span> <span class="data">13</span> -->
-        <!-- </span> -->
-      <!-- </p> -->
       <div class="listTitle">
         <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
         <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-htsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
@@ -106,9 +93,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" min-width="60" fixed>
+        <el-table-column label="合同类型" min-width="70" fixed>
           <template slot-scope="scope">
-            {{scope.row.isCombine?"委托合同":scope.row.contType.label}}
+            <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+            <span v-else>{{scope.row.isCombine?"委托合同":scope.row.contType.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
@@ -620,6 +608,7 @@ export default {
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))
           combineItem.isCombine=true//是否是插入的数据
+          combineItem.loanType=0//武汉买卖类型
           combineItem.signDate=combineItem.contractEntrust.signDate//签约日期
           combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
           combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态

@@ -5,7 +5,7 @@
         <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
       </ul>
       <p class="operation" @click="goBack"
-         v-if="Index.length>3&&$route.path!=='/routingRemitDetail' && $route.path!=='/storeReceive' && $route.path!=='/detailIntention'&& $route.path!=='/contractDetails'&&$route.path!=='/achPage'&& $route.path!=='/otherContractList'">
+         v-if="Index.length>3&&$route.path!=='/routingRemitDetail' && $route.path!=='/storeReceive' && $route.path!=='/achDetial' && $route.path!=='/detailIntention'&& $route.path!=='/contractDetails'&&$route.path!=='/achPage'&& $route.path!=='/otherContractList'">
         <i class="iconfont icon-fanhui"></i>
         <span>返回</span>
       </p>

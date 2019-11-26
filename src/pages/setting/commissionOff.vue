@@ -36,7 +36,7 @@
         </ScreeningTop>
         <!-- table表格 -->
         <div class="table-box">
-            <p>
+            <p v-if="power['sign-set-bg-sxf-add'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button icon="el-icon-plus" @click="openFn(1)" round type="primary">新增手续费</el-button>
             </p>
@@ -64,7 +64,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="openFn(2,scope.row)">编辑</el-button>
+                        <el-button type="text" @click="openFn(2,scope.row)" v-if="power['sign-set-bg-sxf-add'].state">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -175,8 +175,8 @@
                 updateTime: [],
                 list: [], //列表
                 power: {
-                    'sign-set-bg-sxf-query': {
-                        name: '查询',
+                    'sign-set-bg-sxf-add': {
+                        name: '新增/编辑',
                         state: false
                     }
                 },
@@ -258,10 +258,10 @@
                     this.rowId = row.id
                     this.commissionForm = {
                         systemTag: row.systemTag,
-                        cash: row.commissionFee[0].fee,
-                        credit: row.commissionFee[1].fee,
-                        wechat: row.commissionFee[2].fee,
-                        aliPay: row.commissionFee[3].fee
+                        cash: row.commissionFee[0].fee + '',
+                        credit: row.commissionFee[1].fee + '',
+                        wechat: row.commissionFee[2].fee + '',
+                        aliPay: row.commissionFee[3].fee + ''
                     }
                 }
             },

@@ -21,18 +21,12 @@
             </el-form-item>
             <el-form-item label="合同类型：" class="width-250">
               <el-input placeholder="请输入内容" value="租赁" :disabled="true" style="width:140px" v-if="contractForm.type===1"></el-input>
-              <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
+              <el-input placeholder="请输入内容" :value="loanType===7?'全款买卖':loanType===8?'贷款买卖':'买卖'" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
               <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
             </el-form-item>
             <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
               <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
             </el-form-item>
-            <!-- <el-form-item label="付款方式：" class="width-250 form-label" v-if="userMsg.cityId===1&&isOffline===0&&contractForm.type===2">
-              <el-select :disabled="type===2?true:false" v-model="contractForm.payType" placeholder="请选择" style="width:105px">
-                <el-option :value="1" label="全款买卖"></el-option>
-                <el-option :value="2" label="贷款买卖"></el-option>
-              </el-select>
-            </el-form-item> -->
             <br>
             <el-form-item label="客户佣金：" class="width-250">
               <input type="text" :disabled="canInput" v-model="contractForm.custCommission" @input="cutNumber('custCommission')" @change="countTotal" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
@@ -1769,7 +1763,10 @@ export default {
           this.recordId = res.data.recordId;
           this.isHaveDetail=true
           this.countTotal()
-          this.contVersion=res.data.recordVersion
+          this.contVersion=res.data.recordVersion //合同基本信息版式（1 基础版  2 复杂版）
+          if(res.data.loanType){//武汉买卖 全款贷款
+            this.loanType=res.data.loanType
+          }
           // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.type=res.data.contType.value;
           //合同状态为已签约且未结算时只允许编辑房客源编号

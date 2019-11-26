@@ -350,12 +350,12 @@
                     this.commissionForm = {
                         cityId: row.cityId,
                         systemTag: row.systemTag,
-                        cash: row.commissionFee[0].fee,
-                        credit: row.commissionFee[1].fee,
-                        wechat: row.commissionFee[2].fee,
-                        aliPay: row.commissionFee[3].fee,
-                        public: row.sepaFee[0].feeMoney,
-                        private: row.sepaFee[1].feeMoney
+                        cash: row.commissionFee[0].fee + '',
+                        credit: row.commissionFee[1].fee + '',
+                        wechat: row.commissionFee[2].fee + '',
+                        aliPay: row.commissionFee[3].fee + '',
+                        public: row.sepaFee[0].feeMoney + '',
+                        private: row.sepaFee[1].feeMoney + ''
                     }
                 }
             },

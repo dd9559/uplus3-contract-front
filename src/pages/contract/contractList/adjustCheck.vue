@@ -16,10 +16,6 @@
 
         </el-form-item>
         <el-form-item label="合同类型">
-          <!-- <el-select v-model="adjustForm.tradeType" placeholder="全部" class="width150" clearable>
-            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
-            </el-option>
-          </el-select> -->
           <el-select v-model="adjustForm.contractTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contractTypes&&adjustForm.contractTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
@@ -29,19 +25,15 @@
             </el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="合作方式">
           <el-select v-model="adjustForm.recordType" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="部门">
-          <!-- <el-select v-model="Form.getDepName" clearable filterable remote placeholder="请选择门店" :remote-method="getDepNameFn" @change="changeDepNameFn" :loading="loading" @clear="clearDepNameFn" class="width200">
-              <el-option v-for="item in adjustForm.getDepName" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-          <el-select v-model="Form.getAgentName" clearable filterable placeholder="经纪人" :loading="loading2" class="width100">
-              <el-option v-for="item in adjustForm.getAgentName" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
-          </el-select> -->
           <select-tree :data="DepList" :init="adjustForm.depName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep" class="fl"></select-tree>
           <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small" v-model="adjustForm.empId" @change="handleEmpNodeClick" placeholder="请选择">
             <el-option
@@ -51,7 +43,6 @@
               :value="item.empId">
             </el-option>
           </el-select>
-
         </el-form-item>
 
         <el-form-item label="审核状态">
@@ -61,6 +52,7 @@
             <el-option label="驳回" value="2"></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="签约方式">
           <el-select v-model="adjustForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
@@ -72,11 +64,9 @@
 
     <!-- 数据列表 -->
     <div class="contract-list">
-      <!-- <div class="form-title-fl"><i class="iconfont icon-tubiao-11 mr8"></i>数据列表</div>    -->
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
         <el-table-column label="合同信息" min-width="120" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
-            <!-- <div class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</div> -->
             <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span></p>
             <p v-if="scope.row.recordType&&scope.row.recordType===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
           </template>
@@ -346,7 +336,6 @@
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <!-- <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" v-if="isDelete===item.index+item.path"></i> -->
               </li>
             </ul>
           </div>
@@ -365,11 +354,6 @@
             </el-table-column>
             <el-table-column prop="roleName" label="职务"  width=110></el-table-column>
             <el-table-column prop="operate" label="操作" :formatter="nullFormatter" align="center" width=100>
-              <!-- <template slot-scope="scope">
-                <span class="blue" v-if="scope.row.auditState === 4">未审核</span>
-                <span class="green" v-if="scope.row.auditState === 1">通过</span>
-                <span class="red" v-if="scope.row.auditState === 2">驳回</span>
-              </template> -->
             </el-table-column>
             <el-table-column label="备注">
               <template slot-scope="scope">
@@ -397,12 +381,9 @@
   </div>
 </template>
 
-
-
 <script>
   import ScreeningTop from '@/components/ScreeningTop';
   import { Message } from 'element-ui';
-
   import {FILTER} from "@/assets/js/filter";
   import {TOOL} from "@/assets/js/common";
   import { MIXINS } from "@/assets/js/mixins";
@@ -410,7 +391,6 @@
 
   export default {
     name: "adjust-check",
-    // mixins: [FILTER],
     mixins: [FILTER,MIXINS],
     components: {
       ScreeningTop,
@@ -437,10 +417,6 @@
         pageNum: 1,
         pageSize: 10,
         total: 0,
-        // Form :{
-        //   getDepName: '',
-        //   getAgentName: ''
-        // },
         adjustForm:{
           signDate: '', //发起日期
           contractTypes: '', //合同类型
@@ -449,42 +425,22 @@
           depId: '',
           empId: '',
           recordType: '',//2.3.1新加
-          // getDepName: [{
-          //   name: "全部",
-          //   id: ""
-          // }],    //选择门店
-          // getAgentName: [{
-          //   name: "全部",
-          //   empId: ""
-          // }],
           checkState: '',  //审核状态
           keyword: ''   //关键字
-
         },
         dictionary: {
           //数据字典
           "10": "", //合同类型
-          "17": "", //审核状态
           "507": "", // 成交总价单位
           "53": "", // 合作方式
           "64": '', //签约方式
         },
-
-        layerAudit:{
-
-        },
-
+        layerAudit:{},
         checkInfo:[],
-
-        // preview:false,
-        // start:'',
-
         isDelete:'',
-
         myCheckId: '',
         //上传的协议
         uploadList: [],
-
         auditForm: {
           textarea: '', //备注
         },
@@ -492,14 +448,10 @@
         dialogImageUrl: '',
         dialogVisible: false,
         dialogVisible2: false,
-        // checked: false, //是否有解除协议
-
         tableData:[],
         adjustCheckFiles:[],//调佣详情附件缩略图
-
         //当前调佣审核的合同类型
         applyType:1,
-
         power: {
           'sign-ht-maid-query': {
             state: false,
@@ -543,59 +495,24 @@
         })
         this.getEmploye(this.adjustForm.deptId)
       }
-        // this.adjustForm.empId=''
-        // this.adjustForm.deptId=''
       }else{
         this.queryFn();
       }
-      // this.getDepNameFn();
       this.getDictionary();
-      // this.getAdmin();
       this.remoteMethod()
     },
-
     mounted() {
       var _this = this;
        window.onresize = function(){
          _this.clientHei = document.documentElement.clientHeight;
        }
     },
-
     methods:{
-
-
-      //图片预览
-      // getPicture(value,index){
-      //     this.start=index;
-      //     let arr=[];
-      //     // console.log(value);
-      //     value.forEach(item =>{
-      //         arr.push(item.path)
-      //     })
-      //     this.fileSign(arr)
-      // },
-
-      // //文件的删除
-      // ZTdelectData(index){
-      //     this.uploadList.splice(index,1)
-      // },
-
-      // //显示删除按钮
-      // moveIn(value){
-      //     this.isDelete=value
-      // },
-      // moveOut(value){
-      //     if(this.isDelete===value){
-      //         this.isDelete=''
-      //     }
-      // },
       trim(str){
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },
       myclose: function() {
         this.checkPerson.state=false
-        // this.queryFn();
-
       },
       // 选择审核人
       choseCheckPerson:function (row,type) {
@@ -615,177 +532,81 @@
       },
       personChose:function () {
         this.checkPerson.state=false
-        // this.$message({
-        //   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
-        // })
         this.queryFn()
       },
-
       // 控制弹框body内容高度，超过显示滚动条
       clientHeight() {
           return this.clientHei - 265 + 'px'
       },
-
       clientHeight2() {
           return this.clientHei - 197 + 'px'
       },
-
-      // 得到部门门店和经纪人信息
-      // getDepNameFn(e) {
-      //   this.loading = true;
-      //   this.$ajax.get("/api/access/deps", {keyword: e})
-      //   .then(res => {
-      //     let data = res.data;
-      //     if (res.data.status === 200) {
-      //       this.loading = false;
-      //       if(e === '' || !e){
-      //         this.adjustForm.getDepName = [{
-      //           name: "全部",
-      //           id: ""
-      //         },...data.data]
-      //       }else{
-      //         this.adjustForm.getDepName = data.data
-      //       }
-
-      //     }
-      //   }).catch(error => {
-      //     this.$message({
-      //       message: error
-      //     })
-      //   })
-      // },
-
-      // changeDepNameFn(e) {
-      //   if(e !== "" || !!e){
-      //     this.loading2 = true;
-      //     this.$ajax.get("/api/organize/employees",{
-      //       cityId:this.userMsg.cityId,
-      //       depId: e
-      //     })
-
-      //     .then(res => {
-
-      //       if (res.data.status === 200) {
-      //         this.loading2 = false;
-      //         this.Form.getAgentName = '';
-      //         if(res.data.data.length > 0){
-
-      //           this.adjustForm.getAgentName = [{
-      //             name: "全部",
-      //             empId: ""
-      //           },...res.data.data]
-      //         }
-      //         else{
-      //           this.adjustForm.getAgentName = res.data.data
-      //         }
-
-      //       }
-
-      //     }).catch(error => {
-      //       this.$message({
-      //         message: error
-      //       })
-      //     })
-      //   }else{
-      //       this.Form.getAgentName = '';
-      //       this.adjustForm.getAgentName = [{
-      //           name: "全部",
-      //           empId: ""
-      //       }]
-      //       // this.Form.getDepName = '全部';
-      //       this.Form.getDepName = '';
-      //       this.getDepNameFn('');
-      //   }
-      // },
-
-
-      // 清除部门搜索
-      // clearDepNameFn(){
-      //     this.getDepNameFn('');
-      // },
-
-
       // 重置
       resetFormFn() {
           TOOL.clearForm(this.adjustForm);
           this.pageNum = 1;
-          // this.changeDepNameFn('');
-          // this.pageNum=1;
-          // this.queryFn();
           this.EmployeList = []
       },
-
       // 查询
       queryFn(type="init") {
-        // console.log(this.power)
-        // if(this.power['sign-ht-maid-query'].state){
-          // console.log(this.userMsg.empId)
-          if(type==='search'){
-            this.pageNum=1
+        if(type==='search'){
+          this.pageNum=1
+        }
+        this.loadingTable = true;
+        let startTime = '';
+        let endTime = '';
+
+        if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
+          startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
+          endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
+        }
+        let param = {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          deptId: this.adjustForm.depId,
+          depName:this.adjustForm.depName,
+          empId: this.adjustForm.empId,
+          startTime,
+          endTime,
+          depAttr: this.adjustForm.depAttr,
+          checkState: this.adjustForm.checkState,
+          keyword: this.adjustForm.keyword,
+          recordType: this.adjustForm.recordType,
+        }
+        if(this.adjustForm.contractTypes.length>0){
+          param.contractTypes=this.adjustForm.contractTypes.join(',')
+        }else{
+          param.contractTypes=''
+        }
+        if(type==="search"||type==="page"){
+          sessionStorage.setItem('sessionQuery',JSON.stringify({
+            path:'/adjustCheck',
+            url:'/commission/updateList',
+            query:Object.assign({},param,{empName:this.dep.empName}),
+            methods:"get"
+          }))
+        }
+        //调整佣金审核列表
+        this.$ajax
+        .get("/api/commission/updateList", param)
+        .then(res => {
+          let data = res.data;
+          if (res.data.status === 200) {
+            this.tableData = data.data
           }
-          this.loadingTable = true;
-          let startTime = '';
-          let endTime = '';
-
-          if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
-              startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
-              endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
-          }
-            let param = {
-              pageNum: this.pageNum,
-              pageSize: this.pageSize,
-              deptId: this.adjustForm.depId,
-              depName:this.adjustForm.depName,
-              empId: this.adjustForm.empId,
-              startTime,
-              endTime,
-              // contractType: this.adjustForm.tradeType,
-              depAttr: this.adjustForm.depAttr,
-              checkState: this.adjustForm.checkState,
-              keyword: this.adjustForm.keyword,
-              recordType: this.adjustForm.recordType,
-            }
-            if(this.adjustForm.contractTypes.length>0){
-              param.contractTypes=this.adjustForm.contractTypes.join(',')
-            }else{
-              param.contractTypes=''
-            }
-            if(type==="search"||type==="page"){
-              sessionStorage.setItem('sessionQuery',JSON.stringify({
-                path:'/adjustCheck',
-                url:'/commission/updateList',
-                query:Object.assign({},param,{empName:this.dep.empName}),
-                methods:"get"
-              }))
-            }
-            //调整佣金审核列表
-            this.$ajax
-            .get("/api/commission/updateList", param)
-            .then(res => {
-              let data = res.data;
-              if (res.data.status === 200) {
-                this.tableData = data.data
-
-              }
-              this.$nextTick(()=>{
-                this.loadingTable = false;
-              })
-
-            }).catch(error => {
-              this.$message({
-                message: error
-              })
-            })
-        // }else{
-        //   this.noPower(this.power['sign-ht-maid-query'].name)
-        // }
-
+          this.$nextTick(()=>{
+            this.loadingTable = false;
+          })
+        }).catch(error => {
+          this.$message({
+            message: error
+          })
+        })
       },
 
       // 双击详情事件
       toDetail(e) {
         if(this.power['sign-ht-maid-vdetail'].state){
-
           this.dialogVisible2 = true
           let param = {
             checkId: e.checkId,
@@ -818,7 +639,6 @@
         }else{
           this.noPower(this.power['sign-ht-maid-vdetail'].name)
         }
-
       },
 
       // 点击审核事件
@@ -859,7 +679,6 @@
 
       // 驳回操作
       refuseFn() {
-
         let param = {
           checkId: this.myCheckId,
           remark: this.auditForm.textarea
@@ -878,21 +697,22 @@
               setTimeout(() => {
                  this.$message('已驳回');
               }, 2000);
-
             }
           }).catch(error => {
             this.$nextTick(()=>{
               this.fullscreenLoading=false
             })
-
-              this.$message({
-                message: error
-              })
+            this.$message({
+              message: error,
+              type:"error"
+            })
           });
         }else if((this.auditForm.textarea).trim() === ""){
-          this.$message('审核备注未填写！');
+          this.$message({
+            message:'审核备注未填写！',
+            type:"warning"
+          });
         }
-
       },
 
       // 通过操作
@@ -912,17 +732,17 @@
               // 数据刷新
             this.queryFn();
             setTimeout(() => {
-              this.$message('已通过');
+              this.$message({
+                message:'已通过',
+                type:"success"
+              });
             }, 2000);
           }
-
         }).catch(error => {
-
             this.$nextTick(()=>{
               this.fullscreenLoading=false
             })
             if(error.status === 300 && error.data.checkId){
-              // this.choseCheckPerson(error.data.checkId,'set')
               if(this.applyType===1){
                 this.checkPerson.flowType=8   //租赁调佣的流程类型为8
               }else if(this.applyType===2||this.applyType===3){
@@ -931,15 +751,12 @@
               this.checkPerson.code=error.data.checkId  //业务编码为checkId
               this.checkPerson.state=true
               this.checkPerson.type=3
-              // this.checkPerson.label=true
-              // this.checkPerson.current=false
-            }
-            else{
+            }else{
               this.$message({
-                message: error
+                message: error,
+                type:"error"
               })
             }
-
         });
       },
 
@@ -964,21 +781,16 @@
         this.queryFn("page");
       },
 
-
-
       depHandleClick(data) {
-        // this.getEmploye(data.depId)
         this.adjustForm.depId=data.depId
         this.adjustForm.depName=data.name
         this.adjustForm.empId = ''
-
         this.handleNodeClick(data)
       },
 
       clearDep:function () {
         this.adjustForm.depId=''
         this.adjustForm.depName=''
-        // this.EmployeList=[]
         this.adjustForm.empId=''
         this.clearSelect()
       },
