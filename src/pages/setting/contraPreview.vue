@@ -129,18 +129,21 @@ export default{
             if(this.show==1){
                this.getImgAdd(this.count)
             }else if(this.show==2){
+                debugger
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
                     this.$nextTick(()=>{
                       this.loading=false
                     })
                      let resadd=res.data.data
-                     if(this.uploadType==1){
+                     if(resadd.img&&resadd.img.url!=''){
+                            this.uploadType=1
                             this.imgSrc=resadd.img.url
                            this.total=res.data.data.img.count
                            let htImg=document.getElementById('ht')
                            var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                            this.autograph(htImg,newsrc)
-                     }else if(this.uploadType==2){
+                     }else if(res.data.data.businessImg&&res.data.data.businessImg.url!=''){
+                            this.uploadType=2
                             this.imgSrc=res.data.data.businessImg.url
                             this.imgSrc2=res.data.data.residenceImg.url
                             this.total=res.data.data.businessImg.count
@@ -148,7 +151,8 @@ export default{
                             let htImg=document.getElementById('ht')
                             var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                             this.autograph(htImg,newsrc)
-                     }else if(this.uploadType==3){
+                     }else if(res.data.data.wholeImg&&res.data.data.wholeImg.url!=''){
+                            this.uploadType=3
                             this.imgSrc=res.data.data.wholeImg.url
                             this.imgSrc2=res.data.data.loanImg.url
                             this.imgSrc3=res.data.data.residenceImg.url

@@ -74,7 +74,9 @@
         <el-table-column label="合同类型" :formatter="nullFormatter" min-width="60">
           <template slot-scope="scope">
             <p v-if="scope.row.tradeType === 1">租赁</p>
-            <p v-if="scope.row.tradeType === 2">买卖</p>
+            <p v-if="scope.row.tradeType === 2">
+              <span v-if="scope.row.loanType">{{scope.row.loanType===7?'全款买卖':"贷款买卖"}}</span>
+            </p>
             <p v-if="scope.row.tradeType === 3">代办</p>
             <p v-if="scope.row.tradeType === 4">意向</p>
             <p v-if="scope.row.tradeType === 5">定金</p>
