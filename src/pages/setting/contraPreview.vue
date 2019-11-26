@@ -149,7 +149,6 @@ export default{
                             var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
                             this.autograph(htImg,newsrc)
                      }else if(this.uploadType==3){
-                         debugger
                             this.imgSrc=res.data.data.wholeImg.url
                             this.imgSrc2=res.data.data.loanImg.url
                             this.imgSrc3=res.data.data.residenceImg.url
@@ -189,7 +188,7 @@ export default{
                     this.showSed=false
                     this.isActive=3
                     let htImg=document.getElementById('ht3')
-                     var newsrc=this.imgSrc.substr(0,this.imgSrc.lastIndexOf('.'))+this.count3+this.imgSrc.substr(this.imgSrc.lastIndexOf('.'))
+                     var newsrc=this.imgSrc3.substr(0,this.imgSrc3.lastIndexOf('.'))+this.count3+this.imgSrc3.substr(this.imgSrc3.lastIndexOf('.'))
                      this.autograph(htImg,newsrc)
                 }
             },
