@@ -9,7 +9,8 @@
       </el-table-column>
       <el-table-column align="left" label="合同类型">
         <template slot-scope="scope">
-          {{scope.row.contType.label}}
+          <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+          <span v-else>{{scope.row.contType.label}}</span>
         </template>
       </el-table-column>
       <el-table-column align="left" prop="address" label="物业地址">

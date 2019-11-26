@@ -5,7 +5,7 @@
             <div class="cont-content text">
                 <p>签约日期：<span>{{dealBasicInfo.signDate}}</span></p>
                 <p>合同编号：<span style="color:#478DE3;font-weight:bold">{{dealBasicInfo.code}}</span></p>
-                <p>交易类型：<span>{{dealBasicInfo.contType}}</span></p>
+                <p>合同类型：<span>{{setTypeFn(dealBasicInfo.contType)}}</span></p>
                 <p>房屋总价：<span style="color:#FF9039;">{{dealBasicInfo.dealPrice}}元 <i>{{dealBasicInfo.dealPrice|moneyFormat}}</i></span></p>
                 <p>应收佣金：<span>{{dealBasicInfo.receivableCommission}}元</span></p>
             </div>
@@ -113,7 +113,7 @@
                     <div class="input">
                         <p>
                             <span class="mark">付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="!saveBtnShow" class="bank fukuan">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="loadType||!saveBtnShow" class="bank fukuan">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -325,7 +325,8 @@ export default {
             buyerArr: [],
             sellerArr: [],
             noStageBank: true,
-            recordVersion: '' //合同页面版式
+            recordVersion: '', //合同页面版式
+            loadType: false //是否武汉全款贷款买卖
         }
     },
     created() {
@@ -336,6 +337,17 @@ export default {
         }
     },
     methods: {
+        setTypeFn(val) {
+            if(this.loadType) {
+                if(this.report.buyerPaymentMethod === 1) {
+                    return `全款${val}`
+                } else {
+                    return `贷款${val}`
+                }
+            } else {
+                return val
+            }
+        },
         yearFormatFn(val) {
             if(val) {
                 if(val.includes('年')) {
@@ -362,6 +374,8 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.recordVersion = res.data.recordVersion
+                    this.report.buyerPaymentMethod = res.data.loanType ? res.data.loanType == 7 ? 1: 2: ''
+                    this.loadType = res.data.loanType ? true : false
                     if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = res.data.guestInfo.GuestStoreName

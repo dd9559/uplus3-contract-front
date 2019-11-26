@@ -240,4 +240,7 @@ export default {
     }
   }
 }
+/deep/.margin-left{
+  margin-left: 0;
+}
 </style>

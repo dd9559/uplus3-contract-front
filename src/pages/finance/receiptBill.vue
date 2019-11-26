@@ -129,7 +129,7 @@
             <div class="message-box flex-box">
               <section>
                 <label class="form-label f14 margin-bottom-base">支付方式</label>
-                <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择" @change="hideCardList">
+                <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择" @change="hideCardList(item)">
                   <el-option-group
                     v-for="group in getDir"
                     :key="group.label"
@@ -137,7 +137,7 @@
                     <el-option
                       v-for="item in group.options"
                       :key="item.key"
-                      :label="item.value"
+                      :label="getPayMethod(item.key)?item.value:'刷卡-'+item.value"
                       :value="item.key">
                     </el-option>
                   </el-option-group>
@@ -155,7 +155,7 @@
                 <div class="flex-box tool-tip w200 no-max">
                   <label class="form-label f14 margin-bottom-base">手续费金额（元）</label>
                 </div>
-                <el-input size="small" :disabled="![2,3].includes(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>
+                <el-input size="small" :disabled="!getPayMethod(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>
                 <!--<input type="text" class="w200 el-input__inner" :disabled="![2,3].includes(item.payMethod)" placeholder="请输入" v-model="item.fee"
                        @input="cutNum(item,'fee')">-->
               </section>
@@ -547,10 +547,25 @@
                     this.form.amount = this.$tool.cutFloat({val: this.form.amount, max: 999999999.99})
                 } else {
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
-                    if(![2,3].includes(val.payMethod)&&item==='amount'){
-                        val.fee=val[item]*0.1
+                    if(!this.getPayMethod(val.payMethod)&&item==='amount'){
+                        val.fee=this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])
                     }
                 }
+            },
+            //解决浮点数运算精度
+            multiply : function (arg1, arg2) {
+                var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+                try {
+                    m += s1.split(".")[1].length;
+                }
+                catch (e) {
+                }
+                try {
+                    m += s2.split(".")[1].length;
+                }
+                catch (e) {
+                }
+                return this.$tool.cutFloat({val: Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m), max: 999999999.99});
             },
             inputOnly: function (type, index) {
                 if (type === 'userName') {
@@ -618,8 +633,17 @@
                   this.$refs.tree.blur()
                 }*/
             },
+            //判断支付方式选择
+            getPayMethod:function(method){
+                return [2,3].includes(method)
+            },
             //是否隐藏刷卡补充
             hideCardList: function (val) {
+                if(this.getPayMethod(val.payMethod)){
+                    this.$set(val,'fee','')
+                }else{
+                    this.$set(val,'fee',this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod]))
+                }
                 /*let state = this.payList.every(item => {
                     return item.payMethod === 3
                 })
@@ -631,7 +655,6 @@
             },
             //支付信息表单增减
             payListOper: function (index) {
-                // this.hideCardList()
                 if (index === 0) {
                     let cell = {
                         payMethod: '',
@@ -645,7 +668,6 @@
                     this.payList.splice(index, 1)
                     this.cardOpera('delete',index)
                 }
-                this.hideCardList()
             },
             /**
              * 修改款单，获取初始数据
@@ -692,7 +714,7 @@
                         // }
                         this.form = Object.assign({}, this.form, obj)
                         this.getAcount(this.form.inObjId)
-                        this.hideCardList()
+                        // this.hideCardList()
                     }
                 })
             },

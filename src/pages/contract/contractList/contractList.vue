@@ -190,7 +190,8 @@
         </el-table-column>
         <el-table-column label="合同类型" min-width="70">
           <template slot-scope="scope">
-            {{scope.row.isCombine?"委托合同":scope.row.contType.label}}
+            <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+            <span v-else>{{scope.row.isCombine?"委托合同":scope.row.contType.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="物业地址" min-width="160">
@@ -1261,6 +1262,7 @@ export default {
         if(element.contractEntrust&&element.contractEntrust.id){
           //在指定位置添加元素,第一个参数指定位置,第二个参数指定要删除的元素,如果为0,则追加
           let combineItem = JSON.parse(JSON.stringify(element))
+          combineItem.loanType=0//武汉买卖类型
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
           combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
