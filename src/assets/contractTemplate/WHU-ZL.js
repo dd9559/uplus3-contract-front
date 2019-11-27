@@ -129,9 +129,7 @@ for(let readonlyItem in msg){
     let arr= []
     if(readonlyItem==="companyNames"){
       if(msg[readonlyItem].length>0){
-          let companyName = document.querySelector(`*[extendParam="val1"]`)
-          let companyNameTxt = msg[readonlyItem].join(',')
-          companyName.setAttribute('list',companyNameTxt)
+        element.innerHTML=msg[readonlyItem][0]
       }
   }
     if(onlyReadDom.length>0){
