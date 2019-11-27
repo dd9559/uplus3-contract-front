@@ -15,7 +15,7 @@
           <div class="ach-body">
             <div class="house-divide">
               <div class="house-left f_l">
-              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal}}%</span></h1>  
+              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal?housetotal:0}}%</span></h1>  
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
@@ -413,7 +413,7 @@
 
             <div class="house-divide top20">
               <div class="house-left f_l">
-              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal}}%</span></h1>  
+              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal?clienttotal:0}}%</span></h1>  
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
               </div>
               <div
@@ -808,7 +808,7 @@
 
            <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
+              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>  
               <p class="f_l delive">房客源可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
@@ -1294,7 +1294,7 @@
           </div>
         </div>
 
-          <!-- 业绩审核底部 -->
+          <!-- 申诉审核底部 -->
           <div
             class="ach-footer"
             v-if="dialogType==0"
@@ -1309,73 +1309,6 @@
                 class="color-green"
                 id="savebtn"
               >确定</el-button>
-            </div>
-          </div>
-
-          <!-- 业绩编辑底部 -->
-          <div
-            class="ach-footer"
-            v-if="dialogType==1"
-            style="height:70px;padding-bottom: 30px;width:100%"
-          >
-            <div class="footer-btn-layout f_r">
-              <!-- <el-button
-                type="primary"
-                round
-                @click="keepAch(2,2,'editSave')"
-                class="color-white"
-                v-dbClick
-              >保存</el-button> -->
-              <el-button
-                type="primary"
-                round
-                @click="keepAch(2,1,'editSave')"
-                class="color-blue"
-                id="savebtn2"
-              >保存并提审</el-button>
-            </div>
-          </div>
-          <!-- 业绩反审核底部 -->
-          <div
-            class="ach-footer"
-            v-if="dialogType==2"
-            style="height:90px;padding-bottom: 20px;width:100%"
-          >
-            <p class="f_l" style="width:300px;">审核日期：
-              <el-date-picker
-                v-model="examineDate"
-                type="date"
-                placeholder="选择日期"
-                value-format="timestamp"
-                @change="checkDate"
-              ></el-date-picker>
-            </p>
-            <div class="footer-btn-layout f_r">
-              <el-button
-                type="primary"
-                round
-                @click="keepAch(1,null,'examineSave')"
-                class="color-blue"
-                style="margin-top:20px;"
-                v-dbClick
-              >保存</el-button>
-            </div>
-          </div>
-
-          <!-- 业绩分成底部      -->
-          <div
-            class="ach-footer"
-            v-if="dialogType==3&&!backAId"
-            style="height:70px;padding-bottom: 30px;width:100%"
-          >
-            <div class="footer-btn-layout f_r">
-              <el-button
-                type="primary"
-                round
-                @click=" keepAchDivide(1)"
-                class="color-blue"
-                v-dbClick
-              >保存并提审</el-button>
             </div>
           </div>
 
@@ -2344,6 +2277,7 @@
           roleFlag = true,
           flag = true,
           sum = 0,
+          ser_sum=0,
           sumFlag = false;
         for(let i=0;i<this.houseArr.length;i++){
           this.houseArr[i].sortNum=i+1
@@ -2366,7 +2300,21 @@
         let resultArr = this.houseArr.concat(this.clientArr);
         let resultArr2 = resultArr.concat(this.serviceAgents);
         for (var i = 0; i < resultArr.length; i++) {
-          sum = this.toDecimal(sum,resultArr[i].ratio);
+        sum = this.toDecimal(sum, resultArr[i].ratio);
+        }
+        if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+        for (var i = 0; i < this.serviceAgents.length; i++) {
+          ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
+        }
+        if(ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费分成比例");
+          return
+        }
+        for (var i = 0; i < resultArr2.length; i++) {
           if (this.$route.query.version == '0') {
             // 旧版本 总监 副总 必填
             if(
@@ -2394,11 +2342,6 @@
             ) {
               flag = false;
             }
-          }
-          if (sum == 100) {
-            sumFlag = true;
-          } else {
-            sumFlag = false;
           }
         }
         //flag=true代表信息都填完整，flag=false代表还有信息没有填
@@ -2451,404 +2394,8 @@
           this.$message.error("请完善信息");
         }
       },
-      //弹框驳回操作
-      rejectAch() {
-        if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-          this.$message.error("房源至少保留一人");
-          return false;
-        }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
-          this.$message.error("客源至少保留一人");
-          return false;
-        }
-        var arr1=this.unique(this.houseArr)
-        if(arr1.length<this.houseArr.length){
-          this.$message.error("房源方有重复角色存在，请核实")
-          return
-        }
-        var arr2=this.unique(this.clientArr)
-        if(arr2.length<this.clientArr.length){
-          this.$message.error("客源方有重复角色存在，请核实")
-          return
-        }
-        let arr = [],
-          roleFlag = true,
-          flag = true,
-          sum = 0,
-          sumFlag = false;
-        for(let i=0;i<this.houseArr.length;i++){
-          this.houseArr[i].sortNum=i+1
-          this.houseArr[i].contractId=this.achObj.contractId
-          this.houseArr[i].contractCode=this.contractCode
-        }
-        for(let i=0;i<this.clientArr.length;i++){
-          this.clientArr[i].sortNum=i+1
-          this.clientArr[i].contractId=this.achObj.contractId
-          this.clientArr[i].contractCode=this.contractCode
-        }
-        let resultArr = this.houseArr.concat(this.clientArr);
-        for (var i = 0; i < resultArr.length; i++) {
-          sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (
-            resultArr[i].roleType === "" ||
-            resultArr[i].ratio === "" ||
-            resultArr[i].assignor === "" ||
-            resultArr[i].isJob === "" ||
-            resultArr[i].level3 === "" ||
-            resultArr[i].shopkeeper === "" ||
-            resultArr[i].level4 === "" ||
-            resultArr[i].amaldar === "" ||
-            resultArr[i].manager === ""
-          ) {
-            flag = false;
-          } else if (sum == 100) {
-            sumFlag = true;
-          } else {
-            sumFlag = false;
-          }
-        }
-        if (flag && sumFlag && this.remark != "") {
-          this.loading=true;
-          let param = {
-            id: this.aId,
-            remark: this.remark,
-            distributions: resultArr,
-            agendIds: this.agendIds,
-            contractId: this.achObj.contractId
-          };
-          this.$ajax
-            .postJSON("/api/achievement/examineReject", param)
-            .then(res => {
-              console.log(res.data.status)
-              if (res.data.status == 200) {
-                this.$emit("close");
-                this.loading=false;
-                this.$message({ message: "操作成功", type: "success" });
-                this.$emit("rejectData", this.achIndex, resultArr);
-              }
-            }).catch(error => {
-            this.$message.error({message: error})
-            this.loading=false;
-          });
-        } else if (!sumFlag && flag) {
-          this.$message.error("请输入正确的分成比例");
-        } else if (this.remark == "") {
-          this.$message.error("请填写备注");
-        } else {
-          this.$message.error("请完善信息");
-        }
-      },
       close(){
         this.aplremark=''
-      },
-      // 反审核，编辑的保存
-       keepAch(type, status, editStr) {
-      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-        this.$message.error("房源至少保留一人");
-        return false;
-      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
-        this.$message.error("客源至少保留一人");
-        return false;
-      }
-      var arr1 = this.unique(this.houseArr);
-      if (arr1.length < this.houseArr.length) {
-        this.$message.error("房源方有重复角色存在，请核实");
-        return;
-      }
-      var arr2 = this.unique(this.clientArr);
-      if (arr2.length < this.clientArr.length) {
-        this.$message.error("客源方有重复角色存在，请核实");
-        return;
-      }
-      for (let i = 0; i < this.houseArr.length; i++) {
-        this.houseArr[i].sortNum = i + 1;
-        this.houseArr[i].contractId = this.achObj.contractId;
-        this.houseArr[i].contractCode = this.contractCode;
-        this.houseArr[i].place=this.houseArr[i].checkbox[0]===''?-1:this.houseArr[i].checkbox[0]
-      }
-      for (let i = 0; i < this.clientArr.length; i++) {
-        this.clientArr[i].sortNum = i + 1;
-        this.clientArr[i].contractId = this.achObj.contractId;
-        this.clientArr[i].contractCode = this.contractCode;
-        this.clientArr[i].place=this.clientArr[i].checkbox[0]===''?-1:this.clientArr[i].checkbox[0]
-      }
-      for (let i = 0; i < this.serviceAgents.length; i++) {
-        this.serviceAgents[i].sortNum = i + 1;
-        this.serviceAgents[i].contractId = this.achObj.contractId;
-        this.serviceAgents[i].contractCode = this.contractCode;
-        this.serviceAgents[i].place=this.serviceAgents[i].checkbox[0]===''?-1:this.serviceAgents[i].checkbox[0]
-      }
-      //resultArr表示房源客源加在一起之后组成的数组
-      let resultArr = this.houseArr.concat(this.clientArr);
-      let resultArr2 = resultArr.concat(this.serviceAgents);
-      console.log(this.serviceAgents);
-      let arr = [],
-        roleFlag = true,
-        flag = true,
-        sum = 0,
-        sumFlag = false;
-      for (var i = 0; i < resultArr.length; i++) {
-        sum = this.toDecimal(sum, resultArr[i].ratio);
-        if (this.$route.query.version == "0") {
-          // 旧版本 总监 副总 必填
-          if (
-            resultArr2[i].roleType === "" ||
-            resultArr2[i].ratio === "" ||
-            resultArr2[i].assignor === "" ||
-            resultArr2[i].isJob === "" ||
-            resultArr2[i].level3 === "" ||
-            resultArr2[i].shopkeeper === "" ||
-            resultArr2[i].level4 === "" ||
-            resultArr2[i].amaldar === "" ||
-            resultArr2[i].manager === ""
-          ) {
-            flag = false;
-          }
-        } else {
-          // 新版本 总监 副总 非必填
-          if (
-            resultArr2[i].roleType === "" ||
-            resultArr2[i].ratio === "" ||
-            resultArr2[i].assignor === "" ||
-            resultArr2[i].isJob === "" ||
-            resultArr2[i].level3 === "" ||
-            resultArr2[i].shopkeeper === ""
-          ) {
-            flag = false;
-          }
-        }
-        if (sum == 100) {
-          sumFlag = true;
-        } else {
-          sumFlag = false;
-        }
-      }
-      //  debugger;
-      // console.log(sumFlag);
-      if (flag && sumFlag) {
-        this.loading = true;
-        // 新版本时参数添加level4和storefront4Id字段
-        if (this.$route.query.version == "1") {
-          resultArr.forEach(item => {
-            item.level4 = item.level3;
-            item.storefront4Id = item.storefront3Id;
-          });
-        }
-        let param = {};
-        if (type == 1) {
-          param = {
-            id: this.aId,
-            examineDate: this.examineDate,
-            distributions: resultArr2,
-            agendIds: this.agendIds,
-            contractId: this.achObj.contractId,
-            distributionAgreement: this.filesList
-          };
-        }
-        if (type == 2) {
-          param = {
-            id: this.aId,
-            distributions: resultArr2,
-            agendIds: this.agendIds,
-            status: status,
-            contractId: this.achObj.contractId,
-            distributionAgreement: this.filesList
-          };
-        }
-        this.$ajax
-          .postJSON("/api/achievement/" + editStr, param)
-          .then(res => {
-            if (res.data.status == 200) {
-              let sendObj = {
-                agendIds: this.agendIds
-              };
-              if (type == 1) {
-                this.$emit("saveData", this.achIndex, resultArr);
-              }
-              if (type == 2 && status == 2) {
-                this.$emit("saveData", this.achIndex, resultArr, -1);
-              }
-              if (type == 2 && status == 1) {
-                if (this.state2 === 1) {
-                  this.codeBaseInfo(
-                    this.contractId2,
-                    1,
-                    null,
-                    "getExamineInfo"
-                  );
-                  var paperBtn2 = document.getElementById("savebtn2");
-                  paperBtn2.disabled = true;
-                  paperBtn2.classList.remove("color-blue");
-                  paperBtn2.classList.add("grey");
-                  this.$emit("saveData", this.achIndex, resultArr, 0);
-                }
-              }
-              this.loading = false;
-              this.$emit("close");
-              this.$message({ message: "操作成功", type: "success" });
-            }
-          })
-          .catch(error => {
-            // if(this.state2==0){
-            //   var paperBtn2=document.getElementById('savebtn2')
-            //       paperBtn2.disabled=true
-            //       paperBtn2.classList.remove('color-blue')
-            //       paperBtn2.classList.add('grey')
-            // }
-            if (error.message === "下一节点审批人不存在") {
-              this.checkPerson.flowType = 2;
-              this.checkPerson.code = this.aId;
-              this.checkPerson.state = true;
-              this.checkPerson.type = 1;
-              this.codeBaseInfo(this.contractId2, 1, null, "getExamineInfo");
-              var paperBtn2 = document.getElementById("savebtn2");
-              paperBtn2.disabled = true;
-              paperBtn2.classList.remove("color-blue");
-              paperBtn2.classList.add("grey");
-              this.$emit("saveData", this.achIndex, resultArr, 0);
-            } else {
-              this.$message({
-                message: error,
-                type: "error"
-              });
-            }
-            this.loading = false;
-          });
-      } else if (!sumFlag && flag) {
-        this.$message.error("请输入正确的分成比例");
-      } else {
-        this.$message.error("请完善信息");
-      }
-    },
-      // 业绩分成的保存
-      keepAchDivide(type) {
-        if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-          this.$message.error("房源至少保留一人");
-          return false;
-        }else if(this.houseArr.length != 0 && this.clientArr.length == 0){
-          this.$message.error("客源至少保留一人");
-          return false;
-        }
-        var arr1=this.unique(this.houseArr)
-        if(arr1.length<this.houseArr.length){
-          this.$message.error("房源方有重复角色存在，请核实")
-          return
-        }
-        var arr2=this.unique(this.clientArr)
-        if(arr2.length<this.clientArr.length){
-          this.$message.error("客源方有重复角色存在，请核实")
-          return
-        }
-        for(let i=0;i<this.houseArr.length;i++){
-          this.houseArr[i].sortNum=i+1
-          this.houseArr[i].contractId=this.achObj.contractId
-          this.houseArr[i].contractCode=this.contractCode
-        }
-        for(let i=0;i<this.clientArr.length;i++){
-          this.clientArr[i].sortNum=i+1
-          this.clientArr[i].contractId=this.achObj.contractId
-          this.clientArr[i].contractCode=this.contractCode
-        }
-        let resultArr = this.houseArr.concat(this.clientArr);
-        for (var i = 0; i < resultArr.length; i++) {
-          sum = this.toDecimal(sum,resultArr[i].ratio);
-          if (this.$route.query.version == '0') {
-            // 旧版本 总监 副总 必填
-            if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === "" ||
-              resultArr[i].level4 === "" ||
-              resultArr[i].amaldar === "" ||
-              resultArr[i].manager === ""
-            ) {
-              flag = false;
-            }
-          } else {
-            // 新版本 总监 副总 非必填
-            if(
-              resultArr[i].roleType === "" ||
-              resultArr[i].ratio === "" ||
-              resultArr[i].assignor === "" ||
-              resultArr[i].isJob === "" ||
-              resultArr[i].level3 === "" ||
-              resultArr[i].shopkeeper === ""
-            ) {
-              flag = false;
-            }
-          }
-          if (sum == 100) {
-            sumFlag = true;
-          } else {
-            sumFlag = false;
-          }
-        }
-
-        console.log(sum);
-        if (flag && sumFlag) {
-          this.loading=true;
-          // 新版本时参数添加level4和storefront4Id字段
-          if(this.$route.query.version == '1') {
-            resultArr.forEach(item => {
-              item.level4 = item.level3
-              item.storefront4Id = item.storefront3Id
-            })
-          }
-          let param = {};
-          if (type == 2) {
-            param = {
-              distributions: resultArr,
-              contractCode: this.contractCode,
-              contractId: this.achObj.contractId, //合同id需要详情页面带过来
-              houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
-              receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
-              signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
-              contractType: this.achObj.contractType, //合同类型需要详情页面带过来
-              customerCode: this.achObj.customerCode, //源编号需要详情页面带过来
-              status: 2
-            };
-          }
-          if (type == 1) {
-            param = {
-              distributions: resultArr,
-              contractCode: this.contractCode,
-              contractId: this.achObj.contractId, //合同id需要详情页面带过来
-              houseCode: this.achObj.houseCode, //房源编号需要详情页面带过来
-              receivableComm: this.achObj.receivableComm, //合同应收佣金需要详情页面带过来
-              signDate: this.achObj.signDate, //合同签约时间需要详情页面带过来
-              contractType: this.achObj.contractType, //合同类型需要详情页面带过来
-              customerCode: this.achObj.customerCode, //源编号需要详情页面带过来
-              status: 1
-            };
-          }
-
-          this.$ajax
-            .postJSON("/api/achievement/distributionSave", param)
-            .then(res => {
-              if (res.data.status == 200) {
-                this.$emit("close");
-                this.loading=false;
-                this.$message({ message: "操作成功", type: "success" });
-              }
-            }).catch(error => {
-            if(error.status == 300){
-              this.loading=false;
-              this.checkPerson.flowType=2;
-              this.checkPerson.code= error.data.bizCode;
-              this.checkPerson.state=true;
-              this.checkPerson.type=1;
-            }else{
-              this.$message({ message:error, type: "error"})
-            }
-            this.loading=false;
-          });
-        } else if (!sumFlag && flag) {
-          this.$message.error("请输入正确的分成比例");
-        } else {
-          this.$message.error("请完善信息");
-        }
       },
       closeDialog() {
         this.$emit("close");

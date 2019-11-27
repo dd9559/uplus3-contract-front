@@ -25,7 +25,7 @@
         <div class="ach-body">
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal}}%</span></h1>  
+              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal?housetotal:0}}%</span></h1>  
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
             </div>
             <div class="house-right f_r" v-if="!backAId">
@@ -384,7 +384,7 @@
 
           <div class="house-divide top20">
             <div class="house-left f_l">
-              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal}}%</span></h1>  
+              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal?clienttotal:0}}%</span></h1>  
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
             </div>
             <div class="house-right f_r" v-if="!backAId">
@@ -741,7 +741,7 @@
 
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal}}%</span></h1>  
+              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>  
               <p class="f_l delive">交易服务费可分配业绩：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
@@ -1305,13 +1305,6 @@
           style="height:70px;padding-bottom: 30px;width:100%"
         >
           <div class="footer-btn-layout f_r">
-            <!-- <el-button
-                type="primary"
-                round
-                @click=" keepAchDivide(2)"
-                class="color-white"
-                v-dbClick
-            >保存</el-button>-->
             <el-button
               type="primary"
               round
@@ -2044,7 +2037,7 @@ export default {
         }
       }
     },
-    // 改变区经
+    // 改变总监
     changeAmaldar(val, index, type1) {
       if (val) {
         let idName = val.split("-");
@@ -2253,6 +2246,7 @@ export default {
         roleFlag = true,
         flag = true,
         sum = 0,
+        ser_sum=0,
         sumFlag = false;
       for (let i = 0; i < this.houseArr.length; i++) {
         this.houseArr[i].sortNum = i + 1;
@@ -2274,8 +2268,23 @@ export default {
       }
       let resultArr = this.houseArr.concat(this.clientArr);
       let resultArr2 = resultArr.concat(this.serviceAgents);
+
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
+      }
+      if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+      }
+      for (var i = 0; i < this.serviceAgents.length; i++) {
+          ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
+      }
+      if(ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费分成比例");
+          return
+      }
+      for (var i = 0; i < resultArr2.length; i++) {
         if (this.$route.query.version == "0") {
           // 旧版本 总监 副总 必填
           if (
@@ -2303,11 +2312,6 @@ export default {
           ) {
             flag = false;
           }
-        }
-        if (sum == 100) {
-          sumFlag = true;
-        } else {
-          sumFlag = false;
         }
       }
       //flag=true代表信息都填完整，flag=false代表还有信息没有填
@@ -2402,6 +2406,7 @@ export default {
         roleFlag = true,
         flag = true,
         sum = 0,
+        ser_sum=0,
         sumFlag = false;
       for (let i = 0; i < this.houseArr.length; i++) {
         this.houseArr[i].sortNum = i + 1;
@@ -2425,6 +2430,20 @@ export default {
       let resultArr2 = resultArr.concat(this.serviceAgents);
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
+      }
+      if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+      }
+      for (var i = 0; i < this.serviceAgents.length; i++) {
+          ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
+      }
+      if(ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费分成比例");
+          return
+      }
+      for (var i = 0; i < resultArr2.length; i++) {
         if (this.$route.query.version == "0") {
           // 旧版本 总监 副总 必填
           if (
@@ -2452,11 +2471,6 @@ export default {
           ) {
             flag = false;
           }
-        }
-        if (sum == 100) {
-          sumFlag = true;
-        } else {
-          sumFlag = false;
         }
       }
       if (flag && sumFlag && this.remark != "") {
@@ -2557,14 +2571,29 @@ export default {
       //resultArr表示房源客源加在一起之后组成的数组
       let resultArr = this.houseArr.concat(this.clientArr);
       let resultArr2 = resultArr.concat(this.serviceAgents);
-      console.log(this.serviceAgents);
       let arr = [],
         roleFlag = true,
         flag = true,
         sum = 0,
+        ser_sum=0,
         sumFlag = false;
+
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
+      }
+       if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+      for (var i = 0; i < this.serviceAgents.length; i++) {
+          ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
+      }
+      if(ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费分成比例");
+          return
+        }
+      for (var i = 0; i < resultArr2.length; i++) {
         if (this.$route.query.version == "0") {
           // 旧版本 总监 副总 必填
           if (
@@ -2593,13 +2622,7 @@ export default {
             flag = false;
           }
         }
-        if (sum == 100) {
-          sumFlag = true;
-        } else {
-          sumFlag = false;
-        }
       }
-      // console.log(sumFlag);
       if (flag && sumFlag) {
         this.loading = true;
         // 新版本时参数添加level4和storefront4Id字段
@@ -2739,8 +2762,29 @@ export default {
       }
       let resultArr = this.houseArr.concat(this.clientArr);
       let resultArr2 = resultArr.concat(this.serviceAgents);
+      let arr = [],
+        roleFlag = true,
+        flag = true,
+        sum = 0,
+        ser_sum=0,
+        sumFlag = false;
       for (var i = 0; i < resultArr.length; i++) {
         sum = this.toDecimal(sum, resultArr[i].ratio);
+      }
+      if (sum == 100) {
+          sumFlag = true;
+        } else {
+          sumFlag = false;
+        }
+      for (var i = 0; i < this.serviceAgents.length; i++) {
+         ser_sum = this.toDecimal(ser_sum,this.serviceAgents[i].ratio)
+        
+      }
+      if(ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费分成比例");
+          return
+        }
+      for (var i = 0; i < resultArr2.length; i++) {
         if (
           resultArr2[i].roleType === "" ||
           resultArr2[i].ratio === "" ||
@@ -2753,11 +2797,7 @@ export default {
           resultArr2[i].manager === ""
         ) {
           flag = false;
-        } else if (sum == 100) {
-          sumFlag = true;
-        } else {
-          sumFlag = false;
-        }
+        } 
       }
 
       console.log(sum);
