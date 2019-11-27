@@ -1534,12 +1534,14 @@
         preloadList: [],
         preloadFiles: [],
         contType:'',
+        cityId:''
       };
     },
     components:{
       checkPerson
     },
-    created() {  
+    created() {
+      this.cityId=this.userInfo.cityId  
       this.contType=this.$route.query.contType
       this.dialogType=this.$route.query.dialogType
       this.contractCode=this.$route.query.contractCode
@@ -2314,36 +2316,48 @@
           this.$message.error("请输入正确的交易服务费分成比例");
           return
         }
-        for (var i = 0; i < resultArr2.length; i++) {
-          if (this.$route.query.version == '0') {
-            // 旧版本 总监 副总 必填
-            if(
-              resultArr2[i].roleType === "" ||
-              resultArr2[i].ratio === "" ||
-              resultArr2[i].assignor === "" ||
-              resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === "" ||
-              resultArr2[i].level4 === "" ||
-              resultArr2[i].amaldar === "" ||
-              resultArr2[i].manager === ""
-            ) {
-              flag = false;
-            }
-          } else {
-            // 新版本 总监 副总 非必填
-            if(
-              resultArr2[i].roleType === "" ||
-              resultArr2[i].ratio === "" ||
-              resultArr2[i].assignor === "" ||
-              resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === ""
-            ) {
-              flag = false;
-            }
+      for (var i = 0; i < resultArr2.length; i++) {
+        if (this.$route.query.version == "0") {
+          // 旧版本 总监 副总 必填
+          if (
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === "" ||
+            resultArr2[i].level4 === "" ||
+            resultArr2[i].amaldar === "" ||
+            resultArr2[i].manager === ""
+          ) {
+            flag = false;
           }
+        } else {
+          // 新版本 总监 副总 非必填
+          if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""
+            ){
+              flag = false;
+            }
+          }else{
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""||
+                resultArr2[i].shopkeeper === ""
+            ){
+              flag = false;
+            }
+            }
         }
+      }
         //flag=true代表信息都填完整，flag=false代表还有信息没有填
         // console.log(sumFlag);
 

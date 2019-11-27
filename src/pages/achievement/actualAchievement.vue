@@ -750,7 +750,7 @@
             </div>
             <div class="role">
               <span class="point jianju" style="margin-right:25px;">审核人：</span>{{depName}}
-              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" placeholder="请选择"  
+              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" filterable  placeholder="请选择"  
                @change="getName">
                     <el-option v-for="item in this.empNames" :key="item.empId" :label="item.name"  :value="item.empId"></el-option>
               </el-select>

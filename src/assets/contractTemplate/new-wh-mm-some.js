@@ -26,15 +26,16 @@ let sub = {
   'val6': null,
   'val7': null,
   'val8': null,
+  'checkbox_pmoney':null,
   'val9': null,
+  'checkbox_zhizhao2':{
+    stateful: function(index) {
+      return index===1?{'val100': null,'val101':null} : null
+    }
+  },
   'checkbox_leakage': {
     stateful: function(index) {
       return index===1?{'checkbox_leakagePlace': null} : null
-    }
-  },
-  'checkbox_zhizhao2':{
-    stateful: function(index) {
-      return index===2?{'val100': null,'val101':null} : null
     }
   },
   'checkbox_death': null,
@@ -49,8 +50,7 @@ let sub = {
     }
   },
   'val14': null,
-  'checkbox_ownerCost': null,
-  // 'checkbox_guestCost': null,
+  'checkbox_ownerCost':null,
   'checkbox_incomeTax': null,
   'checkbox_otherCost': null,
 }
@@ -152,9 +152,14 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     if(proveTypeDoms[0].querySelector('p').getAttribute('checked')==='true'||proveTypeDoms[2].querySelector('p').getAttribute('checked')==='true'){
       document.querySelector(`span[extendparam="val100"]`).setAttribute('systemParam','true')
       document.querySelector(`span[extendparam="val101"]`).setAttribute('systemParam','true')
-  }else{
-      document.querySelector(`span[extendparam="val100"]`).removeAttribute('systemParam')
-      document.querySelector(`span[extendparam="val101"]`).removeAttribute('systemParam')
+  }
+  if(proveTypeDoms[1].querySelector('p').getAttribute('checked')==='true'){
+      document.querySelector(`span[extendparam="val100"]`).removeAttribute('systemParam','true')
+      document.querySelector(`span[extendparam="val101"]`).removeAttribute('systemParam','true')
+  }
+  else{
+    document.querySelector(`span[extendparam="val100"]`).setAttribute('systemParam','true')
+    document.querySelector(`span[extendparam="val101"]`).setAttribute('systemParam','true')
   }
   }
   else if(attr == 'guaranty'){//第二条  抵押人是否可输入逻辑

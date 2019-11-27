@@ -32,7 +32,7 @@
         <el-table-column  label="上传人" prop="currentUpdateByName" :formatter="nullFormatter"></el-table-column>
         <el-table-column  label="上传时间" :formatter="nullFormatter">
           <template slot-scope="scope">
-            {{scope.row.uploadTime | formatDate}}
+            {{scope.row.uploadTime | formatTime(false)}}
           </template>
         </el-table-column>
         <el-table-column  label="已使用份数" prop="useNum"></el-table-column>
