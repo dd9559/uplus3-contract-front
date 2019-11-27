@@ -5,7 +5,7 @@ let Obj = {
 }
 
 let sub = {
-  'val1':null,
+  "val1": null,
   "val2": null,
   'val3': null,
 }
@@ -90,21 +90,21 @@ contractConfig.inputListener(function(ev,tip){
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
+  if(readonlyItem==="companyNames"){
+    if(msg[readonlyItem].length>0){
+      let companyName = document.querySelector(`*[extendParam="val1"]`)
+      // let companyNameTxt = msg[readonlyItem].join(',')
+      // companyName.setAttribute('list',companyNameTxt)
+      companyName.innerHTML=msg[readonlyItem][0]
+    }
+  }
   let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
-      if(readonlyItem==='companyNames'){e
-        if(msg[readonlyItem].length>0){
-          element.innerHTML=msg[readonlyItem][0]
-          element.classList.remove('input-before')
-        }
-      }else{
+      if(readonlyArr.includes(readonlyItem)){
         element.innerHTML=msg[readonlyItem]
-        element.classList.remove('input-title')
-        element.classList.remove('input-title2')
         element.classList.remove('input-before')
       }
-
     })
   }
 }
