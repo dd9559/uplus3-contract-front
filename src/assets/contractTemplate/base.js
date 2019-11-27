@@ -69,10 +69,12 @@ let contractConfig = {
         input.classList.remove('BODERRED');
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
-          contractConfig.errorArr.push({
+          let _errorMsg={
             type:'input',
             name:item
-          });
+          }
+          input.getAttribute('company')&&(_errorMsg.company=true)
+          contractConfig.errorArr.push(_errorMsg);
           break;
         }
       }
