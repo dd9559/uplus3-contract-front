@@ -10,7 +10,7 @@ let obj = {
 }
 
 let Obj1 = {
-    val3:'',
+  val3:'',
     val5:'',
     val6:'',
     val8:'',
@@ -33,10 +33,12 @@ function submit() {
         document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
     }
     if(Obj1[item].length===0){
-        errorArr.push({
+      let _errorMsg={
         type:'input',
         name:item
-        })
+      }
+      document.querySelector(`*[extendparam=${item}]`).getAttribute('company')&&(_errorMsg.company=true)
+        errorArr.push(_errorMsg)
         break
     }
     }
@@ -124,8 +126,8 @@ for(let readonlyItem in msg){
     if(readonlyItem==="companyNames"){
         if(msg[readonlyItem].length>0){
             let companyName = document.querySelector(`*[extendParam="val3"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
+            let companyNameTxt = msg[readonlyItem][0]
+            companyName.innerHTML=companyNameTxt
         }
     }
     if(onlyReadDom.length>0){

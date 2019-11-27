@@ -686,6 +686,8 @@ export default {
     moveOut(type){
       if(type==="online"){
         this.showOnLine=false
+      }else if(type==="offline"){
+        this.showOffLine=false
       }else{
         this.showPrint=false
       }
@@ -1209,7 +1211,7 @@ export default {
         let value = {
           id:item.id,
           transFlowName:item.stepInstanceName,
-          statusReceiveAmount:item.receiveAmountState
+          statusReceiveAmount:item.resultState
         }
         this.$refs.lateProgress.show(value);
       }else{

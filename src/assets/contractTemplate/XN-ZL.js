@@ -132,6 +132,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
   }
 
 let sub = {
+  'val25': null,
   'checkbox_zhizhao4': {
     stateful:function (index) {
       return index===3?{'val32':null}:null
