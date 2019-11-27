@@ -1476,7 +1476,6 @@ export default {
   name: "achDialog",
   data() {
     return {
-      aaa:[],
       contDataFiles: [], //资料库图片缩略图
       mainDataFiles: [], //合同主体图片缩略图
       // distributionAgreement: [],
@@ -2511,10 +2510,12 @@ export default {
     checkDate:function(val){
             let date=new Date(val);
             if(date.getTime()>Date.now()){
+                this.examineDate=this.examineDate_2
                 this.$message({
                     message:'不能选择未来时间'
                 })
             }
+            this.examineDate_2=this.examineDate
     },
     // 反审核，编辑的保存
     keepAch(type, status, editStr) {
@@ -2907,6 +2908,7 @@ export default {
           }
           if (res.data.data.examineDate) {
             this.examineDate = res.data.data.examineDate;
+            this.examineDate_2 = res.data.data.examineDate;
           }
           //  this.$emit("opens");
           this.loading = false;
