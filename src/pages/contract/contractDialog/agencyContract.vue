@@ -198,7 +198,7 @@ export default {
             })
         },
         isSave() {
-            debugger
+            // debugger
             if(this.tradeFee.includes('.')) {
                 if(!/\d\.\d/.test(this.tradeFee)){
                     this.$message({message: '请输入正确的交易服务费',type:'error'})
