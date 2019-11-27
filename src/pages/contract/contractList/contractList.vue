@@ -135,16 +135,22 @@
               </ul>
             </div>
           </div>
-          <el-dropdown placement="bottom" @command="toAddcontract" v-if="power['sign-ht-info-addoffline'].state">
-            <el-button round type="primary" size="small">
-              录入线下合同<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in dictionary['65']" :key="item.key" :command="item.key+'offline'">
-                {{item.value}}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          <div class="haveSon" :class="{'showOnLine':showOffLine}" @mouseover="moveIn('offline')" @mouseout="moveOut('offline')" v-if="power['sign-ht-info-addoffline'].state">
+            录入线下合同<i class="el-icon-arrow-down el-icon--right"></i>
+            <div class="holderPlace" v-if="dictionary['65']">
+              <ul class="mainList">
+                <li v-for="item in dictionary['65']" :key="item.key" @click="addOffLine(item)" style="position:relative;">
+                  {{item.value}}
+                  <i class="el-icon-caret-right" v-if="item.key===2&&item.children" style="position:absolute;top:10px;left:55px;"></i>
+                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                    <ul class="childrenList">
+                      <li v-for="item_ in item.children" :key="item_.key" @click="addOffLine(item_)">{{item_.value}}</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div class="haveSon printStyle" :class="{'showOnLine':showPrint}" @mouseover="moveIn('print')" @mouseout="moveOut('print')" v-if="power['sign-ht-info-print'].state">
             打印空白合同<i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
@@ -455,7 +461,6 @@ export default {
       //流水弹窗
       water: false,
       flowType: 1,
-      // contractCode: "",
       tiaoyong: false,
       layerAudit:{},
       jiesuan: false,
@@ -619,7 +624,8 @@ export default {
         }
       },
       showOnLine:false,
-      showPrint:false
+      showPrint:false,
+      showOffLine:false,
     };
   },
   created() {
@@ -671,6 +677,8 @@ export default {
     moveIn(type){
       if(type==="online"){
         this.showOnLine=true
+      }else if(type==="offline"){
+        this.showOffLine=true
       }else{
         this.showPrint=true
       }
@@ -915,24 +923,24 @@ export default {
       }
     },
     uploadData(value) {
-        if(this.power['sign-com-htdetail'].state){
-          // let pathArr = this.getPath.concat([{name:"合同详情"}])
-          // this.setPath(pathArr)
-          this.$router.push({
-            path: "/contractDetails",
-            query: {
-              type: "dataBank",
-              id: value.id,
-              code:value.code,
-              contType: value.contType.value
-            }
-          });
-        }else{
-          this.$message({
-            message:"没有合同详情权限",
-            type:"warning"
-          })
-        }
+      if(this.power['sign-com-htdetail'].state){
+        // let pathArr = this.getPath.concat([{name:"合同详情"}])
+        // this.setPath(pathArr)
+        this.$router.push({
+          path: "/contractDetails",
+          query: {
+            type: "dataBank",
+            id: value.id,
+            code:value.code,
+            contType: value.contType.value
+          }
+        });
+      }else{
+        this.$message({
+          message:"没有合同详情权限",
+          type:"warning"
+        })
+      }
     },
     handleCurrentChange(val) {
       this.currentPage = val;
@@ -994,27 +1002,38 @@ export default {
         }
     },
     //新增线下合同
-    toAddcontract(command) {
-      command=Number(command.replace("offline",""))
-      localStorage.removeItem('backMsg')
-      if (command === 1 || command === 2 || command === 3) {
-        this.$router.push({
-          path: "/addContract",
-          query: {
-            type: command,
-            operateType:1,
-            isOffline:1
-          }
-        });
-      } else if (command === 4 || command === 5) {
-        this.$router.push({
-          path: "/newIntention",
-          query: {
-            contType: command,
-            operateType:1,
-            isOffline:1
-          }
-        });
+    addOffLine(val){
+      if(val.key!=2||val.key===2&&!val.children){
+        this.showOffLine=false
+        if (val.key === 1 || val.key === 2 || val.key === 3) {
+          this.$router.push({
+            path: "/addContract",
+            query: {
+              type: val.key,
+              operateType:1,
+              isOffline:1
+            }
+          });
+        } else if(val.key === 7 || val.key === 8){
+          this.$router.push({
+            path: "/addContract",
+            query: {
+              type: 2,
+              operateType:1,
+              isOffline:1,
+              loanType:val.key
+            }
+          });
+        }else if (val.key === 4 || val.key === 5) {
+          this.$router.push({
+            path: "/newIntention",
+            query: {
+              contType: val.key,
+              operateType:1,
+              isOffline:1
+            }
+          });
+        }
       }
     },
     //合同预览

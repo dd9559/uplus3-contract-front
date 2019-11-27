@@ -42,7 +42,8 @@
                             res = res.data
                             if (res.status === 200) {
                                 this.$store.commit('setUser', res.data)
-                                if (window.location.host==='sign2.jjw.com'&&res.data.user && res.data.user.empId === 37109) {
+                                let host=window.location.host
+                                if (host==='sign2.jjw.com'&&res.data.user&&res.data.user.empId===37109) {
                                     this.$router.push({
                                         path: 'commission'
                                     })

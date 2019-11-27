@@ -175,7 +175,7 @@
             <div class="bankCard-list" v-if="billStatus&&payList[index].payMethod!==3">
               <p><label class="f14">刷卡资料补充</label></p>
               <el-table border :data="[cardList[index]]" style="width: 100%" header-row-class-name="theader-bg">
-                <el-table-column align="center" label="刷卡银行">
+                <el-table-column align="center" label="刷卡/转账银行">
                   <template slot-scope="scope">
                     <span>{{scope.row.bankName|formatNull}}</span>
                   </template>
