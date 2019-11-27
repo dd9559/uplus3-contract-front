@@ -70,7 +70,6 @@ contractConfig.checkboxListener()
   }
 
 let sub = {
-  'val1': null,
   'val2': null,
   'time_val3': null,
   'time_val4': null,
@@ -127,18 +126,14 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr= []
-    if(readonlyItem==="companyNames"){
-      if(msg[readonlyItem].length>0){
-          let companyName = document.querySelector(`*[extendParam="val1"]`)
-          let companyNameTxt = msg[readonlyItem].join(',')
-          companyName.setAttribute('list',companyNameTxt)
-      }
-  }
     if(onlyReadDom.length>0){
   onlyReadDom.forEach((element,index) => {
      if(readonlyItem==='code'){
         element.value=msg[readonlyItem]
         element.setAttribute('value', msg[readonlyItem])
+    }else if(readonlyItem==="companyNames"){
+      element.innerHTML=msg[readonlyItem][0]
+      element.classList.remove('input-before')
     }
     else{
         element.innerHTML=msg[readonlyItem]
