@@ -95,6 +95,7 @@ for(let readonlyItem in msg){
             }else if(readonlyItem==='companyNames'){
                 if(msg[readonlyItem].length>0){
                     element.innerHTML=msg[readonlyItem][0]
+                    element.classList.remove('input-before')
                   }
             }else if(readonlyItem==='propertyAddr'){
                 if(element.getAttribute("extendParam")==="val4"){
