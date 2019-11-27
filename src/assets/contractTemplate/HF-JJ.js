@@ -10,7 +10,6 @@ let obj = {
 }
 
 let Obj1 = {
-    val3:'',
     val5:'',
     val6:'',
     val8:'',
@@ -124,8 +123,8 @@ for(let readonlyItem in msg){
     if(readonlyItem==="companyNames"){
         if(msg[readonlyItem].length>0){
             let companyName = document.querySelector(`*[extendParam="val3"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
+            let companyNameTxt = msg[readonlyItem][0]
+            companyName.innerHTML=companyNameTxt
         }
     }
     if(onlyReadDom.length>0){

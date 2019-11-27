@@ -1,7 +1,6 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 
 let sub = {
-    'val3': null,
     'time_val5': null,
     'val8': null,
     'val10': null
@@ -75,13 +74,6 @@ for(let readonlyItem in msg){
         arr.push(time.getMonth()+1)
         arr.push(time.getDate())
     }
-    if(readonlyItem==="companyNames"){
-        if(msg[readonlyItem].length>0){
-            let companyName = document.querySelector(`*[extendParam="val3"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
-        }
-    }
     if(onlyReadDom.length>0){
         onlyReadDom.forEach((element,index) => {
             if(readonlyItem==='signDate'){
@@ -100,6 +92,11 @@ for(let readonlyItem in msg){
                 }else{
                     element.innerHTML = msg['guestName']
                 }
+            }else if(readonlyItem==='companyNames'){
+                if(msg[readonlyItem].length>0){
+                    element.innerHTML=msg[readonlyItem][0]
+                    element.classList.remove('input-before')
+                  }
             }else if(readonlyItem==='propertyAddr'){
                 if(element.getAttribute("extendParam")==="val4"){
                     let value = msg["propertyAddr"]

@@ -1,6 +1,5 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 let obj = {
-  val6:'',
   check1:{
     name:'proveType',
     require:true
@@ -106,7 +105,7 @@ function submit(e,Obj=obj){
           Obj[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
         }else{
           Obj[item]=document.querySelector(`input[extendparam=${item}]`).value
-        } 
+        }
       }else{
         Obj[item]=document.querySelector(`span[extendparam=${item}]`).innerHTML
       }
@@ -230,50 +229,7 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg = {
-//   code: "Z0001190610001",
-//   commissionPayment: 0,
-//   companyNames: ["adfasfd"],
-//   custCommission: 0,
-//   custCommissionUpper: "零",
-//   custEnsure: 0,
-//   dealPrice: 4000,
-//   dealPriceUpper: "肆仟",
-//   guestCardType: "2",
-//   guestCardTypes: "",
-//   guestID: "345345345",
-//   guestIDs: "",
-//   guestName: "租个房子",
-//   guestNames: "",
-//   guestTel: "13071291915",
-//   guestTels: "",
-//   guestinfoCode: "CSXD000063",
-//   houseinfoCode: "Z461JYHH000182",
-//   id: 1978,
-//   isHaveData: 0,
-//   isWuHanMM: 0,
-//   moneyUnit: "元",
-//   otherCooperationCost: 0,
-//   ownerCardType: "2",
-//   ownerCardTypes: "",
-//   ownerCommission: 1212,
-//   ownerCommissionUpper: "壹仟贰佰壹拾贰",
-//   ownerID: "123123123",
-//   ownerIDs: "",
-//   ownerName: "录房勘啊",
-//   ownerNames: "",
-//   ownerTels: "",
-//   propertyAddr: "啊时代发生的发生地方",
-//   propertyCard: "",
-//   remarks: "",
-//   signDate: 1560096000000,
-//   square: 235,
-//   squareUse: 200,
-//   subscriptionPrice: 0,
-//   subscriptionPriceUpper: "零",
-//   timeUnit: "月",
-//   type: 1
-// }
+
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
@@ -286,8 +242,8 @@ for(let readonlyItem in msg){
   if(readonlyItem==="companyNames"){
     if(msg[readonlyItem].length>0){
       let companyName = document.querySelector(`*[extendParam="val6"]`)
-      let companyNameTxt = msg[readonlyItem].join(',')
-      companyName.setAttribute('list',companyNameTxt)
+      let companyNameTxt = msg[readonlyItem][0]
+      companyName.innerHTML=companyNameTxt
     }
   }
   if(onlyReadDom.length>0){

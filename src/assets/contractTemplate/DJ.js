@@ -20,7 +20,6 @@
     }
 
     let Obj5 = {   //校验
-        val5:'',
         val7:'',
         val13:'',
         check1:{
@@ -118,7 +117,7 @@
        sessionStorage.setItem('templateError',JSON.stringify(errorArr1))
        console.log(errorArr1)
        return errorArr1
-     } 
+     }
     // document.querySelector('#submit').addEventListener('click',submit)
     //初始化时间控件
     Calendar.create({
@@ -313,7 +312,20 @@
     })
 
     //基础数据赋值
-    let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+    // let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+    let msg={
+      cityId: 1,
+      code: "S0001191127005",
+      commissionPayment: 0,
+      companyNames: ["森林小镇", "金银湖三级门店哦"],
+      custCommission: 0,
+      custCommissionUpper: "零",
+      custEnsure: 0,
+      dealPrice: 1000,
+      dealPriceUpper: "壹仟",
+      guestCardType: "护照",
+      guestCardTypes: ""
+    }
     for(let readonlyItem in msg){
         let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
         let arr= []
@@ -326,8 +338,8 @@
         if(readonlyItem==="companyNames"){
             if(msg[readonlyItem].length>0){
                 let companyName = document.querySelector(`input[extendParam="val5"]`)
-                let companyNameTxt = msg[readonlyItem].join(',')
-                companyName.setAttribute('list',companyNameTxt)
+                let companyNameTxt = msg[readonlyItem][0]
+                companyName.value=companyNameTxt
             }
         }
         if(onlyReadDom.length>0){

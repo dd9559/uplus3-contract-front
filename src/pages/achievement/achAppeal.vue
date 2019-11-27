@@ -813,46 +813,6 @@ export default {
       });
       window.open(newPage.href, "_blank");
     },
-    // editAch(value,index) {            //编辑时触发
-    //     this.beginData = true;
-    //     this.code2 =  value.code;
-    //     this.aId =  value.aId;
-    //     this.contractId =  value.id;
-    //     this.dialogType = 1;
-    //     this.achIndex=index
-    //     this.achObj={
-    //       contractId:value.id,//合同id
-    //     }
-    //     this.shows = true;
-    // },
-    editAch(value, index) {
-      let newPage = this.$router.resolve({
-        path: "/achPage",
-        query: {
-          aId: value.aId,
-          contractCode: value.code,
-          dialogType: 1,
-          achIndex: index,
-          achObj: JSON.stringify({ contractId: value.id }),
-          contractId: value.id
-        }
-      });
-      window.open(newPage.href, "_blank");
-    },
-    againCheck(value, index) {
-      let newPage = this.$router.resolve({
-        path: "/achPage",
-        query: {
-          aId: value.aId,
-          contractCode: value.code,
-          dialogType: 2,
-          achIndex: index,
-          achObj: JSON.stringify({ contractId: value.id }),
-          contractId: value.id
-        }
-      });
-      window.open(newPage.href, "_blank");
-    },
     //分页
     handleSizeChange(val) {
       console.log(val);
