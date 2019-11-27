@@ -255,13 +255,13 @@
         </el-table-column>
         <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-              <span v-if="scope.row.contType.value<4">
-                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-              </span>
-              <span v-else>-</span>
+            <span v-if="scope.row.contType.value<4">
+              <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+              <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+              <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+              <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
@@ -333,8 +333,8 @@
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
-              <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
-              <span v-else>-</span>
+            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="打印次数">
