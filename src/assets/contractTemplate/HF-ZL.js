@@ -1,5 +1,6 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 let obj = {
+  val6:'',
   check1:{
     name:'proveType',
     require:true
@@ -111,10 +112,12 @@ function submit(e,Obj=obj){
       }
       document.querySelector(`*[extendparam=${item}]`).classList.remove('BODERRED')
       if(Obj[item].length===0){
-        errorArr1.push({
+        let _errorMsg={
           type:'input',
           name:item
-        })
+        }
+        document.querySelector(`*[extendparam=${item}]`).getAttribute('company')&&(_errorMsg.company=true)
+        errorArr1.push(_errorMsg)
         break
       }
     }
@@ -229,7 +232,6 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
