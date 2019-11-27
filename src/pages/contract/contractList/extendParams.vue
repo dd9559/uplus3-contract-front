@@ -357,10 +357,17 @@ export default {
 					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					if(this.isActive===1){
 						if(emptyInput1.length>0){
-							this.$message({
-								message:'合同信息未填写完整',
-								type:'warning'
-							})
+							if(emptyInput1[0].company){
+								this.$message({
+									message:'主客方门店未设置公章',
+									type:'warning'
+								})
+							}else{
+								this.$message({
+									message:'合同信息未填写完整',
+									type:'warning'
+								})
+							}
 							let inputHeight1=0
 							if(emptyInput1[0].type){
 								let inputTag = iframebox1.contentWindow.document.querySelector(`*[extendparam=${emptyInput1[0].name}]`)
@@ -378,10 +385,17 @@ export default {
 						}
 					}else{
 						if(emptyInput2.length>0){
-							this.$message({
-								message:'合同信息未填写完整',
-								type:'warning'
-							})
+							if(emptyInput2[0].company){
+								this.$message({
+									message:'主客方门店未设置公章',
+									type:'warning'
+								})
+							}else{
+								this.$message({
+									message:'合同信息未填写完整',
+									type:'warning'
+								})
+							}
 							let inputHeight2=0
 							if(emptyInput2[0].type){
 								let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
@@ -401,10 +415,17 @@ export default {
 				}else{//非武汉买卖
 					emptyInput2 = sessionStorage.getItem("templateError1")?JSON.parse(sessionStorage.getItem("templateError1")):[];
 					if(emptyInput2.length>0){
-						this.$message({
-							message:'合同信息未填写完整',
-							type:'warning'
-						})
+						if(emptyInput2[0].company){
+							this.$message({
+								message:'主客方门店未设置公章',
+								type:'warning'
+							})
+						}else{
+							this.$message({
+								message:'合同信息未填写完整',
+								type:'warning'
+							})
+						}
 						let inputHeight2=0
 						if(emptyInput2[0].type){
 							let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
@@ -421,10 +442,17 @@ export default {
 				iframebox1.contentWindow.document.querySelector("#submit").click()
 				emptyInput1 = sessionStorage.getItem("templateError")?JSON.parse(sessionStorage.getItem("templateError")):[];
 				if(emptyInput1.length>0){
-					this.$message({
-						message:'合同信息未填写完整',
-						type:'warning'
-					})
+					if(emptyInput1[0].company){
+						this.$message({
+							message:'主客方门店未设置公章',
+							type:'warning'
+						})
+					}else{
+						this.$message({
+							message:'合同信息未填写完整',
+							type:'warning'
+						})
+					}
 					let inputHeight1=0
 					if(emptyInput1[0].type){
 						let inputTag = iframebox1.contentWindow.document.querySelector(`*[extendparam=${emptyInput1[0].name}]`)
