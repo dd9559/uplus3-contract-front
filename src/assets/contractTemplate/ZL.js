@@ -1,6 +1,5 @@
 let obj = {
     val22:'',
-    val25:'',
     val26:'',
     val27:'',
     check4:{
@@ -598,9 +597,11 @@ for(let readonlyItem in msg){
     }
     if(readonlyItem==="companyNames"){
         if(msg[readonlyItem].length>0){
-            let companyName = document.querySelector(`input[extendParam="val25"]`)
-            let companyNameTxt = msg[readonlyItem].join(',')
-            companyName.setAttribute('list',companyNameTxt)
+            let companyName = document.querySelector(`span[extendParam="val25"]`)
+            // let companyNameTxt = msg[readonlyItem].join(',')
+            // companyName.setAttribute('list',companyNameTxt)
+            companyName.innerHTML=msg[readonlyItem][0]
+            companyName.classList.remove("input-title1")
         }
     }
     if(onlyReadDom.length>0){

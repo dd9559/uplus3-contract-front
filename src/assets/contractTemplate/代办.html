@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="/datepicker.css"/>
+    <!-- <link rel="stylesheet" href="/datepicker.css"/> -->
     <title>代办合同</title>
     <style>
        body{
@@ -83,6 +83,13 @@
             color: #a1a1a1;
             display: inline-block;
             width: 665px;
+        }
+        span[tag='input-auto'].input-title1:before{
+            content:'请输入';
+            text-align: left;
+            color: #a1a1a1;
+            display: inline-block;
+            width: 590px;
         }
         .container{
             position: relative;
@@ -813,7 +820,7 @@
         <p>地  址：<span tag="input-auto" extendParam="val8" class="input-before"></span></p>
         <p>电  话：<span systemParam="guestTel" extendParam="val9" class="input-before" tag="input-auto"></span></p>
 
-        <p style="margin-top:20px;position:relative;"><img class="SignatureLocation" style="position:absolute;left:130px;top:-50px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" />丙方（中介方）：<input type="text" maxlength="25" extendParam="val10" class="text-limit dropdown-item" value="" tag="input" style="width:615px;"/></p>
+        <p style="margin-top:20px;position:relative;"><img class="SignatureLocation" style="position:absolute;left:130px;top:-50px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" />丙方（中介方）：<span extendParam="val10" systemParam="true" class="input-title1" tag="input-auto"></span></p>
         <p>地  址：<span extendParam="val11" tag="input-auto" class="input-title"></span></p>
         <p>电  话：<span extendParam="val12" listen="number" max="11" class="input-title" tag="input-auto"></span></p>
 
@@ -912,12 +919,12 @@
                 </p>
         </div>
      </div>
-    <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+    <!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
     <script type="text/javascript" src="/browser.min.js"></script>
     <script type="text/javascript" src="/datepicker.js"></script>
     <script type="text/javascript" src="/dropdown.js"></script>
-    <script type="text/javascript" src="/js/bundle_db20190409.js"></script>
-     <!-- <script>
+    <script type="text/javascript" src="/js/bundle_db20190409.js"></script> -->
+     <script>
          (function () {
             var scriptList = document.getElementsByTagName("script")
             console.log(scriptList)
@@ -928,9 +935,10 @@
                 for (let i = 0; i < addrList.length; i++) {
                 if(window.location.host==='localhost:8080'){
                     if(addrList[i].indexOf('bundle')>-1){
-                    addrList[i]=host_other+'/'+addrList[i]
+                        // addrList[i]=host_other+'/'+addrList[i]
+                        addrList[i]="./DB.js"
                     }else{
-                    addrList[i]=host_other+'/'+addrList[i]
+                        addrList[i]=host_other+'/'+addrList[i]
                     }
                 }else{
                     addrList[i]='/'+addrList[i]
@@ -939,10 +947,12 @@
                     var hm = document.createElement("link");
                     hm.rel="stylesheet"
                     hm.href = addrList[i];
-                    var s = document.getElementsByTagName("link")[0];
-                    s.parentNode.insertBefore(hm,s);
+                    // var s = document.getElementsByTagName("link")[0];
+                    // s.parentNode.insertBefore(hm,s);
+                    document.head.appendChild(hm);
                 }else{
                     var hm = document.createElement("script");
+                    addrList[i].includes('DB')&&(hm.type = 'module');
                     hm.src = addrList[i];
                     var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
                     s.parentNode.insertBefore(hm,s);
@@ -950,6 +960,6 @@
             }
         }
         })();
-    </script> -->
+    </script>
 </body>
 </html>

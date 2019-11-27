@@ -1,6 +1,5 @@
 let obj = {
     val8:'',
-    val10:'',
     val11:'',
     val12:'',
     val14:'',
@@ -316,19 +315,21 @@ inputAutoBoxs[i].onclick=function (tip) {
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
-let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-let arr= []
-if(readonlyItem==='signDate'){
-   let time = new Date(msg.signDate)
-   arr.push(time.getFullYear())
-   arr.push(time.getMonth()+1)
-   arr.push(time.getDate())
-}
-if(readonlyItem==="companyNames"){
-   if(msg[readonlyItem].length>0){
-       let companyName = document.querySelector(`input[extendParam="val10"]`)
-       let companyNameTxt = msg[readonlyItem].join(',')
-       companyName.setAttribute('list',companyNameTxt)
+    let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
+    let arr= []
+    if(readonlyItem==='signDate'){
+        let time = new Date(msg.signDate)
+        arr.push(time.getFullYear())
+        arr.push(time.getMonth()+1)
+        arr.push(time.getDate())
+    }
+    if(readonlyItem==="companyNames"){
+    if(msg[readonlyItem].length>0){
+        let companyName = document.querySelector(`span[extendParam="val10"]`)
+        // let companyNameTxt = msg[readonlyItem].join(',')
+        // companyName.setAttribute('list',companyNameTxt)
+        companyName.innerHTML=msg[readonlyItem][0]
+        companyName.classList.remove("input-title1")
    }
 }
 if(onlyReadDom.length>0){

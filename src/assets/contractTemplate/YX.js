@@ -1,5 +1,4 @@
    let obj = {
-        val3: '',
         val8: '',
         val9: '',
         val12: '',
@@ -7,7 +6,6 @@
         val16: '',
     }
     let Obj4 = {  //校验
-        val3: '',
         val8: '',
         val9: '',
         val12: '',
@@ -194,9 +192,11 @@
         }
         if(readonlyItem==="companyNames"){
             if(msg[readonlyItem].length>0){
-                let companyName = document.querySelector(`input[extendParam="val3"]`)
-                let companyNameTxt = msg[readonlyItem].join(',')
-                companyName.setAttribute('list',companyNameTxt)
+                let companyName = document.querySelector(`span[extendParam="val3"]`)
+                // let companyNameTxt = msg[readonlyItem].join(',')
+                // companyName.setAttribute('list',companyNameTxt)
+                companyName.innerHTML=msg[readonlyItem][0]
+                companyName.classList.remove("input-before")
             }
         }
         if(onlyReadDom.length>0){
