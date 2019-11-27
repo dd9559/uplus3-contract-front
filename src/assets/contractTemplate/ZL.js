@@ -514,6 +514,11 @@ for(let i=0;i<checkboxs.length;i++){
         if(boxArray[i] == obj.currentTarget){
           if(boxArray[i].querySelector('p').getAttribute('checked')==='true'){
             boxArray[i].querySelector('p').removeAttribute('checked')
+            if(obj.currentTarget.getAttribute('name')==='facility'){
+              document.querySelector(`span[extendparam="val51"]`).innerHTML=''
+              document.querySelector(`span[extendparam="val51"]`).setAttribute('systemParam','true')
+              document.querySelector(`span[extendparam="val51"]`).classList.add("input-before")
+            }
           }else {
             boxArray[i].querySelector('p').setAttribute('checked', true)
             if(obj.currentTarget.getAttribute('name')==='zhizhao5'){
@@ -527,11 +532,26 @@ for(let i=0;i<checkboxs.length;i++){
               }else{
                 document.querySelector(`span[extendparam="val41"]`).removeAttribute('systemParam')
               }
+            }else if(obj.currentTarget.getAttribute('name')==='zhizhao4'){
+              let zhizhao4Doms = document.getElementsByName("zhizhao4")
+              if(zhizhao4Doms[3].querySelector('p').getAttribute('checked')==='true'){
+                document.querySelector(`span[extendparam="val32"]`).removeAttribute('systemParam')
+              }
+            }else if(obj.currentTarget.getAttribute('name')==='facility'){
+              let facilityDoms = document.getElementsByName("facility")
+              if(facilityDoms[5].querySelector('p').getAttribute('checked')==='true'){
+                document.querySelector(`span[extendparam="val51"]`).removeAttribute('systemParam')
+              }
             }
           }
         }else {
           if(!obj.currentTarget.getAttribute('more')){
             boxArray[i].querySelector('p').removeAttribute('checked')
+          }
+          if(obj.currentTarget.getAttribute('name')==='zhizhao4'){
+            document.querySelector(`span[extendparam="val32"]`).innerHTML=''
+            document.querySelector(`span[extendparam="val32"]`).setAttribute('systemParam','true')
+            document.querySelector(`span[extendparam="val32"]`).classList.add("input-before")
           }
         }
       }
@@ -565,49 +585,48 @@ for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
   if(readonlyItem==='signDate'){
-      let time = new Date(msg.signDate)
-      arr.push(time.getFullYear())
-      arr.push(time.getMonth()+1)
-      arr.push(time.getDate())
+    let time = new Date(msg.signDate)
+    arr.push(time.getFullYear())
+    arr.push(time.getMonth()+1)
+    arr.push(time.getDate())
   }
   if(readonlyItem==="companyNames"){
-      if(msg[readonlyItem].length>0){
-          let companyName = document.querySelector(`span[extendParam="val25"]`)
-          // let companyNameTxt = msg[readonlyItem].join(',')
-          // companyName.setAttribute('list',companyNameTxt)
-          companyName.innerHTML=msg[readonlyItem][0]
-          companyName.classList.remove("input-title1")
-      }
+    if(msg[readonlyItem].length>0){
+      let companyName = document.querySelector(`span[extendParam="val25"]`)
+      // let companyNameTxt = msg[readonlyItem].join(',')
+      // companyName.setAttribute('list',companyNameTxt)
+      companyName.innerHTML=msg[readonlyItem][0]
+      companyName.classList.remove("input-title1")
+    }
   }
   if(onlyReadDom.length>0){
-      onlyReadDom.forEach((element,index) => {
-          if(readonlyItem==='timeUnit'){
-              element.querySelector('p').removeAttribute('checked')
-              if(element.getAttribute('value')===msg[readonlyItem]){
-                  element.querySelector('p').setAttribute('checked', 'true')
-              }
-          }else if(readonlyItem==='signDate'){
-              element.value=msg[readonlyItem]
-              element.setAttribute('value', arr[index])
-          // }else if(readonlyItem==='propertyAddr'||readonlyItem==='guestTel'||readonlyItem==='square'||readonlyItem==='dealPrice'||readonlyItem==='dealPriceUpper'||readonlyItem==='ownerName'||readonlyItem==='guestName'){
-          }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
-              element.value=msg[readonlyItem]
-              element.setAttribute('value', msg[readonlyItem])
+    onlyReadDom.forEach((element,index) => {
+      if(readonlyItem==='timeUnit'){
+        element.querySelector('p').removeAttribute('checked')
+        if(element.getAttribute('value')===msg[readonlyItem]){
+          element.querySelector('p').setAttribute('checked', 'true')
+        }
+      }else if(readonlyItem==='signDate'){
+        element.value=msg[readonlyItem]
+        element.setAttribute('value', arr[index])
+      }else if(readonlyItem==='houseinfoCode'||readonlyItem==='guestinfoCode'||readonlyItem==='code'){
+        element.value=msg[readonlyItem]
+        element.setAttribute('value', msg[readonlyItem])
+      }else{
+        if(element.getAttribute("extendParam")==="val33"){
+          let value = msg["propertyAddr"]
+          if(value.substring(0,3)==="武汉市"){
+            element.innerHTML=value.replace("武汉市",'')
           }else{
-              if(element.getAttribute("extendParam")==="val33"){
-                  let value = msg["propertyAddr"]
-                  if(value.substring(0,3)==="武汉市"){
-                      element.innerHTML=value.replace("武汉市",'')
-                  }else{
-                      element.innerHTML=value
-                  }
-              }else{
-                  element.innerHTML=msg[readonlyItem]
-              }
-              element.classList.remove('input-title')
-              element.classList.remove('input-title2')
-              element.classList.remove('input-before')
+            element.innerHTML=value
           }
-      });
+        }else{
+          element.innerHTML=msg[readonlyItem]
+        }
+        element.classList.remove('input-title')
+        element.classList.remove('input-title2')
+        element.classList.remove('input-before')
+      }
+    });
   }
 }

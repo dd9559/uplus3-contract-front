@@ -1211,7 +1211,7 @@ export default {
         let value = {
           id:item.id,
           transFlowName:item.stepInstanceName,
-          statusReceiveAmount:item.receiveAmountState
+          statusReceiveAmount:item.resultState
         }
         this.$refs.lateProgress.show(value);
       }else{
