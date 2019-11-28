@@ -1466,7 +1466,6 @@ import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [MIXINS],
-  name: "achDialog",
   data() {
     return {
       contDataFiles: [], //资料库图片缩略图
