@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-  <link rel="stylesheet" href="/datepicker.css"/>
+   <link rel="stylesheet" href="/datepicker.css"/>
   <title>新武汉买卖合同</title>
   <style>
     body {
@@ -288,7 +288,18 @@
       break-before: page;
       page-break-before: always;
     }
-
+    .modal{
+      position: relative;
+    }
+    .modal:before{
+      content: '';
+      z-index: 50;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
     @page {
       size: 955px 1350px;
     }
@@ -492,50 +503,32 @@
       <p>根据《中华人民共和国合同法》、《中华人民共和国城市房地产管理法》及其他相关法律、法规的规定，甲方和乙方在平等、自愿、公平、协商一致的基础上就存量房买卖事宜达成以下协议：</p>
 
       <p id="one" class="navTitle bold">第一条 房屋基本情况 </p>
-      <div class="lh-18">1、甲乙双方交易房屋坐落在<span systemParam="propertyAddr" tag="input-auto"></span>，建筑面积<span
-        tag="input-auto" systemParam="square"></span>平方米（具体面积以产权证为准），该房屋产权性质为
-        <div class="info-checkbox" name="houseType"><p type="check"></p>商品房</div>
-        <div class="info-checkbox" name="houseType"><p type="check"></p>已购公有住房</div>
-        <div class="info-checkbox" name="houseType"><p type="check"></p>经济适用房</div>
-        <div class="info-checkbox" name="houseType"><p type="check"></p>其他</div>
-        ：<span tag="input-auto" class="text-limit input-before" extendParam="val1"></span>。
+      <div class="lh-18">
+        1、甲乙双方交易房屋坐落在<span systemParam="propertyAddr" tag="input-auto"></span>，建筑面积<span tag="input-auto" systemParam="square"></span>平方米（具体面积以产权证为准），该房屋产权性质为<div class="info-checkbox" name="houseType"><p type="check"></p>商品房</div><div class="info-checkbox" name="houseType"><p type="check"></p>已购公有住房</div><div class="info-checkbox" name="houseType"><p type="check"></p>经济适用房</div><div class="info-checkbox" name="houseType"><p type="check"></p>其他</div>：<span tag="input-auto" class="text-limit input-before" extendParam="val1"></span>。
       </div>
 
       <p id="two" class="navTitle bold">第二条 房屋权属情况</p>
-      <div class="lh-18">1、该房屋所有权人为：<span tag="input-auto" class="text-limit input-before" extendParam="val2"></span>，房屋产权证号：<span
-        tag="input-auto" class="text-limit input-before" extendParam="val3"></span></div>
-      <div class="lh-18">2、土地使用状况：房屋占用的国有土地使用权以
-        <div class="info-checkbox" name="useRight"><p type="check"></p>出让</div>
-        <div class="info-checkbox" name="useRight"><p type="check"></p>划拨方式获得</div>
-        。
+      <div class="lh-18">
+        1、该房屋所有权人为：<span tag="input-auto" class="text-limit input-before" extendParam="val2"></span>，房屋产权证号：<span tag="input-auto" class="text-limit input-before" extendParam="val3"></span></div><div class="lh-18">2、土地使用状况：房屋占用的国有土地使用权以<div class="info-checkbox" name="useRight"><p type="check"></p>出让</div><div class="info-checkbox" name="useRight"><p type="check"></p>划拨方式获得</div>。
       </div>
-      <div class="lh-18">3、该房屋抵押情况：
-        <div class="info-checkbox" name="guaranty"><p type="check"></p>该房屋未设定抵押</div>
-        ，
-        <div class="info-checkbox" name="guaranty"><p type="check"></p>该房屋已设定抵押</div>
-        ，抵押权人为：<span tag="input-auto" class="text-limit input-before" extendParam="val4"></span></div>
-      <div class="lh-18">4、该房屋租约情况：
-        <div class="info-checkbox" name="lease"><p type="check"></p>不带租约</div>
-        ，
-        <div class="info-checkbox" name="lease"><p type="check"></p>带租约</div>
-        ，若该房带租约，甲方承诺承租人已经放弃优先购买权，且甲乙双方同意按照下列方式解决租约问题，但法律另有规定的除外：
+      <div class="lh-18">
+        3、该房屋抵押情况：<div class="info-checkbox" name="guaranty"><p type="check"></p>该房屋未设定抵押</div>，<div class="info-checkbox" name="guaranty"><p type="check"></p>该房屋已设定抵押</div>，抵押权人为：<span tag="input-auto" class="text-limit input-before" extendParam="val4"></span>
+      </div>
+      <div class="lh-18">
+        4、该房屋租约情况：<div class="info-checkbox" name="lease"><p type="check"></p>不带租约</div>，<div class="info-checkbox" name="lease"><p type="check"></p>带租约</div>，若该房带租约，甲方承诺承租人已经放弃优先购买权，且甲乙双方同意按照下列方式解决租约问题，但法律另有规定的除外：
       </div>
       <div class="lh-18">
         <div class="info-checkbox" name="leaseSon"><p type="check"></p>乙方同意承继租约中甲方的权利义务，但甲方须协助将乙方变更为出租人，并通知承租人。</div>
       </div>
       <div class="lh-18">
-        <div class="info-checkbox" name="leaseSon"><p type="check"></p>
-          乙方不愿承继租约中甲方的权利义务，甲方需在交房之前与承租人解除租约，并腾空房屋（合同约定一并转让的设施设备除外），且自行承担解除租约的责任。
-        </div>
+        <div class="info-checkbox" name="leaseSon"><p type="check"></p>乙方不愿承继租约中甲方的权利义务，甲方需在交房之前与承租人解除租约，并腾空房屋（合同约定一并转让的设施设备除外），且自行承担解除租约的责任。</div>
       </div>
 
       <p id="three" class="navTitle bold">第三条 甲方售房资格和乙方购房资格情况</p>
       <div class="lh-18">1、若因政策原因导致甲方不具备售房资格，原合同无法正常履行，双方协商一致解除合同，甲方退还乙方已支付的所有款项，双方均不承担责任。</div>
       <div class="lh-18">2、乙方承诺，对于武汉市现行有效的购房政策及本人应具备的购房资格已明确知晓；若因政策原因导致乙方不具备购房资格，原合同无法正常履行的，双方协商一致，按下列方式解决（仅选其一）：</div>
       <div class="lh-18">
-        <div class="info-checkbox" name="negotiate"><p type="check"></p>
-          甲方同意乙方将房屋过户至乙方指定人名下，由乙方指定人员继续履行合同约定的权利义务，自乙方知晓不具备购房资格起3个工作日内甲方配合乙方签署《买受人变更协议》；
-        </div>
+        <div class="info-checkbox" name="negotiate"><p type="check"></p>甲方同意乙方将房屋过户至乙方指定人名下，由乙方指定人员继续履行合同约定的权利义务，自乙方知晓不具备购房资格起3个工作日内甲方配合乙方签署《买受人变更协议》；</div>
       </div>
       <div class="lh-18">
         <div class="info-checkbox" name="negotiate"><p type="check"></p>甲乙双方协商一致解除合同，甲方退还乙方已支付的所有款项，双方均不承担责任。</div>
@@ -543,51 +536,35 @@
       <div class="lh-18">3、甲乙双方应对其售房购房所需的相关资料和文件的真实性、合法性、有效性负责。</div>
 
       <p id="four" class="navTitle bold">第四条 甲乙双方通过以下方式达成交易</p>
-      <div class="lh-18">甲乙双方通过房地产经纪机构居间介绍成交，房地产经纪机构名称：<span tag="input-auto" class="text-limit input-before"
-                                                             extendParam="val5"></span>，统一社会信用机构代码：<span
-        tag="input-auto" class="text-limit input-before" extendParam="val6"></span>。
+      <div class="lh-18">
+        甲乙双方通过房地产经纪机构居间介绍成交，房地产经纪机构名称：<span tag="input-auto" class="text-limit input-before" extendParam="val5"></span>，统一社会信用机构代码：<span tag="input-auto" class="text-limit input-before" extendParam="val6"></span>。
       </div>
 
       <p class="navTitle bold" id="five">第五条 成交价格和付款方式</p>
-      <p>1、甲乙双方协商同意，交易房屋价款及装饰装修、配套设施设备等作价总计为人民币（小写）<span tag="input-auto" systemParam="dealPrice"></span>元，人民币(大写)<span
-        tag="input-auto" systemParam="dealPriceUpper"></span>元整。</p>
+      <p>1、甲乙双方协商同意，交易房屋价款及装饰装修、配套设施设备等作价总计为人民币（小写）<span tag="input-auto" systemParam="dealPrice"></span>元，人民币(大写)<span tag="input-auto" systemParam="dealPriceUpper"></span>元整。</p>
       <p>2、具体付款方式：</p>
       <p>（1）定金</p>
-      <p>乙方应当在签订本合同当日支付定金人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before"
-                                      extendParam="val7"></span>元，人民币(大写)<span tag="input-auto" systemParam="true"
-                                                                               extendParam="val7_add"></span>；甲乙双方协商一致采取以下方式支付定金，由乙方通过转账的方式支付给甲方。
+      <p>乙方应当在签订本合同当日支付定金人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val7"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val7_add"></span>；甲乙双方协商一致采取以下方式支付定金，由乙方通过转账的方式支付给甲方。
       </p>
       <p>（2）房款</p>
-      <p>甲乙双方自行交接钱款过户递件完成后当日内，乙方将首付款（不包含定金）人民币（小写）<span tag="input-auto" listen="number" max="12"
-                                                        class="text-limit input-before" extendParam="val8"></span>元，人民币(大写)<span
-        tag="input-auto" systemParam="true" extendParam="val8_add"></span>支付给甲方；过户取件完成后当日内，乙方将尾款人民币（小写）<span
-        tag="input-auto" listen="number" max="12" class="text-limit input-before"
-        extendParam="val9"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val9_add"></span>直接支付给甲方。
+      <p>甲乙双方自行交接钱款过户递件完成后当日内，乙方将首付款（不包含定金）人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val8"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val8_add"></span>支付给甲方；过户取件完成后当日内，乙方将尾款人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val9"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val9_add"></span>直接支付给甲方。
       </p>
       <p class="navTitle bold" id="six">第六条 甲方对房屋产权及具体状况的承诺</p>
       <p>
-        1、甲方保证该房屋没有产权纠纷；该房屋无司法查封或其他闲置转让的情形，甲方承诺其配偶和该房屋的共有权人均知晓并同意本次房屋交易，认可本合同及其他相关文件的约定，且无他人对房屋享有优先认购权；乙方承诺其配偶和该房屋的共同买受人均知晓并同意本次房屋交易，且认可本合同及其他相关文件的约定。如因一方违反前述承诺，导致该房屋不能办理产权登记或发生债权债务纠纷的，由违约方按照房屋成交总价款的20%赔偿守约方的损失。<span
-        class="bold">本条款为独立条款，即使本合同及其他文件因一方违反前述承诺，依法被变更、撤销、解除、终止或认定无效的，本条约定依然有效，守约方仍可依据本条款追究违反承诺方的法律责任。</span></p>
+        1、甲方保证该房屋没有产权纠纷；该房屋无司法查封或其他闲置转让的情形，甲方承诺其配偶和该房屋的共有权人均知晓并同意本次房屋交易，认可本合同及其他相关文件的约定，且无他人对房屋享有优先认购权；乙方承诺其配偶和该房屋的共同买受人均知晓并同意本次房屋交易，且认可本合同及其他相关文件的约定。如因一方违反前述承诺，导致该房屋不能办理产权登记或发生债权债务纠纷的，由违约方按照房屋成交总价款的20%赔偿守约方的损失。
+        <span class="bold">本条款为独立条款，即使本合同及其他文件因一方违反前述承诺，依法被变更、撤销、解除、终止或认定无效的，本条约定依然有效，守约方仍可依据本条款追究违反承诺方的法律责任。</span>
+      </p>
       <div class="lh-18">2、甲方该房屋主体结构和公共区域
         <div class="info-checkbox" name="leakage"><p type="check"></p>不存在</div>
-        <div class="info-checkbox" name="leakage"><p type="check"></p>存在漏水、渗水现象</div>
-        ，如存在漏水、渗水现象，位置为：
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>房屋顶部</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内墙面</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内管道</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内地面</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>阳台</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>飘窗</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>公共管道</div>
-        ；
-        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室外墙面</div>
-        ；
+        <div class="info-checkbox" name="leakage"><p type="check"></p>存在漏水、渗水现象</div>，如存在漏水、渗水现象，位置为：
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>房屋顶部；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内墙面；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内管道；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室内地面；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>阳台；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>飘窗；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>公共管道；</div>
+        <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>室外墙面；</div>
         <div class="info-checkbox" more="true" name="leakagePlace"><p type="check"></p>顶楼</div>
         。若该房屋存在漏水情况，甲方保证在交房之前修缮好房屋且须交于乙方验收，如甲方未予修复，乙方在房屋交付后自行维修的，甲方应当承担全部维修费用；如甲方拒绝支付维修费用的，乙方可从物业交割保证金中扣除对应金额作为维修费用；因维修房屋影响乙方使用的，甲方另应当赔付乙方因此所受的实际损失。但乙方接收房屋后，因乙方原因造成的漏水除外。
       </div>
@@ -603,37 +580,30 @@
         4、甲方保证已如实陈述该房屋权属状况、附属设施设备、装饰装修情况和相关关系，房屋附属设施清单所列的该房屋附属设施设备及其装饰装修随同该房屋一并转让给乙方。乙方对甲方出售的该房屋具体状况已充分了解，自愿购买该房屋，甲方保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</p>
 
       <p class="navTitle bold" id="seven">第七条 房屋交易具体事宜的约定</p>
-      <div class="lh-18"><span class="bold">1、还款解押：</span>该房屋目前
-        <div class="info-checkbox" name="installment"><p type="check"></p>是</div>
-        <div class="info-checkbox" name="installment"><p type="check"></p>否</div>
-        按揭状态，甲方应在<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly"
-                        extendParam="val10"/>之前到其贷款银行办理完成结按（即提前还贷）手续，承担相关费用，并负责取回注销抵押登记后的房屋所有权证（具体取回时间以银行通知为准）。
+      <div class="lh-18">
+        <span class="bold">1、还款解押：</span>该房屋目前<div class="info-checkbox" name="installment"><p type="check"></p>是</div><div class="info-checkbox" name="installment"><p type="check"></p>否</div>按揭状态，甲方应在<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val10"/>之前到其贷款银行办理完成结按（即提前还贷）手续，承担相关费用，并负责取回注销抵押登记后的房屋所有权证（具体取回时间以银行通知为准）。
       </div>
-      <div class="lh-18"><span class="bold">2、权属转移登记：</span>甲乙双方同意，在符合过户条件后，甲乙双方须在<span tag="input-auto"
-                                                                                        class="text-limit input-before"
-                                                                                        extendParam="val11"></span>后7个工作日内亲临房屋所在地房管局办理过户递件手续，过户递件完成后7个工作日内须再次亲临房屋所在地房管局办理过户取件手续。
+      <div class="lh-18">
+        <span class="bold">2、权属转移登记：</span>甲乙双方同意，在符合过户条件后，甲乙双方须在<span tag="input-auto" class="text-limit input-before" extendParam="val11"></span>后7个工作日内亲临房屋所在地房管局办理过户递件手续，过户递件完成后7个工作日内须再次亲临房屋所在地房管局办理过户取件手续。
       </div>
-      <div class="lh-18"><span class="bold">3、户口迁出：</span>甲方应在房屋权属转移登记完成后<span tag="input-auto"
-                                                                               class="text-limit input-before"
-                                                                               extendParam="val12"></span>日内，向房屋所在地的户籍管理机关办理原有户口迁出手续（如有）。若因甲方原因未在约定期限内办理完成与本房屋相关的户口迁出手续，每逾期一日，甲方按照成交价的0.5‰向乙方支付违约金。
+      <div class="lh-18">
+        <span class="bold">3、户口迁出：</span>甲方应在房屋权属转移登记完成后<span tag="input-auto" class="text-limit input-before" extendParam="val12"></span>日内，向房屋所在地的户籍管理机关办理原有户口迁出手续（如有）。若因甲方原因未在约定期限内办理完成与本房屋相关的户口迁出手续，每逾期一日，甲方按照成交价的0.5‰向乙方支付违约金。
       </div>
 
       <p class="navTitle bold" id="eight">第八条 房屋的交付</p>
-      <div class="lh-18">1、收齐房款（物业交割保证金除外）
-        <div class="info-checkbox" name="delivery"><p type="check"></p>3日内</div>
-        <div class="info-checkbox" name="delivery"><p type="check"></p>在</div>
-        <span tag="input-auto" class="text-limit input-before" extendParam="val13"></span>，甲方将该房屋交付给乙方。
+      <div class="lh-18">
+        1、收齐房款（物业交割保证金除外）<div class="info-checkbox" name="delivery"><p type="check"></p>3日内</div><div class="info-checkbox" name="delivery"><p type="check"></p>在</div><span tag="input-auto" class="text-limit input-before" extendParam="val13"></span>，甲方将该房屋交付给乙方。
       </div>
       <p>2、该房屋交付时，应当履行下列三项手续：</p>
       <p>
-        （1）甲方与乙方共同对该房屋附属设施设备、装饰装修、相关物品清单等具体情况进行验收。记录水、点、气表的读数，并交接房屋附属设施清单中所列物品，若物品损坏或者缺失，甲方应恢复原状并赔偿损失（损失以乙方恢复原状费用或购买相应品质的设施设备的价格计算）。</p>
+        （1）甲方与乙方共同对该房屋附属设施设备、装饰装修、相关物品清单等具体情况进行验收。记录水、点、气表的读数，并交接房屋附属设施清单中所列物品，若物品损坏或者缺失，甲方应恢复原状并赔偿损失（损失以乙方恢复原状费用或购买相应品质的设施设备的价格计算）。
+      </p>
       <p>（2）甲方将该房屋房门钥匙、水卡、电卡、气卡、门卡等移交给乙方。</p>
       <p>
-        （3）在房屋交付日以前发生的物业管理费、水、点、燃气、有线电视、电信、宽带等费用由甲方承担，交付日以后（含当日）发生的费用由乙方承担。甲方应在房屋过户手续办理完毕之日起3个工作日内，将该房屋转让情况告知物业管理的相关单位和部门，并积极办理物业交割手续，且甲乙双方须在《物业交割单》上签字；如任何一方拒绝在《物业交割单》上签字，又不能出具书面理由的，视为物业交割完成。</p>
-      <p>物业交割：甲乙双方应在本合同约定的时间内办理物业交割手续，居间方陪同，甲乙双方协商一致同意，乙方从购房款中留存人民币（小写）<span tag="input-auto" listen="number" max="12"
-                                                                             class="text-limit input-before"
-                                                                             extendParam="val14"></span>元，人民币(大写)<span
-        tag="input-auto" systemParam="true" extendParam="val14_add"></span>作为物业交割保证金；该物业交割保证金甲乙双方协商一致按照下列方式执行：甲乙双方办理物业交割之日，由乙方自行支付给甲方，且因此而产生的损失及风险由甲乙双方自行承担；
+        （3）在房屋交付日以前发生的物业管理费、水、点、燃气、有线电视、电信、宽带等费用由甲方承担，交付日以后（含当日）发生的费用由乙方承担。甲方应在房屋过户手续办理完毕之日起3个工作日内，将该房屋转让情况告知物业管理的相关单位和部门，并积极办理物业交割手续，且甲乙双方须在《物业交割单》上签字；如任何一方拒绝在《物业交割单》上签字，又不能出具书面理由的，视为物业交割完成。
+      </p>
+      <p>
+        物业交割：甲乙双方应在本合同约定的时间内办理物业交割手续，居间方陪同，甲乙双方协商一致同意，乙方从购房款中留存人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val14"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val14_add"></span>作为物业交割保证金；该物业交割保证金甲乙双方协商一致按照下列方式执行：甲乙双方办理物业交割之日，由乙方自行支付给甲方，且因此而产生的损失及风险由甲乙双方自行承担；
       </p>
 
       <p class="navTitle bold" id="nine">第九条 税费相关约定</p>
@@ -1008,11 +978,11 @@
   </div>
 </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+ <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mm_all_wh20191126.js"></script>
+<script type="text/javascript" src="/js/bundle_mm_all_wh20191128.js"></script>
 <!--<script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
@@ -1025,7 +995,7 @@
         if(window.location.host==='localhost:8080'){
           if(addrList[i].indexOf('bundle')>-1){
             // addrList[i]=host_other+'/'+addrList[i]
-            addrList[i]='./new-wh-mm.js'
+            addrList[i]='./new-wh-mm-all.js'
           }else{
             addrList[i]=host_other+'/'+addrList[i]
           }
@@ -1041,7 +1011,7 @@
           document.head.appendChild(hm);
         }else{
           var hm = document.createElement("script");
-          addrList[i].includes('new-wh-mm')&&(hm.type = 'module');
+          addrList[i].includes('new-wh-mm-all')&&(hm.type = 'module');
           hm.src = addrList[i];
           var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
           s.parentNode.insertBefore(hm,s);
