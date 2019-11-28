@@ -1533,14 +1533,12 @@
         preloadList: [],
         preloadFiles: [],
         contType:'',
-        cityId:''
       };
     },
     components:{
       checkPerson
     },
     created() {
-      this.cityId=this.userInfo.cityId  
       this.contType=this.$route.query.contType
       this.dialogType=this.$route.query.dialogType
       this.contractCode=this.$route.query.contractCode
@@ -2628,6 +2626,9 @@
         },
         userInfo() {
           return this.getUser.user
+        },
+        cityId() {
+          return this.getUser.user.cityId
         }
     }, 
     
