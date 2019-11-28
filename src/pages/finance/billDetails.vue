@@ -129,7 +129,7 @@
                 </template>
               </el-table-column>-->
             </el-table>
-            <template v-if="billMsg.account[index].cardNumber.length>0">
+            <template v-if="billMsg.account.length>0&&billMsg.account[index].cardNumber.length>0">
               <h4 class="f14">资料补充：</h4>
               <el-table border :data="[billMsg.account[index]]" header-row-class-name="theader-bg">
                 <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
