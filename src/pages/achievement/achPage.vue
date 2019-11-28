@@ -1544,7 +1544,6 @@ export default {
       filesList: [],
       contType:'',
       tradeFee:0,
-      cityId:''
     };
   },
   components: {
