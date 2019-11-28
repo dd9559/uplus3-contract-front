@@ -250,7 +250,6 @@
 import { MIXINS } from "@/assets/js/mixins";
 export default {
   mixins: [MIXINS],
-  name: "actualAchievement",
   data() {
     return {
       receivableList: [], //实收数据列表数组
@@ -351,7 +350,7 @@ export default {
             })
             this.getEmploye(this.propForm.dealAgentStoreId)
           }
-         
+
          this.currentPage=session.pageNum
          this.pageSize=session.pageSize
          this.propForm.timeType=session.timeType
@@ -433,7 +432,7 @@ export default {
       this.propForm.department=payload.depName*/
     },
     queryFn(typeshow) {
-      
+
       // console.log("ssssssssssss");
       // console.log(this.ajaxParam);
       // console.log(this.propForm);

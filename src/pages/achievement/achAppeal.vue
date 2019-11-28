@@ -261,7 +261,7 @@
             </template>
           </el-table-column>
 
-          
+
 
           <el-table-column label="审核备注"  min-width="200">
             <template slot-scope="scope">
@@ -290,7 +290,7 @@
             </template>
           </el-table-column>
 
-          
+
 
           <el-table-column label="操作"  min-width="70" fixed="right">
             <template slot-scope="scope">
@@ -338,7 +338,6 @@ import ScreeningTop from "@/components/ScreeningTop";
 import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [MIXINS],
-  name: "actualAchievement",
   data() {
     return {
       imgList: [],
@@ -830,7 +829,7 @@ export default {
         let param = {
           code: value.code
         };
-      
+
               this.$router.push({
                 path: "/contractDetails",
                 query: {
@@ -839,7 +838,7 @@ export default {
                   contType: value.contType.value
                 }
               });
-       
+
       } else {
         this.noPower("合同详情查看");
       }
