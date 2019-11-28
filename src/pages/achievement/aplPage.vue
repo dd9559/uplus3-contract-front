@@ -1454,7 +1454,6 @@
   import checkPerson from '@/components/checkPerson'
   export default {
     mixins: [MIXINS],
-    name: "achDialog",
     data() {
       return {
         serviceAgents:[],
