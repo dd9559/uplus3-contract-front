@@ -168,6 +168,8 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     let installment = document.getElementsByName("installment")
     if(installment[1].querySelector('p').getAttribute('checked')==='true'){
       document.querySelector(`*[extendparam="val10"]`).value=''
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('value')
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('random')
       document.querySelector(`*[extendparam="val10"]`).classList.add("input-before")
       document.querySelector(`*[extendparam="val10"]`).setAttribute('disabled','true')
     }else{
@@ -178,6 +180,8 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     }else{
       document.querySelector(`*[extendparam="val10"]`).setAttribute('disabled','true')
       document.querySelector(`*[extendparam="val10"]`).value=''
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('value')
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('random')
     }
   }
   else if(attr == 'guaranty'){//第二条  抵押人是否可输入逻辑
