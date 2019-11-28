@@ -1544,13 +1544,15 @@ export default {
       auditIds: "",
       filesList: [],
       contType:'',
-      tradeFee:0
+      tradeFee:0,
+      cityId:''
     };
   },
   components: {
     checkPerson
   },
   created() {
+    this.cityId=this.userInfo.cityId
     this.contType = this.$route.query.contType;
     this.dialogType = this.$route.query.dialogType;
     this.contractCode = this.$route.query.contractCode;
@@ -2302,16 +2304,28 @@ export default {
           }
         } else {
           // 新版本 总监 副总 非必填
-          if (
-            resultArr2[i].roleType === "" ||
-            resultArr2[i].ratio === "" ||
-            resultArr2[i].assignor === "" ||
-            resultArr2[i].isJob === "" ||
-            resultArr2[i].level3 === "" ||
-            resultArr2[i].shopkeeper === ""
-          ) {
-            flag = false;
-          }
+          if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === "" 
+            ){
+              flag = false;
+            }
+          }else{
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""||
+                resultArr2[i].shopkeeper === ""
+            ){
+              flag = false;
+            }
+            }
         }
       }
       //flag=true代表信息都填完整，flag=false代表还有信息没有填
@@ -2461,16 +2475,28 @@ export default {
           }
         } else {
           // 新版本 总监 副总 非必填
-          if (
-            resultArr2[i].roleType === "" ||
-            resultArr2[i].ratio === "" ||
-            resultArr2[i].assignor === "" ||
-            resultArr2[i].isJob === "" ||
-            resultArr2[i].level3 === "" ||
-            resultArr2[i].shopkeeper === ""
-          ) {
-            flag = false;
-          }
+          if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === "" 
+            ){
+              flag = false;
+            }
+          }else{
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""||
+                resultArr2[i].shopkeeper === ""
+            ){
+              flag = false;
+            }
+            }
         }
       }
       if (flag && sumFlag && this.remark != "") {
@@ -2611,16 +2637,28 @@ export default {
           }
         } else {
           // 新版本 总监 副总 非必填
-          if (
-            resultArr2[i].roleType === "" ||
-            resultArr2[i].ratio === "" ||
-            resultArr2[i].assignor === "" ||
-            resultArr2[i].isJob === "" ||
-            resultArr2[i].level3 === "" ||
-            resultArr2[i].shopkeeper === ""
-          ) {
-            flag = false;
-          }
+          if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === "" 
+            ){
+              flag = false;
+            }
+          }else{
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""||
+                resultArr2[i].shopkeeper === ""
+            ){
+              flag = false;
+            }
+            }
         }
       }
       if (flag && sumFlag) {
@@ -2785,19 +2823,46 @@ export default {
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {
-        if (
-          resultArr2[i].roleType === "" ||
-          resultArr2[i].ratio === "" ||
-          resultArr2[i].assignor === "" ||
-          resultArr2[i].isJob === "" ||
-          resultArr2[i].level3 === "" ||
-          resultArr2[i].shopkeeper === "" ||
-          resultArr2[i].level4 === "" ||
-          resultArr2[i].amaldar === "" ||
-          resultArr2[i].manager === ""
-        ) {
-          flag = false;
-        } 
+        if (this.$route.query.version == "0") {
+          // 旧版本 总监 副总 必填
+          if (
+            resultArr2[i].roleType === "" ||
+            resultArr2[i].ratio === "" ||
+            resultArr2[i].assignor === "" ||
+            resultArr2[i].isJob === "" ||
+            resultArr2[i].level3 === "" ||
+            resultArr2[i].shopkeeper === "" ||
+            resultArr2[i].level4 === "" ||
+            resultArr2[i].amaldar === "" ||
+            resultArr2[i].manager === ""
+          ) {
+            flag = false;
+          }
+        } else {
+          // 新版本 总监 副总 非必填
+          if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === "" 
+            ){
+              flag = false;
+            }
+          }else{
+            if(
+                resultArr2[i].roleType === "" ||
+                resultArr2[i].ratio === "" ||
+                resultArr2[i].assignor === "" ||
+                resultArr2[i].isJob === "" ||
+                resultArr2[i].level3 === ""||
+                resultArr2[i].shopkeeper === ""
+            ){
+              flag = false;
+            }
+            }
+        }
       }
 
       console.log(sum);
@@ -3120,6 +3185,9 @@ export default {
     }
   },
   computed: {
+    isProd(){
+      return this.getUser.isProd
+    },
     validInput() {
       return this.aplremark.length;
     },
@@ -3524,7 +3592,6 @@ export default {
   padding: 0;
   padding-left: 5px !important;
   padding-right: 25px !important;
-  // padding-left: 10px;
   font-size: 12px !important;
 }
 
@@ -3616,14 +3683,6 @@ export default {
     white-space: nowrap;
   }
 }
-// .dialog1 /deep/ input, .el-input__inner{
-//   font-size: 10px !important;
-//   height: 30px;
-//   line-height: 30px;
-// }
-//   .dialog1 /deep/ .el-input__icon{
-//     line-height: 0px;
-//   }
 .grey {
   background-color: #f5f5f5;
   color: #aca899;
