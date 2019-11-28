@@ -741,7 +741,7 @@
             </div>
             <div class="role">
               <span class="point jianju">申诉角色：</span>
-              <el-select v-model="SSuForm.role" placeholder="请选择" multiple 
+              <el-select v-model="SSuForm.role" placeholder="请选择" multiple
               class="width300"
               :class="{'width425':SSuForm.role.length>3}"
               :clearable="true">
@@ -750,7 +750,7 @@
             </div>
             <div class="role">
               <span class="point jianju" style="margin-right:25px;">审核人：</span>{{depName}}
-              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" filterable  placeholder="请选择"  
+              <el-select v-model="SSuForm.empNames" style="margin-left:22px;width:210px" filterable  placeholder="请选择"
                @change="getName">
                     <el-option v-for="item in this.empNames" :key="item.empId" :label="item.name"  :value="item.empId"></el-option>
               </el-select>
@@ -808,7 +808,6 @@ import ScreeningTop from "@/components/ScreeningTop";
 import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [MIXINS],
-  name: "actualAchievement",
   data() {
     return {
       pinzheng2:[],
@@ -967,10 +966,10 @@ export default {
     };
   },
   created(){
-    
-    
 
-    
+
+
+
   },
   mounted() {
     this.ajaxParam = {
@@ -993,7 +992,7 @@ export default {
         } else {
           this.countData = [0, 0, 0, 0];
         }
-        
+
         let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
         this.propForm.contractType = session.contractType.split(",");
         this.propForm.divideType = session.distributionType;
@@ -1028,8 +1027,8 @@ export default {
             })
             this.getEmploye(this.propForm.dealAgentStoreId)
           }
-         
-        
+
+
         this.$nextTick(() => {
           this.loading = false;
         });
@@ -1100,7 +1099,7 @@ export default {
         }
       }
     },
-    trim(str){  
+    trim(str){
                  return str.replace(/(^\s*)|(\s*$)/g, "")
             },
     submitForm(){
@@ -1171,7 +1170,7 @@ export default {
       //   this.SSuForm.pinzheng.push(obj.param[i].path+'?'+obj.param[i].name)
       // }
       // this.imgList=this.$tool.cutFilePath(this.files)
-      
+
       this.SSuForm.pinzheng=this.SSuForm.pinzheng.concat(obj.param)
       },
     getPicture(item){
@@ -1192,10 +1191,10 @@ export default {
         this.people=res.data.data.allRole
         this.depName=res.data.data.empNames[0].depName
         this.empNames=res.data.data.empNames
-        
+
         this.SSuForm.empNames=res.data.data.empNames[0].empId
         this.auditName=res.data.data.empNames[0].name
-      } 
+      }
       }).catch(err=>{
         if(err.status==300){
         this.$message({message:err.message})
@@ -1958,7 +1957,7 @@ export default {
       margin-right: 8px;
     }
   }
-    
+
 }
 .el-dialog.base-dialog .ach-body {
   padding: 0 20px;
