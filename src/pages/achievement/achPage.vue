@@ -1551,7 +1551,7 @@ export default {
     checkPerson
   },
   created() {
-    this.cityId=this.userInfo.cityId
+    // this.cityId=this.userInfo.cityId
     this.contType = this.$route.query.contType;
     this.dialogType = this.$route.query.dialogType;
     this.contractCode = this.$route.query.contractCode;
@@ -3227,6 +3227,9 @@ export default {
     },
     userInfo() {
       return this.getUser.user;
+    },
+    cityId() {
+      return this.getUser.user.cityId;
     }
   },
   filters: {
