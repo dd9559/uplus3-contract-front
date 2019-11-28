@@ -1794,17 +1794,17 @@
             // 图片上传
             imgBtnFn(e){
                 // console.log(e)
-                // debugger
+                debugger
                 let index = e.btnId.slice(6);
                 let arr = e.param
                 arr.forEach(item => {
                     let type = this.$tool.get_suffix(item.name)
                     item.type = type
                 })
-                this.stepsFrom.list[index].val = arr
+                this.stepsFrom.list[index].val = this.stepsFrom.list[index].val.concat(arr)
                 this.$refs['stepsFrom'].validate((bool)=>{});
                 let pre_arr = []
-                arr.forEach(item => {
+                this.stepsFrom.list[index].val.forEach(item => {
                     if(this.isPictureFile(item.type)){
                         pre_arr.push(item.path)
                     }
