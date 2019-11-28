@@ -168,20 +168,17 @@ for(let readonlyItem in msg){
     arr.push(time.getMonth()+1)
     arr.push(time.getDate())
   }
-  if(readonlyItem==="companyNames"){
-    if(msg[readonlyItem].length>0){
-      let companyName = document.querySelector(`*[extendParam="val13"]`)
-      let companyNameTxt = msg[readonlyItem].join(',')
-      companyName.setAttribute('list',companyNameTxt)
-    }
-  }
 
   let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
          element.setAttribute('value', arr[index])
-      }else if(readonlyArr.includes(readonlyItem)){
+      }else if(readonlyItem==="companyNames"){
+        element.innerHTML=msg[readonlyItem][0]
+        element.classList.remove('input-before')
+      }
+      else if(readonlyArr.includes(readonlyItem)){
         if(element.getAttribute("extendParam")==="val25"){
             let value = msg["propertyAddr"]
             if(value.substring(0,3)==="芜湖市"){
