@@ -33,8 +33,11 @@ let sub = {
     }
   },
   'checkbox_death': null,
-  'checkbox_installment': null,
-  'time_val10': null,
+  'checkbox_installment': {
+    stateful: function(index) {
+      return index===1?{'time_val10': null} : null
+    }
+  },
   'val11': null,
   'val12': null,
   'checkbox_delivery': {
@@ -44,7 +47,6 @@ let sub = {
   },
   'val14': null,
   'checkbox_ownerCost': null,
-  // 'checkbox_guestCost': null,
   'checkbox_incomeTax': null,
   'checkbox_otherCost': null,
 }
@@ -222,6 +224,29 @@ contractConfig.checkboxListener(function(){},function(obj,index){
             leakagePlace[index].removeAttribute('readonly')
             leakagePlace[index].querySelector('p').removeAttribute('checked')
           }
+        }
+      }
+    }
+  }else if(attr == 'installment'){//第七条 是否按揭逻辑timeFather
+    let boxArray = document.getElementsByName(attr);
+    let _val10 = document.querySelector(`input[extendparam="val10"]`)
+    _val10.classList.remove("BODERRED")
+    for(let i = 0; i < boxArray.length; i++) {
+      if(boxArray[i] == obj.currentTarget) {
+        if(boxArray[i].querySelector('p').getAttribute('checked')==='true') {
+          if(i==0) {
+            _val10.removeAttribute('disabled')
+          } else {
+            _val10.value=""
+            _val10.removeAttribute('value')
+            _val10.removeAttribute('random')
+            _val10.setAttribute('disabled','true')
+          }
+        } else {
+          _val10.value=""
+          _val10.removeAttribute('value')
+          _val10.removeAttribute('random')
+          _val10.removeAttribute('disabled')
         }
       }
     }
