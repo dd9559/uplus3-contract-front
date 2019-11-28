@@ -35,7 +35,7 @@ let sub = {
   'checkbox_death': null,
   'checkbox_installment': {
     stateful: function(index) {
-      return index===1?{'time_val10': null} : null
+      return index===0?{'time_val10': null} : null
     }
   },
   'val11': null,
