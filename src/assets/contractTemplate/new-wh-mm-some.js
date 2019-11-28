@@ -40,8 +40,11 @@ let sub = {
   },
   'checkbox_death': null,
   'time_val102':null,
-  'checkbox_installment': null,
-  'time_val10': null,
+  'checkbox_installment': {
+    stateful: function(index) {
+      return index===0?{'val10': null} : null
+    }
+  },
   'val11': null,
   'val12': null,
   'checkbox_delivery': {
@@ -161,6 +164,21 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     document.querySelector(`span[extendparam="val100"]`).setAttribute('systemParam','true')
     document.querySelector(`span[extendparam="val101"]`).setAttribute('systemParam','true')
   }
+  }else if(attr=="installment"){
+    let installment = document.getElementsByName("installment")
+    if(installment[1].querySelector('p').getAttribute('checked')==='true'){
+      document.querySelector(`*[extendparam="val10"]`).value=''
+      document.querySelector(`*[extendparam="val10"]`).classList.add("input-before")
+      document.querySelector(`*[extendparam="val10"]`).setAttribute('disabled','true')
+    }else{
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('disabled')
+    }
+    if(installment[0].querySelector('p').getAttribute('checked')==='true'){
+      document.querySelector(`*[extendparam="val10"]`).removeAttribute('disabled')
+    }else{
+      document.querySelector(`*[extendparam="val10"]`).setAttribute('disabled','true')
+      document.querySelector(`*[extendparam="val10"]`).value=''
+    }
   }
   else if(attr == 'guaranty'){//第二条  抵押人是否可输入逻辑
     let boxArray = document.getElementsByName(attr);
