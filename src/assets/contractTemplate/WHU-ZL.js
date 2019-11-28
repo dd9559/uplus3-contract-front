@@ -70,7 +70,7 @@ contractConfig.checkboxListener()
   }
 
 let sub = {
-  'vale':null,
+  'val1':null,
   'time_val3': null,
   'time_val4': null,
   'val5': null,
