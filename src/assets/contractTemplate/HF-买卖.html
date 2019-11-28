@@ -950,7 +950,7 @@
           <div class="lingH18">（三）该房屋的租赁情况为：<div class="info-checkbox" extendParam="val54" name="rentout"><p type="check"></p>出卖人未将该房屋出租</div><div class="info-checkbox" extendParam="val55" name="rentout"><p type="check"></p>出卖人已将该房屋出租。</div>出卖人承诺已经在出售前三个月书面通知了承租人，承租人已放弃优先购买权，如因此导致合同无法履行，由出卖人承担违约责任。</div>
           <p>（四）出卖人应在签订本合同后<span tag="input-auto" listen="number" class="input-before" extendParam="val55_"></span>日内将房屋不动产权证书/房屋所有权证、土地使用权证原件及其他权属证明文件交付居间方保管，用于办理房产交易相关手续。</p>
           <p id="three" class="navTitle fontBold">第三条、成交方式</p>
-          <p>出卖人与买受人通过<span type="text" tag="input-auto" class="input-before input-select text-limit dropdown-item" systemparam="true" extendParam="val56"></span>居间介绍成交。</p>
+          <p>出卖人与买受人通过<span type="text" tag="input-auto" class="input-before" systemparam="true" extendParam="val56" company="true"></span>居间介绍成交。</p>
           <p id="four" class="navTitle fontBold">第四条、房产转让价格</p>
           <p>（一）该房产转让价格为按套转让，转让价格为人民币（大写）<span tag="input-auto" systemParam="dealPriceUpper" extendParam="val57"></span>圆整（本合同转让价格与网签价格不一致的，以本合同转让价格为准）。此转让价：</p>
           <div class="lingH18">1、<div class="info-checkbox" extendParam="val58" name="furniture"><p type="check"></p><span class="fontBold">包含</span></div>该房屋家具、家电、装饰装修及配套设施设备该房屋家具、家电、装饰装修及配套设施设备（以列明的家私清单或所附照片为准），出卖人应当保证自本合同签订之日起至该房屋验收交接完成，各项房屋附属设施设备及其装饰装修保持良好的状况。</div>
@@ -1151,12 +1151,45 @@
 
     </div>
 </body>
-<!--<script type="text/javascript" src="./datepicker.js"></script>
-<script type="text/javascript" src="./dropdown.js"></script>
-<script type="module" src="./HF-MM.js"></script>-->
  <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_mm_hf20190610.js"></script>
+<!--<script>
+    (function () {
+        var scriptList = document.getElementsByTagName("script")
+        console.log(scriptList)
+        if(!scriptList[0].src){
+            var host='https://sign2.jjw.com'
+            var host_other="http://sign2.jjw.com:28879"
+            var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl20190402.js","datepicker.css"]
+            for (let i = 0; i < addrList.length; i++) {
+                if(window.location.host==='localhost:8080'){
+                    if(addrList[i].indexOf('bundle')>-1){
+                        // addrList[i]=host_other+'/'+addrList[i]
+                        addrList[i]='./HF-MM.js'
+                    }else{
+                        addrList[i]=host_other+'/'+addrList[i]
+                    }
+                }else{
+                    addrList[i]='/'+addrList[i]
+                }
+                if(addrList[i].indexOf('.css')>-1){
+                    var hm = document.createElement("link");
+                    hm.rel="stylesheet"
+                    hm.href = addrList[i];
+                    var s = document.getElementsByTagName("link")[0];
+                    s.parentNode.insertBefore(hm,s);
+                }else{
+                    var hm = document.createElement("script");
+                    hm.src = addrList[i];
+                    addrList[i].includes('HF-MM')&&(hm.type='module');
+                    var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+                    s.parentNode.insertBefore(hm,s);
+                }
+            }
+        }
+    })();
+</script>-->
 </html>
