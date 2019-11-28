@@ -25,7 +25,7 @@
         <div class="ach-body">
           <div class="house-divide">
             <div class="house-left f_l">
-              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal?housetotal:0}}%</span></h1>  
+              <h1 class="f14">房源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{housetotal?housetotal:0}}%</span></h1>
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
             </div>
             <div class="house-right f_r" v-if="!backAId">
@@ -384,7 +384,7 @@
 
           <div class="house-divide top20">
             <div class="house-left f_l">
-              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal?clienttotal:0}}%</span></h1>  
+              <h1 class="f14">客源方分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{clienttotal?clienttotal:0}}%</span></h1>
               <p class="f_l delive">房客源可分配业绩总计：{{comm?comm:0}}元</p>
             </div>
             <div class="house-right f_r" v-if="!backAId">
@@ -628,7 +628,7 @@
                     :disabled="scope.row.level4?false:true"
                     placement="top"
                     :open-delay="300"
-                  >                 
+                  >
                   <el-select
                     v-model="scope.row.level4"
                     filterable
@@ -695,7 +695,7 @@
                     :disabled="scope.row.manager?false:true"
                     placement="top"
                     :open-delay="300"
-                  >                  
+                  >
                   <el-select
                     v-model="scope.row.manager"
                     filterable
@@ -741,7 +741,7 @@
 
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>  
+              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
               <p class="f_l delive">交易服务费可分配业绩：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
@@ -1544,7 +1544,6 @@ export default {
       filesList: [],
       contType:'',
       tradeFee:0,
-      cityId:''
     };
   },
   components: {
@@ -2309,7 +2308,7 @@ export default {
                 resultArr2[i].ratio === "" ||
                 resultArr2[i].assignor === "" ||
                 resultArr2[i].isJob === "" ||
-                resultArr2[i].level3 === "" 
+                resultArr2[i].level3 === ""
             ){
               flag = false;
             }
@@ -2480,7 +2479,7 @@ export default {
                 resultArr2[i].ratio === "" ||
                 resultArr2[i].assignor === "" ||
                 resultArr2[i].isJob === "" ||
-                resultArr2[i].level3 === "" 
+                resultArr2[i].level3 === ""
             ){
               flag = false;
             }
@@ -2642,7 +2641,7 @@ export default {
                 resultArr2[i].ratio === "" ||
                 resultArr2[i].assignor === "" ||
                 resultArr2[i].isJob === "" ||
-                resultArr2[i].level3 === "" 
+                resultArr2[i].level3 === ""
             ){
               flag = false;
             }
@@ -2815,7 +2814,7 @@ export default {
         }
       for (var i = 0; i < this.serviceAgents.length; i++) {
          ser_sum = this.toDecimal(ser_sum,this.serviceAgents[i].ratio)
-        
+
       }
       if((this.contType==2||this.contType==3)&&ser_sum!=100){
           this.$message.error("请输入正确的交易服务费分成比例");
@@ -2845,7 +2844,7 @@ export default {
                 resultArr2[i].ratio === "" ||
                 resultArr2[i].assignor === "" ||
                 resultArr2[i].isJob === "" ||
-                resultArr2[i].level3 === "" 
+                resultArr2[i].level3 === ""
             ){
               flag = false;
             }
