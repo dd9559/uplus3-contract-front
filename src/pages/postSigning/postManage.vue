@@ -1794,7 +1794,7 @@
             // 图片上传
             imgBtnFn(e){
                 // console.log(e)
-                debugger
+                // debugger
                 let index = e.btnId.slice(6);
                 let arr = e.param
                 arr.forEach(item => {
