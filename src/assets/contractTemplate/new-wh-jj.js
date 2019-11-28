@@ -1,13 +1,11 @@
 import {contractConfig,toChineseNumber} from "./base.js";
 
 let Obj = {
-  cn_arr: ['val2','val3']
+  cn_arr: []
 }
 
 let sub = {
   "val1": null,
-  "val2": null,
-  'val3': null,
 }
 
 //给按钮添加点击事件
@@ -98,7 +96,7 @@ for(let readonlyItem in msg){
       companyName.innerHTML=msg[readonlyItem][0]
     }
   }
-  let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr']
+  let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr','ownerCommission','ownerCommissionUpper','custCommission','custCommissionUpper']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
