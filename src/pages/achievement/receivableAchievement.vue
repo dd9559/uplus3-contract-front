@@ -216,7 +216,7 @@
 
           <el-table-column prop="roleName" label="角色类型"  min-width="60"></el-table-column>
 
-          <el-table-column prop="ratio" label="分成比例（%）"  min-width="60"></el-table-column>
+          <el-table-column prop="ratio" label="分成比例（%）"  min-width="100"></el-table-column>
 
           <el-table-column prop="agentPayFee" label="刷卡手续费（元）"  min-width="80"></el-table-column>
 

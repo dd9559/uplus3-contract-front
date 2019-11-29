@@ -328,7 +328,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="分成比例"  min-width="60">
+          <el-table-column label="分成比例"  min-width="80">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>

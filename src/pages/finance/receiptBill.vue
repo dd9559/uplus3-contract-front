@@ -552,6 +552,9 @@
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
                     if(!this.getPayMethod(val.payMethod)&&item==='amount'){
                         val.fee=this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])
+                    }else{//现金方式排除小数以小数点开头
+                        let regex=/^\./g
+                        regex.test(val.fee)&&(val.fee='')
                     }
                 }
             },
