@@ -92,38 +92,15 @@ contractConfig.checkboxListener()
     })
   }
 
-let sub = {
-  'checkbox_zhizhao4':null,
-  'val1': null,
-  'val2': null,
-  'val3': null,
-  'val4': null,
-  // 'val8': null,
-  // 'val9': null,
-  // 'val10': null,
-  // 'val11': null,
-  // 'val12': null,
-  // 'drapdown_handle': {
-  //   stateful: function (val) {
-  //     let res = null;
-  //     switch (val) {
-  //       case '1':
-  //         res = {'val14': null};
-  //         break;
-  //       case '2':
-  //         break;
-  //       case '1，2':
-  //         res = {'val14': null};
-  //         break
-  //     }
-  //     return res;
-  //   }
-  // },
-  // 'val14': null,
-  // 'time_val15': null,
-  // 'val16': null,
-  // 'val17': null,
-}
+  let sub = {
+    'checkbox_zhizhao4':null,
+    'checkbox_zhizhao5':null,
+    'val1': null,
+    'val2': null,
+    'val3': null,
+    'val4': null,
+    'checkbox_zhizhao6':null
+  }
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // let msg={
