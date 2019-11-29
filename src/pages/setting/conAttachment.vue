@@ -25,7 +25,7 @@
         </ScreeningTop>
         <!-- 表格 -->
         <div class="table-box">
-            <p>
+            <p v-if="power['sign-set-rule-add'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button icon="el-icon-plus" @click="addFn" round type="primary">新增合同附件</el-button>
             </p>
@@ -154,7 +154,13 @@
                 pageSize: 10,
                 total: 0,
                 sureDeleteDialog: false, //确认删除弹窗
-                deleteId: '' //删除行id
+                deleteId: '', //删除行id
+                power: {
+                    'sign-set-rule-add': {
+                        name: '添加/编辑',
+                        state: false
+                    }
+                },
             }
         },
         created() {
