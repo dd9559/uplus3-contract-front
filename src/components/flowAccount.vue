@@ -177,21 +177,15 @@ export default {
       this.$emit("closeRunningWater");
     },
     handleClick(tab) {
-      //console.log(tab.name);
       //分类账
       if (tab.name === "first") {
-        // let param = {
-        //   contractCode: "Z181111001"
-        // };
-        // this.$ajax.get("/api/flows/account", param).then(res => {
-
-        // });
         this.getFlowwater();
       } else if (tab.name === "second" || tab.name === "third") {
         //业主分类账
         let param = {
           contractCode: this.contCode,
-          type: tab.name === "second" ? 2 : 1
+          type: tab.name === "second" ? 2 : 1,
+          contractType:this.flowType
         };
         this.$ajax.get("/api/flows/account", param).then(res => {
           res = res.data;
@@ -213,9 +207,10 @@ export default {
             this.gridData2 = list;
           }
         });
-      } else if (tab.name === "fourth") {
+      } else if (tab.name === "fourth") {//分类流水账
         let param = {
-          contractCode: this.contCode
+          contractCode: this.contCode,
+          contractType:this.flowType
         };
         this.$ajax.get("/api/flows/waterAccount", param).then(res => {
           res = res.data;
@@ -237,9 +232,10 @@ export default {
             this.gridData4 = list;
           }
         });
-      }else if (tab.name === "fifth") {
+      }else if (tab.name === "fifth") {//流水账
         let param = {
-          contractCode: this.contCode
+          contractCode: this.contCode,
+          contractType:this.flowType
 				};
 				this.$ajax.get("/api/flows/water", param).then(res => {
 					 res = res.data;
@@ -248,7 +244,7 @@ export default {
 						this.gridData5=res.data
 					}
 				})
-			}else if(tab.name==='sixth'){
+			}else if(tab.name==='sixth'){//票据
 				let param = {
           contractId: this.contId,
           type: this.flowType
@@ -265,7 +261,8 @@ export default {
     //流水明细
     getFlowwater() {
       let param = {
-        contractCode: this.contCode
+        contractCode: this.contCode,
+        contractType:this.flowType
       };
       this.$ajax.get("/api/flows/account", param).then(res => {
         res = res.data;
