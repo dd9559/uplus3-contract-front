@@ -210,9 +210,9 @@
             </div>
             <div v-if="contractDetail.contChangeState.value!=2">
               <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1" @click="goPreview">预览</el-button>
-              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5&&contractDetail.cancelExamineState!=0" @click="goChangeCancel(2)">解约</el-button>
+              <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&contractDetail.contState.value===3&&contractDetail.laterStageState.value!=5&&contractDetail.cancelExamineState!=0&&contractDetail.resultState.value===1" @click="goChangeCancel(2)">解约</el-button>
               <el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(contractDetail.recordType.value===1&&contractDetail.contState.value===2)" @click="invalid">撤单</el-button>
-              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0" @click="goChangeCancel(1)">变更</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0&&contractDetail.resultState.value===1" @click="goChangeCancel(1)">变更</el-button>
               <el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===1&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))" @click="goEdit">编辑</el-button>
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&contractDetail.toExamineState.value<0&&contractDetail.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
