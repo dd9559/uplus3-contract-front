@@ -29,7 +29,7 @@
                         placeholder="选择日期时间"
                         :picker-options="pickerOptions"
                         default-time="12:00:00"
-                        :disabled="entrustBtn">
+                        :disabled="defaultInfo.contractEntrust&&defaultInfo.contractEntrust.id?true:false">
                         </el-date-picker>
                     </p>
                     <p>
