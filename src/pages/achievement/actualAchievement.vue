@@ -256,8 +256,8 @@
 
           <el-table-column label="合同类型"  min-width="80">
             <template slot-scope="scope">
-              <p v-if="scope.row.loanType==7">全款买卖</p>
-              <p v-if="scope.row.loanType==8">贷款买卖</p>
+              <p v-if="scope.row.loanType&&scope.row.loanType==7">全款买卖</p>
+              <p v-else-if="scope.row.loanType&&scope.row.loanType==8">贷款买卖</p>
               <p v-else>{{scope.row.contType.label}}</p>
             </template>
           </el-table-column>
@@ -503,205 +503,6 @@
       </div>-->
     </div>
 
-    <!-- 表单列表弹出框（业绩详情） -->
-    <div>
-      <el-dialog
-        :visible.sync="dialogVisible"
-        width="1000px"
-        :close-on-click-modal="false"
-        custom-class="base-dialog"
-      >
-        <div v-loading="loading2">
-          <b class="el-icon-close" @click="closeDialog"></b>
-          <div class="ach-header">
-            <h1 class="f14">业绩详情</h1>
-            <p class="f14" style="font-weight:bold;">
-              可分配业绩：
-              <span class="orange">{{comm}}元</span>
-              <span>（可分配业绩=客户佣金+业主佣金-第三方合作费）</span>
-            </p>
-          </div>
-          <div class="ach-body">
-            <h1 class="f14">房源方分成</h1>
-            <div class="ach-divide-list">
-              <el-table :data="houseArr" style="width: 100%" border>
-                <!-- roleType 分成人角色类型 :
-             房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
-                客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
-                <el-table-column label="角色类型" width="100">
-                  <template slot-scope="scope">
-                    <div>
-                      <p>{{scope.row.roleName}}</p>
-                    </div>
-                  </template>
-                </el-table-column>
-
-                <!-- ratio -->
-                <el-table-column prop="ratio"></el-table-column>
-
-                <!-- assignor -->
-                <el-table-column prop="assignor" label="经纪人" width="100"></el-table-column>
-
-                <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
-                <el-table-column label="在职状况" width="75">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.isJob">
-                      <p>{{scope.row.isJob.label}}</p>
-                    </div>
-                  </template>
-                </el-table-column>
-
-                <!-- shopkeeper -->
-                <el-table-column prop="shopkeeper" label="店长" width="100"></el-table-column>
-                <!-- level4 -->
-                <el-table-column prop="level4" label="单组" width="135"></el-table-column>
-                <!-- level3 -->
-                <el-table-column prop="level3" label="门店" width="135"></el-table-column>
-
-                <!-- amaldar -->
-                <el-table-column prop="amaldar" label="总监" width="100"></el-table-column>
-
-                <!-- manager -->
-                <el-table-column prop="manager" label="副总"></el-table-column>
-                <el-table-column label="公共业绩">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.place==-1">--</div>
-                    <div v-if="scope.row.place==0">门店公共业绩</div>
-                    <div v-if="scope.row.place==1">公司公共业绩</div>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-
-            <h1 class="f14">客源方分成</h1>
-            <div class="ach-divide-list">
-              <el-table :data="clientArr" style="width: 100%" border>
-                <!-- roleType 分成人角色类型 :
-                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
-                客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
-                <el-table-column label="角色类型" width="100">
-                  <template slot-scope="scope">
-                    <div>
-                      <p>{{scope.row.roleName}}</p>
-                    </div>
-                  </template>
-                </el-table-column>
-
-                <!-- ratio -->
-                <el-table-column prop="ratio" label="分成比例(%)" width="100"></el-table-column>
-
-                <!-- assignor -->
-                <el-table-column prop="assignor" label="经纪人" width="100"></el-table-column>
-
-                <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
-                <el-table-column label="在职状况" width="75">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.isJob">
-                      <p>{{scope.row.isJob.label}}</p>
-                    </div>
-                  </template>
-                </el-table-column>
-
-                <!-- shopkeeper -->
-                <el-table-column prop="shopkeeper" label="店长" width="100"></el-table-column>
-                <!-- level4 -->
-                <el-table-column prop="level4" label="单组" width="135"></el-table-column>
-                <!-- level3 -->
-                <el-table-column prop="level3" label="门店" width="135"></el-table-column>
-
-                <!-- amaldar -->
-                <el-table-column prop="amaldar" label="总监" width="100"></el-table-column>
-
-                <!-- manager -->
-                <el-table-column prop="manager" label="副总"></el-table-column>
-                <el-table-column label="公共业绩">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.place==-1">--</div>
-                    <div v-if="scope.row.place==0">门店公共业绩</div>
-                    <div v-if="scope.row.place==1">公司公共业绩</div>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-
-            <h1 class="f14">审核信息</h1>
-
-            <div class="ach-check-list">
-              <el-table :data="checkArr" border>
-                <!-- examineDate -->
-                <el-table-column label="时间" width="150">
-                  <template slot-scope="scope">
-                    <p v-if="scope.row.examineDate">{{scope.row.examineDate|formatTime}}</p>
-                    <p v-else>-</p>
-                  </template>
-                </el-table-column>
-                <!-- auditorDepartment -->
-                <el-table-column prop="auditor" label="姓名" width="220"></el-table-column>
-                <!-- auditor -->
-                <el-table-column prop="auditorDepartment" label="职务" width="150"></el-table-column>
-
-                <!-- 节点名称（新增）-->
-                <!-- <el-table-column
-              prop="updateByName"
-              label="节点名称"
-              width="130"
-            >
-                </el-table-column>-->
-
-                <!-- result审核结果(0未审核 1通过 2驳回)(薪资组审核) -->
-                <el-table-column prop="createDepName" label="操作" width="150">
-                  <!-- <template slot-scope="scope">
-                <div>
-                  <div v-if="scope.row.contType==0">
-                    <p class="blue">提交审核</p>
-                  </div>
-                  <div v-if="scope.row.contType==-1">
-                    <p class="blue">待提审</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==1">
-                    <p class="green">审核通过</p>
-                  </div>
-                  <div v-else-if="scope.row.contType==2">
-                    <p class="orange">已驳回</p>
-                  </div>
-                 <div v-else-if="scope.row.contType==3">
-                    <p class="orange">撤销</p>
-                  </div>
-                  <div v-else>
-                    <p>-</p>
-                  </div>
-                </div>
-                  </template>-->
-                </el-table-column>
-
-                <!-- remark -->
-                <el-table-column label="备注">
-                  <template slot-scope="scope">
-                    <div v-if="scope.row.remark">
-                      <el-popover
-                        trigger="hover"
-                        placement="top"
-                        :content="scope.row.remark"
-                        width="150"
-                      >
-                        <div
-                          style="width:160px"
-                          slot="reference"
-                          class="name-wrapper"
-                        >{{scope.row.remark}}</div>
-                      </el-popover>
-                    </div>
-                    <div v-else>--</div>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </div>
-          <div class="ach-footer"></div>
-        </div>
-      </el-dialog>
-    </div>
-
     <!-- 审核，编辑，反审核，业绩分成弹框 -->
     <achDialog
       :shows="shows"
@@ -832,7 +633,6 @@ export default {
       depUser: "",
       users: [],
       empNames:[],
-      dialogVisible: false, //详情弹框
       SSuForm:{
         role:[],
         remark:'',
@@ -1284,9 +1084,6 @@ export default {
       let param = Object.assign({}, this.ajaxParam,{'strStartTime':this.ajaxParam.startTime},{'strEndTIme':this.ajaxParam.endTime});
       this.excelCreate("/input/achievementExcel", param);
     },
-    closeDialog() {
-      this.dialogVisible = false;
-    },
     // 保存操作
     saveData(index, resultArr, status) {
       this.shows = false;
@@ -1381,7 +1178,6 @@ export default {
         }
       });
       window.open(newPage.href, "_blank");
-      // this.dialogVisible = true;
       // this.loading2=true;
       // //合同边和获取业绩详情
       // this.code = row.code;
