@@ -2593,6 +2593,13 @@
     }
   },
     computed:{
+      serfeetotal() {
+      var sum = 0;
+      this.serviceAgents.forEach((item, index) => {
+        sum = this.accAdd(sum, item.ratio == "" ? 0 : item.ratio);
+      });
+      return sum;
+    },
         validInput() {
                 return this.aplremark.length
             },
