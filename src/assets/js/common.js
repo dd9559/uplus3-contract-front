@@ -806,9 +806,13 @@ let TOOL = {
       .toString()
       .replace(/[^\d.]/g, "")
       .replace(/\.{2,}/g, "");
+    let regex=/^\./g;
     let point = "";
     if (parseFloat(val) >= max) {
       return max;
+    }
+    if(regex.test(val)){//不允许小数点开头
+      return ''
     }
     let pos = val.indexOf(".");
     if (pos > -1) {

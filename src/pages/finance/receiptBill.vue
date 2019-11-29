@@ -155,9 +155,9 @@
                 <div class="flex-box tool-tip w200 no-max">
                   <label class="form-label f14 margin-bottom-base">手续费金额（元）</label>
                 </div>
-                <el-input size="small" :disabled="!getPayMethod(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>
-                <!--<input type="text" class="w200 el-input__inner" :disabled="![2,3].includes(item.payMethod)" placeholder="请输入" v-model="item.fee"
-                       @input="cutNum(item,'fee')">-->
+<!--                <el-input size="small" :disabled="!getPayMethod(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>-->
+                <input type="text" class="w200 el-input__inner input-info" :disabled="!getPayMethod(item.payMethod)" placeholder="请输入" v-model="item.fee"
+                       @input="cutNum(item,'fee')">
               </section>
               <!--<section v-if="item.payMethod===2">
                 <label class="f14 margin-bottom-base">收账账户</label>
@@ -552,9 +552,6 @@
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
                     if(!this.getPayMethod(val.payMethod)&&item==='amount'){
                         val.fee=this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])
-                    }else{//现金方式排除小数以小数点开头
-                        let regex=/^\./g
-                        regex.test(val.fee)&&(val.fee='')
                     }
                 }
             },
@@ -1215,6 +1212,12 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+
+  input:disabled{
+    &.input-info{
+      background-color: @bg-grey !important;
+    }
+  }
 
   .h32 {
     height: 32px;
