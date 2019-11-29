@@ -56,7 +56,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="medium" @click="operationFn('查看',scope.row)">查看</el-button>
+                        <el-button type="text" size="medium" @click="operationFn('查看',scope.row)" v-if="power['sign-set-bl-htym-see'].state">查看</el-button>
                         <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)" v-if="power['sign-set-bl-htym-update'].state">编辑</el-button>
                     </template>
                 </el-table-column>
@@ -156,6 +156,10 @@
                     'sign-set-bl-htym-update': {
                         state: false,
                         name: '新增/编辑'
+                    },
+                    'sign-set-bl-htym-see': {
+                        state: false,
+                        name: '查看'
                     }
                 },
                 saveDialog: false
