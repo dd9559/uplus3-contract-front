@@ -363,6 +363,8 @@
                 this.$nextTick(() =>{
                     this.commissionForm[item]=this.$tool.cutFloat({val:this.commissionForm[item],max:type===1?1:100})
                 })
+                let regex=/^\./g
+                regex.test(this.commissionForm[item])&&(this.commissionForm[item]='')
             },
             saveFn() {
                 this.$tool.checkForm(

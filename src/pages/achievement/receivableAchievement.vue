@@ -168,8 +168,8 @@
           <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
           <el-table-column label="合同类型"  min-width="80">
               <template slot-scope="scope">
-              <p v-if="scope.row.loanType==7">全款买卖</p>
-              <p v-if="scope.row.loanType==8">贷款买卖</p>
+              <p v-if="scope.row.loanType&&scope.row.loanType==7">全款买卖</p>
+              <p v-else-if="scope.row.loanType&&scope.row.loanType==8">贷款买卖</p>
               <p v-else>{{scope.row.contType.label}}</p>
             </template>
           </el-table-column>
