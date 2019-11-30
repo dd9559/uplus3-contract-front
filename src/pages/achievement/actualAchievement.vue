@@ -870,7 +870,7 @@ export default {
       }
     },
     aMoneyFn(m) {
-      if(m!=='') {
+      if(m&&m!=='') {
         return `${m}`
       }else {
         return '-'
