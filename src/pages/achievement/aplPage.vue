@@ -1575,7 +1575,6 @@
                 this.$set(this.houseArr[i],'checkbox',[])
                 this.houseArr[i].checkbox.push(this.houseArr[i].place)
               }
-              console.log(this.houseArr);
               for(let i=0;i< this.clientArr.length;i++){
                 this.$set(this.clientArr[i],'checkbox',[])
                 this.clientArr[i].checkbox.push(this.clientArr[i].place)
