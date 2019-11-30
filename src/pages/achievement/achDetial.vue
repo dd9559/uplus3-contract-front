@@ -48,6 +48,25 @@
             >
             </el-table-column>
 
+             <el-table-column label="经纪人工号" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="经纪人级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorLevel">{{scope.row.assignorLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="销售经理级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.salesManagerLevel">{{scope.row.salesManagerLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
@@ -61,9 +80,12 @@
 
             <!-- shopkeeper -->
             <el-table-column
-              prop="shopkeeper"
               label="店长"
             >
+            <template slot-scope="scope">
+              <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
+              <span v-else>-</span>
+            </template>
             </el-table-column>
             <!-- level4 -->
             <el-table-column
@@ -147,6 +169,25 @@
             >
             </el-table-column>
 
+             <el-table-column label="经纪人工号" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="经纪人级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorLevel">{{scope.row.assignorLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="销售经理级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.salesManagerLevel">{{scope.row.salesManagerLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
@@ -160,9 +201,12 @@
 
             <!-- shopkeeper -->
             <el-table-column
-              prop="shopkeeper"
               label="店长"
             >
+            <template slot-scope="scope">
+              <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
+              <span v-else>-</span>
+            </template>
             </el-table-column>
             <!-- level4 -->
             <el-table-column
@@ -244,6 +288,25 @@
             >
             </el-table-column>
 
+             <el-table-column label="经纪人工号" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="经纪人级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.assignorLevel">{{scope.row.assignorLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="销售经理级别" width="100">
+                    <template slot-scope="scope">
+                      <p v-if="scope.row.salesManagerLevel">{{scope.row.salesManagerLevel}}</p>
+                      <p v-else>-</p>
+                    </template>
+                  </el-table-column>
+
             <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
             <el-table-column
               label="在职状况"
@@ -257,9 +320,12 @@
 
             <!-- shopkeeper -->
             <el-table-column
-              prop="shopkeeper"
               label="店长"
             >
+            <template slot-scope="scope">
+              <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
+              <span v-else>-</span>
+            </template>
             </el-table-column>
             <!-- level4 -->
             <el-table-column

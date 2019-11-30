@@ -2475,6 +2475,10 @@
           }
         }
       },
+      deletefee(index, rows, id) {
+      this.agendIds.push(id);
+      rows.splice(index, 1);
+    },
       personChose:function () {
         this.checkPerson.state=false
         let _this=this;
@@ -2593,6 +2597,13 @@
     }
   },
     computed:{
+      serfeetotal() {
+      var sum = 0;
+      this.serviceAgents.forEach((item, index) => {
+        sum = this.accAdd(sum, item.ratio == "" ? 0 : item.ratio);
+      });
+      return sum;
+    },
         validInput() {
                 return this.aplremark.length
             },
