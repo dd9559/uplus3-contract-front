@@ -172,15 +172,46 @@
                 <div class="table">
                   <p>房源方分成</p>
                   <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
-                    <el-table-column prop="roleName" label="角色类型">
+                    <el-table-column label="角色类型">
+                      <template slot-scope="scope">
+                        {{scope.row.roleName?scope.row.roleName:'-'}}
+                      </template>
                     </el-table-column>
-                    <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
-                    <el-table-column prop="assignor" label="经纪人" min-width="100"></el-table-column>
-                    <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
-                    <el-table-column prop="level3" label="门店"></el-table-column>
-                    <el-table-column prop="shopkeeper" label="店长"></el-table-column>
-                    <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
-                    <el-table-column prop="amaldar" label="总监"></el-table-column>
+                    <el-table-column label="分成比例(%)">
+                      <template slot-scope="scope">
+                        {{scope.row.ratio?scope.row.ratio:'0'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="在职状态">
+                      <template slot-scope="scope">
+                        {{scope.row.isJob?scope.row.isJob.label:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="店长">
+                      <template slot-scope="scope">
+                        {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="单组" v-if="!employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.level4?scope.row.level4:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="总监">
+                      <template slot-scope="scope">
+                        {{scope.row.amaldar?scope.row.amaldar:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="副总">
                       <template slot-scope="scope">
                         {{scope.row.manager?scope.row.manager:'-'}}
@@ -191,15 +222,46 @@
                 <div class="table">
                   <p>客源方分成</p>
                   <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
-                    <el-table-column prop="roleName" label="角色类型">
+                    <el-table-column label="角色类型">
+                      <template slot-scope="scope">
+                        {{scope.row.roleName?scope.row.roleName:'-'}}
+                      </template>
                     </el-table-column>
-                    <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
-                    <el-table-column prop="assignor" label="经纪人"></el-table-column>
-                    <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
-                    <el-table-column prop="level3" label="门店"></el-table-column>
-                    <el-table-column prop="shopkeeper" label="店长"></el-table-column>
-                    <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
-                    <el-table-column prop="amaldar" label="总监"></el-table-column>
+                    <el-table-column label="分成比例(%)">
+                      <template slot-scope="scope">
+                        {{scope.row.ratio?scope.row.ratio:'0'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="在职状态">
+                      <template slot-scope="scope">
+                        {{scope.row.isJob?scope.row.isJob.label:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="店长">
+                      <template slot-scope="scope">
+                        {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="单组" v-if="!employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.level4?scope.row.level4:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="总监">
+                      <template slot-scope="scope">
+                        {{scope.row.amaldar?scope.row.amaldar:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="副总">
                       <template slot-scope="scope">
                         {{scope.row.manager?scope.row.manager:'-'}}
