@@ -181,7 +181,11 @@
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
                     <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
                     <el-table-column prop="amaldar" label="总监"></el-table-column>
-                    <el-table-column prop="manager" label="副总"></el-table-column>
+                    <el-table-column label="副总">
+                      <template slot-scope="scope">
+                        {{scope.row.manager?scope.row.manager:'-'}}
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
                 <div class="table">
@@ -196,7 +200,11 @@
                     <el-table-column prop="shopkeeper" label="店长"></el-table-column>
                     <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
                     <el-table-column prop="amaldar" label="总监"></el-table-column>
-                    <el-table-column prop="manager" label="副总"></el-table-column>
+                    <el-table-column label="副总">
+                      <template slot-scope="scope">
+                        {{scope.row.manager?scope.row.manager:'-'}}
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
               </div>
