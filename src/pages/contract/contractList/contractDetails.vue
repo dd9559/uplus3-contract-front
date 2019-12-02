@@ -169,7 +169,7 @@
                 <div class="one_performance">
                   <p>房源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                 </div>
-                <div class="table">
+                <div class="table" style="width:1200px;">
                   <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
@@ -186,14 +186,24 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="在职状态">
                       <template slot-scope="scope">
                         {{scope.row.isJob?scope.row.isJob.label:'-'}}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="门店">
-                      <template slot-scope="scope">
-                        {{scope.row.level3?scope.row.level3:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="店长">
@@ -206,6 +216,11 @@
                         {{scope.row.level4?scope.row.level4:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="总监">
                       <template slot-scope="scope">
                         {{scope.row.amaldar?scope.row.amaldar:'-'}}
@@ -216,9 +231,17 @@
                         {{scope.row.manager?scope.row.manager:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
-                <div class="table">
+                <div class="table" style="width:1200px;">
                   <div class="one_performance">
                     <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                   </div>
@@ -238,14 +261,24 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="在职状态">
                       <template slot-scope="scope">
                         {{scope.row.isJob?scope.row.isJob.label:'-'}}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="门店">
-                      <template slot-scope="scope">
-                        {{scope.row.level3?scope.row.level3:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="店长">
@@ -258,6 +291,11 @@
                         {{scope.row.level4?scope.row.level4:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="总监">
                       <template slot-scope="scope">
                         {{scope.row.amaldar?scope.row.amaldar:'-'}}
@@ -268,23 +306,89 @@
                         {{scope.row.manager?scope.row.manager:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
-                <div class="table">
+                <div class="table" style="width:1200px;">
                   <div class="one_performance">
                     <p>交易服务费分成<span>（交易服务费可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
                   <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
-                    <el-table-column prop="roleName" label="角色类型">
+                    <el-table-column label="角色类型">
+                      <template slot-scope="scope">
+                        {{scope.row.roleName?scope.row.roleName:'-'}}
+                      </template>
                     </el-table-column>
-                    <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
-                    <el-table-column prop="assignor" label="经纪人"></el-table-column>
-                    <el-table-column prop="isJob.label" label="在职状态"></el-table-column>
-                    <el-table-column prop="level3" label="门店"></el-table-column>
-                    <el-table-column prop="shopkeeper" label="店长"></el-table-column>
-                    <el-table-column prop="level4" label="单组" v-if="!employeeData.version"></el-table-column>
-                    <el-table-column prop="amaldar" label="总监"></el-table-column>
-                    <el-table-column prop="manager" label="副总"></el-table-column>
+                    <el-table-column label="分成比例(%)">
+                      <template slot-scope="scope">
+                        {{scope.row.ratio?scope.row.ratio:'0'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="在职状态">
+                      <template slot-scope="scope">
+                        {{scope.row.isJob?scope.row.isJob.label:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="店长">
+                      <template slot-scope="scope">
+                        {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="单组" v-if="!employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.level4?scope.row.level4:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="总监">
+                      <template slot-scope="scope">
+                        {{scope.row.amaldar?scope.row.amaldar:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="副总">
+                      <template slot-scope="scope">
+                        {{scope.row.manager?scope.row.manager:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
               </div>

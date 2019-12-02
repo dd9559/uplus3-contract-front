@@ -75,8 +75,8 @@
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
-                <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
-                <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
+                <li>房源：<span>{{scope.row.honseCode}}</span> {{scope.row.showOwnerName}}</li>
+                <li>客源：<span>{{scope.row.guestCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
             </div>
           </template>
@@ -100,7 +100,7 @@
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
-              <span>{{scope.row.dealPrice}} 元</span>
+              <span>{{scope.row.price}} 元</span>
               <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
             </div>
             <span v-else>-</span>
@@ -109,7 +109,7 @@
         <el-table-column label="成交经纪人" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.dealAgentStoreName}}</p>
-            <p>{{scope.row.dealAgentName}}</p>
+            <p>{{scope.row.dealName}}</p>
           </template>
         </el-table-column>
         <el-table-column label="签约时间" min-width="90">
@@ -139,18 +139,18 @@
         </el-table-column>
         <el-table-column label="上传合同主体时间" min-width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
+            <span v-if="scope.row.contType.value<4&&scope.row.upTime">{{Number(scope.row.upTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditId>0&&scope.row.toExamineState.value===0">
-              <p>{{scope.row.auditStoreName}}</p>
-              <p>{{scope.row.auditName}}</p>
+            <span v-if="scope.row.currentReviewerId>0&&scope.row.toExamineState.value===0">
+              <p>{{scope.row.currentReviewerDep}}</p>
+              <p>{{scope.row.currentReviewer}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="getUserMsg&&(scope.row.auditId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.auditId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.currentReviewerId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.currentReviewerId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="下一步审核人" min-width="120">
@@ -304,7 +304,7 @@ export default {
         this.getEmploye(this.contractForm.depId)
       }
     }else{
-      // this.getContractList();//合同列表
+      this.getSignedList();//列表
     }
   },
   methods:{
@@ -344,7 +344,7 @@ export default {
       this.excelCreate('/input/contractAuditExcel',printParam)
     },
     //获取合同列表
-    getContractList(type="init") {
+    getSignedList(type="init") {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
@@ -353,8 +353,8 @@ export default {
       param = Object.assign({}, param, this.contractForm);
       if(this.signDate){
         if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+          param.signDateSta = this.signDate[0];
+          param.signDateEnd = this.signDate[1];
         }
       }
       if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
@@ -373,7 +373,7 @@ export default {
       // }
       // printParam=Object.assign({},param)
 
-      this.$ajax.postJSON("/api/signingAudit/getlist", param).then(res => {
+      this.$ajax.get("/api/signingAudit/getlist", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.tableData = res.data.list;
@@ -384,7 +384,7 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getContractList("page");
+      this.getSignedList("page");
     },
     //重置
     resetFormFn() {
@@ -396,7 +396,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage=1;
-      this.getContractList("search");
+      this.getSignedList("search");
     },
      //字典查询
     getDictionaries() {
@@ -469,7 +469,7 @@ export default {
     //关闭设置审核人弹窗
     closeCheckPerson(){
       this.checkPerson.state=false;
-      this.getContractList();
+      this.getSignedList();
     },
     //审核弹窗
     toCheck(val){
