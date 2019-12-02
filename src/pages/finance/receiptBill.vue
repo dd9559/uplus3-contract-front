@@ -1111,7 +1111,7 @@
                     row.cardNumber = row.cardNumber.substr(0, 20)
                     return
                 }
-                if (param.cardNumber.length >= 16) {
+                if (param.cardNumber.length >= 12) {
                     this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
                         res = res.data
                         if (res.status === 200) {

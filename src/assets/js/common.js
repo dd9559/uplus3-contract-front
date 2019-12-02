@@ -601,7 +601,7 @@ let TOOL = {
               return;
             }
           } else if (typeInfo === "bankCard") {
-            if (val.length < 16) {
+            if (val.length < 12) {
               res.msg = "银行卡号位数不正确";
               reject(res);
               return;
