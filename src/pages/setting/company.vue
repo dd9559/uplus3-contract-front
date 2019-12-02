@@ -824,7 +824,7 @@
               isOk = false
               if(bankList[i].bankAccountName) {
                 if(bankList[i].bankCard) {
-                  if(bankList[i].bankCard.length >= 16) {
+                  if(bankList[i].bankCard.length >= 12) {
                     if(bankList[i].bankId) {
                       if(bankList[i].type === 1 && !bankList[i].bankBranchName) {
                         that_.$message({message:"支行不能为空"})
