@@ -19,7 +19,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'wh新委托.html'
+        src:'XN-买卖.html'
       }
     },
     created(){
