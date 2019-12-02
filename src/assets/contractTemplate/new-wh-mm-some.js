@@ -328,17 +328,17 @@ for(let readonlyItem in msg){
       if(readonlyArr.includes(readonlyItem)){
         if(readonlyItem=='guestStoreName'){
           element.removeAttribute('systemparam')
-          if(element.innerHTML==''){
+          if(element.innerHTML.length==0){
             element.innerHTML=msg[readonlyItem]
-            element.classList.remove('input-before')
           }
+          element.classList.remove('input-before')
         }
         else if(readonlyItem=='guestStoreRegisterCode'){
           element.removeAttribute('systemparam')
-          if(element.innerHTML==''){
+          if(element.innerHTML.length==0){
             element.innerHTML=msg[readonlyItem]
-            element.classList.remove('input-before')
           }
+          element.classList.remove('input-before')
         }else{
           element.innerHTML=msg[readonlyItem]
           element.classList.remove('input-before')
