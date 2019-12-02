@@ -212,7 +212,7 @@
                                             :value="option.key"
                                             ></el-option>
                                         </el-select>
-                                        <el-select class="person-right" size="small" placeholder="请选择职级类型" v-model="item.depTypeArr" filterable multiple @change="multiSelect(item.type,index)">
+                                        <el-select class="person-right" size="small" placeholder="请选择职级类型" v-if="item.depType" v-model="item.depTypeArr" filterable multiple @change="multiSelect(item.type,index)">
                                             <el-option v-for="item in dictionary['659']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                                         </el-select>
                                     </div>

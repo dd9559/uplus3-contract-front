@@ -257,18 +257,30 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  // let arr= []
-  // if(readonlyItem==='signDate'){
-  //   let time = new Date(msg.signDate)
-  //   arr.push(time.getFullYear())
-  //   arr.push(time.getMonth()+1)
-  //   arr.push(time.getDate())
-  // }
   // if(readonlyItem==="companyNames"){
   //   if(msg[readonlyItem].length>0){
   //     let companyName = document.querySelector(`*[extendParam="val13"]`)
   //     let companyNameTxt = msg[readonlyItem].join(',')
   //     companyName.setAttribute('list',companyNameTxt)
+  //   }
+  // }
+  if(readonlyItem==="guestStoreName"||readonlyItem==="guestStoreRegisterCode"){
+    if(msg[readonlyItem].length>0){
+      let dom
+      if(readonlyItem==="guestStoreName"){
+        dom = document.querySelector(`*[extendParam="val5"]`)
+      }else{
+        dom = document.querySelector(`*[extendParam="val6"]`)
+      }
+      dom.innerHTML = msg[readonlyItem]
+      dom.classList.remove('input-before')
+    }
+  }
+  // if(readonlyItem==="guestStoreRegisterCode"){
+  //   if(msg[readonlyItem].length>0){
+  //     let guestStoreRegisterCode = document.querySelector(`*[extendParam="val6"]`)
+  //     guestStoreRegisterCode.innerHTML = msg[readonlyItem]
+  //     guestStoreRegisterCode.classList.remove('input-before')
   //   }
   // }
 
