@@ -72,6 +72,8 @@ const otherContractDetail = () => import("@/pages/contract/otherContract/otherCo
 //变更解约审核
 const changeCheck = () => import("@/pages/contract/contractList/changeCheck")
 const cancelCheck = () => import("@/pages/contract/contractList/cancelCheck")
+//合同主体签后审核
+const signedCheck = () => import("@/pages/contract/contractList/signedCheck")
 
 const Login = () => import("@/login")
 const iframTest = () => import("@/pages/iframe/iframeTest")
@@ -404,6 +406,15 @@ export default new Router({
           meta: {
             root: true,
             list: ["二手房","合同", "合同审核"]
+          }
+        },
+        //合同主体审核
+        {
+          path: "signedCheck",
+          component: signedCheck,
+          meta: {
+            root: true,
+            list: ["二手房","合同", "签后审核"]
           }
         },
         //变更解约审核

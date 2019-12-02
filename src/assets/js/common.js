@@ -30,6 +30,13 @@ let TOOL = {
               code: "sign-ht-htsh-query"
             },
             {
+              name: "签后审核",
+              category:"1-1-7",
+              can:true,//是否可见
+              path: "signedCheck",
+              code: "sign-ht-htsh-query"
+            },
+            {
               name: "调佣审核",
               category:"1-1-3",
               can:true,//是否可见
