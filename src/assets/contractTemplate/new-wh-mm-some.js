@@ -328,12 +328,21 @@ for(let readonlyItem in msg){
       if(readonlyArr.includes(readonlyItem)){
         if(readonlyItem=='guestStoreName'){
           element.removeAttribute('systemparam')
+          if(element.innerHTML==''){
+            element.innerHTML=msg[readonlyItem]
+            element.classList.remove('input-before')
+          }
         }
-        if(readonlyItem=='guestStoreRegisterCode'){
+        else if(readonlyItem=='guestStoreRegisterCode'){
           element.removeAttribute('systemparam')
+          if(element.innerHTML==''){
+            element.innerHTML=msg[readonlyItem]
+            element.classList.remove('input-before')
+          }
+        }else{
+          element.innerHTML=msg[readonlyItem]
+          element.classList.remove('input-before')
         }
-        element.innerHTML=msg[readonlyItem]
-        element.classList.remove('input-before')
       }
     })
   }
