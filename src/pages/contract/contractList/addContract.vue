@@ -207,10 +207,18 @@
       <!-- 房源客源弹窗 -->
       <houseGuest :dialogType="dialogType" :dialogVisible="isShowDialog" :contractType="contractType" :choseHcode="choseHcode" :choseGcode="choseGcode" @closeHouseGuest="closeHouseGuest" v-if="isShowDialog">
       </houseGuest>
-      <!-- 保存合同确认框 -->
+      <!-- 保存合同确认框dialogSave -->
       <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
         <div class="warning-box">
-          <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
+          <p v-if="type!=1">
+            <i class="iconfont icon-tubiao_shiyong-1"></i>
+            <span>请确认客户和业主的姓名与证件上的一致？</span>
+          </p>
+          <div class="firstAdd" v-else>
+            <i class="iconfont icon-tubiao_shiyong-1"></i>
+            <p>您的合同24小时后自动删除，请签约成功后尽快上传合同主体和资料库</p>
+            <p>请确认客户和业主的姓名与证件上的一致？</p>
+          </div>
           <ul>
             <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
               {{item.name}}：{{item.encryptionCode}}
@@ -228,7 +236,7 @@
       </el-dialog>
       <!-- 删除人员确认框 -->
       <el-dialog title="提示" :visible.sync="dialogDel" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
-        <span>确定删除当前联系人吗？</span>
+        <div style="padding-top:10px;font-size:16px;">确定删除当前联系人吗？</div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogDel = false">取 消</el-button>
           <el-button type="primary" @click="delPeopleMsg">确 定</el-button>
@@ -2072,8 +2080,9 @@ export default {
   }
 }
 .warning-box{
-  margin: -4px 0 18px 28px;
-  p{
+  margin: -4px 0 18px 10px;
+  padding-top: 10px;
+  >p{
     line-height: 1.4;
     &:first-of-type{
       // display:flex;
@@ -2096,6 +2105,30 @@ export default {
     margin-bottom: 10px;
     li{
       padding-left: 65px;
+    }
+  }
+  .firstAdd{
+    width: 370px;
+    box-sizing: border-box;
+    padding-left: 65px;
+    position: relative;
+    >i{
+      color:orange;
+      font-size:48px;
+      margin-right:16px;
+      position: absolute;
+      top: -15px;
+      left: 0;
+    }
+    p{
+      font-size: 16px;
+      &:first-of-type{
+        color:red;
+        font-size: 14px;
+      }
+      &:last-of-type{
+        margin: 15px 0;
+      }
     }
   }
 }

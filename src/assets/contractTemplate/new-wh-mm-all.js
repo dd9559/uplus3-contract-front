@@ -272,17 +272,13 @@ for(let readonlyItem in msg){
       }else{
         dom = document.querySelector(`*[extendParam="val6"]`)
       }
-      dom.innerHTML = msg[readonlyItem]
-      dom.classList.remove('input-before')
+      if(!dom.innerHTML.length>0){
+        dom.innerHTML = msg[readonlyItem]
+        dom.classList.remove('input-before')
+      }
+      
     }
   }
-  // if(readonlyItem==="guestStoreRegisterCode"){
-  //   if(msg[readonlyItem].length>0){
-  //     let guestStoreRegisterCode = document.querySelector(`*[extendParam="val6"]`)
-  //     guestStoreRegisterCode.innerHTML = msg[readonlyItem]
-  //     guestStoreRegisterCode.classList.remove('input-before')
-  //   }
-  // }
 
   let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
   if(onlyReadDom.length>0){

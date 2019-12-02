@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table :max-height="tableHeight" class="info-scrollbar" :data="tableDate" style="width: 100%" border>
-      <el-table-column label="合同信息" min-width="200" fixed>
+      <el-table-column label="合同信息" label-class-name="pdl" min-width="200" fixed>
         <template slot-scope="scope">
           <div class="contract_msg">
             <div class="riskLabel">
@@ -75,7 +75,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="审核时间" min-width="110">
+      <el-table-column label="审核时间" min-width="120">
         <template slot-scope="scope">
           <span v-if="scope.row.changeRecord.auditTime">{{Number(scope.row.changeRecord.auditTime)|formatTime}}</span>
           <span v-else>-</span>
@@ -106,7 +106,7 @@
 
       <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
         <template slot-scope="scope">
-          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div><div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))" @click="goCheck(scope.row)">审核</div>
+          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div><div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||(scope.row.changeRecord.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(getUserMsg&&scope.row.changeRecord.grabDept===getUserMsg.depId))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
@@ -324,6 +324,11 @@ export default{
 </script>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+/deep/.pdl{
+  &.cell{
+    padding-left: 30px !important;
+  }
+}
 .contract_msg{
   display: flex;
    align-items: center;
