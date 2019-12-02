@@ -166,7 +166,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
-            <template v-if="scope.row.examineState.value=== 0 && scope.row.auditorId === getUserMsg.empId">
+            <template v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || scope.row.grabDept === getUserMsg.depId)">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -604,13 +604,56 @@
 
       // 点击审核事件
       auditApply(e){
-        this.dialogVisible = true
-        this.auditForm.textarea = ''
-        let param = {
-          id: e.id,
+        if(e.grabDept===this.getUserMsg.depId){
+          let param={
+            bizCode:e.code,
+            flowType:5
+          }
+          this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+            res = res.data
+            if(res.status===200){
+              this.dialogVisible = true
+              this.auditForm.textarea = ''
+              let param = {
+                id:e.id
+              }
+              this.getCheckData(param)
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          })
+        }else{
+          this.dialogVisible = true
+          this.auditForm.textarea = ''
+          let param = {
+            id:e.id
+          }
+          this.getCheckData(param)
         }
-        this.$ajax.get("/api/settlement/applyExamineById", param)
-        .then(res => {
+        // this.dialogVisible = true
+        // this.auditForm.textarea = ''
+        // let param = {
+        //   id: e.id,
+        // }
+        // this.$ajax.get("/api/settlement/applyExamineById", param).then(res => {
+        //   if (res.data.status === 200) {
+        //    this.layerAudit = res.data.data.contractResult;
+        //    this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
+        //    this.myCheckId = res.data.data.contractResult.id; //结算id
+        //    this.uploadList = res.data.data.contractResult.vouchers;
+        //   }
+        // }).catch(error => {
+        //   this.$message({
+        //     message: error
+        //   })
+        // });
+      },
+      //审核弹窗数据获取
+      getCheckData(param){
+        this.$ajax.get("/api/settlement/applyExamineById", param).then(res => {
           if (res.data.status === 200) {
            this.layerAudit = res.data.data.contractResult;
            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
@@ -618,9 +661,9 @@
            this.uploadList = res.data.data.contractResult.vouchers;
           }
         }).catch(error => {
-            this.$message({
-             message: error
-            })
+          this.$message({
+            message: error
+          })
         });
       },
 
@@ -812,9 +855,9 @@
 
 
     components: {
-          ScreeningTop,
-          checkPerson
-      }
+      ScreeningTop,
+      checkPerson
+    }
   };
 </script>
 <style lang="less">

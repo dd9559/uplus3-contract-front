@@ -166,11 +166,10 @@
             <div class="msg">
               <div class="title">业绩分成</div>
               <div class="content">
-                <div class="one_ performance">
-                  <p>(可分配业绩：<span class="orange">{{contractDetail.distributableAchievement}}</span>元)</p>
+                <div class="one_performance">
+                  <p>房源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                 </div>
-                <div class="table">
-                  <p>房源方分成</p>
+                <div class="table" style="width:1200px;">
                   <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
@@ -187,14 +186,24 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="在职状态">
                       <template slot-scope="scope">
                         {{scope.row.isJob?scope.row.isJob.label:'-'}}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="门店">
-                      <template slot-scope="scope">
-                        {{scope.row.level3?scope.row.level3:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="店长">
@@ -207,6 +216,11 @@
                         {{scope.row.level4?scope.row.level4:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="总监">
                       <template slot-scope="scope">
                         {{scope.row.amaldar?scope.row.amaldar:'-'}}
@@ -217,10 +231,20 @@
                         {{scope.row.manager?scope.row.manager:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
-                <div class="table">
-                  <p>客源方分成</p>
+                <div class="table" style="width:1200px;">
+                  <div class="one_performance">
+                    <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
+                  </div>
                   <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
@@ -237,14 +261,24 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="在职状态">
                       <template slot-scope="scope">
                         {{scope.row.isJob?scope.row.isJob.label:'-'}}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="门店">
-                      <template slot-scope="scope">
-                        {{scope.row.level3?scope.row.level3:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="店长">
@@ -257,6 +291,11 @@
                         {{scope.row.level4?scope.row.level4:'-'}}
                       </template>
                     </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
                     <el-table-column label="总监">
                       <template slot-scope="scope">
                         {{scope.row.amaldar?scope.row.amaldar:'-'}}
@@ -265,6 +304,89 @@
                     <el-table-column label="副总">
                       <template slot-scope="scope">
                         {{scope.row.manager?scope.row.manager:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class="table" style="width:1200px;">
+                  <div class="one_performance">
+                    <p>交易服务费分成<span>（交易服务费可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
+                  </div>
+                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
+                    <el-table-column label="角色类型">
+                      <template slot-scope="scope">
+                        {{scope.row.roleName?scope.row.roleName:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="分成比例(%)">
+                      <template slot-scope="scope">
+                        {{scope.row.ratio?scope.row.ratio:'0'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人工号" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="经纪人级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.assignorLevel?scope.row.assignorLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="销售经理级别" min-width="100">
+                      <template slot-scope="scope">
+                        {{scope.row.salesManagerLevel?scope.row.salesManagerLevel:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="在职状态">
+                      <template slot-scope="scope">
+                        {{scope.row.isJob?scope.row.isJob.label:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="店长">
+                      <template slot-scope="scope">
+                        {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="单组" v-if="!employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.level4?scope.row.level4:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="门店">
+                      <template slot-scope="scope">
+                        {{scope.row.level3?scope.row.level3:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="总监">
+                      <template slot-scope="scope">
+                        {{scope.row.amaldar?scope.row.amaldar:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="副总">
+                      <template slot-scope="scope">
+                        {{scope.row.manager?scope.row.manager:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="公共业绩">
+                      <template slot-scope="scope">
+                        <div v-if="scope.row.place==-1">--</div>
+                        <div v-if="scope.row.place==0">门店公共业绩</div>
+                        <div v-if="scope.row.place==1">公司公共业绩</div>
+                        <div v-if="scope.row.place==2">大区公共业绩</div>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -291,9 +413,10 @@
             </div>
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="合同主体" name="second">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
-            <p class="mainTitle">合同主体</p>
+            <p class="mainTitle">合同主体<span class="redTitle">合同主体和资料库均上传完成，才能进行签后审核</span></p>
             <ul class="ulData" style="margin-bottom:10px">
               <li>
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
@@ -337,8 +460,10 @@
             <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
+            <p style="margin-top:10px;color:red;">合同主体和资料库均上传完成，才能进行签后审核</p>
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">业主</p>
               <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
@@ -428,9 +553,11 @@
             </div>
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="委托合同" v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state" name="agency">
           <agency-contract :defaultInfo="contractDetail" v-if="agencyShow&&isHaveDetail" @goToMainData="goToMainData"></agency-contract>
         </el-tab-pane>
+
         <el-tab-pane label="应收实收" name="receipt" v-if="power['sign-ht-xq-ys-qurey'].state">
           <div class="receiptModule">
             <div class="moduleTitle">
@@ -531,6 +658,7 @@
             </div>
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
             <div :class="{'active':isActive===1}" @click="changeType(1)">房源</div>
@@ -592,6 +720,7 @@
             <!-- <audio src="http://192.168.1.6:28081/static/my.MP3" controls></audio> -->
           </div>
         </el-tab-pane>
+
         <el-tab-pane label="审核记录" name="fifth">
           <div class="firstDetail" :style="{ height: clientHei }">
             <!-- 合同审核记录 -->
@@ -632,6 +761,74 @@
             <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="WTcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+             <!-- 合同签后审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
+              <div class="moduleTitle">
+                <span>合同签后审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="WTcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+             <!-- 委托合同签后审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
+              <div class="moduleTitle">
+                <span>委托合同签后审核</span>
               </div>
               <div class="receiptList">
                 <el-table :data="WTcheckData" border style="width: 100%" header-row-class-name="theader-bg">
@@ -741,7 +938,7 @@
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
     </div>
     <div class="uploadBtn">
-      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -2668,6 +2865,11 @@ export default {
 </style>
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.redTitle{
+  color: red;
+  font-size: 14px;
+  padding-left: 10px;
+}
 .icon-loading:before {
     content: "\e62b" !important;
 }
@@ -2763,49 +2965,17 @@ export default {
           width: 600px;
         }
       }
-      .extendParams{
-        width: 1000px;
-        display: flex;
-        flex-wrap: wrap;
-        > p{
-          display: flex;
-          width: 300px;
-          padding: 4px 0;
-          .tag{
-            width: 100px;
-            cursor: pointer;
-          }
-          .text{
-            max-width: 110px;
-            cursor: pointer;
-          }
-          .colon{
-            color: @color-6c;
-          }
-          .extendUnit{
-            color: @color-6c;
-            padding-left: 5px;
-          }
-          .tagHidden{
-            // display: -webkit-box;
-            /*!autoprefixer: off */
-            // -webkit-box-orient: vertical;
-            /* autoprefixer: on */
-            // -webkit-line-clamp: 1;
-            // overflow: hidden;
-            // text-overflow:ellipsis;
-            text-overflow:ellipsis;
-            white-space:nowrap;
-            overflow:hidden;
-            display: inline-block;
-          }
-        }
-      }
-      .performance {
-        > p {
-          color: @color-6c;
-          .orange {
-            color: @color-orange;
+      .one_performance{
+        >p{
+          padding-left: 10px;
+          width: 500px;
+          color: #333333;
+          >span{
+            font-size: 12px;
+            color:#6C7986;
+            .orange{
+              color:#ff9039;
+            }
           }
         }
       }
@@ -2926,7 +3096,7 @@ export default {
     overflow-y: auto;
     // height: 100%;
     .classify {
-      padding-top: 20px;
+      padding-top: 10px;
       padding-bottom: 30px;
       border-bottom: 1px solid @border-ED;
       .title {
