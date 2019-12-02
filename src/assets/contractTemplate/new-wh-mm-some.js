@@ -279,6 +279,32 @@ contractConfig.checkboxListener(function(){},function(obj,index){
 
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg={
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "",
+//   guestName: "然爱迪生",
+//   guestNames: "",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "",
+//   ownerName: "熊先",
+//   ownerNames: "",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "",
+//   guestStoreName:"2222",
+//   guestStoreRegisterCode:'2222',
+// }
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   // let arr= []
@@ -296,10 +322,16 @@ for(let readonlyItem in msg){
   //   }
   // }
 
-  let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
+  let readonlyArr = ['code','ownerName','ownerNames','guestStoreRegisterCode','guestStoreName','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
+        if(readonlyItem=='guestStoreName'){
+          element.removeAttribute('systemparam')
+        }
+        if(readonlyItem=='guestStoreRegisterCode'){
+          element.removeAttribute('systemparam')
+        }
         element.innerHTML=msg[readonlyItem]
         element.classList.remove('input-before')
       }
