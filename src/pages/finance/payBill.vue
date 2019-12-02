@@ -604,7 +604,7 @@
                 let param = {
                     cardNumber: row.cardNumber
                 }
-                if (param.cardNumber.length >= 16 && param.cardNumber.length <= 20 && this.form.accountProperties === 0) {
+                if (param.cardNumber.length >= 12 && param.cardNumber.length <= 20 && this.form.accountProperties === 0) {
                     this.$ajax.get('/api/system/selectBankNameByCard', param).then(res => {
                         res = res.data
                         if (res.status === 200) {

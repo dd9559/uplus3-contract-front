@@ -588,15 +588,15 @@ export default {
       let host=window.location.host
       let url = false
       switch (host){
-          case "localhost:8080":
-          case "sign2.jjw.com:28879":
-            url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
-                break
-          case "sign2.jjw.com":
-            url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
-                break
-        }
-        return url
+        case "localhost:8080":
+        case "sign2.jjw.com:28879":
+          url=this.getUserMsg.depId===594||this.getUserMsg.depId===838
+          break
+        case "sign2.jjw.com":
+          url=this.getUserMsg.depId===900||this.getUserMsg.depId===2257
+          break
+      }
+      return url
     },
     getUserMsg(){
       return this.getUser.user
