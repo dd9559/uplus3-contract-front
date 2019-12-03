@@ -1279,25 +1279,10 @@ export default {
       this.EmployeList = [];
     },
     checkAch(value, index) {
-      if(value.auditId===this.userInfo.empId){
-              let newPage = this.$router.resolve({
-              path: "/achPage",
-              query: {
-                aId: value.aId,
-                contractCode: value.code,
-                dialogType: 0,
-                achIndex: index,
-                achObj: JSON.stringify({ contractId: value.id }),
-                contractId: value.id,
-                version: this.selectAchList[0].version,
-                contType:value.contType.value
-              }
-            });
-            window.open(newPage.href, "_blank");
-      }else{
-        let param={
-          bizCode:value.aId,
-          flowType :2
+      if(userInfo&&scope.row.grabDept.indexOf(userInfo.depId) !=-1){
+              let param={
+              bizCode:value.aId,
+              flowType :2
         }
           this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
           res = res.data
@@ -1314,15 +1299,30 @@ export default {
                   version: this.selectAchList[0].version,
                   contType:value.contType.value
                 }
-              });
-            window.open(newPage.href, "_blank");
-          }
-        }).catch(error=>{
-          this.$message({
-            message:error,
-            type: "error"
+                });
+              window.open(newPage.href, "_blank");
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
           })
-        })
+      }else{
+              let newPage = this.$router.resolve({
+              path: "/achPage",
+              query: {
+                aId: value.aId,
+                contractCode: value.code,
+                dialogType: 0,
+                achIndex: index,
+                achObj: JSON.stringify({ contractId: value.id }),
+                contractId: value.id,
+                version: this.selectAchList[0].version,
+                contType:value.contType.value
+              }
+            });
+            window.open(newPage.href, "_blank");
       }
     },
     editAch(value, index) {
