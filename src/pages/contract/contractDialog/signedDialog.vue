@@ -181,6 +181,9 @@ export default {
     close(){
       this.$emit("closeDialog")
     },
+    closeCheckPerson(){
+      this.close()
+    },
     inputOnly(){
       let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
       this.checkReasion=this.checkReasion.replace(/\s+/g,"").replace(addrReg,'')
@@ -342,11 +345,18 @@ export default {
             message:"操作成功",
             type:"success"
           })
+          this.close()
         }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:"error"
+        })
       })
     },
     //主合同驳回
     confirm(){
+      debugger
       if(this.checkList.length>0){
         let param
         if(this.checkList.length===2){
@@ -375,7 +385,7 @@ export default {
           type:"warning"
         })
       }
-    }
+    },
   },
   computed: {
     getDialogVisible: function() {

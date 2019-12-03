@@ -83,25 +83,24 @@
         </el-table-column>
         <el-table-column label="合同类型" min-width="60" fixed>
           <template slot-scope="scope">
-            <!-- {{scope.row.isCombine?"委托合同":scope.row.contType.label}} -->
-            <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
-            <span v-else>{{scope.row.isCombine?"委托合同":scope.row.contType.label}}</span>
+            <span v-if="scope.row.contTypes">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+            <span v-else>委托合同</span>
           </template>
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" min-width="160" fixed>
           <template slot-scope="scope">
-            <span v-if="!scope.row.propertyAddr">-</span>
+            <span v-if="!scope.row.property_addr">-</span>
             <template>
-              <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
-              <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+              <p>{{scope.row.property_addr.split(' ')[0]}}</p>
+              <p>{{scope.row.property_addr.split(' ')[1]}}</p>
             </template>
           </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
           <template slot-scope="scope">
-            <div v-if="!scope.row.isCombine">
+            <div v-if="scope.row.contTypes">
               <span>{{scope.row.price}} 元</span>
-              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="scope.row.contType.value===1&&item.key===scope.row.timeUnit"> / {{item.value}}</span>
             </div>
             <span v-else>-</span>
           </template>
@@ -112,62 +111,55 @@
             <p>{{scope.row.dealName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约时间" min-width="90">
+        <el-table-column label="签约时间" min-width="95">
           <template slot-scope="scope">
-            <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
-            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
+            {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" min-width="60">
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="90">
           <template slot-scope="scope">
-              <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
-              <span v-else>-</span>
+            {{scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}
           </template>
         </el-table-column>
         <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-            </span>
-            <span v-else>-</span>
+              <span v-if="scope.row.state.value===-1" class="blue">{{scope.row.state.label}}</span>
+              <span v-if="scope.row.state.value===0" class="yellow">{{scope.row.state.label}}</span>
+              <span v-if="scope.row.state.value===1" class="green">{{scope.row.state.label}}</span>
+              <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="上传合同主体时间" min-width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4&&scope.row.upTime">{{Number(scope.row.upTime)|timeFormat_hm}}</span>
+            <span v-if="scope.row.upTime">{{Number(scope.row.upTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.currentReviewerId>0&&scope.row.toExamineState.value===0">
+            <span v-if="scope.row.currentReviewerId>0&&scope.row.state.value===0">
               <p>{{scope.row.currentReviewerDep}}</p>
               <p>{{scope.row.currentReviewer}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="getUserMsg&&(scope.row.currentReviewerId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.toExamineState.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.currentReviewerId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.currentReviewerId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.state.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.currentReviewerId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="下一步审核人" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.nextAuditId>0">
-              <p>{{scope.row.nextAuditStoreName}}</p>
-              <p>{{scope.row.nextAuditName}}</p>
+            <span v-if="scope.row.nextReviewerId>0">
+              <p>{{scope.row.nextReviewerDep}}</p>
+              <p>{{scope.row.nextReviewer}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="getUserMsg&&(scope.row.nextAuditId!==0&&scope.row.auditId===getUserMsg.empId&&scope.row.toExamineState.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextAuditId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.nextReviewerId!==0&&scope.row.currentReviewerId===getUserMsg.empId&&scope.row.state.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextReviewerId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90" fixed="right">
+        <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <!-- <div style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId)||((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))))" @click="goCheck(scope.row)">审核</div> -->
-            <div class="btn" @click="toCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.nextReviewerId>0&&getUserMsg&&scope.row.nextReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||(scope.row.currentReviewerId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))))" @click="toCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -364,22 +356,21 @@ export default {
       }else{
         param.contTypes=''
       }
-      // delete param.depName
-      // if(type==="search"||type==="page"){
-      //   sessionStorage.setItem('sessionQuery',JSON.stringify({
-      //     path:'/contractCheck',
-      //     url:'/contract/contractList',
-      //     query:Object.assign({},param,{empName:this.dep.empName}),
-      //     methods:"postJSON"
-      //   }))
-      // }
-      // printParam=Object.assign({},param)
+      if(type==="search"||type==="page"){
+        sessionStorage.setItem('sessionQuery',JSON.stringify({
+          path:'/signedCheck',
+          url:'/signingAudit/getlist',
+          query:Object.assign({},param,{empName:this.dep.empName}),
+          methods:"get"
+        }))
+      }
+      printParam=Object.assign({},param)
 
       this.$ajax.get("/api/signingAudit/getlist", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.tableData = res.data.list;
-          this.total = res.data.count;
+          this.total = res.data.total;
         }
       });
     },
@@ -411,7 +402,7 @@ export default {
           this.$router.push({
             path: "/contractDetails",
             query: {
-              id: value.id,//合同id
+              id: value.cid,//合同id
               contType: value.contType.value//合同类型
             }
           });
@@ -419,7 +410,7 @@ export default {
           this.$router.push({
             path: "/detailIntention",
             query: {
-              id: value.id,
+              id: value.cid,
               contType: value.contType.value
             }
           });
@@ -454,14 +445,13 @@ export default {
     },
      // 选择审核人
     choseCheckPerson:function (row,type) {
-      this.checkPerson.code=row.code;
+      this.checkPerson.code=row.id;
       this.checkPerson.type=type;
-      if(row.nextAuditId>=0){
+      if(row.nextReviewerId>=0){
         this.checkPerson.label=false;
       }else{
         this.checkPerson.label=true;
       }
-      // this.checkPerson.flowType=12
       this.checkPerson.state=true;
     },
     //关闭设置审核人弹窗
@@ -471,18 +461,40 @@ export default {
     },
     //审核弹窗
     toCheck(val){
-      this.checkDialog=true
-      this.id=val.id//合同id
-      this.signedId=val.signedId//签后ID
-      if(val.isCombine){
+      debugger
+      this.id=val.cid//合同id
+      this.signedId=val.id//签后ID
+      if(!val.contTypes){
         this.isWT=1
       }else{
         this.isWT=0
+      }
+      if(val.currentReviewerId===this.getUserMsg.empId){
+        this.checkDialog=true
+      }else{
+        let param = {
+          bizCode:item.code,
+          flowType:12
+        }
+        this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          if(res.status===200){
+            this.checkDialog=true
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
       }
     },
     closeDialog(){
       this.checkDialog=false
       this.id=0
+      this.signedId=0
+      this.isWT=0
+      this.getSignedList();
     }
   },
   computed:{
@@ -704,5 +716,16 @@ export default {
 }
 /deep/ .el-table th {
   background: @bg-th;
+}
+/deep/ .null-formatter {
+  .cell:empty {
+    position: relative;
+
+    &:before {
+      content: '--';
+      width: 30px;
+      display: inline-block;
+    }
+  }
 }
 </style>
