@@ -471,7 +471,7 @@
                       <span
                         @click.stop="checkAch(scope.row,scope.$index)"
                         style="cursor:pointer;"
-                        v-if="userInfo&&userInfo.empId==scope.row.auditId"
+                        v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept.indexOf(userInfo.depId) !=-1)"
                       >审核</span>
                   </div>
                  <span v-else>-</span>
@@ -780,12 +780,6 @@ export default {
       let res = this.getDataList;
       if (res && res.route === this.$route.path) {
         this.selectAchList = res.data.list;
-        // this.selectAchList.forEach((item, index) => {
-        //   for (let i = 0; i < item.distributions.length; i++) {
-        //     item.distributions[i].aMoney =
-        //       Math.floor(this.mul(item.distributions[i].aMoney, 100)) / 100;
-        //   }
-        // });
         this.total = res.data.total;
         if (res.data.list[0]) {
           this.countData = res.data.list[0].contractCount;
@@ -1052,14 +1046,8 @@ export default {
           let data = res.data;
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
-            // _that.selectAchList.forEach((item, index) => {
-            //   for (let i = 0; i < item.distributions.length; i++) {
-            //     item.distributions[i].aMoney =
-            //       Math.floor(this.mul(item.distributions[i].aMoney, 100)) / 100;
-            //     //  debugger
-            //   }
-            // });
             _that.total = data.data.total;
+            debugger
             if (data.data.list[0]) {
               _that.countData = data.data.list[0].contractCount;
             } else {
@@ -1293,20 +1281,52 @@ export default {
       this.EmployeList = [];
     },
     checkAch(value, index) {
-      let newPage = this.$router.resolve({
-        path: "/achPage",
-        query: {
-          aId: value.aId,
-          contractCode: value.code,
-          dialogType: 0,
-          achIndex: index,
-          achObj: JSON.stringify({ contractId: value.id }),
-          contractId: value.id,
-          version: this.selectAchList[0].version,
-          contType:value.contType.value
+      if(value.auditId===this.userInfo.empId){
+              let newPage = this.$router.resolve({
+              path: "/achPage",
+              query: {
+                aId: value.aId,
+                contractCode: value.code,
+                dialogType: 0,
+                achIndex: index,
+                achObj: JSON.stringify({ contractId: value.id }),
+                contractId: value.id,
+                version: this.selectAchList[0].version,
+                contType:value.contType.value
+              }
+            });
+            window.open(newPage.href, "_blank");
+      }else{
+        let param={
+          bizCode:value.aId,
+          flowType :2
         }
-      });
-      window.open(newPage.href, "_blank");
+          this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          debugger
+          if(res.status===200){
+                let newPage = this.$router.resolve({
+                path: "/achPage",
+                query: {
+                  aId: value.aId,
+                  contractCode: value.code,
+                  dialogType: 0,
+                  achIndex: index,
+                  achObj: JSON.stringify({ contractId: value.id }),
+                  contractId: value.id,
+                  version: this.selectAchList[0].version,
+                  contType:value.contType.value
+                }
+              });
+            window.open(newPage.href, "_blank");
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            type: "error"
+          })
+        })
+      }
     },
     editAch(value, index) {
       let newPage = this.$router.resolve({
