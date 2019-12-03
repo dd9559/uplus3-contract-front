@@ -9,7 +9,7 @@
         </li>
       </ul>
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button class="btn-info" round size="small" type="primary" @click="showDialog"
+        <el-button class="btn-info" round size="small" type="primary" @click="quickCheck"
                    v-if="billMsg.auditButton">审核
         </el-button>
       </p>
@@ -423,6 +423,23 @@
                     message: '下一个节点审核人设置成功'
                 })
                 this.getCheckData()
+            },
+            //审核按钮是否操作抢单
+            quickCheck:function(){
+                if(this.billMsg.grabDept&&false){//抢单，判断当前登录人部门是否包含在设置的部门中，是则调用抢单接口
+                    this.$ajax.get('/api/machine/getAuditAuth',{bizCode:this.billMsg.payCode,flowType:this.activeItem === '付款信息'?0:1}).then(res=>{
+                        res=res.data
+                        if(res.status===200){
+                            this.showDialog()
+                        }
+                    }).catch(error=>{
+                        this.$message({
+                            message:`抢单失败`
+                        })
+                    })
+                }else{
+                    this.showDialog()
+                }
             },
             // 判断审核弹窗显示内容
             showDialog: function () {

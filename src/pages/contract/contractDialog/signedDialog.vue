@@ -95,6 +95,18 @@
         <el-button round type="primary" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 设置/转交审核人 -->
+    <checkPerson
+    :show="checkPerson.state" page="list"
+    :type="checkPerson.type"
+    :showLabel="checkPerson.label"
+    :bizCode="checkPerson.code"
+    :flowType="checkPerson.flowType"
+    @close="closeCheckPerson"
+    @submit="closeCheckPerson"
+    v-if="checkPerson.state"
+    >
+    </checkPerson>
     <!-- 图片预览 -->
     <preview
     :imgList="previewFiles"
@@ -122,6 +134,10 @@ export default {
       type: Number,
       default: 0
     },
+    signedId:{
+      type: Number,
+      default: 0
+    },
     isWT:{
       type:Number,
       default:0
@@ -134,6 +150,14 @@ export default {
       mainData:[],//合同主体
       contDataFiles:[],//资料库图片缩略图
       mainDataFiles:[],//合同主体图片缩略图
+      checkPerson: {
+        state:false,
+        type:1,
+        code:'',
+        flowType:12,
+        label:false,
+        current:false
+      },
       // 资料库类型
       //买方类型
       buyerList: [],
@@ -156,6 +180,9 @@ export default {
   methods:{
     close(){
       this.$emit("closeDialog")
+    },
+    closeCheckPerson(){
+      this.close()
     },
     inputOnly(){
       let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
@@ -277,12 +304,27 @@ export default {
     checked(type){
       if(this.checkReasion.length>0){
         if(type===1){//通过
-          this.subCheck()
+          let param = {
+            id:this.signedId,//签后id
+            contId:this.id,//合同id
+            remarks:this.checkReasion,//审核备注
+            state:0,//通过驳回 0通过 1驳回
+            contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
+          }
+          this.subCheck(param)
         }else{//驳回
           if(this.isWT){//委托合同直接驳回
-            this.subCheck()
+            let param = {
+              id:this.signedId,//签后id
+              contId:this.id,//合同id
+              remarks:this.checkReasion,//审核备注
+              state:1,//通过驳回 0通过 1驳回
+              rejectFileType:'2',//驳回类型 字符串 '1'资料库 '2'合同主体 '12'资料库和合同主体
+              contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
+            }
+            this.subCheck(param)
           }else{//主合同选择是合同主体驳回还是资料库驳回
-          this.checkList=["合同主体", "资料库"]
+            this.checkList=["合同主体", "资料库"]
             this.rejectDialog=true
           }
         }
@@ -294,20 +336,56 @@ export default {
       }
     },
     //提交审核
-    subCheck(){
-      console.log("提交啦！！！！")
+    subCheck(param){
+      console.log(param)
+      this.$ajax.post('/api/signingAudit/signinAudit',param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.$message({
+            message:"操作成功",
+            type:"success"
+          })
+          this.close()
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:"error"
+        })
+      })
     },
     //主合同驳回
     confirm(){
+      debugger
       if(this.checkList.length>0){
-
+        let param
+        if(this.checkList.length===2){
+          param = {
+            id:this.signedId,//签后id
+            contId:this.id,//合同id
+            remarks:this.checkReasion,//审核备注
+            state:1,//通过驳回 0通过 1驳回
+            rejectFileType:'12',//驳回类型 字符串 '1'资料库 '2'合同主体 '12'资料库和合同主体
+            contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
+          }
+        }else if(this.checkList.length===1){
+          param = {
+            id:this.signedId,//签后id
+            contId:this.id,//合同id
+            remarks:this.checkReasion,//审核备注
+            state:1,//通过驳回 0通过 1驳回
+            rejectFileType:this.checkList[0]==="合同主体"?'2':'1',//驳回类型 字符串 '1'资料库 '2'合同主体 '12'资料库和合同主体
+            contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
+          }
+        }
+        this.subCheck(param)
       }else{
         this.$message({
           message:"驳回类型不能为空",
           type:"warning"
         })
       }
-    }
+    },
   },
   computed: {
     getDialogVisible: function() {

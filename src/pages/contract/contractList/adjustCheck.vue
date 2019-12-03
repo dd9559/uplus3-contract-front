@@ -165,7 +165,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0 && scope.row.checkby === getUserMsg.empId">
+            <template v-if="scope.row.checkState === 0 && (scope.row.checkby === getUserMsg.empId||scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId)))">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -646,20 +646,49 @@
 
       // 点击审核事件
       auditApply(e) {
-        this.dialogVisible = true
-        this.auditForm.textarea = ''
-        // 当前合同的类型
+        // // 当前合同的类型
         this.applyType=e.tradeType
-        let param = {
-          checkId: e.checkId,
-          contractCode: e.contractCode
+        if(e.grabDept.indexOf(String(getUserMsg.depId))){
+          let param={
+            bizCode:e.checkId,
+          }
+          if(e.tradeType===1){
+            param.flowType=8
+          }else if(e.tradeType===2||e.tradeType===3){
+            param.flowType=7
+          }
+          this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{//抢单
+            res = res.data
+            if(res.status===200){
+              this.dialogVisible = true
+              this.auditForm.textarea = ''
+              let param = {
+                checkId: e.checkId,
+                contractCode: e.contractCode
+              }
+              this.getCheckData(param)
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          })
+        }else{
+          this.dialogVisible = true
+          this.auditForm.textarea = ''
+          let param = {
+            checkId: e.checkId,
+            contractCode: e.contractCode
+          }
+          this.getCheckData(param)
         }
-        this.$ajax.get("/api/commission/toCheck", param)
-        .then(res => {
-          console.log(e);
+      },
+      //审核弹窗数据获取
+      getCheckData(param){
+        this.$ajax.get("/api/commission/toCheck", param).then(res => {
           let data = res.data;
           if (res.data.status === 200) {
-            console.log(data.data)
             this.layerAudit = data.data;
             this.myCheckId = data.data.checkId;
             this.uploadList = data.data.voucher;
@@ -679,7 +708,6 @@
             })
         });
       },
-
       // 驳回操作
       refuseFn() {
         let param = {
