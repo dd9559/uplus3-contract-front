@@ -537,12 +537,6 @@
 
       <h1 class="f14"  v-if="fujian">业绩分成协议</h1>
       <ul class="ulData" style="margin-top:10px" v-if="fujian">
-              <!-- <li>
-                <file-up class="upload-box" @getUrl="addSubject">
-                  <i class="iconfont icon-shangchuan"></i>
-                  <p>点击上传</p>
-                </file-up>
-              </li> -->
               <li v-for="(item,i) in filesList" :key="i">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                   <div class="attach-box" @click="previewPhoto(filesList,i)">

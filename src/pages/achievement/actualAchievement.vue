@@ -840,7 +840,6 @@ export default {
         return this.getUser.user
       },
       validInput() {
-        // debugger
         return this.SSuForm.remark.length
         }
       },
@@ -1047,7 +1046,6 @@ export default {
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
             _that.total = data.data.total;
-            debugger
             if (data.data.list[0]) {
               _that.countData = data.data.list[0].contractCount;
             } else {
@@ -1270,7 +1268,7 @@ export default {
         dealAgentId: '',
         empName:'',
         departmentDetail: "", //部门详情（员工）
-        contractType: "", //合同类型
+        contractType: [], //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
@@ -1281,7 +1279,36 @@ export default {
       this.EmployeList = [];
     },
     checkAch(value, index) {
-      if(value.auditId===this.userInfo.empId){
+      if(userInfo&&scope.row.grabDept.indexOf(userInfo.depId) !=-1){
+              let param={
+              bizCode:value.aId,
+              flowType :2
+        }
+          this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
+          res = res.data
+          if(res.status===200){
+                let newPage = this.$router.resolve({
+                path: "/achPage",
+                query: {
+                  aId: value.aId,
+                  contractCode: value.code,
+                  dialogType: 0,
+                  achIndex: index,
+                  achObj: JSON.stringify({ contractId: value.id }),
+                  contractId: value.id,
+                  version: this.selectAchList[0].version,
+                  contType:value.contType.value
+                }
+                });
+              window.open(newPage.href, "_blank");
+            }
+          }).catch(error=>{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          })
+      }else{
               let newPage = this.$router.resolve({
               path: "/achPage",
               query: {
@@ -1296,36 +1323,6 @@ export default {
               }
             });
             window.open(newPage.href, "_blank");
-      }else{
-        let param={
-          bizCode:value.aId,
-          flowType :2
-        }
-          this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
-          res = res.data
-          debugger
-          if(res.status===200){
-                let newPage = this.$router.resolve({
-                path: "/achPage",
-                query: {
-                  aId: value.aId,
-                  contractCode: value.code,
-                  dialogType: 0,
-                  achIndex: index,
-                  achObj: JSON.stringify({ contractId: value.id }),
-                  contractId: value.id,
-                  version: this.selectAchList[0].version,
-                  contType:value.contType.value
-                }
-              });
-            window.open(newPage.href, "_blank");
-          }
-        }).catch(error=>{
-          this.$message({
-            message:error,
-            type: "error"
-          })
-        })
       }
     },
     editAch(value, index) {

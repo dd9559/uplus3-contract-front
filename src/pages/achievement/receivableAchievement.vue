@@ -494,7 +494,7 @@ export default {
         dealAgentStoreId:null,
         dealAgentId:null,
         departmentDetail: "", //部门详情（员工）
-        contractType: "", //合同类型
+        contractType: [], //合同类型
         dateMo: "",
         search: "",
         timeType:0,
