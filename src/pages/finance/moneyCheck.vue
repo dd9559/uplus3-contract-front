@@ -731,7 +731,10 @@
             //操作
             cellOpera: function (item, type = 'check') {
                 if (type === 'check') {
-                    if(item.grabDept){//抢单，判断当前登录人部门是否包含在设置的部门中，是则调用抢单接口
+                    //抢单，判断当前登录人部门是否包含在设置的部门中，是则调用抢单接口
+                    if(this.getUser.user.empId === item.auditBy){
+                        this.toDetails(item)
+                    }else{
                         this.$ajax.get('/api/machine/getAuditAuth',{bizCode:item.payCode,flowType:item.type===1?1:0}).then(res=>{
                             res=res.data
                             if(res.status===200){
@@ -742,8 +745,6 @@
                                 message:`抢单失败`
                             })
                         })
-                    }else{
-                        this.toDetails(item)
                     }
                 } else if (type === 'edit') {
                     this.$router.push({
