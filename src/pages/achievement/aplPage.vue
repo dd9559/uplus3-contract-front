@@ -2330,6 +2330,7 @@
           }
         } else {
           // 新版本 总监 副总 非必填
+          debugger
           if((this.isProd==0&&this.cityId==40)||(this.isProd==1&&this.cityId==16)) {
             if(
                 resultArr2[i].roleType === "" ||
@@ -2596,6 +2597,9 @@
     }
   },
     computed:{
+      isProd(){
+      return this.getUser.isProd
+    },
       serfeetotal() {
       var sum = 0;
       this.serviceAgents.forEach((item, index) => {

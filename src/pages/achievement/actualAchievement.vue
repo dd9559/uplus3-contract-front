@@ -840,7 +840,6 @@ export default {
         return this.getUser.user
       },
       validInput() {
-        // debugger
         return this.SSuForm.remark.length
         }
       },
@@ -1047,7 +1046,6 @@ export default {
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
             _that.total = data.data.total;
-            debugger
             if (data.data.list[0]) {
               _that.countData = data.data.list[0].contractCount;
             } else {
@@ -1270,7 +1268,7 @@ export default {
         dealAgentId: '',
         empName:'',
         departmentDetail: "", //部门详情（员工）
-        contractType: "", //合同类型
+        contractType: [], //合同类型
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
@@ -1303,7 +1301,6 @@ export default {
         }
           this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
           res = res.data
-          debugger
           if(res.status===200){
                 let newPage = this.$router.resolve({
                 path: "/achPage",

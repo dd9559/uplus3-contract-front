@@ -144,7 +144,7 @@
               <p>{{scope.row.currentReviewer}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="getUserMsg&&(scope.row.currentReviewerId===getUserMsg.empId||scope.row.preAuditId===getUserMsg.empId)&&scope.row.state.value===0" @click="choseCheckPerson(scope.row,scope.row.preAuditId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.currentReviewerId?'转交审核人':'设置审核人'}}</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.currentReviewerId===getUserMsg.empId||scope.row.previousreviewerId===getUserMsg.empId)&&scope.row.state.value===0" @click="choseCheckPerson(scope.row,scope.row.previousreviewerId===getUserMsg.empId?1:2)">{{getUserMsg&&getUserMsg.empId===scope.row.currentReviewerId?'转交审核人':'设置审核人'}}</el-button>
           </template>
         </el-table-column>
         <el-table-column label="下一步审核人" min-width="120">
@@ -159,7 +159,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.nextReviewerId>0&&getUserMsg&&scope.row.nextReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||(scope.row.currentReviewerId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))))" @click="toCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.nextReviewerId>0&&getUserMsg&&scope.row.nextReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||(scope.row.currentReviewerId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -473,7 +473,7 @@ export default {
         this.checkDialog=true
       }else{
         let param = {
-          bizCode:item.code,
+          bizCode:val.id,
           flowType:12
         }
         this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{

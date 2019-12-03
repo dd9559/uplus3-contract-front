@@ -166,7 +166,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
-            <template v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))))">
+            <template v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -604,7 +604,14 @@
 
       // 点击审核事件
       auditApply(e){
-        if(e.grabDept.indexOf(String(getUserMsg.depId))){
+        if(e.auditorId === this.getUserMsg.empId){
+          this.dialogVisible = true
+          this.auditForm.textarea = ''
+          let param = {
+            id:e.id
+          }
+          this.getCheckData(param)
+        }else{
           let param={
             bizCode:e.code,
             flowType:5
@@ -625,31 +632,7 @@
               type: "error"
             })
           })
-        }else{
-          this.dialogVisible = true
-          this.auditForm.textarea = ''
-          let param = {
-            id:e.id
-          }
-          this.getCheckData(param)
         }
-        // this.dialogVisible = true
-        // this.auditForm.textarea = ''
-        // let param = {
-        //   id: e.id,
-        // }
-        // this.$ajax.get("/api/settlement/applyExamineById", param).then(res => {
-        //   if (res.data.status === 200) {
-        //    this.layerAudit = res.data.data.contractResult;
-        //    this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
-        //    this.myCheckId = res.data.data.contractResult.id; //结算id
-        //    this.uploadList = res.data.data.contractResult.vouchers;
-        //   }
-        // }).catch(error => {
-        //   this.$message({
-        //     message: error
-        //   })
-        // });
       },
       //审核弹窗数据获取
       getCheckData(param){

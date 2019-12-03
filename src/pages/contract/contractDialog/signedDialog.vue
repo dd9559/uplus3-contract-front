@@ -348,10 +348,17 @@ export default {
           this.close()
         }
       }).catch(error=>{
-        this.$message({
-          message:error,
-          type:"error"
-        })
+        if(error.status === 300 && error.message==="下一节点审批人不存在"){
+          this.checkPerson.flowType=12   //签后审核的流程类型为12
+          this.checkPerson.code=this.signedId  //业务编码为checkId
+          this.checkPerson.state=true
+          this.checkPerson.type=3
+        }else{
+          this.$message({
+            message: error,
+            type:"error"
+          })
+        }
       })
     },
     //主合同驳回
