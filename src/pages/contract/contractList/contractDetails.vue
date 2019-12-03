@@ -792,12 +792,12 @@
               </div>
             </div>
              <!-- 合同签后审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
               <div class="moduleTitle">
                 <span>合同签后审核</span>
               </div>
               <div class="receiptList">
-                <el-table :data="WTcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                <el-table :data="QHcheckData" border style="width: 100%" header-row-class-name="theader-bg">
                   <el-table-column label="时间">
                     <template slot-scope="scope">
                       {{scope.row.auditTime|formatTime}}
@@ -826,12 +826,12 @@
               </div>
             </div>
              <!-- 委托合同签后审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
               <div class="moduleTitle">
                 <span>委托合同签后审核</span>
               </div>
               <div class="receiptList">
-                <el-table :data="WTcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                <el-table :data="WTsignedData" border style="width: 100%" header-row-class-name="theader-bg">
                   <el-table-column label="时间">
                     <template slot-scope="scope">
                       {{scope.row.auditTime|formatTime}}
@@ -1432,6 +1432,8 @@ export default {
       WTcheckData:[],
       BGcheckData:[],
       JYcheckData:[],
+      QHcheckData:[],
+      WTsignedData:[],
       currentPage: 1,
       pageSize: 10,
       total:0,
@@ -1721,8 +1723,10 @@ export default {
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
         this.getEntrustMsg();//委托
-        this.getChangeMsg();
-        this.getCancelMsg();
+        this.getChangeMsg();//变更
+        this.getCancelMsg();//解约
+        this.SignedMsg();//合同签后
+        this.getWTsignedMsg();//委托签后
       }else if(tab.name==="fourth"){
         this.getRecordList();//电话录音
       }else if(tab.name==="receipt"){
@@ -2575,6 +2579,11 @@ export default {
             });
             this.getContractDetail();
           }
+        }).catch(error=>{
+          this.$message({
+            message:error,
+            tyep:"error"
+          })
         })
       }
     },
@@ -2671,6 +2680,15 @@ export default {
         flowType:type,
         bizCode:this.contCode
       };
+      if(type===12||type==="WT12"){//签后审核记录用的是签后id查询
+        param = {
+          flowType:type,
+          bizCode:type===12?this.contractDetail.signingId:this.contractDetail.signingEntrustId
+        }
+      }
+      if(!param.bizCode){
+        return
+      }
       this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
         res=res.data;
         if(res.status===200){
@@ -2680,8 +2698,12 @@ export default {
             this.BGcheckData=res.data.data;
           }else if(type===10){
             this.JYcheckData=res.data.data;
-          }else{
+          }else if(type===11){
             this.WTcheckData=res.data.data;
+          }else if(type===12){
+            this.QHcheckData=res.data.data;
+          }else if(type==="WT12"){
+            this.WTsignedData=res.data.data
           }
           
         }
@@ -2809,6 +2831,14 @@ export default {
     getCancelMsg(){
       this.getAuditList(10)
     },
+    // 合同签后审核
+    getSignedMsg(){
+      this.getAuditList(12)
+    },
+    //委托合同签后审核
+    getWTsignedMsg(){
+      this.getAuditList("WT12")
+    }
   },
   mounted(){
     window.onresize = this.clientHeight;
