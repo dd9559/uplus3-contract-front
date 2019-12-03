@@ -165,7 +165,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0 && (scope.row.checkby === getUserMsg.empId||scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId)))">
+            <template v-if="scope.row.checkState === 0 && (scope.row.checkby === getUserMsg.empId||scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1)">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -648,7 +648,15 @@
       auditApply(e) {
         // // 当前合同的类型
         this.applyType=e.tradeType
-        if(e.grabDept.indexOf(String(getUserMsg.depId))){
+        if(e.checkby === this.getUserMsg.empId){
+          this.dialogVisible = true
+          this.auditForm.textarea = ''
+          let param = {
+            checkId: e.checkId,
+            contractCode: e.contractCode
+          }
+          this.getCheckData(param)
+        }else{
           let param={
             bizCode:e.checkId,
           }
@@ -674,14 +682,6 @@
               type: "error"
             })
           })
-        }else{
-          this.dialogVisible = true
-          this.auditForm.textarea = ''
-          let param = {
-            checkId: e.checkId,
-            contractCode: e.contractCode
-          }
-          this.getCheckData(param)
         }
       },
       //审核弹窗数据获取

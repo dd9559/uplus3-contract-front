@@ -204,7 +204,7 @@
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&( (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
+            <div class="btn" v-if="scope.row.toExamineState.value===0&&( (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -478,7 +478,6 @@ export default {
         bizCode:item.code,
         flowType:3
       }
-      // if(item.contType.value===1||item.auditId===this.getUserMsg.empId){
       //登录人部门等于设置部门  法务  登录人是审核人
       if(item.auditId===this.getUserMsg.empId){//登录人是审核人不走抢单模式
         this.$router.push({
@@ -489,7 +488,6 @@ export default {
             isentrust:item.isCombine?1:0
           }
         })
-      // }else{
       }else{//登录人部门等于设置部门  法务  走抢单
         this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
           res = res.data

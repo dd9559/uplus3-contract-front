@@ -418,7 +418,7 @@
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">合同主体<span class="redTitle">合同主体和资料库均上传完成，才能进行签后审核</span></p>
             <ul class="ulData" style="margin-bottom:10px">
-              <li>
+              <li v-show="contractDetail.signingState!==1&&contractDetail.signingState!==0">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -432,15 +432,15 @@
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'main')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+                <i v-if="contractDetail.signingState!==1&&contractDetail.signingState!==0" class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'main')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.signingState!==1&&contractDetail.signingState!==0&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&contractDetail.signingState!==1&&contractDetail.signingState!==0&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
-              <li>
+              <li v-show="contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0">
                 <file-up class="uploadSubject" @getUrl="uploadSubject_" :scane="entrustScane" id="WT">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -454,10 +454,10 @@
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+                <i v-if="contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0" class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
 
@@ -467,9 +467,9 @@
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">业主</p>
               <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                <p v-if="item.value.length>0||(contractDetail.signingState!==1&&contractDetail.signingState!==0)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data'].state">
+                  <li v-show="contractDetail.signingState!==1&&contractDetail.signingState!==0">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -483,7 +483,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+                    <i v-if="contractDetail.signingState!==1&&contractDetail.signingState!==0" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -491,9 +491,9 @@
             <div class="classify" v-if="buyerList.length>0">
               <p class="title">客户</p>
               <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                <p v-if="item.value.length>0||(contractDetail.signingState!==1&&contractDetail.signingState!==0)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data'].state">
+                  <li v-show="contractDetail.signingState!==1&&contractDetail.signingState!==0">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -507,7 +507,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+                    <i v-if="contractDetail.signingState!==1&&contractDetail.signingState!==0" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -515,9 +515,9 @@
             <div class="classify" v-if="otherList.length>0">
               <p class="title">其他</p>
               <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+                <p v-if="item.value.length>0||(contractDetail.signingState!==1&&contractDetail.signingState!==0)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
-                  <li v-if="power['sign-ht-xq-data'].state">
+                  <li v-show="contractDetail.signingState!==1&&contractDetail.signingState!==0">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
                       <i class="iconfont icon-shangchuan"></i>
                       <p>点击上传</p>
@@ -531,7 +531,7 @@
                         <p>{{item_.name}}</p>
                       </div>
                     </el-tooltip>
-                    <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+                    <i v-if="contractDetail.signingState!==1&&contractDetail.signingState!==0" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
                   </li>
                 </ul>
               </div>
@@ -938,7 +938,7 @@
       <el-button type="primary" round class="search_btn" @click="fencheng" v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2">分成</el-button>
     </div>
     <div class="uploadBtn">
-      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'">{{contractDetail.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
+      <el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&contractDetail.signingState!==1&&contractDetail.signingState!==0">{{contractDetail.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
     </div>
 
     <!-- 拨号弹出框 -->
@@ -1725,7 +1725,7 @@ export default {
         this.getEntrustMsg();//委托
         this.getChangeMsg();//变更
         this.getCancelMsg();//解约
-        this.SignedMsg();//合同签后
+        this.getSignedMsg();//合同签后
         this.getWTsignedMsg();//委托签后
       }else if(tab.name==="fourth"){
         this.getRecordList();//电话录音
