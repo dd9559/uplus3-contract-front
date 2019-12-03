@@ -199,6 +199,7 @@
     :dialogVisible="checkDialog"
     v-if="checkDialog"
     :id="id"
+    :signedId="signedId"
     :isWT="isWT"
     @closeDialog="closeDialog"
     >
@@ -244,12 +245,13 @@ export default {
         state:false,
         type:1,
         code:'',
-        flowType:3,
+        flowType:12,
         label:false,
         current:false
       },
       checkDialog:false,
-      id:0,
+      id:0,//合同id
+      signedId:0,//签后id
       isWT:0,
        //权限配置
       power: {
@@ -459,11 +461,7 @@ export default {
       }else{
         this.checkPerson.label=true;
       }
-      if(row.isCombine){
-        this.checkPerson.flowType=11
-      }else{
-        this.checkPerson.flowType=3
-      }
+      // this.checkPerson.flowType=12
       this.checkPerson.state=true;
     },
     //关闭设置审核人弹窗
@@ -474,7 +472,8 @@ export default {
     //审核弹窗
     toCheck(val){
       this.checkDialog=true
-      this.id=val.id
+      this.id=val.id//合同id
+      this.signedId=val.signedId//签后ID
       if(val.isCombine){
         this.isWT=1
       }else{

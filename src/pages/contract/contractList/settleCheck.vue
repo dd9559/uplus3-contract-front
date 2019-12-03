@@ -166,7 +166,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right">
           <template slot-scope="scope">
-            <template v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || scope.row.grabDept === getUserMsg.depId)">
+            <template v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))))">
               <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
             </template>
             <span v-else>--</span>
@@ -604,7 +604,7 @@
 
       // 点击审核事件
       auditApply(e){
-        if(e.grabDept===this.getUserMsg.depId){
+        if(e.grabDept.indexOf(String(getUserMsg.depId))){
           let param={
             bizCode:e.code,
             flowType:5
