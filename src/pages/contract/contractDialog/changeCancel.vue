@@ -47,8 +47,9 @@
           <div class="uploadtitle" :class="{'form-label':!getContentHidden}">{{getDialogType}}协议:
             <template v-if="!getContentHidden">
               <span><b>注：</b>协议支持所有格式</span>
-              <span class="iconfont" @click="downloadFile" v-if="dialogType!=='bg'">
-              <i class="el-icon-document"></i>下载解约协议</span>
+              <!-- <span class="iconfont" @click="downloadFile" v-if="dialogType!=='bg'">
+                <i class="el-icon-document"></i>下载解约协议
+              </span> -->
             </template>
             <span v-if="uploadList.length===0&&getContentHidden">无</span>
           </div>

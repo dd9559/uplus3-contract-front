@@ -210,15 +210,16 @@
       <!-- 保存合同确认框dialogSave -->
       <el-dialog title="" :visible.sync="dialogSave" class="personalMsg" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
         <div class="warning-box">
-          <p v-if="type!=1">
+          <!-- <p v-if="type!=1"> -->
+          <p>
             <i class="iconfont icon-tubiao_shiyong-1"></i>
             <span>请确认客户和业主的姓名与证件上的一致？</span>
           </p>
-          <div class="firstAdd" v-else>
+          <!-- <div class="firstAdd" v-else>
             <i class="iconfont icon-tubiao_shiyong-1"></i>
             <p>您的合同24小时后自动删除，请签约成功后尽快上传合同主体和资料库</p>
             <p>请确认客户和业主的姓名与证件上的一致？</p>
-          </div>
+          </div> -->
           <ul>
             <li v-for="item in ownerList" :key="'owner'+item.encryptionCode">
               {{item.name}}：{{item.encryptionCode}}
