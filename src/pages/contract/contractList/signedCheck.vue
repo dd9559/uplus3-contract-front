@@ -56,7 +56,7 @@
     <div class="contract-list">
       <div class="listTitle">
         <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
-        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-htsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
+        <div class="float-right"><el-button class="btn-info" v-if="power['sign-ht-qhsh-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button></div>
       </div>
       <el-table ref="tableCom" class="info-scrollbar" :span-method="objectSpanMethod" :data="combineList" border style="width: 100%"  @row-dblclick='toDetail' :max-height="tableNumberCom">
         <el-table-column label="合同信息" label-class-name="pdl" min-width="200" fixed>
@@ -255,7 +255,7 @@ export default {
           state: false,
           name: '合同详情'
         },
-        "sign-ht-htsh-export": {
+        "sign-ht-qhsh-export": {
           state: false,
           name: '导出'
         },
@@ -335,7 +335,7 @@ export default {
       }
     },
     getExcel:function () {
-      this.excelCreate('/input/contractAuditExcel',printParam)
+      // this.excelCreate('/input/contractAuditExcel',printParam)
     },
     //获取合同列表
     getSignedList(type="init") {

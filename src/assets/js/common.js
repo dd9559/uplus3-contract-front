@@ -34,7 +34,7 @@ let TOOL = {
               category:"1-1-7",
               can:true,//是否可见
               path: "signedCheck",
-              code: "sign-ht-htsh-query"
+              code: "sign-ht-qhsh-query"
             },
             {
               name: "调佣审核",
