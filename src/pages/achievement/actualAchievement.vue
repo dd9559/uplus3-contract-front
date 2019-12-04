@@ -414,7 +414,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作"  min-width="90" fixed="right">
+          <el-table-column label="操作"  min-width="120" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.isModify==0">
                 <div v-if="scope.row.achievementState==-1" class="check-btn">
@@ -457,27 +457,22 @@
                 </div>
 
                 <div v-if="scope.row.achievementState==0" class="check-btn">
-                  <div v-if="power['sign-yj-rev-retreat'].state||power['sign-yj-rev-appeal'].state||(userInfo&&userInfo.empId==scope.row.auditId)">
-                      <span
-                        @click.stop="chehui(scope.row,scope.$index)"
-                        style="cursor:pointer;"
-                        v-if="power['sign-yj-rev-retreat'].state"
-                      >撤回</span>
-                      <span
-                        @click.stop="shenSu(scope.row,scope.$index)"
-                        style="cursor:pointer;"
-                        v-if="power['sign-yj-rev-appeal'].state"
-                      >申诉</span>
-                      <span
-                        @click.stop="checkAch(scope.row,scope.$index)"
-                        style="cursor:pointer;"
-                        v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept.indexOf(userInfo.depId) !=-1)"
-                      >审核</span>
-                  </div>
-                 <span v-else>-</span>
-                  <!-- <span
-                    v-if="userInfo&&userInfo.empId!=scope.row.auditId&&scope.row.arraignmentId!=userInfo.empId"
-                  >-</span> -->
+                  <span
+                    @click.stop="chehui(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-retreat'].state"
+                  >撤回</span>
+                  <span
+                    @click.stop="shenSu(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-appeal'].state"
+                  >申诉</span>
+                  <span
+                    @click.stop="checkAch(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept.indexOf(userInfo.depId) !=-1&&!(scope.row.auditId>0))"
+                  >审核</span>
+                  <div style="color:red" v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId">{{scope.row.auditName}}正在审核</div>
                 </div>
               </div>
               <div v-else>
