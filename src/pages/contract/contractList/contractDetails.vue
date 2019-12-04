@@ -437,7 +437,7 @@
             </ul>
             <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.signingState!==1&&contractDetail.signingState!==0&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&contractDetail.signingState!==1&&contractDetail.signingState!==0&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.signingState!==1&&contractDetail.signingState!==0||String(contractDetail.signingState)==='undefined')&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li v-show="contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0||String(contractDetail.signingEntrustState)==='undefined'">

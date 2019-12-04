@@ -302,17 +302,17 @@ export default {
     },
     //审核弹窗
     checked(type){
-      if(this.checkReasion.length>0){
-        if(type===1){//通过
-          let param = {
-            id:this.signedId,//签后id
-            contId:this.id,//合同id
-            remarks:this.checkReasion,//审核备注
-            state:0,//通过驳回 0通过 1驳回
-            contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
-          }
-          this.subCheck(param)
-        }else{//驳回
+      if(type===1){//通过
+        let param = {
+          id:this.signedId,//签后id
+          contId:this.id,//合同id
+          remarks:this.checkReasion,//审核备注
+          state:0,//通过驳回 0通过 1驳回
+          contType:this.isWT===1?0:1//是否是委托合同 0是 1不是
+        }
+        this.subCheck(param)
+      }else{//驳回
+        if(this.checkReasion.length>0){
           if(this.isWT){//委托合同直接驳回
             let param = {
               id:this.signedId,//签后id
@@ -327,12 +327,12 @@ export default {
             this.checkList=["合同主体", "资料库"]
             this.rejectDialog=true
           }
+        }else{
+          this.$message({
+            message:"请填写通过/驳回原因",
+            type:"warning"
+          })
         }
-      }else{
-        this.$message({
-          message:"请填写通过/驳回原因",
-          type:"warning"
-        })
       }
     },
     //提交审核
