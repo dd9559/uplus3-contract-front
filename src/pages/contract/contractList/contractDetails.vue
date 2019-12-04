@@ -416,7 +416,10 @@
 
         <el-tab-pane label="合同主体" name="second">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
-            <p class="mainTitle">合同主体<span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span></p>
+            <p class="mainTitle">
+              合同主体
+              <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
+            </p>
             <ul class="ulData" style="margin-bottom:10px">
               <li v-show="contractDetail.signingState!==1&&contractDetail.signingState!==0">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_">
@@ -437,7 +440,7 @@
             </ul>
             <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&contractDetail.signingState!==1&&contractDetail.signingState!==0&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
-          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li v-show="contractDetail.signingEntrustState!==1&&contractDetail.signingEntrustState!==0">
@@ -463,7 +466,7 @@
 
         <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state">
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
-            <p style="margin-top:10px;color:red;">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</p>
+            <!-- <p style="margin-top:10px;color:red;">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</p> -->
             <div class="classify" v-if="sellerList.length>0">
               <p class="title">业主</p>
               <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
