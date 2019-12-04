@@ -210,7 +210,7 @@ export default {
     //翻页
     handleCurrentChange(val) {
       this.currentPage = val;
-      // this.getContractList("page");
+      this.getCancelList("page");
     },
     //审核成功刷新列表
     freachList(){

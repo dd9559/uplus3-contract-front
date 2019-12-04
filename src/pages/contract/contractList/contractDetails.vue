@@ -2682,7 +2682,7 @@ export default {
       };
       if(type===12||type==="WT12"){//签后审核记录用的是签后id查询
         param = {
-          flowType:type,
+          flowType:12,
           bizCode:type===12?this.contractDetail.signingId:this.contractDetail.signingEntrustId
         }
       }
