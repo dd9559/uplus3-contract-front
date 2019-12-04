@@ -51,50 +51,8 @@
         </el-form-item>
       </el-form>
     </ScreeningTop>
-
-    <!-- 筛选条件 end -->
     <!-- 数据列表 -->
     <div class="data-layout">
-      <!-- 头部 -->
-      <div class="table-tool">
-        <div class="tool-left">
-          <!-- <h4 class="f14">
-            <i class="iconfont icon-tubiao-11"></i>数据列表
-          </h4>-->
-          <!-- <ul>
-            <li>
-              <span>
-                总分成：
-                <b class="orange">{{countData[3] ?countData[3] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>分类分成：</span>
-            </li>
-            <li>
-              <span>
-                出售：
-                <b class="orange">{{countData[1] ?countData[1] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>
-                代办：
-                <b class="orange">{{countData[2] ?countData[2] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>
-                出租：
-                <b class="orange">{{countData[0] ?countData[0] :'0'}}元</b>
-              </span>
-            </li>
-          </ul>-->
-        </div>
-      </div>
-      <!-- 头部 end -->
-
-      <!-- 表格 -->
       <div class="data-list" v-loading="loading">
         <el-table
           :data="selectAchList"
@@ -505,12 +463,6 @@
             }
         },
         methods: {
-            shenSu(row, index) {
-                this.uploadScane.id = row.code;
-                this.htbh = row.code;
-                this.qysj = this.$tool.dateFormat(row.signDate);
-                this.isSS = true;
-            },
             getPicture(item) {
                 return this.$tool.cutFilePath(item);
             },
@@ -906,6 +858,7 @@
 
     // 展示数据
     .data-list {
+      padding-top: @margin-10;
       width: 100%;
 
       /deep/ .el-table {
