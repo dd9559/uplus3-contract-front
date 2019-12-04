@@ -498,18 +498,18 @@ export default {
     //选中房源客源
     selectItem(value) {
       if (this.dialogType === "house") {
-        if (value.invalid) {
+        // if (value.invalid) {
           if (this.selectCode === value.PropertyCode) {
             this.selectCode = "";
           } else {
             this.selectCode = value.PropertyCode;
           }
-        } else {
-          this.$message({
-            message: "不能选择已锁定房源",
-            type:"warning"
-          });
-        }
+        // } else {
+        //   this.$message({
+        //     message: "不能选择已锁定房源",
+        //     type:"warning"
+        //   });
+        // }
       } else if (this.dialogType === "guest") {
         if (this.selectCode === value.InquiryCode) {
           this.selectCode = "";
@@ -557,7 +557,7 @@ export default {
     },
     tableRowClassName({ row, rowIndex }) {
       if (!row.invalid) {
-        return "warning-row";
+        return "";
       }
     },
     //部门
