@@ -468,7 +468,7 @@
             // this.getReceiptman()
             // this.getAdmin()
             this.addInit(urlParam.contId)
-            !this.isentrust&&this.getFirstTime_receipt(urlParam.contId)//非委托合同才调用
+            // !this.isentrust&&this.getFirstTime_receipt(urlParam.contId)//非委托合同才调用
 
             if (urlParam.code) {
                 this.uploadScane.id = urlParam.code
@@ -1008,7 +1008,7 @@
             },
             //选择收款类型操作
             checkReceiptType: function (type) {
-                if(type===1&&this.isentrust){
+                /*if(type===1&&this.isentrust){
                     this.$message({
                         message:'交易服务费的收款方式只能选择线下收款'
                     })
@@ -1033,7 +1033,7 @@
                         message: msg
                     })
                     return
-                }
+                }*/
                 this.billStatus = false//线上收款
                 type !== 1 && (this.billStatus = true)
             },
