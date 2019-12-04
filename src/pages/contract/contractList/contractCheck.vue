@@ -478,6 +478,9 @@ export default {
         bizCode:item.code,
         flowType:3
       }
+      if(item.isCombine){
+        param.flowType=11
+      }
       //登录人部门等于设置部门  法务  登录人是审核人
       if(item.auditId===this.getUserMsg.empId){//登录人是审核人不走抢单模式
         this.$router.push({

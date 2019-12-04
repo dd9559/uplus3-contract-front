@@ -915,18 +915,7 @@
     .el-table{
       th{
         background-color: #EEF2FB;
-        &:first-child{
-          /*padding-left: 20px;*/
-        }
       }
-      tr{
-        td{
-          &:first-child{
-            /*padding-left: 20px;*/
-          }
-        }
-      }
-
     }
   }
 
