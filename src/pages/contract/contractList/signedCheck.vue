@@ -335,7 +335,7 @@ export default {
       }
     },
     getExcel:function () {
-      // this.excelCreate('/input/contractAuditExcel',printParam)
+      this.excelCreate('/input/signingAuditExcel',printParam)
     },
     //获取合同列表
     getSignedList(type="init") {
