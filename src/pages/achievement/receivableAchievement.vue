@@ -515,9 +515,9 @@ export default {
     // 跳转合同详情
     skipContDel(value) {
          if(this.power['sign-com-htdetail'].state){
-            this.setPath(
+            /*this.setPath(
               this.$tool.getRouter(["业绩", "结算业绩", "合同详情"], "receivableAchievement")
-            );
+            );*/
             this.$router.push({
               path: "/contractDetails",
               query: {
