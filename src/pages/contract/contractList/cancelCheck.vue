@@ -133,10 +133,10 @@ export default {
         deptId:this.contractForm.deptId,
         empId:this.contractForm.dealAgentId,
       }
-      if(this.signDate){
-        if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+      if(this.signData){
+        if (this.signData.length > 0) {
+          param.signStart = this.signData[0];
+          param.signEnd = this.signData[1];
         }
       }
       if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
@@ -194,10 +194,10 @@ export default {
         deptId:this.contractForm.deptId,
         empId:this.contractForm.dealAgentId,
       }
-      if(this.signDate){
-        if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+      if(this.signData){
+        if (this.signData.length > 0) {
+          param.signStart = this.signData[0];
+          param.signEnd = this.signData[1];
         }
       }
       if(this.contractForm.contTypes&&this.contractForm.contTypes.length>0){
