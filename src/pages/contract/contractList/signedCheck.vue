@@ -159,7 +159,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.nextReviewerId>0&&getUserMsg&&scope.row.nextReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||(scope.row.currentReviewerId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||(getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.currentReviewerId>0&&getUserMsg&&scope.row.currentReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||(scope.row.currentReviewerId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu))||((!(scope.row.currentReviewerId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
