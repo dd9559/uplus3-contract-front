@@ -163,12 +163,10 @@
             <span v-else>--</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="120" fixed="right">
+        <el-table-column label="操作" min-width="120" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <template v-if="scope.row.checkState === 0 && (scope.row.checkby === getUserMsg.empId||scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1)">
-              <el-button type="text" class="curPointer" @click="auditApply(scope.row)">审核</el-button>
-            </template>
-            <span v-else>--</span>
+            <div style="color:red;" v-if="scope.row.checkState===0&&scope.row.checkby>0&&getUserMsg&&scope.row.checkby!==getUserMsg.empId">{{scope.row.checkByName}}正在审核</div>
+            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.checkState === 0 && ((cope.row.checkby === getUserMsg.empId)||((!(cope.row.checkby>0))&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -1249,6 +1247,17 @@
     right: 20px;
     color: #6C7986;
     text-align: right;
+  }
+}
+/deep/ .null-formatter {
+  .cell:empty {
+    position: relative;
+
+    &:before {
+      content: '--';
+      width: 30px;
+      display: inline-block;
+    }
   }
 }
 </style>

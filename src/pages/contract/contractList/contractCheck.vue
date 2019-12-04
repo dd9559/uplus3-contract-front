@@ -203,8 +203,8 @@
         <el-table-column label="操作" min-width="90" fixed="right">
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
-            <div style="color:red" v-if="scope.row.toExamineState.value===0&&(scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&( (getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.toExamineState.value===0&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
+            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
