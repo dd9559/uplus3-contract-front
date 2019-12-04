@@ -1349,8 +1349,8 @@
       text-align: center !important
     }
 
-    .check-btn span:first-of-type {
-      margin-right: 8px;
+    .check-btn span:nth-child(n+1){
+      margin-left: 8px;
     }
 
     .link {
