@@ -271,7 +271,7 @@ let toChineseNumber = function (money) {
   //整数金额时后面跟的字符
   var cnInteger = "整";
   //整型完以后的单位
-  var cnIntLast = "圆";
+  var cnIntLast = "元";
   //最大处理的数字
   var maxNum = 9999999999999.99;
   //金额整数部分

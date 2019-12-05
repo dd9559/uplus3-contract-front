@@ -104,7 +104,7 @@ contractConfig.inputListener(function(ev,tip){
     tip.target.innerHTML = ev.target.value
     let cn_str = tip.target.getAttribute('extendparam')
     if(Obj['cn_arr'].includes(cn_str)){
-      document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value)
+      document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).split("元")[0]
     }
   }
 },function(tip){
@@ -113,7 +113,7 @@ contractConfig.inputListener(function(ev,tip){
   let strCn = tip.target.getAttribute('extendparam')
   if(Obj['cn_arr'].includes(strCn)){
     if(initVal.length>0){
-      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).split("元")[0]
     }else{
       document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
     }
