@@ -12,9 +12,9 @@
       </el-table-column>
       <el-table-column min-width="120" label="项目名称" prop="projectName"
                        :formatter="nullFormatter"></el-table-column>
-      <el-table-column min-width="120" label="签约日期">
+      <el-table-column min-width="120" label="签约时间">
         <template slot-scope="scope">
-          <span>{{scope.row.signDate|formatDate}}</span>
+          <span>{{scope.row.signDate|formatTime(false)}}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="90" label="成交总价" prop="dealPrice" :formatter="nullFormatter"></el-table-column>
@@ -88,7 +88,7 @@
           <div class="null-context">
             <div v-if="(scope.row.state.value!==1&&power['sign-xf-cw-rev-edit'].state)||(scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId))">
               <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-xf-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button>
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept">审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button>
               <div style="color:red" v-if="scope.row.state.value===3&&scope.row.auditId>0&&getUser.user&&scope.row.auditId!==getUser.user.empId">{{scope.row.auditName}}正在审核</div>
             </div>
           </div>
