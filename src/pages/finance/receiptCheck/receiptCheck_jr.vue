@@ -117,7 +117,7 @@
             <!--审核状态不为已到账-->
             <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-jr-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button>
             <!--审核状态为审核中，当前审核人为当前登录人-->
-            <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId)||(scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button>
           </div>
           <span v-else>--</span>
         </template>
