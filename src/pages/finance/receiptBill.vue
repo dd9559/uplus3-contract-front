@@ -260,14 +260,14 @@
                       :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5"
                       maxlength="200" type="textarea"></el-input>
           </div>
-          <div class="input-group">
+          <!--<div class="input-group">
             <p><label class="f14">温馨提示</label></p>
             <ul class="warning-text">
               <li>1.线上未到账或者线下未审核通过情况下，想变更收款方式，需先作废之前的收款方式才能重新选择其他的收款方式；</li>
               <li>2.线上已到账或者线下审核通过情况下，无法更改收款方式，必须根据第一笔实收的收款方式继续收款;</li>
               <li v-if="billStatus">3.线下收款不参与线上结算。</li>
             </ul>
-          </div>
+          </div>-->
         </div>
       </section>
     </div>

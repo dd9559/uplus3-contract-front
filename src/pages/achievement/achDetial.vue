@@ -623,7 +623,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="pass('no')" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
-        <el-button @click="pass" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
+        <el-button @click="pass()" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
       </div>
     </el-dialog>
   </div>
