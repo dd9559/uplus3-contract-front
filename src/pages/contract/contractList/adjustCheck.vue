@@ -65,7 +65,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同信息" min-width="120" fixed :formatter="nullFormatter">
+        <el-table-column label="合同信息" min-width="130" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span></p>
             <p v-if="scope.row.recordType&&scope.row.recordType===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
@@ -100,7 +100,7 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约时间" min-width="90">
+        <el-table-column label="签约时间" min-width="110">
           <template slot-scope="scope">
             <p>{{scope.row.signDate | timeFormat_}}</p>
           </template>
@@ -123,9 +123,9 @@
             <span class="red" v-if="scope.row.checkState === 2">驳回</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核日期" min-width="90">
+        <el-table-column label="审核时间" min-width="110">
           <template slot-scope="scope">
-            <p>{{scope.row.checkTime | getDate}}</p>
+            <p>{{scope.row.checkTime | timeFormat_}}</p>
           </template>
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">

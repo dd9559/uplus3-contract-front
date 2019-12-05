@@ -103,6 +103,7 @@
           <template slot-scope="scope">
             <p>{{scope.row.sponsorStoreName}}</p>
             <p>{{scope.row.sponsorName}}</p>
+            <p v-if="!scope.row.sponsorStoreName&&!scope.row.sponsorName">-</p>
           </template>
         </el-table-column>
 
@@ -120,9 +121,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="审核日期" min-width="90">
+        <el-table-column label="审核时间" min-width="110">
           <template slot-scope="scope">
-            <p>{{scope.row.examineTime | getDate}}</p>
+            <p>{{scope.row.examineTime | formatTime(false)}}</p>
           </template>
         </el-table-column>
 
