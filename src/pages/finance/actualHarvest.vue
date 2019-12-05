@@ -177,7 +177,7 @@
         <el-table-column min-width="80" label="线下手续费（元）" prop="xxFee" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="160" label="签约时间" prop="operation time">
           <template slot-scope="scope">
-            {{scope.row.signTime|formatDate}}
+            {{scope.row.signTime|formatTime(false)}}
           </template>
         </el-table-column>
         <el-table-column min-width="160" label="收款时间" prop="operation time">
