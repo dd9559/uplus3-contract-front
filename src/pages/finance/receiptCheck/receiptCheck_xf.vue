@@ -86,11 +86,7 @@
       <el-table-column label="操作" fixed="right" min-width="120">
         <template slot-scope="scope">
           <div class="null-context">
-            <div v-if="(scope.row.state.value!==1&&power['sign-xf-cw-rev-edit'].state)||(scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId))">
-              <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-xf-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button>
-              <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button>
-              <div style="color:red" v-if="scope.row.state.value===3&&scope.row.auditId>0&&getUser.user&&scope.row.auditId!==getUser.user.empId">{{scope.row.auditName}}正在审核</div>
-            </div>
+            <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-xf-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button><div style="color:red" v-if="scope.row.state.value===3&&scope.row.auditId>0&&getUser.user&&scope.row.auditId!==getUser.user.empId">{{scope.row.auditName}}正在审核</div>
           </div>
         </template>
       </el-table-column>
