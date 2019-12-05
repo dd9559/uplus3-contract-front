@@ -705,14 +705,18 @@
                             this.files=[].concat(JSON.parse(res.data.filePath))
                             this.getFiles()
                         }
-                        this.cardList = res.data.account //刷卡补充
-                        let arr = res.data.inAccount.map(item => Object.assign({}, item, {
-                            activeAdmin: item.cardNumber,
-                            payMethod: item.payMethod.value
-                        }))
-                        this.payList = [].concat(arr)
-                        if (res.data.inAccount && res.data.inAccount.length > 0) { //收账账户
-                            this.activeAdmin = res.data.inAccount[0].accountId
+                        if(res.data.inAccountType===4){//线下时才赋值
+                            this.cardList = res.data.account //刷卡补充
+                            let arr = res.data.inAccount.map(item => Object.assign({}, item, {
+                                activeAdmin: item.cardNumber,
+                                payMethod: item.payMethod.value
+                            }))
+                            this.payList = [].concat(arr)
+                            if (res.data.inAccount && res.data.inAccount.length > 0) { //收账账户
+                                this.activeAdmin = res.data.inAccount[0].accountId
+                            }
+                        }else{//线上收款初始化时间控件
+                            obj.createTime=''
                         }
                         // }
                         this.form = Object.assign({}, this.form, obj)
@@ -910,7 +914,17 @@
                         res = res.data
                         if (res.status === 200) {
                             this.fullscreenLoading = false
-                            this.$router.go(-1)
+                            if(this.billStatus){
+                                this.$router.go(-1)
+                            }else{//编辑成为线上收款时跳转至结果页显示二维码
+                                this.$router.replace({
+                                    path: 'receiptResult',
+                                    query: {
+                                        type: 1,
+                                        content: JSON.stringify(res.data)
+                                    }
+                                })
+                            }
                         }
                     }).catch(error => {
                         this.fullscreenLoading = false

@@ -83,7 +83,21 @@ const receiptCheck = {
           }
         })
       } else {
-        this.toDetails(row)
+        // this.toDetails(row)
+        if(this.getUser.user.empId === row.auditId){
+          this.toDetails(row)
+        }else{
+          this.$ajax.get('/api/machine/getAuditAuth',{bizCode:row.payCode,flowType:1}).then(res=>{
+            res=res.data
+            if(res.status===200){
+              this.toDetails(row)
+            }
+          }).catch(error=>{
+            this.$message({
+              message:`${error}`
+            })
+          })
+        }
       }
     },
     //设置审核人
