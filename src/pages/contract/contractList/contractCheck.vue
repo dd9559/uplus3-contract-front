@@ -123,7 +123,7 @@
             <p>{{scope.row.dealAgentName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约时间" min-width="90">
+        <el-table-column label="签约时间" min-width="110">
           <template slot-scope="scope">
             <!-- {{Number(scope.row.signDate)|timeFormat_}} -->
             <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
@@ -164,9 +164,9 @@
               <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核时间" min-width="120">
+        <el-table-column label="审核时间" min-width="110">
           <template slot-scope="scope">
-            <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|formatTime}}</span>
+            <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|timeFormat_}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>

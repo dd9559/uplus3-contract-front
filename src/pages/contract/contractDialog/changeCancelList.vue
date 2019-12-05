@@ -75,9 +75,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="审核时间" min-width="120">
+      <el-table-column label="审核时间" min-width="110">
         <template slot-scope="scope">
-          <span v-if="scope.row.changeRecord.auditTime">{{Number(scope.row.changeRecord.auditTime)|formatTime}}</span>
+          <span v-if="scope.row.changeRecord.auditTime">{{Number(scope.row.changeRecord.auditTime)|formatTime(false)}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
