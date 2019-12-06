@@ -373,7 +373,7 @@
                     name: ''
                 },
                 inputPerson: false,//是否显示第三方输入框
-                billStatus: false,//线上或线下,false=线上，true=线下
+                billStatus: true,//线上或线下,false=线上，true=线下
                 form: {
                     contId: '',
                     remark: '',
@@ -459,7 +459,7 @@
             let urlParam=this.$route.query//id款单id,contId合同id,code合同编号
             this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : ''
             this.isentrust=Number(urlParam.isentrust)===0?false:true
-            this.billStatus=this.isentrust
+            // this.billStatus=this.isentrust
 
             this.getMoneyType()
             this.getDictionary()
