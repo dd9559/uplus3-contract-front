@@ -13,7 +13,6 @@
   import lowCommission from "./lowCommission";
   import conAttachment from "./conAttachment";
   import contractLayout from "./contractLayout";
-  import divideRatio from "./divideRatio";
 export default{
     mixins: [MIXINS],
     data() {
@@ -44,12 +43,6 @@ export default{
                 state: false,
                 name: "合同页面设置",
                 current: 'contractLayout'
-              },
-              'sign-set-bl-htym-query': {
-                id: 5,
-                state: false,
-                name: "分成比例设置",
-                current: 'divideRatio'
               }
             }
         }
@@ -77,8 +70,7 @@ export default{
         aplTime,
         lowCommission,
         conAttachment,
-        contractLayout,
-        divideRatio
+        contractLayout
     }
 }
 </script>

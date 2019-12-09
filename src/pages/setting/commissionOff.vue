@@ -98,29 +98,24 @@
                             <tr>
                                 <th>支付方式</th>
                                 <th>手续费率（%）</th>
-                                <th>封顶手续费（元/笔）</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>储蓄卡</td>
                                 <td><input type="text" v-model="commissionForm.cash" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'cash')"></td>
-                                <td><input type="text" v-model="commissionForm.amount" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'amount')"></td>
                             </tr>
                             <tr>
                                 <td>信用卡</td>
                                 <td><input type="text" v-model="commissionForm.credit" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'credit')"></td>
-                                <td>/</td>
                             </tr>
                             <tr>
                                 <td>微信</td>
                                 <td><input type="text" v-model="commissionForm.wechat" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'wechat')"></td>
-                                <td>/</td>
                             </tr>
                             <tr>
                                 <td>支付宝</td>
                                 <td><input type="text" v-model="commissionForm.aliPay" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'aliPay')"></td>
-                                <td>/</td>
                             </tr>
                         </tbody>
                     </table>
@@ -158,9 +153,6 @@
         cash: {
             name: '收佣储蓄卡手续费率'
         },
-        amount: {
-            name: '收佣储蓄卡封顶手续费'
-        },
         credit: {
             name: '收佣信用卡手续费率'
         },
@@ -194,7 +186,6 @@
                 commissionForm: {
                     systemTag: '',
                     cash: '',
-                    amount: '',
                     credit: '',
                     wechat: '',
                     aliPay: ''
@@ -268,7 +259,6 @@
                     this.commissionForm = {
                         systemTag: row.systemTag,
                         cash: row.commissionFee[0].fee + '',
-                        amount: row.commissionFee[0].amount + '',
                         credit: row.commissionFee[1].fee + '',
                         wechat: row.commissionFee[2].fee + '',
                         aliPay: row.commissionFee[3].fee + ''
@@ -294,8 +284,7 @@
                 let arr = [
                     {
                         payType: 0,
-                        fee: this.commissionForm.cash,
-                        amount: this.commissionForm.amount
+                        fee: this.commissionForm.cash
                     },
                     {
                         payType: 1,
