@@ -98,30 +98,35 @@
                             <tr>
                                 <th>支付方式</th>
                                 <th>手续费率（%）</th>
+                                <th>封顶手续费（元/笔）</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>储蓄卡</td>
                                 <td><input type="text" v-model="commissionForm.cash" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'cash')"></td>
+                                <td><input type="text" v-model="commissionForm.amount" class="no-style input-tac" placeholder="请输入" @input="cutNumber(2,'amount')"></td>
                             </tr>
                             <tr>
                                 <td>信用卡</td>
                                 <td><input type="text" v-model="commissionForm.credit" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'credit')"></td>
+                                <td>/</td>
                             </tr>
                             <tr>
                                 <td>微信</td>
                                 <td><input type="text" v-model="commissionForm.wechat" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'wechat')"></td>
+                                <td>/</td>
                             </tr>
                             <tr>
                                 <td>支付宝</td>
                                 <td><input type="text" v-model="commissionForm.aliPay" class="no-style input-tac" placeholder="请输入" @input="cutNumber(1,'aliPay')"></td>
+                                <td>/</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="color-red tip-msg"> 注：设置新的手续费值成功后，原来的手续费值被替换。</div>
+            <div class="color-red tip-msg"> 注：设置新的手续费率成功后，新创建的合同以新设置的手续费率为准。</div>
         </div>
         <div class="btn">
             <el-button @click="addVisible=false" round>取 消</el-button>
@@ -132,7 +137,7 @@
         <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
             <div class="save-txt">
                 <p style="margin-bottom:10px;">确认保存新的手续费设置？</p>
-                <p class="color-red">新的手续费率会覆盖原来的手续费率</p>
+                <p class="color-red">新创建的合同以新设置的手续费率为准</p>
                 <p>当前收佣手续费率 储蓄卡{{commissionForm.cash}}% 信用卡{{commissionForm.credit}}% 微信{{commissionForm.wechat}}% 支付宝{{commissionForm.aliPay}}%</p>
             </div>
             <div class="save-btn">
@@ -152,6 +157,9 @@
         },
         cash: {
             name: '收佣储蓄卡手续费率'
+        },
+        amount: {
+            name: '收佣储蓄卡封顶手续费'
         },
         credit: {
             name: '收佣信用卡手续费率'
@@ -186,6 +194,7 @@
                 commissionForm: {
                     systemTag: '',
                     cash: '',
+                    amount: '',
                     credit: '',
                     wechat: '',
                     aliPay: ''
@@ -259,6 +268,7 @@
                     this.commissionForm = {
                         systemTag: row.systemTag,
                         cash: row.commissionFee[0].fee + '',
+                        amount: row.commissionFee[0].amount + '',
                         credit: row.commissionFee[1].fee + '',
                         wechat: row.commissionFee[2].fee + '',
                         aliPay: row.commissionFee[3].fee + ''
@@ -269,8 +279,6 @@
                 this.$nextTick(() =>{
                     this.commissionForm[item]=this.$tool.cutFloat({val:this.commissionForm[item],max:type===1?1:100})
                 })
-                let regex=/^\./g
-                regex.test(this.commissionForm[item])&&(this.commissionForm[item]='')
             },
             saveFn() {
                 this.$tool.checkForm(
@@ -286,7 +294,8 @@
                 let arr = [
                     {
                         payType: 0,
-                        fee: this.commissionForm.cash
+                        fee: this.commissionForm.cash,
+                        amount: this.commissionForm.amount
                     },
                     {
                         payType: 1,
