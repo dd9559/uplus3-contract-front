@@ -127,7 +127,7 @@
           <template slot-scope="scope">
             <!-- {{Number(scope.row.signDate)|timeFormat_}} -->
             <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
-            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
           </template>
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
@@ -632,6 +632,8 @@ export default {
           combineItem.nextAuditId=combineItem.contractEntrust.nextAuditId
           combineItem.nextAuditName=combineItem.contractEntrust.nextAuditName
           combineItem.nextAuditStoreName=combineItem.contractEntrust.nextAuditStoreName
+            //抢单部门字段
+            combineItem.grabDept=combineItem.contractEntrust.grabDept
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
