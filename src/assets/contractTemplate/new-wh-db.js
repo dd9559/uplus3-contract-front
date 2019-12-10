@@ -43,7 +43,19 @@ textLong.forEach(function (item) {
 })
 
 // 勾选框逻辑
-contractConfig.checkboxListener(function(){},function(){})
+contractConfig.checkboxListener(function(el,index){
+  let elementDom=el.currentTarget
+  if(['owner','guest'].includes(elementDom.getAttribute('name'))){
+    let inputCell=document.getElementById(`menu${elementDom.getAttribute('menu')}`)
+    if(elementDom.querySelector('p').getAttribute('checked')){
+      inputCell.innerHTML=''
+      inputCell.classList.add('input-before')
+      inputCell.setAttribute('systemParam',true)
+    }else{
+      inputCell.removeAttribute('systemParam')
+    }
+  }
+})
 
 //输入自适应
 contractConfig.inputListener(function(ev,tip){
