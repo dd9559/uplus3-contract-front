@@ -10,6 +10,10 @@ let Obj={
   }
 
   let sub = {
+    'val5': null,
+    'val6': null,
+    'val11': null,
+    'val12': null,
     'val13': null,
     'checkbox_houseType': null,
     'val26': null,
@@ -45,7 +49,6 @@ let Obj={
         return res;
       }
     },
-    'val72': null,
     'drapdown_delivery': {
       stateful: function (val) {
         let res = null;
