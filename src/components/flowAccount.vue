@@ -18,7 +18,7 @@
 					</el-table>
 				</el-tab-pane>
 				<!-- 业主分类账 -->
-				<el-tab-pane label="业主分类账" name="second">
+				<el-tab-pane label="业主分类账" name="second" v-if="flowType===1">
 					<el-table :data="gridData2" border :row-class-name="rowClass" height="450">
 						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
 						<el-table-column prop="receive" label="收款（元）"> </el-table-column>

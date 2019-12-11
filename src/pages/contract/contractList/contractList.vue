@@ -311,7 +311,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="实收/应收(佣金)" min-width="80" key='received'>
+        <el-table-column label="实收/应收" min-width="80" key='received'>
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
             <span v-else>-</span>
