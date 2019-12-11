@@ -30,7 +30,7 @@
         </div>
         <!-- <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button> -->
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&contType<4&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0&&resultState===1"  @click="goChangeCancel(2)">解约</el-button>
         <!-- <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button> -->

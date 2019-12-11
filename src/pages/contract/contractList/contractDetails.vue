@@ -451,7 +451,7 @@
               </li>
               <li v-for="(item,index) in entrustUploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(uploadList,index,2)">
+                  <div class="namePath" @click="previewPhoto(entrustUploadList,index,2)">
                     <img class="signImage" :src="item.path|getSignImage(entrustMainFiles)" alt="" v-if="isPictureFile(item.fileType)">
                     <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
@@ -997,7 +997,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 线下合同提示上传资料库弹窗 -->
@@ -1916,6 +1916,11 @@ export default {
           }
         })
     },
+    //关闭设置审核人弹窗
+    closeCheckPerson(){
+      this.checkPerson.state=false;
+      this.getContractDetail()
+    },
     // 变更解约弹窗
     goChangeCancel(value) {
       this.changeCancelId = Number(this.id);
@@ -2310,6 +2315,7 @@ export default {
             this.uploadList.splice(index,1);
           }else{
             this.entrustUploadList.splice(index,1);
+            param.datas=this.entrustUploadList
             param.isentrust=1
           }
           this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {

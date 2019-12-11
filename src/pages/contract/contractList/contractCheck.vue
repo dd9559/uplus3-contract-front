@@ -138,30 +138,23 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
-              <el-popover trigger="hover" placement="top" v-else>
-                <div style="width:160px">
-                  {{scope.row.delReason}}
-                </div>
-                <div slot="reference" class="name-wrapper isFlex">
-                  {{scope.row.contState.label}}
-                </div>
-              </el-popover>
-            </span>
-            <span v-else>-</span>
+            <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
+            <el-popover trigger="hover" placement="top" v-else>
+              <div style="width:160px">
+                {{scope.row.delReason}}
+              </div>
+              <div slot="reference" class="name-wrapper isFlex">
+                {{scope.row.contState.label}}
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
-              <span v-if="scope.row.contType.value<4">
-                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-              </span>
-              <span v-else>-</span>
+            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="审核时间" min-width="110">
@@ -204,7 +197,7 @@
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
+            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || (((scope.row.contType.value===1||scope.row.contType.value===4||scope.row.contType.value===5)&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>

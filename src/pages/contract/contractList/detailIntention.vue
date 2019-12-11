@@ -1,7 +1,7 @@
 <!-- 意向详情金 -->
 <template>
-	<div class="newintention" id="intention" >
-		<div class="detailbox">
+	<div class="view-container" id="intention" >
+		<div class="detailbox" v-if="detailData.contState">
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane :label="detailData.contType.value === 4 ? '意向金详情':'定金详情'" name="first" class="first-tab">
 					<div class="tab" :style="{ height: clientHeight() }">
@@ -17,8 +17,8 @@
 								<li>
 									<div class="div1"><span>合同类型：</span>{{detailData.contType.label | nullData}}</div>
 									<div class="div2"><span>认购总价：</span>{{detailData.subscriptionPrice | nullData}}元</div>
-									<div v-if="this.detailData.contType.value == 4"><span>意向金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
-									<div v-if="this.detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
+									<div v-if="detailData.contType.value == 4"><span>意向金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
+									<div v-if="detailData.contType.value == 5"><span>定金金额：</span><span class="yellow mr12">{{detailData.dealPrice | nullData}}元</span><span class="chinesemoney yellow">{{detailData.dealPrice | moneyFormat}}</span></div>
 								</li>
 							</ul>
 						</ul>
@@ -64,32 +64,33 @@
 								</li>
 							</ul>
 						</ul>
-						<div class="textbox" v-if="this.detailData.contType.value == 4">
+						<div class="textbox" v-if="detailData.contType.value == 4">
 							<span>意向备注：</span>
 							<el-input type="textarea" class="textareawidth" :disabled="true" v-model="detailData.remarks" :autosize="{ minRows: 5, maxRows: 5}"></el-input>
 						</div>
 					</div>
-					<div class="fixed">
-						<div class="form-btn">
-							<div class="btnbox">
-								<div class="fl">
-									<ul>
-										<li>录入时间：<span>{{detailData.createTime | getDate}}</span></li>
-										<li>录入人：<span>{{detailData.recordDeptName + '-' + detailData.recordName}}</span></li>
-										<li>最后修改：<span>{{detailData.updateTime | getDate}}</span></li>
-									</ul>
-								</div>
-								<div class="fr">
-									<el-button type="primary" plain round class="btn1" @click="onPreview()" v-if="power['sign-ht-info-view'].state">预 览</el-button>
-									<el-button type="primary" round class="mr30 btn2" v-if="power['sign-ht-info-edit'].state" @click="onEdit(detailData.contType)">编 辑</el-button>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div class="footer">
+            <div>
+              <p><span>录入时间：</span>{{detailData.createTime|getDate}}</p>
+              <p><span>录入人：</span>{{detailData.recordDeptName}}-{{detailData.recordName}}</p>
+              <p><span>最后修改：</span>{{detailData.updateTime|getDate}}</p>
+            </div>
+            <div v-if="detailData.contChangeState.value!=2">
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&detailData.recordType.value===1" @click="onPreview()">预览</el-button>
+							<el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-void'].state&&(detailData.recordType.value===1&&detailData.contState.value===2)" @click="invalid">撤单</el-button>
+							<el-button round type="danger"  class="search_btn" v-if="power['sign-ht-xq-cancel'].state&&detailData.contState.value===3&&detailData.laterStageState.value!=5&&detailData.cancelExamineState!=0&&detailData.resultState.value===1" @click="goChangeCancel(2)">解约</el-button>
+							<el-button round type="primary" class="search_btn" v-if="power['sign-ht-xq-modify'].state&&detailData.contState.value===3&&detailData.contChangeState.value!=1&&detailData.laterStageState.value!=5&&detailData.changeExamineState!=0&&detailData.resultState.value===1" @click="goChangeCancel(1)">变更</el-button>
+							<el-button round type="primary" class="search_btn" v-if="(power['sign-ht-info-edit'].state&&detailData.recordType.value===1&&detailData.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&detailData.recordType.value===2&&(detailData.contState.value!=3||detailData.contState.value===3&&detailData.resultState.value===1&&!getUserMsg))" @click="onEdit(detailData.contType)">编辑</el-button>
+              <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&detailData.toExamineState.value<0&&detailData.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
+            </div>
+            <div v-else>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&detailData.recordType.value===1" @click="goPreview">预览</el-button>
+            </div>
+          </div>
 				</el-tab-pane>
         <!-- xuneng修改：意向定金打开合同主体限制，照搬买卖租赁 -->
-				<el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
-					<div class="contractSubject">
+				<el-tab-pane label="合同主体" name="second">
+					<div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 						<ul class="ulData">
 							<li v-if="power['sign-ht-xq-main-add'].state">
 								<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="scaneZhuti">
@@ -100,17 +101,20 @@
 							<li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
 								<el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
 									<div class="namePath" @click="previewPhoto(uploadList,index)">
-										<upload-cell :type="item.fileType"></upload-cell>
+										<img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt="" v-if="isPictureFile(item.fileType)">
+										<upload-cell :type="item.fileType" v-else></upload-cell>
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
 								<i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
 							</li>
 						</ul>
+						<el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&detailData.signingState!==1&&detailData.signingState!==0&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
 					</div>
 				</el-tab-pane>
+
 				<el-tab-pane label="资料库" name="third" class="third-tab" v-if="power['sign-ht-xq-data'].state">
-					<div class="dataBank" v-if="power['sign-ht-xq-data'].state">
+					<div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHeight() }">
 						<!-- 业主 -->
 						<div class="classify" v-if="this.sellerList.length>0">
 							<div class="ht-title">业主</div>
@@ -126,7 +130,8 @@
 									<li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
 										<el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
 											<div class="namePath" @click="previewPhoto(item.value,index_)">
-												<upload-cell :type="item_.fileType"></upload-cell>
+												<img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+												<upload-cell :type="item_.fileType" v-else></upload-cell>
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
@@ -150,7 +155,8 @@
 									<li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
 										<el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
 											<div class="namePath" @click="previewPhoto(item.value,index_)">
-												<upload-cell :type="item_.fileType"></upload-cell>
+												<img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+												<upload-cell :type="item_.fileType" v-else></upload-cell>
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
@@ -174,7 +180,8 @@
 									<li v-for="(item_,index_) in item.value" :key="item_.index" @mouseover="moveIn(item.title+item_.path)" @mouseout="moveOut(item.title+item_.path)">
 										<el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
 											<div class="namePath" @click="previewPhoto(item.value,index_)">
-												<upload-cell :type="item_.fileType"></upload-cell>
+												<img class="signImage" :src="item_.path|getSignImage(contDataFiles)" alt="" v-if="isPictureFile(item_.fileType)">
+												<upload-cell :type="item_.fileType" v-else></upload-cell>
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
@@ -185,24 +192,175 @@
 						</div>
 					</div>
 				</el-tab-pane>
+
+				<el-tab-pane label="审核记录" name="fourth">
+          <div class="firstDetail" :style="{ height: clientHei }">
+            <!-- 合同审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&detailData.recordType.value===1">
+              <div class="moduleTitle">
+                <span>合同审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同变更审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同变更审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="BGcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+            <!-- 合同解约审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同解约审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="JYcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+          </div>
+        </el-tab-pane>
 			</el-tabs>
-			<!-- 上传按钮 -->
-			<div class="functionTable">
-				<el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && power['sign-ht-xq-main-add'].state&&detailData.signingEntrustState!==1&&detailData.signingEntrustState!==0&&(detailData.contractEntrust&&detailData.contractEntrust.entrustState>1||detailData.recordType.value===2)">上传</el-button>  <!-- 合同主体上传 -->
-				<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data'].state">上传</el-button>  <!-- 资料库上传 -->
-			</div>
-			<!-- 图片放大 -->
-			<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
 		</div>
+		<!-- 上传按钮 -->
+		<div class="uploadBtn">
+			<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&detailData.signingState!==1&&detailData.signingState!==0">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
+		</div>
+		<!-- 图片放大 -->
+		<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+		<!-- 变更/解约编辑弹窗 -->
+    <changeCancel
+		:dialogType="canceldialogType"
+		:cancelDialog="changeCancel_"
+		:cityCode="detailData.cityCode"
+		:contId="changeCancelId"
+		:commission="commission"
+		:code="detailData.code"
+		@close="changeCancelDialog"
+		@success="freshChangeCancel"
+		v-if="changeCancel_"></changeCancel>
+		<!-- 设置/转交审核人 -->
+    <checkPerson
+		:show="checkPerson.state"
+		:type="checkPerson.type"
+		:showLabel="checkPerson.label"
+		:bizCode="checkPerson.code"
+		:flowType="checkPerson.flowType"
+		@close="closeCheckPerson"
+		@submit="closeCheckPerson"
+		v-if="checkPerson.state"></checkPerson>
+		<!-- 提审弹窗 -->
+    <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
+      <span>确定提审？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isSubmitAudit = false">取 消</el-button>
+        <el-button type="primary" @click="submitAudit">确 定</el-button>
+      </span>
+    </el-dialog>
+		<!-- 合同撤单弹窗 -->
+    <el-dialog title="合同撤单" :visible.sync="dialogInvalid" width="400px" :closeOnClickModal="$tool.closeOnClickModal">
+      <div class="top">
+        <p class="invalid">是否确认撤单！</p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="dialogInvalid = false">取消</el-button>
+        <el-button round type="primary" @click="setInvalid">确定</el-button>
+      </span>
+    </el-dialog>
 	</div>
 </template>
 
 <script>
 import {TOOL} from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
+import changeCancel from "../contractDialog/changeCancel";
+import checkPerson from '@/components/checkPerson';
 // import {FILTER} from "@/assets/js/filter";
 export default {
 	mixins: [MIXINS],
+	components: {
+    changeCancel,
+    checkPerson,
+  },
 	data() {
 		return {
 			userMsg:{}, //当前登录人信息
@@ -212,7 +370,7 @@ export default {
 			dialogImageUrl: '',
 			dialogVisible: false,
 			contState:'',
-			// code:'',
+			code:'',
 			scaneZhuti:{
 				path:'zhuti',
 				id: this.code
@@ -266,9 +424,33 @@ export default {
 			otherList: [],
 			//主体合同
 			uploadList: [],
+			contDataFiles:[],//资料库图片缩略图
+      mainDataFiles:[],//合同主体图片缩略图
 			isDelete:'',
+			//变更解约
+			changeCancel_: false,
+			canceldialogType: "",
+			changeCancelId:'',
+			commission:'',
+			//审核记录
+      checkData:[],
+      BGcheckData:[],
+			JYcheckData:[],
+			isSubmitAudit:false,//提审
+			checkPerson: {
+        state:false,
+        type:1,
+        code:'',
+        flowType:3,
+        label:false
+			},
+			dialogInvalid:false,//撤单
 			//权限
 			power: {
+				'sign-com-htdetail': {
+          state: false,
+          name: '合同详情'
+        },
 				'sign-ht-info-view': {
 					state: false,
 					name: '预览'
@@ -285,6 +467,26 @@ export default {
 					state: false,
 					name: '编辑'
 				},
+				'sign-ht-info-addoffline': {
+          state: false,
+          name: '创建线下合同'
+				},
+				'sign-ht-xq-cancel': {
+          state: false,
+          name: '解约'
+        },
+        'sign-ht-xq-modify': {
+          state: false,
+          name: '变更'
+				},
+				'sign-ht-view-toverify': {
+          state: false,
+          name: '提交审核'
+				},
+				'sign-ht-xq-void': {
+          state: false,
+          name: '撤单'
+        },
 			}
 		}
 	},
@@ -297,11 +499,23 @@ export default {
 	methods: {
 		handleClick(tab, event) {
 			this.name=tab.name;
+			if(tab.name==="second"){
+        if(this.detailData.contState.value<2&&this.detailData.recordType.value===1){
+          this.$message({
+            message:'合同未签章,不允许上传合同主体',
+            type:'warning'
+          })
+        }
+      }else if(tab.name==="fourth"){
+				this.getAuditList()
+				this.getAuditList(9)
+				this.getAuditList(10)
+			}
 		},
 
 		// 控制弹框body内容高度，超过显示滚动条
 		clientHeight() {
-			return this.clientHei - 285 + 'px'
+			return this.clientHei - 250 + 'px'
 		},
 
 		//预览事件
@@ -333,7 +547,6 @@ export default {
 
 		//合同资料库添加数据到每种类型
 		addSubject(data){
-			console.log(data);
 			let arr = data.param;
 			let num = Number(data.btnId.substring(data.btnId.length-1));
 			let typeId = data.btnId.substring(0,data.btnId.length-1)
@@ -347,8 +560,16 @@ export default {
 				this.buyerList[num].value=this.buyerList[num].value.concat(arr);
 			}else if(typeId==='other'){
 				this.otherList[num].value=this.otherList[num].value.concat(arr);
-				console.log(this.otherList[num].value)
 			}
+			let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.contDataFiles=this.contDataFiles.concat(res)
+      })
 		},
 
 		//获取合同资料库信息
@@ -404,11 +625,13 @@ export default {
 			this.$ajax.get("/api/contract/getContAttachmentById", param).then(res => {
 				res = res.data;
 				if (res.status === 200) {
+					let pathList = []
 					let address = JSON.parse(res.data.address);
 					address.forEach(element => {
 						element.value.forEach(item => {
 							let fileType = this.$tool.get_suffix(item.name);
 							item.fileType=fileType
+							pathList.push(item)
 						});
 						if(element.kind==="1"){
 							this.buyerList.forEach(ele => {
@@ -430,6 +653,15 @@ export default {
 							});
 						}
 					});
+					let preloadList=[]
+          pathList.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            if(this.isPictureFile(item.fileType)){
+              preloadList.push(item.path)
+            }
+          })
+          this.fileSign(preloadList,'preload').then(res=>{
+            this.contDataFiles=res
+          })
 				}
 			});
 		},
@@ -553,6 +785,20 @@ export default {
 						element.fileType=fileType;
 					});
 					this.uploadList=uploadList_;
+					let preloadList=[]
+          uploadList_.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            if(this.isPictureFile(item.fileType)){
+              preloadList.push(item.path)
+            }
+          })
+          this.fileSign(preloadList,'preload').then(res=>{
+            if(param.isentrust){
+              this.entrustMainFiles=res
+            }else{
+              this.mainDataFiles=res
+            }
+            
+          })
 				}
 			}).catch((error)=>{
 				this.$message({
@@ -569,11 +815,45 @@ export default {
 				element.fileType = fileType;
 			});
 			this.uploadList=this.uploadList.concat(arr);
+			let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.mainDataFiles=this.mainDataFiles.concat(res)
+      })
 		},
 
 		//合同主体的删除
 		ZTdelectData(index){
-			this.uploadList.splice(index,1)
+			// this.uploadList.splice(index,1)
+			if(this.detailData.contState.value===3){
+				if(this.uploadList.length>1){
+					this.uploadList.splice(index,1)
+					let param = {
+            contId:this.$route.query.id,
+            datas:this.uploadList
+					}
+					this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
+            res=res.data;
+            if(res.status===200){
+              this.$message({
+                message:'删除成功',
+                type:'success'
+              })
+            }
+          })
+				}else{
+          this.$message({
+            message:'至少保留一个，请勿删除',
+            type:'warning'
+          })
+        }
+			}else{
+				this.uploadList.splice(index,1)
+			}
 		},
 		//合同主体上传文件
 		saveFile() {
@@ -589,7 +869,8 @@ export default {
 					if(res.data.status===200){
 						this.getContractBody();
 						this.$message({
-							message:'上传成功'
+							message:'上传成功',
+							type:'success'
 						})
 					}else if(res.data.status===500){
 						this.$message.error(res.data.message)
@@ -628,6 +909,11 @@ export default {
 					this.detailData = res.data.data
 					this.code = res.data.data.code
 					this.contState = res.data.data.contState.value
+					//变更解约佣金
+          this.commission={
+            owner:this.detailData.ownerCommission,
+            user:this.detailData.custCommission
+          }
 					var contperson = this.detailData.contPersons
 					if (contperson.length > 0) {
 						for (let i=0; i < contperson.length; i++){
@@ -652,6 +938,114 @@ export default {
 				})
 			})
 		},
+		// 变更解约弹窗
+    goChangeCancel(value) {
+      this.changeCancelId = Number(this.detailData.id);
+      if (value === 1) {
+        this.canceldialogType = "bg";
+        this.changeCancel_ = true;
+      } else if (value === 2) {
+        this.canceldialogType = "jy";
+        this.changeCancel_ = true;
+      }
+    },
+    // 关闭变更解约弹窗
+    changeCancelDialog() {
+      this.changeCancel_ = false;
+      this.getDetail();
+    },
+    freshChangeCancel(){
+      this.changeCancel_ = false;
+      this.getDetail();
+		},
+		//合同审核信息
+    getAuditList(type=3){
+      let param = {
+        flowType:type,
+        bizCode:this.contCode
+      };
+      if(!param.bizCode){
+        return
+      }
+      this.$ajax.get('/api/machine/getAuditList', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          if(type===3){
+            this.checkData=res.data.data;
+          }else if(type===9){
+            this.BGcheckData=res.data.data;
+          }else if(type===10){
+            this.JYcheckData=res.data.data;
+          }
+        }
+      })
+		},
+		 //提审
+    submitAudit(){
+      let param = {
+        cityId:this.detailData.cityCode,
+        flowType:3,
+        bizCode:this.code,
+        modularType:0//合同类型
+      }
+      this.$ajax.get('/api/machine/submitAduit', param).then(res=>{
+        this.isSubmitAudit=false;
+        res=res.data;
+        if(res.status===200){
+          this.$message({
+            message:"提审成功",
+            type:'success'
+          })
+          this.getDetail()
+        }else{
+          this.$message({
+            message:res.message
+          })
+        }
+      }).catch(error => {
+          if(error.message==='下一节点审批人不存在'){
+            this.isSubmitAudit=false;
+            this.checkPerson.code=this.code;
+            this.checkPerson.state=true;
+            // this.checkPerson.type=error.data.type===1?'set':'init';
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+        })
+		},
+		//关闭设置审核人弹窗
+		closeCheckPerson(){
+			this.checkPerson.state=false;
+		},
+		//合同撤单弹窗
+    invalid(){
+      this.dialogInvalid=true;
+    },
+    setInvalid(){
+      let param = {
+        id: this.$route.query.id
+      };
+      this.$ajax.post('/api/contract/invalid', param).then(res=>{
+        res=res.data;
+        if(res.status===200){
+          this.getDetail();
+          this.dialogInvalid=false;
+          this.$message({
+            message:'操作成功',
+            type:'success'
+          })
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type: "error"
+        })
+      })
+    },
 	},
 
 	filters: {
@@ -673,7 +1067,21 @@ export default {
 			} else {
 				return TOOL.toChineseNumber(val);
 			}
-		}
+		},
+		/**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
+    }
 	},
 
 	created() {
@@ -700,9 +1108,19 @@ export default {
 </script>
 
 <style lang="less">
-#intention{
-	overflow: hidden;
-	background-color: #fff;
+@import "~@/assets/common.less";
+.view-container {
+  position: relative;
+  min-height: 100%;
+  padding-left: 20px;
+  background: @bg-white;
+  font-size: 14px;
+	.uploadBtn{
+		position: absolute;
+		left: 40px;
+		bottom: 20px;
+		z-index: 999;
+	}
 	.el-textarea.is-disabled .el-textarea__inner{
 		color:#233241;
 	}
@@ -714,16 +1132,15 @@ export default {
 	.el-tabs__active-bar{
 		height: 2px;
 	}
-	.el-tabs__nav-scroll{
-		padding: 0 30px;
-	}
+	// .el-tabs__nav-scroll{
+	// 	padding: 0 30px;
+	// }
 
 	.deleteShow{
 		display: block !important;
 	}
 
 	.detailbox{
-		padding: 20px 0 0px;
 		border-radius: 4px;
 		height: 100%;
 		position: relative;
@@ -744,7 +1161,7 @@ export default {
 			}
 		}
 		.tab{
-			padding: 10px 30px;
+			padding: 10px 30px 30px 0;
 			overflow-y: auto;
 			.textbox{
 				display: flex;
@@ -835,6 +1252,28 @@ export default {
 				}
 			}
 		}
+		
+		.footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			height: 60px;
+			p {
+				color: @color-6c;
+				display: inline-block;
+				padding-right: 20px;
+				font-size: 12px;
+			}
+			> div {
+				&:last-of-type {
+					padding-right: 20px;
+					/deep/.el-button.is-round {
+						padding: 10px 20px;
+					}
+				}
+			}
+		}
+
 		.fixed{
 			width: 100%;
 		}
@@ -849,10 +1288,6 @@ export default {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				.el-button.is-round{
-					padding: 11px 23px;
-					width: 100px;
-				}
 				.btn1{
 					background-color: #EAEFF5;
 					color: #32485F;
@@ -918,6 +1353,7 @@ export default {
 		.ulData{
 			display: flex;
 			flex-wrap:wrap;
+			margin-bottom: 20px;
 			li{
 				margin-right: 10px;
 				position: relative;
@@ -960,7 +1396,12 @@ export default {
 			box-sizing: border-box;
 			border-radius:4px;
 			background: #F2F3F8;
-			p{
+			.signImage{
+				width:60px;
+				height: 60px;
+				margin: 1px 0;
+			}
+			>p{
 				padding-top: 5px;
 				display: inline-block;
 				width: 100px;
@@ -968,6 +1409,30 @@ export default {
 				text-overflow:ellipsis;
 				white-space: nowrap;
 			}
+		}
+	}
+}
+.firstDetail{
+	overflow-y: auto;
+}
+.receiptModule{
+	padding-top: 20px;
+	width: 950px;
+	.moduleTitle{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 8px 0;
+		span{
+			border-left: 3px solid #409EFF;
+			padding-left: 5px;
+		}
+	}
+	.receiptList{
+		.receipBtn{
+			color: #409EFF;
+			cursor: pointer;
+			margin-right: 10px;
 		}
 	}
 }
