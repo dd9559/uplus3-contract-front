@@ -835,7 +835,15 @@ export default {
               message:"创建成功",
               type: "success"
             })
-            this.$router.push('/contractList');
+            //xuneng20191210修改：创建线下意向定金合同，成功跳转合同主体
+            this.$router.push({
+              path:'detailIntention',
+              query:{
+                type:'contBody',
+                id: res.data.data.id,
+                contType: res.data.data.type
+              }
+            });
           }else{
             let contractMsg = res.data.data
             this.hidBtn=1

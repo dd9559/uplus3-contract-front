@@ -113,13 +113,9 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" min-width="120">
         <template slot-scope="scope">
-          <div v-if="(scope.row.state.value!==1&&power['sign-jr-cw-rev-edit'].state)||(scope.row.state.value===3&&getUser.user&&(getUser.user.empId===scope.row.auditId))">
-            <!--审核状态不为已到账-->
-            <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-jr-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button>
-            <!--审核状态为审核中，当前审核人为当前登录人-->
-            <el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button>
+          <div class="null-context">
+            <el-button type="text" @click="cellOpera(scope.row,'edit')" v-if="scope.row.state.value!==1&&power['sign-jr-cw-rev-edit'].state&&scope.row.edit===1">编辑</el-button><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.state.value===3&&(getUser.user&&(getUser.user.empId===scope.row.auditId)||scope.row.grabDept&&!(scope.row.auditId>0))">审核</el-button><div style="color:red" v-if="scope.row.state.value===3&&scope.row.auditId>0&&getUser.user&&scope.row.auditId!==getUser.user.empId">{{scope.row.auditName}}正在审核</div>
           </div>
-          <span v-else>--</span>
         </template>
       </el-table-column>
     </el-table>
@@ -162,6 +158,13 @@
     span{
       color: @color-blue;
       cursor: pointer;
+    }
+  }
+  .null-context:empty{
+    position: relative;
+    &:before{
+      content: '--';
+      display: inline-block;
     }
   }
   /deep/ .theader-bg{

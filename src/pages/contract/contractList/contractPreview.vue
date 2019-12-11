@@ -8,7 +8,8 @@
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
         <div :class="{'active':isActive===2}" @click="changeType(2)">买卖合同</div>
       </div>
-      <div class="btn" v-if="contType<4&&!isentrust">
+      <!-- xuneng20191210修改：操作按钮去掉合同类型判断（contType>4） -->
+      <div class="btn" v-if="contType&&!isentrust">
         <el-button-group>
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>

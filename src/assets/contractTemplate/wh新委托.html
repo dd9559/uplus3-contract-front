@@ -265,18 +265,14 @@
                                                   tag="input-auto" brother="input2"></span>元整(大写：<span tag="input-auto"
                                                                                                        brother="input2"
                                                                                                        extendparam="val1_add"
+                                                                                                       systemParam="true"
                                                                                                        class="input-readonly"></span>圆整)；乙方（购买方）同意在签订本合同当日内向丙方支付权证代办费人民币（小写）<span
       class="input-before" listen="number" max="12" extendParam="val2" tag="input-auto"
-      brother="input3"></span>元整(大写：<span tag="input-auto" brother="input3" extendparam="val2_add"
-                                          class="input-readonly"></span>圆整)；</p>
+      brother="input3"></span>元整(大写：<span tag="input-auto" brother="input3" systemParam="true" extendparam="val2_add" class="input-readonly"></span>圆整)；</p>
     <p>2、乙方（购买方）同意在签订本合同当日内向丙方支付贷款服务费人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val3"
-                                                  tag="input-auto" brother="input4"></span>元整(大写：<span tag="input-auto"
-                                                                                                       brother="input4"
-                                                                                                       extendparam="val3_add"
-                                                                                                       class="input-readonly"></span>圆整)；和代收评估费人民币（小写）<span
+                                                  tag="input-auto" brother="input4"></span>元整(大写：<span tag="input-auto" brother="input4" extendparam="val3_add" systemParam="true" class="input-readonly"></span>圆整)；和代收评估费人民币（小写）<span
       class="input-before" listen="number" max="12" extendParam="val4" tag="input-auto"
-      brother="input5"></span>元整(大写<span tag="input-auto" brother="input5" extendparam="val4_add"
-                                         class="input-readonly"></span>圆整)。如乙方未获得相应贷款的，丙方应退还已收取的贷款服务费用，评估费由丙方代收并向评估机构缴纳，且评估事宜一旦受理，该笔费用不予退还。
+      brother="input5"></span>元整(大写<span tag="input-auto" brother="input5" systemParam="true" extendparam="val4_add" class="input-readonly"></span>圆整)。如乙方未获得相应贷款的，丙方应退还已收取的贷款服务费用，评估费由丙方代收并向评估机构缴纳，且评估事宜一旦受理，该笔费用不予退还。
     </p>
     <p>3、其他可能产生的贷款费用（例如抵押登记费、借款合同公证费、划款委托公证费、单身公证费、委托公证费、合同书工本费等）由乙方自行缴纳。</p>
     <p class="son_title">第三条 权利和义务</p>
@@ -305,7 +301,7 @@
     <p>本合同履行过程中发生争议的，三方应协商解决。协商不成的，任何一方均可向房屋所在地人民法院提起诉讼。</p>
     <p class="son_title">第六条 其他</p>
     <p>1、本合同履行期间，三方因履行本合同而签署的补充协议及其他书面文件，均为本合同不可分割的一部分，具有同等法律效力。</p>
-    <p>2、本合同一式叁份，每份共壹页，三方各执壹份，自各方签署盖章之日起生效。各方同意，未经本人签字或未经丙方盖章（合同专用章）确认的任何书面承诺、口头承诺、条款的变更等行为均不产生法律约束力。</p>
+    <p>2、本合同一式叁份，三方各执壹份，自各方签署盖章之日起生效。各方同意，未经本人签字或未经丙方盖章（合同专用章）确认的任何书面承诺、口头承诺、条款的变更等行为均不产生法律约束力。</p>
     <div class="sign">
       <div>
         <p>甲方（出售方）签章：</p>
@@ -328,8 +324,6 @@
       </div>
     </div>
   </div>
-
-
   <span id="submit" style="display: none;">click</span>
 </div>
 <div class="alert-viwer" style="display: none;">
@@ -345,41 +339,41 @@
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_wt_wh20191129.js"></script>
-<script>
-    //  (function () {
-    //   var scriptList = document.getElementsByTagName("script")
-    //   console.log(scriptList)
-    //   if(!scriptList[0].src){
-    //     var host='https://sign2.jjw.com'
-    //     var host_other="http://sign2.jjw.com:28879"
-    //     var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_dj20190402.js","datepicker.css"]
-    //     for (let i = 0; i < addrList.length; i++) {
-    //       if(window.location.host==='localhost:8080'){
-    //         if(addrList[i].indexOf('bundle')>-1){
-    //         //   addrList[i]=host_other+'/'+addrList[i]
-    //           addrList[i]='./new-wh-wt.js'
-    //         }else{
-    //           addrList[i]=host_other+'/'+addrList[i]
-    //         }
-    //       }else{
-    //         addrList[i]='/'+addrList[i]
-    //       }
-    //       if(addrList[i].indexOf('.css')>-1){
-    //       var hm = document.createElement("link");
-    //       hm.rel="stylesheet"
-    //       hm.href = addrList[i];
-    //       /*var s = document.getElementsByTagName("link")[0];
-    //       s.parentNode.insertBefore(hm,s);*/
-    //       document.head.appendChild(hm);
-    //     }else{
-    //       var hm = document.createElement("script");
-    //       addrList[i].includes('new-wh-wt')&&(hm.type = 'module');
-    //       hm.src = addrList[i];
-    //       var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
-    //       s.parentNode.insertBefore(hm,s);
-    //     }
-    //     }
-    //   }
-    // })();
-</script>
+<!--<script>
+     (function () {
+      var scriptList = document.getElementsByTagName("script")
+      console.log(scriptList)
+      if(!scriptList[0].src){
+        var host='https://sign2.jjw.com'
+        var host_other="http://sign2.jjw.com:28879"
+        var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_dj20190402.js","datepicker.css"]
+        for (let i = 0; i < addrList.length; i++) {
+          if(window.location.host==='localhost:8080'){
+            if(addrList[i].indexOf('bundle')>-1){
+            //   addrList[i]=host_other+'/'+addrList[i]
+              addrList[i]='./new-wh-wt.js'
+            }else{
+              addrList[i]=host_other+'/'+addrList[i]
+            }
+          }else{
+            addrList[i]='/'+addrList[i]
+          }
+          if(addrList[i].indexOf('.css')>-1){
+          var hm = document.createElement("link");
+          hm.rel="stylesheet"
+          hm.href = addrList[i];
+          /*var s = document.getElementsByTagName("link")[0];
+          s.parentNode.insertBefore(hm,s);*/
+          document.head.appendChild(hm);
+        }else{
+          var hm = document.createElement("script");
+          addrList[i].includes('new-wh-wt')&&(hm.type = 'module');
+          hm.src = addrList[i];
+          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+          s.parentNode.insertBefore(hm,s);
+        }
+        }
+      }
+    })();
+</script>-->
 </html>

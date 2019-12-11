@@ -121,7 +121,7 @@
                     </table>
                 </div>
             </div>
-            <div class="color-red tip-msg"> 注：设置新的手续费值成功后，原来的手续费值被替换。</div>
+            <div class="color-red tip-msg"> 注：设置新的手续费率成功后，新创建的合同以新设置的手续费率为准。</div>
         </div>
         <div class="btn">
             <el-button @click="addVisible=false" round>取 消</el-button>
@@ -132,7 +132,7 @@
         <el-dialog title="确认保存" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal" width="500px" :visible.sync="saveDialog">
             <div class="save-txt">
                 <p style="margin-bottom:10px;">确认保存新的手续费设置？</p>
-                <p class="color-red">新的手续费率会覆盖原来的手续费率</p>
+                <p class="color-red">新创建的合同以新设置的手续费率为准</p>
                 <p>当前收佣手续费率 储蓄卡{{commissionForm.cash}}% 信用卡{{commissionForm.credit}}% 微信{{commissionForm.wechat}}% 支付宝{{commissionForm.aliPay}}%</p>
             </div>
             <div class="save-btn">
@@ -269,8 +269,6 @@
                 this.$nextTick(() =>{
                     this.commissionForm[item]=this.$tool.cutFloat({val:this.commissionForm[item],max:type===1?1:100})
                 })
-                let regex=/^\./g
-                regex.test(this.commissionForm[item])&&(this.commissionForm[item]='')
             },
             saveFn() {
                 this.$tool.checkForm(

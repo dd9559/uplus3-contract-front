@@ -87,7 +87,8 @@
 						</div>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="合同主体" name="second" v-if="this.contState === 2 || this.contState === 3">
+        <!-- xuneng修改：意向定金打开合同主体限制，照搬买卖租赁 -->
+				<el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 					<div class="contractSubject">
 						<ul class="ulData">
 							<li v-if="power['sign-ht-xq-main-add'].state">
@@ -187,7 +188,7 @@
 			</el-tabs>
 			<!-- 上传按钮 -->
 			<div class="functionTable">
-				<el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && (this.contState === 2 || this.contState === 3) && power['sign-ht-xq-main-add'].state">上传</el-button>  <!-- 合同主体上传 -->
+				<el-button type="primary" round class="search_btn" @click="saveFile" v-if="name==='second' && power['sign-ht-xq-main-add'].state&&detailData.signingEntrustState!==1&&detailData.signingEntrustState!==0&&(detailData.contractEntrust&&detailData.contractEntrust.entrustState>1||detailData.recordType.value===2)">上传</el-button>  <!-- 合同主体上传 -->
 				<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="name==='third' && power['sign-ht-xq-data'].state">上传</el-button>  <!-- 资料库上传 -->
 			</div>
 			<!-- 图片放大 -->
@@ -682,7 +683,10 @@ export default {
 		if (this.$route.query.type === "dataBank") {
 			this.activeName = "third";
 			this.name="third";
-		}
+		}else if(this.$route.query.type === "contBody"){
+      this.activeName = "second";
+      this.name="second";
+    }
 	},
 
 	mounted() {
