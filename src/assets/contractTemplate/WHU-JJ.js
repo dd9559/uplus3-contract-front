@@ -137,7 +137,7 @@ contractConfig.inputListener(function(ev,tip){
         let toChineseArr = ['val8']
         let chineseStr = tip.target.getAttribute('extendparam')
         if(toChineseArr.includes(chineseStr)){
-            document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value)
+            document.querySelector(`*[extendparam=${chineseStr}_add]`).innerHTML = toChineseNumber(ev.target.value).split('元')[0]
         }
     }
 },function(tip){
@@ -147,7 +147,7 @@ contractConfig.inputListener(function(ev,tip){
     let strCn = tip.target.getAttribute('extendparam')
     if(ArrCn.includes(strCn)){
         if(initVal.length>0){
-            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal)
+            document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).split('元')[0]
         }else{
             document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
         }
