@@ -631,7 +631,7 @@ export default {
         this.$nextTick(() => {
           this.contractForm.houseInfo.ListingPrice = this.$tool.cutFloat({
             val: this.contractForm.houseInfo.ListingPrice,
-            max: 999999999.99
+            max: 999999999
           });
         });
       }
@@ -741,23 +741,23 @@ export default {
           let index1 = rightAddress.indexOf('市')
           let index2 = rightAddress.indexOf('区')
           if(index1>0){
-            this.contractForm.rightAddrCity=rightAddress.substring(0,index1)
+            this.$set(this.contractForm,'rightAddrCity',rightAddress.substring(0,index1))
           }
           if(index2>0){
             if(index1>0){
-              this.contractForm.rightAddrArea=rightAddress.substring(index1+1,index2)
+              this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(index1+1,index2))
             }else{
-              this.contractForm.rightAddrArea=rightAddress.substring(0,index2)
+              this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(0,index2))
             }
           }
           if(index1>0&&index2>0){
-            this.contractForm.rightAddrDetail=rightAddress.substring(index2+1)
+            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
           }else if(index1>0&&index2<0){
-            this.contractForm.rightAddrDetail=rightAddress.substring(index1+1)
+            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index1+1))
           }else if(index1<0&&index2>0){
-            this.contractForm.rightAddrDetail=rightAddress.substring(index2+1)
+            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
           }else{
-            this.contractForm.rightAddrDetail=rightAddress
+            this.$set(this.contractForm,'rightAddrDetail',rightAddress)
           }
 
           for (let i = 0; i < res.data.contPersons.length; i++) {
