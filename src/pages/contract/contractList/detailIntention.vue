@@ -26,20 +26,23 @@
 							<li class="tabs-title">房源信息</li>
 							<ul class="ul3">
 								<li>
-									<div class="div1"><span>房源编号：</span><em class="blue">{{detailData.houseinfoCode | nullData}}</em></div>
-									<div class="div2"><span>房型：</span>{{detailData.houseInfo.HouseType | nullData}}</div>
+									<div class="div1"><span>房源编号：</span><em :class="{'blue':detailData.houseinfoCode}">{{detailData.houseinfoCode | nullData}}</em></div>
+									<div class="div2" v-if="detailData.houseInfo.HouseType==='0*0*0*0'"><span>房型：</span>--</div>
+									<div class="div2" v-else><span>房型：</span>{{detailData.houseInfo.HouseType | nullData}}</div>
 									<div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
 								</li>
 								<li>
 									<div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
 									<div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
 									<div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
-									<div class="div1"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
+									<div class="div1" v-if="detailData.houseInfo.Square"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
+									<div class="div1" v-else><span>建筑面积：</span>--</div>
 									<div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
 									<div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
 								</li>
 								<li>
-									<div class="div1"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
+									<div class="div1" v-if="detailData.houseInfo.SquareUse"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
+									<div class="div1" v-else><span>套内面积：</span>--</div>
 									<div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
 									<div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
 								</li>
@@ -499,6 +502,7 @@ export default {
 	methods: {
 		handleClick(tab, event) {
 			this.name=tab.name;
+			debugger
 			if(tab.name==="second"){
         if(this.detailData.contState.value<2&&this.detailData.recordType.value===1){
           this.$message({
@@ -962,7 +966,7 @@ export default {
     getAuditList(type=3){
       let param = {
         flowType:type,
-        bizCode:this.contCode
+        bizCode:this.code
       };
       if(!param.bizCode){
         return
@@ -1103,6 +1107,12 @@ export default {
 			_this.clientHei = document.documentElement.clientHeight;
 		}
 	},
+	computed:{
+    //非业务人员的判断
+    getUserMsg(){
+      return this.getUser.isBusiness
+    }
+  },
 
 }
 </script>

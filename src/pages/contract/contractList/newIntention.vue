@@ -22,32 +22,32 @@
               </el-date-picker>
               </el-form-item>
               <el-form-item label="合同类型：">
-                <el-input placeholder="意向金" :disabled="true" v-if="this.contractForm.type == 4"></el-input>
-                <el-input placeholder="定金"  :disabled="true" v-if="this.contractForm.type == 5"></el-input>
+                <el-input placeholder="意向" :disabled="true" v-if="contractForm.type == 4"></el-input>
+                <el-input placeholder="定金"  :disabled="true" v-if="contractForm.type == 5"></el-input>
               </el-form-item>
               <el-form-item label="纸质合同编号：" prop="pCode"  v-if="isOffline===1">
-                <el-input v-model="contractForm.pCode" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('pCode',0)" >
+                <el-input v-model="contractForm.pCode" :disabled="canInput" maxlength="30" placeholder="请输入" type="text" clearable @input="cutInfo('pCode',0)" >
                 </el-input>
               </el-form-item>
               <br>
               <el-form-item label="认购期限：" prop="subscriptionTerm">
-                <el-date-picker v-model="contractForm.subscriptionTerm" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker v-model="contractForm.subscriptionTerm" :disabled="canInput" value-format="yyyy/MM/dd" type="date" placeholder="选择日期"></el-date-picker>
               </el-form-item>
               <el-form-item label="认购总价：" prop="subscriptionPrice">
-                <el-input v-model="contractForm.subscriptionPrice" type="text" clearable @input="cutNumber('subscriptionPrice')" >
+                <el-input v-model="contractForm.subscriptionPrice" :disabled="canInput" type="text" clearable @input="cutNumber('subscriptionPrice')" >
                   <i slot="suffix" class="yuan">元</i>
                 </el-input>
               </el-form-item>
 
-              <el-form-item label="意向金金额：" prop="dealPrice" v-if="this.contractForm.type == 4">
-                <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
+              <el-form-item label="意向金金额：" prop="dealPrice" v-if="contractForm.type == 4">
+                <el-input v-model="contractForm.dealPrice" :disabled="canInput" type="text" clearable @input="cutNumber('dealPrice')">
                   <i slot="suffix" class="yuan">元</i>
                   <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
                 </el-input>
               </el-form-item>
 
-              <el-form-item label="定金金额：" prop="dealPrice" v-if="this.contractForm.type == 5">
-                <el-input v-model="contractForm.dealPrice" type="text" clearable @input="cutNumber('dealPrice')">
+              <el-form-item label="定金金额：" prop="dealPrice" v-if="contractForm.type == 5">
+                <el-input v-model="contractForm.dealPrice" :disabled="canInput" type="text" clearable @input="cutNumber('dealPrice')">
                   <!-- <i slot="suffix" class="yuan">万元</i> -->
                   <i slot="suffix" class="yuan">元</i>
                   <template slot="append">{{contractForm.dealPrice | moneyFormat}}</template>
@@ -62,21 +62,31 @@
             <div class="form-cont">
               <el-form-item>
                 <el-form-item label="房源编号：" prop="houseno">
-                  <el-button type="primary" @click="toLayerHouse()" v-if="type===1">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
-                  <el-button type="text" v-if="type==2">{{contractForm.houseinfoCode}}</el-button>
+                  <el-button type="primary" @click="toLayerHouse()"  v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
+                  <el-button type="text" v-else>{{contractForm.houseinfoCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="物业地址：" class="ml30">
-                  <div v-if="type===1">{{contractForm.houseInfo.EstateName}}</div>
+                  <div v-if="type===1">{{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}</div>
                   <div v-if="type==2">{{contractForm.propertyAddr}}</div>
                 </el-form-item>
               </el-form-item>
 
-              <el-form-item label="产权地址：" class="disb">
-                <el-input v-model="contractForm.houseInfo.propertyRightAddr" clearable class="big-input" maxlength="70"></el-input>
+              <el-form-item label="产权地址：" class="disb rightAddrStyle" required>
+                <el-form-item prop="rightAddrCity" :rules="{validator: rightAddr1, trigger: 'change'}">
+                  <el-input v-model="contractForm.rightAddrCity" :disabled="canInput" clearable maxlength="10" class="addrwidth" @input="cutAddress('city')"></el-input>
+                </el-form-item>
+                市
+                <el-form-item prop="rightAddrArea" :rules="{validator: rightAddr2, trigger: 'change'}">
+                  <el-input v-model="contractForm.rightAddrArea" :disabled="canInput" clearable maxlength="10" class="addrwidth" @input="cutAddress('area')"></el-input>
+                </el-form-item>
+                区
+                <el-form-item prop="rightAddrDetail" :rules="{validator: rightAddr3, trigger: 'change'}">
+                  <el-input v-model="contractForm.rightAddrDetail" :disabled="canInput" clearable class="big-input" maxlength="70" @input="cutAddress('detail')"></el-input>
+                </el-form-item>
               </el-form-item>
 
               <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
-                <el-input v-model.number="contractForm.houseInfo.ListingPrice" clearable @input="cutNumber('editHousePrice')">
+                <el-input v-model.number="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
                   <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">元</i>
                   <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
                   <!-- <i slot="suffix" class="yuan">元/月</i> -->
@@ -84,28 +94,28 @@
               </el-form-item>
 
               <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
-                <el-input v-model="contractForm.houseInfo.ListingPrice" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">
+                <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">
                 </el-input>
               </el-form-item>
 
               <el-form-item label="业主信息：" class="disb" required>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
-                  <el-input v-model="contractForm.contPersons[0].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].mobile" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[0].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                   </el-select>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[0].cardType===1?18:this.contractForm.contPersons[0].cardType===2?9:this.contractForm.contPersons[0].cardType===3?20:18" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?9:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -143,7 +153,7 @@
               <el-form-item label="客户信息：" class="disb" required>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
-                  <el-input v-model="contractForm.contPersons[1].name" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',1)"></el-input>
+                  <el-input v-model="contractForm.contPersons[1].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',1)"></el-input>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].mobile'" :rules="{validator: telPhone,trigger:'change'}">
@@ -151,13 +161,13 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[1].cardType" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
+                  <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                   </el-select>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[1].identifyCode" clearable placeholder="证件号" class="custwidth" :maxlength="this.contractForm.contPersons[1].cardType===1?18:this.contractForm.contPersons[1].cardType===2?9:this.contractForm.contPersons[1].cardType===3?20:18" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
+                  <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?9:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -165,7 +175,7 @@
             </div>
             <div class="form-cont mt30" v-if="contractForm.type == 4">
               <el-form-item label="意向备注：" class="disb textlengthbox">
-                <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}" :disabled="canInput"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
                 <span class="textLength">{{contractForm.remarks.length}}/200</span>
               </el-form-item>
             </div>
@@ -275,7 +285,10 @@ export default {
         subscriptionPrice: "",
         dealPrice: "",
         remarks: "",
-
+        //产权地址
+        rightAddrCity:'',
+        rightAddrArea:'',
+        rightAddrDetail:'',
         houseInfo: {
           EstateName: "",
           BuildingName: "",
@@ -374,11 +387,15 @@ export default {
           return time.getTime() > Date.now();
         }
       },
+      sourceBtnCheck:true,//房客源是否可选择
+      //是否能输入（已签约 未结算）
+      canInput:false,
+      //线下合同已签约状态编辑
+      offLine:false,
     };
   },
   created() {
-     this.getDictionary();
-     console.log(this.contractForm.houseInfo.ListingPrice)
+    this.getDictionary();
     let backMsg = JSON.parse(localStorage.getItem("backMsg"));
     if(backMsg){//存在则是从h5页面返回  需走编辑逻辑
       let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
@@ -403,8 +420,10 @@ export default {
           this.getNewData()
         }
       }
-
     }
+    let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
+    arr.push({name:this.type===1?"新增合同":'合同编辑',path:this.$route.fullPath});
+    this.setPath(arr);
   },
   methods: {
     //获取当前日期
@@ -456,9 +475,19 @@ export default {
         })
       }
     },
-
+    //产权地址限制输入
+    cutAddress(type){
+      let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+      if(type==="city"){
+        this.contractForm.rightAddrCity=this.contractForm.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","").replace(/\//g,'')
+      }else if(type==="area"){
+        this.contractForm.rightAddrArea=this.contractForm.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace(/\//g,'')
+      }else{
+        this.contractForm.rightAddrDetail=this.contractForm.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
+      }
+    },
     housePrice (rule, value, callback) {
-      let myprice = /(^[1-9][0-9]{0,8}(['元']{2}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['元']{2}|['元/月']{3})$)/;
+      let myprice = /(^[1-9][0-9]{0,8}(['元']{1}|['元/月']{3})$)|(^([1-9][0-9]{0,8}|[0])\.[0-9]{1,2}(['元']{1}|['元/月']{3})$)/;
       if(value){
         if (!myprice.test(value)) {
           callback(new Error("提示：输入总价在0-999999999.99之间，不能等于0。必须带上单位，出租类型单位为'元/月',出售类型单位为'元'，例子：'3000元/月'或者'300元'，小数点只保留后两位。"));
@@ -488,7 +517,7 @@ export default {
         } else {
           callback();
         }
-      }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3){
+      }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3 || this.contractForm.contPersons[0].cardType == 4){
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
         }
@@ -515,7 +544,7 @@ export default {
         } else {
           callback();
         }
-      }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3){
+      }else if(this.contractForm.contPersons[1].cardType == 2 || this.contractForm.contPersons[1].cardType == 3 || this.contractForm.contPersons[1].cardType == 4){
         if (!value || value == '') {
            return callback(new Error("请输入证件号"));
         }
@@ -554,6 +583,28 @@ export default {
       }else if (!namereg.test(value)) {
         callback(new Error("只能输入大小写字母和汉字"));
       } else {
+        callback();
+      }
+    },
+
+    rightAddr1(rule, value, callback){
+      if (!value || value == '') {
+        return callback(new Error("请输入城市"));
+      }else{
+        callback();
+      }
+    },
+    rightAddr2(rule, value, callback){
+      if (!value || value == '') {
+        return callback(new Error("请输入区域"));
+      }else{
+        callback();
+      }
+    },
+    rightAddr3(rule, value, callback){
+      if (!value || value == '') {
+        return callback(new Error("请输入详细地址"));
+      }else{
         callback();
       }
     },
@@ -673,11 +724,41 @@ export default {
           // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(0,10);
           this.contractForm.type = res.data.contType.value;
-
+          //合同状态为已签约且未结算时只允许编辑房客源编号
+          if(this.contractForm.recordType.value===1&&res.data.resultState.value===1&&res.data.contState.value===3){
+            this.canInput=true
+          }
+          //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
+          if(this.contractForm.recordType.value===2&&this.contractForm.contState.value===3){
+            this.offLine=true
+          }
+          this.sourceBtnCheck=(res.data.contState.value===3)?false:true
           // this.contractForm.guestInfo.GuestStoreName = res.data.guestInfo.GuestStoreName;
           // this.contractForm.guestInfo.GuestStoreCode = res.data.guestInfo.GuestStoreCode;
           // this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
           // this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
+          let rightAddress = res.data.propertyRightAddr
+          let index1 = rightAddress.indexOf('市')
+          let index2 = rightAddress.indexOf('区')
+          if(index1>0){
+            this.contractForm.rightAddrCity=rightAddress.substring(0,index1)
+          }
+          if(index2>0){
+            if(index1>0){
+              this.contractForm.rightAddrArea=rightAddress.substring(index1+1,index2)
+            }else{
+              this.contractForm.rightAddrArea=rightAddress.substring(0,index2)
+            }
+          }
+          if(index1>0&&index2>0){
+            this.contractForm.rightAddrDetail=rightAddress.substring(index2+1)
+          }else if(index1>0&&index2<0){
+            this.contractForm.rightAddrDetail=rightAddress.substring(index1+1)
+          }else if(index1<0&&index2>0){
+            this.contractForm.rightAddrDetail=rightAddress.substring(index2+1)
+          }else{
+            this.contractForm.rightAddrDetail=rightAddress
+          }
 
           for (let i = 0; i < res.data.contPersons.length; i++) {
             if (res.data.contPersons[i].personType.value === 1) {
@@ -815,7 +896,9 @@ export default {
               cardType: this.contractForm.contPersons[1].cardType,
               type: 2,
 
-            }]
+            }
+          ],
+          propertyRightAddr:this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
         },
         type: this.type,
         recordType:this.isOffline===1?2:1
@@ -968,6 +1051,9 @@ export default {
 
         delete param.igdCont.achievementState;
         delete param.igdCont.recordType
+        delete param.igdCont.rightAddrCity
+        delete param.igdCont.rightAddrArea
+        delete param.igdCont.rightAddrDetail
       }
 
 
@@ -1241,6 +1327,9 @@ export default {
         .ownwidth {
           width: 140px;
         }
+        .addrwidth{
+          width: 100px;
+        }
         .namewidth {
           width: 200px;
         }
@@ -1296,6 +1385,12 @@ export default {
     font-weight: bold;
   }
 }
+.rightAddrStyle{
+  /deep/.el-form-item{
+    margin-right: 0;
+  }
+}
+
 </style>
 
 

@@ -214,7 +214,7 @@
 
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -248,6 +248,7 @@ export default {
       pageSize: 10,
       contractCode: "",
       changeCancel: false,
+      dialogOperation:"details",
       dictionary: {
         //数据字典
         "10": "", //合同类型
@@ -435,16 +436,14 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      console.log(item.contChangeState.value);
-      //debugger
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
-        this.dialogType = "changeLook";
+        this.dialogType = "bg";
         this.contId=item.id;
         console.log(this.contId)
       } else if (item.contChangeState.value === 2) {
         this.changeCancel = true;
-        this.dialogType = "cancelLook";
+        this.dialogType = "jy";
         this.contId=item.id;
       }
     },
