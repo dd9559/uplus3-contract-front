@@ -451,7 +451,7 @@
               </li>
               <li v-for="(item,index) in entrustUploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
-                  <div class="namePath" @click="previewPhoto(uploadList,index,2)">
+                  <div class="namePath" @click="previewPhoto(entrustUploadList,index,2)">
                     <img class="signImage" :src="item.path|getSignImage(entrustMainFiles)" alt="" v-if="isPictureFile(item.fileType)">
                     <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
@@ -2310,6 +2310,7 @@ export default {
             this.uploadList.splice(index,1);
           }else{
             this.entrustUploadList.splice(index,1);
+            param.datas=this.entrustUploadList
             param.isentrust=1
           }
           this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
