@@ -1107,7 +1107,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import "~@/assets/common.less";
 .view-container {
   position: relative;
@@ -1121,15 +1121,15 @@ export default {
 		bottom: 20px;
 		z-index: 999;
 	}
-	.el-textarea.is-disabled .el-textarea__inner{
+	/deep/.el-textarea.is-disabled .el-textarea__inner{
 		color:#233241;
 	}
-	.el-tabs__item{
+	/deep/.el-tabs__item{
 		height: 50px;
 		line-height: 50px;
 		font-size: 16px;
 	}
-	.el-tabs__active-bar{
+	/deep/.el-tabs__active-bar{
 		height: 2px;
 	}
 	// .el-tabs__nav-scroll{
@@ -1177,7 +1177,7 @@ export default {
 					height: 80px;
 					margin-left: 15px;
 				}
-				.el-textarea.is-disabled .el-textarea__inner{
+				/deep/.el-textarea.is-disabled .el-textarea__inner{
 					height: 80px;
 				}
 			}
