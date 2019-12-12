@@ -260,10 +260,6 @@
                  v-if="power['sign-cw-bill-invoice'].state">打印客户联</p>
               <p class="operation-text" @click="btnOpera(scope.row,5,'book')"
                  v-if="power['sign-cw-bill-printtally'].state">打印记账联</p>
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销
-              </el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收
-              </el-button>
               <p><el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废
               </el-button></p>
               <!-- <template v-else></template> -->
@@ -277,7 +273,12 @@
               </el-button>
               <!-- <template v-else></template> -->
             </template>
-            <!-- 已回收 和 已核销 -->
+            <!-- 已回收 -->
+            <template v-else-if="scope.row.state.value===5">
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销
+              </el-button>
+            </template>
+            <!-- 已核销 -->
             <template v-else>--</template>
           </template>
         </el-table-column>
