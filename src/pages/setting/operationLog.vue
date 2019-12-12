@@ -40,7 +40,7 @@
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="模块">
-                        <el-select v-model="selectType" clearable placeholder="请选择">
+                        <el-select v-model="selectType" filterable clearable placeholder="请选择">
                             <el-option
                                 v-for="(item) in type"
                                 :key="item.value"
