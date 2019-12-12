@@ -87,7 +87,7 @@
               <el-button round type="primary" class="search_btn" v-if="power['sign-ht-view-toverify'].state&&detailData.toExamineState.value<0&&detailData.isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
             </div>
             <div v-else>
-              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&detailData.recordType.value===1" @click="goPreview">预览</el-button>
+              <el-button round class="search_btn" v-if="power['sign-ht-info-view'].state&&detailData.recordType.value===1" @click="onPreview()">预览</el-button>
             </div>
           </div>
 				</el-tab-pane>
@@ -502,7 +502,6 @@ export default {
 	methods: {
 		handleClick(tab, event) {
 			this.name=tab.name;
-			debugger
 			if(tab.name==="second"){
         if(this.detailData.contState.value<2&&this.detailData.recordType.value===1){
           this.$message({
