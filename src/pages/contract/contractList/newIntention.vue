@@ -941,14 +941,18 @@ export default {
         type: this.type,
         recordType:this.isOffline===1?2:1
       };
-      if(!param.igdCont.houseinfoCode&&param.igdCont.houseInfo.ListingPricel){
+      let price=''
+      if(param.igdCont.houseInfo.ListingPrice){
+        price = String(param.igdCont.houseInfo.ListingPrice)
+      }
+      if(!param.igdCont.houseinfoCode&&price.length>0){
         if(param.igdCont.houseInfo.TimeUnit===1){
-          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元'
+          param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')+'元'
         }else if(param.igdCont.houseInfo.TimeUnit===2){
-          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元/月'
+          param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')+'元/月'
         }
-      }else if(param.igdCont.houseInfo.ListingPrice){
-        param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')
+      }else if(price.length>0){
+        param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')
       }
       
       var url = '/api/contract/addContract';
@@ -1042,14 +1046,19 @@ export default {
       param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
       param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
       param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
-      if(!param.igdCont.houseinfoCode&&param.igdCont.houseInfo.ListingPrice){
+      debugger
+      let price=''
+      if(param.igdCont.houseInfo.ListingPrice){
+        price = String(param.igdCont.houseInfo.ListingPrice)
+      }
+      if(!param.igdCont.houseinfoCode&&price.length>0){
         if(param.igdCont.houseInfo.TimeUnit===1){
-          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元'
+          param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')+'元'
         }else if(param.igdCont.houseInfo.TimeUnit===2){
-          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元/月'
+          param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')+'元/月'
         }
-      }else if(param.igdCont.houseInfo.ListingPrice){
-        param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')
+      }else if(price.length>0){
+        param.igdCont.houseInfo.ListingPrice=price.replace(/\.$/,'')
       }
       if (this.type== 2) {
         // delete param.igdCont.code;
