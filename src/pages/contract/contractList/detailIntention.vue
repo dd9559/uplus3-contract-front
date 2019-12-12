@@ -721,7 +721,8 @@ export default {
 							message:msg,
 							type:'success'
 						})
-						this.getContData();
+						// this.getContData();
+						this.getDetail()
 					}
 				}).catch((error)=>{
 					this.$message({
@@ -886,7 +887,8 @@ export default {
 				}
 				this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
 					if(res.data.status===200){
-						this.getContractBody();
+						// this.getContractBody();
+						this.getDetail()
 						this.$message({
 							message:'上传成功',
 							type:'success'

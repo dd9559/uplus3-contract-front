@@ -90,7 +90,7 @@
                   <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
                   </el-input>
                 </el-form-item>
-                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="contractForm.houseInfo.ListingPrice.length>0">
+                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="String(contractForm.houseInfo.ListingPrice).length>0">
                   <el-select v-model="contractForm.houseInfo.TimeUnit" :disabled="isDisabled" clearable placeholder="单位" style="width:100px;">
                     <el-option label="元" :value="1"></el-option>
                     <el-option label="元/月" :value="2"></el-option>
@@ -680,10 +680,13 @@ export default {
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.TradeInt===2){
-            this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
-            this.contractForm.houseInfo.TimeUnit=1
+            this.$set(this.contractForm.houseInfo,'ListingPrice',this.multiply(houseMsg.ListingPrice,10000))
+            // this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
+            // this.contractForm.houseInfo.TimeUnit=1
+            this.$set(this.contractForm.houseInfo,'TimeUnit',1)
           }else if(houseMsg.TradeInt===3){
-            this.contractForm.houseInfo.TimeUnit=2
+            // this.contractForm.houseInfo.TimeUnit=2
+            this.$set(this.contractForm.houseInfo,'TimeUnit',2)
           }
         }
       })
@@ -750,18 +753,21 @@ export default {
             this.offLine=true
           }
           this.sourceBtnCheck=(res.data.contState.value===3)?false:true
-           debugger
           if(this.contractForm.houseinfoCode){
             if(this.contractForm.houseInfo.TradeInt===2){
-              this.contractForm.houseInfo.TimeUnit=1
+              // this.contractForm.houseInfo.TimeUnit=1
+              this.$set(this.contractForm.houseInfo,'TimeUnit',1)
             }else if(this.contractForm.houseInfo.TradeInt===3){
-              this.contractForm.houseInfo.TimeUnit=2
+              // this.contractForm.houseInfo.TimeUnit=2
+              this.$set(this.contractForm.houseInfo,'TimeUnit',2)
             }
           }else if(this.contractForm.houseInfo.ListingPrice.length>0){
             if(this.contractForm.houseInfo.ListingPrice.indexOf('元/月')>-1){
-              this.contractForm.houseInfo.TimeUnit=2
+              // this.contractForm.houseInfo.TimeUnit=2
+              this.$set(this.contractForm.houseInfo,'TimeUnit',2)
             }else{
-              this.contractForm.houseInfo.TimeUnit=1
+              // this.contractForm.houseInfo.TimeUnit=1
+              this.$set(this.contractForm.houseInfo,'TimeUnit',1)
             }
             this.contractForm.houseInfo.ListingPrice=this.contractForm.houseInfo.ListingPrice.split("元")[0]
           }
