@@ -129,8 +129,8 @@
               <div>
                 <el-form-item label="客源编号：" prop="guestinfoCode">
                   <el-button-group v-model="contractForm.guestinfoCode">
-                    <el-button type="primary" @click="toLayerGuest()" v-if="type===1" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
-                    <el-button type="text" v-if="type==2" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
+                    <el-button type="primary" @click="toLayerGuest()" v-if="sourceBtnCheck||canInput||!offLine" v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</el-button>
+                    <el-button type="text" v-else v-model="contractForm.guestinfoCode">{{contractForm.guestinfoCode}}</el-button>
                   </el-button-group>
                 </el-form-item>
 
