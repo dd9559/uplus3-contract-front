@@ -1283,7 +1283,7 @@
               type="datetime"
               placeholder="选择日期"
               format="yyyy-MM-dd HH:mm"
-              value-format="timestamp"
+              value-format="yyyy-MM-dd HH:mm"
               :picker-options="pickerOptions"
               default-time="12:00:00"
             ></el-date-picker>
@@ -2939,9 +2939,9 @@ export default {
         infoType == "getEditInfo" ||
         infoType == "getBackExamineInfo"
       ) {
-        var param = { contId: contCode, entrance: entrance, aId: this.aId, distributionAgreement:this.filesList};
+        var param = { contId: contCode, entrance: entrance, aId: this.aId, };
       } else {
-        var param = { contCode: contCode, entrance: entrance, aId: this.aId,distributionAgreement:this.filesList };
+        var param = { contCode: contCode, entrance: entrance, aId: this.aId, };
       }
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
@@ -3008,7 +3008,12 @@ export default {
             }
           }
           if (res.data.data.examineDate) {
-            this.examineDate = res.data.data.examineDate
+            let _date = res.data.data.examineDate
+            if(typeof _date === 'number') {
+              this.examineDate = this.$tool.timeFormat(_date,false)
+            } else {
+              this.examineDate = res.data.data.examineDate
+            }
           }
           //  this.$emit("opens");
           this.loading = false;
