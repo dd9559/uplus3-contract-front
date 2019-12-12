@@ -71,7 +71,10 @@
 
       <el-table-column :label="listType==='bg'?'变更审核状态':'解约审核状态'" min-width="80">
         <template slot-scope="scope">
-          {{scope.row.changeRecord.examineState===0?"审核中":scope.row.changeRecord.examineState===1?"已通过":"已驳回"}}
+          <!-- {{scope.row.changeRecord.examineState===0?"审核中":scope.row.changeRecord.examineState===1?"已通过":"已驳回"}} -->
+          <span v-if="scope.row.changeRecord.examineState===0" class="yellow">审核中</span>
+          <span v-if="scope.row.changeRecord.examineState===1" class="green">已通过</span>
+          <span v-if="scope.row.changeRecord.examineState===2" class="red">已驳回</span>
         </template>
       </el-table-column>
 
@@ -382,5 +385,14 @@ export default{
       display: inline-block;
     }
   }
+}
+.yellow {
+  color: @color-yellow;
+}
+.green {
+  color: @color-green;
+}
+.red {
+  color: @color-warning;
 }
 </style>
