@@ -1280,10 +1280,12 @@
             审核日期：
             <el-date-picker
               v-model="examineDate"
-              type="date"
+              type="datetime"
               placeholder="选择日期"
+              format="yyyy-MM-dd HH:mm"
               value-format="timestamp"
-              @change="checkDate"
+              :picker-options="pickerOptions"
+              default-time="12:00:00"
             ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
@@ -1544,6 +1546,12 @@ export default {
       filesList: [],
       contType:'',
       tradeFee:0,
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+          disabledDate(time) {
+              return time.getTime() > Date.now();
+          }
+      },
     };
   },
   components: {
@@ -2545,16 +2553,6 @@ export default {
         this.$message.error("请完善信息");
       }
     },
-    checkDate:function(val){
-            let date=new Date(val);
-            if(date.getTime()>Date.now()){
-                this.examineDate=this.examineDate_2
-                this.$message({
-                    message:'不能选择未来时间'
-                })
-            }
-            this.examineDate_2=this.examineDate
-    },
     // 反审核，编辑的保存
     keepAch(type, status, editStr) {
       if (this.houseArr.length == 0 && this.clientArr.length != 0) {
@@ -3010,8 +3008,7 @@ export default {
             }
           }
           if (res.data.data.examineDate) {
-            this.examineDate = res.data.data.examineDate;
-            this.examineDate_2 = res.data.data.examineDate;
+            this.examineDate = res.data.data.examineDate
           }
           //  this.$emit("opens");
           this.loading = false;
@@ -3500,14 +3497,14 @@ export default {
       box-sizing: border-box;
       position: relative;
       .el-input__prefix {
-        left: 107px;
+        // left: 107px;
       }
       .el-input__suffix {
         right: 90px;
         display: none;
       }
       .el-input__inner {
-        width: 150px !important;
+        // width: 150px !important;
       }
       p {
         margin-top: 5px;
