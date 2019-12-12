@@ -2941,7 +2941,7 @@ export default {
       ) {
         var param = { contId: contCode, entrance: entrance, aId: this.aId, };
       } else {
-        var param = { contCode: contCode, entrance: entrance, aId: this.aId, };
+        var param = { contCode: contCode, entrance: entrance, aId: this.aId, distributionAgreement:JSON.stringify(this.filesList)};
       }
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
