@@ -66,8 +66,8 @@
                   <el-button type="text" v-else>{{contractForm.houseinfoCode}}</el-button>
                 </el-form-item>
                 <el-form-item label="物业地址：" class="ml30">
-                  <div v-if="type===1">{{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}</div>
-                  <div v-if="type==2">{{contractForm.propertyAddr}}</div>
+                  <div v-if="contractForm.houseinfoCode">{{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}</div>
+                  <div v-else>--</div>
                 </el-form-item>
               </el-form-item>
 
@@ -941,13 +941,13 @@ export default {
         type: this.type,
         recordType:this.isOffline===1?2:1
       };
-      if(!param.igdCont.houseinfoCode){
+      if(!param.igdCont.houseinfoCode&&param.igdCont.houseInfo.ListingPricel){
         if(param.igdCont.houseInfo.TimeUnit===1){
           param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元'
         }else if(param.igdCont.houseInfo.TimeUnit===2){
           param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元/月'
         }
-      }else{
+      }else if(param.igdCont.houseInfo.ListingPrice){
         param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')
       }
       
@@ -1042,13 +1042,13 @@ export default {
       param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
       param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
       param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
-      if(!param.igdCont.houseinfoCode){
+      if(!param.igdCont.houseinfoCode&&param.igdCont.houseInfo.ListingPrice){
         if(param.igdCont.houseInfo.TimeUnit===1){
           param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元'
         }else if(param.igdCont.houseInfo.TimeUnit===2){
           param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')+'元/月'
         }
-      }else{
+      }else if(param.igdCont.houseInfo.ListingPrice){
         param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice.replace(/\.$/,'')
       }
       if (this.type== 2) {
