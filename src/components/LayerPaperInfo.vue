@@ -362,7 +362,7 @@
 
     @page {
       size: auto;
-      margin: 0mm;
+      margin: 4mm;
     }
   }
 
