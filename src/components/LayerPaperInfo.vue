@@ -345,7 +345,7 @@
     // /deep/.red{
     //   display: none;
     // }
-    /deep/ .paper-info-child {
+    /*/deep/ .paper-info-child {
       margin: 0 4.7mm;
       font-size: 12px;
       margin-top: 10mm \9;
@@ -354,16 +354,16 @@
       margin-left: 1mm \0;
       margin-right: 1mm \9;
       margin-right: 1mm \9;
-    }
+    }*/
 
     /deep/ .paper-info-child .paper-table-main {
       font-size: 12px;
     }
 
-    @page {
+    /*@page {
       size: auto;
       margin: 0mm;
-    }
+    }*/
   }
 
   .red {
