@@ -942,6 +942,7 @@ export default {
     },
     //拼接地址
     setSrc(value,count){
+      debugger
       var arrSrc = [];
       for(let i=1;i<=count;i++){
         let src = value.substr(0,value.lastIndexOf('.'))+i+value.substr(value.lastIndexOf('.'));

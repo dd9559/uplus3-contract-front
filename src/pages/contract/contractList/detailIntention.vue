@@ -44,12 +44,20 @@
 									<div class="div1" v-if="detailData.houseInfo.SquareUse"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
 									<div class="div1" v-else><span>套内面积：</span>--</div>
 									<div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-									<div><span>产权地址：</span>{{detailData.houseInfo.propertyRightAddr | nullData}}</div>
+									<div><span>产权地址：</span>{{detailData.propertyRightAddr | nullData}}</div>
 								</li>
 								<li>
-									<div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div>
+									<!-- <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div> -->
+									<div class="div1" style="position:relative">
+										<span>业主姓名：</span>
+										<el-tooltip class="item" effect="dark" :content="ownerInfo[0].name" placement="bottom">
+                      <div class="contractDetailCode">
+                        {{ownerInfo[0].name}}
+                      </div>
+                    </el-tooltip>
+									</div>
 									<div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
-									<div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+									<div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
 								</li>
 							</ul>
 						</ul>
@@ -61,9 +69,16 @@
 									<div><span>成交经纪人：</span>{{detailData.dealAgentStoreName + '-' + detailData.dealAgentName | nullData}}</div>
 								</li>
 								<li>
-									<div class="div1"><span>客户姓名：</span>{{custInfo[0].name | nullData}}</div>
+									<div class="div1" style="position:relative">
+										<span>客户姓名：</span>
+										<el-tooltip class="item" effect="dark" :content="custInfo[0].name" placement="bottom">
+                      <div class="contractDetailCode">
+                        {{custInfo[0].name}}
+                      </div>
+                    </el-tooltip>
+									</div>
 									<div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
-									<div><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span>{{custInfo[0].identifyCode | nullData}}</div>
+									<div><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span>{{custInfo[0].identifyCode | nullData}}</div>
 								</li>
 							</ul>
 						</ul>
@@ -527,7 +542,8 @@ export default {
 			this.$router.push({
 				path:'/contractPreview',
 				query:{
-					id: this.$route.query.id
+					id: this.$route.query.id,
+					isentrust:0
 				}
 			})
 		},
@@ -1444,6 +1460,19 @@ export default {
 			margin-right: 10px;
 		}
 	}
+}
+.contractDetailCode{
+  position: absolute;
+  left: 70px;
+  top:50%;
+  transform: translateY(-50%);
+  width: 130px;
+  display: inline-block;
+  box-sizing: border-box;
+  color: @color-blue;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 </style>
 

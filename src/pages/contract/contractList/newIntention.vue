@@ -85,18 +85,30 @@
                 </el-form-item>
               </el-form-item>
 
-              <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
+              <el-form-item label="房源总价：" class="disb">
+                <el-form-item>
+                  <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
+                  </el-input>
+                </el-form-item>
+                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="contractForm.houseInfo.ListingPrice.length>0">
+                  <el-select v-model="contractForm.houseInfo.TimeUnit" :disabled="isDisabled" clearable placeholder="单位" style="width:100px;">
+                    <el-option label="元" :value="1"></el-option>
+                    <el-option label="元/月" :value="2"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-form-item>
+
+              <!-- <el-form-item label="房源总价：" class="error-item" v-if="contractForm.houseInfo.TradeInt">
                 <el-input v-model.number="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
                   <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 2">元</i>
                   <i slot="suffix" class="yuan" v-if="contractForm.houseInfo.TradeInt && contractForm.houseInfo.TradeInt == 3">元/月</i>
-                  <!-- <i slot="suffix" class="yuan">元/月</i> -->
                 </el-input>
-              </el-form-item>
+              </el-form-item> -->
 
-              <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
+              <!-- <el-form-item label="房源总价：" class="error-item" :prop="'houseInfo.ListingPrice'" :rules="{validator: housePrice, trigger: 'change'}"  v-if="!contractForm.houseInfo.TradeInt" >
                 <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" type="text" clearable v-if="!contractForm.houseInfo.TradeInt">
                 </el-input>
-              </el-form-item>
+              </el-form-item> -->
 
               <el-form-item label="业主信息：" class="disb" required>
 
@@ -257,6 +269,7 @@ export default {
       }
     };
     return {
+      houseInfoTimeUnit:'',
       choseHcode:0,//选择的房源编号
       choseGcode:0,//选择的客源编号
       fullscreenLoading:false,//创建按钮防抖
@@ -294,7 +307,8 @@ export default {
           BuildingName: "",
           Unit: "",
           RoomNo: "",
-          ListingPrice:""
+          ListingPrice:"",
+          TimeUnit:"",
         },
         guestInfo: {
           GuestStoreCode: "",
@@ -367,6 +381,7 @@ export default {
         guestinfoCode: [
           { required: true, message: "请选择客源编号", trigger:'change'}
         ],
+        // 'houseInfo.TimeUnit':[{required: true, message: "请选择单位", trigger:'change'}]
 
       },
       hidBtn:'',//隐藏保存按钮
@@ -631,7 +646,7 @@ export default {
         this.$nextTick(() => {
           this.contractForm.houseInfo.ListingPrice = this.$tool.cutFloat({
             val: this.contractForm.houseInfo.ListingPrice,
-            max: 999999999
+            max: 999999999.99
           });
         });
       }
@@ -660,13 +675,15 @@ export default {
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
         res = res.data;
         if (res.status === 200) {
-            this.$refs['contractForm'].clearValidate('houseInfo.ListingPrice');
+          this.$refs['contractForm'].clearValidate('houseInfo.ListingPrice');
           let houseMsg = res.data;
-          console.log(houseMsg);
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
           if(houseMsg.TradeInt===2){
             this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
+            this.contractForm.houseInfo.TimeUnit=1
+          }else if(houseMsg.TradeInt===3){
+            this.contractForm.houseInfo.TimeUnit=2
           }
         }
       })
@@ -733,6 +750,21 @@ export default {
             this.offLine=true
           }
           this.sourceBtnCheck=(res.data.contState.value===3)?false:true
+           debugger
+          if(this.contractForm.houseinfoCode){
+            if(this.contractForm.houseInfo.TradeInt===2){
+              this.contractForm.houseInfo.TimeUnit=1
+            }else if(this.contractForm.houseInfo.TradeInt===3){
+              this.contractForm.houseInfo.TimeUnit=2
+            }
+          }else if(this.contractForm.houseInfo.ListingPrice.length>0){
+            if(this.contractForm.houseInfo.ListingPrice.indexOf('元/月')>-1){
+              this.contractForm.houseInfo.TimeUnit=2
+            }else{
+              this.contractForm.houseInfo.TimeUnit=1
+            }
+            this.contractForm.houseInfo.ListingPrice=this.contractForm.houseInfo.ListingPrice.split("元")[0]
+          }
           // this.contractForm.guestInfo.GuestStoreName = res.data.guestInfo.GuestStoreName;
           // this.contractForm.guestInfo.GuestStoreCode = res.data.guestInfo.GuestStoreCode;
           // this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
@@ -903,7 +935,14 @@ export default {
         type: this.type,
         recordType:this.isOffline===1?2:1
       };
-
+      if(!param.igdCont.houseinfoCode){
+        if(param.igdCont.houseInfo.TimeUnit===1){
+          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice+'元'
+        }else if(param.igdCont.houseInfo.TimeUnit===2){
+          param.igdCont.houseInfo.ListingPrice=param.igdCont.houseInfo.ListingPrice+'元/月'
+        }
+      }
+      
       var url = '/api/contract/addContract';
       if(this.isOffline===1){
         url = '/api/contract/addLocalContract'
@@ -994,6 +1033,7 @@ export default {
       param.igdCont.contPersons[1].encryptionMobile = param.igdCont.contPersons[1].mobile;
       param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
       param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
+      param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
       if (this.type== 2) {
         // delete param.igdCont.code;
         delete param.igdCont.contType;
@@ -1169,7 +1209,11 @@ export default {
       return false;
     },
   },
-
+  computed:{
+    isDisabled(){
+      return (this.canInput||!!this.contractForm.houseinfoCode)
+    }
+  },
   filters: {
     moneyFormat: function(val) {
       if (!val) {

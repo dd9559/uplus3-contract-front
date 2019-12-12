@@ -2920,16 +2920,11 @@ export default {
   width: 150px;
   display: inline-block;
   box-sizing: border-box;
-  // padding-left: 30px;
   color: @color-blue;
   font-weight: bold;
-  // p{
-    // display: inline-block;
-    // width: 140px;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-  // }
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 .contDataTag{
     display:block;

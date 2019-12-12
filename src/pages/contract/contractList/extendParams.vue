@@ -219,9 +219,15 @@ export default {
       this.dialogSuccess=false;
       if(this.power['sign-com-htdetail'].state){
         if(this.power['sign-ht-xq-data'].state){
-          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+					this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+					let path
+					if(this.Msg.type===4||this.Msg.type===5){
+						path="/detailIntention"
+					}else{
+						path="/contractDetails"
+					}
           this.$router.replace({
-            path: "/contractDetails",
+            path: path,
             query: {
               type: "dataBank",
               id: this.Msg.id,//合同id
