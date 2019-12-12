@@ -676,7 +676,7 @@
             this.noPower(this.power['sign-com-htdetail'].name);
             return false
           }
-          this.setPath(this.getPath.concat({name: '合同详情'}));
+          /*this.setPath(this.getPath.concat({name: '合同详情'}));
           this.$router.push({
             path: "/contractDetails",
             query: {
@@ -684,7 +684,15 @@
               code: row.contNo,//合同编号
               contType: row.contType,//合同类型
             }
-          });
+          });*/
+          let param = {
+            contType: row.contType,
+            contId: row.contId,
+            contCode: row.contNo,
+            operaType: 'cont',
+            power: this.power['sign-com-htdetail']
+          }
+          this.msgOpera(param)
         } else if (type === 'paper') {
           if (!this.power['sign-cw-bill-detail'].state) {
             this.noPower(this.power['sign-cw-bill-detail'].name);
