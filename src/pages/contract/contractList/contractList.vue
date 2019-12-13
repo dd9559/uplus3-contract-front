@@ -253,21 +253,15 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
           <template slot-scope="scope">
-            <!-- <span v-if="scope.row.contType.value<4"> -->
-              <span>{{scope.row.contState.label}}</span>
-            <!-- </span> -->
-            <!-- <span v-else>-</span> -->
+            <span>{{scope.row.contState.label}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
+        <el-table-column label="合同审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-            <!-- <span v-if="scope.row.contType.value<4"> -->
-              <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-            <!-- </span> -->
-            <!-- <span v-else>-</span> -->
+            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
@@ -285,6 +279,14 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
+        <!-- <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+          </template>
+        </el-table-column> -->
         <el-table-column label="上传合同主体时间" min-width="90" key="uploadTime">
           <template slot-scope="scope">
             <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
@@ -339,7 +341,7 @@
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement?scope.row.distributableAchievement:0}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -1287,7 +1289,7 @@ export default {
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
           combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFeeCommission//可分配业绩
           combineItem.receivableCommission=combineItem.contractEntrust.receivableCommission?combineItem.contractEntrust.receivableCommission:0//应收
           combineItem.receivedCommission=combineItem.contractEntrust.receivedCommission?combineItem.contractEntrust.receivedCommission:0//实收
           combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态

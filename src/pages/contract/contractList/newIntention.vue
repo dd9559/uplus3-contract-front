@@ -228,6 +228,13 @@
         <el-button type="primary" @click="toUpload">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 单公司提示框 -->
+    <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="toH5">确 定</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -407,6 +414,8 @@ export default {
       canInput:false,
       //线下合同已签约状态编辑
       offLine:false,
+      singleCompany:false,
+      singleCompanyName:"",//单公司（为设置签章）
     };
   },
   created() {
@@ -982,10 +991,14 @@ export default {
             let contractMsg = res.data.data
             this.hidBtn=1
             sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(contractMsg.singleCompany){
+              this.singleCompany=true
+              this.singleCompanyName=contractMsg.singleCompany
+            }else{
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
           }
         } else {
           this.fullscreenLoading=false
@@ -998,6 +1011,13 @@ export default {
           message: error,
           type:"error"
         });
+      });
+    },
+    //跳转H5页面
+    toH5(){
+      this.singleCompany=false
+      this.$router.push({
+        path: "/extendParams"
       });
     },
     //创建成功提示
@@ -1256,6 +1276,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.singleCompany{
+  padding: 20px 0 10px 10px;
+}
 .personalMsg{
   /deep/.el-dialog__header{
     border: none !important;
@@ -1289,44 +1312,6 @@ export default {
     }
   }
 }
-  //  .myconfirm{
-  //       /deep/.el-dialog{
-  //           width: 420px;
-
-  //           .el-dialog__header {
-  //               border-bottom: 1px solid #edecf0;
-  //               padding: 15px 20px 10px;
-  //           }
-  //           .el-dialog__headerbtn{
-  //               top: 14px;
-  //               font-size: 22px;
-  //           }
-  //           .el-dialog__body{
-  //               text-align: center;
-  //               color: #233241;
-  //               font-size: 16px;
-  //               padding-top: 60px;
-  //               padding-bottom: 26px;
-  //           }
-  //           .el-dialog__footer{
-  //               text-align: center;
-  //               padding: 20px 20px 30px;
-  //           }
-  //           .dialog-footer{
-  //               text-align: center;
-
-  //               .el-button{
-  //                   padding: 11px 30px;
-  //                   border-radius: 30px;
-  //               }
-  //               .el-button+.el-button{
-  //                   margin-left: 16px;
-  //               }
-  //           }
-
-  //       }
-  //   }
-
   .error-item{
     /deep/.el-form-item__error{
       top: 0 !important;

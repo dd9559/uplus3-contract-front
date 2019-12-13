@@ -27,7 +27,7 @@
         </el-form-item>
 
         <el-form-item label="合作方式">
-          <el-select v-model="adjustForm.recordType" placeholder="全部" class="width150" clearable>
+          <el-select v-model="adjustForm.depAttr" placeholder="全部" class="width150" clearable>
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
