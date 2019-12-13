@@ -157,6 +157,15 @@
             </el-form-item>
           </div>
         </div>
+        <!-- 合同备注 -->
+        <!-- <div class="houseMsg">
+          <p @click="showRemark=!showRemark" class="thirdParty">备注栏<span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span></p>
+          <div class="cooperation" v-show="showRemark">
+            <el-form-item style="padding-left:20px">
+              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="请输入备注内容"></el-input>
+            </el-form-item>
+          </div>
+        </div> -->
         <!-- 三方合作 -->
         <div class="houseMsg">
           <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
@@ -477,6 +486,7 @@ export default {
       contVersion:2,//合同基本信息版式（1 基础版  2 复杂版）
       commissionTotal:0,//总佣金
       loanType:0,//7 全款买卖 8 贷款买卖
+      showRemark:false,//备注栏折叠展开
     };
   },
   created() {
@@ -642,10 +652,20 @@ export default {
       this.cooperation = !this.cooperation;
       if (this.contractForm.isHaveCooperation) {
         this.contractForm.isHaveCooperation = 0;
+        this.contractForm.otherCooperationCost=''
+        this.contractForm.otherCooperationInfo.type=''
+        this.contractForm.otherCooperationInfo.name=''
+        this.contractForm.otherCooperationInfo.mobile=''
+        this.contractForm.otherCooperationInfo.identifyCode=''
+        this.contractForm.otherCooperationInfo.remarks=''
       } else {
         this.contractForm.isHaveCooperation = 1;
       }
     },
+    // 备注栏
+    // showRemake(){
+    //   this.showRemake = !this.showRemake
+    // },
     //证件类型切换
     changeCadrType(value,index,type){
       // console.log(value,index,type)

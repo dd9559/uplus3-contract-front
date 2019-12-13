@@ -130,7 +130,7 @@
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="80">
+        <el-table-column label="可分配业绩 (元)" min-width="110">
           <template slot-scope="scope">
               <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
               <span v-else>-</span>
@@ -157,9 +157,15 @@
             <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核时间" min-width="110">
+        <el-table-column label="审核时间" min-width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|timeFormat_}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="上传合同主体时间" min-width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -193,7 +199,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="90" fixed="right">
+        <el-table-column label="操作" min-width="100" fixed="right">
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
