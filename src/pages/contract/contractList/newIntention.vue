@@ -414,6 +414,7 @@ export default {
       canInput:false,
       //线下合同已签约状态编辑
       offLine:false,
+      singleCompany:false,
       singleCompanyName:"",//单公司（为设置签章）
     };
   },

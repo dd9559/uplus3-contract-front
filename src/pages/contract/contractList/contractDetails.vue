@@ -128,6 +128,15 @@
               </div>
             </div>
 
+            <div class="msg" v-if="contractDetail.remarks">
+              <div class="title">备注栏</div>
+              <div class="content">
+                <div class="remark">
+                  <el-input type="textarea" :rows="6" maxlength="200" disabled resize='none' v-model="contractDetail.remarks" placeholder="无备注内容"></el-input>
+                </div>
+              </div>
+            </div>
+
             <div class="msg" v-if="contractDetail.isHaveCooperation">
               <div class="title">三方合作</div>
               <div class="content">
@@ -242,7 +251,7 @@
                   </el-table>
                 </div>
                 <div class="table" style="width:1200px;">
-                  <div class="one_performance">
+                  <div class="one_performance" style="margin-bottom:10px;">
                     <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                   </div>
                   <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
@@ -317,8 +326,8 @@
                   </el-table>
                 </div>
                 <div class="table" style="width:1200px;">
-                  <div class="one_performance">
-                    <p>交易服务费分成<span>（交易服务费可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
+                  <div class="one_performance" style="margin-bottom:10px;">
+                    <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
                   <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
                     <el-table-column label="角色类型">
@@ -3046,6 +3055,11 @@ export default {
           border-radius: 4px;
           border: 1px solid rgba(236, 239, 242, 1);
           background: @bg-FA;
+        }
+        /deep/.el-textarea__inner {
+          width: 800px;
+          min-height: 200px;
+          font-size: 12px;
         }
         /deep/.el-textarea.is-disabled .el-textarea__inner{
           color: #606266;

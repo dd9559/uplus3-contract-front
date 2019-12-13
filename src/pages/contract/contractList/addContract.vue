@@ -25,7 +25,7 @@
               <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
             </el-form-item>
             <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
-              <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
+              <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode('pCode')" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
             </el-form-item>
             <br>
             <el-form-item label="客户佣金：" class="width-250">
@@ -158,14 +158,15 @@
           </div>
         </div>
         <!-- 合同备注 -->
-        <!-- <div class="houseMsg">
-          <p @click="showRemark=!showRemark" class="thirdParty">备注栏<span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span></p>
-          <div class="cooperation" v-show="showRemark">
-            <el-form-item style="padding-left:20px">
-              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="请输入备注内容"></el-input>
+        <div class="houseMsg">
+          <p @click="showRemarkTab" class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span></p>
+          <div class="remarkType" v-show="showRemark">
+            <el-form-item style="padding-left:20px;position:relative;">
+              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.remarks" placeholder="请输入备注内容" @input="inputCode('remarks')"></el-input>
+              <span class="textLength">{{contractForm.remarks.length}}/200</span>
             </el-form-item>
           </div>
-        </div> -->
+        </div>
         <!-- 三方合作 -->
         <div class="houseMsg">
           <p @click="toCooperation" class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span></p>
@@ -195,7 +196,7 @@
               </el-form-item>
               <br>
               <el-form-item label="备注：" style="padding-left:51px">
-                <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
+                <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容" @input="inputCode('cooperation')"></el-input>
               </el-form-item>
             </div>
           </div>
@@ -362,7 +363,8 @@ export default {
           identifyCode:'',
           mobile:''
         },
-        isHaveCooperation: 0
+        isHaveCooperation: 0,
+        remarks:'',
       },
       //业主信息
       ownerList: [
@@ -663,9 +665,10 @@ export default {
       }
     },
     // 备注栏
-    // showRemake(){
-    //   this.showRemake = !this.showRemake
-    // },
+    showRemarkTab(){
+      this.showRemark = !this.showRemark
+      this.contractForm.remarks=''
+    },
     //证件类型切换
     changeCadrType(value,index,type){
       // console.log(value,index,type)
@@ -1793,6 +1796,9 @@ export default {
           this.isHaveDetail=true
           this.countTotal()
           this.contVersion=res.data.recordVersion //合同基本信息版式（1 基础版  2 复杂版）
+          if(res.data.remarks&&res.data.remarks.length>0){
+            this.showRemark=true
+          }
           if(res.data.loanType){//武汉买卖 全款贷款
             this.loanType=res.data.loanType
           }
@@ -1951,13 +1957,22 @@ export default {
         this.contractForm.otherCooperationInfo.name=this.$tool.textInput(this.contractForm.otherCooperationInfo.name)
       }
     },
-    inputCode(){
-      // let addrReg=/\\|\/|\@|\#|\%|\?|\？|\!|\！|\…|\￥|\+|\;|\；|\,|\，|\。|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+    inputCode(type){
       let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
-      if(this.contractForm.pCode){
-        this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
+      if(type==="pCode"){
+        if(this.contractForm.pCode){
+          this.contractForm.pCode=this.contractForm.pCode.replace(/\s+/g,"").replace(addrReg,'')
+        }
+      }else if(type==="remarks"){
+        if(this.contractForm.remarks){
+          this.contractForm.remarks=this.contractForm.remarks.replace(/\s+/g,"").replace(addrReg,'')
+        }
+      }else if(type==="cooperation"){
+        if(this.contractForm.otherCooperationInfo.remarks){
+          this.contractForm.otherCooperationInfo.remarks=this.contractForm.otherCooperationInfo.remarks.replace(/\s+/g,"").replace(addrReg,'')
+        }
       }
-
+      
     },
     closeCheckPerson(){
       checkPerson.state=false;
@@ -2352,6 +2367,19 @@ export default {
           overflow: hidden;
         }
       }
+    }
+  }
+  .remarkType{
+    padding-left: 30px;
+    /deep/.el-textarea__inner {
+      width: 600px;
+      min-height: 200px;
+    }
+    .textLength {
+      position: absolute;
+      bottom: 0;
+      right: 10px;
+      color: #6c7986;
     }
   }
   .cooperation {

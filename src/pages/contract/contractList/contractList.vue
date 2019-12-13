@@ -341,7 +341,7 @@
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement?scope.row.distributableAchievement:0}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -1289,7 +1289,7 @@ export default {
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
           combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFeeCommission//可分配业绩
           combineItem.receivableCommission=combineItem.contractEntrust.receivableCommission?combineItem.contractEntrust.receivableCommission:0//应收
           combineItem.receivedCommission=combineItem.contractEntrust.receivedCommission?combineItem.contractEntrust.receivedCommission:0//实收
           combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
