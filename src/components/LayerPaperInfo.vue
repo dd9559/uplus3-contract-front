@@ -142,8 +142,6 @@
 </template>
 
 <script>
-  import src from './../assets/img/seal.png'
-
   const o = {
     a: '二手买卖佣金',
     b: '低佣买卖佣金'
@@ -151,7 +149,8 @@
   export default {
     data() {
       return {
-        failImg: require('@/assets/img/fail.png')
+        failImg: require('@/assets/img/fail.png'),
+        sign_status:require('@/assets/img/sign_jjw.jpg')
       }
     },
     props: {
@@ -240,6 +239,10 @@
       payway: {//收款方式
         type: String,
         default: ''
+      },
+      signatureType:{//武汉专用，是否使用本地静态签章图片
+        type:Number,
+        default: 2
       }
     },
     computed: {
@@ -289,10 +292,15 @@
         }
       },
       comImgSrc() {
-        if (this.imgSrc === '') {
-          return ''
-        } else {
-          return this.imgSrc
+        switch (this.signatureType) {
+          case 2:
+            if (this.imgSrc === '') {
+              return ''
+            } else {
+              return this.imgSrc
+            }
+          case 1:
+            return this.sign_status
         }
       },
       comMoney() {
