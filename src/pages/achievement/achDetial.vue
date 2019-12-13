@@ -251,10 +251,10 @@
         </el-table>
       </div>
 
-      <h1 class="f14" v-if="contType==2||contType==3">交易服务费分成
+      <h1 class="f14" v-if="contType==2||contType==3">交易服务费佣金分成
       </h1>
       <p class="f14" v-if="contType==2||contType==3" style="color:red">
-        交易服务费可分配业绩：<span>{{tradeFee}}元</span>
+        交易服务费佣金可分配业绩：<span>{{tradeFee}}元</span>
       </p>
       <div class="ach-divide-list" v-if="contType==2||contType==3">
         <el-table
