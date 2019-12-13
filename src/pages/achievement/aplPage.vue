@@ -808,8 +808,8 @@
 
            <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>  
-              <p class="f_l delive">房客源可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
+              <h1 class="f14">交易服务费佣金分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
+              <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -2309,7 +2309,7 @@
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
         }
         if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {

@@ -551,7 +551,11 @@
                 } else {
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
                     if(!this.getPayMethod(val.payMethod)&&item==='amount'){
+                      if(val.payMethod===7&&this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])>20){//判断是否选择的储蓄卡且手续费达到封顶额度
+                        val.fee=20
+                      }else{
                         val.fee=this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])
+                      }
                     }
                 }
             },

@@ -126,6 +126,17 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="审核时间" prop="dateMo" class="mr">
+          <el-date-picker
+            v-model="propForm.auditTime"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
 
@@ -349,6 +360,14 @@
               <p v-else>-</p>
             </template>
           </el-table-column>
+          <el-table-column label="成交总价（元）" min-width="90" prop="dealPrice"></el-table-column>
+          <el-table-column label="实收/应收" min-width="90">
+            <template slot-scope="scope">
+              <p>{{scope.row.receivedCommission+'/'+scope.row.receivableCommission}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易服务费（元）" min-width="90" prop="tradeFee"></el-table-column>
+          <el-table-column label="交易服务费佣金（元）" min-width="90" prop="tradeFeeComm"></el-table-column>
 
           <el-table-column label="平台费比例（%）" min-width="60">
             <template slot-scope="scope">
@@ -377,6 +396,11 @@
               <div v-else>
                 <p v-for="item in scope.row.distributions">{{aMoneyFn(item.aMoney)}}</p>
               </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="审核时间" min-width="140">
+            <template slot-scope="scope">
+              <p>{{scope.row.auditTime|formatTime(false)}}</p>
             </template>
           </el-table-column>
 
@@ -421,10 +445,10 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
                   >确认业绩</span><span
-                    @click.stop="shenSu(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
+                  @click.stop="shenSu(scope.row,scope.$index)"
+                  style="cursor:pointer;"
+                  v-if="power['sign-yj-rev-appeal'].state"
+                >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==1" class="check-btn">
@@ -433,10 +457,10 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-fs'].state&&(userInfo&&scope.row.finalAuditorId===userInfo.empId)"
                   >反审核</span><span
-                    @click.stop="shenSu(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
+                  @click.stop="shenSu(scope.row,scope.$index)"
+                  style="cursor:pointer;"
+                  v-if="power['sign-yj-rev-appeal'].state"
+                >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
@@ -445,10 +469,10 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
                   >确认业绩</span><span
-                    @click.stop="shenSu(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
+                  @click.stop="shenSu(scope.row,scope.$index)"
+                  style="cursor:pointer;"
+                  v-if="power['sign-yj-rev-appeal'].state"
+                >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==0" class="check-btn">
@@ -457,14 +481,15 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span><span
-                    @click.stop="shenSu(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span><span
-                    @click.stop="checkAch(scope.row,scope.$index)"
-                    style="cursor:pointer;"
-                    v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept&&scope.row.grabDept.indexOf(userInfo.depId) !=-1&&!(scope.row.auditId>0))"
-                  >审核</span><div style="color:red" v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId">
+                  @click.stop="shenSu(scope.row,scope.$index)"
+                  style="cursor:pointer;"
+                  v-if="power['sign-yj-rev-appeal'].state"
+                >申诉</span><span
+                  @click.stop="checkAch(scope.row,scope.$index)"
+                  style="cursor:pointer;"
+                  v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept&&scope.row.grabDept.indexOf(userInfo.depId) !=-1&&!(scope.row.auditId>0))"
+                >审核</span>
+                  <div style="color:red" v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId">
                     {{scope.row.auditName}}正在审核
                   </div>
                 </div>
@@ -580,702 +605,711 @@
 </template>
 
 <script>
-    // 引入审核，编辑，反审核，分成弹框
-    import achDialog from "./achDialog";
-    import {MIXINS} from "@/assets/js/mixins";
-    import ScreeningTop from "@/components/ScreeningTop";
-    import checkPerson from "@/components/checkPerson";
+  // 引入审核，编辑，反审核，分成弹框
+  import achDialog from "./achDialog";
+  import {MIXINS} from "@/assets/js/mixins";
+  import ScreeningTop from "@/components/ScreeningTop";
+  import checkPerson from "@/components/checkPerson";
 
-    export default {
-        mixins: [MIXINS],
-        data() {
-            return {
-                pinzheng2: [],
-                imgList: [],
-                roleName: '',
-                auditName: '',
-                depName: '',
-                uploadScane: {path: 'shensu', id: ''},//上传场景值
-                people: [],
-                htbh: '',
-                yjId: '',
-                qysj: '',
-                inputMax: 200,
-                isSS: false,
-                mbrules: ['jpg', 'png', 'doc', 'docx', 'pdf', 'jpeg', 'xlsx', 'xls'],
-                selectAchList: [], //应收列表数组
-                countData: [], //数据统计数组
-                houseArr: [], //应收详情房源数组
-                clientArr: [], //应收详情客源数组
-                checkArr: [], //应收详情审核信息数组
-                departs: [], //部门
-                depUser: "",
-                users: [],
-                empNames: [],
-                SSuForm: {
-                    role: [],
-                    remark: '',
-                    empNames: '',
-                    auditName: '',
-                    pinzheng: [],
-                },
-                // 筛选条件
-                propForm: {
-                    department: "", //部门
-                    dealAgentStoreId: "",
-                    dealAgentId: "",
-                    departmentDetail: "", //部门详情（员工）
-                    contractType: "", //合同类型
-                    divideType: "", //分成类型
-                    achType: "", //业绩类型
-                    appealType: '', //申诉状态
-                    dateMo: "",
-                    search: "",
-                    joinMethods: "", //合作方式
-                    recordType: "" //签约方式2.3.1新加
-                },
-                shows: false,
-                dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
-                code: "",
-                code2: "",
-                dictionary: {
-                    //数据字典
-                    "10": "", //合同类型
-                    "21": "", //分成状态
-                    "53": "", //合作方式
-                    "64": "" //签约方式
-                },
-                beginData: false,
-                currentPage: 1,
-                pageSize: 10,
-                comm: "", //业绩分成
-                aId: null, //业绩id
-                contractId: null, //合同id
-                achIndex: null,
-                ajaxParam: {},
-                total: 0,
-                loading: false,
-                loading2: false,
-                achObj: {},
-                recallShow: false,//撤回弹窗是否显示
-                smallTips: "",
-                statuContId: null,
-                statuAid: null,
-                achStatuArr: [
-                    {
-                        key: -1,
-                        value: "待提审"
-                    },
-                    {
-                        key: 0,
-                        value: "审核中"
-                    },
-                    {
-                        key: 1,
-                        value: "已通过"
-                    },
-                    {
-                        key: 2,
-                        value: "已驳回"
-                    }
-                ],
-                aplStatuArr: [
-                    {
-                        key: -1,
-                        value: "未申诉"
-                    },
-                    {
-                        key: 0,
-                        value: "已处理"
-                    },
-                    {
-                        key: 1,
-                        value: "未处理"
-                    },
-                    {
-                        key: 2,
-                        value: "全部"
-                    }
-                ],
-                //权限配置
-                power: {
-                    "sign-yj-rev-appeal": {
-                        state: false,
-                        name: "申诉"
-                    },
-                    "sign-yj-rev-query": {
-                        state: false,
-                        name: "查询"
-                    },
-                    "sign-yj-rev-edit": {
-                        state: false,
-                        name: "编辑"
-                    },
-                    "sign-yj-rev-addemp": {
-                        state: false,
-                        name: "录入分成"
-                    },
-                    "sign-yj-rev-retreat": {
-                        state: false,
-                        name: "撤回"
-                    },
-                    "sign-yj-rev-fs": {
-                        state: false,
-                        name: "反审核"
-                    },
-                    "sign-com-htdetail": {
-                        state: false,
-                        name: "合同详情"
-                    },
-                    "sign-yj-rev-export": {
-                        state: false,
-                        name: "导出"
-                    }
-                },
-                checkPerson: {
-                    state: false,
-                    type: "init",
-                    code: "",
-                    label: false,
-                    flowType: 0,
-                    page: "list"
-                }
-            };
+  export default {
+    mixins: [MIXINS],
+    data() {
+      return {
+        pinzheng2: [],
+        imgList: [],
+        roleName: '',
+        auditName: '',
+        depName: '',
+        uploadScane: {path: 'shensu', id: ''},//上传场景值
+        people: [],
+        htbh: '',
+        yjId: '',
+        qysj: '',
+        inputMax: 200,
+        isSS: false,
+        mbrules: ['jpg', 'png', 'doc', 'docx', 'pdf', 'jpeg', 'xlsx', 'xls'],
+        selectAchList: [], //应收列表数组
+        countData: [], //数据统计数组
+        houseArr: [], //应收详情房源数组
+        clientArr: [], //应收详情客源数组
+        checkArr: [], //应收详情审核信息数组
+        departs: [], //部门
+        depUser: "",
+        users: [],
+        empNames: [],
+        SSuForm: {
+          role: [],
+          remark: '',
+          empNames: '',
+          auditName: '',
+          pinzheng: [],
         },
-        mounted() {
-            this.ajaxParam = {
-                pageNum: this.currentPage,
-                pageSize: this.pageSize
-            };
-            this.$nextTick(() => {
-                let res = this.getDataList;
-                if (res && res.route === this.$route.path) {
-                    this.selectAchList = res.data.list;
-                    this.total = res.data.total;
-                    if (res.data.list[0]) {
-                        this.countData = res.data.list[0].contractCount;
-                    } else {
-                        this.countData = [0, 0, 0, 0];
-                    }
-
-                    let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
-                    this.propForm.contractType = session.contractType.split(",");
-                    this.propForm.divideType = session.distributionType;
-                    this.propForm.achType = session.achievementStatus;
-                    this.propForm.dealAgentStoreId = session.dealAgentStoreId
-                    this.propForm.dealAgentId = session.dealAgentId
-                    this.propForm.appealType = session.appealStatus
-                    this.propForm.dateMo = session.startTime
-                        ? [session.startTime, session.endTime]
-                        : [];
-                    this.propForm.search = session.keyword;
-                    this.currentPage = session.pageNum;
-                    this.pageSize = session.pageSize;
-                    this.propForm.empName = session.empName
-                    this.propForm.department = session.department
-                    this.propForm.joinMethods = session.joinMethods;
-                    this.propForm.recordType = session.recordType
-                    if (this.propForm.contractType[0] != "") {
-                        for (let i = 0; i < this.propForm.contractType.length; i++) {
-                            this.propForm.contractType[i] = Number(
-                                this.propForm.contractType[i]
-                            );
-                        }
-                    } else {
-                        this.propForm.contractType = [];
-                    }
-                    if (this.propForm.dealAgentId) {
-                        this.dep = Object.assign({}, this.dep, {
-                            id: this.propForm.dealAgentStoreId,
-                            empId: this.propForm.dealAgentId,
-                            empName: this.propForm.empName
-                        })
-                        this.EmployeList.unshift({
-                            empId: this.propForm.dealAgentId,
-                            name: this.propForm.empName
-                        })
-                        this.getEmploye(this.propForm.dealAgentStoreId)
-                    }
-
-
-                    this.$nextTick(() => {
-                        this.loading = false;
-                    });
-                } else {
-                    this.getData(this.ajaxParam);
-                }
-            });
-            // 字典初始化
-            this.getDictionary();
-            //部门初始化
-            this.remoteMethod();
+        // 筛选条件
+        propForm: {
+          department: "", //部门
+          dealAgentStoreId: "",
+          dealAgentId: "",
+          departmentDetail: "", //部门详情（员工）
+          contractType: "", //合同类型
+          divideType: "", //分成类型
+          achType: "", //业绩类型
+          appealType: '', //申诉状态
+          dateMo: "",
+          search: "",
+          joinMethods: "", //合作方式
+          recordType: "", //签约方式2.3.1新加
+          auditTime: "",//审核时间
         },
-        computed: {
-            userInfo() {
-                return this.getUser.user
-            },
-            validInput() {
-                return this.SSuForm.remark.length
-            }
+        shows: false,
+        dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
+        code: "",
+        code2: "",
+        dictionary: {
+          //数据字典
+          "10": "", //合同类型
+          "21": "", //分成状态
+          "53": "", //合作方式
+          "64": "" //签约方式
         },
-        components: {
-            achDialog,
-            MIXINS,
-            ScreeningTop,
-            checkPerson
+        beginData: false,
+        currentPage: 1,
+        pageSize: 10,
+        comm: "", //业绩分成
+        aId: null, //业绩id
+        contractId: null, //合同id
+        achIndex: null,
+        ajaxParam: {},
+        total: 0,
+        loading: false,
+        loading2: false,
+        achObj: {},
+        recallShow: false,//撤回弹窗是否显示
+        smallTips: "",
+        statuContId: null,
+        statuAid: null,
+        achStatuArr: [
+          {
+            key: -1,
+            value: "待提审"
+          },
+          {
+            key: 0,
+            value: "审核中"
+          },
+          {
+            key: 1,
+            value: "已通过"
+          },
+          {
+            key: 2,
+            value: "已驳回"
+          }
+        ],
+        aplStatuArr: [
+          {
+            key: -1,
+            value: "未申诉"
+          },
+          {
+            key: 0,
+            value: "已处理"
+          },
+          {
+            key: 1,
+            value: "未处理"
+          },
+          {
+            key: 2,
+            value: "全部"
+          }
+        ],
+        //权限配置
+        power: {
+          "sign-yj-rev-appeal": {
+            state: false,
+            name: "申诉"
+          },
+          "sign-yj-rev-query": {
+            state: false,
+            name: "查询"
+          },
+          "sign-yj-rev-edit": {
+            state: false,
+            name: "编辑"
+          },
+          "sign-yj-rev-addemp": {
+            state: false,
+            name: "录入分成"
+          },
+          "sign-yj-rev-retreat": {
+            state: false,
+            name: "撤回"
+          },
+          "sign-yj-rev-fs": {
+            state: false,
+            name: "反审核"
+          },
+          "sign-com-htdetail": {
+            state: false,
+            name: "合同详情"
+          },
+          "sign-yj-rev-export": {
+            state: false,
+            name: "导出"
+          }
         },
-        filters: {
-            rounding(value) {
-                return value.toFixed(2);
-            }
-        },
-        methods: {
-            platformFeeFn(p) {
-                if (p || p == 0) {
-                    return `${p}%`
-                } else {
-                    return '-'
-                }
-            },
-            aMoneyFn(m) {
-                if ((m && m !== '') || m == 0) {
-                    return `${m}`
-                } else {
-                    return '-'
-                }
-            },
-            //申诉弹窗关闭回调事件-初始化表单对象
-            close2() {
-                this.yjId = ''
-                this.SSuForm.role = []
-                this.SSuForm.remark = ''
-                this.SSuForm.pinzheng = []
-                this.depName = ''
-                this.SSuForm.empNames = ''
-                this.auditName = ''
-                this.roleName = ''
-            },
-            //删除上传附件队列中的文件
-            cutfile(index) {
-                this.SSuForm.pinzheng.splice(index, 1)
-            },
-            //申诉弹窗中获取审核人下拉框选中项
-            getName(val) {
-                for (let i = 0; i < this.empNames.length; i++) {
-                    if (val == this.empNames[i].empId) {
-                        this.auditName = this.empNames[i].name
-                        this.depName = this.empNames[i].depName
-                        this.roleName = this.empNames[i].roleName
-                    }
-                }
-            },
-            trim(str) {
-                return str.replace(/(^\s*)|(\s*$)/g, "")
-            },
-            //附件上传回调
-            getAdd(obj) {
-                this.SSuForm.pinzheng = this.SSuForm.pinzheng.concat(obj.param)
-            },
-            getPicture(item) {
-                return this.$tool.cutFilePath(item)
-            },
-            //申诉表单提交
-            submitForm() {
-                if (this.SSuForm.role.length == 0) {
-                    this.$message('申诉角色不能为空！')
-                    return
-                }
-                if (this.trim(this.SSuForm.remark).length == 0) {
-                    this.$message('申诉内容不能为空！')
-                    return
-                }
-                if (this.auditName == '') {
-                    this.$message('审核人不能为空！')
-                    return
-                }
-                let arr2 = []
-                let arr = JSON.parse(JSON.stringify(this.SSuForm.pinzheng))
-                for (let i = 0; i < arr.length; i++) {
-                    arr2.push(arr[i].path + '?' + arr[i].name)
-                }
-                let param = {
-                    achievementId: this.yjId,
-                    appealRole: this.SSuForm.role.join(','),
-                    appealContent: this.SSuForm.remark,
-                    voucherUrl: arr2,
-                    auditDepName: this.depName,
-                    auditId: this.SSuForm.empNames,
-                    auditName: this.auditName,
-                    auditPostionName: this.roleName,
-                }
-                if (this.power['sign-yj-rev-appeal'].state) {
-                    this.$ajax.postJSON('/api/appeal/saveAppealInfo', param, 2).then(res => {
-                        if (res.status == 200) {
-                            this.isSS = false
-                            this.yjId = ''
-                            this.SSuForm.role = []
-                            this.SSuForm.remark = ''
-                            this.SSuForm.pinzheng = []
-                            this.SSuForm.empNames = ''
-                            this.auditName = ''
-                            this.roleName = ''
-                            this.$message({message: '提交成功！'})
-                            this.getData(this.ajaxParam);
-                        }
-                    }).catch(error => {
-                        if (error.message === '下一节点审批人不存在') {
-                            this.checkPerson.flowType = 2;
-                            this.checkPerson.code = this.yjId;
-                            this.checkPerson.state = true
-                            this.checkPerson.type = error.data.type;
-
-                        } else {
-                            this.$message({
-                                message: error,
-                                type: "error"
-                            })
-                        }
-                        this.isSS = false
-                        this.getData(this.ajaxParam);
-                    })
-                } else {
-                    this.noPower(this.power['sign-yj-rev-appeal'].name)
-                }
-            },
-            //申诉弹窗显示前的校验方法
-            shenSu(row, index) {
-                if ((!row.dealName || row.dealName == '-') && (!row.dealStorefront || row.dealStorefront == '-')) {
-                    this.$message({message: '无成交经纪人不能发起申诉', type: 'error'})
-                    return
-                }
-                this.uploadScane.id = row.code
-                this.htbh = row.code
-                this.yjId = row.aId
-                this.qysj = this.$tool.timeFormat(row.signDate, false)
-                this.$ajax.get("/api/appeal/launchAppeal", {aId: `${this.yjId}`}).then(res => {
-                    if (res.data.status == 200) {
-                        this.isSS = true
-                        this.people = res.data.data.allRole
-                        this.depName = res.data.data.empNames[0].depName
-                        this.empNames = res.data.data.empNames
-
-                        this.SSuForm.empNames = res.data.data.empNames[0].empId
-                        this.auditName = res.data.data.empNames[0].name
-                    }
-                }).catch(err => {
-                    if (err.status == 300) {
-                        this.$message({message: err.message})
-                    }
-                })
-            },
-            clearDep: function () {
-                this.propForm.department = "";
-                this.EmployeList = [];
-                this.propForm.dealAgentId = "";
-                this.propForm.dealAgentStoreId = "";
-                this.clearSelect();
-            },
-            depHandleClick(data) {
-                this.propForm.dealAgentStoreId = data.depId;
-                this.propForm.department = data.name;
-                this.propForm.dealAgentId = "";
-                this.handleNodeClick(data);
-            },
-            getData(ajaxParam, typeshow, param) {
-                if (typeshow != 1 && param == 2) {
-                    this.currentPage = 1
-                }
-                this.loading = true;
-                let _that = this;
-                this.$ajax
-                    .get("/api/achievement/selectAchievementList", ajaxParam)
-                    .then(res => {
-                        console.log(res);
-                        let data = res.data;
-                        if (res.status === 200) {
-                            _that.selectAchList = data.data.list;
-                            _that.total = data.data.total;
-                            if (data.data.list[0]) {
-                                _that.countData = data.data.list[0].contractCount;
-                            } else {
-                                _that.countData = [0, 0, 0, 0];
-                            }
-                            this.$nextTick(() => {
-                                this.loading = false;
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        this.$message({message: error});
-                        this.$nextTick(() => {
-                            this.loading = false;
-                        });
-                    });
-            },
-            // 导出功能
-            getExcel() {
-                this.queryFn();
-                // this.ajaxParam.is_Receivable=1;
-                let param = Object.assign({}, this.ajaxParam, {'strStartTime': this.ajaxParam.startTime}, {'strEndTIme': this.ajaxParam.endTime});
-                this.excelCreate("/input/achievementExcel", param);
-            },
-            chehui(value, index) {
-                this.smallTips = "撤回";
-                this.statuContId = value.id;
-                this.statuAid = value.aId;
-                this.recallShow = true;
-            },
-            //撤回确定操作
-            changeStatus() {
-                let param = {
-                    contId: this.statuContId,
-                    aId: this.statuAid,
-                    status: -1
-                };
-                this.$ajax.postJSON("/api/achievement/withdrawStatusArraign", param).then(res => {
-                    if (res.data.status == 200) {
-                        this.$message({message: "操作成功", type: "success"});
-                        this.recallShow = false;
-                        this.getData(this.ajaxParam);
-                    }
-                }).catch(error => {
-                    this.$message.error({message: error});
-                });
-            },
-            //获取应收列表详情
-            enterDetail(row) {
-                this.code = row.code;
-                let newPage = this.$router.resolve({
-                    path: "/achDetial",
-                    query: {
-                        contCode: row.code,
-                        entrance: 3,
-                        aId: row.aId,
-                        contractId2: row.id,
-                        version: this.selectAchList[0].version,
-                        contType: row.contType.value
-                    }
-                });
-                window.open(newPage.href, "_blank");
-            },
-            //查询操作
-            queryFn(typeshow) {
-                if (this.propForm.dateMo) {
-                    this.ajaxParam = {
-                        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-                        dealAgentId: this.propForm.dealAgentId, //员工
-                        contractType:
-                            this.propForm.contractType.length === 0
-                                ? ""
-                                : this.propForm.contractType.join(","), //合同类型
-                        distributionType: this.propForm.divideType, //分成类型
-                        achievementStatus: this.propForm.achType, //业绩类型
-                        appealStatus: this.propForm.appealType,
-                        startTime: this.propForm.dateMo[0], //开始时间
-                        endTime: this.propForm.dateMo[1], //结束时间
-                        keyword: this.propForm.search, //关键字
-                        pageNum: this.currentPage,
-                        department: this.propForm.department,
-                        pageSize: this.pageSize,
-                        joinMethods: this.propForm.joinMethods,
-                        recordType: this.propForm.recordType
-                    };
-                } else {
-                    this.ajaxParam = {
-                        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-                        dealAgentId: this.propForm.dealAgentId, //员工
-                        contractType:
-                            this.propForm.contractType.length === 0
-                                ? ""
-                                : this.propForm.contractType.join(","), //合同类型
-                        distributionType: this.propForm.divideType, //分成类型
-                        achievementStatus: this.propForm.achType, //业绩类型
-                        appealStatus: this.propForm.appealType,
-                        keyword: this.propForm.search, //关键字
-                        department: this.propForm.department,
-                        pageNum: this.currentPage,
-                        pageSize: this.pageSize,
-                        joinMethods: this.propForm.joinMethods,
-                        recordType: this.propForm.recordType
-                    };
-                }
-                // this.ajaxParam.pageNum = 1;
-                // this.currentPage = 1;
-                let param = JSON.parse(JSON.stringify(this.ajaxParam));
-                // delete param.dealAgentStoreId
-                // delete param.dealAgentId
-                sessionStorage.setItem(
-                    "sessionQuery",
-                    JSON.stringify({
-                        path: "/actualAchievement",
-                        url: "/achievement/selectAchievementList",
-                        query: Object.assign({}, param, {empName: this.dep.empName}),
-                        methods: "get"
-                    })
-                );
-                this.getData(this.ajaxParam, typeshow, 2);
-            },
-            resetFormFn() {
-                this.ajaxParam = {
-                    dealAgentStoreId: "", //部门
-                    dealAgentId: "", //员工
-                    contractType: "", //合同类型
-                    distributionType: "", //分成类型
-                    achievementStatus: "", //业绩类型
-                    startTime: "", //开始时间
-                    endTime: "", //结束时间
-                    keyword: "", //关键字
-                    joinMethods: "",
-                    recordType: "",
-                    pageNum: this.currentPage,
-                    pageSize: this.pageSize
-                };
-                this.ajaxParam.pageNum = 1;
-                this.currentPage = 1;
-                this.propForm = {
-                    department: "", //部门
-                    dealAgentStoreId: '',
-                    dealAgentId: '',
-                    empName: '',
-                    departmentDetail: "", //部门详情（员工）
-                    contractType: [], //合同类型
-                    divideType: "", //分成类型
-                    achType: "", //业绩类型
-                    dateMo: "",
-                    search: "",
-                    joinMethods: "",
-                    recordType: ""
-                };
-                this.EmployeList = [];
-            },
-            //点击审核
-            checkAch(value, index) {
-                if (value.auditId === this.userInfo.empId) {
-                    let newPage = this.$router.resolve({
-                        path: "/achPage",
-                        query: {
-                            aId: value.aId,
-                            contractCode: value.code,
-                            dialogType: 0,
-                            achIndex: index,
-                            achObj: JSON.stringify({contractId: value.id}),
-                            contractId: value.id,
-                            version: this.selectAchList[0].version,
-                            contType: value.contType.value
-                        }
-                    });
-                    window.open(newPage.href, "_blank");
-                } else {
-                    let param = {
-                        bizCode: value.aId,
-                        flowType: 2
-                    }
-                    this.$ajax.get('/api/machine/getAuditAuth', param).then(res => {
-                        res = res.data
-                        if (res.status === 200) {
-                            let newPage = this.$router.resolve({
-                                path: "/achPage",
-                                query: {
-                                    aId: value.aId,
-                                    contractCode: value.code,
-                                    dialogType: 0,
-                                    achIndex: index,
-                                    achObj: JSON.stringify({contractId: value.id}),
-                                    contractId: value.id,
-                                    version: this.selectAchList[0].version,
-                                    contType: value.contType.value
-                                }
-                            });
-                            window.open(newPage.href, "_blank");
-                        }
-                    }).catch(error => {
-                        this.$message({
-                            message: error,
-                            type: "error"
-                        })
-                    })
-                }
-            },
-            editAch(value, index) {
-                let newPage = this.$router.resolve({
-                    path: "/achPage",
-                    query: {
-                        aId: value.aId,   //业绩id
-                        contractCode: value.code, //合同编号
-                        dialogType: 1,  // 类型  编辑的话就是1
-                        achIndex: index,
-                        achObj: JSON.stringify({contractId: value.id}),  //合同id
-                        contractId: value.id,
-                        version: this.selectAchList[0].version,  //版本
-                        contType: value.contType.value   //合同类型
-                    }
-                });
-                window.open(newPage.href, "_blank");
-            },
-            //点击反审核
-            againCheck(value, index) {
-                let newPage = this.$router.resolve({
-                    path: "/achPage",
-                    query: {
-                        aId: value.aId,
-                        contractCode: value.code,
-                        dialogType: 2,
-                        achIndex: index,
-                        achObj: JSON.stringify({contractId: value.id}),
-                        contractId: value.id,
-                        version: this.selectAchList[0].version,
-                        contType: value.contType.value
-                    }
-                });
-                window.open(newPage.href, "_blank");
-            },
-            handleCurrentChange(val) {
-                // console.log(`当前页: ${val}`);
-                this.ajaxParam.pageNum = val;
-                this.currentPage = val;
-                this.queryFn(1);
-            },
-            //点击合同编号进详情
-            skipContDel(value) {
-                //进入合同详情
-                if (this.power["sign-com-htdetail"].state) {
-                    let param = {
-                        code: value.code
-                    };
-                    this.$router.push({
-                        path: "/contractDetails",
-                        query: {
-                            id: value.id,
-                            code: value.code,
-                            contType: value.contType.value
-                        }
-                    });
-                } else {
-                    this.noPower("合同详情查看");
-                }
-            },
-            //触发设置审核人弹窗
-            choseCheckPerson(val, type1) {
-                this.checkPerson.flowType = 2;
-                this.checkPerson.code = val.aId;
-                this.checkPerson.state = true;
-                this.checkPerson.type = type1;
-                if (type1 == 1 || type1 == 2) {
-                    this.checkPerson.label = false;
-                } else {
-                    if (val.nextAuditId != 0) {
-                        this.checkPerson.label = false;
-                    } else {
-                        this.checkPerson.label = true;
-                    }
-                }
-            },
-            personChose: function () {
-                this.checkPerson.state = false;
-                this.getData(this.ajaxParam);
-            },
+        checkPerson: {
+          state: false,
+          type: "init",
+          code: "",
+          label: false,
+          flowType: 0,
+          page: "list"
         }
-    };
+      };
+    },
+    mounted() {
+      this.ajaxParam = {
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      };
+      this.$nextTick(() => {
+        let res = this.getDataList;
+        if (res && res.route === this.$route.path) {
+          this.selectAchList = res.data.list;
+          this.total = res.data.total;
+          if (res.data.list[0]) {
+            this.countData = res.data.list[0].contractCount;
+          } else {
+            this.countData = [0, 0, 0, 0];
+          }
+
+          let session = JSON.parse(sessionStorage.getItem("sessionQuery")).query;
+          this.propForm.contractType = session.contractType.split(",");
+          this.propForm.divideType = session.distributionType;
+          this.propForm.achType = session.achievementStatus;
+          this.propForm.dealAgentStoreId = session.dealAgentStoreId
+          this.propForm.dealAgentId = session.dealAgentId
+          this.propForm.appealType = session.appealStatus
+          this.propForm.dateMo = session.startTime
+            ? [session.startTime, session.endTime]
+            : [];
+          this.propForm.search = session.keyword;
+          this.currentPage = session.pageNum;
+          this.pageSize = session.pageSize;
+          this.propForm.empName = session.empName
+          this.propForm.department = session.department
+          this.propForm.joinMethods = session.joinMethods;
+          this.propForm.recordType = session.recordType
+          this.propForm.auditTime = session.auditStartTime
+            ? [session.auditStartTime, session.auditEndTime]
+            : [];
+
+          if (this.propForm.contractType[0] != "") {
+            for (let i = 0; i < this.propForm.contractType.length; i++) {
+              this.propForm.contractType[i] = Number(
+                this.propForm.contractType[i]
+              );
+            }
+          } else {
+            this.propForm.contractType = [];
+          }
+          if (this.propForm.dealAgentId) {
+            this.dep = Object.assign({}, this.dep, {
+              id: this.propForm.dealAgentStoreId,
+              empId: this.propForm.dealAgentId,
+              empName: this.propForm.empName
+            })
+            this.EmployeList.unshift({
+              empId: this.propForm.dealAgentId,
+              name: this.propForm.empName
+            })
+            this.getEmploye(this.propForm.dealAgentStoreId)
+          }
+
+
+          this.$nextTick(() => {
+            this.loading = false;
+          });
+        } else {
+          this.getData(this.ajaxParam);
+        }
+      });
+      // 字典初始化
+      this.getDictionary();
+      //部门初始化
+      this.remoteMethod();
+    },
+    computed: {
+      userInfo() {
+        return this.getUser.user
+      },
+      validInput() {
+        return this.SSuForm.remark.length
+      }
+    },
+    components: {
+      achDialog,
+      MIXINS,
+      ScreeningTop,
+      checkPerson
+    },
+    filters: {
+      rounding(value) {
+        return value.toFixed(2);
+      }
+    },
+    methods: {
+      platformFeeFn(p) {
+        if (p || p == 0) {
+          return `${p}%`
+        } else {
+          return '-'
+        }
+      },
+      aMoneyFn(m) {
+        if ((m && m !== '') || m == 0) {
+          return `${m}`
+        } else {
+          return '-'
+        }
+      },
+      //申诉弹窗关闭回调事件-初始化表单对象
+      close2() {
+        this.yjId = ''
+        this.SSuForm.role = []
+        this.SSuForm.remark = ''
+        this.SSuForm.pinzheng = []
+        this.depName = ''
+        this.SSuForm.empNames = ''
+        this.auditName = ''
+        this.roleName = ''
+      },
+      //删除上传附件队列中的文件
+      cutfile(index) {
+        this.SSuForm.pinzheng.splice(index, 1)
+      },
+      //申诉弹窗中获取审核人下拉框选中项
+      getName(val) {
+        for (let i = 0; i < this.empNames.length; i++) {
+          if (val == this.empNames[i].empId) {
+            this.auditName = this.empNames[i].name
+            this.depName = this.empNames[i].depName
+            this.roleName = this.empNames[i].roleName
+          }
+        }
+      },
+      trim(str) {
+        return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
+      //附件上传回调
+      getAdd(obj) {
+        this.SSuForm.pinzheng = this.SSuForm.pinzheng.concat(obj.param)
+      },
+      getPicture(item) {
+        return this.$tool.cutFilePath(item)
+      },
+      //申诉表单提交
+      submitForm() {
+        if (this.SSuForm.role.length == 0) {
+          this.$message('申诉角色不能为空！')
+          return
+        }
+        if (this.trim(this.SSuForm.remark).length == 0) {
+          this.$message('申诉内容不能为空！')
+          return
+        }
+        if (this.auditName == '') {
+          this.$message('审核人不能为空！')
+          return
+        }
+        let arr2 = []
+        let arr = JSON.parse(JSON.stringify(this.SSuForm.pinzheng))
+        for (let i = 0; i < arr.length; i++) {
+          arr2.push(arr[i].path + '?' + arr[i].name)
+        }
+        let param = {
+          achievementId: this.yjId,
+          appealRole: this.SSuForm.role.join(','),
+          appealContent: this.SSuForm.remark,
+          voucherUrl: arr2,
+          auditDepName: this.depName,
+          auditId: this.SSuForm.empNames,
+          auditName: this.auditName,
+          auditPostionName: this.roleName,
+        }
+        if (this.power['sign-yj-rev-appeal'].state) {
+          this.$ajax.postJSON('/api/appeal/saveAppealInfo', param, 2).then(res => {
+            if (res.status == 200) {
+              this.isSS = false
+              this.yjId = ''
+              this.SSuForm.role = []
+              this.SSuForm.remark = ''
+              this.SSuForm.pinzheng = []
+              this.SSuForm.empNames = ''
+              this.auditName = ''
+              this.roleName = ''
+              this.$message({message: '提交成功！'})
+              this.getData(this.ajaxParam);
+            }
+          }).catch(error => {
+            if (error.message === '下一节点审批人不存在') {
+              this.checkPerson.flowType = 2;
+              this.checkPerson.code = this.yjId;
+              this.checkPerson.state = true
+              this.checkPerson.type = error.data.type;
+
+            } else {
+              this.$message({
+                message: error,
+                type: "error"
+              })
+            }
+            this.isSS = false
+            this.getData(this.ajaxParam);
+          })
+        } else {
+          this.noPower(this.power['sign-yj-rev-appeal'].name)
+        }
+      },
+      //申诉弹窗显示前的校验方法
+      shenSu(row, index) {
+        if ((!row.dealName || row.dealName == '-') && (!row.dealStorefront || row.dealStorefront == '-')) {
+          this.$message({message: '无成交经纪人不能发起申诉', type: 'error'})
+          return
+        }
+        this.uploadScane.id = row.code
+        this.htbh = row.code
+        this.yjId = row.aId
+        this.qysj = this.$tool.timeFormat(row.signDate, false)
+        this.$ajax.get("/api/appeal/launchAppeal", {aId: `${this.yjId}`}).then(res => {
+          if (res.data.status == 200) {
+            this.isSS = true
+            this.people = res.data.data.allRole
+            this.depName = res.data.data.empNames[0].depName
+            this.empNames = res.data.data.empNames
+
+            this.SSuForm.empNames = res.data.data.empNames[0].empId
+            this.auditName = res.data.data.empNames[0].name
+          }
+        }).catch(err => {
+          if (err.status == 300) {
+            this.$message({message: err.message})
+          }
+        })
+      },
+      clearDep: function () {
+        this.propForm.department = "";
+        this.EmployeList = [];
+        this.propForm.dealAgentId = "";
+        this.propForm.dealAgentStoreId = "";
+        this.clearSelect();
+      },
+      depHandleClick(data) {
+        this.propForm.dealAgentStoreId = data.depId;
+        this.propForm.department = data.name;
+        this.propForm.dealAgentId = "";
+        this.handleNodeClick(data);
+      },
+      getData(ajaxParam, typeshow, param) {
+        if (typeshow != 1 && param == 2) {
+          this.currentPage = 1
+        }
+        this.loading = true;
+        let _that = this;
+        this.$ajax
+          .get("/api/achievement/selectAchievementList", ajaxParam)
+          .then(res => {
+            console.log(res);
+            let data = res.data;
+            if (res.status === 200) {
+              _that.selectAchList = data.data.list;
+              _that.total = data.data.total;
+              if (data.data.list[0]) {
+                _that.countData = data.data.list[0].contractCount;
+              } else {
+                _that.countData = [0, 0, 0, 0];
+              }
+              this.$nextTick(() => {
+                this.loading = false;
+              });
+            }
+          })
+          .catch(error => {
+            this.$message({message: error});
+            this.$nextTick(() => {
+              this.loading = false;
+            });
+          });
+      },
+      // 导出功能
+      getExcel() {
+        this.queryFn();
+        // this.ajaxParam.is_Receivable=1;
+        let param = Object.assign({}, this.ajaxParam, {'strStartTime': this.ajaxParam.startTime}, {'strEndTIme': this.ajaxParam.endTime});
+        this.excelCreate("/input/achievementExcel", param);
+      },
+      chehui(value, index) {
+        this.smallTips = "撤回";
+        this.statuContId = value.id;
+        this.statuAid = value.aId;
+        this.recallShow = true;
+      },
+      //撤回确定操作
+      changeStatus() {
+        let param = {
+          contId: this.statuContId,
+          aId: this.statuAid,
+          status: -1
+        };
+        this.$ajax.postJSON("/api/achievement/withdrawStatusArraign", param).then(res => {
+          if (res.data.status == 200) {
+            this.$message({message: "操作成功", type: "success"});
+            this.recallShow = false;
+            this.getData(this.ajaxParam);
+          }
+        }).catch(error => {
+          this.$message.error({message: error});
+        });
+      },
+      //获取应收列表详情
+      enterDetail(row) {
+        this.code = row.code;
+        let newPage = this.$router.resolve({
+          path: "/achDetial",
+          query: {
+            contCode: row.code,
+            entrance: 3,
+            aId: row.aId,
+            contractId2: row.id,
+            version: this.selectAchList[0].version,
+            contType: row.contType.value
+          }
+        });
+        window.open(newPage.href, "_blank");
+      },
+      //查询操作
+      queryFn(typeshow) {
+        if (this.propForm.dateMo) {
+          this.ajaxParam = {
+            dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+            dealAgentId: this.propForm.dealAgentId, //员工
+            contractType:
+              this.propForm.contractType.length === 0
+                ? ""
+                : this.propForm.contractType.join(","), //合同类型
+            distributionType: this.propForm.divideType, //分成类型
+            achievementStatus: this.propForm.achType, //业绩类型
+            appealStatus: this.propForm.appealType,
+            startTime: this.propForm.dateMo[0], //开始时间
+            endTime: this.propForm.dateMo[1], //结束时间
+            keyword: this.propForm.search, //关键字
+            pageNum: this.currentPage,
+            department: this.propForm.department,
+            pageSize: this.pageSize,
+            joinMethods: this.propForm.joinMethods,
+            recordType: this.propForm.recordType
+          };
+        } else {
+          this.ajaxParam = {
+            dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+            dealAgentId: this.propForm.dealAgentId, //员工
+            contractType:
+              this.propForm.contractType.length === 0
+                ? ""
+                : this.propForm.contractType.join(","), //合同类型
+            distributionType: this.propForm.divideType, //分成类型
+            achievementStatus: this.propForm.achType, //业绩类型
+            appealStatus: this.propForm.appealType,
+            keyword: this.propForm.search, //关键字
+            department: this.propForm.department,
+            pageNum: this.currentPage,
+            pageSize: this.pageSize,
+            joinMethods: this.propForm.joinMethods,
+            recordType: this.propForm.recordType
+          };
+        }
+        if(this.propForm.auditTime.length>0){
+          Object.assign(this.ajaxParam,{auditStartTime:this.propForm.auditTime[0],auditEndTime:this.propForm.auditTime[1]})
+        }
+        // this.ajaxParam.pageNum = 1;
+        // this.currentPage = 1;
+        let param = JSON.parse(JSON.stringify(this.ajaxParam));
+        // delete param.dealAgentStoreId
+        // delete param.dealAgentId
+        sessionStorage.setItem(
+          "sessionQuery",
+          JSON.stringify({
+            path: "/actualAchievement",
+            url: "/achievement/selectAchievementList",
+            query: Object.assign({}, param, {empName: this.dep.empName}),
+            methods: "get"
+          })
+        );
+        this.getData(this.ajaxParam, typeshow, 2);
+      },
+      resetFormFn() {
+        this.ajaxParam = {
+          dealAgentStoreId: "", //部门
+          dealAgentId: "", //员工
+          contractType: "", //合同类型
+          distributionType: "", //分成类型
+          achievementStatus: "", //业绩类型
+          startTime: "", //开始时间
+          endTime: "", //结束时间
+          keyword: "", //关键字
+          joinMethods: "",
+          recordType: "",
+          pageNum: this.currentPage,
+          pageSize: this.pageSize
+        };
+        this.ajaxParam.pageNum = 1;
+        this.currentPage = 1;
+        this.propForm = {
+          department: "", //部门
+          dealAgentStoreId: '',
+          dealAgentId: '',
+          empName: '',
+          departmentDetail: "", //部门详情（员工）
+          contractType: [], //合同类型
+          divideType: "", //分成类型
+          achType: "", //业绩类型
+          dateMo: "",
+          search: "",
+          joinMethods: "",
+          recordType: "",
+          auditTime: "",
+        };
+        this.EmployeList = [];
+      },
+      //点击审核
+      checkAch(value, index) {
+        if (value.auditId === this.userInfo.empId) {
+          let newPage = this.$router.resolve({
+            path: "/achPage",
+            query: {
+              aId: value.aId,
+              contractCode: value.code,
+              dialogType: 0,
+              achIndex: index,
+              achObj: JSON.stringify({contractId: value.id}),
+              contractId: value.id,
+              version: this.selectAchList[0].version,
+              contType: value.contType.value
+            }
+          });
+          window.open(newPage.href, "_blank");
+        } else {
+          let param = {
+            bizCode: value.aId,
+            flowType: 2
+          }
+          this.$ajax.get('/api/machine/getAuditAuth', param).then(res => {
+            res = res.data
+            if (res.status === 200) {
+              let newPage = this.$router.resolve({
+                path: "/achPage",
+                query: {
+                  aId: value.aId,
+                  contractCode: value.code,
+                  dialogType: 0,
+                  achIndex: index,
+                  achObj: JSON.stringify({contractId: value.id}),
+                  contractId: value.id,
+                  version: this.selectAchList[0].version,
+                  contType: value.contType.value
+                }
+              });
+              window.open(newPage.href, "_blank");
+            }
+          }).catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
+            })
+          })
+        }
+      },
+      editAch(value, index) {
+        let newPage = this.$router.resolve({
+          path: "/achPage",
+          query: {
+            aId: value.aId,   //业绩id
+            contractCode: value.code, //合同编号
+            dialogType: 1,  // 类型  编辑的话就是1
+            achIndex: index,
+            achObj: JSON.stringify({contractId: value.id}),  //合同id
+            contractId: value.id,
+            version: this.selectAchList[0].version,  //版本
+            contType: value.contType.value   //合同类型
+          }
+        });
+        window.open(newPage.href, "_blank");
+      },
+      //点击反审核
+      againCheck(value, index) {
+        let newPage = this.$router.resolve({
+          path: "/achPage",
+          query: {
+            aId: value.aId,
+            contractCode: value.code,
+            dialogType: 2,
+            achIndex: index,
+            achObj: JSON.stringify({contractId: value.id}),
+            contractId: value.id,
+            version: this.selectAchList[0].version,
+            contType: value.contType.value
+          }
+        });
+        window.open(newPage.href, "_blank");
+      },
+      handleCurrentChange(val) {
+        // console.log(`当前页: ${val}`);
+        this.ajaxParam.pageNum = val;
+        this.currentPage = val;
+        this.queryFn(1);
+      },
+      //点击合同编号进详情
+      skipContDel(value) {
+        //进入合同详情
+        if (this.power["sign-com-htdetail"].state) {
+          let param = {
+            code: value.code
+          };
+          this.$router.push({
+            path: "/contractDetails",
+            query: {
+              id: value.id,
+              code: value.code,
+              contType: value.contType.value
+            }
+          });
+        } else {
+          this.noPower("合同详情查看");
+        }
+      },
+      //触发设置审核人弹窗
+      choseCheckPerson(val, type1) {
+        this.checkPerson.flowType = 2;
+        this.checkPerson.code = val.aId;
+        this.checkPerson.state = true;
+        this.checkPerson.type = type1;
+        if (type1 == 1 || type1 == 2) {
+          this.checkPerson.label = false;
+        } else {
+          if (val.nextAuditId != 0) {
+            this.checkPerson.label = false;
+          } else {
+            this.checkPerson.label = true;
+          }
+        }
+      },
+      personChose: function () {
+        this.checkPerson.state = false;
+        this.getData(this.ajaxParam);
+      },
+    }
+  };
 </script>
 
 <style scoped lang="less">
@@ -1286,9 +1320,11 @@
     .check-btn span {
       color: #478de3;
     }
-    .check-btn:empty{
+
+    .check-btn:empty {
       position: relative;
-      &:before{
+
+      &:before {
         content: '--';
         display: inline-block;
       }
@@ -1349,7 +1385,7 @@
       text-align: center !important
     }
 
-    .check-btn span:nth-child(n+1){
+    .check-btn span:nth-child(n+1) {
       margin-left: 8px;
     }
 

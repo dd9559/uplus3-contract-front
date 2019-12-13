@@ -741,8 +741,8 @@
 
           <div  class="house-divide top20" v-if="contType==2||contType==3">
             <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
-              <p class="f_l delive">交易服务费可分配业绩：{{tradeFee?tradeFee:0}}元</p>
+              <h1 class="f14">交易服务费佣金分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
+              <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
               <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
@@ -1283,7 +1283,7 @@
               type="datetime"
               placeholder="选择日期"
               format="yyyy-MM-dd HH:mm"
-              value-format="timestamp"
+              value-format="yyyy-MM-dd HH:mm"
               :picker-options="pickerOptions"
               default-time="12:00:00"
             ></el-date-picker>
@@ -2289,7 +2289,7 @@ export default {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
       if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2460,7 +2460,7 @@ export default {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
       if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2612,7 +2612,7 @@ export default {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
       if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2815,7 +2815,7 @@ export default {
 
       }
       if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2939,9 +2939,9 @@ export default {
         infoType == "getEditInfo" ||
         infoType == "getBackExamineInfo"
       ) {
-        var param = { contId: contCode, entrance: entrance, aId: this.aId, distributionAgreement:this.filesList};
+        var param = { contId: contCode, entrance: entrance, aId: this.aId, };
       } else {
-        var param = { contCode: contCode, entrance: entrance, aId: this.aId,distributionAgreement:this.filesList };
+        var param = { contCode: contCode, entrance: entrance, aId: this.aId, distributionAgreement:JSON.stringify(this.filesList)};
       }
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
@@ -3008,7 +3008,12 @@ export default {
             }
           }
           if (res.data.data.examineDate) {
-            this.examineDate = res.data.data.examineDate
+            let _date = res.data.data.examineDate
+            if(typeof _date === 'number') {
+              this.examineDate = this.$tool.timeFormat(_date,false)
+            } else {
+              this.examineDate = res.data.data.examineDate
+            }
           }
           //  this.$emit("opens");
           this.loading = false;
