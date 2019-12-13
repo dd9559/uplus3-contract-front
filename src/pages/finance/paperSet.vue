@@ -260,10 +260,6 @@
                  v-if="power['sign-cw-bill-invoice'].state">打印客户联</p>
               <p class="operation-text" @click="btnOpera(scope.row,5,'book')"
                  v-if="power['sign-cw-bill-printtally'].state">打印记账联</p>
-              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销
-              </el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收
-              </el-button>
               <p><el-button type="text" @click="btnOpera(scope.row,3)" v-if="power['sign-cw-bill-void'].state">作废
               </el-button></p>
               <!-- <template v-else></template> -->
@@ -277,7 +273,12 @@
               </el-button>
               <!-- <template v-else></template> -->
             </template>
-            <!-- 已回收 和 已核销 -->
+            <!-- 已回收 -->
+            <template v-else-if="scope.row.state.value===5">
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-bill-delete'].state">核销
+              </el-button>
+            </template>
+            <!-- 已核销 -->
             <template v-else>--</template>
           </template>
         </el-table-column>
@@ -675,7 +676,7 @@
             this.noPower(this.power['sign-com-htdetail'].name);
             return false
           }
-          this.setPath(this.getPath.concat({name: '合同详情'}));
+          /*this.setPath(this.getPath.concat({name: '合同详情'}));
           this.$router.push({
             path: "/contractDetails",
             query: {
@@ -683,7 +684,15 @@
               code: row.contNo,//合同编号
               contType: row.contType,//合同类型
             }
-          });
+          });*/
+          let param = {
+            contType: row.contType,
+            contId: row.contId,
+            contCode: row.contNo,
+            operaType: 'cont',
+            power: this.power['sign-com-htdetail']
+          }
+          this.msgOpera(param)
         } else if (type === 'paper') {
           if (!this.power['sign-cw-bill-detail'].state) {
             this.noPower(this.power['sign-cw-bill-detail'].name);

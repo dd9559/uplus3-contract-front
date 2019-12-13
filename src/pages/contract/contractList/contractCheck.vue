@@ -87,7 +87,7 @@
               </div>
               <ul class="contract-msglist">
                 <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
-                <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
+                <li v-if="scope.row.houseinfoCode">房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
                 <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
             </div>
@@ -127,7 +127,7 @@
           <template slot-scope="scope">
             <!-- {{Number(scope.row.signDate)|timeFormat_}} -->
             <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
-            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
           </template>
         </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="80">
@@ -138,30 +138,23 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
-              <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
-              <el-popover trigger="hover" placement="top" v-else>
-                <div style="width:160px">
-                  {{scope.row.delReason}}
-                </div>
-                <div slot="reference" class="name-wrapper isFlex">
-                  {{scope.row.contState.label}}
-                </div>
-              </el-popover>
-            </span>
-            <span v-else>-</span>
+            <span v-if="scope.row.contState.value>0">{{scope.row.contState.label}}</span>
+            <el-popover trigger="hover" placement="top" v-else>
+              <div style="width:160px">
+                {{scope.row.delReason}}
+              </div>
+              <div slot="reference" class="name-wrapper isFlex">
+                {{scope.row.contState.label}}
+              </div>
+            </el-popover>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-            <!-- {{scope.row.contType.value<4 ? scope.row.distributableAchievement:'-'}} -->
-              <span v-if="scope.row.contType.value<4">
-                <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-                <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-              </span>
-              <span v-else>-</span>
+            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="审核时间" min-width="110">
@@ -204,7 +197,7 @@
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || ((scope.row.contType.value===1&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
+            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || (((scope.row.contType.value===1||scope.row.contType.value===4||scope.row.contType.value===5)&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -221,7 +214,7 @@
 
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :contState="contState" :cancelDialog="changeCancel" :contId="contId" @closeChangeCancel="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -255,6 +248,7 @@ export default {
       pageSize: 10,
       contractCode: "",
       changeCancel: false,
+      dialogOperation:"details",
       dictionary: {
         //数据字典
         "10": "", //合同类型
@@ -442,16 +436,14 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
-      console.log(item.contChangeState.value);
-      //debugger
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
-        this.dialogType = "changeLook";
+        this.dialogType = "bg";
         this.contId=item.id;
         console.log(this.contId)
       } else if (item.contChangeState.value === 2) {
         this.changeCancel = true;
-        this.dialogType = "cancelLook";
+        this.dialogType = "jy";
         this.contId=item.id;
       }
     },
@@ -632,6 +624,8 @@ export default {
           combineItem.nextAuditId=combineItem.contractEntrust.nextAuditId
           combineItem.nextAuditName=combineItem.contractEntrust.nextAuditName
           combineItem.nextAuditStoreName=combineItem.contractEntrust.nextAuditStoreName
+            //抢单部门字段
+            combineItem.grabDept=combineItem.contractEntrust.grabDept
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)

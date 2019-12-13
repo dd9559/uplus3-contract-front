@@ -198,13 +198,6 @@ export default {
             })
         },
         isSave() {
-            // debugger
-            if(this.tradeFee.includes('.')) {
-                if(!/\d\.\d/.test(this.tradeFee)){
-                    this.$message({message: '请输入正确的交易服务费',type:'error'})
-                    return
-                }
-            }
             if(!this.signDate){
                 this.$message("签约时间不能为空")
                 return

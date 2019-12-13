@@ -997,7 +997,7 @@
     <!-- 图片预览 -->
     <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
     <!-- 设置/转交审核人 -->
-    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <!-- 流水明细弹框 -->
     <flowAccount :dialogTableVisible="water" :contCode="contCode" :contId="waterId" @closeRunningWater="closeWater" v-if="water"></flowAccount>
     <!-- 线下合同提示上传资料库弹窗 -->
@@ -1915,6 +1915,11 @@ export default {
             })
           }
         })
+    },
+    //关闭设置审核人弹窗
+    closeCheckPerson(){
+      this.checkPerson.state=false;
+      this.getContractDetail()
     },
     // 变更解约弹窗
     goChangeCancel(value) {
@@ -2915,16 +2920,11 @@ export default {
   width: 150px;
   display: inline-block;
   box-sizing: border-box;
-  // padding-left: 30px;
   color: @color-blue;
   font-weight: bold;
-  // p{
-    // display: inline-block;
-    // width: 140px;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-  // }
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 .contDataTag{
     display:block;

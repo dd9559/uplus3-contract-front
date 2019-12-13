@@ -14,9 +14,9 @@
         <div :class="{'active':isActive===1}" @click="changeType(1)">买卖合同</div>
         <div :class="{'active':isActive===2}" @click="changeType(2)">居间合同</div>
       </div>
-      <div class="type" v-if="uploadType==1">
+      <!-- <div class="type" v-if="uploadType==1">
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
-      </div>
+      </div> -->
     </div>
       <div class="bodycontainer"  ref='bigbox'>
           <div class="ht-list listone" v-show='showFir' ref='htlist'>

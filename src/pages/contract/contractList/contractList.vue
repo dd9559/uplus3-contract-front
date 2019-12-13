@@ -188,7 +188,7 @@
               <ul class="contract-msglist">
                 <li>合同：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
                 <li v-if="scope.row.recordType.value===2">纸质合同编号：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.pCode}}</span></li>
-                <li>房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
+                <li v-if="scope.row.houseinfoCode">房源：<span>{{scope.row.houseinfoCode}}</span> {{scope.row.showOwnerName}}</li>
                 <li>客源：<span>{{scope.row.guestinfoCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
             </div>
@@ -253,21 +253,21 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
+            <!-- <span v-if="scope.row.contType.value<4"> -->
               <span>{{scope.row.contState.label}}</span>
-            </span>
-            <span v-else>-</span>
+            <!-- </span> -->
+            <!-- <span v-else>-</span> -->
           </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">
+            <!-- <span v-if="scope.row.contType.value<4"> -->
               <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
               <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
               <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
               <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-            </span>
-            <span v-else>-</span>
+            <!-- </span> -->
+            <!-- <span v-else>-</span> -->
           </template>
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
@@ -287,7 +287,7 @@
         </el-table-column>
         <el-table-column label="上传合同主体时间" min-width="90" key="uploadTime">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4&&scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
+            <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -311,7 +311,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="实收/应收(佣金)" min-width="80" key='received'>
+        <el-table-column label="实收/应收" min-width="80" key='received'>
           <template slot-scope="scope">
             <div class="btn" @click="runningWater(scope.row)" v-if="scope.row.contType.value<4">{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
             <span v-else>-</span>
@@ -351,7 +351,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <template v-if="!scope.row.isCombine"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div></template><template v-else><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div></template>
+            <template v-if="!scope.row.isCombine"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div></template><template v-else><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div></template>
           </template>
         </el-table-column>
       </el-table>

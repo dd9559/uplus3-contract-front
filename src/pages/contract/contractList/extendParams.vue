@@ -16,7 +16,8 @@
       <iframe :src="src2" frameborder="0" ref='iframeSecond' :style="{ height: clientHei }" v-show="isActive===2"></iframe>
       <div class="btn">
         <el-button round @click="isSave(1)">保存</el-button><br>
-        <el-button v-if="(Msg.type===1||Msg.type===2||Msg.type===3)&&power['sign-ht-info-toverify'].state||power['sign-ht-xq-entrust-edit'].state&&Msg.isentrust" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
+        <!-- xuneng20191210修改：所有合同类型都支持提审 -->
+        <el-button v-if="power['sign-ht-info-toverify'].state||power['sign-ht-xq-entrust-edit'].state&&Msg.isentrust" type="primary" round @click="submit" v-loading.fullscreen.lock="fullscreenLoading">提审</el-button><br>
         <span class="huojian" @click="backTop"><img src="/static/img/huojian.png" alt=""></span>
       </div>
     </div>
@@ -218,9 +219,15 @@ export default {
       this.dialogSuccess=false;
       if(this.power['sign-com-htdetail'].state){
         if(this.power['sign-ht-xq-data'].state){
-          this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+					this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+					let path
+					if(this.Msg.type===4||this.Msg.type===5){
+						path="/detailIntention"
+					}else{
+						path="/contractDetails"
+					}
           this.$router.replace({
-            path: "/contractDetails",
+            path: path,
             query: {
               type: "dataBank",
               id: this.Msg.id,//合同id

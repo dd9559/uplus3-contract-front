@@ -438,6 +438,7 @@
             this.opera2batch=true
             this.paperShow=true
             this.FooterShow=true
+            this.paperType=false
             this.paperList_jzl=[].concat(res.data)
             let arr=[]
             this.paperList_jzl.forEach(item=>{

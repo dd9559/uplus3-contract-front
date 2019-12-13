@@ -781,6 +781,9 @@
         type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
       submitConfirm() {
+        if(this.version === 3) {
+          delete rule['cooperationMode']
+        }
         this.$tool.checkForm(this.companyForm,rule).then(() => {
           if(this.companyForm.lepDocumentCard) {
             let val = this.companyForm.lepDocumentCard
@@ -1124,6 +1127,9 @@
     computed: {
       cityInfo(){
         return this.getUser.user
+      },
+      version(){
+        return this.getUser.version
       }
     }
 }
