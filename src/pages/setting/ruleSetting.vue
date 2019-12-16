@@ -45,7 +45,7 @@ export default{
                 name: "合同页面设置",
                 current: 'contractLayout'
               },
-              'sign-set-verify': {
+              'sign-set-bl-fcbl-query': {
                 id: 5,
                 state: false,
                 name: "分成比例设置",
