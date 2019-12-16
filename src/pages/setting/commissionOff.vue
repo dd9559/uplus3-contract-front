@@ -53,7 +53,7 @@
                 </el-table-column>
                 <el-table-column label="收佣手续费" width="450">
                     <template slot-scope="scope">
-                        <span :class="i!=scope.row.commissionFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.commissionFee" :key="i">{{addSignFn(item.payType.label,item)}}</span>
+                        <span :class="i!=scope.row.commissionFee.length-1?'mr-10':''" v-for="(item,i) in scope.row.commissionFee" :key="i">{{addSignFn(item.payType.label,item,i)}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="设置时间" prop="settingTime">
@@ -221,8 +221,8 @@
             }
         },
         methods: {
-            addSignFn(m,n) {
-                return n.maxLimit||n.maxLimit===0 ? `${m}${n.fee}%-封顶手续费${n.maxLimit}元/笔` : `${m}${n.fee}%`
+            addSignFn(m,n,i) {
+                return (n.maxLimit||n.maxLimit===0)&&i===0 ? `${m}${n.fee}%-封顶手续费${n.maxLimit}元/笔` : `${m}${n.fee}%`
             },
             // 列表
             getData(type='init') {
