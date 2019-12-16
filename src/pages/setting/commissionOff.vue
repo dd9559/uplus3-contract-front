@@ -266,10 +266,11 @@
                 }else{
                     this.com_title = "编辑"
                     this.rowId = row.id
+                    let limit = row.commissionFee[0].maxLimit
                     this.commissionForm = {
                         systemTag: row.systemTag,
                         cash: row.commissionFee[0].fee + '',
-                        amount: row.commissionFee[0].maxLimit ? row.commissionFee[0].maxLimit + '' : '',
+                        amount: limit||limit===0 ? limit + '' : '',
                         credit: row.commissionFee[1].fee + '',
                         wechat: row.commissionFee[2].fee + '',
                         aliPay: row.commissionFee[3].fee + ''
