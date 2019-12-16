@@ -2,11 +2,13 @@ import {contractConfig,toChineseNumber} from "./base.js"
 
 let sub = {
   'val3':null,
+  'val4':null,
   'val5':null,
   'val8':null,
   'val12':null,
   'val13':null,
   'val14':null,
+  'val15':null,
   'val16':null,
 }
 
@@ -48,6 +50,20 @@ for(let readonlyItem in msg){
       let elementCell=document.querySelector('*[extendParam=val3]')
       elementCell.innerHTML=msg[readonlyItem]
       elementCell.classList.remove('input-before')
+    }
+  }else if(readonlyItem==='ownerName'){
+    if(msg[readonlyItem].length>0){
+      let elementCell=document.querySelector('*[extendParam=val4]')
+      elementCell.innerHTML=msg[readonlyItem]
+      elementCell.classList.remove('input-before')
+      elementCell.setAttribute('systemParam',true)
+    }
+  }else if(readonlyItem==='guestID'){
+    if(msg[readonlyItem].length>0){
+      let elementCell=document.querySelector('*[extendParam=val15]')
+      elementCell.innerHTML=msg[readonlyItem]
+      elementCell.classList.remove('input-before')
+      elementCell.setAttribute('systemParam',true)
     }
   }
   if(onlyReadDom.length>0){
