@@ -284,6 +284,21 @@
       margin: 10px 0;
     }
 
+    .fontBold{
+      font-weight: bold;
+    }
+
+    .coverStyle{
+      text-align: center;
+      font-size: 70px;
+      font-weight: bold;
+      margin-top: 400px;
+    }
+
+    .coverStyle p{
+      line-height: 1;
+    }
+
     .page1 {
       break-before: page;
       page-break-before: always;
@@ -306,8 +321,16 @@
       <span>取消</span>
     </p>
   </div>
-  <!-- 签约提示 -->
+  <!-- 封面 -->
   <div>
+    <div class="code fontBold"><span>编号：<span systemParam="code" tag="input-auto"></span></div>
+    <div class="coverStyle">
+      <p>房屋买卖业务签约</p>
+      <p>文件合订本</p>
+    </div>
+  </div>
+  <!-- 签约提示 -->
+  <div class="page1">
     <div class="title bold">
       <p>吉家地产签约提示</p>
     </div>
@@ -384,8 +407,11 @@
         <td colspan="4"></td>
       </tr>
     </table>
+    <p style="margin-top: 40px;">
+      房屋出卖方（签章）：<span class="underLine"></span><span class="underLine" style="width:80px;"></span>年<span class="underLine" style="width:40px;"></span>月<span class="underLine" style="width:40px;"></span>日
+    </p>
   </div>
-  <div>
+  <div style="margin-top:20px;">
     <p>房屋买受人</p>
     <table border="1" class="tablestyle2">
       <tr>
@@ -426,7 +452,7 @@
         <td colspan="4"></td>
       </tr>
     </table>
-    <p>共同买受人一</p>
+    <!-- <p>共同买受人一</p>
     <table border="1" class="tablestyle2">
       <tr>
         <td>姓名</td>
@@ -465,7 +491,7 @@
         <td>通讯地址</td>
         <td colspan="4"></td>
       </tr>
-    </table>
+    </table> -->
     <p style="margin-top: 40px;">
       房屋购买方（签章）：<span class="underLine"></span><span class="underLine" style="width:80px;"></span>年<span class="underLine" style="width:40px;"></span>月<span class="underLine" style="width:40px;"></span>日
     </p>
@@ -476,7 +502,7 @@
     <div class="title bold">
       <p>武汉市存量房屋买卖合同</p>
     </div>
-    <div class="code fontBold"><span>合同编号：<span systemParam="code" tag="input-auto"></span></div>
+    <div class="code"><span>合同编号：<span systemParam="code" tag="input-auto"></span></div>
     <div class="cw_message">
       <ul>
         <li><span>甲方：</span><span systemParam="ownerName" tag="input-auto"></span></li>
@@ -536,14 +562,14 @@
       <p>1、甲乙双方协商同意，交易房屋价款及装饰装修、配套设施设备等作价总计为人民币（小写）<span tag="input-auto" systemParam="dealPrice"></span>元，人民币(大写)<span tag="input-auto" systemParam="dealPriceUpper"></span>圆整。</p>
       <p>2、具体付款方式：</p>
       <p>（1）定金</p>
-      <p>乙方应当在签订本合同当日支付定金人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val7"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val7_add"></span>圆整；甲乙双方协商一致采取以下方式支付定金，由乙方通过转账的方式支付给甲方。
+      <p>乙方应当在签订本合同当日支付定金人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val7"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val7_add"></span>圆整；甲乙双方协商一致采取转账的方式，将定金由乙方支付给甲方。
       </p>
       <p>（2）房款</p>
-      <p>甲乙双方自行交接钱款过户递件完成后当日内，乙方将首付款（不包含定金）人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val8"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val8_add"></span>圆整支付给甲方；过户取件完成后当日内，乙方将尾款人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val9"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val9_add"></span>圆整直接支付给甲方。
+      <p>甲乙双方自行交接钱款，过户递件完成后当日内，乙方将首付款（不包含定金）人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val8"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val8_add"></span>圆整支付给甲方；过户取件完成后当日内，乙方将尾款人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val9"></span>元，人民币(大写)<span tag="input-auto" systemParam="true" extendParam="val9_add"></span>圆整直接支付给甲方。
       </p>
       <p class="navTitle bold" id="six">第六条 甲方对房屋产权及具体状况的承诺</p>
       <p>
-        1、甲方保证该房屋没有产权纠纷；该房屋无司法查封或其他闲置转让的情形，甲方承诺其配偶和该房屋的共有权人均知晓并同意本次房屋交易，认可本合同及其他相关文件的约定，且无他人对房屋享有优先认购权；乙方承诺其配偶和该房屋的共同买受人均知晓并同意本次房屋交易，且认可本合同及其他相关文件的约定。如因一方违反前述承诺，导致该房屋不能办理产权登记或发生债权债务纠纷的，由违约方按照房屋成交总价款的20%赔偿守约方的损失。
+        1、甲方保证该房屋没有产权纠纷；该房屋无司法查封或其他限制转让的情形，甲方承诺其配偶和该房屋的共有权人均知晓并同意本次房屋交易，认可本合同及其他相关文件的约定，且无他人对房屋享有优先认购权；乙方承诺其配偶和该房屋的共同买受人均知晓并同意本次房屋交易，且认可本合同及其他相关文件的约定。如因一方违反前述承诺，导致该房屋不能办理产权登记或发生债权债务纠纷的，由违约方按照房屋成交总价款的20%赔偿守约方的损失。
         <span class="bold">本条款为独立条款，即使本合同及其他文件因一方违反前述承诺，依法被变更、撤销、解除、终止或认定无效的，本条约定依然有效，守约方仍可依据本条款追究违反承诺方的法律责任。</span>
       </p>
       <div class="lh-18">2、甲方该房屋主体结构和公共区域

@@ -162,7 +162,8 @@
           <p @click="showRemarkTab" class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span></p>
           <div class="remarkType" v-show="showRemark">
             <el-form-item style="padding-left:20px;position:relative;">
-              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.remarks" placeholder="请输入备注内容" @input="inputCode('remarks')"></el-input>
+               <!-- @input="inputCode('remarks')" -->
+              <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.remarks" placeholder="请输入备注内容"></el-input>
               <span class="textLength">{{contractForm.remarks.length}}/200</span>
             </el-form-item>
           </div>
@@ -196,7 +197,8 @@
               </el-form-item>
               <br>
               <el-form-item label="备注：" style="padding-left:51px">
-                <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容" @input="inputCode('cooperation')"></el-input>
+                 <!-- @input="inputCode('cooperation')" -->
+                <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.otherCooperationInfo.remarks" placeholder="无备注内容"></el-input>
               </el-form-item>
             </div>
           </div>
