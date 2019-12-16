@@ -34,7 +34,7 @@
         </ScreeningTop>
         <!-- 列表 -->
         <div class="table-box">
-            <p>
+            <p v-if="power['sign-set-bl-fcbl-edit'].state">
                 <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
                 <el-button icon="el-icon-plus" @click="operationFn('新增')" round type="primary">新增分成比例</el-button>
             </p>
@@ -53,7 +53,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)">编辑</el-button>
+                        <el-button type="text" size="medium" @click="operationFn('编辑',scope.row)" v-if="power['sign-set-bl-fcbl-edit'].state">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -179,8 +179,8 @@
                 roleClient: [],
                 sureDialog: false, //确认保存
                 power: {
-                    'sign-set-rule-add': {
-                        name: '添加/编辑',
+                    'sign-set-bl-fcbl-edit': {
+                        name: '新增/编辑',
                         state: false
                     }
                 },
