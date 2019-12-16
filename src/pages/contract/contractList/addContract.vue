@@ -108,7 +108,7 @@
                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                     </el-option>
                   </el-select>
-                  <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                  <input v-model="item.encryptionCode" type="text" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
                   <span @click.stop="addcommissionData" class="icon" v-if="!canInput">
                     <i class="iconfont icon-tubiao_shiyong-14"></i>
                   </span>
@@ -145,7 +145,7 @@
                     <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key">
                     </el-option>
                   </el-select>
-                  <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?9:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
+                  <input id="guestCard" v-model="item.encryptionCode" :disabled="canInput" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" type="text" placeholder="请输入证件号" class="idCard_" :class="{'disabled':canInput}" @input="verifyIdcard(item)">
                   <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
                     <i class="iconfont icon-tubiao_shiyong-14"></i>
                   </span>
@@ -833,7 +833,7 @@ export default {
                                       element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                     }
                                   // }
-                                  if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
+                                  if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=30)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
                                     isOk = true;
                                     ownerRightRatio += element.propertyRightRatio - 0;
                                   }else{
@@ -947,7 +947,7 @@ export default {
                                           element.encryptionCode=element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"")
                                         }
                                       }
-                                      if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=9)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
+                                      if (element.cardType===1&&this.isIdCardNo(element.encryptionCode)||(element.cardType===2&&element.encryptionCode.length<=30)||(element.cardType===3&&element.encryptionCode.length<=20)||(element.cardType===4&&element.encryptionCode.length<=10)) {
                                         isOk_ = true;
                                         guestRightRatio += element.propertyRightRatio - 0;
                                       }else{
@@ -1504,7 +1504,9 @@ export default {
                 element.type=1;
                 element.encryptionCode='';
                 element.propertyRightRatio='';
-                element.name=element.OwnerName;
+                // element.name=element.OwnerName;
+                //2019.12.16更改需求不带出姓名
+                element.name='';
                 element.mobile=element.OwnerMobile;
                 element.relation=element.Relation;
                 element.cardType='';
@@ -1575,7 +1577,9 @@ export default {
                 element.type=2;
                 element.encryptionCode='';
                 element.propertyRightRatio='';
-                element.name=element.CustName;
+                // element.name=element.CustName;
+                //2019.12.16更改需求不带出姓名
+                element.name='';
                 element.mobile=element.CustMobile;
                 element.relation=element.CustRelation;
                 element.cardType='';

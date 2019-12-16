@@ -110,7 +110,28 @@
                 </el-input>
               </el-form-item> -->
 
-              <el-form-item label="业主信息：" class="disb" required>
+              <el-form-item label="业主信息：" class="disb" v-if="contractForm.type===4">
+
+                <el-form-item>
+                  <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                  </el-select>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                </el-form-item>
+
+              </el-form-item>
+              <el-form-item label="业主信息：" class="disb" required v-if="contractForm.type===5">
 
                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
                   <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
@@ -127,7 +148,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?9:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -179,7 +200,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?9:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
+                  <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?30:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -205,7 +226,7 @@
       <div class="warning-box">
         <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
         <ul>
-          <li>
+          <li v-if="contractForm.contPersons[0].name">
             {{contractForm.contPersons[0].name}}：{{contractForm.contPersons[0].identifyCode}}
           </li>
           <li>

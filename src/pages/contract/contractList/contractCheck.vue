@@ -612,13 +612,13 @@ export default {
           combineItem.isCombine=true//是否是插入的数据
           combineItem.loanType=0//武汉买卖类型
           combineItem.signDate=combineItem.contractEntrust.signDate//签约日期
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFeeCommission//可分配业绩
           combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
           combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
           combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"//合同主体上传时间
-          combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩转台
+          combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩状态
           combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
           combineItem.auditTime=combineItem.contractEntrust.auditTime?combineItem.contractEntrust.auditTime:"-"//审核时间

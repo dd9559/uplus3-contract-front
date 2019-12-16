@@ -353,7 +353,19 @@
         </el-table-column>
         <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <template v-if="!scope.row.isCombine"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div></template><template v-else><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div></template>
+            <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1">
+              <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
+              <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div>
+              <div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
+              <div class="btn" v-if="scope.row.contState.value==1" @click="deleteCont(scope.row,0)">删除</div>
+            </template>
+            <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
+              <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
+              <div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div>
+            </template>
+            <template v-if="scope.row.contState.value===-1">
+              <div class="btn" @click="deleteCont(scope.row,1)">恢复</div>
+            </template>
           </template>
         </el-table-column>
       </el-table>
@@ -822,14 +834,21 @@ export default {
     //流水
     runningWater(item) {
       if(this.power['sign-com-bill'].state){
-        if(item.isCombine){
-          this.flowType=8
+        if(item.contState.value!=-1){
+          if(item.isCombine){
+            this.flowType=8
+          }else{
+            this.flowType=1
+          }
+          this.water = true;
+          this.contCode=item.code;
+          this.waterContId=item.id;
         }else{
-          this.flowType=1
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
         }
-        this.water = true;
-        this.contCode=item.code;
-        this.waterContId=item.id;
       }else{
         this.$message({
           message:"没有流水查看权限",
@@ -846,14 +865,21 @@ export default {
     //收款
     gathering(item) {
       if(this.power['sign-ht-info-collect'].state){
-        this.$router.push({
-          path:'/receiptBill',
-          query:{
-            contId:item.id,
-            code:item.code,
-            isentrust:item.isCombine?1:0
-          }
-        })
+        if(item.contState.value!=-1){
+          this.$router.push({
+            path:'/receiptBill',
+            query:{
+              contId:item.id,
+              code:item.code,
+              isentrust:item.isCombine?1:0
+            }
+          })
+        }else{
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
+        }
       }else{
         this.$message({
           message:"没有收款权限",
@@ -864,14 +890,21 @@ export default {
     //付款
     payment(item) {
       if(this.power['sign-ht-info-pay'].state){
-        this.$router.push({
-          path:'/payBill',
-          query:{
-            contId:item.id,
-            code:item.code,
-            address:item.propertyAddr
-          }
-        })
+        if(item.contState.value!=-1){
+          this.$router.push({
+            path:'/payBill',
+            query:{
+              contId:item.id,
+              code:item.code,
+              address:item.propertyAddr
+            }
+          })
+        }else{
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
+        }
       }else{
         this.$message({
           message:"没有付款权限",
@@ -900,24 +933,31 @@ export default {
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          let newPage = this.$router.resolve({
-            path: "/contractDetails",
-            query: {
-              id: value.id,//合同id
-              contType: value.contType.value//合同类型
-            }
-          });
-          window.open(newPage.href, '_blank');
+        if(value.contState.value!=-1){
+          if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+            let newPage = this.$router.resolve({
+              path: "/contractDetails",
+              query: {
+                id: value.id,//合同id
+                contType: value.contType.value//合同类型
+              }
+            });
+            window.open(newPage.href, '_blank');
+          }else{
+            let newPage = this.$router.resolve({
+              path: "/detailIntention",
+              query: {
+                id: value.id,
+                contType: value.contType.value
+              }
+            });
+            window.open(newPage.href, '_blank');
+          }
         }else{
-          let newPage = this.$router.resolve({
-            path: "/detailIntention",
-            query: {
-              id: value.id,
-              contType: value.contType.value
-            }
-          });
-          window.open(newPage.href, '_blank');
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
         }
       }else{
         this.$message({
@@ -1271,7 +1311,24 @@ export default {
 
       delete param.depName
       this.excelCreate("/input/contractExcel",param)
-    }
+    },
+    //合同删除
+    deleteCont(val,type){
+      let param = {
+        type:type,
+        id:val.id
+      }
+      this.$ajax.put('/api/contract/delete',param,2).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.$message({
+            message:type===1?"恢复成功":"删除成功",
+            type:"success"
+          })
+          this.getContractList()
+        }
+      })
+    },
   },
   computed:{
     combineList(){
