@@ -357,7 +357,7 @@
               <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
               <div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div>
               <div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div>
-              <div class="btn" v-if="scope.row.contState.value==1" @click="deleteCont(scope.row,0)">删除</div>
+              <div class="btn" v-if="scope.row.contState.value==1" @click="showDelete(scope.row)">删除</div>
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div>
@@ -433,6 +433,18 @@
     <!-- <span @click="dayin">打印</span> -->
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <!-- 删除确认框 -->
+    <el-dialog title="确认删除" :visible.sync="deleteDialog" width="460px" class="deleteDialog">
+      <div class="deleteType">
+        <p>确认删除该合同？</p>
+        <p>删除后此合同在合同列表隐藏</p>
+      </div>
+      
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="deleteDialog = false">取 消</el-button>
+        <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -640,6 +652,9 @@ export default {
       showOnLine:false,
       showPrint:false,
       showOffLine:false,
+      //合同删除
+      deleteDialog:false,
+      deleteItem:''
     };
   },
   created() {
@@ -1312,6 +1327,11 @@ export default {
       delete param.depName
       this.excelCreate("/input/contractExcel",param)
     },
+    //合同删除确认框
+    showDelete(val){
+      this.deleteItem = val
+      this.deleteDialog=true
+    },
     //合同删除
     deleteCont(val,type){
       let param = {
@@ -1673,4 +1693,23 @@ export default {
     }
   }
 }
+.deleteDialog{
+  .deleteType{
+    text-align: center;
+    padding: 30px 0;
+    p{
+      font-size: 16px;
+      &:last-of-type{
+        font-size: 14px;
+        color:red;
+        margin-top: 10px;
+      }
+    }
+  }
+  /deep/.el-dialog__footer{
+    padding: 10px;
+    border-top: 1px solid #e8eaf6;
+  }
+}
+
 </style>
