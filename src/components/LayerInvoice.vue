@@ -25,7 +25,18 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.payerName" @input="form.payerName=$tool.textInput(form.payerName)" v-if="form.inputInfo">
+              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20" v-model.trim="form.payerName" @input="inputInfo_op" v-if="form.inputInfo">
+            </p>
+            <p v-if="city_wh">
+              <label>收款单位（加盖财务专用章）:</label>
+              <el-select size="small" class="w200" v-model="form.signatureType" placeholder="请选择" @change="getOption('sign')">
+                <el-option
+                  v-for="item in signatureList"
+                  :key="item.key"
+                  :label="item.name"
+                  :value="item.key">
+                </el-option>
+              </el-select>
             </p>
           </li>
           <li v-for="(item,index) in moneyTypes" :key="index">
@@ -74,6 +85,7 @@
               :create="paperInfoData.createByName"
               :rules="paperInfoData.remark"
               :imgSrc="imgUrl"
+              :signatureType="paperInfoData.signatureType"
               :time="paperInfoData.printDate"
               :num="paperInfoData.printCount?(getPrint==='all'?`${paperInfoData.printCount.KHL},${paperInfoData.printCount.JZL}`:getPrint==='client'?paperInfoData.printCount.KHL:paperInfoData.printCount.JZL):0"
               :methodAndAmount="paperInfoData.methodAndAmount"
@@ -100,6 +112,7 @@
               :create="item.createByName"
               :rules="item.remark"
               :imgSrc="imgUrlList[index]"
+              :signatureType="item.signatureType"
               :time="item.printDate"
               :num="item.printCount?(getPrint==='client'?item.printCount.KHL:item.printCount.JZL):0"
               :methodAndAmount="item.methodAndAmount"
@@ -165,12 +178,24 @@
         form:{
           payerType:'',
           payerName:'',
-          inputInfo:false
+          inputInfo:false,
+          signatureType:'',//武汉专用
         },//交款单位
         dropdown:[],//交款单位下拉
+        signatureList:[
+          {name:'吉家',key:1},
+          {name:'正念',key:2}
+        ]
       }
     },
     methods: {
+      inputInfo_op:function(){
+        this.form.payerName=this.$tool.textInput(this.form.payerName)
+        Object.assign(this.paperInfoData, {
+          payerName:this.form.payerName,
+          // payerType:this.form.payerType===1?'客户':this.form.payerType===2?'业主':'其他'
+        })
+      },
       // 图片请求
       getImgFn(url,batch=false) {
         if(batch){
@@ -226,16 +251,21 @@
         })
       },
       getOption:function (tip) {
-        this.form.inputInfo=false
-        this.dropdown.find(item=>{
-          if(item.value===tip){
-            this.form.payerName=item.custName
-            tip===3&&(this.form.inputInfo=true)
-          }
-        })
-        /*this.paperInfoData=Object.assign({},this.paperInfoData,{
-          payerName:this.form.payerName,
-          payerType:this.form.payerType===1?'客户':this.form.payerType===2?'业主':'其他'})*/
+        if(tip==='sign'){
+          !!this.city_wh&&(Object.assign(this.paperInfoData,{signatureType:this.form.signatureType}))
+        }else{
+          this.form.inputInfo=false
+          this.dropdown.find(item=>{
+            if(item.value===tip){
+              this.form.payerName=item.custName
+              tip===3&&(this.form.inputInfo=true)
+            }
+          })
+          Object.assign(this.paperInfoData, {
+            payerName:this.form.payerName,
+            payerType:this.form.payerType===1?'客户':this.form.payerType===2?'业主':'其他'
+          })
+        }
       },
       /**
        * 票据详情
@@ -279,6 +309,10 @@
         }
         if(!this.form.payerName){
           this.$message.error('请选择或输入交款单位');
+          return false
+        }
+        if(!this.form.signatureType&&this.city_wh){
+          this.$message.error('请选择收款单位（加盖财务专用章）');
           return false
         }
         if (!this.moneyTypes[this.activeType].project) {
@@ -357,6 +391,9 @@
             this.$message.error('请先设置财务专用电子签章');
             return false
           }
+        }
+        if(this.getPrint==='client'&&this.paperType&&this.city_wh){//武汉开票添加signatureType字段
+          Object.assign(obj,{signatureType: this.form.signatureType})
         }
         this.$ajax.post(this.getPrint==='client'?'/api/bills/print':this.opera2batch?'/api/bills/batchPrintTally':'/api/bills/printTally', obj).then(res => {
           res = res.data
@@ -481,6 +518,9 @@
       this.getDictionary();
     },
     computed: {
+      city_wh:function(){
+        return this.getUser.user.cityId===1
+      },
       getPro: function () {
         let types = [
             {
@@ -702,6 +742,7 @@
           /*align-items: center;*/
           &.tips-second{
             align-items: center;
+            flex-wrap: wrap;
             >p:first-of-type{
               margin-top: -4px;
             }

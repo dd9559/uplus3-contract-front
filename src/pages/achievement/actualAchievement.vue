@@ -269,6 +269,7 @@
           </el-table-column>
 
           <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
+          <el-table-column prop="lastState" label="签后审核状态" min-width="90" :formatter="nullFormatter"></el-table-column>
           <el-table-column label="上传合同主体时间" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.uploadTime|formatTime(false)}}</p>
@@ -607,12 +608,13 @@
 <script>
   // 引入审核，编辑，反审核，分成弹框
   import achDialog from "./achDialog";
+  import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import ScreeningTop from "@/components/ScreeningTop";
   import checkPerson from "@/components/checkPerson";
 
   export default {
-    mixins: [MIXINS],
+    mixins: [MIXINS,FILTER],
     data() {
       return {
         pinzheng2: [],
