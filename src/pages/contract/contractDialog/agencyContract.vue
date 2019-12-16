@@ -116,7 +116,7 @@
         <div class="msg">
             <div class="title">备注栏</div>
             <div class="content remark-box">
-                <el-input type="textarea" placeholder="请输入备注内容" :rows="3" v-model="entrustRemark" maxlength="200" resize="none" @input="cutNumber('entrustRemark')" :disabled="entrustBtn"></el-input>
+                <el-input type="textarea" placeholder="请输入备注内容" :rows="3" v-model.trim="entrustRemark" maxlength="200" resize="none" :disabled="entrustBtn"></el-input>
                 <span>{{entrustRemark.length}}/200</span>
             </div>
         </div>
@@ -211,12 +211,7 @@ export default {
         },
         cutNumber(val) {
             this.$nextTick(()=>{
-                if(val === 'entrustRemark') {
-                    let addrReg = /[^\a-\z\A-\Z0-9\u4E00-\u9FA5\(\)\-\_]/g
-                    this[val] = this[val].replace(/\s+/g,"").replace(addrReg,'')
-                } else {
-                    this[val] = this.$tool.cutFloat({val:this[val],max:999999999.99})
-                }
+                this[val] = this.$tool.cutFloat({val:this[val],max:999999999.99})
             })
         },
         isSave() {

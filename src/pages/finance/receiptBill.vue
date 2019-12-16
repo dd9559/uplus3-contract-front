@@ -552,7 +552,7 @@
                     val[item] = this.$tool.cutFloat({val: val[item], max: 999999999.99})
                     if(!this.getPayMethod(val.payMethod)&&item==='amount'){
                       if(val.payMethod===7&&this.firstCreate.content.fee&&this.firstCreate.content.fee['7MaxLimit']&&this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])>this.firstCreate.content.fee['7MaxLimit']){//判断是否选择的储蓄卡且手续费达到封顶额度
-                        val.fee=20
+                        val.fee=this.firstCreate.content.fee['7MaxLimit']
                       }else{
                         val.fee=this.multiply(val[item],this.firstCreate.content.fee[val.payMethod])
                       }
@@ -650,7 +650,7 @@
                     this.$set(val,'fee','')
                 }else{
                   if(val.amount&&val.payMethod===7&&this.firstCreate.content.fee&&this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod])>this.firstCreate.content.fee['7MaxLimit']){//判断是否选择的储蓄卡且手续费达到封顶额度
-                    val.fee=20
+                    val.fee=this.firstCreate.content.fee['7MaxLimit']
                   }else{
                     val.amount&&this.$set(val,'fee',this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod]))
                   }
