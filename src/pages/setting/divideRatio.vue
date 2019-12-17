@@ -123,7 +123,7 @@
         :visible.sync="sureDialog"
         width="500px">
             <div class="sure-box">
-                <p>确认保存新的业绩分成比例？</p>
+                <p style="margin-bottom: 15px;">确认保存新的业绩分成比例？</p>
                 <p class="color-red">确认业绩前取新设置的默认业绩分成比例，</p>
                 <p class="color-red">确认业绩后以旧数据为准</p>
             </div>
