@@ -396,7 +396,7 @@
                             this.$message(`${arrForm[i].title}角色类型不能为空`)
                             return
                         }
-                        if(!arrForm[i].arr[k].ratio) {
+                        if(!String(arrForm[i].arr[k].ratio)) {
                             this.$message(`${arrForm[i].title}分成比例不能为空`)
                             return
                         }
