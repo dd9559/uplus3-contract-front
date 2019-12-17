@@ -407,12 +407,12 @@
                     }
                 }
                 if(!this.checkRatioFn(arrForm[1].arr.concat(arrForm[2].arr))) {
-                    this.$message({message: '请输入正确的房客源分成比例', type: 'warning'})
+                    this.$message({message: '房客源分成合计不等于100% ，请输入正确的房客源分成比例', type: 'warning'})
                     return
                 }
                 if(this.contType === '2') { //选择买卖/代办验证
                     if(!this.checkRatioFn(arrForm[3].arr)) {
-                        this.$message({message: '请输入正确的交易服务费佣金分成比例', type: 'warning'})
+                        this.$message({message: '交易服务费佣金分成合计不等于100%，请输入正确的交易服务费佣金分成比例', type: 'warning'})
                         return
                     }
                 }
