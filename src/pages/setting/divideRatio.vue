@@ -8,6 +8,12 @@
                         <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="合同类型">
+                    <el-select v-model="searchForm.contType">
+                        <el-option label="租赁" value="1"></el-option>
+                        <el-option label="买卖/代办" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="设置时间">
                     <el-date-picker
                     size="small"
@@ -40,6 +46,7 @@
             </p>
             <el-table :data="divideData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom" header-row-class-name="theader-bg">
                 <el-table-column label="体系" prop="systemName"></el-table-column>
+                <el-table-column label="合同类型" prop="operatorName"></el-table-column>
                 <el-table-column label="默认分成比例" prop="ratioInfos">
                     <template slot-scope="scope">
                         <p v-for="(item,i) in scope.row.ratioInfos" :key="i">{{ratioShowFn(item)}}</p>
@@ -78,9 +85,14 @@
             <div class="dialog-body">
                 <div v-for="(item,i) in ratioForm" :key="i" class="item-box">
                     <p class="item-title"><i>*</i>{{i===0?item.title+'：':item.title+'分成'}}<span v-if="i!==0" style="margin-left: 10px;" class="color-red">合计：{{item.count?item.count:0}}%</span></p>
-                    <div v-if="i===0">
+                    <p class="item-title" v-if="i===0"><i>*</i>合同类型：</p>
+                    <div v-if="i===0" class="item-ratio">
                         <el-select v-model="item.systemId" size="small" class="w240" @change="getSystemName" :disabled="divideTitle==='编辑'">
                             <el-option v-for="ele in systemOpt" :key="ele.key" :label="ele.value" :value="ele.key"></el-option>
+                        </el-select>
+                        <el-select v-model="contType" size="small" class="w240" :disabled="divideTitle==='编辑'" @change="contFn">
+                            <el-option label="租赁" value="1"></el-option>
+                            <el-option label="买卖/代办" value="2"></el-option>
                         </el-select>
                     </div>
                     <div v-for="(m,n) in item.arr" :key="n" v-else class="item-ratio">
@@ -163,7 +175,8 @@
         data() {
             return {
                 searchForm: {
-                    systemId: ''
+                    systemId: '',
+                    contType: ''
                 },
                 createTime: [],
                 updateTime: [],
@@ -174,6 +187,7 @@
                 total: 0,
                 divideTitle: '',
                 divideId: '',
+                contType: '',
                 ratioForm: [],
                 roleHouse: [],
                 roleClient: [],
@@ -195,6 +209,7 @@
                 this.divideData = res.data.list
                 this.total = res.data.total
                 this.searchForm.systemId = query.systemId
+                this.searchForm.contType = query.contType
                 this.createTime = query.firstStartUpdateTime ? [query.firstStartUpdateTime,query.firstEndUpdateTime] : []
                 this.updateTime = query.lastStartUpdateTime ? [query.lastStartUpdateTime,query.lastEndUpdateTime] : []
                 this.pageNum = query.pageNum
@@ -236,6 +251,7 @@
                 let bool2 = this.updateTime!=null&&this.updateTime.length
                 let param = {
                     systemIds: this.searchForm.systemId,
+                    contType: this.searchForm.contType,
                     firstStartUpdateTime: bool1 ? this.createTime[0] : '',
                     firstEndUpdateTime: bool1 ? this.createTime[1] : '',
                     lastStartUpdateTime: bool2 ? this.updateTime[0] : '',
@@ -273,10 +289,16 @@
                     this.divideId = rowData.id
                     this.ratioForm[0].systemId = rowData.systemId
                     this.ratioForm[0].systemName = rowData.systemName
+                    this.contType = rowData.contType + ''
+                    if(this.contType === '1') { //租赁
+                        this.ratioForm.splice(3,1)
+                    }
                     for(let i = 1; i < this.ratioForm.length; i++) {
                         this.ratioForm[i].arr = rowData.ratioInfos.filter(item => item.type === i)
                         this.countFn(this.ratioForm[i].arr,i)
                     }
+                } else {
+                    this.contType = ""
                 }
             },
             getSystemName(val) {
@@ -285,6 +307,14 @@
                         this.ratioForm[0].systemName = item.value
                     }
                 })
+            },
+            // 合同类型选择
+            contFn(val) {
+                if(val === '1') {
+                    this.ratioForm.splice(3,1)
+                } else {
+                    this.ratioForm.length<4&&this.ratioForm.push(JSON.parse(JSON.stringify(INTARR[3])))
+                }
             },
             getRoleName(e,i,n) {
                 let arr_role = []
@@ -311,7 +341,9 @@
             },
             // 删除
             delFn(i,n) {
+                let _ratio = this.ratioForm[i].arr[n].ratio
                 this.ratioForm[i].arr.splice(n,1)
+                _ratio&&this.countFn(this.ratioForm[i].arr,i)
             },
             countFn(arr,i) {
                 let sum = 0;
@@ -353,6 +385,10 @@
                     this.$message({message:'体系不能为空'})
                     return
                 }
+                if(!this.contType) {
+                    this.$message({message:'合同类型不能为空'})
+                    return
+                }
                 let arrForm = [...this.ratioForm]
                 for(let i = 1; i < arrForm.length; i++) {
                     for(let k = 0; k < arrForm[i].arr.length; k++) {
@@ -374,9 +410,11 @@
                     this.$message({message: '请输入正确的房客源分成比例', type: 'warning'})
                     return
                 }
-                if(!this.checkRatioFn(arrForm[3].arr)) {
-                    this.$message({message: '请输入正确的交易服务费佣金分成比例', type: 'warning'})
-                    return
+                if(this.contType === '2') { //选择买卖/代办验证
+                    if(!this.checkRatioFn(arrForm[3].arr)) {
+                        this.$message({message: '请输入正确的交易服务费佣金分成比例', type: 'warning'})
+                        return
+                    }
                 }
                 this.sureDialog = true
             },
@@ -385,7 +423,11 @@
                 let param = {
                     systemId: this.ratioForm[0].systemId,
                     systemName: this.ratioForm[0].systemName,
-                    ratioInfos: [...this.ratioForm[1].arr,...this.ratioForm[2].arr,...this.ratioForm[3].arr]
+                    contType: this.contType,
+                    ratioInfos: [...this.ratioForm[1].arr,...this.ratioForm[2].arr]
+                }
+                if(this.contType === '2') {
+                    param.ratioInfos = [...param.ratioInfos,...this.ratioForm[3].arr]
                 }
                 let url = 'insert'
                 if(this.divideTitle === '编辑') {
@@ -412,6 +454,7 @@
             // 重置
             resetFormFn() {
                 this.searchForm.systemId = ''
+                this.searchForm.contType = ''
                 this.createTime = []
                 this.updateTime = []
             },
@@ -459,6 +502,8 @@
             margin-bottom: 15px;
         }
         .item-title {
+            display: inline-block;
+            width: 260px;
             margin-bottom: 5px;
             >i {
                 color: @color-red;
