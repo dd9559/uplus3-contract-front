@@ -353,7 +353,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="80" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div><div class="btn" v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state" @click="showDelete(scope.row)">删除</div></template><template v-if="scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div></template><template v-if="scope.row.contState.value===-1"><div class="btn" @click="deleteCont(scope.row,1)" v-if="power['sign-ht-info-recovery'].state">恢复</div></template>
+            <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row,'cont')">合同提审</div><div class="btn" v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit" @click="toSignAudit(scope.row,'sign')">签后提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div><div class="btn" v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state" @click="showDelete(scope.row)">删除</div></template><template v-if="scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row,'cont')">合同提审</div><div class="btn" v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit" @click="toSignAudit(scope.row,'sign')">签后提审</div></template><template v-if="scope.row.contState.value===-1"><div class="btn" @click="deleteCont(scope.row,1)" v-if="power['sign-ht-info-recovery'].state&&!scope.row.isCombine">恢复</div></template>
           </template>
         </el-table-column>
       </el-table>
@@ -382,10 +382,10 @@
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
-      <span>确定提审？</span>
+      <span class="submitAudit">确定提审？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="isSubmitAudit = false">取 消</el-button>
-        <el-button type="primary" @click="submitAudit">确 定</el-button>
+        <el-button round @click="isSubmitAudit = false">取 消</el-button>
+        <el-button round type="primary" @click="toAudit">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 打印详情弹窗 -->
@@ -410,8 +410,6 @@
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="isSubmitAudit = false">取 消</el-button>
-        <el-button type="primary" @click="submitAudit">确 定</el-button> -->
       </span>
     </el-dialog>
     <!-- 打印 -->
@@ -521,8 +519,11 @@ export default {
       uploadCode:'',
       waterContId:'',
       housePurpose:[],
+      //合同提审
       isSubmitAudit:false,
-      submitAuditData:{},
+      submitAuditData:'',
+      //签后提审
+      signAuditItem:'',
       blankPdf1:'',
       blankPdf2:'',
       blankPdf3:'',
@@ -643,13 +644,17 @@ export default {
           state: false,
           name: '合同恢复'
         },
+        'sign-ht-qhsh-toverify': {
+          state: false,
+          name: '签后提审'
+        },
       },
       showOnLine:false,
       showPrint:false,
       showOffLine:false,
       //合同删除
       deleteDialog:false,
-      deleteItem:''
+      deleteItem:'',
     };
   },
   created() {
@@ -1172,9 +1177,10 @@ export default {
       this.contractForm.depName=payload.depName*/
     },
     //提审
-    goSave(item){
+    goSave(item,type){
       this.isSubmitAudit=true;
       this.submitAuditData=item;
+      this.auditType=type
     },
     submitAudit(){
       let param = {
@@ -1350,6 +1356,51 @@ export default {
         })
       })
     },
+    //提审
+    toAudit(){
+      if(this.auditType==='cont'){
+        this.submitAudit()
+      }else if(this.auditType==='sign'){
+        this.signAudit()
+      }
+    },
+    //签后提审确认弹窗
+    toSignAudit(val,type){
+      this.signAuditItem=val
+      this.isSubmitAudit=true
+      this.auditType=type
+    },
+    //签后提审
+    signAudit(){
+      let param = {
+        contId:this.signAuditItem.id,
+        contType:this.signAuditItem.isCombine?this.signAuditItem.isCombine:false
+      }
+      this.$ajax.post("/api/signingAudit/addsignin",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.isSubmitAudit=false
+          this.$message({
+            message:"提审成功",
+            type:'success'
+          })
+          this.getContractList()
+        }
+      }).catch(error => {
+          this.isSubmitAudit=false;
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.code=error.data.bizCode;
+            this.checkPerson.state=true;
+            this.checkPerson.flowType=12//签后审核的流程类型为12
+            this.checkPerson.label=true;
+          }else{
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+        })
+    },
   },
   computed:{
     combineList(){
@@ -1370,14 +1421,21 @@ export default {
           combineItem.distributableAchievement=combineItem.contractEntrust.tradeFeeCommission//可分配业绩
           combineItem.receivableCommission=combineItem.contractEntrust.receivableCommission?combineItem.contractEntrust.receivableCommission:0//应收
           combineItem.receivedCommission=combineItem.contractEntrust.receivedCommission?combineItem.contractEntrust.receivedCommission:0//实收
-          combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
-          combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
+
+          if(combineItem.contState.value!=-1){
+            combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
+            combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
+          }
+          
+          
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
           combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"
           // combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩状态
           // combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
+          combineItem.signAudit=combineItem.contractEntrust.entrustSignAudit?combineItem.contractEntrust.entrustSignAudit:false//H5是否填写完整
+
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
@@ -1712,5 +1770,8 @@ export default {
     border-top: 1px solid #e8eaf6;
   }
 }
-
+.submitAudit{
+  display: inline-block;
+  padding-top: 10px;
+}
 </style>
