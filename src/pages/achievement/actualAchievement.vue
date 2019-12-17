@@ -72,7 +72,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="分成类型" prop="divideType">
+        <!--<el-form-item label="分成类型" prop="divideType">
           <el-select v-model="propForm.divideType" class="w120" :clearable="true">
             <el-option
               v-for="item in dictionary['21']"
@@ -81,7 +81,7 @@
               :value="item.key"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
 
         <el-form-item label="业绩状态" prop="achType">
           <el-select v-model="propForm.achType" class="w120" :clearable="true">
