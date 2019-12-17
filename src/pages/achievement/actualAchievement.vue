@@ -367,8 +367,18 @@
               <p>{{scope.row.receivedCommission+'/'+scope.row.receivableCommission}}</p>
             </template>
           </el-table-column>
-          <el-table-column label="交易服务费（元）" min-width="90" prop="tradeFee"></el-table-column>
-          <el-table-column label="交易服务费佣金（元）" min-width="90" prop="tradeFeeComm"></el-table-column>
+          <el-table-column label="交易服务费（元）" min-width="90">
+            <template slot-scope="scope">
+              <span v-if="scope.row.tradeFee<0">-</span>
+              <span v-else>{{scope.row.tradeFee}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易服务费佣金（元）" min-width="90">
+            <template slot-scope="scope">
+              <span v-if="scope.row.tradeFeeComm<0">-</span>
+              <span v-else>{{scope.row.tradeFeeComm}}</span>
+            </template>
+          </el-table-column>
 
           <el-table-column label="平台费比例（%）" min-width="60">
             <template slot-scope="scope">
