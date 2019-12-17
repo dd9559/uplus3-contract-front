@@ -325,7 +325,7 @@
                     </el-table-column>
                   </el-table>
                 </div>
-                <div class="table" style="width:1200px;" v-if="contType!=1">
+                <div class="table" style="width:1200px;" v-if="contType!='1'">
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
@@ -770,7 +770,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1&&contType!='1'">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
@@ -838,7 +838,7 @@
               </div>
             </div>
              <!-- 委托合同签后审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contType!='1'">
               <div class="moduleTitle">
                 <span>委托合同签后审核</span>
               </div>

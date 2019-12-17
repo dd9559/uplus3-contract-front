@@ -247,6 +247,40 @@
                 </el-table>
               </div>
             </div>
+						 <!-- 合同签后审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同签后审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="QHcheckData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
             <!-- 合同变更审核记录 -->
             <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
               <div class="moduleTitle">
@@ -451,7 +485,8 @@ export default {
 			changeCancelId:'',
 			commission:'',
 			//审核记录
-      checkData:[],
+			checkData:[],
+			QHcheckData:[],
       BGcheckData:[],
 			JYcheckData:[],
 			isSubmitAudit:false,//提审
@@ -525,9 +560,10 @@ export default {
           })
         }
       }else if(tab.name==="fourth"){
-				this.getAuditList()
-				this.getAuditList(9)
-				this.getAuditList(10)
+				this.getAuditList()//合同审核
+				this.getAuditList(9)//变更审核
+				this.getAuditList(10)//解约审核
+				this.getAuditList(12)//签后
 			}
 		},
 
@@ -1006,7 +1042,9 @@ export default {
             this.BGcheckData=res.data.data;
           }else if(type===10){
             this.JYcheckData=res.data.data;
-          }
+          }else if(type===12){
+						this.QHcheckData=res.data.data;
+					}
         }
       })
 		},
