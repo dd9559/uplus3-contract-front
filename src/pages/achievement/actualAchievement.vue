@@ -1131,7 +1131,7 @@
             recordType: this.propForm.recordType
           };
         }
-        if(this.propForm.auditTime.length>0){
+        if(this.propForm.auditTime&&this.propForm.auditTime.length>0){
           Object.assign(this.ajaxParam,{auditStartTime:this.propForm.auditTime[0],auditEndTime:this.propForm.auditTime[1]})
         }
         // this.ajaxParam.pageNum = 1;
