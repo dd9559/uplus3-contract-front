@@ -551,6 +551,15 @@ export default {
 		//编辑事件
 		onEdit(e) {
 			this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractList'));
+			//合同锁定
+			if((this.detailData.contState.value===1&&this.detailData.toExamineState.value===0)||this.detailData.contState.value===2){
+				let param = {
+					id:this.detailData.id
+				}
+				this.$ajax.put("/api/contract/lock",param,2).then(res=>{
+
+				})
+			}
 			this.$router.push({
 				path:'/newIntention',
 				query:{

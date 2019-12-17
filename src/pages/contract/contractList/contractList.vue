@@ -351,7 +351,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
+        <el-table-column label="操作" min-width="80" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
             <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div><div class="btn" v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state" @click="showDelete(scope.row)">删除</div></template><template v-if="scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">合同提审</div></template><template v-if="scope.row.contState.value===-1"><div class="btn" @click="deleteCont(scope.row,1)" v-if="power['sign-ht-info-recovery'].state">恢复</div></template>
           </template>
@@ -427,7 +427,6 @@
         <p>确认删除该合同？</p>
         <p>删除后此合同在合同列表隐藏</p>
       </div>
-      
       <span slot="footer" class="dialog-footer">
         <el-button round @click="deleteDialog = false">取 消</el-button>
         <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
@@ -1341,8 +1340,14 @@ export default {
             message:type===1?"恢复成功":"删除成功",
             type:"success"
           })
+          this.deleteDialog=false
           this.getContractList()
         }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:"error"
+        })
       })
     },
   },
