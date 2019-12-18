@@ -27,7 +27,7 @@
         </el-form-item>
         <el-form-item label="合同状态">
           <el-select v-model="contractForm.contState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==0">
+            <el-option v-for="item in dictionary['9']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==0&&item.key!==-1">
             </el-option>
           </el-select>
         </el-form-item>
