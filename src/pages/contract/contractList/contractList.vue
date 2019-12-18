@@ -302,7 +302,8 @@
         <el-table-column label="后期状态" min-width="80" v-if="contVersion===2" key="laterStageState">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine">
-              <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
+               <!-- @click="uploadData(scope.row)" -->
+              <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium">已拒绝</el-button>
               <span v-else>{{scope.row.laterStageState.label}}</span>
             </span>
             <span v-else>-</span>
@@ -1400,6 +1401,7 @@ export default {
             this.checkPerson.flowType=12//签后审核的流程类型为12
             this.checkPerson.label=true;
           }else{
+            this.getContractList()
             this.$message({
               message:error,
               type: "error"

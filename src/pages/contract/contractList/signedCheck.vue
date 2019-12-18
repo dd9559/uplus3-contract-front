@@ -100,7 +100,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.contTypes">
               <span>{{scope.row.price}} 元</span>
-              <span v-for="item in dictionary['507']" :key="item.key" v-if="scope.row.contType.value===1&&item.key===scope.row.timeUnit"> / {{item.value}}</span>
+              <!-- <span v-for="item in dictionary['507']" :key="item.key" v-if="scope.row.contType.value===1&&item.key===scope.row.timeUnit"> / {{item.value}}</span> -->
             </div>
             <span v-else>-</span>
           </template>
@@ -142,7 +142,7 @@
         </el-table-column>
         <el-table-column label="当前审核人" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.currentReviewerId>0&&scope.row.state.value===0">
+            <span v-if="scope.row.currentReviewerId>0&&scope.row.state&&scope.row.state.value===0">
               <p>{{scope.row.currentReviewerDep}}</p>
               <p>{{scope.row.currentReviewer}}</p>
             </span>
@@ -157,12 +157,12 @@
               <p>{{scope.row.nextReviewer}}</p>
             </span>
             <p v-else>-</p>
-            <el-button type="text" v-if="getUserMsg&&(scope.row.nextReviewerId!==0&&scope.row.currentReviewerId===getUserMsg.empId&&scope.row.state.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextReviewerId===0}">设置审核人</el-button>
+            <el-button type="text" v-if="getUserMsg&&(scope.row.nextReviewerId!==0&&scope.row.currentReviewerId===getUserMsg.empId&&scope.row.state&&scope.row.state.value===0)" @click="choseCheckPerson(scope.row,3)" :class="{'error_':scope.row.nextReviewerId===0}">设置审核人</el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div style="color:red" v-if="scope.row.state.value===0&&scope.row.currentReviewerId>0&&getUserMsg&&scope.row.currentReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||((!(scope.row.currentReviewerId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.state&&scope.row.state.value===0&&scope.row.currentReviewerId>0&&getUserMsg&&scope.row.currentReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state&&scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||((!(scope.row.currentReviewerId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
