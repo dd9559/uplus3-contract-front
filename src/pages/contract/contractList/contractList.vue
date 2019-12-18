@@ -70,12 +70,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="签后审核状态">
-          <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+        <el-form-item label="签后审核状态">
+          <el-select v-model="contractForm.signinState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['72']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="变更/解约">
           <el-select v-model="contractForm.contChangeState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">
@@ -224,13 +224,13 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="佣金比例(%)" min-width="60">
+        <el-table-column label="佣金比例(%)" min-width="100">
           <template slot-scope="scope">
             <span v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="财务收付" min-width="50">
+        <el-table-column label="财务收付" min-width="80">
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
               <div class="btn" @click="runningWater(scope.row)">流水</div>
@@ -262,7 +262,7 @@
             <span>{{scope.row.contState.label}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="合同审核状态" prop="toExamineState.label" min-width="80">
+        <el-table-column label="合同审核状态" min-width="100">
           <template slot-scope="scope">
             <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
             <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
@@ -285,15 +285,18 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="80">
+        <el-table-column label="签后审核状态" min-width="100">
           <template slot-scope="scope">
-            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
+            <div v-if="scope.row.signingState">
+              <span v-if="scope.row.signingState.value===-1" class="blue">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===0" class="yellow">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span>
+            </div>
+            <div v-else>-</div>
           </template>
-        </el-table-column> -->
-        <el-table-column label="上传合同主体时间" min-width="90" key="uploadTime">
+        </el-table-column>
+        <el-table-column label="上传合同主体时间" min-width="120" key="uploadTime">
           <template slot-scope="scope">
             <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
@@ -303,8 +306,8 @@
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine">
                <!-- @click="uploadData(scope.row)" -->
-              <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium">已拒绝</el-button>
-              <span v-else>{{scope.row.laterStageState.label}}</span>
+              <el-button v-if="scope.row.laterStageState&&scope.row.laterStageState.label==='已拒绝'" type="text" size="medium">已拒绝</el-button>
+              <span v-else>{{scope.row.laterStageState?scope.row.laterStageState.label:'-'}}</span>
             </span>
             <span v-else>-</span>
           </template>
@@ -338,7 +341,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="签约方式" prop="recordType.label" min-width="50">
+        <el-table-column label="签约方式" prop="recordType.label" min-width="70">
         </el-table-column>
         <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
@@ -346,7 +349,7 @@
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
           </template>
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="80">
+        <el-table-column label="可分配业绩 (元)" min-width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement?scope.row.distributableAchievement:0}}</span>
             <span v-else>-</span>
@@ -501,6 +504,7 @@ export default {
         "507": "", //租赁时间单位
         "11": "",//后期状态
         "64":"",//签约方式  线上线下
+        "72":"",//签后审核状态
       },
       loading:false,
       //部门选择列表
@@ -1435,6 +1439,12 @@ export default {
             combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
           }
           
+          if(combineItem.signingEntrustState){
+            combineItem.signingState.value=combineItem.signingEntrustState.value
+            combineItem.signingState.label=combineItem.signingEntrustState.label
+          }else{
+            combineItem.signingState=''
+          }
           
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"

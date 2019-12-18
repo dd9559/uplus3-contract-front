@@ -89,11 +89,15 @@
                 <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-xf-ht-xq-ly'].state"></i>
               </template>
             </el-table-column>
-            <el-table-column prop="relation" label="关系">
+            <el-table-column label="关系">
+              <template slot-scope="scope">
+                {{scope.row.relation?scope.row.relation:'-'}}
+              </template>
             </el-table-column>
             <el-table-column min-width="150" label="证件号码">
               <template slot-scope="scope">
-                {{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}
+                <span v-if="scope.row.cardType">{{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.cardCode}}</span>
+                <span v-else>-</span>
               </template>
             </el-table-column>
           </el-table>

@@ -83,7 +83,11 @@
         </el-table-column>
         <el-table-column label="合同类型" min-width="60" fixed>
           <template slot-scope="scope">
-            <span v-if="scope.row.contTypes">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+            <span v-if="scope.row.contTypes">
+              <!-- {{scope.row.loanType===7?"全款买卖":"贷款买卖"}} -->
+              <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+              <span v-else>{{scope.row.contType.label}}</span>
+            </span>
             <span v-else>委托合同</span>
           </template>
         </el-table-column>

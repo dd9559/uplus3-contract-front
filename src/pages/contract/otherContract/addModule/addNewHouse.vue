@@ -848,44 +848,44 @@ export default {
                     let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
                     if (reg.test(element.mobile)||reg_.test(element.mobile)) {
                       // 人员关系
-                      if (element.relation) {
+                      // if (element.relation) {
                         // 证件类型
-                        if(element.cardType){
+                        // if(element.cardType){
                           // 证件号码
-                          if (element.cardCode.replace(/\s/g,"")) {
-                            if(element.cardType!==1){
-                              element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
-                            }
-                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
+                          // if (element.cardCode.replace(/\s/g,"")) {
+                          //   if(element.cardType!==1){
+                          //     element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                          //   }
+                          //   if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
                               isOk = true;
-                            }else{
-                              this.$message({
-                                message: "客源信息-客户证件号不正确",
-                                type: "warning"
-                              });
-                              break
-                            }
-                          } else {
-                            this.$message({
-                              message: "客源信息-客户证件号不能为空",
-                              type: "warning"
-                            });
-                            break
-                          }
-                      }else {
-                        this.$message({
-                          message: "客源信息-客户证件类型不能为空",
-                          type: "warning"
-                        });
-                        break
-                      }
-                    } else {
-                      this.$message({
-                        message: "客源信息-客户关系不能为空",
-                        type: "warning"
-                      });
-                      break
-                    }
+                          //   }else{
+                          //     this.$message({
+                          //       message: "客源信息-客户证件号不正确",
+                          //       type: "warning"
+                          //     });
+                          //     break
+                          //   }
+                          // } else {
+                          //   this.$message({
+                          //     message: "客源信息-客户证件号不能为空",
+                          //     type: "warning"
+                          //   });
+                          //   break
+                          // }
+                      // }else {
+                      //   this.$message({
+                      //     message: "客源信息-客户证件类型不能为空",
+                      //     type: "warning"
+                      //   });
+                      //   break
+                      // }
+                    // } else {
+                    //   this.$message({
+                    //     message: "客源信息-客户关系不能为空",
+                    //     type: "warning"
+                    //   });
+                    //   break
+                    // }
                     }else{
                       this.$message({
                         message: "客源信息-客户电话号码不正确",
