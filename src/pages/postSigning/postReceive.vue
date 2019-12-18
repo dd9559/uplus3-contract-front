@@ -232,10 +232,10 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <div class="receive-label" v-if="receive.refuseReasons">
+                            <!-- <div class="receive-label" v-if="receive.refuseReasons">
                                 <span class="cl-1 mr-10">拒绝原因：</span>
                                 <div class="receive-txt">{{receive.refuseReasons}}</div>
-                            </div>
+                            </div> -->
                         </el-tab-pane>
                         <el-tab-pane label="合同资料库">
                             <div class="contract-box">
@@ -269,7 +269,7 @@
             <span slot="footer">
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn(receive.receive)" round>保存</el-button>
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
-                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
+                <!-- <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button> -->
             </span>
         </el-dialog>
     </div>
@@ -365,7 +365,9 @@
                     proWidth: '1000px',
                     rabbet: true,
                     center: false,
-                    footer: true
+                    footer: true,
+                    receive: '',
+                    e: {}
                 },
                 // 弹层切换展示那个
                 activeName: '0',
@@ -540,29 +542,6 @@
                     this.noPower(this.power['sign-qh-rev-receive'].name);
                     return false
                 }
-                this.receive = {
-                    show: true,
-                    tit: '接收',
-                    proWidth: '1000px',
-                    rabbet: true,
-                    center: false,
-                    footer: true,
-                    receive: e.statusLaterStage.value,
-                    refuseReasons: e.refuseReasons,
-                    e,
-                }
-                // 获取角色
-                this.loading4 = true;
-                this.$ajax.get("/api/roles").then(res => {
-                    res = res.data;
-                    if (res.status === 200) {
-                        this.dealTableRule = [...res.data];
-                    }
-                    this.loading4 = false;
-                }).catch(err => {
-                    this.errMeFn(err);
-                    this.loading4 = false;
-                })
                 // 获取列表数据
                 this.loadingdealTable = true;
                 this.$ajax.get('/api/postSigning/clickReceive', {
@@ -571,6 +550,11 @@
                 }).then(res => {
                     res = res.data
                     if (res.status === 200) {
+                        this.receive.show = true
+                        this.receive.receive = e.statusLaterStage.value
+                        this.receive.e = e
+                        this.getRole()
+                        this.getDataBase(e.id)
                         let arr = [...res.data];
                         arr.map(e => {
                             if(e.roleId == 0) {
@@ -593,9 +577,25 @@
                         this.loadingdealTable = false;
                     });
                 })
-                // 合同资料库数据
+            },
+            // 获取角色
+            getRole() {
+                this.loading4 = true;
+                this.$ajax.get("/api/roles").then(res => {
+                    res = res.data;
+                    if (res.status === 200) {
+                        this.dealTableRule = [...res.data];
+                    }
+                    this.loading4 = false;
+                }).catch(err => {
+                    this.errMeFn(err);
+                    this.loading4 = false;
+                })
+            },
+            // 合同资料库数据
+            getDataBase(e) {
                 this.$ajax.get("/api/postSigning/getDatabase", {
-                    contractCode: e.id
+                    contractCode: e
                 }).then(res => {
                     res = res.data;
                     if (res.status === 200) {
