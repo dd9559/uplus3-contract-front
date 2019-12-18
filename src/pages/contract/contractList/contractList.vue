@@ -64,12 +64,18 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="审核状态">
+        <el-form-item label="合同审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
+        <!-- <el-form-item label="签后审核状态">
+          <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item> -->
         <el-form-item label="变更/解约">
           <el-select v-model="contractForm.contChangeState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['6']" :key="item.key" :label="item.value" :value="item.key">

@@ -125,10 +125,13 @@
         </el-table-column>
         <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="80">
           <template slot-scope="scope">
+            <template v-if="scope.row.state">
               <span v-if="scope.row.state.value===-1" class="blue">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===0" class="yellow">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===1" class="green">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
+            </template>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="上传合同主体时间" min-width="100">
