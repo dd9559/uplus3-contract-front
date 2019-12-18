@@ -269,7 +269,7 @@
             <span slot="footer">
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn paper-btn-blue" type="primary" size="small" @click="saveBtnFn(receive.receive)" round>保存</el-button>
                 <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-blue" size="small" v-show="receiveComFn(receive.receive,0)" @click="receiveBtnFn" round>接收</el-button>
-                <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button>
+                <!-- <el-button v-if="power['sign-qh-rev-receive'].state" class="paper-btn plain-btn-red" size="small" @click="refusedFn" v-show="receiveComFn(receive.receive,0)" round>拒绝</el-button> -->
             </span>
         </el-dialog>
     </div>
