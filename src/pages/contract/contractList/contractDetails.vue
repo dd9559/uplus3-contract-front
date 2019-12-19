@@ -477,9 +477,9 @@
           <div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHei }">
             <!-- <p style="margin-top:10px;color:red;">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</p> -->
             <div class="classify" v-if="sellerList.length>0">
-              <p class="title">业主</p>
-              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)">
+                <p class="title" v-if="index===0">业主</p>
+                <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
@@ -501,9 +501,9 @@
               </div>
             </div>
             <div class="classify" v-if="buyerList.length>0">
-              <p class="title">客户</p>
-              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)">
+                <p class="title" v-if="index===0">客户</p>
+                <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
@@ -525,9 +525,9 @@
               </div>
             </div>
             <div class="classify" v-if="otherList.length>0">
-              <p class="title">其他</p>
-              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-                <p v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)">
+                <p class="title" v-if="index===0">其他</p>
+                <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
                 <ul class="ulData">
                   <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
                     <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
@@ -3144,16 +3144,23 @@ export default {
     overflow-y: auto;
     // height: 100%;
     .classify {
-      padding-top: 10px;
-      padding-bottom: 30px;
-      border-bottom: 1px solid @border-ED;
-      .title {
-        font-size: 16px;
-        color: @color-324;
-      }
+      position: relative;
+      // padding-top: 30px;
+      // padding-bottom: 30px;
+      // border-bottom: 1px solid @border-ED;
       .one_ {
         padding-left: 10px;
-        > p {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid @border-ED;
+        .title {
+          font-size: 16px;
+          color: @color-324;
+          position: absolute;
+          top: 10px;
+          left: 5px;
+        }
+        .title_ {
           font-size: 14px;
           padding: 10px 0;
           color: @color-6c;
