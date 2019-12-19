@@ -1728,9 +1728,7 @@ export default {
           systemtag: this.userInfo.systemtag
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
-          console.log(res.status);
           if (res.status === 200) {
-            console.log(res.data.data);
             this.loading1 = false;
             this.assignors = res.data.data.list;
             this.assignorTotal = res.data.data.total;
@@ -1751,9 +1749,7 @@ export default {
           systemtag: this.userInfo.systemtag
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
-          console.log(res.status);
           if (res.status === 200) {
-            console.log(res.data.data);
             this.assignors = this.assignors.concat(res.data.data.list);
           }
         });
@@ -1970,7 +1966,6 @@ export default {
             } else if (roleId == 1) {
               this.amaldars = res.data.data.list;
             } else if (roleId == 0) {
-              // debugger
               this.managers = res.data.data.list;
             }
             this.loading1 = false;
@@ -2032,7 +2027,6 @@ export default {
     changeShopkeeper(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].shopkeeperId = idName[0];
           this.houseArr[index].shopkeeper = idName[1];
@@ -2049,7 +2043,6 @@ export default {
     changeAmaldar(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].amaldarId = idName[0];
           this.houseArr[index].amaldar = idName[1];
@@ -2066,7 +2059,6 @@ export default {
     changeManager(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].managerId = idName[0];
           this.houseArr[index].manager = idName[1];
@@ -2168,7 +2160,6 @@ export default {
     },
     // 添加客源经纪人
     addMansClient() {
-      console.log(this.clientArr);
       let obj = {
         amaldar: "",
         assignor: "",
@@ -2334,9 +2325,6 @@ export default {
             }
         }
       }
-      //flag=true代表信息都填完整，flag=false代表还有信息没有填
-      // debugger;
-      // console.log(sumFlag);
 
       if (flag && sumFlag) {
         this.loading = true;
@@ -2525,7 +2513,6 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
           .then(res => {
-            console.log(res.data.status);
             if (res.data.status == 200) {
               var paperBtn3 = document.getElementById("savebtn3");
               paperBtn3.disabled = true;
@@ -2861,7 +2848,6 @@ export default {
         }
       }
 
-      console.log(sum);
       if (flag && sumFlag) {
         this.loading = true;
         let param = {};
@@ -2924,7 +2910,6 @@ export default {
     },
     handleSelectionChange(val) {
       //返回的是选择当行的对象
-      console.log(val);
       this.addManList = val;
       this.addArr.push(val);
     },
@@ -2960,7 +2945,6 @@ export default {
               JSON.parse(this.shensuArr[i].voucherUrl)
             );
           }
-          console.log(this.houseArr, "houseArr");
           this.clientArr = res.data.data.customerAgents;
           for(let i=0;i< this.clientArr.length;i++){
             this.$set(this.clientArr[i],'checkbox',[])
@@ -3021,9 +3005,7 @@ export default {
       });
       // 角色类型
       this.$ajax.get("/api/role/types").then(res => {
-        console.log(res.status);
         if (res.status === 200) {
-          // console.log(res.data.data[0]);
           this.roleType0 = res.data.data[1]; //房源角色类型
           this.roleType1 = res.data.data[2]; //客源角色类型
         }
@@ -3268,9 +3250,7 @@ export default {
           this.comm = this.achObj.comm; //合同详情传过来的可分配业绩
           // 角色类型
           this.$ajax.get("/api/role/types").then(res => {
-            console.log(res.status);
             if (res.status === 200) {
-              // console.log(res.data.data[0]);
               this.roleType0 = res.data.data[1]; //房源角色类型
               this.roleType1 = res.data.data[2]; //客源角色类型
             }
@@ -3319,7 +3299,7 @@ export default {
 /deep/ .dialog2In {
   width: 450px !important;
   max-height: 600px;
-  min-height: 500px;
+  /*min-height: 500px;*/
   margin-top: 13vh !important;
   .is-checked {
     color: #478de3 !important;
@@ -3345,8 +3325,8 @@ export default {
   }
 
   .dialog2-btn {
-    height: 100px;
-    padding-top: 20px;
+    /*height: 100px;*/
+    padding: 20px 0;
     padding-right: 30px;
     box-sizing: border-box;
     background-color: #fff;
@@ -3362,7 +3342,6 @@ export default {
       color: #000;
       border: 1px solid #e8eaf6;
     }
-    margin-bottom: 20px;
   }
   .cell {
     font-size: 12px;
