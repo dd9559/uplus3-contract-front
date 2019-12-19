@@ -20,10 +20,6 @@
               :label="item.value"
               :value="item.key">
             </el-option>
-            <el-option
-              label="委托合同"
-              :value="6">
-            </el-option>
           </el-select>
         </el-form-item>
 
@@ -1438,8 +1434,9 @@ export default {
             combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
             combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
           }
-          
           if(combineItem.signingEntrustState){
+            // this.$set(element,"bgc",true)
+            combineItem.signingState={}
             combineItem.signingState.value=combineItem.signingEntrustState.value
             combineItem.signingState.label=combineItem.signingEntrustState.label
           }else{
