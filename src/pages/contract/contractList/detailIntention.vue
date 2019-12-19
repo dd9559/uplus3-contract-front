@@ -110,7 +110,7 @@
 				<el-tab-pane label="合同主体" name="second">
 					<div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 						<ul class="ulData">
-							<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState">
+							<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 								<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="scaneZhuti">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
@@ -124,10 +124,10 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
+								<i class="iconfont icon-tubiao-6" v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
 							</li>
 						</ul>
-						<el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
+						<el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
 					</div>
 				</el-tab-pane>
 
@@ -137,9 +137,9 @@
 						<div class="classify" v-if="this.sellerList.length>0">
 							<div class="ht-title">业主</div>
 							<div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -153,7 +153,7 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
@@ -162,9 +162,9 @@
 						<div class="classify" v-if="this.buyerList.length>0">
 							<div class="ht-title">客户</div>
 							<div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -178,7 +178,7 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
@@ -187,9 +187,9 @@
 						<div class="classify" v-if="otherList.length>0">
 							<div class="ht-title">其他</div>
 							<div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -203,7 +203,7 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
@@ -355,7 +355,7 @@
 		</div>
 		<!-- 上传按钮 -->
 		<div class="uploadBtn">
-			<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||detailData.signingState)">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
+			<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
 		</div>
 		<!-- 图片放大 -->
 		<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
