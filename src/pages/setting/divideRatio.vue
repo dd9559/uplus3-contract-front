@@ -84,7 +84,12 @@
         width="740px">
             <div class="dialog-body">
                 <div v-for="(item,i) in ratioForm" :key="i" class="item-box">
-                    <p class="item-title"><i>*</i>{{i===0?item.title+'：':item.title+'分成'}}<span v-if="i!==0" style="margin-left: 10px;" class="color-red">合计：{{item.count?item.count:0}}%</span></p>
+                    <p class="item-title" v-if="contType==='2'?true:i!=3">
+                        <span v-if="i===3" @click="remarkFn" class="remark-icon iconfont icon-tubiao-10" :class="{'remark_':remarkBool}"></span>
+                        <i v-if="i!=3">*</i>
+                        {{i===0?item.title+'：':i===3?item.is_tit+'分成':item.title+'分成'}}
+                        <span v-if="i===0?false:i===3?remarkBool?true:false:true" style="margin-left: 10px;" class="color-red">合计：{{item.count?item.count:0}}%</span>
+                    </p>
                     <p class="item-title" v-if="i===0"><i>*</i>合同类型：</p>
                     <div v-if="i===0" class="item-ratio">
                         <el-select v-model="item.systemId" size="small" class="w240" @change="getSystemName" :disabled="divideTitle==='编辑'">
@@ -95,7 +100,7 @@
                             <el-option label="买卖/代办" value="2"></el-option>
                         </el-select>
                     </div>
-                    <div v-for="(m,n) in item.arr" :key="n" v-else class="item-ratio">
+                    <div v-for="(m,n) in item.arr" :key="n" v-if="remarkBool?true:i!=3&&i!=0" class="item-ratio">
                         <el-select v-model="m.roleType" size="small" class="w240" placeholder="请选择角色类型" filterable @change="getRoleName($event,i,n)">
                             <el-option v-for="ele in i===1?roleHouse:roleClient" :key="ele.value" :label="ele.label" :value="ele.value"></el-option>
                         </el-select>
@@ -156,6 +161,7 @@
             arr: [{ type: 2, ratio: "", roleType: '', roleName: '' }]
         },
         {
+            is_tit: "是否设置默认交易服务费佣金",
             title: "交易服务费佣金",
             count: '',
             arr: [{ type: 3, ratio: "", roleType: '', roleName: '' }]
@@ -198,6 +204,7 @@
                         state: false
                     }
                 },
+                remarkBool: false
             }
         },
         created() {
@@ -284,18 +291,22 @@
                 this.addVisible = true
                 this.divideTitle = tit
                 this.ratioForm = JSON.parse(JSON.stringify(INTARR))
+                this.remarkBool = false
                 if(row) {
                     let rowData = JSON.parse(JSON.stringify(row))
                     this.divideId = rowData.id
                     this.ratioForm[0].systemId = rowData.systemId
                     this.ratioForm[0].systemName = rowData.systemName
                     this.contType = rowData.contType + ''
-                    if(this.contType === '1') { //租赁
-                        this.ratioForm.splice(3,1)
-                    }
                     for(let i = 1; i < this.ratioForm.length; i++) {
-                        this.ratioForm[i].arr = rowData.ratioInfos.filter(item => item.type === i)
-                        this.countFn(this.ratioForm[i].arr,i)
+                        let _arr = rowData.ratioInfos.filter(item => item.type === i)
+                        if(_arr.length > 0) {
+                            this.ratioForm[i].arr = _arr
+                            this.countFn(this.ratioForm[i].arr,i)
+                            if(i === 3) {
+                                this.remarkBool = true
+                            }
+                        }
                     }
                 } else {
                     this.contType = ""
@@ -311,10 +322,18 @@
             // 合同类型选择
             contFn(val) {
                 if(val === '1') {
-                    this.ratioForm.splice(3,1)
-                } else {
-                    this.ratioForm.length<4&&this.ratioForm.push(JSON.parse(JSON.stringify(INTARR[3])))
+                    this.remarkBool = false
+                    this.clearFn()
                 }
+            },
+            clearFn() {
+                this.ratioForm[3].count = ""
+                this.ratioForm[3].arr = JSON.parse(JSON.stringify(INTARR[3].arr))
+            },
+            // 勾选框
+            remarkFn() {
+                this.remarkBool = !this.remarkBool
+                if(!this.remarkBool) this.clearFn()
             },
             getRoleName(e,i,n) {
                 let arr_role = []
@@ -389,8 +408,11 @@
                     this.$message({message:'合同类型不能为空'})
                     return
                 }
-                let arrForm = [...this.ratioForm]
-                for(let i = 1; i < arrForm.length; i++) {
+                let arrForm = [this.ratioForm[1],this.ratioForm[2]]
+                if(this.remarkBool) {
+                    arrForm.push(this.ratioForm[3])
+                }
+                for(let i = 0; i < arrForm.length; i++) {
                     for(let k = 0; k < arrForm[i].arr.length; k++) {
                         if(!arrForm[i].arr[k].roleType) {
                             this.$message(`${arrForm[i].title}角色类型不能为空`)
@@ -406,12 +428,12 @@
                         }
                     }
                 }
-                if(!this.checkRatioFn(arrForm[1].arr.concat(arrForm[2].arr))) {
+                if(!this.checkRatioFn(arrForm[0].arr.concat(arrForm[1].arr))) {
                     this.$message({message: '房客源分成合计不等于100% ，请输入正确的房客源分成比例', type: 'warning'})
                     return
                 }
-                if(this.contType === '2') { //选择买卖/代办验证
-                    if(!this.checkRatioFn(arrForm[3].arr)) {
+                if(this.remarkBool) { //选择买卖/代办验证并选中默认设置勾选框
+                    if(!this.checkRatioFn(arrForm[2].arr)) {
                         this.$message({message: '交易服务费佣金分成合计不等于100%，请输入正确的交易服务费佣金分成比例', type: 'warning'})
                         return
                     }
@@ -426,7 +448,7 @@
                     contType: this.contType,
                     ratioInfos: [...this.ratioForm[1].arr,...this.ratioForm[2].arr]
                 }
-                if(this.contType === '2') {
+                if(this.remarkBool) {
                     param.ratioInfos = [...param.ratioInfos,...this.ratioForm[3].arr]
                 }
                 let url = 'insert'
@@ -500,13 +522,22 @@
         border-bottom: 1px solid #EDECF0;
         .item-box {
             margin-bottom: 15px;
+            &:first-child .item-title {
+                display: inline-block;
+                width: 260px;
+            }
         }
         .item-title {
-            display: inline-block;
-            width: 260px;
             margin-bottom: 5px;
             >i {
                 color: @color-red;
+            }
+            .remark-icon {
+                color: #ccc;
+                font-weight: normal;
+            }
+            .remark_ {
+                color: @color-blue;
             }
         }
         .item-ratio {
