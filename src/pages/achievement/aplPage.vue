@@ -1793,68 +1793,16 @@
           let param = {
             id: val
           };
-          this.$ajax
-            .get("/api/organize/employee/agent/details", param)
-            .then(res => {
-              let data = res.data.data;
+          this.$ajax.get("/api/organize/employee/agent/details", param).then(res => {
+              let {assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel} = res.data.data;
               if (type == 0) {
-                this.houseArr[index].assignor = data.assignor;
-                this.houseArr[index].isJob = data.isJob;
-                this.houseArr[index].level3 = data.level3; //门店
-                this.houseArr[index].shopkeeper = data.shopkeeper; //店长
-                this.houseArr[index].level4 = data.level4; //单组
-                this.houseArr[index].amaldar = data.amaldar; //区经
-                this.houseArr[index].manager = data.manager; //区总
-                this.houseArr[index].assignorId = data.assignorId; //经纪人id
-                this.houseArr[index].storefront3Id = data.storefront3Id; //三级门店
-                this.houseArr[index].storefront4Id = data.storefront4Id; //四级门店
-                this.houseArr[index].managerId = data.managerId; //区总id
-                this.houseArr[index].amaldarId = data.amaldarId; //区经id
-                this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
-                this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-                this.houseArr[index].assignorNum = data.assignorNum;
-                this.houseArr[index].assignorLevel = data.assignorLevel;
-                this.houseArr[index].salesManagerLevel = data.salesManagerLevel;
-              } else if (type == 1) {
-                this.clientArr[index].assignor = data.assignor;
-                this.clientArr[index].isJob = data.isJob;
-                this.clientArr[index].level3 = data.level3; //门店
-                this.clientArr[index].shopkeeper = data.shopkeeper; //店长
-                this.clientArr[index].level4 = data.level4; //单组
-                this.clientArr[index].amaldar = data.amaldar; //区经
-                this.clientArr[index].manager = data.manager; //区总
-                this.clientArr[index].assignorId = data.assignorId; //经纪人id
-                this.clientArr[index].storefront3Id = data.storefront3Id; //三级门店
-                this.clientArr[index].storefront4Id = data.storefront4Id; //四级门店
-                this.clientArr[index].managerId = data.managerId; //区总id
-                this.clientArr[index].amaldarId = data.amaldarId; //区经id
-                this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
-                this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-                this.clientArr[index].assignorNum = data.assignorNum;
-                this.clientArr[index].assignorLevel = data.assignorLevel;
-                this.clientArr[index].salesManagerLevel = data.salesManagerLevel;
+                Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
+              } else if (type == 1){
+                Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
               } else {
-                this.serviceAgents[index].assignor = data.assignor;
-                this.serviceAgents[index].isJob = data.isJob;
-                this.serviceAgents[index].level3 = data.level3; //门店
-                this.serviceAgents[index].shopkeeper = data.shopkeeper; //店长
-                this.serviceAgents[index].level4 = data.level4; //单组
-                this.serviceAgents[index].amaldar = data.amaldar; //区经
-                this.serviceAgents[index].manager = data.manager; //区总
-                this.serviceAgents[index].assignorId = data.assignorId; //经纪人id
-                this.serviceAgents[index].storefront3Id = data.storefront3Id; //三级门店
-                this.serviceAgents[index].storefront4Id = data.storefront4Id; //四级门店
-                this.serviceAgents[index].managerId = data.managerId; //区总id
-                this.serviceAgents[index].amaldarId = data.amaldarId; //区经id
-                this.serviceAgents[index].shopkeeperId = data.shopkeeperId; //店长id
-                this.serviceAgents[index].platformFeeRatio =
-                  data.platformFeeRatio; //平台费比率
-                this.serviceAgents[index].assignorNum = data.assignorNum;
-                this.serviceAgents[index].assignorLevel = data.assignorLevel;
-                this.serviceAgents[index].salesManagerLevel =
-                  data.salesManagerLevel;
+                Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
               }
-            });
+            })
         } else {
           let initObj={
             isJob:"",
@@ -1883,17 +1831,9 @@
           }
         }
       },
-      checkDate: function (val) {
-        let date = new Date(val);
-        if (date.getTime() > Date.now()) {
-          this.examineDate = ''
-          this.$message({
-            message: '不能选择未来时间'
-          })
-        }
-      },
       // 获取门店，单组信息  type=3(门店)  type=4(单组)
       getLevel(type) {
+        // 闭包
         return queryString => {
           if (queryString !== "") {
             this.loading1 = true;
@@ -1915,7 +1855,7 @@
           }
         };
       },
-      // 改变门店,单组
+      // 改变门店,单组（type1,0=房源，1=客源，2=交易服务费佣金）（type2,0=门店，1=单组）
       changeLevel3(val, index, type1, type2) {
         if (val) {
           let level3Arr = val.split("-");
