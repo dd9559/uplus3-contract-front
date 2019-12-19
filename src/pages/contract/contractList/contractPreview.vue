@@ -923,7 +923,7 @@ export default {
           if(res.data.isWuHanMM===1&&(res.data.contType.value===2)){
             this.isShowType=true;
             //买卖
-            this.business=res.data.imgAddress.business;
+            this.business=res.data.imgAddress.business; 
             this.total_b=res.data.imgCount.business;
             //居间
             this.residence=res.data.imgAddress.residence;
