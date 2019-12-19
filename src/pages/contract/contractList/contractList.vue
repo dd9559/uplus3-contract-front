@@ -468,7 +468,9 @@ export default {
   data() {
     return {
       tableBox:null,
-      contractForm: {},
+      contractForm: {
+        contState:3
+      },
       keyword: "",
       signDate: [],
       tableData: [],
