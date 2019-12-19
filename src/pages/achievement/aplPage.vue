@@ -49,7 +49,7 @@
               </el-button>
               <el-button
                 type="primary"
-                @click="addMansHouse"
+                @click="addListCell('houseArr')"
               >添加分配人
               </el-button>
               <el-button
@@ -410,7 +410,7 @@
                   <a
                     class="delete"
                     style="color:#478de3;text-decoration:underline;cursor:pointer;"
-                    @click="deleteHouse(scope.$index,houseArr,scope.row.id)"
+                    @click="deleteListCell(scope.$index,houseArr,scope.row.id)"
                   >删除</a>
                   <!-- <a href="javascript:;" class="delete" style="color:#478de3;" @click="delete(index)">删除</a> -->
                 </template>
@@ -454,7 +454,7 @@
               </el-button>
               <el-button
                 type="primary"
-                @click="addMansClient"
+                @click="addListCell('clientArr')"
               >添加分配人
               </el-button>
               <el-button
@@ -812,7 +812,7 @@
                   <a
                     class="delete"
                     style="color:#478de3;text-decoration:underline;cursor:pointer;"
-                    @click="deleteClient(scope.$index,clientArr,scope.row.id)"
+                    @click="deleteListCell(scope.$index,clientArr,scope.row.id)"
                   >删除</a>
                 </template>
               </el-table-column>
@@ -827,7 +827,7 @@
               <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
             </div>
             <div class="house-right f_r">
-              <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
+              <el-button type="primary" @click="addListCell('serviceAgents')">添加分配人</el-button>
             </div>
           </div>
 
@@ -1147,7 +1147,7 @@
                   <a
                     class="delete"
                     style="color:#478de3;text-decoration:underline;cursor:pointer;"
-                    @click="deletefee(scope.$index,serviceAgents,scope.row.id)"
+                    @click="deleteListCell(scope.$index,serviceAgents,scope.row.id)"
                   >删除</a>
                 </template>
               </el-table-column>
@@ -1798,9 +1798,9 @@
               if (type == 0) {
                 Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
               } else if (type == 1){
-                Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
+                Object.assign(this.clientArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
               } else {
-                Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
+                Object.assign(this.serviceAgents[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel})
               }
             })
         } else {
@@ -2067,8 +2067,11 @@
         this.type = 2;
         this.getMans(this.type, fieldStr);
       },
-      // 添加房源经纪人
-      addMansHouse() {
+      /**
+       * 添加分配人操作
+       * @param arrName数组名
+       */
+      addListCell(arrName){
         let obj = {
           amaldar: "",
           assignor: "",
@@ -2092,68 +2095,14 @@
           contractId: this.achObj.contractId,
           contractCode: this.contractCode
         };
-        this.houseArr.push(obj);
-        this.addArr.push(obj);
-      },
-      // 添加客源经纪人
-      addMansClient() {
-        let obj = {
-          amaldar: "",
-          assignor: "",
-          isJob: {
-            label: "",
-            value: ""
-          },
-          level3: null,
-          level4: "",
-          manager: "",
-          place: -1,
-          checkbox: [],
-          ratio: "",
-          isService: 0,
-          roleType: "",
-          shopkeeper: "",
-          amaldarId: "",
-          managerId: "",
-          shopkeeperId: "",
-          platformFeeRatio: "",
-          contractId: this.achObj.contractId,
-          contractCode: this.contractCode
-        };
-        this.clientArr.push(obj);
+        arrName==='serviceAgents'&&(obj.isService=1)
+        this[arrName].push(obj);
         this.addArr.push(obj);
       },
       // 删除按钮
-      deleteHouse(index, rows, id) {
+      deleteListCell(index, rows, id) {
         this.agendIds.push(id);
         rows.splice(index, 1);
-      },
-      deleteClient(index, rows, id) {
-        this.agendIds.push(id);
-        rows.splice(index, 1);
-      },
-      sameRole() {
-        for (var i = 0; i < this.houseArr.length; i++) {
-          let hRoleType = this.houseArr[i].roleType;
-          if (arr.indexOf(hRoleType) == -1) {
-            arr.push(hRoleType);
-          } else if (hRoleType) {
-            roleFlag = false;
-            this.$message.error("房源不可有重复角色类型");
-            return false;
-          }
-        }
-
-        for (var i = 0; i < this.clientArr.length; i++) {
-          let cRoleType = this.clientArr[i].roleType;
-          if (arr.indexOf(cRoleType) == -1) {
-            arr.push(cRoleType);
-          } else if (cRoleType) {
-            roleFlag = false;
-            this.$message.error("客源不可有重复角色类型");
-            return false;
-          }
-        }
       },
       // 弹框通过操作
       passAch() {
@@ -2310,15 +2259,12 @@
       close() {
         this.aplremark = ''
       },
-      closeDialog() {
-        this.$emit("close");
-      },
       handleSelectionChange(val) {
         //返回的是选择当行的对象
         this.addManList = val;
         this.addArr.push(val);
       },
-      // 相关人员确定按钮
+      // 相关人员确定操作
       manSure(type) {
         let addhouseArr = [];
         if (this.type == 1) {
@@ -2362,23 +2308,6 @@
         }
         this.showTips1 = false;
       },
-      selectRadio(index, e, type, select) {
-        let event = window.event || e;
-        let target = event.target || event.srcElement;
-        if (type == 0) {
-          if (target.parentNode.className.indexOf("is-checked") !== -1) {
-            this.houseArr[index].place = -1;
-          }
-        } else {
-          if (target.parentNode.className.indexOf("is-checked") !== -1) {
-            this.clientArr[index].place = -1;
-          }
-        }
-      },
-      deletefee(index, rows, id) {
-        this.agendIds.push(id);
-        rows.splice(index, 1);
-      },
       personChose: function () {
         this.checkPerson.state = false
         let _this = this;
@@ -2387,34 +2316,6 @@
             _this.$emit("close");
           }, 50);
         }
-      },
-      addserviceAgents() {
-        let obj = {
-          amaldar: "",
-          assignor: "",
-          isJob: {
-            label: "",
-            value: ""
-          },
-          level3: null,
-          level4: "",
-          manager: "",
-          place: -1,
-          checkbox: [],
-          ratio: "",
-          roleType: "",
-          shopkeeper: "",
-          isService: 1,
-          amaldarId: "",
-          managerId: "",
-          shopkeeperId: "",
-          platformFeeRatio: "",
-          storefront3Id: "",
-          contractId: this.achObj.contractId,
-          contractCode: this.contractCode
-        };
-        this.serviceAgents.push(obj);
-        this.addArr.push(obj);
       },
       addSubject(data) {
         let arr = data.param;
