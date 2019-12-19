@@ -1326,7 +1326,16 @@ export default {
 				}
 			}
 		}
-		
+		/deep/.el-tabs{
+      .el-tabs__header {
+        margin-bottom: 0;
+      }
+      .el-tabs__item {
+        font-size: 18px;
+        height: 50px;
+        line-height: 50px;
+      }
+    }
 		.footer {
 			display: flex;
 			justify-content: space-between;
@@ -1397,10 +1406,6 @@ export default {
 			//合同主体
 		.contractSubject {
 			padding: 40px;
-		}
-
-		.third-tab{
-			padding: 20px 30px 30px 30px;
 		}
 		.classify{
 			margin-bottom: 30px;
@@ -1522,6 +1527,10 @@ export default {
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;
+}
+.dataBank{
+	overflow-y: auto;
+	padding-top: 10px;
 }
 </style>
 
