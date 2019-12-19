@@ -74,7 +74,7 @@
                   <el-select
                     v-model="scope.row.roleType"
                     placeholder="请选择"
-                    @change="housecli(scope.row.roleType,scope.$index)"
+                    @change="rolesTypeCheck(scope.row.roleType,scope.$index,'houseArr')"
                   >
                     <el-option
                       v-for="item in roleType0"
@@ -95,7 +95,7 @@
                   <el-input
                     v-model.number="scope.row.ratio"
                     placeholder="请输入"
-                    @input="filterHouseNumber(scope.row.ratio,scope.$index)"
+                    @input="filterRatioVal(scope.row.ratio,scope.$index,'houseArr')"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -479,7 +479,7 @@
                   <el-select
                     v-model="scope.row.roleType"
                     placeholder="请选择"
-                    @change="clentcli(scope.row.roleType0,scope.$index)"
+                    @change="rolesTypeCheck(scope.row.roleType,scope.$index,'clientArr')"
                   >
                     <el-option
                       v-for="item in roleType1"
@@ -499,7 +499,7 @@
                   <el-input
                     v-model="scope.row.ratio"
                     placeholder="请输入"
-                    @input="filterClientNumber(scope.row.ratio,scope.$index)"
+                    @input="filterRatioVal(scope.row.ratio,scope.$index,'clientArr')"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -839,7 +839,7 @@
                   <el-select
                     v-model="scope.row.roleType"
                     placeholder="请选择"
-                    @change="feecli(scope.row.roleType0,scope.$index)"
+                    @change="rolesTypeCheck(scope.row.roleType,scope.$index,'serviceAgents')"
                   >
                     <el-option
                       v-for="item in roleType1"
@@ -856,7 +856,7 @@
                   <el-input
                     v-model="scope.row.ratio"
                     placeholder="请输入"
-                    @input="filterFeeNumber(scope.row.ratio,scope.$index)"
+                    @input="filterRatioVal(scope.row.ratio,scope.$index,'serviceAgents')"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -1682,39 +1682,25 @@
         this.aplid = row.id
         this.aplDialog = true
       },
+      //判断数组数据角色类型是否存在重复
       unique(arr1) {
         const res = new Map();
         return arr1.filter((a) => !res.has(a.roleType) && res.set(a.roleType, 1))
       },
-      clentcli(val, index) {
-        let arr1 = JSON.parse(JSON.stringify(this.clientArr))
+      /**
+       * 角色类型选择方法
+       * @param val当前选择的roleType值
+       * @param index数组当前操作项
+       * @param arr操作的数组名
+       * @returns {boolean}
+       */
+      rolesTypeCheck(val,index,arr){
+        let arr1 = JSON.parse(JSON.stringify(this[arr]))
         arr1.splice(index, 1)
         for (let i = 0; i < arr1.length; i++) {
-          if (arr1[i].roleType == this.clientArr[index].roleType) {
+          if (arr1[i].roleType == val) {
             this.$message.error("角色已经存在，请勿重新添加")
-            this.clientArr[index].roleType = ''
-            return false;
-          }
-        }
-      },
-      feecli(val, index) {
-        let arr1 = JSON.parse(JSON.stringify(this.serviceAgents))
-        arr1.splice(index, 1)
-        for (let i = 0; i < arr1.length; i++) {
-          if (arr1[i].roleType == this.serviceAgents[index].roleType) {
-            this.$message.error("角色已经存在，请勿重新添加")
-            this.serviceAgents[index].roleType = ''
-            return false;
-          }
-        }
-      },
-      housecli(val, index) {
-        let arr1 = JSON.parse(JSON.stringify(this.houseArr))
-        arr1.splice(index, 1)
-        for (let i = 0; i < arr1.length; i++) {
-          if (arr1[i].roleType == this.houseArr[index].roleType) {
-            this.$message.error("角色已经存在，请勿重新添加")
-            this.houseArr[index].roleType = ''
+            this.$set(this[arr][index],'roleType','')
             return false;
           }
         }
@@ -1741,36 +1727,24 @@
           }
         })
       },
-      filterHouseNumber(val, index) {
-        this.$nextTick(() => {
-          this.houseArr[index].ratio = this.$tool.cutFloat({
-            val: this.houseArr[index].ratio,
-            max: 100
-          });
-        });
-      },
-      filterClientNumber(val, index) {
-        this.$nextTick(() => {
-          this.clientArr[index].ratio = this.$tool.cutFloat({
-            val: this.clientArr[index].ratio,
-            max: 100
-          });
-        });
-      },
-      filterFeeNumber(val, index) {
-        this.$nextTick(() => {
-          this.serviceAgents[index].ratio = this.$tool.cutFloat({
-            val: this.serviceAgents[index].ratio,
-            max: 100
-          });
-        });
+      /**
+       * 分成比例数值输入方法
+       * @param val
+       * @param index数组当前操作项
+       * @param arr操作的数组名
+       */
+      filterRatioVal(val,index,arr){
+        this.$set(this[arr][index],'ratio',this.$tool.cutFloat({
+          val: this[arr][index].ratio,
+          max: 100
+        }))
       },
       // 获取经纪人
       getAssignors(queryString) {
         if (queryString !== "") {
           this.loading1 = true;
           this.assignorStr = queryString;
-          let list = [{}];
+
           let param = {
             keyword: queryString,
             pageNum: 1,
@@ -1791,7 +1765,6 @@
       // 经纪人下拉加载下一页
       getMoreAssignors(queryString, page) {
         if (queryString !== "") {
-          let list = [{}];
           let param = {
             keyword: queryString,
             pageNum: page,
@@ -1883,57 +1856,30 @@
               }
             });
         } else {
+          let initObj={
+            isJob:"",
+            level3:"",
+            shopkeeper:"",
+            level4:"",
+            amaldar:"",
+            manager:"",
+            assignorId:"",
+            storefront3Id:"",
+            storefront4Id:"",
+            managerId:"",
+            amaldarId:"",
+            shopkeeperId:"",
+            platformFeeRatio:"",
+            assignorNum:"",
+            assignorLevel:"",
+            salesManagerLevel:"",
+          }
           if (type == 0) {
-            this.houseArr[index].isJob = "";
-            this.houseArr[index].level3 = "";
-            this.houseArr[index].shopkeeper = "";
-            this.houseArr[index].level4 = "";
-            this.houseArr[index].amaldar = "";
-            this.houseArr[index].manager = "";
-            this.houseArr[index].assignorId = "";
-            this.houseArr[index].storefront3Id = "";
-            this.houseArr[index].storefront4Id = "";
-            this.houseArr[index].managerId = "";
-            this.houseArr[index].amaldarId = "";
-            this.houseArr[index].shopkeeperId = "";
-            this.houseArr[index].platformFeeRatio = "";
-            this.houseArr[index].assignorNum = "";
-            this.houseArr[index].assignorLevel = "";
-            this.houseArr[index].salesManagerLevel = "";
+            Object.assign(this.houseArr[index],initObj)
           } else if (type == 1) {
-            this.clientArr[index].isJob = "";
-            this.clientArr[index].level3 = "";
-            this.clientArr[index].shopkeeper = "";
-            this.clientArr[index].level4 = "";
-            this.clientArr[index].amaldar = "";
-            this.clientArr[index].manager = "";
-            this.clientArr[index].assignorId = "";
-            this.clientArr[index].storefront3Id = "";
-            this.clientArr[index].storefront4Id = "";
-            this.clientArr[index].managerId = "";
-            this.clientArr[index].amaldarId = "";
-            this.clientArr[index].shopkeeperId = "";
-            this.clientArr[index].platformFeeRatio = "";
-            this.clientArr[index].assignorNum = "";
-            this.clientArr[index].assignorLevel = "";
-            this.clientArr[index].salesManagerLevel = "";
+            Object.assign(this.clientArr[index],initObj)
           } else {
-            this.serviceAgents[index].isJob = "";
-            this.serviceAgents[index].level3 = "";
-            this.serviceAgents[index].shopkeeper = "";
-            this.serviceAgents[index].level4 = "";
-            this.serviceAgents[index].amaldar = "";
-            this.serviceAgents[index].manager = "";
-            this.serviceAgents[index].assignorId = "";
-            this.serviceAgents[index].storefront3Id = "";
-            this.serviceAgents[index].storefront4Id = "";
-            this.serviceAgents[index].managerId = "";
-            this.serviceAgents[index].amaldarId = "";
-            this.serviceAgents[index].shopkeeperId = "";
-            this.serviceAgents[index].platformFeeRatio = "";
-            this.serviceAgents[index].assignorNum = "";
-            this.serviceAgents[index].assignorLevel = "";
-            this.serviceAgents[index].salesManagerLevel = "";
+            Object.assign(this.serviceAgents[index],initObj)
           }
         }
       },
