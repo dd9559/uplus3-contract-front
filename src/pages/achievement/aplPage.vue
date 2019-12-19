@@ -396,7 +396,7 @@
 
               <el-table-column label="公共业绩" width="280">
                 <template slot-scope="scope">
-                  <el-checkbox-group @change="text2(scope.row)" v-model="scope.row.checkbox">
+                  <el-checkbox-group @change="getPublicGrade(scope.row)" v-model="scope.row.checkbox">
                     <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
@@ -797,7 +797,7 @@
 
               <el-table-column label="公共业绩" width="280">
                 <template slot-scope="scope">
-                  <el-checkbox-group @change="text3(scope.row)" v-model="scope.row.checkbox">
+                  <el-checkbox-group @change="getPublicGrade(scope.row)" v-model="scope.row.checkbox">
                     <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
@@ -1136,7 +1136,7 @@
 
               <el-table-column label="公共业绩" width="280">
                 <template slot-scope="scope">
-                  <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox">
+                  <el-checkbox-group @change="getPublicGrade(scope.row)" v-model="scope.row.checkbox">
                     <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
                   </el-checkbox-group>
                 </template>
@@ -1469,7 +1469,6 @@
       </div>
     </el-dialog>
 
-  </div>
   </div>
 </template>
 
@@ -1892,19 +1891,8 @@
           }
         }
       },
-      text2(row) {
-        if (row.checkbox.length == 0) {
-          return
-        }
-        row.checkbox = row.checkbox.slice(-1)
-      },
-      text3(row) {
-        if (row.checkbox.length == 0) {
-          return
-        }
-        row.checkbox = row.checkbox.slice(-1)
-      },
-      text4(row) {
+      //公共业绩选择
+      getPublicGrade(row){
         if (row.checkbox.length == 0) {
           return
         }
@@ -2287,17 +2275,17 @@
             }
           }
         } else {
-          var kflag = true
+          let kflag = true
           this.addManList.forEach((item, index) => {
             for (let i = 0; i < this.clientArr.length; i++) {
               if (item.roleType == this.clientArr[i].roleType) {
                 this.$message.error("角色已经存在，请勿重新添加");
-                hflag = false
+                kflag = false
                 return false;
               }
             }
           })
-          if (hflag) {
+          if (kflag) {
             this.clientArr = this.clientArr.concat(this.addManList);
             for (let i = 0; i < this.clientArr.length; i++) {
               this.$set(this.clientArr[i], 'checkbox', [])
@@ -2307,15 +2295,6 @@
           }
         }
         this.showTips1 = false;
-      },
-      personChose: function () {
-        this.checkPerson.state = false
-        let _this = this;
-        if (this.dialogType == 3 || this.dialogType == 1) {
-          setTimeout(function () {
-            _this.$emit("close");
-          }, 50);
-        }
       },
       addSubject(data) {
         let arr = data.param;
@@ -2348,6 +2327,17 @@
         }
         this.filesList.splice(i, 1);
       },
+      //设置审核人弹窗确认操作
+      personChose: function () {
+        this.checkPerson.state = false
+        let _this = this;
+        if (this.dialogType == 3 || this.dialogType == 1) {
+          setTimeout(function () {
+            _this.$emit("close");
+          }, 50);
+        }
+      },
+      //设置审核人弹窗关闭操作
       closeCheckPerson() {
         this.checkPerson.state = false;
         let _this = this;
@@ -2540,7 +2530,7 @@
   /deep/ .dialog2In {
     width: 450px !important;
     max-height: 600px;
-    min-height: 500px;
+    /*min-height: 500px;*/
     margin-top: 13vh !important;
 
     .is-checked {
@@ -2570,8 +2560,8 @@
     }
 
     .dialog2-btn {
-      height: 100px;
-      padding-top: 20px;
+      /*height: 100px;*/
+      padding: 20px 0;
       padding-right: 30px;
       box-sizing: border-box;
       background-color: #fff;
@@ -2589,8 +2579,6 @@
         color: #000;
         border: 1px solid #e8eaf6;
       }
-
-      margin-bottom: 20px;
     }
 
     .cell {
