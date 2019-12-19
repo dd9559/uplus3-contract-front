@@ -19,10 +19,6 @@
               :label="item.value"
               :value="item.key">
             </el-option>
-            <el-option
-              label="委托合同"
-              value="6">
-            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="合同状态">

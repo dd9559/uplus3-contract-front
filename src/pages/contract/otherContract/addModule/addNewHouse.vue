@@ -64,7 +64,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250 form-label">
-            <input type="text" maxlength="20" v-model="contractForm.guestinfoCode" @input="inputCode('guestinfoCode')" placeholder="请输入内容" class="dealPrice">
+            <el-input style="width:140px;" type="text" maxlength="20" v-model="contractForm.guestinfoCode" :clearable="true" @input="inputCode('guestinfoCode')" placeholder="请输入内容"></el-input>
           </el-form-item>
           <span class="select" @click="showDialog">请选择客源</span>
           <br>
