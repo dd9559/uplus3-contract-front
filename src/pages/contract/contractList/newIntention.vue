@@ -61,7 +61,7 @@
             <div class="column-title">房源信息</div>
             <div class="form-cont">
               <el-form-item>
-                <el-form-item label="房源编号：" prop="houseno">
+                <el-form-item label="房源编号：" prop="houseno" class="paddingLeft">
                   <el-button type="primary" @click="toLayerHouse()"  v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
                   <el-button type="text" v-else>{{contractForm.houseinfoCode}}</el-button>
                 </el-form-item>
@@ -85,12 +85,12 @@
                 </el-form-item>
               </el-form-item>
 
-              <el-form-item label="房源总价：" class="disb">
+              <el-form-item label="房源总价：" class="disb paddingLeft">
                 <el-form-item>
                   <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
                   </el-input>
                 </el-form-item>
-                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="String(contractForm.houseInfo.ListingPrice).length>0">
+                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="String(contractForm.houseInfo.ListingPrice).length>0||contractForm.houseInfo.TradeInt">
                   <el-select v-model="contractForm.houseInfo.TimeUnit" :disabled="isDisabled" clearable placeholder="单位" style="width:100px;">
                     <el-option label="元" :value="1"></el-option>
                     <el-option label="元/月" :value="2"></el-option>
@@ -110,13 +110,13 @@
                 </el-input>
               </el-form-item> -->
 
-              <el-form-item label="业主信息：" class="disb" v-if="contractForm.type===4">
+              <el-form-item label="业主信息：" class="disb paddingLeft" v-if="contractForm.type==4">
 
-                <el-form-item>
+                <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameInput, trigger: 'change'}">
                   <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhoneInput, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                 </el-form-item>
 
@@ -131,7 +131,7 @@
                 </el-form-item>
 
               </el-form-item>
-              <el-form-item label="业主信息：" class="disb" required v-if="contractForm.type===5">
+              <el-form-item label="业主信息：" class="disb" required v-if="contractForm.type==5">
 
                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
                   <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
@@ -632,6 +632,33 @@ export default {
       }
     },
 
+    nameInput(rule, value, callback){
+      let namereg = /^[a-zA-Z\u4e00-\u9fa5]*$/;
+      if (!value || value == '') {
+        return callback();
+      }else if (!namereg.test(value)) {
+        callback(new Error("只能输入大小写字母和汉字"));
+      } else {
+        callback();
+      }
+    },
+
+    telPhoneInput (rule, value, callback) {
+      let myreg = /^[1][0-9]{10}$/;
+      let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+      // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+
+      if (!value || value == '') {
+        return callback();
+      }else{
+        if (!myreg.test(value)&&!myreg_.test(value)) {
+          callback(new Error("请输入正确电话号码"));
+        } else {
+          callback();
+        }
+      }
+    },
+
     rightAddr1(rule, value, callback){
       if (!value || value == '') {
         return callback(new Error("请输入城市"));
@@ -709,8 +736,9 @@ export default {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
+          this.contractForm.houseInfo.ListingPrice=''
           if(houseMsg.TradeInt===2){
-            this.$set(this.contractForm.houseInfo,'ListingPrice',this.multiply(houseMsg.ListingPrice,10000))
+            // this.$set(this.contractForm.houseInfo,'ListingPrice',this.multiply(houseMsg.ListingPrice,10000))
             // this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
             // this.contractForm.houseInfo.TimeUnit=1
             this.$set(this.contractForm.houseInfo,'TimeUnit',1)
@@ -1428,6 +1456,9 @@ export default {
   }
   .textlengthbox {
     position: relative;
+    /deep/.el-form-item__label{
+      padding-left: 9px;
+    }
   }
   .textLength {
     position: absolute;
@@ -1466,7 +1497,11 @@ export default {
     margin-right: 0;
   }
 }
-
+.paddingLeft{
+  /deep/.el-form-item__label{
+    padding-left: 9px;
+  }
+}
 </style>
 
 

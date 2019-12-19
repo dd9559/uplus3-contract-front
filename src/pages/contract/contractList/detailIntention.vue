@@ -32,9 +32,10 @@
 									<div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
 								</li>
 								<li>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 0&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 2&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 3&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
+									<div class="div1" v-if="!detailData.houseInfo.ListingPrice"><span>房源价格：</span>--</div>
 									<div class="div1" v-if="detailData.houseInfo.Square"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
 									<div class="div1" v-else><span>建筑面积：</span>--</div>
 									<div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
@@ -52,7 +53,7 @@
 										<span>业主姓名：</span>
 										<el-tooltip class="item" effect="dark" :content="ownerInfo[0].name" placement="bottom">
                       <div class="contractDetailCode">
-                        {{ownerInfo[0].name}}
+                        {{ownerInfo[0].name | nullData}}
                       </div>
                     </el-tooltip>
 									</div>
@@ -135,9 +136,9 @@
 					<div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHeight() }">
 						<!-- 业主 -->
 						<div class="classify" v-if="this.sellerList.length>0">
-							<div class="ht-title">业主</div>
-							<div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+							<div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">业主</div>
+								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
 									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" :scane="scaneData">
@@ -160,9 +161,9 @@
 						</div>
 						<!-- 客户 -->
 						<div class="classify" v-if="this.buyerList.length>0">
-							<div class="ht-title">客户</div>
-							<div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+							<div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">客户</div>
+								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
 									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" :scane="scaneData">
@@ -185,9 +186,9 @@
 						</div>
 						<!-- 其他 -->
 						<div class="classify" v-if="otherList.length>0">
-							<div class="ht-title">其他</div>
-							<div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state||item.value.length>0">
-								<p class="small-title" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)"><i v-if="item.isrequire">*</i>{{item.title}}</p>
+							<div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">其他</div>
+								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
 									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" :scane="scaneData">
@@ -1029,7 +1030,10 @@ export default {
       let param = {
         flowType:type,
         bizCode:this.code
-      };
+			};
+			if(type===12){
+				param.bizCode=this.detailData.signingId
+			}
       if(!param.bizCode){
         return
       }
@@ -1326,7 +1330,16 @@ export default {
 				}
 			}
 		}
-		
+		/deep/.el-tabs{
+      .el-tabs__header {
+        margin-bottom: 0;
+      }
+      .el-tabs__item {
+        font-size: 18px;
+        height: 50px;
+        line-height: 50px;
+      }
+    }
 		.footer {
 			display: flex;
 			justify-content: space-between;
@@ -1398,32 +1411,30 @@ export default {
 		.contractSubject {
 			padding: 40px;
 		}
-
-		.third-tab{
-			padding: 20px 30px 30px 30px;
-		}
-		.classify{
-			margin-bottom: 30px;
-			border-bottom: 1px solid #EDECF0;
-			padding-bottom: 15px;
-			.ht-title{
-				color: #32485F;
-				font-size: 16px;
-				margin-bottom: 15px;
-			}
-			.small-col{
-				margin-bottom: 20px;
-				padding-left: 10px;
-				.small-title{
-					font-size: 14px;
-					color: #6C7986;
-					margin-bottom: 15px;
-					i{
-						color: #FF3E3E;
-					}
-				}
-			}
-		}
+		.classify {
+      position: relative;
+      .small-col {
+        padding-left: 10px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid @border-ED;
+        .ht-title {
+          font-size: 16px;
+          color: @color-324;
+          position: absolute;
+          top: 10px;
+          left: 5px;
+        }
+        .small-title {
+          font-size: 14px;
+          padding: 10px 0;
+          color: @color-6c;
+          > i {
+            color: @color-FF;
+          }
+        }
+      }
+    }
 		.ulData{
 			display: flex;
 			flex-wrap:wrap;
@@ -1522,6 +1533,10 @@ export default {
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;
+}
+.dataBank{
+	overflow-y: auto;
+	// padding-top: 10px;
 }
 </style>
 
