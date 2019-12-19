@@ -289,7 +289,7 @@
               <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span>
             </div>
-            <div v-else>-</div>
+            <div v-else class="blue">待提审</div>
           </template>
         </el-table-column>
         <el-table-column label="上传合同主体时间" min-width="120" key="uploadTime">
@@ -468,7 +468,9 @@ export default {
   data() {
     return {
       tableBox:null,
-      contractForm: {},
+      contractForm: {
+        contState:3
+      },
       keyword: "",
       signDate: [],
       tableData: [],

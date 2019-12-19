@@ -125,7 +125,7 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.dealAgentStoreName.length>7">
+            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.dealAgentStoreName&&contractForm.dealAgentStoreName.length>7">
               <span>
                 <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
               </span>
@@ -150,7 +150,7 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-             <el-tooltip class="item" effect="dark" :content="contractForm.shopOwnerStoreName" placement="top" v-if="contractForm.shopOwnerStoreName.length>7">
+             <el-tooltip class="item" effect="dark" :content="contractForm.shopOwnerStoreName" placement="top" v-if="contractForm.shopOwnerStoreName&&contractForm.shopOwnerStoreName.length>7">
               <span>
                 <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
               </span>
@@ -325,7 +325,9 @@ export default {
           // 放款金额
           contractDetail.loanAmount= contractDetail.contractInfo.loanAmount
           // 期限时间
-          this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          if(contractDetail.contractInfo.termStart){
+            this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          }
           //金融专员
           contractDetail.financeCommissioner= contractDetail.contractInfo.financeCommissioner
           //经办人
