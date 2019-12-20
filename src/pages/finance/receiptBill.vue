@@ -572,7 +572,7 @@
                 }
                 catch (e) {
                 }
-                return this.$tool.cutFloat({val: Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m), max: 999999999.99});
+                return this.$tool.toFixed(Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m),2);
             },
             inputOnly: function (type, index) {
                 if (type === 'userName') {
@@ -649,7 +649,7 @@
                 if(this.getPayMethod(val.payMethod)){
                     this.$set(val,'fee','')
                 }else{
-                  if(val.amount&&val.payMethod===7&&this.firstCreate.content.fee&&this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod])>this.firstCreate.content.fee['7MaxLimit']){//判断是否选择的储蓄卡且手续费达到封顶额度
+                  if(val.amount&&val.payMethod===7&&this.firstCreate.content.fee&&this.firstCreate.content.fee['7MaxLimit']&&this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod])>this.firstCreate.content.fee['7MaxLimit']){//判断是否选择的储蓄卡且手续费达到封顶额度
                     val.fee=this.firstCreate.content.fee['7MaxLimit']
                   }else{
                     val.amount&&this.$set(val,'fee',this.multiply(val.amount,this.firstCreate.content.fee[val.payMethod]))
