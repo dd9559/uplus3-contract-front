@@ -469,7 +469,6 @@ export default {
     return {
       tableBox:null,
       contractForm: {
-        contState:3,
         dealAgentId:'',
       },
       keyword: "",

@@ -325,7 +325,7 @@
                     </el-table-column>
                   </el-table>
                 </div>
-                <div class="table" style="width:1200px;" v-if="contType!='1'">
+                <div class="table" style="width:1200px;" v-if="contType!='1'&&employeeData.hasServiceAgent===1">
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
