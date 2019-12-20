@@ -2314,7 +2314,7 @@ export default {
     },
     //合同主体的删除
     ZTdelectData(index,path,type){
-      if(this.contractDetail.contState.value===3&&type==="main"||this.contractDetail.contractEntrust.entrustState===3&&type==="WT"){
+      if(this.contractDetail.contState.value===3&&type==="main"||this.contractDetail.contractEntrust&&this.contractDetail.contractEntrust.entrustState===3&&type==="WT"){
         if(this.uploadList.length>1&&type==="main"||this.entrustUploadList.length>1&&type==="WT"){
           let param = {
             contId:this.id,
