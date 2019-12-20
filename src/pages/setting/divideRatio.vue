@@ -422,7 +422,7 @@
                             this.$message(`${arrForm[i].title}分成比例不能为空`)
                             return
                         }
-                        if(this.uniqueFn(arrForm[i].arr).length < arrForm[i].arr.length) {
+                        if(arrForm[i].arr.length===k+1&&this.uniqueFn(arrForm[i].arr).length < arrForm[i].arr.length) {
                             this.$message({message: `${arrForm[i].title}有重复角色存在，请核实`, type: 'warning'})
                             return
                         }
