@@ -1,7 +1,7 @@
 <template>
   <div class="view-container" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" v-if="dictionary['9']">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
           <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
@@ -492,7 +492,7 @@ export default {
         "10": "", //合同类型（创建线上  打印空白）
         "65":"",//线下合同类型
         "71":"",//合同类型（筛选条件）
-        "9": [{key:3,value:"已签约"}], //合同状态
+        "9": "", //合同状态
         "51": "", //审核状态
         "6": "", //变更/解约
         "14": "", //结算状态
