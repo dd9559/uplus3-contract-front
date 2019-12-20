@@ -474,7 +474,6 @@ export default {
     },
     //审核弹窗
     toCheck(val){
-      debugger
       this.id=val.cid//合同id
       this.signedId=val.id//签后ID
       if(!val.contTypes){
