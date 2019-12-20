@@ -160,7 +160,7 @@
         <el-table-column label="待收款佣金（元）" prop="waitingForPay" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="实收/应收（交易服务费）" min-width="100">
           <template slot-scope="scope">
-            {{scope.row.serviceMoney|formatNull}}
+            <span>{{scope.row.serviceMoney|formatNull}}</span>
           </template>
         </el-table-column>
         <el-table-column label="实收/应收（成交违约金）" min-width="100">
