@@ -469,7 +469,8 @@ export default {
     return {
       tableBox:null,
       contractForm: {
-        contState:3
+        contState:3,
+        dealAgentId:'',
       },
       keyword: "",
       signDate: [],
@@ -491,7 +492,7 @@ export default {
         "10": "", //合同类型（创建线上  打印空白）
         "65":"",//线下合同类型
         "71":"",//合同类型（筛选条件）
-        "9": "", //合同状态
+        "9": [{key:3,value:"已签约"}], //合同状态
         "51": "", //审核状态
         "6": "", //变更/解约
         "14": "", //结算状态
@@ -1178,6 +1179,7 @@ export default {
       // this.getEmploye(data.depId)
       this.contractForm.dealAgentStoreId=data.depId
       this.contractForm.depName=data.name
+      this.contractForm.dealAgentId=''
 
       this.handleNodeClick(data)
     },

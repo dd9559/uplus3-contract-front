@@ -70,14 +70,15 @@
                 </el-popover>
               </div>
               <ul class="contract-msglist">
-                <li>合同：<span @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
-                <li>房源：<span>{{scope.row.honseCode}}</span> {{scope.row.showOwnerName}}</li>
+                <li>合同：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.code}}</span></li>
+                <li v-if="scope.row.recordType.value===2">纸质合同编号：<span class="blueColor" @click="toDetail(scope.row)">{{scope.row.pCode}}</span></li>
+                <li v-if="scope.row.honseCode">房源：<span>{{scope.row.honseCode}}</span> {{scope.row.showOwnerName}}</li>
                 <li>客源：<span>{{scope.row.guestCode}}</span> {{scope.row.showCustName}}</li>
               </ul>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" min-width="60" fixed>
+        <el-table-column label="合同类型" min-width="80" fixed>
           <template slot-scope="scope">
             <span v-if="scope.row.contTypes">
               <!-- {{scope.row.loanType===7?"全款买卖":"贷款买卖"}} -->
@@ -100,7 +101,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.contTypes">
               <span>{{scope.row.price}} 元</span>
-              <!-- <span v-for="item in dictionary['507']" :key="item.key" v-if="scope.row.contType.value===1&&item.key===scope.row.timeUnit"> / {{item.value}}</span> -->
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="scope.row.contType.value===1&&item.key===scope.row.timeUnit"> / {{item.value}}</span>
             </div>
             <span v-else>-</span>
           </template>
@@ -111,19 +112,19 @@
             <p>{{scope.row.dealName}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="签约时间" min-width="95">
+        <el-table-column label="签约时间" min-width="110">
           <template slot-scope="scope">
             {{Number(scope.row.signDate)|timeFormat_}}
           </template>
         </el-table-column>
-        <el-table-column label="签约方式" prop="recordType.label" min-width="60">
+        <el-table-column label="签约方式" prop="recordType.label" min-width="80">
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="90">
+        <el-table-column label="可分配业绩 (元)" min-width="110">
           <template slot-scope="scope">
             {{scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}
           </template>
         </el-table-column>
-        <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="80">
+        <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="100">
           <template slot-scope="scope">
             <template v-if="scope.row.state">
               <span v-if="scope.row.state.value===-1" class="blue">{{scope.row.state.label}}</span>
@@ -226,7 +227,9 @@ export default {
   },
   data(){
     return{
-      contractForm: {},
+      contractForm: {
+        empId:''
+      },
       keyword: "",
       signDate: [],
       tableData: [],
@@ -445,6 +448,7 @@ export default {
       // this.getEmploye(data.depId)
       this.contractForm.depId=data.depId;
       this.contractForm.depName=data.name;
+      this.contractForm.empId='';
 
       this.handleNodeClick(data);
     },
@@ -696,13 +700,10 @@ export default {
   .contract-msglist {
     > li {
       text-align: left;
-      &:first-of-type{
-        > span{
-          color: @color-blue;
-          cursor: pointer;
-        }
+      .blueColor{
+        color: @color-blue;
+        cursor: pointer;
       }
-
     }
   }
 }
