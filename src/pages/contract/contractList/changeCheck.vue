@@ -86,7 +86,9 @@ export default {
   },
   data(){
     return{
-      contractForm:{},
+      contractForm:{
+        dealAgentId:''
+      },
       signData:[],
       list:[],
       total:0,
@@ -182,6 +184,7 @@ export default {
     depHandleClick(data) {
       this.contractForm.dealAgentStoreId=data.depId;
       this.contractForm.depName=data.name;
+      this.contractForm.dealAgentId='';
       this.handleNodeClick(data);
     },
     //导出

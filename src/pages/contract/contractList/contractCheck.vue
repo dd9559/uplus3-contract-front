@@ -241,7 +241,9 @@ export default {
   data(){
     return{
       tableBox:null,
-      contractForm: {},
+      contractForm: {
+        dealAgentId:''
+      },
       keyword: "",
       signDate: [],
       tableData: [],
@@ -552,6 +554,7 @@ export default {
       // this.getEmploye(data.depId)
       this.contractForm.dealAgentStoreId=data.depId;
       this.contractForm.depName=data.name;
+      this.contractForm.dealAgentId='';
 
       this.handleNodeClick(data);
     },
