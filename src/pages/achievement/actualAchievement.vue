@@ -105,6 +105,17 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="签后审核状态" prop="contractType">
+          <el-select v-model="propForm.afterSigningStatus" class="w120" :clearable="true">
+            <el-option
+              v-for="item in dictionary['756']"
+              :key="item.value"
+              :label="item.value"
+              :value="item.sort"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="合作方式" prop="contractType">
           <el-select v-model="propForm.joinMethods" class="w120" :clearable="true">
             <el-option
@@ -269,7 +280,7 @@
           </el-table-column>
 
           <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
-          <el-table-column prop="lastState" label="签后审核状态" min-width="90" :formatter="nullFormatter"></el-table-column>
+          <el-table-column prop="signinState.label" label="签后审核状态" min-width="90" :formatter="nullFormatter"></el-table-column>
           <el-table-column label="上传合同主体时间" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.uploadTime|formatTime(false)}}</p>
@@ -671,6 +682,7 @@
           joinMethods: "", //合作方式
           recordType: "", //签约方式2.3.1新加
           auditTime: "",//审核时间
+          afterSigningStatus: "",//签后审核状态
         },
         shows: false,
         dialogType: 0, //0代表审核  1代表编辑  2代表反审核  3代表业绩分成
@@ -681,7 +693,8 @@
           "10": "", //合同类型
           "21": "", //分成状态
           "53": "", //合作方式
-          "64": "" //签约方式
+          "64": "", //签约方式
+          "756": "", //签后审核状态
         },
         beginData: false,
         currentPage: 1,
@@ -816,6 +829,7 @@
           this.propForm.auditTime = session.auditStartTime
             ? [session.auditStartTime, session.auditEndTime]
             : [];
+          this.propForm.afterSigningStatus=session.afterSigningStatus//新加
 
           if (this.propForm.contractType[0] != "") {
             for (let i = 0; i < this.propForm.contractType.length; i++) {
@@ -1141,6 +1155,8 @@
             recordType: this.propForm.recordType
           };
         }
+        //新加
+        Object.assign(this.ajaxParam,{afterSigningStatus:this.propForm.afterSigningStatus})
         if(this.propForm.auditTime&&this.propForm.auditTime.length>0){
           Object.assign(this.ajaxParam,{auditStartTime:this.propForm.auditTime[0],auditEndTime:this.propForm.auditTime[1]})
         }
@@ -1161,21 +1177,6 @@
         this.getData(this.ajaxParam, typeshow, 2);
       },
       resetFormFn() {
-        this.ajaxParam = {
-          dealAgentStoreId: "", //部门
-          dealAgentId: "", //员工
-          contractType: "", //合同类型
-          distributionType: "", //分成类型
-          achievementStatus: "", //业绩类型
-          startTime: "", //开始时间
-          endTime: "", //结束时间
-          keyword: "", //关键字
-          joinMethods: "",
-          recordType: "",
-          pageNum: this.currentPage,
-          pageSize: this.pageSize
-        };
-        this.ajaxParam.pageNum = 1;
         this.currentPage = 1;
         this.propForm = {
           department: "", //部门
@@ -1191,6 +1192,7 @@
           joinMethods: "",
           recordType: "",
           auditTime: "",
+          afterSigningStatus:""
         };
         this.EmployeList = [];
       },
