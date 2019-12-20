@@ -19,9 +19,9 @@
         <div class="dataBank" v-if="!isWT">
           <p class="fontBold">资料库</p>
           <div class="classify" v-if="sellerList.length>0">
-            <p class="title">业主</p>
             <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0">
-              <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <p class="title">业主</p>
+              <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
                 <li v-for="(item_,index_) in item.value" :key="item_.index">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
@@ -36,9 +36,9 @@
             </div>
           </div>
           <div class="classify" v-if="buyerList.length>0">
-            <p class="title">客户</p>
             <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="item.value.length>0">
-              <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <p class="title">客户</p>
+              <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
                 <li v-for="(item_,index_) in item.value" :key="item_.index">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
@@ -53,9 +53,9 @@
             </div>
           </div>
           <div class="classify" v-if="otherList.length>0">
-            <p class="title">其他</p>
             <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="item.value.length>0">
-              <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+              <p class="title">其他</p>
+              <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
               <ul class="ulData">
                 <li v-for="(item_,index_) in item.value" :key="item_.index">
                   <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
@@ -363,7 +363,6 @@ export default {
     },
     //主合同驳回
     confirm(){
-      debugger
       if(this.checkList.length>0){
         let param
         if(this.checkList.length===2){
@@ -508,17 +507,20 @@ export default {
 .dataBank {
   padding: 0 30px 0 0;
   .classify {
-    padding: 10px 0 10px 10px;
-    &:last-of-type{
-      border-bottom: none;
-    }
-    .title {
-      font-size: 16px;
-      color: @color-324;
-    }
+    position: relative;
     .one_ {
       padding-left: 10px;
-      > p {
+      padding-top: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid @border-ED;
+      .title {
+        font-size: 16px;
+        color: @color-324;
+        position: absolute;
+        top: 10px;
+        left: 5px;
+      }
+      .title_ {
         font-size: 14px;
         padding: 10px 0;
         color: @color-6c;
@@ -528,6 +530,27 @@ export default {
       }
     }
   }
+  // .classify {
+  //   padding: 10px 0 10px 10px;
+  //   &:last-of-type{
+  //     border-bottom: none;
+  //   }
+  //   .title {
+  //     font-size: 16px;
+  //     color: @color-324;
+  //   }
+  //   .one_ {
+  //     padding-left: 10px;
+  //     > p {
+  //       font-size: 14px;
+  //       padding: 10px 0;
+  //       color: @color-6c;
+  //       > i {
+  //         color: @color-FF;
+  //       }
+  //     }
+  //   }
+  // }
 }
 .rejectDialog{
   .checkList{
