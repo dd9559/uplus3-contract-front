@@ -134,9 +134,15 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="100">
+        <el-table-column label="上传合同主体时间" min-width="110">
           <template slot-scope="scope">
             <span v-if="scope.row.upTime">{{Number(scope.row.upTime)|timeFormat_hm}}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核时间" min-width="110">
+          <template slot-scope="scope">
+            <span v-if="scope.row.updateTime&&scope.row.updateTime!='-'">{{Number(scope.row.updateTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -272,7 +278,7 @@ export default {
     let res=this.getDataList
     if(res&&(res.route===this.$route.path)){
       this.tableData = res.data.list
-      this.total = res.data.count
+      this.total = res.data.total
       let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
       this.contractForm = Object.assign({},this.contractForm,session.query,{contTypes:session.query.contTypes.length>0?session.query.contTypes.split(','):''})
       if(this.contractForm.contTypes){
