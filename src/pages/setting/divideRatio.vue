@@ -4,12 +4,12 @@
         <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
             <el-form :inline="true" :model="searchForm" size="small">
                 <el-form-item label="体系">
-                    <el-select class="w240" v-model="searchForm.systemId">
+                    <el-select class="w240" v-model="searchForm.systemId" :clearable="true">
                         <el-option v-for="item in systemOpt" :key="item.key" :label="item.value" :value="item.key"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="合同类型">
-                    <el-select v-model="searchForm.contType">
+                    <el-select v-model="searchForm.contType" :clearable="true">
                         <el-option label="租赁" value="1"></el-option>
                         <el-option label="买卖/代办" value="2"></el-option>
                     </el-select>

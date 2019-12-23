@@ -247,7 +247,7 @@
                                             <ul class="steps-img">
                                                 <el-tooltip class="item" effect="dark" :content="ies.name" placement="bottom" v-for="(ies,i) in item.value" :key="ies.name+i">
                                                     <li @click="previewPhoto(item.value,i)">
-                                                        <img class="suolue-img" :src="ies.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(ies.fileType)" width="70%">
+                                                        <img class="suolue-img" :src="ies.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(ies.fileType)" width="70%" height="85px">
                                                         <div class="img" v-else>
                                                             <uploadCell :type="stepsTypeImg(ies.path)"></uploadCell>
                                                         </div>

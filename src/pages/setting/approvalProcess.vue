@@ -13,7 +13,7 @@
             <div class="input-search" v-if="version==2">
                 <label class="w-70">合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
-                    <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in dictionary['73']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
             <div class="input-search">
@@ -133,7 +133,7 @@
                     <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
                         <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
-                            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                            <el-option v-for="item in dictionary['73']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
                     <div class="aduit-input must mr-35">
@@ -322,7 +322,7 @@
                 isAudit: "",
                 nodeList: [],
                 dictionary: {
-                    '39':'', //合作方式
+                    '73':'', //合作方式
                     '573':'', //流程类型
                     '659':'职级类型',
                     '660':'部门类型',
