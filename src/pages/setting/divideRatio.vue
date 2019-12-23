@@ -533,6 +533,7 @@
                 color: @color-red;
             }
             .remark-icon {
+                cursor: pointer;
                 color: #ccc;
                 font-weight: normal;
             }
