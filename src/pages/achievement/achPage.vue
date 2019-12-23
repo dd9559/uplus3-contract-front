@@ -1149,11 +1149,11 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="审核状态(时间)">
+              <el-table-column label="审核状态(时间)" min-width="120">
                 <template slot-scope="scope">
                   <div
                     v-if="scope.row.auditStatus"
-                  >{{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})</div>
+                  >{{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatTime(false)}})</div>
                   <div v-else>-</div>
                 </template>
               </el-table-column>
