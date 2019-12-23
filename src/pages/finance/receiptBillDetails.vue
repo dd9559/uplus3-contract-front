@@ -235,7 +235,14 @@
           result: type,
           remark: this.layer.reasion
         }
-        this.fullscreenLoading = true
+        if (type === 2 && this.layer.reasion.length === 0) {
+          this.$message({
+            message: '请输入拒绝原因'
+          })
+          return;
+        } else {
+          this.fullscreenLoading = true
+        }
         this.$ajax.postJSON('/api/machine/audit', param).then(res => {
           res = res.data
           if (res.status === 200) {
@@ -336,6 +343,7 @@
 
   .reasion-dialog {
     display: flex;
+    margin-top: @margin-10;
     > label {
       min-width: 46px;
     }
