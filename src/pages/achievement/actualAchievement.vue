@@ -280,7 +280,12 @@
           </el-table-column>
 
           <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
-          <el-table-column prop="signinState.label" label="签后审核状态" min-width="90" :formatter="nullFormatter"></el-table-column>
+          <el-table-column label="签后审核状态" min-width="90">
+            <template slot-scope="scope">
+              <span v-if="scope.row.signinState" :class="[{'blue-txt':scope.row.signinState.value===-1},{'yellow-txt':scope.row.signinState.value===0},{'green-txt':scope.row.signinState.value===1},{'red-txt':scope.row.signinState.value===2}]">{{scope.row.signinState.label}}</span>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
           <el-table-column label="上传合同主体时间" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.uploadTime|formatTime(false)}}</p>
@@ -1329,6 +1334,18 @@
 <style scoped lang="less">
   @import "~@/assets/less/lsx.less";
   @import "~@/assets/common.less";
+  .blue-txt {
+    color: @color-blue;
+  }
+  .yellow-txt {
+    color: @color-yellow;
+  }
+  .green-txt {
+    color: @color-green;
+  }
+  .red-txt {
+    color: @color-warning;
+  }
 
   .layout {
     .check-btn span {
@@ -1411,6 +1428,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
 
     .blue {
       color: #478de3;

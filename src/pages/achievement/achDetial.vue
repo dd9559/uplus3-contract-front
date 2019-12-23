@@ -251,124 +251,126 @@
         </el-table>
       </div>
 
-      <h1 class="f14" v-if="contType==2||contType==3">交易服务费佣金分成
-      </h1>
-      <p class="f14" v-if="contType==2||contType==3" style="color:red">
-        交易服务费佣金可分配业绩：<span>{{tradeFee}}元</span>
-      </p>
-      <div class="ach-divide-list" v-if="contType==2||contType==3">
-        <el-table
-          :data="serviceach"
-          style="width: 100%"
-          border
-        >
-          <!-- roleType 分成人角色类型 :
-              房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
-              客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
-          <el-table-column
+      <template v-if="hasServiceAgent">
+        <h1 class="f14" v-if="contType==2||contType==3">交易服务费佣金分成
+        </h1>
+        <p class="f14" v-if="contType==2||contType==3" style="color:red">
+          交易服务费佣金可分配业绩：<span>{{tradeFee}}元</span>
+        </p>
+        <div class="ach-divide-list" v-if="contType==2||contType==3">
+          <el-table
+            :data="serviceach"
+            style="width: 100%"
+            border
+          >
+            <!-- roleType 分成人角色类型 :
+                房源>0:录入、1:维护、2:独家、3:房勘、4:钥匙、5:委托、6:建盘
+                客源>7:主客方、8:推荐人、9:签约人、10:A/M、11:协议方、12:协议方2-->
+            <el-table-column
 
-            label="角色类型"
-          >
-            <template slot-scope="scope">
-              <div>
-                <p>{{scope.row.roleName}}</p>
-              </div>
-            </template>
-          </el-table-column>
+              label="角色类型"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <p>{{scope.row.roleName}}</p>
+                </div>
+              </template>
+            </el-table-column>
 
-          <!-- ratio -->
-          <el-table-column
-            prop="ratio"
-            label="分成比例(%)"
-          >
-          </el-table-column>
+            <!-- ratio -->
+            <el-table-column
+              prop="ratio"
+              label="分成比例(%)"
+            >
+            </el-table-column>
 
-          <!-- assignor -->
-          <el-table-column
-            prop="assignor"
-            label="经纪人"
-          >
-          </el-table-column>
+            <!-- assignor -->
+            <el-table-column
+              prop="assignor"
+              label="经纪人"
+            >
+            </el-table-column>
 
-          <el-table-column label="经纪人工号" width="100">
-            <template slot-scope="scope">
-              <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
-              <p v-else>-</p>
-            </template>
-          </el-table-column>
-          <el-table-column label="经纪人级别" width="100">
-            <template slot-scope="scope">
-              <p v-if="scope.row.assignorLevel">{{scope.row.assignorLevel}}</p>
-              <p v-else>-</p>
-            </template>
-          </el-table-column>
-          <el-table-column label="销售经理级别" width="100">
-            <template slot-scope="scope">
-              <p v-if="scope.row.salesManagerLevel">{{scope.row.salesManagerLevel}}</p>
-              <p v-else>-</p>
-            </template>
-          </el-table-column>
+            <el-table-column label="经纪人工号" width="100">
+              <template slot-scope="scope">
+                <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+                <p v-else>-</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="经纪人级别" width="100">
+              <template slot-scope="scope">
+                <p v-if="scope.row.assignorLevel">{{scope.row.assignorLevel}}</p>
+                <p v-else>-</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="销售经理级别" width="100">
+              <template slot-scope="scope">
+                <p v-if="scope.row.salesManagerLevel">{{scope.row.salesManagerLevel}}</p>
+                <p v-else>-</p>
+              </template>
+            </el-table-column>
 
-          <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
-          <el-table-column
-            label="在职状况"
-          >
-            <template slot-scope="scope">
-              <div v-if="scope.row.isJob">
-                <p>{{scope.row.isJob.label}}</p>
-              </div>
-            </template>
-          </el-table-column>
+            <!-- isJob  在职状态(0:离职  1:在职 2:待入职) -->
+            <el-table-column
+              label="在职状况"
+            >
+              <template slot-scope="scope">
+                <div v-if="scope.row.isJob">
+                  <p>{{scope.row.isJob.label}}</p>
+                </div>
+              </template>
+            </el-table-column>
 
-          <!-- shopkeeper -->
-          <el-table-column
-            label="店长"
-          >
-            <template slot-scope="scope">
-              <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
-              <span v-else>-</span>
-            </template>
-          </el-table-column>
-          <!-- level4 -->
-          <el-table-column
-            prop="level4"
-            label="单组"
-            v-if="$route.query.version=='0'"
-          >
-          </el-table-column>
-          <!-- level3 -->
-          <el-table-column
-            prop="level3"
-            label="门店"
-          >
-          </el-table-column>
+            <!-- shopkeeper -->
+            <el-table-column
+              label="店长"
+            >
+              <template slot-scope="scope">
+                <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
+                <span v-else>-</span>
+              </template>
+            </el-table-column>
+            <!-- level4 -->
+            <el-table-column
+              prop="level4"
+              label="单组"
+              v-if="$route.query.version=='0'"
+            >
+            </el-table-column>
+            <!-- level3 -->
+            <el-table-column
+              prop="level3"
+              label="门店"
+            >
+            </el-table-column>
 
-          <!-- amaldar -->
-          <el-table-column
-            prop="amaldar"
-            label="总监"
-            :formatter="nullFormatter"
-          >
-          </el-table-column>
+            <!-- amaldar -->
+            <el-table-column
+              prop="amaldar"
+              label="总监"
+              :formatter="nullFormatter"
+            >
+            </el-table-column>
 
-          <!-- manager -->
-          <el-table-column
-            prop="manager"
-            label="副总"
-            :formatter="nullFormatter"
-          >
-          </el-table-column>
-          <el-table-column
-            label="公共业绩">
-            <template slot-scope="scope">
-              <div v-if="scope.row.place==-1">--</div>
-              <div v-if="scope.row.place==0">门店公共业绩</div>
-              <div v-if="scope.row.place==1">公司公共业绩</div>
-              <div v-if="scope.row.place==2">大区公共业绩</div>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+            <!-- manager -->
+            <el-table-column
+              prop="manager"
+              label="副总"
+              :formatter="nullFormatter"
+            >
+            </el-table-column>
+            <el-table-column
+              label="公共业绩">
+              <template slot-scope="scope">
+                <div v-if="scope.row.place==-1">--</div>
+                <div v-if="scope.row.place==0">门店公共业绩</div>
+                <div v-if="scope.row.place==1">公司公共业绩</div>
+                <div v-if="scope.row.place==2">大区公共业绩</div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </template>
 
       <h1 class="f14">审核信息</h1>
 
@@ -630,181 +632,182 @@
 </template>
 
 <script>
-    import {FILTER} from "@/assets/js/filter"
-    import {MIXINS} from "@/assets/js/mixins";
+  import {FILTER} from "@/assets/js/filter"
+  import {MIXINS} from "@/assets/js/mixins";
 
-    export default {
-        mixins: [FILTER, MIXINS],
-        data() {
-            return {
-                contDataFiles: [], //资料库图片缩略图
-                mainDataFiles: [], //合同主体图片缩略图
-                preloadList: [],
-                preloadFiles: [],
-                auditIds: '',
-                aplremark: '',
-                inputMax: 200,
-                aplman: '',
-                aplrole: '',
-                aplcontent: '',
-                aplurl: [],
-                aplid: '',
-                aplDialog: false,
-                imgList: [],
-                shensuArr: [],
-                AMData: [],
-                AMShow: false,
-                recordData: [],
-                recordShow: false,
-                shows: true,
-                houseArr: [], //房源列表
-                clientArr: [], //客源列表
-                examineDate: "", //审核时间
-                comm: "", //可分配业绩
-                remark: "",
-                contCode: '',
-                entrance: '',
-                aId: '',
-                checkArr: [],
-                contractId2: '',
-                serviceach: [],
-                filesList: [],
-                fujian: false,
-                contType: '',
-                tradeFee: 0
-            };
+  export default {
+    mixins: [FILTER, MIXINS],
+    data() {
+      return {
+        contDataFiles: [], //资料库图片缩略图
+        mainDataFiles: [], //合同主体图片缩略图
+        preloadList: [],
+        preloadFiles: [],
+        auditIds: '',
+        aplremark: '',
+        inputMax: 200,
+        aplman: '',
+        aplrole: '',
+        aplcontent: '',
+        aplurl: [],
+        aplid: '',
+        aplDialog: false,
+        imgList: [],
+        shensuArr: [],
+        AMData: [],
+        AMShow: false,
+        recordData: [],
+        recordShow: false,
+        shows: true,
+        houseArr: [], //房源列表
+        clientArr: [], //客源列表
+        examineDate: "", //审核时间
+        comm: "", //可分配业绩
+        remark: "",
+        contCode: '',
+        entrance: '',
+        aId: '',
+        checkArr: [],
+        contractId2: '',
+        serviceach: [],
+        filesList: [],
+        fujian: false,
+        contType: '',
+        tradeFee: 0,
+        hasServiceAgent: false,//是否勾选交易服务费佣金分成
+      };
+    },
+    created() {
+      this.contType = this.$route.query.contType
+      this.contCode = this.$route.query.contCode
+      this.entrance = this.$route.query.entrance
+      this.aId = this.$route.query.aId
+      this.contractId2 = this.$route.query.contractId2
+      //合同边和获取业绩详情
+      this.setPath(this.$tool.getRouter(['二手房', '业绩', '应收业绩', '业绩详情'], 'actualAchievement'));
 
-        },
-        created() {
-            this.contType = this.$route.query.contType
-            this.contCode = this.$route.query.contCode
-            this.entrance = this.$route.query.entrance
-            this.aId = this.$route.query.aId
-            this.contractId2 = this.$route.query.contractId2
-            //合同边和获取业绩详情
-            this.setPath(this.$tool.getRouter(['二手房', '业绩', '应收业绩', '业绩详情'], 'actualAchievement'));
-
-            this.getData()
-        },
-        methods: {
-            getData() {
-                let param = {contId: this.contractId2, entrance: this.entrance, aId: this.aId};
-                this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
-                    let data = res.data;
-                    if (res.status === 200) {
-                        this.auditIds = data.data.auditIds
-                        this.shensuArr = data.data.appeals
-                        for (let i = 0; i < this.shensuArr.length; i++) {
-                            this.shensuArr[i].voucherUrl = this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
-                        }
-                        this.houseArr = data.data.houseAgents;
-                        this.clientArr = data.data.customerAgents;
-                        this.serviceach = data.data.serviceAgents
-                        this.tradeFee = data.data.tradeFee
-                        if (res.data.data.distributionAgreement && JSON.parse(res.data.data.distributionAgreement).length > 0) {
-                            this.fujian = true
-                            let pathList = JSON.parse(res.data.data.distributionAgreement);
-                            this.filesList = pathList;
-                            let preloadList = [];
-                            pathList.forEach((item, index) => {
-                                //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-                                if (this.isPictureFile(item.fileType)) {
-                                    preloadList.push(item.path);
-                                }
-                            });
-                            this.fileSign(preloadList, "preload").then(res => {
-                                this.contDataFiles = res;
-                            });
-                        }
-                        if (data.data.achievements) {
-                            this.checkArr = data.data.achievements;  //详情的审核信息
-
-                        } else {
-                            this.checkArr = [];
-                        }
-                        this.comm = data.data.comm;
-                    }
-                }).catch(err => {
-                    this.$message({message: err})
-                })
-            },
-            close() {
-                this.aplremark = ''
-            },
-            itemht(row) {
-                this.aplman = row.appealName
-                this.aplrole = row.roles
-                this.aplcontent = row.appealContent
-                this.aplurl = row.voucherUrl
-                this.aplid = row.id
-                this.aplDialog = true
-            },
-            trim(str) {
-                return str.replace(/(^\s*)|(\s*$)/g, "")
-            },
-            pass(operation='yes') {
-                let param = {
-                    id: this.aplid,
-                    examineRemark: this.aplremark
-                }
-                if (operation==='no'&&this.trim(this.aplremark).length == 0) {
-                    this.$message({message: "请填写备注信息！"})
-                    return
-                }
-                let url=operation==='yes'?'/appeal/appealAdopt':'/appeal/appealReject'
-                this.$ajax.post(`/api${url}`, param, 2).then(res => {
-                    if (res.status == 200) {
-                        this.$message({message: "操作成功", type: "success"})
-                        this.aplDialog = false
-                        this.getData()
-                    }
-                }).catch(err => {
-                    this.$message({message: err})
-                })
-            },
-            getPicture(item) {
-                return this.$tool.cutFilePath(item)
-            },
-            ammanger() {
-                let param = {
-                    contId: this.contractId2,
-                }
-                this.AMShow = true
-                this.$ajax.get("/api/achievement/getEmpAMById", param).then(res => {
-                    if (res.status === 200) {
-                        this.AMData = res.data.data
-                    }
-                })
-            },
-            houseRecode() {
-                let param = {
-                    contId: this.contractId2,
-                }
-                this.recordShow = true
-                this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res => {
-                    if (res.status === 200) {
-                        this.recordData = res.data.data
-                    }
-                })
-            },
-        },
-        filters: {
-            getSignImage(val, list) {
-                if (list.length === 0) {
-                    return "";
-                } else {
-                    return list.find(item => {
-                        return item.includes(val);
-                    });
-                }
+      this.getData()
+    },
+    methods: {
+      getData() {
+        let param = {contId: this.contractId2, entrance: this.entrance, aId: this.aId};
+        this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
+          let data = res.data;
+          if (res.status === 200) {
+            this.auditIds = data.data.auditIds
+            this.shensuArr = data.data.appeals
+            for (let i = 0; i < this.shensuArr.length; i++) {
+              this.shensuArr[i].voucherUrl = this.getPicture(JSON.parse(this.shensuArr[i].voucherUrl))
             }
-        },
-        computed: {
-            validInput() {
-                return this.aplremark.length
+            this.houseArr = data.data.houseAgents;
+            this.clientArr = data.data.customerAgents;
+            this.serviceach = data.data.serviceAgents
+            this.tradeFee = data.data.tradeFee
+            this.hasServiceAgent= data.data.hasServiceAgent===0?false:true
+            if (res.data.data.distributionAgreement && JSON.parse(res.data.data.distributionAgreement).length > 0) {
+              this.fujian = true
+              let pathList = JSON.parse(res.data.data.distributionAgreement);
+              this.filesList = pathList;
+              let preloadList = [];
+              pathList.forEach((item, index) => {
+                //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                if (this.isPictureFile(item.fileType)) {
+                  preloadList.push(item.path);
+                }
+              });
+              this.fileSign(preloadList, "preload").then(res => {
+                this.contDataFiles = res;
+              });
             }
+            if (data.data.achievements) {
+              this.checkArr = data.data.achievements;  //详情的审核信息
+
+            } else {
+              this.checkArr = [];
+            }
+            this.comm = data.data.comm;
+          }
+        }).catch(err => {
+          this.$message({message: err})
+        })
+      },
+      close() {
+        this.aplremark = ''
+      },
+      itemht(row) {
+        this.aplman = row.appealName
+        this.aplrole = row.roles
+        this.aplcontent = row.appealContent
+        this.aplurl = row.voucherUrl
+        this.aplid = row.id
+        this.aplDialog = true
+      },
+      trim(str) {
+        return str.replace(/(^\s*)|(\s*$)/g, "")
+      },
+      pass(operation = 'yes') {
+        let param = {
+          id: this.aplid,
+          examineRemark: this.aplremark
         }
+        if (operation === 'no' && this.trim(this.aplremark).length == 0) {
+          this.$message({message: "请填写备注信息！"})
+          return
+        }
+        let url = operation === 'yes' ? '/appeal/appealAdopt' : '/appeal/appealReject'
+        this.$ajax.post(`/api${url}`, param, 2).then(res => {
+          if (res.status == 200) {
+            this.$message({message: "操作成功", type: "success"})
+            this.aplDialog = false
+            this.getData()
+          }
+        }).catch(err => {
+          this.$message({message: err})
+        })
+      },
+      getPicture(item) {
+        return this.$tool.cutFilePath(item)
+      },
+      ammanger() {
+        let param = {
+          contId: this.contractId2,
+        }
+        this.AMShow = true
+        this.$ajax.get("/api/achievement/getEmpAMById", param).then(res => {
+          if (res.status === 200) {
+            this.AMData = res.data.data
+          }
+        })
+      },
+      houseRecode() {
+        let param = {
+          contId: this.contractId2,
+        }
+        this.recordShow = true
+        this.$ajax.get("/api/achievement/getHistoryPriceHouse", param).then(res => {
+          if (res.status === 200) {
+            this.recordData = res.data.data
+          }
+        })
+      },
+    },
+    filters: {
+      getSignImage(val, list) {
+        if (list.length === 0) {
+          return "";
+        } else {
+          return list.find(item => {
+            return item.includes(val);
+          });
+        }
+      }
+    },
+    computed: {
+      validInput() {
+        return this.aplremark.length
+      }
     }
+  }
 </script>
 <style scoped lang="less">
   @import "~@/assets/common.less";
