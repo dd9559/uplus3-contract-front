@@ -1182,7 +1182,7 @@
                 label="申诉时间"
               >
                 <template slot-scope="scope">
-                  {{scope.row.appealTime|formatDate}}
+                  {{scope.row.appealTime|formatTime(false)}}
                 </template>
               </el-table-column>
 

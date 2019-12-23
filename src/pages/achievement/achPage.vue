@@ -1090,7 +1090,7 @@
               </el-table-column>
 
               <el-table-column label="申诉时间">
-                <template slot-scope="scope">{{scope.row.appealTime|formatDate}}</template>
+                <template slot-scope="scope">{{scope.row.appealTime|formatTime(false)}}</template>
               </el-table-column>
 
               <el-table-column label="申诉角色">
