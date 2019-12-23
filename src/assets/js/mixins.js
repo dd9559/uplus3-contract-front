@@ -300,7 +300,8 @@ const MIXINS = {
     },
     // 判断是否为图片类别
     isPictureFile(type){
-      return ['.png', '.jpg', '.jpeg', '.gif', '.bmp'].includes(type)
+      let lowType = type.toLowerCase()
+      return ['.png', '.jpg', '.jpeg', '.gif', '.bmp'].includes(lowType)
     },
     // 判断图片或视频类别
     imgBoolFn(type){
