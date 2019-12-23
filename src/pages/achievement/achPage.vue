@@ -1288,6 +1288,7 @@
               value-format="yyyy-MM-dd HH:mm"
               :picker-options="pickerOptions"
               default-time="12:00:00"
+              :editable="false"
             ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
