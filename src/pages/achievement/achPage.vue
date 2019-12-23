@@ -2282,7 +2282,7 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
           this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
@@ -2450,7 +2450,7 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
           this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
@@ -2601,7 +2601,7 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
           this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
@@ -2804,7 +2804,7 @@ export default {
          ser_sum = this.toDecimal(ser_sum,this.serviceAgents[i].ratio)
 
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
           this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
