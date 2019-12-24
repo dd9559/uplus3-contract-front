@@ -57,6 +57,7 @@
             </div>
           </li>
         </ul>
+        <p class="bill-warning" v-if="city_wh">温馨提示：以吉家为主体签约的合同选择吉家的财务章，以正念为主体签约的合同选择正念的财务章</p>
         <el-button round size="small" class="paper-btn paper-btn-blue paper-btn-float" @click="billing">确定开票</el-button>
       </div>
       <div v-show="FooterShow">
@@ -593,6 +594,12 @@
 
 <style lang="less" scoped>
   @import "~@/assets/common.less";
+  .bill-warning{
+    color: @color-red;
+    position: absolute;
+    bottom: 26px;
+    left: 0;
+  }
   input[size='small']{
     height: 32px;
   }

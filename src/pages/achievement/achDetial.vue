@@ -444,7 +444,7 @@
             label="申诉时间"
           >
             <template slot-scope="scope">
-              {{scope.row.appealTime|formatDate}}
+              {{scope.row.appealTime|formatTime(false)}}
             </template>
           </el-table-column>
 
@@ -502,11 +502,12 @@
           </el-table-column>
 
           <el-table-column
+            min-width="120"
             label="审核状态(时间)"
           >
             <template slot-scope="scope">
               <div v-if="scope.row.auditStatus">
-                {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
+                {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatTime(false)}})
               </div>
               <div v-else>-</div>
             </template>

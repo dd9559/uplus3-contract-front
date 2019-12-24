@@ -122,7 +122,7 @@
           <el-table-column prop="date" label="申诉时间" min-width="90">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
-                <p>{{item.appealTime|formatDate}}</p>
+                <p>{{item.appealTime|formatTime(false)}}</p>
               </div>
             </template>
           </el-table-column>
@@ -211,8 +211,8 @@
               <div v-for="item in scope.row.achievementAppeals">
                 <div v-if="item.auditStatus">
                   <p v-if="item.auditStatus.value==0">未审</p>
-                  <p v-if="item.auditStatus.value==1">通过 {{item.auditTime|formatDate}}</p>
-                  <p v-if="item.auditStatus.value==2">驳回 {{item.auditTime|formatDate}}</p>
+                  <p v-if="item.auditStatus.value==1">通过 {{item.auditTime|formatTime(false)}}</p>
+                  <p v-if="item.auditStatus.value==2">驳回 {{item.auditTime|formatTime(false)}}</p>
                 </div>
                 <div v-else>-</div>
               </div>

@@ -1182,7 +1182,7 @@
                 label="申诉时间"
               >
                 <template slot-scope="scope">
-                  {{scope.row.appealTime|formatDate}}
+                  {{scope.row.appealTime|formatTime(false)}}
                 </template>
               </el-table-column>
 
@@ -1240,11 +1240,12 @@
               </el-table-column>
 
               <el-table-column
+                min-width="120"
                 label="审核状态(时间)"
               >
                 <template slot-scope="scope">
                   <div v-if="scope.row.auditStatus">
-                    {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})
+                    {{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatTime(false)}})
                   </div>
                   <div v-else>-</div>
                 </template>
@@ -2152,7 +2153,7 @@
         for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
         }
-        if ((this.contType == 2 || this.contType == 3) && ser_sum != 100) {
+        if (this.hasServiceAgent&&(this.contType == 2 || this.contType == 3) && ser_sum != 100) {
           this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
