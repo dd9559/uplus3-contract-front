@@ -236,7 +236,7 @@
           </div>
         </div>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
         <el-button round @click="dialogContData=false">取消</el-button>
         <el-button round type="primary" @click="uploading('上传成功')">保存</el-button>
       </span>
