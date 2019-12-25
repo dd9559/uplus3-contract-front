@@ -63,6 +63,7 @@
                      :class="{'width325':propForm.contractType.length>3}" multiple :clearable="true">
             <el-option
               v-for="item in dictionary['10']"
+              v-if="item.key!==6"
               :key="item.value"
               :label="item.value"
               :value="item.key"
