@@ -374,7 +374,9 @@ export default {
                     this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
                     this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
                     this.recordVersion = res.data.recordVersion
-                    this.report.buyerPaymentMethod = res.data.loanType ? res.data.loanType == 7 ? 1: 2: ''
+                    if(res.data.loanType) {
+                        this.report.buyerPaymentMethod = res.data.loanType == 7 ? 1: 2
+                    }
                     this.loadType = res.data.loanType ? true : false
                     if(!this.report.guestShopOwnerName) {
                         this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
