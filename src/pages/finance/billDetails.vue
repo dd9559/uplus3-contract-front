@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column align="center" label="物业地址 ">
               <template slot-scope="scope">
-                <span>{{billMsg.address}}</span>
+                <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
             </el-table-column>
             <el-table-column align="center" label="收款方" v-if="activeItem==='付款信息'">

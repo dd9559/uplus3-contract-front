@@ -72,7 +72,8 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.houseinfoCode" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice">
+            <!-- <input type="text" v-model="contractForm.houseinfoCode" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice"> -->
+            <el-input style="width:140px;" type="text" maxlength="20" v-model="contractForm.houseinfoCode" :clearable="true" @input="inputCode('houseinfoCode')" placeholder="请输入内容"></el-input>
           </el-form-item>
           <span class="select" @click="showDialog">请选择房源</span>
           <br>
@@ -124,7 +125,7 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.dealAgentStoreName.length>7">
+            <el-tooltip class="item" effect="dark" :content="contractForm.dealAgentStoreName" placement="top" v-if="contractForm.dealAgentStoreName&&contractForm.dealAgentStoreName.length>7">
               <span>
                 <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.dealAgentStoreName">
               </span>
@@ -149,7 +150,7 @@
                 <span style="float: left">{{ item.empName+"-"+item.depName }}</span>
               </el-option>
             </el-select>
-             <el-tooltip class="item" effect="dark" :content="contractForm.shopOwnerStoreName" placement="top" v-if="contractForm.shopOwnerStoreName.length>7">
+             <el-tooltip class="item" effect="dark" :content="contractForm.shopOwnerStoreName" placement="top" v-if="contractForm.shopOwnerStoreName&&contractForm.shopOwnerStoreName.length>7">
               <span>
                 <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName">
               </span>
@@ -324,7 +325,9 @@ export default {
           // 放款金额
           contractDetail.loanAmount= contractDetail.contractInfo.loanAmount
           // 期限时间
-          this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          if(contractDetail.contractInfo.termStart){
+            this.termData=[contractDetail.contractInfo.termStart,contractDetail.contractInfo.termEnd]
+          }
           //金融专员
           contractDetail.financeCommissioner= contractDetail.contractInfo.financeCommissioner
           //经办人

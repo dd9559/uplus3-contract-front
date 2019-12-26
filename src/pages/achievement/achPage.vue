@@ -739,144 +739,165 @@
             </el-table>
           </div>
 
-          <div  class="house-divide top20" v-if="contType==2||contType==3">
-            <div class="house-left f_l">
-              <h1 class="f14">交易服务费分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
-              <p class="f_l delive">交易服务费可分配业绩：{{tradeFee?tradeFee:0}}元</p>
+          <template v-if="hasServiceAgent">
+            <div  class="house-divide top20" v-if="contType==2||contType==3">
+              <div class="house-left f_l">
+                <h1 class="f14">交易服务费佣金分成 <span style="position:relative;left:20px;color:#f56c6c">合计：{{serfeetotal?serfeetotal:0}}%</span></h1>
+                <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
+              </div>
+              <div class="house-right f_r">
+                <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
+              </div>
             </div>
-            <div class="house-right f_r">
-              <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
-            </div>
-          </div>
-          <div  class="ach-divide-list" v-if="contType==2||contType==3">
-            <el-table :data="serviceAgents" style="width: 100%">
-              <el-table-column label="角色类型" width="125">
-                <template slot-scope="scope">
-                  <!-- filterable -->
-                  <el-select
-                    v-model="scope.row.roleType"
-                    placeholder="请选择"
-                    @change="feecli(scope.row.roleType0,scope.$index)"
-                  >
-                    <el-option
-                      v-for="item in roleType1"
-                      :key="item.id"
-                      :label="item.description"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="分成比例(%)" width="95">
-                <template slot-scope="scope">
-                  <el-input
-                    v-model="scope.row.ratio"
-                    placeholder="请输入"
-                    @input="filterFeeNumber(scope.row.ratio,scope.$index)"
-                  ></el-input>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="经纪人">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.assignor+''"
-                    :disabled="scope.row.assignor?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-select
-                    v-model="scope.row.assignor"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :remote-method="getAssignors"
-                    :loading="loading1"
-                    v-loadmore="moreAssignors"
-                    @change="changeAssignors(scope.row.assignor,scope.$index,2)"
-                  >
-                    <el-option
-                      v-for="item in assignors"
-                      :key="item.empId"
-                      :label="item.name+'-'+item.depName"
-                      :value="item.empId"
-                    ></el-option>
-                  </el-select>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="经纪人工号" width="120">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.assignorNum+''"
-                    :disabled="scope.row.assignorNum?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-input
-                    v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
-                    v-model="scope.row.assignorNum"
-                    disabled
-                  ></el-input>
-                  <el-input v-else v-model="hx" disabled></el-input>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-              <el-table-column label="经纪人级别" width="100">
-                <template slot-scope="scope">
-                  <el-input
-                    v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
-                    v-model="scope.row.assignorLevel"
-                    disabled
-                  ></el-input>
-                  <el-input v-else v-model="hx" disabled></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="销售经理级别" width="100">
-                <template slot-scope="scope">
-                  <el-input
-                    v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
-                    v-model="scope.row.salesManagerLevel"
-                    disabled
-                  ></el-input>
-                  <el-input v-else v-model="hx" disabled></el-input>
-                </template>
-              </el-table-column>
-
-              <el-table-column label="在职状况" width="110">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.isJob" placeholder="请选择">
-                    <el-option
-                      v-for="item in dictionary['20']"
-                      :key="item.key"
-                      :label="item.value"
-                      :value="{'label':item.value,'value':item.key}"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-
-              <!-- 门店，可输入，可下拉 -->
-              <el-table-column label="门店">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    v-if="scope.row.level3"
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.level3+''"
-                    :disabled="scope.row.level3?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
+            <div  class="ach-divide-list" v-if="contType==2||contType==3">
+              <el-table :data="serviceAgents" style="width: 100%">
+                <el-table-column label="角色类型" width="125">
+                  <template slot-scope="scope">
+                    <!-- filterable -->
                     <el-select
+                      v-model="scope.row.roleType"
+                      placeholder="请选择"
+                      @change="feecli(scope.row.roleType0,scope.$index)"
+                    >
+                      <el-option
+                        v-for="item in roleType1"
+                        :key="item.id"
+                        :label="item.description"
+                        :value="item.code"
+                      ></el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="分成比例(%)" width="95">
+                  <template slot-scope="scope">
+                    <el-input
+                      v-model="scope.row.ratio"
+                      placeholder="请输入"
+                      @input="filterFeeNumber(scope.row.ratio,scope.$index)"
+                    ></el-input>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="经纪人">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.assignor+''"
+                      :disabled="scope.row.assignor?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.assignor"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :remote-method="getAssignors"
+                        :loading="loading1"
+                        v-loadmore="moreAssignors"
+                        @change="changeAssignors(scope.row.assignor,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in assignors"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.empId"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="经纪人工号" width="120">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.assignorNum+''"
+                      :disabled="scope.row.assignorNum?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-input
+                        v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                        v-model="scope.row.assignorNum"
+                        disabled
+                      ></el-input>
+                      <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+                <el-table-column label="经纪人级别" width="100">
+                  <template slot-scope="scope">
+                    <el-input
+                      v-if="scope.row.assignorLevel&&scope.row.assignorLevel.length>0"
+                      v-model="scope.row.assignorLevel"
+                      disabled
+                    ></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="销售经理级别" width="100">
+                  <template slot-scope="scope">
+                    <el-input
+                      v-if="scope.row.salesManagerLevel&&scope.row.salesManagerLevel.length>0"
+                      v-model="scope.row.salesManagerLevel"
+                      disabled
+                    ></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="在职状况" width="110">
+                  <template slot-scope="scope">
+                    <el-select v-model="scope.row.isJob" placeholder="请选择">
+                      <el-option
+                        v-for="item in dictionary['20']"
+                        :key="item.key"
+                        :label="item.value"
+                        :value="{'label':item.value,'value':item.key}"
+                      ></el-option>
+                    </el-select>
+                  </template>
+                </el-table-column>
+
+                <!-- 门店，可输入，可下拉 -->
+                <el-table-column label="门店">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      v-if="scope.row.level3"
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.level3+''"
+                      :disabled="scope.row.level3?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.level3"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :loading="loading1"
+                        :remote-method="getLevel(3)"
+                        @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                      >
+                        <el-option
+                          v-for="item in level3s"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                    <el-select
+                      v-else
                       v-model="scope.row.level3"
                       filterable
                       remote
@@ -894,182 +915,163 @@
                         :value="item.id+'-'+item.name"
                       ></el-option>
                     </el-select>
-                  </el-tooltip>
-                  <el-select
-                    v-else
-                    v-model="scope.row.level3"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :loading="loading1"
-                    :remote-method="getLevel(3)"
-                    @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
-                  >
-                    <el-option
-                      v-for="item in level3s"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id+'-'+item.name"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
+                  </template>
+                </el-table-column>
 
-              <!-- 店长，可输入，可下拉 -->
-              <el-table-column label="店长">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.shopkeeper+''"
-                    :disabled="scope.row.shopkeeper?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-select
-                    v-model="scope.row.shopkeeper"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :loading="loading1"
-                    :remote-method="getShopInfo(2)"
-                    @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
-                  >
-                    <el-option
-                      v-for="item in shopkeepers"
-                      :key="item.empId"
-                      :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
-                    ></el-option>
-                  </el-select>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-
-              <!-- 单组，可输入，可下拉 -->
-              <el-table-column label="单组" v-if="$route.query.version=='0'">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.level4+''"
-                    :disabled="scope.row.level4?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-select
-                    v-model="scope.row.level4"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :loading="loading1"
-                    :remote-method="getLevel(4)"
-                    @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
-                  >
-                    <el-option
-                      v-for="item in level4s"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id+'-'+item.name"
-                    ></el-option>
-                  </el-select>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-
-              <!-- 区经，可输入，可下拉 -->
-              <el-table-column label="总监">
-                <template slot-scope="scope">
+                <!-- 店长，可输入，可下拉 -->
+                <el-table-column label="店长">
+                  <template slot-scope="scope">
                     <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.amaldar+''"
-                    :disabled="scope.row.amaldar?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-select
-                    v-model="scope.row.amaldar"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :loading="loading1"
-                    :remote-method="getShopInfo(1)"
-                    v-loadmore="moreAmaldars"
-                    @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
-                  >
-                    <el-option
-                      v-for="item in amaldars"
-                      :key="item.empId"
-                      :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
-                    ></el-option>
-                  </el-select>
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.shopkeeper+''"
+                      :disabled="scope.row.shopkeeper?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.shopkeeper"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :loading="loading1"
+                        :remote-method="getShopInfo(2)"
+                        @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in shopkeepers"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.depId+'-'+item.name"
+                        ></el-option>
+                      </el-select>
                     </el-tooltip>
-                </template>
-              </el-table-column>
+                  </template>
+                </el-table-column>
 
-              <!-- 区总，可输入，可下拉 -->
-              <el-table-column label="副总">
-                <template slot-scope="scope">
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="scope.row.manager+''"
-                    :disabled="scope.row.manager?false:true"
-                    placement="top"
-                    :open-delay="300"
-                  >
-                  <el-select
-                    v-model="scope.row.manager"
-                    filterable
-                    remote
-                    reserve-keyword
-                    :clearable="true"
-                    placeholder="请输入内容"
-                    :loading="loading1"
-                    :remote-method="getShopInfo(0)"
-                    v-loadmore="moreManagers"
-                    @change="changeManager(scope.row.manager,scope.$index,2)"
-                  >
-                    <el-option
-                      v-for="item in managers"
-                      :key="item.empId"
-                      :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
-                    ></el-option>
-                  </el-select>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
+                <!-- 单组，可输入，可下拉 -->
+                <el-table-column label="单组" v-if="$route.query.version=='0'">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.level4+''"
+                      :disabled="scope.row.level4?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.level4"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :loading="loading1"
+                        :remote-method="getLevel(4)"
+                        @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
+                      >
+                        <el-option
+                          v-for="item in level4s"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
 
-              <el-table-column label="公共业绩" width="280">
-               <template slot-scope="scope">
-                  <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox">
-                        <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
-                  </el-checkbox-group>
-                </template>
-              </el-table-column>
+                <!-- 区经，可输入，可下拉 -->
+                <el-table-column label="总监">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.amaldar+''"
+                      :disabled="scope.row.amaldar?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.amaldar"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :loading="loading1"
+                        :remote-method="getShopInfo(1)"
+                        v-loadmore="moreAmaldars"
+                        @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in amaldars"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.depId+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
 
-              <el-table-column prop="manager" label="操作">
-                <template slot-scope="scope">
-                  <a
-                    class="delete"
-                    style="color:#478de3;text-decoration:underline;cursor:pointer;"
-                    @click="deletefee(scope.$index,serviceAgents,scope.row.id)"
-                  >删除</a>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
+                <!-- 区总，可输入，可下拉 -->
+                <el-table-column label="副总">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.manager+''"
+                      :disabled="scope.row.manager?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.manager"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :loading="loading1"
+                        :remote-method="getShopInfo(0)"
+                        v-loadmore="moreManagers"
+                        @change="changeManager(scope.row.manager,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in managers"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.depId+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="公共业绩" width="280">
+                  <template slot-scope="scope">
+                    <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox">
+                      <el-checkbox v-for="(item,index) in ['门店','公司','大区']" :key=index :label=index>{{item}}</el-checkbox>
+                    </el-checkbox-group>
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="manager" label="操作">
+                  <template slot-scope="scope">
+                    <a
+                      class="delete"
+                      style="color:#478de3;text-decoration:underline;cursor:pointer;"
+                      @click="deletefee(scope.$index,serviceAgents,scope.row.id)"
+                    >删除</a>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </template>
 
           <div class="house-divide top20">
             <div class="house-left f_l">
@@ -1088,7 +1090,7 @@
               </el-table-column>
 
               <el-table-column label="申诉时间">
-                <template slot-scope="scope">{{scope.row.appealTime|formatDate}}</template>
+                <template slot-scope="scope">{{scope.row.appealTime|formatTime(false)}}</template>
               </el-table-column>
 
               <el-table-column label="申诉角色">
@@ -1147,11 +1149,11 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="审核状态(时间)">
+              <el-table-column label="审核状态(时间)" min-width="120">
                 <template slot-scope="scope">
                   <div
                     v-if="scope.row.auditStatus"
-                  >{{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatDate}})</div>
+                  >{{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatTime(false)}})</div>
                   <div v-else>-</div>
                 </template>
               </el-table-column>
@@ -1286,6 +1288,7 @@
               value-format="yyyy-MM-dd HH:mm"
               :picker-options="pickerOptions"
               default-time="12:00:00"
+              :editable="false"
             ></el-date-picker>
           </p>
           <div class="footer-btn-layout f_r">
@@ -1552,6 +1555,7 @@ export default {
               return time.getTime() > Date.now();
           }
       },
+      hasServiceAgent:false,//是否勾选交易服务费佣金分成,20191220新加
     };
   },
   components: {
@@ -1728,9 +1732,7 @@ export default {
           systemtag: this.userInfo.systemtag
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
-          console.log(res.status);
           if (res.status === 200) {
-            console.log(res.data.data);
             this.loading1 = false;
             this.assignors = res.data.data.list;
             this.assignorTotal = res.data.data.total;
@@ -1751,9 +1753,7 @@ export default {
           systemtag: this.userInfo.systemtag
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
-          console.log(res.status);
           if (res.status === 200) {
-            console.log(res.data.data);
             this.assignors = this.assignors.concat(res.data.data.list);
           }
         });
@@ -1970,7 +1970,6 @@ export default {
             } else if (roleId == 1) {
               this.amaldars = res.data.data.list;
             } else if (roleId == 0) {
-              // debugger
               this.managers = res.data.data.list;
             }
             this.loading1 = false;
@@ -2032,7 +2031,6 @@ export default {
     changeShopkeeper(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].shopkeeperId = idName[0];
           this.houseArr[index].shopkeeper = idName[1];
@@ -2049,7 +2047,6 @@ export default {
     changeAmaldar(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].amaldarId = idName[0];
           this.houseArr[index].amaldar = idName[1];
@@ -2066,7 +2063,6 @@ export default {
     changeManager(val, index, type1) {
       if (val) {
         let idName = val.split("-");
-        console.log(idName);
         if (type1 == 0) {
           this.houseArr[index].managerId = idName[0];
           this.houseArr[index].manager = idName[1];
@@ -2168,7 +2164,6 @@ export default {
     },
     // 添加客源经纪人
     addMansClient() {
-      console.log(this.clientArr);
       let obj = {
         amaldar: "",
         assignor: "",
@@ -2288,8 +2283,8 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2334,9 +2329,6 @@ export default {
             }
         }
       }
-      //flag=true代表信息都填完整，flag=false代表还有信息没有填
-      // debugger;
-      // console.log(sumFlag);
 
       if (flag && sumFlag) {
         this.loading = true;
@@ -2459,8 +2451,8 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
       }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2525,7 +2517,6 @@ export default {
         this.$ajax
           .postJSON("/api/achievement/examineReject", param)
           .then(res => {
-            console.log(res.data.status);
             if (res.data.status == 200) {
               var paperBtn3 = document.getElementById("savebtn3");
               paperBtn3.disabled = true;
@@ -2611,8 +2602,8 @@ export default {
       for (var i = 0; i < this.serviceAgents.length; i++) {
           ser_sum = this.toDecimal(ser_sum, this.serviceAgents[i].ratio)
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2814,8 +2805,8 @@ export default {
          ser_sum = this.toDecimal(ser_sum,this.serviceAgents[i].ratio)
 
       }
-      if((this.contType==2||this.contType==3)&&ser_sum!=100){
-          this.$message.error("请输入正确的交易服务费分成比例");
+      if(this.hasServiceAgent&&(this.contType==2||this.contType==3)&&ser_sum!=100){
+          this.$message.error("请输入正确的交易服务费佣金分成比例");
           return
         }
       for (var i = 0; i < resultArr2.length; i++) {
@@ -2861,7 +2852,6 @@ export default {
         }
       }
 
-      console.log(sum);
       if (flag && sumFlag) {
         this.loading = true;
         let param = {};
@@ -2924,7 +2914,6 @@ export default {
     },
     handleSelectionChange(val) {
       //返回的是选择当行的对象
-      console.log(val);
       this.addManList = val;
       this.addArr.push(val);
     },
@@ -2946,6 +2935,7 @@ export default {
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
         if (res.status === 200) {
+          this.hasServiceAgent= res.data.data.hasServiceAgent===0?false:true//新加
           this.houseArr = res.data.data.houseAgents;
           for(let i=0;i< this.houseArr.length;i++){
             // this.houseArr[i].checkbox=[],
@@ -2960,7 +2950,6 @@ export default {
               JSON.parse(this.shensuArr[i].voucherUrl)
             );
           }
-          console.log(this.houseArr, "houseArr");
           this.clientArr = res.data.data.customerAgents;
           for(let i=0;i< this.clientArr.length;i++){
             this.$set(this.clientArr[i],'checkbox',[])
@@ -3021,9 +3010,7 @@ export default {
       });
       // 角色类型
       this.$ajax.get("/api/role/types").then(res => {
-        console.log(res.status);
         if (res.status === 200) {
-          // console.log(res.data.data[0]);
           this.roleType0 = res.data.data[1]; //房源角色类型
           this.roleType1 = res.data.data[2]; //客源角色类型
         }
@@ -3268,9 +3255,7 @@ export default {
           this.comm = this.achObj.comm; //合同详情传过来的可分配业绩
           // 角色类型
           this.$ajax.get("/api/role/types").then(res => {
-            console.log(res.status);
             if (res.status === 200) {
-              // console.log(res.data.data[0]);
               this.roleType0 = res.data.data[1]; //房源角色类型
               this.roleType1 = res.data.data[2]; //客源角色类型
             }
@@ -3319,7 +3304,7 @@ export default {
 /deep/ .dialog2In {
   width: 450px !important;
   max-height: 600px;
-  min-height: 500px;
+  /*min-height: 500px;*/
   margin-top: 13vh !important;
   .is-checked {
     color: #478de3 !important;
@@ -3345,8 +3330,8 @@ export default {
   }
 
   .dialog2-btn {
-    height: 100px;
-    padding-top: 20px;
+    /*height: 100px;*/
+    padding: 20px 0;
     padding-right: 30px;
     box-sizing: border-box;
     background-color: #fff;
@@ -3362,7 +3347,6 @@ export default {
       color: #000;
       border: 1px solid #e8eaf6;
     }
-    margin-bottom: 20px;
   }
   .cell {
     font-size: 12px;

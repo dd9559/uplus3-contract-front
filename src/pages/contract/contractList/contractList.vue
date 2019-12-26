@@ -1,7 +1,7 @@
 <template>
   <div class="view-container" ref="tableComView">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" v-if="dictionary['9']">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
         <el-form-item label="关键字">
           <el-tooltip class="item" effect="dark" content="物业地址/业主/客户/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长" placement="top">
@@ -19,10 +19,6 @@
               :key="item.key"
               :label="item.value"
               :value="item.key">
-            </el-option>
-            <el-option
-              label="委托合同"
-              :value="6">
             </el-option>
           </el-select>
         </el-form-item>
@@ -64,9 +60,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="审核状态">
+        <el-form-item label="合同审核状态">
           <el-select v-model="contractForm.toExamineState" placeholder="全部" :clearable="true" style="width:150px">
             <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="签后审核状态">
+          <el-select v-model="contractForm.signinState" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in dictionary['72']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -218,13 +220,13 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="佣金比例(%)" min-width="60">
+        <el-table-column label="佣金比例(%)" min-width="100">
           <template slot-scope="scope">
             <span v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine">{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="财务收付" min-width="50">
+        <el-table-column label="财务收付" min-width="80">
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
               <div class="btn" @click="runningWater(scope.row)">流水</div>
@@ -253,21 +255,15 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
           <template slot-scope="scope">
-            <!-- <span v-if="scope.row.contType.value<4"> -->
-              <span>{{scope.row.contState.label}}</span>
-            <!-- </span> -->
-            <!-- <span v-else>-</span> -->
+            <span>{{scope.row.contState.label}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" prop="toExamineState.label" min-width="80">
+        <el-table-column label="合同审核状态" min-width="100">
           <template slot-scope="scope">
-            <!-- <span v-if="scope.row.contType.value<4"> -->
-              <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
-              <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
-            <!-- </span> -->
-            <!-- <span v-else>-</span> -->
+            <span v-if="scope.row.toExamineState.value===-1" class="blue">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===0" class="yellow">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===1" class="green">{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value===2" class="red">{{scope.row.toExamineState.label}}</span>
           </template>
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
@@ -285,7 +281,18 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="90" key="uploadTime">
+        <el-table-column label="签后审核状态" min-width="100">
+          <template slot-scope="scope">
+            <div v-if="scope.row.signingState">
+              <span v-if="scope.row.signingState.value===-1" class="blue">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===0" class="yellow">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span>
+            </div>
+            <div v-else class="blue">待提审</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="上传合同主体时间" min-width="120" key="uploadTime">
           <template slot-scope="scope">
             <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
@@ -294,8 +301,9 @@
         <el-table-column label="后期状态" min-width="80" v-if="contVersion===2" key="laterStageState">
           <template slot-scope="scope">
             <span v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine">
-              <el-button v-if="scope.row.laterStageState.label==='已拒绝'" type="text" size="medium" @click="uploadData(scope.row)">已拒绝</el-button>
-              <span v-else>{{scope.row.laterStageState.label}}</span>
+               <!-- @click="uploadData(scope.row)" -->
+              <el-button v-if="scope.row.laterStageState&&scope.row.laterStageState.label==='已拒绝'" type="text" size="medium">已拒绝</el-button>
+              <span v-else>{{scope.row.laterStageState?scope.row.laterStageState.label:'-'}}</span>
             </span>
             <span v-else>-</span>
           </template>
@@ -329,7 +337,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="签约方式" prop="recordType.label" min-width="50">
+        <el-table-column label="签约方式" prop="recordType.label" min-width="70">
         </el-table-column>
         <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
@@ -337,9 +345,9 @@
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>  
           </template>
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="80">
+        <el-table-column label="可分配业绩 (元)" min-width="120">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+            <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement?scope.row.distributableAchievement:0}}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -349,9 +357,9 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="60" fixed="right" class-name="null-formatter">
+        <el-table-column label="操作" min-width="80" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <template v-if="!scope.row.isCombine"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div></template><template v-else><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row)">提审</div></template>
+            <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1" @click="goSave(scope.row,'cont')">合同提审</div><div class="btn" v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit" @click="toSignAudit(scope.row,'sign')">签后提审</div><div class="btn" v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1" @click="toLayerAudit(scope.row)">调佣</div><div class="btn" v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state" @click="showDelete(scope.row)">删除</div></template><template v-if="scope.row.isCombine&&scope.row.contState.value!=-1"><div class="btn" v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1" @click="goPreview(scope.row)">预览</div><div class="btn" v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1" @click="goSave(scope.row,'cont')">合同提审</div><div class="btn" v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit" @click="toSignAudit(scope.row,'sign')">签后提审</div></template><template v-if="scope.row.contState.value===-1"><div class="btn" @click="deleteCont(scope.row,1)" v-if="power['sign-ht-info-recovery'].state&&!scope.row.isCombine">恢复</div></template>
           </template>
         </el-table-column>
       </el-table>
@@ -380,10 +388,10 @@
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
-      <span>确定提审？</span>
+      <span class="submitAudit">确定提审？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="isSubmitAudit = false">取 消</el-button>
-        <el-button type="primary" @click="submitAudit">确 定</el-button>
+        <el-button round @click="isSubmitAudit = false">取 消</el-button>
+        <el-button round type="primary" @click="toAudit">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 打印详情弹窗 -->
@@ -408,8 +416,6 @@
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="isSubmitAudit = false">取 消</el-button>
-        <el-button type="primary" @click="submitAudit">确 定</el-button> -->
       </span>
     </el-dialog>
     <!-- 打印 -->
@@ -419,6 +425,17 @@
     <!-- <span @click="dayin">打印</span> -->
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
+    <!-- 删除确认框 -->
+    <el-dialog title="确认删除" :visible.sync="deleteDialog" width="460px" class="deleteDialog">
+      <div class="deleteType">
+        <p>确认删除该合同？</p>
+        <p>删除后此合同在合同列表隐藏</p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button round @click="deleteDialog = false">取 消</el-button>
+        <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -451,7 +468,9 @@ export default {
   data() {
     return {
       tableBox:null,
-      contractForm: {},
+      contractForm: {
+        dealAgentId:'',
+      },
       keyword: "",
       signDate: [],
       tableData: [],
@@ -483,6 +502,7 @@ export default {
         "507": "", //租赁时间单位
         "11": "",//后期状态
         "64":"",//签约方式  线上线下
+        "72":"",//签后审核状态
       },
       loading:false,
       //部门选择列表
@@ -508,8 +528,11 @@ export default {
       uploadCode:'',
       waterContId:'',
       housePurpose:[],
+      //合同提审
       isSubmitAudit:false,
-      submitAuditData:{},
+      submitAuditData:'',
+      //签后提审
+      signAuditItem:'',
       blankPdf1:'',
       blankPdf2:'',
       blankPdf3:'',
@@ -621,11 +644,26 @@ export default {
         'sign-ht-info-export': {
           state: false,
           name: '导出'
-        }
+        },
+        'sign-ht-info-del': {
+          state: false,
+          name: '合同删除'
+        },
+        'sign-ht-info-recovery': {
+          state: false,
+          name: '合同恢复'
+        },
+        'sign-ht-qhsh-toverify': {
+          state: false,
+          name: '签后提审'
+        },
       },
       showOnLine:false,
       showPrint:false,
       showOffLine:false,
+      //合同删除
+      deleteDialog:false,
+      deleteItem:'',
     };
   },
   created() {
@@ -820,14 +858,21 @@ export default {
     //流水
     runningWater(item) {
       if(this.power['sign-com-bill'].state){
-        if(item.isCombine){
-          this.flowType=8
+        if(item.contState.value!=-1){
+          if(item.isCombine){
+            this.flowType=8
+          }else{
+            this.flowType=1
+          }
+          this.water = true;
+          this.contCode=item.code;
+          this.waterContId=item.id;
         }else{
-          this.flowType=1
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
         }
-        this.water = true;
-        this.contCode=item.code;
-        this.waterContId=item.id;
       }else{
         this.$message({
           message:"没有流水查看权限",
@@ -844,14 +889,21 @@ export default {
     //收款
     gathering(item) {
       if(this.power['sign-ht-info-collect'].state){
-        this.$router.push({
-          path:'/receiptBill',
-          query:{
-            contId:item.id,
-            code:item.code,
-            isentrust:item.isCombine?1:0
-          }
-        })
+        if(item.contState.value!=-1){
+          this.$router.push({
+            path:'/receiptBill',
+            query:{
+              contId:item.id,
+              code:item.code,
+              isentrust:item.isCombine?1:0
+            }
+          })
+        }else{
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
+        }
       }else{
         this.$message({
           message:"没有收款权限",
@@ -862,14 +914,21 @@ export default {
     //付款
     payment(item) {
       if(this.power['sign-ht-info-pay'].state){
-        this.$router.push({
-          path:'/payBill',
-          query:{
-            contId:item.id,
-            code:item.code,
-            address:item.propertyAddr
-          }
-        })
+        if(item.contState.value!=-1){
+          this.$router.push({
+            path:'/payBill',
+            query:{
+              contId:item.id,
+              code:item.code,
+              address:item.propertyAddr
+            }
+          })
+        }else{
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
+        }
       }else{
         this.$message({
           message:"没有付款权限",
@@ -898,24 +957,31 @@ export default {
     //合同详情页
     toDetail(value) {
       if(this.power['sign-com-htdetail'].state){
-        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          let newPage = this.$router.resolve({
-            path: "/contractDetails",
-            query: {
-              id: value.id,//合同id
-              contType: value.contType.value//合同类型
-            }
-          });
-          window.open(newPage.href, '_blank');
+        if(value.contState.value!=-1){
+          if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+            let newPage = this.$router.resolve({
+              path: "/contractDetails",
+              query: {
+                id: value.id,//合同id
+                contType: value.contType.value//合同类型
+              }
+            });
+            window.open(newPage.href, '_blank');
+          }else{
+            let newPage = this.$router.resolve({
+              path: "/detailIntention",
+              query: {
+                id: value.id,
+                contType: value.contType.value
+              }
+            });
+            window.open(newPage.href, '_blank');
+          }
         }else{
-          let newPage = this.$router.resolve({
-            path: "/detailIntention",
-            query: {
-              id: value.id,
-              contType: value.contType.value
-            }
-          });
-          window.open(newPage.href, '_blank');
+          this.$message({
+            message:"此合同已删除无法进行操作",
+            type:"warning"
+          })
         }
       }else{
         this.$message({
@@ -1112,6 +1178,7 @@ export default {
       // this.getEmploye(data.depId)
       this.contractForm.dealAgentStoreId=data.depId
       this.contractForm.depName=data.name
+      this.contractForm.dealAgentId=''
 
       this.handleNodeClick(data)
     },
@@ -1120,9 +1187,10 @@ export default {
       this.contractForm.depName=payload.depName*/
     },
     //提审
-    goSave(item){
+    goSave(item,type){
       this.isSubmitAudit=true;
       this.submitAuditData=item;
+      this.auditType=type
     },
     submitAudit(){
       let param = {
@@ -1269,7 +1337,81 @@ export default {
 
       delete param.depName
       this.excelCreate("/input/contractExcel",param)
-    }
+    },
+    //合同删除确认框
+    showDelete(val){
+      this.deleteItem = val
+      this.deleteDialog=true
+    },
+    //合同删除
+    deleteCont(val,type){
+      let param = {
+        type:type,
+        id:val.id
+      }
+      this.$ajax.put('/api/contract/delete',param,2).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.$message({
+            message:type===1?"恢复成功":"删除成功",
+            type:"success"
+          })
+          this.deleteDialog=false
+          this.getContractList()
+        }
+      }).catch(error=>{
+        this.$message({
+          message:error,
+          type:"error"
+        })
+      })
+    },
+    //提审
+    toAudit(){
+      if(this.auditType==='cont'){
+        this.submitAudit()
+      }else if(this.auditType==='sign'){
+        this.signAudit()
+      }
+    },
+    //签后提审确认弹窗
+    toSignAudit(val,type){
+      this.signAuditItem=val
+      this.isSubmitAudit=true
+      this.auditType=type
+    },
+    //签后提审
+    signAudit(){
+      let param = {
+        contId:this.signAuditItem.id,
+        contType:this.signAuditItem.isCombine?this.signAuditItem.isCombine:false
+      }
+      this.$ajax.post("/api/signingAudit/addsignin",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.isSubmitAudit=false
+          this.$message({
+            message:"提审成功",
+            type:'success'
+          })
+          this.getContractList()
+        }
+      }).catch(error => {
+          this.isSubmitAudit=false;
+          if(error.message==='下一节点审批人不存在'){
+            this.checkPerson.code=error.data.bizCode;
+            this.checkPerson.state=true;
+            this.checkPerson.flowType=12//签后审核的流程类型为12
+            this.checkPerson.label=true;
+          }else{
+            this.getContractList()
+            this.$message({
+              message:error,
+              type: "error"
+            })
+          }
+        })
+    },
   },
   computed:{
     combineList(){
@@ -1287,17 +1429,31 @@ export default {
           combineItem.isCombine=true//是否是插入的数据
           combineItem.signDate=combineItem.contractEntrust.signDate
           combineItem.printCount=combineItem.contractEntrust.printCount//打印次数
-          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFee//可分配业绩
+          combineItem.distributableAchievement=combineItem.contractEntrust.tradeFeeCommission//可分配业绩
           combineItem.receivableCommission=combineItem.contractEntrust.receivableCommission?combineItem.contractEntrust.receivableCommission:0//应收
           combineItem.receivedCommission=combineItem.contractEntrust.receivedCommission?combineItem.contractEntrust.receivedCommission:0//实收
-          combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
-          combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
+
+          if(combineItem.contState.value!=-1){
+            combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
+            combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
+          }
+          if(combineItem.signingEntrustState){
+            // this.$set(element,"bgc",true)
+            combineItem.signingState={}
+            combineItem.signingState.value=combineItem.signingEntrustState.value
+            combineItem.signingState.label=combineItem.signingEntrustState.label
+          }else{
+            combineItem.signingState=''
+          }
+          
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
           combineItem.toExamineState.label=combineItem.contractEntrust.examineState===-1?"待提审":combineItem.contractEntrust.examineState===0?"审核中":combineItem.contractEntrust.examineState===1?"已通过":"已驳回"
           combineItem.uploadTime=combineItem.contractEntrust.uploadTime?combineItem.contractEntrust.uploadTime:"-"
           // combineItem.achievementState.value=combineItem.contractEntrust.achievementState//业绩状态
           // combineItem.achievementState.label=combineItem.contractEntrust.achievementState===-2?"未录入":combineItem.contractEntrust.achievementState===-1?"待提审":combineItem.contractEntrust.achievementState===0?"审核中":combineItem.contractEntrust.achievementState===1?"已通过":"已驳回"
           combineItem.isCanAudit=combineItem.contractEntrust.isCanAudit?combineItem.contractEntrust.isCanAudit:0//H5是否填写完整
+          combineItem.signAudit=combineItem.contractEntrust.entrustSignAudit?combineItem.contractEntrust.entrustSignAudit:false//H5是否填写完整
+
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
@@ -1613,5 +1769,27 @@ export default {
       display: inline-block;
     }
   }
+}
+.deleteDialog{
+  .deleteType{
+    text-align: center;
+    padding: 30px 0;
+    p{
+      font-size: 16px;
+      &:last-of-type{
+        font-size: 14px;
+        color:red;
+        margin-top: 10px;
+      }
+    }
+  }
+  /deep/.el-dialog__footer{
+    padding: 10px;
+    border-top: 1px solid #e8eaf6;
+  }
+}
+.submitAudit{
+  display: inline-block;
+  padding-top: 10px;
 }
 </style>

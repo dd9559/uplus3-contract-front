@@ -32,9 +32,10 @@
 									<div class="div22"><span>物业地址：</span>{{detailData.propertyAddr | nullData}}</div>
 								</li>
 								<li>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 0"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 2"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
-									<div class="div1" v-if="detailData.houseInfo.TradeInt == 3"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 0&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 2&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元</div>
+									<div class="div1" v-if="detailData.houseInfo.TradeInt == 3&&detailData.houseInfo.ListingPrice"><span>房源价格：</span>{{detailData.houseInfo.ListingPrice | nullData}}元/月</div>
+									<div class="div1" v-if="!detailData.houseInfo.ListingPrice"><span>房源价格：</span>--</div>
 									<div class="div1" v-if="detailData.houseInfo.Square"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
 									<div class="div1" v-else><span>建筑面积：</span>--</div>
 									<div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
@@ -52,7 +53,7 @@
 										<span>业主姓名：</span>
 										<el-tooltip class="item" effect="dark" :content="ownerInfo[0].name" placement="bottom">
                       <div class="contractDetailCode">
-                        {{ownerInfo[0].name}}
+                        {{ownerInfo[0].name | nullData}}
                       </div>
                     </el-tooltip>
 									</div>
@@ -110,7 +111,7 @@
 				<el-tab-pane label="合同主体" name="second">
 					<div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 						<ul class="ulData">
-							<li v-if="power['sign-ht-xq-main-add'].state">
+							<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 								<file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="scaneZhuti">
 									<i class="iconfont icon-shangchuan"></i>
 									<p>点击上传</p>
@@ -124,10 +125,10 @@
 										<p>{{item.name}}</p>
 									</div>
 								</el-tooltip>
-								<i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
+								<i class="iconfont icon-tubiao-6" v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" @click="ZTdelectData(index)" :class="{'deleteShow': power['sign-ht-xq-main-add'].state&&isDelete===item.index+item.path}"></i>
 							</li>
 						</ul>
-						<el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&detailData.signingState!==1&&detailData.signingState!==0&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
+						<el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
 					</div>
 				</el-tab-pane>
 
@@ -135,11 +136,11 @@
 					<div class="dataBank" v-if="power['sign-ht-xq-data'].state" :style="{ height: clientHeight() }">
 						<!-- 业主 -->
 						<div class="classify" v-if="this.sellerList.length>0">
-							<div class="ht-title">业主</div>
-							<div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="power['sign-ht-xq-data'].state">
+							<div class="small-col" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">业主</div>
 								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-if="power['sign-ht-xq-data'].state">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'seller'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -153,18 +154,18 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
 						</div>
 						<!-- 客户 -->
 						<div class="classify" v-if="this.buyerList.length>0">
-							<div class="ht-title">客户</div>
-							<div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="power['sign-ht-xq-data'].state">
+							<div class="small-col" v-for="(item,index) in buyerList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">客户</div>
 								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-if="power['sign-ht-xq-data'].state">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'buyer'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -178,18 +179,18 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
 						</div>
 						<!-- 其他 -->
 						<div class="classify" v-if="otherList.length>0">
-							<div class="ht-title">其他</div>
-							<div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="power['sign-ht-xq-data'].state">
+							<div class="small-col" v-for="(item,index) in otherList" :key="index" v-if="item.value.length>0||((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">
+								<div class="ht-title" v-if="index===0">其他</div>
 								<p class="small-title"><i v-if="item.isrequire">*</i>{{item.title}}</p>
 								<ul class="ulData">
-									<li v-if="power['sign-ht-xq-data'].state">
+									<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
 										<file-up class="uploadSubject" :id="'other'+index" @getUrl="addSubject" :scane="scaneData">
 											<i class="iconfont icon-shangchuan"></i>
 											<p>点击上传</p>
@@ -203,7 +204,7 @@
 												<p>{{item_.name}}</p>
 											</div>
 										</el-tooltip>
-										<i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
+										<i v-if="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState" class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"></i>
 									</li>
 								</ul>
 							</div>
@@ -220,6 +221,40 @@
               </div>
               <div class="receiptList">
                 <el-table :data="checkData" border style="width: 100%" header-row-class-name="theader-bg">
+                  <el-table-column label="时间">
+                    <template slot-scope="scope">
+                      {{scope.row.auditTime|formatTime}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="userName" label="姓名">
+                  </el-table-column>
+                  <el-table-column prop="roleName" label="职务">
+                  </el-table-column>
+                  <el-table-column prop="operate" label="操作">
+                  </el-table-column>
+                  <el-table-column label="备注" width="320">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top"  v-if="scope.row.auditInfo!='-'&&scope.row.auditInfo">
+                          <div style="width:300px">
+                            {{scope.row.auditInfo}}
+                          </div>
+                          <div slot="reference" class="name-wrapper">
+                            {{scope.row.auditInfo}}
+                          </div>
+                        </el-popover>
+                      <span v-else>-</span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+						 <!-- 合同签后审核记录 -->
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+              <div class="moduleTitle">
+                <span>合同签后审核</span>
+              </div>
+              <div class="receiptList">
+                <el-table :data="QHcheckData" border style="width: 100%" header-row-class-name="theader-bg">
                   <el-table-column label="时间">
                     <template slot-scope="scope">
                       {{scope.row.auditTime|formatTime}}
@@ -321,7 +356,7 @@
 		</div>
 		<!-- 上传按钮 -->
 		<div class="uploadBtn">
-			<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&detailData.signingState!==1&&detailData.signingState!==0">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
+			<el-button type="primary" round class="search_btn" @click="uploading('上传成功')" v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>  <!-- 合同资料库上传 -->
 		</div>
 		<!-- 图片放大 -->
 		<preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -451,7 +486,8 @@ export default {
 			changeCancelId:'',
 			commission:'',
 			//审核记录
-      checkData:[],
+			checkData:[],
+			QHcheckData:[],
       BGcheckData:[],
 			JYcheckData:[],
 			isSubmitAudit:false,//提审
@@ -525,9 +561,10 @@ export default {
           })
         }
       }else if(tab.name==="fourth"){
-				this.getAuditList()
-				this.getAuditList(9)
-				this.getAuditList(10)
+				this.getAuditList()//合同审核
+				this.getAuditList(9)//变更审核
+				this.getAuditList(10)//解约审核
+				this.getAuditList(12)//签后
 			}
 		},
 
@@ -551,6 +588,15 @@ export default {
 		//编辑事件
 		onEdit(e) {
 			this.setPath(this.$tool.getRouter(['二手房','合同','合同列表','合同编辑'],'contractList'));
+			//合同锁定
+			if((this.detailData.contState.value===1&&this.detailData.toExamineState.value===0)||this.detailData.contState.value===2){
+				let param = {
+					id:this.detailData.id
+				}
+				this.$ajax.put("/api/contract/lock",param,2).then(res=>{
+
+				})
+			}
 			this.$router.push({
 				path:'/newIntention',
 				query:{
@@ -984,7 +1030,10 @@ export default {
       let param = {
         flowType:type,
         bizCode:this.code
-      };
+			};
+			if(type===12){
+				param.bizCode=this.detailData.signingId
+			}
       if(!param.bizCode){
         return
       }
@@ -997,7 +1046,9 @@ export default {
             this.BGcheckData=res.data.data;
           }else if(type===10){
             this.JYcheckData=res.data.data;
-          }
+          }else if(type===12){
+						this.QHcheckData=res.data.data;
+					}
         }
       })
 		},
@@ -1279,7 +1330,16 @@ export default {
 				}
 			}
 		}
-		
+		/deep/.el-tabs{
+      .el-tabs__header {
+        margin-bottom: 0;
+      }
+      .el-tabs__item {
+        font-size: 18px;
+        height: 50px;
+        line-height: 50px;
+      }
+    }
 		.footer {
 			display: flex;
 			justify-content: space-between;
@@ -1351,32 +1411,30 @@ export default {
 		.contractSubject {
 			padding: 40px;
 		}
-
-		.third-tab{
-			padding: 20px 30px 30px 30px;
-		}
-		.classify{
-			margin-bottom: 30px;
-			border-bottom: 1px solid #EDECF0;
-			padding-bottom: 15px;
-			.ht-title{
-				color: #32485F;
-				font-size: 16px;
-				margin-bottom: 15px;
-			}
-			.small-col{
-				margin-bottom: 20px;
-				padding-left: 10px;
-				.small-title{
-					font-size: 14px;
-					color: #6C7986;
-					margin-bottom: 15px;
-					i{
-						color: #FF3E3E;
-					}
-				}
-			}
-		}
+		.classify {
+      position: relative;
+      .small-col {
+        padding-left: 10px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid @border-ED;
+        .ht-title {
+          font-size: 16px;
+          color: @color-324;
+          position: absolute;
+          top: 10px;
+          left: 5px;
+        }
+        .small-title {
+          font-size: 14px;
+          padding: 10px 0;
+          color: @color-6c;
+          > i {
+            color: @color-FF;
+          }
+        }
+      }
+    }
 		.ulData{
 			display: flex;
 			flex-wrap:wrap;
@@ -1475,6 +1533,10 @@ export default {
   overflow: hidden;
   text-overflow:ellipsis;
   white-space: nowrap;
+}
+.dataBank{
+	overflow-y: auto;
+	// padding-top: 10px;
 }
 </style>
 

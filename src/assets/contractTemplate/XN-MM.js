@@ -213,6 +213,7 @@ contractConfig.inputListener(function(ev,tip){
     let spanAttr=tip.target.getAttribute('listen')
     if(spanAttr==='number'){
       ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+      tip.target.innerHTML = ev.target.value
       let cn_str = tip.target.getAttribute('extendparam')
       if(Obj['cn_arr'].includes(cn_str)){
         document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value)

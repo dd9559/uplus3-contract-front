@@ -125,6 +125,11 @@
             <p>{{scope.row.accountAmount}} 元</p>
           </template>
         </el-table-column>
+        <el-table-column label="分账手续费（元）" :formatter="nullFormatter" min-width="80">
+          <template slot-scope="scope">
+            <p>{{scope.row.fee}} 元</p>
+          </template>
+        </el-table-column>
 
         <el-table-column label="分账周期" min-width="100">
           <template slot-scope="scope">
@@ -1551,7 +1556,7 @@
     display: flex;
     align-items: center;
   }
-  
+
   .radiodiv{
     overflow: hidden;
     .innerdiv{
@@ -1573,11 +1578,11 @@
         span.blue:nth-child(1){
           width: 230px;
           margin-right: 30px;
-        
+
         }
-        
+
       }
-      
+
     }
     > .is-checked{
       .el-radio__label{

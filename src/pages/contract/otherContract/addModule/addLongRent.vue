@@ -44,7 +44,8 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.houseinfoCode" maxlength="20" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice">
+            <!-- <input type="text" v-model="contractForm.houseinfoCode" maxlength="20" @input="inputCode('houseinfoCode')" placeholder="请输入内容" class="dealPrice"> -->
+            <el-input style="width:140px;" type="text" maxlength="20" v-model="contractForm.houseinfoCode" :clearable="true" @input="inputCode('houseinfoCode')" placeholder="请输入内容"></el-input>
           </el-form-item>
           <span class="select" @click="showDialog('house')">请选择房源</span>
           <br>
@@ -87,7 +88,8 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250 form-label">
-            <input type="text" v-model="contractForm.guestinfoCode" maxlength="20" @input="inputCode('guestinfoCode')" placeholder="请输入内容" class="dealPrice">
+            <!-- <input type="text" v-model="contractForm.guestinfoCode" maxlength="20" @input="inputCode('guestinfoCode')" placeholder="请输入内容" class="dealPrice"> -->
+            <el-input style="width:140px;" type="text" maxlength="20" v-model="contractForm.guestinfoCode" :clearable="true" @input="inputCode('guestinfoCode')" placeholder="请输入内容"></el-input>
           </el-form-item>
           <span class="select" @click="showDialog('guest')">请选择客源</span>
           <br>
@@ -1381,7 +1383,7 @@ export default {
         let m = time.getMinutes()
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-        return time_.substr(0, 10)
+        return time_
       }
     }
   },

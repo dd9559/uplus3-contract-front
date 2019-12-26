@@ -278,6 +278,7 @@ export default{
     //变更解约弹窗
     ChangeCancelDialog(){
       this.changeCancel=false
+      this.$emit("freach")
     },
     freachChangeCancel(){
       this.changeCancel=false

@@ -34,7 +34,11 @@
                     </p>
                     <p>
                         <span><i>*</i>交易服务费(元)：</span>
-                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFee" @input="cutNumber" :disabled="entrustBtn"></el-input>  
+                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFee" @input="cutNumber('tradeFee')" :disabled="entrustBtn"></el-input>  
+                    </p>
+                    <p>
+                        <span><i>*</i>交易服务费佣金(元)：</span>
+                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFeeCommission" @input="cutNumber('tradeFeeCommission')" :disabled="entrustBtn"></el-input>  
                     </p>
                 </div>
             </div>
@@ -109,6 +113,13 @@
                 </div>
             </div>
         </div>
+        <div class="msg">
+            <div class="title">备注栏</div>
+            <div class="content remark-box">
+                <el-input type="textarea" placeholder="请输入备注内容" :rows="3" v-model.trim="entrustRemark" maxlength="200" resize="none" :disabled="entrustBtn"></el-input>
+                <span>{{entrustRemark.length}}/200</span>
+            </div>
+        </div>
         </div>
         <div class="btn" v-if="!entrustBtn">
             <el-button type="primary" round @click="isSave" v-loading.fullscreen.lock="fullscreenLoading">{{defaultInfo.recordType.value==2?'保存':'保存并进入下一步'}}</el-button>
@@ -138,6 +149,8 @@ export default {
             clientHei: "",
             signDate: "",
             tradeFee: "",
+            tradeFeeCommission: "",
+            entrustRemark: "",
             houseArr: [], //业主信息
             guestArr: [], //客户信息
             //日期选择器禁止选择未来时间
@@ -162,7 +175,11 @@ export default {
             this.getTimeNow()
         }
         let bool = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.id
-        this.tradeFee = bool ? this.defaultInfo.contractEntrust.tradeFee+'' : ''
+        this.tradeFee = bool ? this.defaultInfo.contractEntrust.tradeFee : ''
+        let _tradeFeeCommission = this.defaultInfo.contractEntrust.tradeFeeCommission
+        this.tradeFeeCommission = bool&&_tradeFeeCommission ? _tradeFeeCommission : ''
+        let _entrustRemark = this.defaultInfo.contractEntrust.entrustRemark
+        this.entrustRemark = bool&&_entrustRemark ? _entrustRemark : ''
         // 判断委托合同状态是否为已签约
         this.entrustBtn = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.entrustState===3
         this.houseArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 1)
@@ -192,9 +209,9 @@ export default {
             let _time = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
             this.signDate = _time
         },
-        cutNumber() {
+        cutNumber(val) {
             this.$nextTick(()=>{
-                this.tradeFee = this.$tool.cutFloat({val:this.tradeFee,max:999999999.99})
+                this[val] = this.$tool.cutFloat({val:this[val],max:999999999.99})
             })
         },
         isSave() {
@@ -204,6 +221,10 @@ export default {
             }
             if(this.tradeFee == ''){
                 this.$message("交易服务费不能为空")
+                return
+            }
+            if(this.tradeFeeCommission == ''){
+                this.$message("交易服务费佣金不能为空")
                 return
             }
             if(this.defaultInfo.recordType.value == 2) {
@@ -231,6 +252,8 @@ export default {
             this.$ajax.post('/api/contract/entrust/addContract', {
                 signDate: this.signDate,
                 tradeFee: this.tradeFee,
+                tradeFeeCommission: this.tradeFeeCommission,
+                entrustRemark: this.entrustRemark,
                 id: this.defaultInfo.id,
                 code: this.defaultInfo.code
             }).then(res => {
@@ -310,9 +333,18 @@ export default {
                 &.input-val {
                     display: flex;
                     align-items: center;
-                    i {
-                        color: red;
-                    }
+                }
+                i {
+                    color: red;
+                }
+            }
+            &.remark-box {
+                width: 900px;
+                position: relative;
+                span {
+                    position: absolute;
+                    right: 15px;
+                    bottom: 5px;
                 }
             }
         }
@@ -320,7 +352,7 @@ export default {
             color: #478DE3;
             font-weight: bold;
         }
-        &:nth-child(-n+2) {
+        &:nth-child(-n+3) {
             border-bottom: 1px solid @border-ED;
         }
     }

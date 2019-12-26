@@ -164,11 +164,11 @@
     <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="contData">
         <div class="classify" v-if="sellerList.length>0">
-          <p class="title">业主</p>
-          <div class="one_" v-for="(item,index) in sellerList" :key="index">
-            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+          <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((signingState&&signingState.value!==1&&signingState.value!==0)||!signingState)">
+            <p class="title">业主</p>
+            <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
-              <li>
+              <li v-show="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
                 <file-up class="uploadSubject" :scane="dataScane" :id="'seller'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -182,17 +182,17 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'seller')" :class="{'deleteShow':isDelete===item.title+item_.path}" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState"></i>
               </li>
             </ul>
           </div>
         </div>
         <div class="classify" v-if="buyerList.length>0">
-          <p class="title">客户</p>
-          <div class="one_" v-for="(item,index) in buyerList" :key="index">
-            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+          <div class="one_" v-for="(item,index) in buyerList" :key="index" v-if="item.value.length>0||((signingState&&signingState.value!==1&&signingState.value!==0)||!signingState)">
+            <p class="title">客户</p>
+            <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
-              <li>
+              <li v-show="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
                 <file-up class="uploadSubject" :scane="dataScane" :id="'buyer'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -206,17 +206,17 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'buyer')" :class="{'deleteShow':isDelete===item.title+item_.path}" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState"></i>
               </li>
             </ul>
           </div>
         </div>
         <div class="classify" v-if="otherList.length>0">
-          <p class="title">其他</p>
-          <div class="one_" v-for="(item,index) in otherList" :key="index">
-            <p><i v-if="item.isrequire">*</i>{{item.title}}</p>
+          <div class="one_" v-for="(item,index) in otherList" :key="index" v-if="item.value.length>0||((signingState&&signingState.value!==1&&signingState.value!==0)||!signingState)">
+            <p class="title">其他</p>
+            <p class="title_"><i v-if="item.isrequire">*</i>{{item.title}}</p>
             <ul class="ulData">
-              <li>
+              <li v-show="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
                 <file-up class="uploadSubject" :scane="dataScane" :id="'other'+index" @getUrl="addSubject">
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -230,13 +230,13 @@
                     <p>{{item_.name}}</p>
                   </div>
                 </el-tooltip>
-                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':isDelete===item.title+item_.path}"></i>
+                <i class="iconfont icon-tubiao-6" @click="delectData(index,index_,'other')" :class="{'deleteShow':isDelete===item.title+item_.path}" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState"></i>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
         <el-button round @click="dialogContData=false">取消</el-button>
         <el-button round type="primary" @click="uploading('上传成功')">保存</el-button>
       </span>
@@ -409,6 +409,7 @@ export default {
       isentrust:0,//是否是委托合同 1 是 0不是
       dialogEntrust:false,//委托合同审核弹窗
       entrustReason:"",//委托合同审核备注
+      signingState:'',//签后审核状态
     }; 
   },
   created() {
@@ -434,7 +435,6 @@ export default {
         var oDiv=document.getElementsByClassName('signature')[countnum]
         var that=this
         oDiv.onmousedown = function(ev){
-          // debugger
             var disX = ev.clientX -oDiv.offsetLeft;
             var disY = ev.clientY - oDiv.offsetTop;
           var l=0;
@@ -896,6 +896,8 @@ export default {
               owner:res.data.ownerCommission,
               user:res.data.custCommission
             }
+            //签后审核状态
+            this.signingState=res.data.signingState
           }
           
           this.isCanAudit=res.data.isCanAudit;
@@ -923,7 +925,7 @@ export default {
           if(res.data.isWuHanMM===1&&(res.data.contType.value===2)){
             this.isShowType=true;
             //买卖
-            this.business=res.data.imgAddress.business;
+            this.business=res.data.imgAddress.business; 
             this.total_b=res.data.imgCount.business;
             //居间
             this.residence=res.data.imgAddress.residence;
@@ -942,7 +944,6 @@ export default {
     },
     //拼接地址
     setSrc(value,count){
-      debugger
       var arrSrc = [];
       for(let i=1;i<=count;i++){
         let src = value.substr(0,value.lastIndexOf('.'))+i+value.substr(value.lastIndexOf('.'));
@@ -1709,16 +1710,20 @@ export default {
     height: 450px;
     overflow-y: auto;
     .classify {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid @border-ED;
-      .title {
-        font-size: 16px;
-        color: @color-324;
-      }
+      position: relative;
       .one_ {
-        padding-left: 20px;
-        > p {
+        padding-left: 10px;
+        padding-top: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid @border-ED;
+        .title {
+          font-size: 16px;
+          color: @color-324;
+          position: absolute;
+          top: 10px;
+          left: 5px;
+        }
+        .title_ {
           font-size: 14px;
           padding: 10px 0;
           color: @color-6c;
@@ -1727,16 +1732,27 @@ export default {
           }
         }
       }
-      .noData{
-        text-align: center;
-        width: 100px;
-        height: 100px;
-        padding-top: 40px;
-        box-sizing: border-box;
-        border-radius:4px;
-        background: @color-F2;
-      }
     }
+    // .classify {
+    //   padding-top: 10px;
+    //   padding-bottom: 10px;
+    //   border-bottom: 1px solid @border-ED;
+    //   .title {
+    //     font-size: 16px;
+    //     color: @color-324;
+    //   }
+    //   .one_ {
+    //     padding-left: 20px;
+    //     > p {
+    //       font-size: 14px;
+    //       padding: 10px 0;
+    //       color: @color-6c;
+    //       > i {
+    //         color: @color-FF;
+    //       }
+    //     }
+    //   }
+    // }
     .ulData{
       display: flex;
       flex-wrap:wrap;

@@ -61,7 +61,7 @@
             <div class="column-title">房源信息</div>
             <div class="form-cont">
               <el-form-item>
-                <el-form-item label="房源编号：" prop="houseno">
+                <el-form-item label="房源编号：" prop="houseno" class="paddingLeft">
                   <el-button type="primary" @click="toLayerHouse()"  v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</el-button>
                   <el-button type="text" v-else>{{contractForm.houseinfoCode}}</el-button>
                 </el-form-item>
@@ -85,12 +85,12 @@
                 </el-form-item>
               </el-form-item>
 
-              <el-form-item label="房源总价：" class="disb">
+              <el-form-item label="房源总价：" class="disb paddingLeft">
                 <el-form-item>
                   <el-input v-model="contractForm.houseInfo.ListingPrice" :disabled="canInput" clearable @input="cutNumber('editHousePrice')">
                   </el-input>
                 </el-form-item>
-                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="String(contractForm.houseInfo.ListingPrice).length>0">
+                <el-form-item prop="houseInfo.TimeUnit" :rules="{required: true, message: '请选择单位'}" v-if="String(contractForm.houseInfo.ListingPrice).length>0||contractForm.houseInfo.TradeInt">
                   <el-select v-model="contractForm.houseInfo.TimeUnit" :disabled="isDisabled" clearable placeholder="单位" style="width:100px;">
                     <el-option label="元" :value="1"></el-option>
                     <el-option label="元/月" :value="2"></el-option>
@@ -110,7 +110,28 @@
                 </el-input>
               </el-form-item> -->
 
-              <el-form-item label="业主信息：" class="disb" required>
+              <el-form-item label="业主信息：" class="disb paddingLeft" v-if="contractForm.type==4">
+
+                <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameInput, trigger: 'change'}">
+                  <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhoneInput, trigger:'change'}">
+                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                  </el-select>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                </el-form-item>
+
+              </el-form-item>
+              <el-form-item label="业主信息：" class="disb" required v-if="contractForm.type==5">
 
                 <el-form-item :prop="'contPersons[' + 0 + '].name'" :rules="{validator: nameExp, trigger: 'change'}">
                   <el-input v-model="contractForm.contPersons[0].name" :disabled="canInput" clearable placeholder="姓名" class="namewidth" maxlength=20 @input="cutInfo('name',0)"></el-input>
@@ -127,7 +148,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?9:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -179,7 +200,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?9:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
+                  <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?30:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -205,7 +226,7 @@
       <div class="warning-box">
         <p><i class="iconfont icon-tubiao_shiyong-1"></i><span>请确认客户和业主的姓名与证件上的一致？</span></p>
         <ul>
-          <li>
+          <li v-if="contractForm.contPersons[0].name">
             {{contractForm.contPersons[0].name}}：{{contractForm.contPersons[0].identifyCode}}
           </li>
           <li>
@@ -226,6 +247,13 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="toContract">取 消</el-button>
         <el-button type="primary" @click="toUpload">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 单公司提示框 -->
+    <el-dialog title="提示" :visible.sync="singleCompany" width="460px" :closeOnClickModal="$tool.closeOnClickModal" :showClose="false">
+      <div class="singleCompany">{{singleCompanyName}}未设置公章，请联系管理员设置！</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="toH5">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -407,6 +435,8 @@ export default {
       canInput:false,
       //线下合同已签约状态编辑
       offLine:false,
+      singleCompany:false,
+      singleCompanyName:"",//单公司（为设置签章）
     };
   },
   created() {
@@ -602,6 +632,33 @@ export default {
       }
     },
 
+    nameInput(rule, value, callback){
+      let namereg = /^[a-zA-Z\u4e00-\u9fa5]*$/;
+      if (!value || value == '') {
+        return callback();
+      }else if (!namereg.test(value)) {
+        callback(new Error("只能输入大小写字母和汉字"));
+      } else {
+        callback();
+      }
+    },
+
+    telPhoneInput (rule, value, callback) {
+      let myreg = /^[1][0-9]{10}$/;
+      let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+      // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+
+      if (!value || value == '') {
+        return callback();
+      }else{
+        if (!myreg.test(value)&&!myreg_.test(value)) {
+          callback(new Error("请输入正确电话号码"));
+        } else {
+          callback();
+        }
+      }
+    },
+
     rightAddr1(rule, value, callback){
       if (!value || value == '') {
         return callback(new Error("请输入城市"));
@@ -679,8 +736,9 @@ export default {
           let houseMsg = res.data;
           this.contractForm.houseinfoCode = houseMsg.PropertyNo; //房源编号
           this.contractForm.houseInfo = houseMsg;
+          this.contractForm.houseInfo.ListingPrice=''
           if(houseMsg.TradeInt===2){
-            this.$set(this.contractForm.houseInfo,'ListingPrice',this.multiply(houseMsg.ListingPrice,10000))
+            // this.$set(this.contractForm.houseInfo,'ListingPrice',this.multiply(houseMsg.ListingPrice,10000))
             // this.contractForm.houseInfo.ListingPrice = this.multiply(houseMsg.ListingPrice,10000)
             // this.contractForm.houseInfo.TimeUnit=1
             this.$set(this.contractForm.houseInfo,'TimeUnit',1)
@@ -982,10 +1040,14 @@ export default {
             let contractMsg = res.data.data
             this.hidBtn=1
             sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-            // this.setPath(this.$tool.getRouter(['合同','合同列表','新增合同'],'contractList'));
-            this.$router.push({
-              path: "/extendParams"
-            });
+            if(contractMsg.singleCompany){
+              this.singleCompany=true
+              this.singleCompanyName=contractMsg.singleCompany
+            }else{
+              this.$router.push({
+                path: "/extendParams"
+              });
+            }
           }
         } else {
           this.fullscreenLoading=false
@@ -998,6 +1060,13 @@ export default {
           message: error,
           type:"error"
         });
+      });
+    },
+    //跳转H5页面
+    toH5(){
+      this.singleCompany=false
+      this.$router.push({
+        path: "/extendParams"
       });
     },
     //创建成功提示
@@ -1256,6 +1325,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.singleCompany{
+  padding: 20px 0 10px 10px;
+}
 .personalMsg{
   /deep/.el-dialog__header{
     border: none !important;
@@ -1289,44 +1361,6 @@ export default {
     }
   }
 }
-  //  .myconfirm{
-  //       /deep/.el-dialog{
-  //           width: 420px;
-
-  //           .el-dialog__header {
-  //               border-bottom: 1px solid #edecf0;
-  //               padding: 15px 20px 10px;
-  //           }
-  //           .el-dialog__headerbtn{
-  //               top: 14px;
-  //               font-size: 22px;
-  //           }
-  //           .el-dialog__body{
-  //               text-align: center;
-  //               color: #233241;
-  //               font-size: 16px;
-  //               padding-top: 60px;
-  //               padding-bottom: 26px;
-  //           }
-  //           .el-dialog__footer{
-  //               text-align: center;
-  //               padding: 20px 20px 30px;
-  //           }
-  //           .dialog-footer{
-  //               text-align: center;
-
-  //               .el-button{
-  //                   padding: 11px 30px;
-  //                   border-radius: 30px;
-  //               }
-  //               .el-button+.el-button{
-  //                   margin-left: 16px;
-  //               }
-  //           }
-
-  //       }
-  //   }
-
   .error-item{
     /deep/.el-form-item__error{
       top: 0 !important;
@@ -1422,6 +1456,9 @@ export default {
   }
   .textlengthbox {
     position: relative;
+    /deep/.el-form-item__label{
+      padding-left: 9px;
+    }
   }
   .textLength {
     position: absolute;
@@ -1460,7 +1497,11 @@ export default {
     margin-right: 0;
   }
 }
-
+.paddingLeft{
+  /deep/.el-form-item__label{
+    padding-left: 9px;
+  }
+}
 </style>
 
 

@@ -221,7 +221,7 @@
               }
             })
           }
-          this.searchEmp()
+          this.choseItem.depId&&this.searchEmp()
         }else {
           if(this.inputEmp){
             //去掉员工带出部门的交互

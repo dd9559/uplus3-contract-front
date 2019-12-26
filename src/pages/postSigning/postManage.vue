@@ -605,7 +605,7 @@
                                                     @click="previewPhoto(item.val,n)"
                                                     >
                                                         <i @click.stop="clearFn(index,n)" class="iconfont icon-tubiao-6"></i>
-                                                        <img class="suolue-img" :src="i.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(i.type)" width="70%">
+                                                        <img class="suolue-img" :src="i.path|getSignImage(preloadFiles)" alt="" v-if="isPictureFile(i.type)" width="70%" height="80px">
                                                         <div class="img" v-else><uploadCell :type="stepsTypeImg(item.type)"></uploadCell></div>
                                                         <p class="p">{{i.name}}</p>
                                                     </li>

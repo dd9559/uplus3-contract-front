@@ -64,7 +64,7 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250 form-label">
-            <input type="text" maxlength="20" v-model="contractForm.guestinfoCode" @input="inputCode('guestinfoCode')" placeholder="请输入内容" class="dealPrice">
+            <el-input style="width:140px;" type="text" maxlength="20" v-model="contractForm.guestinfoCode" :clearable="true" @input="inputCode('guestinfoCode')" placeholder="请输入内容"></el-input>
           </el-form-item>
           <span class="select" @click="showDialog">请选择客源</span>
           <br>
@@ -848,44 +848,44 @@ export default {
                     let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
                     if (reg.test(element.mobile)||reg_.test(element.mobile)) {
                       // 人员关系
-                      if (element.relation) {
+                      // if (element.relation) {
                         // 证件类型
-                        if(element.cardType){
+                        // if(element.cardType){
                           // 证件号码
-                          if (element.cardCode.replace(/\s/g,"")) {
-                            if(element.cardType!==1){
-                              element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
-                            }
-                            if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
+                          // if (element.cardCode.replace(/\s/g,"")) {
+                          //   if(element.cardType!==1){
+                          //     element.cardCode=element.cardCode.replace(/[&\|\\\*^%$#@\-]/g,"")
+                          //   }
+                          //   if (element.cardType===1&&this.isIdCardNo(element.cardCode)||(element.cardType===2&&element.cardCode.length<=9)||(element.cardType===3&&element.cardCode.length<=20)||(element.cardType===4&&element.cardCode.length<=10)) {
                               isOk = true;
-                            }else{
-                              this.$message({
-                                message: "客源信息-客户证件号不正确",
-                                type: "warning"
-                              });
-                              break
-                            }
-                          } else {
-                            this.$message({
-                              message: "客源信息-客户证件号不能为空",
-                              type: "warning"
-                            });
-                            break
-                          }
-                      }else {
-                        this.$message({
-                          message: "客源信息-客户证件类型不能为空",
-                          type: "warning"
-                        });
-                        break
-                      }
-                    } else {
-                      this.$message({
-                        message: "客源信息-客户关系不能为空",
-                        type: "warning"
-                      });
-                      break
-                    }
+                          //   }else{
+                          //     this.$message({
+                          //       message: "客源信息-客户证件号不正确",
+                          //       type: "warning"
+                          //     });
+                          //     break
+                          //   }
+                          // } else {
+                          //   this.$message({
+                          //     message: "客源信息-客户证件号不能为空",
+                          //     type: "warning"
+                          //   });
+                          //   break
+                          // }
+                      // }else {
+                      //   this.$message({
+                      //     message: "客源信息-客户证件类型不能为空",
+                      //     type: "warning"
+                      //   });
+                      //   break
+                      // }
+                    // } else {
+                    //   this.$message({
+                    //     message: "客源信息-客户关系不能为空",
+                    //     type: "warning"
+                    //   });
+                    //   break
+                    // }
                     }else{
                       this.$message({
                         message: "客源信息-客户电话号码不正确",
@@ -1090,7 +1090,7 @@ export default {
         let m = time.getMinutes()
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
-        return time_.substr(0, 10)
+        return time_
       }
     }
   },
