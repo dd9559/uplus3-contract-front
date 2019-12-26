@@ -161,7 +161,7 @@
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 合同资料库弹窗 -->
-    <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeContData">
       <div class="contData">
         <div class="classify" v-if="sellerList.length>0">
           <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((signingState&&signingState.value!==1&&signingState.value!==0)||!signingState)">
@@ -237,7 +237,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
-        <el-button round @click="dialogContData=false">取消</el-button>
+        <el-button round @click="closeContData">取消</el-button>
         <el-button round type="primary" @click="uploading('上传成功')">保存</el-button>
       </span>
       <!-- 图片预览 -->
@@ -1134,6 +1134,24 @@ export default {
         this.getContData();
       }
       this.dialogContData=true;
+    },
+    //关闭资料库弹窗
+    closeContData(){
+      this.dialogContData=false
+      // this.buyerList=[]
+      // this.sellerList=[]
+      // this.otherList=[]
+      // this.getContDataType()
+      let arr=[].concat(this.buyerList,this.sellerList,this.otherList)
+      arr.forEach(element => {
+        element.value=[]
+      });
+      // this.sellerList.forEach(element => {
+      //   element.value=[]
+      // });
+      // this.otherList.forEach(element => {
+      //   element.value=[]
+      // });
     },
      //获取合同资料库类型列表
     getContDataType() {
