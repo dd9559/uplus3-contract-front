@@ -68,6 +68,10 @@
             </span>
             <span class="propertyAddress color_" v-else>物业地址</span>
           </el-form-item>
+          <!-- <br>
+          <el-form-item label="产权地址：" :class="{'form-label':operationType===1}" style="width:605px;text-align:right">
+            <input v-model="contractForm.rightAddr" :disabled="canInput" maxlength="70" placeholder="请输入内容" @input="cutAddress" class="dealPrice" :class="{'disabled':canInput}" style="width:500px" />
+          </el-form-item> -->
           <br>
           <el-form-item label="建筑面积：" class="width-250">
             <input type="text" v-model="contractForm.houseInfo.Square" :disabled="canInput" @input="cutNumber('Square')" placeholder="请输入内容" class="dealPrice" :class="{'disabled':canInput}">
@@ -1166,15 +1170,9 @@ export default {
         this.t_ownerList[index].propertyRightRatio=this.$tool.cutFloat({val:this.t_ownerList[index].propertyRightRatio,max:100})
       }
     },
-    cutAddress(type){
+    cutAddress(){
       let addrReg=/\\|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
-      if(type==="city"){
-        this.rightAddrCity=this.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","").replace(/\//g,'')
-      }else if(type==="area"){
-        this.rightAddrArea=this.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace(/\//g,'')
-      }else{
-        this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
-      }
+      // this.rightAddrDetail=this.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
     },
     inputOnly(index,type){
       if(type==='owner'){

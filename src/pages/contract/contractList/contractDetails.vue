@@ -1750,7 +1750,8 @@ export default {
     },
     //打电话
     call(value,index,type) {
-      var nowTime = (new Date()).getTime();
+      //2019.12.27生成虚拟小号接口变更，虚拟小号10s会失效，所以去掉5分钟才重新获取的限制
+      // var nowTime = (new Date()).getTime();
       var param = {
         plateType:0,
         id:value.pid,
@@ -1759,35 +1760,36 @@ export default {
         calledMobile:value.encryptionMobile,
         calledName:value.name
       };
-      if(type==='owner'){
-        if(this.ownerData[index].time){
-          let oldTime = (nowTime-this.ownerData[index].time);
-          if(oldTime<300000){
-            this.callNumber=this.ownerData[index].virtualNum;
-            this.dialogVisible = true;
-          }else{
-            this.ownerData[index].time=nowTime;
-            this.getVirtualNum(param,index,type);
-          }
-        }else{
-          this.ownerData[index].time=nowTime;
-          this.getVirtualNum(param,index,type);
-        }
-      }else if(type==='guest'){
-        if(this.clientrData[index].time){
-          let oldTime = (nowTime-this.clientrData[index].time);
-          if(oldTime<300000){
-            this.callNumber=this.clientrData[index].virtualNum;
-            this.dialogVisible = true;
-          }else{
-            this.clientrData[index].time=nowTime;
-            this.getVirtualNum(param,index,type);
-          }
-        }else{
-          this.clientrData[index].time=nowTime;
-          this.getVirtualNum(param,index,type);
-        }
-      }
+      this.getVirtualNum(param,index,type);
+      // if(type==='owner'){
+      //   if(this.ownerData[index].time){
+      //     let oldTime = (nowTime-this.ownerData[index].time);
+      //     if(oldTime<300000){
+      //       this.callNumber=this.ownerData[index].virtualNum;
+      //       this.dialogVisible = true;
+      //     }else{
+      //       this.ownerData[index].time=nowTime;
+      //       this.getVirtualNum(param,index,type);
+      //     }
+      //   }else{
+      //     this.ownerData[index].time=nowTime;
+      //     this.getVirtualNum(param,index,type);
+      //   }
+      // }else if(type==='guest'){
+      //   if(this.clientrData[index].time){
+      //     let oldTime = (nowTime-this.clientrData[index].time);
+      //     if(oldTime<300000){
+      //       this.callNumber=this.clientrData[index].virtualNum;
+      //       this.dialogVisible = true;
+      //     }else{
+      //       this.clientrData[index].time=nowTime;
+      //       this.getVirtualNum(param,index,type);
+      //     }
+      //   }else{
+      //     this.clientrData[index].time=nowTime;
+      //     this.getVirtualNum(param,index,type);
+      //   }
+      // }
     },
     //生成虚拟号码
     getVirtualNum(param,index,type){
@@ -1795,20 +1797,20 @@ export default {
         this.canCall=true;
         res=res.data;
         if(res.status===200){
-          if(type==='owner'){
-            this.ownerData[index].virtualNum=res.data.virtualNum
-          }else if(type==='guest'){
-            this.clientrData[index].virtualNum=res.data.virtualNum
-          }
+          // if(type==='owner'){
+          //   this.ownerData[index].virtualNum=res.data.virtualNum
+          // }else if(type==='guest'){
+          //   this.clientrData[index].virtualNum=res.data.virtualNum
+          // }
           this.callNumber=res.data.virtualNum;
           this.dialogVisible = true;
         }
       }).catch(error=>{
-        if(type==='owner'){
-          this.ownerData[index].time=''
-        }else if(type==='guest'){
-          this.clientrData[index].time=''
-        }
+        // if(type==='owner'){
+        //   this.ownerData[index].time=''
+        // }else if(type==='guest'){
+        //   this.clientrData[index].time=''
+        // }
         this.canCall=true;
         this.$message({
           message:error,

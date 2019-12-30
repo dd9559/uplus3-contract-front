@@ -132,6 +132,7 @@
     dialogOperation="details"
     :contId="contId"
     :code="contCode"
+    :dialogContType="dialogContType"
     @close="ChangeCancelDialog"
     @success="freachChangeCancel"
     v-if="changeCancel">
@@ -175,6 +176,7 @@ export default{
         label:false,
       },
       changeCancel:false,
+      dialogContType:1,//变更解约弹窗是否是意向定金合同
       contCode:"",
       contId:"",
       commission:"",
@@ -246,6 +248,11 @@ export default{
     },
     //合同审核
     goCheck(item) {
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
+      }
       let param={
         bizCode:item.code,
         flowType:this.listType==="bg"?9:10

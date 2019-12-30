@@ -216,7 +216,7 @@
 
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :dialogContType="dialogContType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -252,6 +252,7 @@ export default {
       pageSize: 10,
       contractCode: "",
       changeCancel: false,
+      dialogContType:1,//变更解约弹窗是否是意向定金合同
       dialogOperation:"details",
       dictionary: {
         //数据字典
@@ -449,6 +450,11 @@ export default {
         this.changeCancel = true;
         this.dialogType = "jy";
         this.contId=item.id;
+      }
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
       }
     },
     //关闭变更解约弹窗

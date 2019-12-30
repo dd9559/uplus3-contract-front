@@ -368,6 +368,7 @@
 		:contId="changeCancelId"
 		:commission="commission"
 		:code="detailData.code"
+		:dialogContType="2"
 		@close="changeCancelDialog"
 		@success="freshChangeCancel"
 		v-if="changeCancel_"></changeCancel>

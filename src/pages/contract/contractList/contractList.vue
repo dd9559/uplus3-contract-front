@@ -383,7 +383,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :dialogContType="dialogContType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -664,6 +664,7 @@ export default {
       //合同删除
       deleteDialog:false,
       deleteItem:'',
+      dialogContType:1//变更解约弹窗是否是意向定金合同
     };
   },
   created() {
@@ -1159,6 +1160,11 @@ export default {
         this.changeCancel = true;
         this.dialogType = "jy";
         this.contId=item.id;
+      }
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
       }
     },
     //获取当前部门
