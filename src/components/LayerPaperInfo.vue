@@ -126,6 +126,24 @@
         <div class="paper-ov">
           <div class="fl"><span class="fb mr-10 ml-28">备注：</span><span>{{comRules}}</span></div>
         </div>
+        <!-- 门店实收分成 -->
+        <!--<table class="dep-receipt">
+          <tr>
+          <td>大区</td>
+          <td>片区</td>
+          <td>门店</td>
+          <td>金额</td>
+          </tr>
+          <tr>
+            <td>
+              手续费合计
+            </td>
+            <td>&#45;&#45;</td>
+            <td>&#45;&#45;</td>
+            <td>&#45;&#45;</td>
+          </tr>
+        </table>-->
+        <!---->
         <div class="pr">
           <div class="paper-ov3">
             <div class="fl fb">收款单位（加盖财务专用章）：</div>
@@ -374,6 +392,31 @@
     }*/
   }
 
+  .dep-receipt{
+    width: 100%;
+    text-align: center;
+    border-spacing: 0px;
+    border: 1px solid #D7D7D7;
+    margin-top: 15px;
+    td{
+      border-left: 1px solid #D7D7D7;
+      border-bottom: 1px solid #D7D7D7;
+      padding: 8px 0;
+    }
+    tr{
+      >td:first-of-type{
+        border-left: 0px;
+      }
+      &:first-of-type{
+        background-color: #F2F2F2;
+      }
+      &:last-of-type{
+        td{
+          border-bottom: 0px;
+        }
+      }
+    }
+  }
   .red {
     color: #FF3E3E;
     font-weight: normal;
@@ -425,12 +468,12 @@
     &:nth-of-type(n+2){
       margin-top: 10px;
     }
-    &:nth-of-type(2n+1){
+    &:nth-of-type(n+1){
       page-break-before:always;
     }
-    &:first-of-type{
+    /*&:first-of-type{
       page-break-before: initial;
-    }
+    }*/
   }
 
   .paper-border {
