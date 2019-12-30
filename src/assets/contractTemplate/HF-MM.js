@@ -65,6 +65,7 @@ let Obj={
       name:'yes1'
     },
     val91:'',
+    val92:'',
     val93:'method4',
     check14:{
       name:"check03"
