@@ -173,6 +173,7 @@ const MIXINS = {
       this.clearSelect('emp')
       this.dep.id=data.depId
       this.dep.name=data.name
+      this.dep.empId=''
       /*if(data.subs.length===0){
         this.$refs.tree.blur()
       }*/
