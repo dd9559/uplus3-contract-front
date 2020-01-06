@@ -108,7 +108,7 @@
           </div>
 				</el-tab-pane>
         <!-- xuneng修改：意向定金打开合同主体限制，照搬买卖租赁 -->
-				<el-tab-pane label="合同主体" name="second">
+				<el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
 					<div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 						<ul class="ulData">
 							<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">

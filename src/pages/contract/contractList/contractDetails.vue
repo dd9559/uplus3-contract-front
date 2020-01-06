@@ -5,6 +5,7 @@
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
           <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
+
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
             <div class="msg">
@@ -66,8 +67,8 @@
                     <span class="text">{{contractDetail.propertyAddr}}</span>
                   </p>
                 </div>
-                <div class="one_" v-if="contractDetail.recordVersion===2">
-                   <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
+                <div class="one_">
+                   <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr?contractDetail.propertyRightAddr:'-'}}</span></p>
                 </div>
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
@@ -102,6 +103,8 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
+                  <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p>
+                  <p v-if="contractDetail.recordVersion===1"><span class="tag">店长：</span><span class="text">{{contractDetail.dealAgentShopowner?contractDetail.dealAgentShopowner:"--"}}</span></p>
                 </div>
                 <div class="table">
                   <el-table :data="clientrData" border header-row-class-name="theader-bg">
@@ -423,7 +426,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="合同主体" name="second">
+        <el-tab-pane label="合同主体" name="second" v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">
               合同主体

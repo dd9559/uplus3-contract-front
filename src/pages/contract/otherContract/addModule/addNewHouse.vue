@@ -99,7 +99,7 @@
       <div class="houseMsg">
         <p>签约信息</p>
         <div class="form-content">
-          <el-form-item label="成交经纪人：" class="form-label" style="width:355px;text-align:right">
+          <el-form-item label="成交经纪人：" class="form-label" style="width:345px;text-align:right">
             <el-select
               style="width:100px"
               v-model="contractForm.dealAgentId"
@@ -150,9 +150,45 @@
             <input type="text" placeholder="所属门店" disabled class="dealPrice storeStyle" v-model="contractForm.shopOwnerStoreName" v-else>
           </el-form-item>
           <br>
-          <el-form-item label="合作方：" style="width:330px;text-align:right">
+          <el-form-item label="合作方：" style="width:320px;text-align:right">
             <input v-model="contractForm.cooperationName" maxlength="30" placeholder="请输入" @input="inputOnly(0,'cooperationName')" class="dealPrice" style="width:200px" /> 
           </el-form-item>
+        </div>
+      </div>
+      <!-- 其他信息 -->
+      <div class="houseMsg">
+        <p>其他信息</p>
+        <div class="form-content">
+          <div class="other">
+            <p>附件：</p>
+            <ul class="ulData" style="margin-bottom:10px">
+              <li>
+                <file-up class="uploadSubject" @getUrl="uploadSubject" id="FJ">
+                  <i class="iconfont icon-shangchuan"></i>
+                  <p>点击上传</p>
+                </file-up>
+              </li>
+              <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                  <div class="namePath" @click="previewPhoto(uploadList,index)">
+                    <img class="signImage" :src="item.path|getSignImage(FJFiles)" alt="" v-if="isPictureFile(item.fileType)">
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
+                    <p>{{item.name}}</p>
+                  </div>
+                </el-tooltip>
+                <i class="iconfont icon-tubiao-6" @click="ZTdelectData(index)" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
+              </li>
+            </ul>
+          </div>
+          <div class="other">
+            <p>备注栏：</p>
+            <div class="remarkType">
+              <el-form-item style="position:relative;">
+                <el-input type="textarea" :rows="6" maxlength="200" resize='none' @input="inputCode('remarks')" v-model="contractForm.remarks" placeholder="请输入备注内容"></el-input>
+                <span class="textLength">{{contractForm.remarks.length}}/200</span>
+              </el-form-item>
+            </div>
+          </div>
         </div>
       </div>
     </el-form>
@@ -186,6 +222,8 @@
     @closeHouseGuest="closeHouseGuest"
     v-if="isShowDialog">
     </houseGuest>
+    <!-- 图片预览 -->
+    <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
            
@@ -254,7 +292,8 @@ export default {
         shopOwnerName:"",
         shopOwnerStoreId:"",
         shopOwnerStoreName:"",
-        cooperationName:""
+        cooperationName:"",
+        remarks:""
       },
       //产权地址
       rightAddrCity:'',
@@ -303,6 +342,10 @@ export default {
           return time.getTime() > Date.now();
         }
       },
+      uploadList: [],//附件
+      FJFiles:[],//附件缩略图片
+      isDelete:'',
+      previewType:'none',
     }
   },
   created () {
@@ -408,9 +451,21 @@ export default {
             let obj_ = Object.assign({}, element);
             this.guestList_.push(obj_);
           };
-          console.log(contractDetail)
-           delete contractDetail.contractInfo
-           this.contractForm=contractDetail
+          //合同附件
+          if(contractDetail.vouchers&&contractDetail.vouchers.length>0){
+            this.uploadList=[].concat(contractDetail.vouchers)
+            let preloadList=[]
+            contractDetail.vouchers.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if(this.isPictureFile(item.fileType)){
+                preloadList.push(item.path)
+              }
+            })
+            this.fileSign(preloadList,'preload').then(res=>{
+              this.FJFiles=res
+            })
+          }
+          delete contractDetail.contractInfo
+          this.contractForm=contractDetail
         }
       })
     },
@@ -478,6 +533,9 @@ export default {
       }
       if(this.contractForm.guestinfoCode&&type==="guestinfoCode"){
         this.contractForm.guestinfoCode=this.contractForm.guestinfoCode.replace(/\s+/g,"").replace(addrReg,'')
+      }
+      if(this.contractForm.remarks&&type==="remarks"){
+        this.contractForm.remarks=this.contractForm.remarks.replace(/\s+/g,"")
       }
     },
     //姓名限制
@@ -1031,6 +1089,12 @@ export default {
         }
         this.contractForm.customerList.push(element);
       });
+      if(this.uploadList.length>0){
+        this.contractForm.vouchers=JSON.stringify(this.uploadList)
+      }else{
+        // this.contractForm.vouchers=[]
+        delete this.contractForm.vouchers
+      }
       let param = this.contractForm
       param.id = this.contId ? this.contId : null
       delete param.createTime
@@ -1067,7 +1131,38 @@ export default {
           type:"error"
         })
       })
-    }
+    },
+    //附件获取文件路径数组
+    uploadSubject(data) {
+      let arr = data.param;
+      arr.forEach(element => {
+        let fileType = this.$tool.get_suffix(element.name);
+        element.fileType = fileType;
+      });
+      this.uploadList=this.uploadList.concat(arr);
+      let preloadList=[]
+      arr.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+        if(this.isPictureFile(item.fileType)){
+          preloadList.push(item.path)
+        }
+      })
+      this.fileSign(preloadList,'preload').then(res=>{
+        this.FJFiles=this.FJFiles.concat(res)
+      })
+    },
+    //显示删除按钮
+    moveIn(value){
+      this.isDelete=value
+    },
+    moveOut(value){
+      if(this.isDelete===value){
+        this.isDelete=''
+      }
+    },
+     //附件的删除
+    ZTdelectData(index){
+      this.uploadList.splice(index,1);   
+    },
   },
   computed: {
     getOperationType: function() {
@@ -1092,6 +1187,20 @@ export default {
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         return time_
       }
+    },
+    /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
     }
   },
 };
@@ -1106,6 +1215,89 @@ export default {
   background: @bg-white;
   overflow-y: auto;
 }
+.uploadSubject {
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  box-sizing: border-box;
+  padding-top: 28px;
+  border: 1px dashed @border-DE;
+  border-radius:1px;
+  i {
+    color: @bg-th;
+    font-size: 50px;
+  }
+  p {
+    padding-top: 10px;
+    color: @color-324;
+    font-size: 12px;
+  }
+}
+.namePath{
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  border-radius:4px;
+  background: @color-F2;
+  .signImage{
+    width:60px;
+    height: 60px;
+    margin: 1px 0;
+  }
+  > p{
+    padding-top: 5px;
+    display: inline-block;
+    width: 100px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+}
+.deleteShow{
+  display: block !important;
+}
+.other{
+  margin-bottom: 20px;
+  padding-left: 20px;
+  >p{
+    color: #606266;
+    margin-bottom: 10px;
+  }
+  .ulData{
+    display: flex;
+    flex-wrap:wrap;
+    li{
+      margin-right: 10px;
+      position: relative;
+      margin-bottom: 10px;
+      > i{
+        display: none;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: @color-warning;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.remarkType{
+  /deep/.el-textarea__inner {
+    width: 600px;
+    min-height: 200px;
+  }
+  .textLength {
+    position: absolute;
+    bottom: 0;
+    right: 10px;
+    color: #6c7986;
+  }
+}
 .contractMsg {
   border-bottom: 1px solid @border-ED;
   > p {
@@ -1113,10 +1305,6 @@ export default {
     padding-left: 10px;
     font-size: 14px;
     font-weight: bold;
-  }
-  .form-content {
-    min-width: 1100px;
-    padding-left: 30px;
   }
 }
 .houseMsg {

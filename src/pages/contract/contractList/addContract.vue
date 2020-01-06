@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <div v-if="contVersion===2">
+    <div v-if="!contVersion===2">
       <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
         <!-- 合同信息 -->
         <div class="contractMsg">
@@ -293,7 +293,8 @@
       :guestList_="guestList_"
       :ownerList="ownerList"
       :guestList="guestList"
-      :canInput="canInput">
+      :canInput="canInput"
+      :basicsOptions="basicsOptions">
       </contractBasics>
       <contractBasics
       :contractForm="contractForm"
@@ -491,6 +492,7 @@ export default {
       commissionTotal:0,//总佣金
       loanType:0,//7 全款买卖 8 贷款买卖
       showRemark:false,//备注栏折叠展开
+      basicsOptions:[],//基础版经纪人信息
     };
   },
   created() {
@@ -1802,6 +1804,16 @@ export default {
           this.isHaveDetail=true
           this.countTotal()
           this.contVersion=res.data.recordVersion //合同基本信息版式（1 基础版  2 复杂版）
+          if(this.contVersion===1){
+            //经纪人
+            let option = {
+              empId:res.data.dealAgentId,
+              empName:res.data.dealAgentName,
+              depId:res.data.dealAgentStoreId,
+              depName:res.data.dealAgentStoreName
+            }
+            this.basicsOptions=[option]
+          }
           if(res.data.remarks&&res.data.remarks.length>0){
             this.showRemark=true
           }
@@ -1891,8 +1903,6 @@ export default {
               this.guestList_.push(obj_);
             }
           }
-          console.log(this.ownerList,this.guestList)
-          // debugger
         }
       });
     },
