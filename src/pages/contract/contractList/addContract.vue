@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <div v-if="!contVersion===2">
+    <div v-if="contVersion===2">
       <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
         <!-- 合同信息 -->
         <div class="contractMsg">

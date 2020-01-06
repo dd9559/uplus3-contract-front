@@ -131,7 +131,11 @@
               <span v-if="scope.row.state.value===-1" class="blue">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===0" class="yellow">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===1" class="green">{{scope.row.state.label}}</span>
-              <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
+              <!-- <span v-if="scope.row.state.value===2" class="red" :title="scope.row.remarks">{{scope.row.state.label}}</span> -->
+              <el-tooltip class="item" v-if="scope.row.state.value===2&&scope.row.remarks" effect="dark" :content="scope.row.remarks" placement="top">
+                <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
+              </el-tooltip>
+              <span v-if="scope.row.state.value===2&&!scope.row.remarks" class="red">{{scope.row.state.label}}</span>
             </template>
             <span v-else>-</span>
           </template>

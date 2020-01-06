@@ -287,7 +287,11 @@
               <span v-if="scope.row.signingState.value===-1" class="blue">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===0" class="yellow">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
-              <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span>
+              <!-- <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span> -->
+              <el-tooltip class="item" v-if="scope.row.signingState.value===2&&scope.row.signingRemarks" effect="dark" :content="scope.row.signingRemarks" placement="top">
+                <span class="red">{{scope.row.signingState.label}}</span>
+              </el-tooltip>
+              <span v-if="scope.row.signingState.value===2&&!scope.row.signingRemarks" class="red">{{scope.row.signingState.label}}</span>
             </div>
             <div v-else class="blue">待提审</div>
           </template>
@@ -1443,13 +1447,19 @@ export default {
             combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
             combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
           }
+          //签后审核状态
           if(combineItem.signingEntrustState){
-            // this.$set(element,"bgc",true)
             combineItem.signingState={}
             combineItem.signingState.value=combineItem.signingEntrustState.value
             combineItem.signingState.label=combineItem.signingEntrustState.label
           }else{
             combineItem.signingState=''
+          }
+          //签后审核驳回原因
+          if(combineItem.signingEntrustRemarks){
+            combineItem.signingRemarks=combineItem.signingEntrustRemarks
+          }else{
+            combineItem.signingRemarks=''
           }
           
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
@@ -1708,7 +1718,7 @@ export default {
     text-overflow:ellipsis;
     white-space:nowrap;
     overflow:hidden;
-    display: inline-block;
+    // display: inline-block;
   }
 }
 .contract_msg{
