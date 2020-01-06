@@ -112,9 +112,9 @@
             <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
             <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
           </el-form-item>
-          <el-form-item label="成交经纪人：" class="form-label" style="width:470px;text-align:right">
+          <el-form-item label="成交经纪人：" class="form-label" style="width:500px;text-align:right">
             <el-select
-              style="width:100px"
+              style="width:130px"
               v-model="contractForm.dealAgentId"
               filterable
               remote
@@ -1345,7 +1345,7 @@ export default {
     },
     //经纪人店长查询
     remoteMethod(keyword,type){
-      if(keyword!==''){
+      if(keyword){
         let param = {
           // type:type==="agent"?1:2,  2019.10.16张丽茹更改需求 经纪人可以为店长 不做限制
           name:keyword
