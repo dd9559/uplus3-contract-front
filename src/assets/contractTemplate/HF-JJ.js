@@ -10,10 +10,8 @@ let obj = {
 }
 
 let Obj1 = {
-  val3:'',
+    val3:'',
     val5:'',
-    val6:'',
-    val8:'',
     val10:''
 }
 let errorArr=[]
