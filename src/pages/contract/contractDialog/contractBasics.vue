@@ -1347,6 +1347,7 @@ export default {
           res=res.data
           if(res.status===200){
             if(type==="agent"){
+              this.options = Object.assign([], this.someObject, res.data)
               this.options=res.data
             }else{
               this.options_=res.data
@@ -1361,9 +1362,12 @@ export default {
       if(this.options.length>0&&val){
         this.options.forEach(element => {
           if(element.empId==val){
-            this.contractForm.dealAgentName=element.empName
-            this.contractForm.dealAgentStoreId=element.depId
-            this.contractForm.dealAgentStoreName=element.depName
+            // this.contractForm.dealAgentName=element.empName
+            // this.contractForm.dealAgentStoreId=element.depId
+            // this.contractForm.dealAgentStoreName=element.depName
+            this.$set(this.contractForm,"dealAgentName",element.empName)
+            this.$set(this.contractForm,"dealAgentStoreId",element.depId)
+            this.$set(this.contractForm,"dealAgentStoreName",element.depName)
           }
         });
       }
