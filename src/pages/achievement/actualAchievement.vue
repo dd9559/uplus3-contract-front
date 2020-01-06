@@ -285,7 +285,10 @@
           <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
           <el-table-column label="签后审核状态" min-width="90">
             <template slot-scope="scope">
-              <span v-if="scope.row.signinState" :class="[{'blue-txt':scope.row.signinState.value===-1},{'yellow-txt':scope.row.signinState.value===0},{'green-txt':scope.row.signinState.value===1},{'red-txt':scope.row.signinState.value===2}]">{{scope.row.signinState.label}}</span>
+              <span v-if="scope.row.signinState&&scope.row.signinState.value!==2" :class="[{'blue-txt':scope.row.signinState.value===-1},{'yellow-txt':scope.row.signinState.value===0},{'green-txt':scope.row.signinState.value===1}]">{{scope.row.signinState.label}}</span>
+              <el-tooltip class="item" :content="scope.row.signinRemarks" effect="light" placement="right" v-else-if="scope.row.signinState&&scope.row.signinState.value===2">
+                <span class="red-txt">{{scope.row.signinState.label}}</span>
+              </el-tooltip>
               <span v-else>-</span>
             </template>
           </el-table-column>
