@@ -127,6 +127,32 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="业绩状态"
+          prop="state">
+          <el-select
+            v-model="propForm.achievementExamineState"
+            class="w180">
+            <el-option
+              v-for="item in dictionary['54']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="申诉状态"
+          prop="state">
+          <el-select
+            v-model="propForm.appealStatus"
+            class="w180">
+            <el-option
+              v-for="item in dictionary['63']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -163,7 +189,11 @@
             <span class="blue" @click="cellOpera('contract',scope.row)">{{nullFormatFn(scope.row.paperCode)}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="recordType.label" label="签约方式" min-width="160" :formatter="nullFormatter">
+        <el-table-column prop="recordType.label" label="签约方式" min-width="80" :formatter="nullFormatter">
+        </el-table-column>
+        <el-table-column prop="result.label" label="业绩状态" min-width="80" :formatter="nullFormatter">
+        </el-table-column>
+        <el-table-column prop="appealStatus.label" label="申诉状态" min-width="80" :formatter="nullFormatter">
         </el-table-column>
         <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
@@ -376,6 +406,8 @@
           cooperation: '',
           recordType: '',
           payway: '',
+          achievementExamineState:'',
+          appealStatus:'',
         },
         // 筛选下拉
         rules: {
@@ -398,6 +430,8 @@
           '53': '合作方式',
           '64': '',
           '69': '',
+          '63': '',
+          '54': '',
         },
         dictionaryData: [],
         // 作废弹层输入框

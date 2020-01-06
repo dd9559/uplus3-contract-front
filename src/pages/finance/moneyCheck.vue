@@ -476,6 +476,9 @@
                     }
                 }
             }
+            if(this.$route.query.source&&this.$route.query.source==='uplus'){
+              Object.assign(this.searchForm,{checkStatus:3})
+            }
 
             let res = this.getDataList
             if (res && (res.route === this.$route.fullPath)) {
