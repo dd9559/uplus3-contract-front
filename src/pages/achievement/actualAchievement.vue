@@ -237,12 +237,14 @@
               </p>
               <p>
                 房源：
-                <span>{{scope.row.houseinfoCode}}</span>
+                <span class="blue" style="cursor:pointer;" @click="jumpUPlus(scope.row,1)" v-if="getUser.version===3">{{scope.row.houseinfoCode}}</span>
+                <span v-else>{{scope.row.houseinfoCode}}</span>
                 {{scope.row.ownerName}}
               </p>
               <p>
                 客源：
-                <span>{{scope.row.guestinfoCode}}</span>
+                <span class="blue" style="cursor:pointer;" @click="jumpUPlus(scope.row,2)" v-if="getUser.version===3">{{scope.row.guestinfoCode}}</span>
+                <span v-else>{{scope.row.guestinfoCode}}</span>
                 {{scope.row.customerName}}
               </p>
             </template>
@@ -515,7 +517,7 @@
                 >申诉</span><span
                   @click.stop="checkAch(scope.row,scope.$index)"
                   style="cursor:pointer;"
-                  v-if="(userInfo&&userInfo.empId==scope.row.auditId)||(userInfo&&scope.row.grabDept&&scope.row.grabDept.indexOf(userInfo.depId) !=-1&&!(scope.row.auditId>0))"
+                  v-if="userInfo&&userInfo.empId===scope.row.auditId||scope.row.validateGrabAuth"
                 >审核</span>
                   <div style="color:red" v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId">
                     {{scope.row.auditName}}正在审核
@@ -806,6 +808,10 @@
       };
       this.$nextTick(() => {
         let res = this.getDataList;
+        if(this.$route.query.source&&this.$route.query.source==='uplus'){
+          Object.assign(this.propForm,{achType:0})
+          Object.assign(this.ajaxParam,{achievementStatus:0})
+        }
         if (res && res.route === this.$route.path) {
           this.selectAchList = res.data.list;
           this.total = res.data.total;
@@ -1307,6 +1313,32 @@
         } else {
           this.noPower("合同详情查看");
         }
+      },
+      /**
+       * 跳转房客源详情
+       * @param code
+       * @param type 1=房源，2=客源
+       */
+      jumpUPlus(row,type){
+        let url='';
+        let code=''
+        if(type===1){
+          url='/getHouseDetails'
+          code=row.houseinfoCode
+        }else{
+          url='/getCustomerDetails'
+          code=row.guestinfoCode
+        }
+        this.$ajax.get('/api/achievement'+url,{code:code}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            window.open(res.data)
+          }
+        }).catch(error=>{
+          this.$message({
+            message:error.message
+          })
+        })
       },
       //触发设置审核人弹窗
       choseCheckPerson(val, type1) {

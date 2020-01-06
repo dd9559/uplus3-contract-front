@@ -127,22 +127,31 @@
           <div class="fl"><span class="fb mr-10 ml-28">备注：</span><span>{{comRules}}</span></div>
         </div>
         <!-- 门店实收分成 -->
-        <!--<table class="dep-receipt">
-          <tr>
-          <td>大区</td>
-          <td>片区</td>
-          <td>门店</td>
-          <td>金额</td>
-          </tr>
-          <tr>
-            <td>
-              手续费合计
-            </td>
-            <td>&#45;&#45;</td>
-            <td>&#45;&#45;</td>
-            <td>&#45;&#45;</td>
-          </tr>
-        </table>-->
+        <div class="dep-receipt" v-if="storeReceiveList.length>0">
+          <p>门店实收分成</p>
+          <table>
+            <tr>
+              <td>大区</td>
+              <td>片区</td>
+              <td>门店</td>
+              <td>金额</td>
+            </tr>
+            <tr v-for="item in storeReceiveList">
+              <td>{{item.managerName|nullFilter}}</td>
+              <td>{{item.amaldarName|nullFilter}}</td>
+              <td>{{item.shopkeeperName|nullFilter}}</td>
+              <td>{{item.amount}}</td>
+            </tr>
+            <tr>
+              <td>
+                手续费合计
+              </td>
+              <td>--</td>
+              <td>--</td>
+              <td>{{storeReceiveList[0].fee}}</td>
+            </tr>
+          </table>
+        </div>
         <!---->
         <div class="pr">
           <div class="paper-ov3">
@@ -261,6 +270,12 @@
       signatureType:{//武汉专用，是否使用本地静态签章图片
         type:Number,
         default: 2
+      },
+      storeReceiveList:{
+        type:Array,
+        default(){
+          return []
+        }
       }
     },
     computed: {
@@ -363,6 +378,15 @@
           return e
         }
       }
+    },
+    filters: {
+      nullFilter:function (val) {
+        if (!val) {
+          return '--'
+        } else {
+          return val
+        }
+      }
     }
   }
 </script>
@@ -393,26 +417,33 @@
   }
 
   .dep-receipt{
-    width: 100%;
-    text-align: center;
-    border-spacing: 0px;
-    border: 1px solid #D7D7D7;
+    border-top: 1px solid #D7D7D7;
     margin-top: 15px;
-    td{
-      border-left: 1px solid #D7D7D7;
-      border-bottom: 1px solid #D7D7D7;
-      padding: 8px 0;
+    >p{
+      margin: 10px 0;
+      font-weight: bold;
     }
-    tr{
-      >td:first-of-type{
-        border-left: 0px;
+    table{
+      width: 100%;
+      text-align: center;
+      border-spacing: 0px;
+      border: 1px solid #D7D7D7;
+      td{
+        border-left: 1px solid #D7D7D7;
+        border-bottom: 1px solid #D7D7D7;
+        padding: 8px 0;
       }
-      &:first-of-type{
-        background-color: #F2F2F2;
-      }
-      &:last-of-type{
-        td{
-          border-bottom: 0px;
+      tr{
+        >td:first-of-type{
+          border-left: 0px;
+        }
+        &:first-of-type{
+          background-color: #F2F2F2;
+        }
+        &:last-of-type{
+          td{
+            border-bottom: 0px;
+          }
         }
       }
     }
