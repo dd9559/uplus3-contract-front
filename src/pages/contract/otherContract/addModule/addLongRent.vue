@@ -466,8 +466,8 @@ export default {
             ]
           }
           console.log(contractDetail)
-           delete contractDetail.contractInfo
-           this.contractForm=contractDetail
+          delete contractDetail.contractInfo
+          this.contractForm=contractDetail
         }
       })
     },

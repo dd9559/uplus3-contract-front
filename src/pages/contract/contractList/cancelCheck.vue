@@ -110,6 +110,10 @@ export default {
     }
   },
   created(){
+    //判断是否为u+跳转 u+跳转列表展示审核中数据
+    if(this.$route.query.source&&this.$route.query.source==="uplus"){
+      this.contractForm.toExamineState=0
+    }
     this.getDictionary();//字典
     this.remoteMethod();//部门
     this.getCancelList()

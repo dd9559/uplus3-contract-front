@@ -4,7 +4,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="合同详情" name="detail">
           <!-- <newHouseDetail :style="{ height: clientHei }"></newHouseDetail> -->
-          <component v-bind:is="contractType" :detail="contractDetail" :storeList="storeCommissionList" :style="{ height: clientHei }"></component>
+          <component v-bind:is="contractType" :imgPathList="imgPathList" :detail="contractDetail" :storeList="storeCommissionList" :style="{ height: clientHei }"></component>
           <div class="footer">
             <div>
               <p><span>录入时间：</span>{{contractDetail.createTime|formatTime}}</p>
@@ -116,6 +116,7 @@ export default {
     return{
       activeName:"detail",
       contractDetail:{},
+      imgPathList:[],//附件缩略图
       storeCommissionList:[],
       clientHei:"",
       contId:"",//列表带过来的id
@@ -218,6 +219,17 @@ export default {
         if(res.status===200){
           this.contractDetail=res.data
           this.$set(this.contractDetail,"contractInfo",JSON.parse(this.contractDetail.contractInfo))
+          if(this.contractDetail.vouchers&&this.contractDetail.vouchers.length>0){
+            let preloadList=[]
+            this.contractDetail.vouchers.forEach((item,index)=>{//判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if(this.isPictureFile(item.fileType)){
+                preloadList.push(item.path)
+              }
+            })
+            this.fileSign(preloadList,'preload').then(res=>{
+              this.imgPathList=[].concat(res)
+            })
+          }
         }
       })
     },
