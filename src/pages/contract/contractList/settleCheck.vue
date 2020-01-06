@@ -167,7 +167,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || ((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))">审核</div>
+            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || ((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept))">审核</div>
             <div style="color:red;" v-if="scope.row.examineState.value===0&&scope.row.auditorId>0&&getUserMsg&&scope.row.auditorId!==getUserMsg.empId">{{scope.row.examineName}}正在审核</div>
             <div v-if="scope.row.examineState.value!==0||scope.row.examineState.value===0&&((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))===-1)">--</div>
           </template>

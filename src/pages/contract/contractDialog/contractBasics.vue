@@ -722,22 +722,15 @@ export default {
 									if(ownerGuestMobile){
 										//经纪人
 										if(this.contractForm.dealAgentId){
-											// 店长
-											if(this.contractForm.dealAgentShopownerId){
-                        if(this.contractForm.dealAgentStoreId){
-                          this.dialogSave = true;
-                        }else{
-                          this.$message({
-                            message:'客源信息-门店不能为空',
-                            type: "warning"
-                          })
-                        }
-											}else{
-												this.$message({
-													message:'客源信息-店长不能为空',
-													type: "warning"
-												})
-											}
+                      //门店
+                      if(this.contractForm.dealAgentStoreId){
+                        this.dialogSave = true;
+                      }else{
+                        this.$message({
+                          message:'客源信息-门店不能为空',
+                          type: "warning"
+                        })
+                      }
 										}else{
 											this.$message({
 												message:'客源信息-成交经纪人不能为空',
