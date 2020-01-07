@@ -188,7 +188,7 @@
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>
@@ -196,6 +196,11 @@
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="经纪人工号" min-width="100">
@@ -223,6 +228,7 @@
                         {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
                       </template>
                     </el-table-column>
+                    <!-- employeeData.version 1是3.0系统  0不是3.0系统 -->
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">
                         {{scope.row.level4?scope.row.level4:'-'}}
@@ -271,6 +277,11 @@
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="经纪人工号" min-width="100">
@@ -346,6 +357,11 @@
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignor?scope.row.assignor:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
                     <el-table-column label="经纪人工号" min-width="100">
