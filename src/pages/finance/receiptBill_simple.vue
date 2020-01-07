@@ -96,7 +96,7 @@
     <p>
       <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult('postJSON')"
-                 v-loading.fullscreen.lock="fullscreenLoading">创建收款信息
+                 v-loading.fullscreen.lock="fullscreenLoading">{{!!$route.query.edit?"提交":"创建"}}收款信息
       </el-button>
     </p>
     <checkPerson :show="checkPerson.state" page="list" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="personChose" v-if="checkPerson.state"></checkPerson>
