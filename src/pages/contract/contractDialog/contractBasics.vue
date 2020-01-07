@@ -1132,14 +1132,10 @@ export default {
               });
 						}
 						// 成交经纪人 
-						// this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
-						// this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
-						// this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
-            // this.contractForm.dealAgentStoreName=guestMsg.GuestStoreName//经纪人门店
-            this.$set(this.contractForm,'dealAgentId',guestMsg.EmpCode)
-            this.$set(this.contractForm,'dealAgentName',guestMsg.EmpName)
-            this.$set(this.contractForm,'dealAgentStoreId',guestMsg.GuestStoreCode)
-            this.$set(this.contractForm,'dealAgentStoreName',guestMsg.GuestStoreName)
+            this.$set(this.contractForm,'dealAgentId',guestMsg.EmpCode)//经纪人id
+            this.$set(this.contractForm,'dealAgentName',guestMsg.EmpName)//经纪人姓名
+            this.$set(this.contractForm,'dealAgentStoreId',guestMsg.GuestStoreCode)//经纪人门店id
+            this.$set(this.contractForm,'dealAgentStoreName',guestMsg.GuestStoreName)//经纪人门店
 						//经纪人上级
 						this.getSuperior(guestMsg.EmpCode)
 						let item = {
@@ -1366,9 +1362,6 @@ export default {
       if(this.options.length>0&&val){
         this.options.forEach(element => {
           if(element.empId==val){
-            // this.contractForm.dealAgentName=element.empName
-            // this.contractForm.dealAgentStoreId=element.depId
-            // this.contractForm.dealAgentStoreName=element.depName
             this.$set(this.contractForm,"dealAgentName",element.empName)
             this.$set(this.contractForm,"dealAgentStoreId",element.depId)
             this.$set(this.contractForm,"dealAgentStoreName",element.depName)
@@ -1382,10 +1375,15 @@ export default {
         agentId:id
       }
       this.$ajax.get("/api/resource/getShopowner",param).then(res=>{
-				res=res.data
+        res=res.data
         if(res.status===200){
-					this.$set(this.contractForm,"dealAgentShopownerId",res.data.ShopOwnerId)//店长id
-					this.$set(this.contractForm,"dealAgentShopowner",res.data.ShopOwnerName)//店长姓名
+          if(res.data&&res.data.ShopOwnerId){
+            this.$set(this.contractForm,"dealAgentShopownerId",res.data.ShopOwnerId)//店长id
+					  this.$set(this.contractForm,"dealAgentShopowner",res.data.ShopOwnerName)//店长姓名
+          }else{
+            this.$set(this.contractForm,"dealAgentShopownerId",'')//店长id
+					  this.$set(this.contractForm,"dealAgentShopowner",'')//店长姓名
+          }
         }
       })
     },
