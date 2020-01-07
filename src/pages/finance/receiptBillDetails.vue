@@ -73,6 +73,13 @@
             </el-table-column>
           </el-table>
         </li>
+        <li>
+          <h4 class="f14">其他信息</h4>
+          <div class="input-group">
+            <label>备注信息:</label>
+            <p>{{dataMsg.remark|nullFormatter}}</p>
+          </div>
+        </li>
       </template>
       <li v-else>
         <h4 class="f14">审核信息</h4>
