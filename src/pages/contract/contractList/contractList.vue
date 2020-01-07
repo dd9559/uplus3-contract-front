@@ -250,7 +250,7 @@
         <el-table-column label="房客源店长" min-width="150">
           <template slot-scope="scope">
             <p>房：{{scope.row.houseStoreName+"-"+scope.row.houseShopOwner}}</p>
-            <p>客：{{scope.row.guestStoreName+"-"+scope.row.guestShopOwner?scope.row.guestShopOwner:''}}</p>
+            <p>客：{{scope.row.guestStoreName}}-{{scope.row.guestShopOwner?scope.row.guestShopOwner:''}}</p>
           </template>
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
