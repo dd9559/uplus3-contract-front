@@ -256,10 +256,6 @@
               <p v-else>暂无</p>
             </template>
           </el-table-column>
-          <template v-if="getUser.version===3">
-            <el-table-column label="登录账号" prop="dealAccount" min-width="120" :formatter="nullFormatter"></el-table-column>
-            <el-table-column label="员工工号" prop="dealNum" min-width="120" :formatter="nullFormatter"></el-table-column>
-          </template>
 
           <el-table-column label="业绩状态" min-width="80">
             <template slot-scope="scope">
