@@ -457,7 +457,7 @@
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">
               合同主体
-              <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</!--> -->
+              <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
             </p>
             <ul class="ulData" style="margin-bottom:10px">
               <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">

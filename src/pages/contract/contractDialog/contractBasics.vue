@@ -157,6 +157,17 @@
           </el-form-item>
         </div>
       </div>
+      <!-- 合同备注 -->
+      <div class="houseMsg">
+        <p @click="showRemarkTab" class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span></p>
+        <div class="remarkType" v-show="showRemark">
+          <el-form-item style="padding-left:20px;position:relative;">
+              <!-- @input="inputCode('remarks')" -->
+            <el-input type="textarea" :rows="6" maxlength="200" resize='none' :disabled="canInput" v-model="contractForm.remarks" placeholder="请输入备注内容"></el-input>
+            <span class="textLength">{{contractForm.remarks.length}}/200</span>
+          </el-form-item>
+        </div>
+      </div>
     </el-form>
     <div class="btn">
       <div>
@@ -354,7 +365,12 @@ export default {
 			default(){
 				return []
 			}
-		}
+    },
+    //备注栏折叠展开
+    getShowRemark:{
+      type:Boolean,
+      default:false
+    }
   },
   data() {
     return {
@@ -364,6 +380,7 @@ export default {
       t_guestList:JSON.parse(JSON.stringify(this.guestList)),
       t_guestList_:JSON.parse(JSON.stringify(this.guestList_)),
       options:JSON.parse(JSON.stringify(this.basicsOptions)),
+      showRemark:JSON.parse(JSON.stringify(this.getShowRemark)),
       dialogType: "",
       isShowDialog: false,
       dialogSave: false,
@@ -1397,6 +1414,11 @@ export default {
         }
       })
     },
+    // 备注栏
+    showRemarkTab(){
+      this.showRemark = !this.showRemark
+      this.contractForm.remarks=''
+    },
   },
    mounted(){
     window.onresize = this.clientHeight;
@@ -1625,6 +1647,19 @@ export default {
     }
     .attention_ {
       color: @color-blue;
+    }
+  }
+  .remarkType{
+    padding-left: 30px;
+    /deep/.el-textarea__inner {
+      width: 600px;
+      min-height: 200px;
+    }
+    .textLength {
+      position: absolute;
+      bottom: 0;
+      right: 10px;
+      color: #6c7986;
     }
   }
   .form-content {

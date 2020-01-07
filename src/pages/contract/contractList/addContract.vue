@@ -296,6 +296,7 @@
       :ownerList="ownerList"
       :guestList="guestList"
       :canInput="canInput"
+      :getShowRemark="showRemark"
       :basicsOptions="basicsOptions">
       </contractBasics>
       <contractBasics
