@@ -1132,10 +1132,14 @@ export default {
               });
 						}
 						// 成交经纪人 
-						this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
-						this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
-						this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
-						this.contractForm.dealAgentStoreName=guestMsg.GuestStoreName//经纪人门店
+						// this.contractForm.dealAgentId=guestMsg.EmpCode//经纪人id
+						// this.contractForm.dealAgentName=guestMsg.EmpName//经纪人姓名
+						// this.contractForm.dealAgentStoreId=guestMsg.GuestStoreCode//经纪人门店id
+            // this.contractForm.dealAgentStoreName=guestMsg.GuestStoreName//经纪人门店
+            this.$set(this.contractForm,'dealAgentId',guestMsg.EmpCode)
+            this.$set(this.contractForm,'dealAgentName',guestMsg.EmpName)
+            this.$set(this.contractForm,'dealAgentStoreId',guestMsg.GuestStoreCode)
+            this.$set(this.contractForm,'dealAgentStoreName',guestMsg.GuestStoreName)
 						//经纪人上级
 						this.getSuperior(guestMsg.EmpCode)
 						let item = {
