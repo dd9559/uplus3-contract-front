@@ -129,7 +129,7 @@
         <!-- 门店实收分成 -->
         <div class="dep-receipt" v-if="storeReceiveList.length>0">
           <p>门店实收分成</p>
-          <table>
+          <table class="paper-table-main">
             <tr>
               <td>大区</td>
               <td>片区</td>
@@ -431,7 +431,6 @@
       td{
         border-left: 1px solid #D7D7D7;
         border-bottom: 1px solid #D7D7D7;
-        padding: 8px 0;
       }
       tr{
         >td:first-of-type{
