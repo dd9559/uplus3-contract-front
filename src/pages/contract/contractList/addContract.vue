@@ -288,6 +288,8 @@
       :contractForm="contractForm"
       v-if="isHaveDetail&&type===2"
       :isOffline="isOffline"
+      :offLineInput="offLine"
+      :sourceBtnCheck="sourceBtnCheck"
       :operationType="type"
       :ownerList_="ownerList_"
       :guestList_="guestList_"

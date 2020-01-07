@@ -46,7 +46,7 @@
         <p>房源信息</p>
         <div class="form-content">
           <el-form-item label="房源编号：" class="width-250" :class="{'form-label':operationType===1}">
-            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+            <span class="select" @click="showDialog('house')" v-if="sourceBtnCheck||canInput||!offLineInput">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
             <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
           </el-form-item>
           <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
@@ -109,11 +109,12 @@
         <p>客源信息</p>
         <div class="form-content">
           <el-form-item label="客源编号：" class="width-250">
-            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
-            <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
+            <span class="select" @click="showDialog('guest')" v-if="sourceBtnCheck||canInput||!offLineInput">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+            <span class="select_" v-else>{{contractForm.guestinfoCode?contractForm.guestinfoCode:'--'}}</span>
           </el-form-item>
           <el-form-item label="成交经纪人：" class="form-label" style="width:500px;text-align:right">
             <el-select
+              :disabled="offLineInput"
               style="width:130px"
               v-model="contractForm.dealAgentId"
               filterable
@@ -295,6 +296,16 @@ export default {
       type:Boolean,
       default:false
     },
+    //线下合同已签约状态是否能编辑
+    offLineInput:{
+      type:Boolean,
+      default:false
+    },
+    //房客源是否可选择
+    sourceBtnCheck:{
+      type:Boolean,
+      default:true
+    },
     //操作类型  新增编辑
     operationType:{
       type:Number,
@@ -401,7 +412,6 @@ export default {
       singleCompanyName:'',
       agentsDialog:false,
       agentsList:[],//分成人列表
-      sourceBtnCheck:true,//房客源是否可选择
       //日期选择器禁止选择未来时间
       pickerOptions: {
         disabledDate(time) {
