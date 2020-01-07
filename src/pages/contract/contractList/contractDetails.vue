@@ -103,8 +103,19 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
-                  <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p>
-                  <p v-if="contractDetail.recordVersion===1"><span class="tag">店长：</span><span class="text">{{contractDetail.dealAgentShopowner?contractDetail.dealAgentShopowner:"--"}}</span></p>
+                  <!-- <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p> -->
+                  <p v-if="contractDetail.recordVersion===1" style="position:relative;">
+                    <span class="tag">成交经纪人：</span>
+                    <el-tooltip class="item" effect="dark" :content="`${contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}-${contractDetail.dealAgentName?contractDetail.dealAgentName:'-'}`" placement="bottom">
+                      <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                        {{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}
+                      </div>
+                    </el-tooltip>
+                  </p>
+                  <p v-if="contractDetail.recordVersion===1">
+                    <span class="tag">店长：</span>
+                    <span class="text">{{contractDetail.dealAgentShopowner?contractDetail.dealAgentShopowner:"--"}}</span>
+                  </p>
                 </div>
                 <div class="table">
                   <el-table :data="clientrData" border header-row-class-name="theader-bg">
@@ -446,7 +457,7 @@
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">
               合同主体
-              <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
+              <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</!--> -->
             </p>
             <ul class="ulData" style="margin-bottom:10px">
               <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
