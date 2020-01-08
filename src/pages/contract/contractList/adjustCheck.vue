@@ -168,7 +168,7 @@
           <template slot-scope="scope">
             <div style="color:red;" v-if="scope.row.checkState===0&&scope.row.checkby>0&&getUserMsg&&scope.row.checkby!==getUserMsg.empId">{{scope.row.checkByName}}正在审核</div>
             <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.checkState === 0 && ((scope.row.checkby === getUserMsg.empId)||((!(scope.row.checkby>0))&&scope.row.grabDept))">审核</div>
-            <div v-if="scope.row.checkState!==0||scope.row.checkState===0&&(!(scope.row.checkby>0))&&(scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))===-1)">--</div>
+            <div v-if="scope.row.checkState!==0||scope.row.checkState===0&&(!(scope.row.checkby>0))&&(!scope.row.grabDept)">--</div>
           </template>
         </el-table-column>
       </el-table>
