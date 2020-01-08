@@ -193,7 +193,7 @@
                   <p>房源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                 </div>
                 <div class="table" style="width:1200px;">
-                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
+                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg" key="house">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
@@ -274,7 +274,7 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" key="customer">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
@@ -354,7 +354,7 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" key="service">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
