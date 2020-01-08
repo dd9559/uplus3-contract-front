@@ -1831,7 +1831,8 @@ export default {
           pageNum: 1,
           pageSize: 100,
           leave: true,
-          systemtag: this.userInfo.systemtag
+          systemtag: this.userInfo.systemtag,
+          contId: this.contractId2
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if (res.status === 200) {
@@ -1989,7 +1990,8 @@ export default {
             pageNum: 1,
             pageSize: 100,
             leave: true,
-            systemtag: this.userInfo.systemtag
+            systemtag: this.userInfo.systemtag,
+            contId:this.contractId2
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             if (roleId == 2) {
