@@ -286,7 +286,8 @@
           <el-table-column label="签后审核状态" min-width="90">
             <template slot-scope="scope">
               <span v-if="scope.row.signinState&&scope.row.signinState.value!==2" :class="[{'blue-txt':scope.row.signinState.value===-1},{'yellow-txt':scope.row.signinState.value===0},{'green-txt':scope.row.signinState.value===1}]">{{scope.row.signinState.label}}</span>
-              <el-tooltip class="item" :content="scope.row.signinRemarks" effect="light" placement="right" v-else-if="scope.row.signinState&&scope.row.signinState.value===2">
+              <el-tooltip class="item" popper-class="signature-state" placement="top" v-else-if="scope.row.signinState&&scope.row.signinState.value===2">
+                <span slot="content">{{!!scope.row.signinRemarks?scope.row.signinRemarks:'--'}}</span>
                 <span class="red-txt">{{scope.row.signinState.label}}</span>
               </el-tooltip>
               <span v-else>-</span>
@@ -1370,6 +1371,13 @@
 <style scoped lang="less">
   @import "~@/assets/less/lsx.less";
   @import "~@/assets/common.less";
+
+  .signature-state{
+    >span{
+      display: inline-block;
+      max-width: 300px;
+    }
+  }
   .blue-txt {
     color: @color-blue;
   }
