@@ -255,10 +255,18 @@
             <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.amount}}</p>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payway&&scope.row.payway.value!==4">{{scope.row.xsFee}}</span>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
         <el-table-column min-width="80" label="线下手续费（元）">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.fee}}</p>
+            <template v-if="scope.row.payway&&scope.row.payway.value===4">
+              <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.fee}}</p>
+            </template>
+            <span v-else>--</span>
           </template>
         </el-table-column>
 <!--        <el-table-column min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>-->
