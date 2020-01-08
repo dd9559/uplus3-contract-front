@@ -115,6 +115,7 @@
           <el-form-item label="成交经纪人：" class="form-label" style="width:500px;text-align:right">
             <el-select
               :disabled="offLineInput"
+              class="dealAgentStyle"
               style="width:130px"
               v-model="contractForm.dealAgentId"
               filterable
@@ -1582,6 +1583,7 @@ export default {
     color:#606266;
     width: 120px;
     background-color: #f5f7fa;
+    // cursor: not-allowed;
   }
   .propertyRight{
     width: 80px;
@@ -1827,6 +1829,13 @@ export default {
     display: inline-block;
     padding-right: 20px;
     font-size: 12px;
+  }
+}
+.dealAgentStyle{
+  /deep/.is-disabled{
+    .el-input__inner{
+      color:#606266!important;
+    }
   }
 }
 </style>
