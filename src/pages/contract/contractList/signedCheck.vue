@@ -132,7 +132,8 @@
               <span v-if="scope.row.state.value===0" class="yellow">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===1" class="green">{{scope.row.state.label}}</span>
               <!-- <span v-if="scope.row.state.value===2" class="red" :title="scope.row.remarks">{{scope.row.state.label}}</span> -->
-              <el-tooltip class="item" v-if="scope.row.state.value===2&&scope.row.remarks" effect="dark" :content="scope.row.remarks" placement="top">
+              <el-tooltip class="item" popper-class="tooltipWidth" v-if="scope.row.state.value===2&&scope.row.remarks" effect="dark" placement="top">
+                <span slot="content">{{scope.row.remarks}}</span>
                 <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
               </el-tooltip>
               <span v-if="scope.row.state.value===2&&!scope.row.remarks" class="red">{{scope.row.state.label}}</span>
@@ -721,6 +722,12 @@ export default {
       width: 30px;
       display: inline-block;
     }
+  }
+}
+.tooltipWidth{
+  span{
+    max-width: 160px;
+    display: inline-block;
   }
 }
 </style>

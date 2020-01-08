@@ -14,7 +14,7 @@
                 <div class="one_">
                   <p style="position:relative;">
                     <span class="tag">合同编号：</span>
-                    <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="bottom">
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="top">
                       <div class="contractDetailCode">
                         {{contractDetail.code}}
                       </div>
@@ -23,7 +23,7 @@
                   <p style="position:relative;" v-if="contractDetail.recordType.value===2">
                     <span class="tag">纸质合同编号：</span>
                     <!-- <span class="text">{{contractDetail.pCode}}</span> -->
-                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="bottom">
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="top">
                       <div class="contractDetailCode">
                         {{contractDetail.pCode}}
                       </div>
@@ -106,7 +106,7 @@
                   <!-- <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p> -->
                   <p v-if="contractDetail.recordVersion===1" style="position:relative;">
                     <span class="tag">成交经纪人：</span>
-                    <el-tooltip class="item" effect="dark" :content="`${contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}-${contractDetail.dealAgentName?contractDetail.dealAgentName:'-'}`" placement="bottom">
+                    <el-tooltip class="item" effect="dark" :content="`${contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}-${contractDetail.dealAgentName?contractDetail.dealAgentName:'-'}`" placement="top">
                       <div class="contractDetailCode" style="color:#233241;font-weight:100;">
                         {{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}
                       </div>
@@ -280,7 +280,7 @@
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>
@@ -360,7 +360,7 @@
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>

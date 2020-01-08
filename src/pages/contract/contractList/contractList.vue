@@ -288,7 +288,8 @@
               <span v-if="scope.row.signingState.value===0" class="yellow">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
               <!-- <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span> -->
-              <el-tooltip class="item" v-if="scope.row.signingState.value===2&&scope.row.signingRemarks" effect="dark" :content="scope.row.signingRemarks" placement="top">
+              <el-tooltip class="item" popper-class="tooltipWidth" v-if="scope.row.signingState.value===2&&scope.row.signingRemarks" effect="dark" placement="top">
+                <span slot="content">{{scope.row.signingRemarks}}</span>
                 <span class="red">{{scope.row.signingState.label}}</span>
               </el-tooltip>
               <span v-if="scope.row.signingState.value===2&&!scope.row.signingRemarks" class="red">{{scope.row.signingState.label}}</span>
@@ -1807,5 +1808,11 @@ export default {
 .submitAudit{
   display: inline-block;
   padding-top: 10px;
+}
+.tooltipWidth{
+  span{
+    max-width: 160px;
+    display: inline-block;
+  }
 }
 </style>
