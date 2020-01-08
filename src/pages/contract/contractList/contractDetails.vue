@@ -193,7 +193,7 @@
                   <p>房源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                 </div>
                 <div class="table" style="width:1200px;">
-                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
+                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg" key="house">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
@@ -209,7 +209,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -274,7 +274,7 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" key="customer">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
@@ -290,7 +290,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -354,7 +354,7 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" key="service">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
@@ -370,7 +370,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -2897,7 +2897,11 @@ export default {
     //非业务人员的判断
     getUserMsg(){
       return this.getUser.isBusiness
-    }
+    },
+    //2.0 3.0 版本判断
+    getVersion(){
+      return this.getUser.version
+    },
   },
   beforeUpdate() {
     this.clientHeight();
