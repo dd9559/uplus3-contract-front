@@ -287,7 +287,7 @@
             <template slot-scope="scope">
               <span v-if="scope.row.signinState&&scope.row.signinState.value!==2" :class="[{'blue-txt':scope.row.signinState.value===-1},{'yellow-txt':scope.row.signinState.value===0},{'green-txt':scope.row.signinState.value===1}]">{{scope.row.signinState.label}}</span>
               <el-tooltip class="item" popper-class="signature-state" placement="top" v-else-if="scope.row.signinState&&scope.row.signinState.value===2">
-                <span slot="content">{{!!scope.row.signinRemarks?scope.row.signinRemarks:'--'}}</span>
+                <span slot="content">{{scope.row.signinRemarks}}</span>
                 <span class="red-txt">{{scope.row.signinState.label}}</span>
               </el-tooltip>
               <span v-else>-</span>
