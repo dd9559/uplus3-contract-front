@@ -209,7 +209,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -290,7 +290,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -370,7 +370,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="employeeData.version">
+                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -2897,7 +2897,11 @@ export default {
     //非业务人员的判断
     getUserMsg(){
       return this.getUser.isBusiness
-    }
+    },
+    //2.0 3.0 版本判断
+    getVersion(){
+      return this.getUser.version
+    },
   },
   beforeUpdate() {
     this.clientHeight();
