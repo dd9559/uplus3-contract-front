@@ -66,13 +66,13 @@
     <!-- 数据列表 -->
     <div class="contract-list">
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同信息" min-width="130" fixed :formatter="nullFormatter">
+        <el-table-column label="合同信息" min-width="140" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span></p>
             <p v-if="scope.row.recordType&&scope.row.recordType===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" :formatter="nullFormatter" min-width="70">
+        <el-table-column label="合同类型" :formatter="nullFormatter" min-width="80">
           <template slot-scope="scope">
             <p v-if="scope.row.tradeType === 1">租赁</p>
             <p v-if="scope.row.tradeType === 2">
