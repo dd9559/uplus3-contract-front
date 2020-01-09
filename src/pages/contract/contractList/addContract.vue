@@ -336,7 +336,7 @@ const rule = {
     name: "客源"
   }
 };
-
+let loading = null
 export default {
   mixins: [MIXINS],
   components: {
@@ -821,6 +821,7 @@ export default {
                   if (element.name) {
                     if(element.name.replace(/\s/g,"")){
                       element.name=element.name.replace(/\s/g,"");
+                      //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符
                       if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                         if (element.encryptionMobile.length === 11) {
                         let reg = /^1[0-9]{10}$/;//手机号正则
@@ -1476,10 +1477,17 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         houseId: id,
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let houseMsg = res.data;
@@ -1558,6 +1566,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -1566,10 +1575,17 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         customerId: id,
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
@@ -1613,6 +1629,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"

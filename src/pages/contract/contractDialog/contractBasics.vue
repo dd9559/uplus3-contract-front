@@ -283,7 +283,7 @@ const rule = {
     name: "房源"
   },
 };
-
+let loading = null
 export default {
   mixins: [MIXINS],
   components: {
@@ -1048,10 +1048,17 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         houseId: id,
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let houseMsg = res.data;
@@ -1120,6 +1127,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -1128,10 +1136,17 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         customerId: id,
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
@@ -1158,7 +1173,14 @@ export default {
                 obj_.encryptionMobile=obj_.mobile;
                 this.t_guestList_.push(obj_);
               });
-						}
+            }
+            let item = {
+							depName:guestMsg.GuestStoreName,
+							depId:guestMsg.GuestStoreCode,
+							empName:guestMsg.EmpName,
+							empId:guestMsg.EmpCode
+            }
+						this.options=[].concat([item])
 						// 成交经纪人 
             this.$set(this.contractForm,'dealAgentId',guestMsg.EmpCode)//经纪人id
             this.$set(this.contractForm,'dealAgentName',guestMsg.EmpName)//经纪人姓名
@@ -1166,13 +1188,6 @@ export default {
             this.$set(this.contractForm,'dealAgentStoreName',guestMsg.GuestStoreName)//经纪人门店
 						//经纪人上级
 						this.getSuperior(guestMsg.EmpCode)
-						let item = {
-							depName:guestMsg.GuestStoreName,
-							depId:guestMsg.GuestStoreCode,
-							empName:guestMsg.EmpName,
-							empId:guestMsg.EmpCode
-						}
-						this.options=[item]
           }else{//已签约编辑
             this.contractForm.guestInfo = guestMsg;
           }
@@ -1184,6 +1199,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -1375,7 +1391,7 @@ export default {
           res=res.data
           if(res.status===200){
             if(type==="agent"){
-              this.options = Object.assign([], this.someObject, res.data)
+              // this.options = Object.assign([], this.someObject, res.data)
               this.options=res.data
             }else{
               this.options_=res.data

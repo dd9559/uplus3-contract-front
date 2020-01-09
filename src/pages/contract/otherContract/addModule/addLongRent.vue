@@ -242,7 +242,7 @@ const rule = {
     name: "客源"
   },
 };
-
+let loading = null
 export default {
   mixins: [MIXINS],
   components: {
@@ -583,10 +583,17 @@ export default {
     },
      //根据房源id获取房源信息
     getHouseDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         houseId: id,
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           this.canNotInput=true
@@ -621,6 +628,7 @@ export default {
           }
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -629,10 +637,17 @@ export default {
     },
      //根据客源id获取客源信息
     getGuestDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         customerId: id,
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
@@ -675,6 +690,7 @@ export default {
           }
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
