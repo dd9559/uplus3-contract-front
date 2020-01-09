@@ -95,7 +95,7 @@
               :paperFail="paperFail"
               :payway="paperInfoData.payway&&paperInfoData.payway.label"
               :payerType="paperInfoData.payerType"
-              :storeReceiveList="paperInfoData.storeDivide?[paperInfoData.storeDivide]:[]"></LayerPaperInfo>
+              :storeReceiveList="paperInfoData.storeDivide?paperInfoData.storeDivide:[]"></LayerPaperInfo>
           </template>
           <template v-else>
             <LayerPaperInfo
@@ -123,7 +123,7 @@
               :paperFail="paperFail"
               :payway="item.payway&&item.payway.label"
               :payerType="item.payerType"
-              :storeReceiveList="item.storeDivide?[item.storeDivide]:[]"></LayerPaperInfo>
+              :storeReceiveList="item.storeDivide?item.storeDivide:[]"></LayerPaperInfo>
           </template>
         </LayerPrint>
         <!-- :imgSrc="paperInfoData.signImg" -->

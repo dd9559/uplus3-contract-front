@@ -136,7 +136,7 @@
               <td>门店</td>
               <td>金额</td>
             </tr>
-            <tr v-for="item in storeReceiveList">
+            <tr v-for="(item,index) in storeReceiveList" v-if="index<storeReceiveList.length-1">
               <td>{{item.managerName|nullFilter}}</td>
               <td>{{item.amaldarName|nullFilter}}</td>
               <td>{{item.shopkeeperName|nullFilter}}</td>
@@ -146,9 +146,9 @@
               <td>
                 手续费合计
               </td>
-              <td>--</td>
-              <td>--</td>
-              <td>￥{{storeReceiveList[0].fee}}</td>
+              <td>-</td>
+              <td>-</td>
+              <td>￥{{storeReceiveList.slice(-1)[0].fee}}</td>
             </tr>
           </table>
         </div>
