@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{recordVersion==2?dealBasicInfo.propertyRightAddr:'--'}}</span></span>
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
                     </div>
                 </div>
                 <div class="item">
@@ -378,9 +378,9 @@ export default {
                         this.report.buyerPaymentMethod = res.data.loanType == 7 ? 1: 2
                     }
                     this.loadType = res.data.loanType ? true : false
-                    if(!this.report.guestShopOwnerName) {
-                        this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
-                        this.report.guestStoreName = res.data.guestInfo.GuestStoreName
+                    if(!res.data.dealReport) {
+                        this.report.guestShopOwnerName = this.recordVersion === 1 ? res.data.dealAgentShopowner : res.data.guestInfo.ShopOwnerName
+                        this.report.guestStoreName = this.recordVersion === 1 ? res.data.dealAgentStoreName : res.data.guestInfo.GuestStoreName
                         this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
                         this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
                         this.report.houseStoreName = res.data.houseInfo.HouseStoreName
