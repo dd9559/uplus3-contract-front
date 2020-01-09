@@ -214,7 +214,7 @@
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>
@@ -295,7 +295,7 @@
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>
@@ -375,7 +375,7 @@
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>

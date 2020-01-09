@@ -232,14 +232,8 @@ export default {
     },
 
     myclose: function() {
-      this.checkPerson.state=false
-      this.$message({
-        message:"已申请",
-        type:'warning'
-      });
-      setTimeout(() => {                      
-        this.$emit('closeCentCommission')
-      }, 1500); 
+      this.checkPerson.state=false                     
+      this.$emit('closeCentCommission')
     },
     // 选择审核人
     choseCheckPerson:function (checkId) {
@@ -249,14 +243,12 @@ export default {
       this.checkPerson.type=1
     },
     personChose:function () {
-      this.checkPerson.state=false
-      setTimeout(() => {                      
+      this.checkPerson.state=false                    
         this.$message({
-          message:'已申请',
-          type:'warning'
+          message:'申请成功',
+          type:'success'
         });
         this.$emit('closeCentCommission')
-      }, 1500); 
     },
     //发起调佣申请
     auditApply() {
@@ -322,8 +314,8 @@ export default {
         }).catch(error => {
           this.isRequest=true
           this.fullscreenLoading=false
-          if (error.status === 300 && error.data.checkId) {    
-            this.choseCheckPerson(error.data.checkId)                                    
+          if (error.status === 300 && error.data.bizCode) {    
+            this.choseCheckPerson(error.data.bizCode)                                    
           } else{
               this.$message({
                 message: error,
