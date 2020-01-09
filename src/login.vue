@@ -63,9 +63,51 @@
                                             })
                                         })
                                     })
+
+                                  let _appPath={
+                                    path: '',
+                                    query:{
+                                      source:'uplus'
+                                    }
+                                  }
+                                  let pageIndex=Number(this.$route.query.pageName)
+                                  switch (pageIndex) {
+                                    case 1:
+                                      _appPath.path='contractCheck'
+                                      break;
+                                    case 2:
+                                      _appPath.path='signedCheck'
+                                      break;
+                                    case 3:
+                                      _appPath.path='adjustCheck'
+                                      break;
+                                    case 4:
+                                      _appPath.path='changeCheck'
+                                      break;
+                                    case 5:
+                                      _appPath.path='cancelCheck'
+                                      break;
+                                    case 6:
+                                    case 7:
+                                      _appPath={
+                                        path: 'moneyCheck',
+                                        query:{
+                                          type:pageIndex===6?1:2,
+                                          source:'uplus'
+                                        }
+                                      }
+                                      break;
+                                    case 8:
+                                      _appPath.path='actualAchievement'
+                                      break;
+                                  }
+                                  if(!!_appPath.path){
+                                    this.$router.push(_appPath)
+                                  }else{
                                     this.$router.push({
-                                        path: sliders[0].path
+                                      path: sliders[0].path
                                     })
+                                  }
                                 } else {
                                     this.$message({
                                         message: '无任何权限'
