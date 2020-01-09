@@ -140,7 +140,7 @@
               <td>{{item.managerName|nullFilter}}</td>
               <td>{{item.amaldarName|nullFilter}}</td>
               <td>{{item.shopkeeperName|nullFilter}}</td>
-              <td>￥{{item.amount}}</td>
+              <td>{{item.amount==='-'?item.amount:`￥${item.amount}`}}</td>
             </tr>
             <tr>
               <td>
