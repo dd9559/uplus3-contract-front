@@ -209,7 +209,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -290,7 +290,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
@@ -370,7 +370,7 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="登录人账号" min-width="100" v-if="getVersion===3">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
                       <template slot-scope="scope">
                         {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
                       </template>
