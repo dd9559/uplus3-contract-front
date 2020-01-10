@@ -1424,9 +1424,11 @@ export default {
           if(res.data&&res.data.ShopOwnerId){
             this.$set(this.contractForm,"dealAgentShopownerId",res.data.ShopOwnerId)//店长id
 					  this.$set(this.contractForm,"dealAgentShopowner",res.data.ShopOwnerName)//店长姓名
+					  this.$set(this.contractForm,"dealAgentShopownerMobile",res.data.ShopOwnerMobile)//店长电话
           }else{
             this.$set(this.contractForm,"dealAgentShopownerId",'')//店长id
-					  this.$set(this.contractForm,"dealAgentShopowner",'')//店长姓名
+            this.$set(this.contractForm,"dealAgentShopowner",'')//店长姓名
+            this.$set(this.contractForm,"dealAgentShopownerMobile",'')//店长电话
           }
         }
       })

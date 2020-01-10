@@ -821,7 +821,7 @@ export default {
                   if (element.name) {
                     if(element.name.replace(/\s/g,"")){
                       element.name=element.name.replace(/\s/g,"");
-                      //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符
+                      //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符(待定)
                       if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                         if (element.encryptionMobile.length === 11) {
                         let reg = /^1[0-9]{10}$/;//手机号正则
