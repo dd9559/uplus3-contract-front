@@ -738,7 +738,7 @@
                     if(this.getUser.user.empId === item.auditBy){
                         this.toDetails(item)
                     }else{
-                        this.$ajax.get('/api/machine/getAuditAuth',{bizCode:item.payCode,flowType:item.type===1?1:0}).then(res=>{
+                        this.$ajax.get('/api/machine/getAuditAuth',{bizCode:item.payCode,flowType:(item.type===1||item.type===8)?1:0}).then(res=>{
                             res=res.data
                             if(res.status===200){
                                 this.toDetails(item)
