@@ -381,7 +381,7 @@ export default {
                     if(!res.data.dealReport) {
                         this.report.guestShopOwnerName = this.recordVersion === 1 ? res.data.dealAgentShopowner : res.data.guestInfo.ShopOwnerName
                         this.report.guestStoreName = this.recordVersion === 1 ? res.data.dealAgentStoreName : res.data.guestInfo.GuestStoreName
-                        this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
+                        this.report.guestShopOwnerMobile = this.recordVersion === 1 ? res.data.dealAgentShopownerMobile :res.data.guestInfo.ShopOwnerMobile
                         this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
                         this.report.houseStoreName = res.data.houseInfo.HouseStoreName
                         this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile   
