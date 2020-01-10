@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr}}</span></span>
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr?dealBasicInfo.propertyRightAddr:'-'}}</span></span>
                     </div>
                 </div>
                 <div class="item">
