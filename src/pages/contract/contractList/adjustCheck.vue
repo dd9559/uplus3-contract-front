@@ -48,9 +48,8 @@
 
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.checkState" placeholder="全部" class="width150" clearable>
-            <el-option label="审核中" value="0"></el-option>
-            <el-option label="通过" value="1"></el-option>
-            <el-option label="驳回" value="2"></el-option>
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==-1">
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -437,6 +436,7 @@
           "507": "", // 成交总价单位
           "53": "", // 合作方式
           "64": '', //签约方式
+          "51": "", //审核状态
         },
         layerAudit:{},
         checkInfo:[],
