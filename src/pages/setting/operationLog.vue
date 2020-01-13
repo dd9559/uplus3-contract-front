@@ -6,7 +6,7 @@
             <el-form  class="header" ref="propForm" size="small">
                 <div class="content">
                     <el-form-item label="体系" v-if="version===3">
-                        <el-select size="small" v-model="systemtag" :clearable="true">
+                        <el-select size="small" v-model="systemtag">
                             <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </el-form-item>
@@ -19,7 +19,7 @@
                         <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
                     </el-form-item> 
                     <el-form-item label="部门" class="dep">
-                         <select-tree :data="DepList" :init="departmentName"    @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
+                         <select-tree :data="DepList" :init="departmentName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
                             <el-option class="drop-tree" value="">
                             <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
