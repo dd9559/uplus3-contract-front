@@ -313,7 +313,7 @@
                         v-for="item in shopkeepers"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -385,7 +385,7 @@
                         v-for="item in amaldars"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -421,7 +421,7 @@
                         v-for="item in managers"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -748,7 +748,7 @@
                         v-for="item in shopkeepers"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -820,7 +820,7 @@
                         v-for="item in amaldars"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -856,7 +856,7 @@
                         v-for="item in managers"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
-                        :value="item.depId+'-'+item.name"
+                        :value="item.empId+'-'+item.name"
                       ></el-option>
                     </el-select>
                   </el-tooltip>
@@ -1129,7 +1129,7 @@
                           v-for="item in shopkeepers"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
@@ -1196,7 +1196,7 @@
                           v-for="item in amaldars"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
@@ -1230,7 +1230,7 @@
                           v-for="item in managers"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
