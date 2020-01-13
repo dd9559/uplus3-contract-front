@@ -475,7 +475,7 @@
             }
             let arr = [];
             if (urlParam.edit) {
-                this.inObjPerson = false
+                // this.inObjPerson = false
                 this.getDetails({type: 1, payId: urlParam.id})
                 arr = this.$tool.getRouter(['二手房', '财务', Number(urlParam.edit)===1?'收付款单':'收款审核'], Number(urlParam.edit)===1?'/bill':'/moneyCheck?type=1');
                 arr.push({name: '编辑收款', path: this.$route.fullPath});
