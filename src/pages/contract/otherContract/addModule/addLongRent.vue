@@ -1217,7 +1217,9 @@ export default {
                   if(element.cardType===4){
                     militaryIDList.push(element.encryptionCode);
                   }
-                  ownerMobileList.push(element.mobile);
+                  let obj = JSON.parse(JSON.stringify(element))
+                  obj.mobile=obj.mobile.replace('-','')
+                  ownerMobileList.push(obj.mobile);
                 });
                 let ownerGuestMobile = true
                 if(this.contractForm.transMode===2){
@@ -1243,7 +1245,9 @@ export default {
                     if(element.cardType===4){
                       militaryIDList.push(element.encryptionCode);
                     }
-                    guestMobileList.push(element.mobile);
+                    let obj = JSON.parse(JSON.stringify(element))
+                    obj.mobile=obj.mobile.replace('-','')
+                    guestMobileList.push(obj.mobile);
                   });
                   for (let index = 0; index < guestMobileList.length; index++) {
                     if(ownerMobileList.includes(guestMobileList[index])){

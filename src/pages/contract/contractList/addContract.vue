@@ -1085,7 +1085,9 @@ export default {
                               if(element.cardType===4){
                                 militaryIDList.push(element.encryptionCode);
                               }
-                              ownerMobileList.push(element.encryptionMobile);
+                              let obj = JSON.parse(JSON.stringify(element))
+                              obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+                              ownerMobileList.push(obj.encryptionMobile);
                             });
 
                             guestArr.forEach(element => {
@@ -1101,7 +1103,9 @@ export default {
                               if(element.cardType===4){
                                 militaryIDList.push(element.encryptionCode);
                               }
-                              guestMobileList.push(element.encryptionMobile);
+                              let obj = JSON.parse(JSON.stringify(element))
+                              obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+                              guestMobileList.push(obj.encryptionMobile);
                             });
                             let ownerGuestMobile = true
                             let otherMobile = true

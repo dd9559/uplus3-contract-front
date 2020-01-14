@@ -755,11 +755,15 @@ export default {
 									let guestMobileList = [];
 
 									ownerArr.forEach(element => {
-										ownerMobileList.push(element.encryptionMobile);
+                    let obj = JSON.parse(JSON.stringify(element))
+                    obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+										ownerMobileList.push(obj.encryptionMobile);
 									});
 
 									guestArr.forEach(element => {
-										guestMobileList.push(element.encryptionMobile);
+                    let obj = JSON.parse(JSON.stringify(element))
+                    obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+										guestMobileList.push(obj.encryptionMobile);
 									});
 									let ownerGuestMobile = true
 									for (let index = 0; index < guestMobileList.length; index++) {
