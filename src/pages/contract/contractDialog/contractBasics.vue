@@ -87,7 +87,7 @@
               <li v-for="(item,index) in t_ownerList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_" :class="{'disabled':canInput}">
-                  <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
+                  <input v-model="item.mobile" :disabled="canInput" type="tel" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" :disabled="canInput" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -141,7 +141,7 @@
               <li v-for="(item,index) in t_guestList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_" :class="{'disabled':canInput}">
-                  <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.mobile" :disabled="canInput" type="tel" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" :disabled="canInput" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -543,6 +543,27 @@ export default {
     },
     //手机号验证
     verifyMobile(item,index,type) {
+      let beginNum = /^0.*$/
+      let beginNum_ = /^1.*$/
+      if(item.mobile.length>0){
+        if(type==="owner"){
+          if(beginNum.test(item.mobile)){
+            this.t_ownerList[index].mobile=item.mobile.substring(0,13)
+          }
+          if(beginNum_.test(item.mobile)){
+            this.t_ownerList[index].mobile=item.mobile.substring(0,11)
+          }
+          item.mobile=this.t_ownerList[index].mobile
+        }else if(type==="guest"){
+          if(beginNum.test(item.mobile)){
+            this.t_guestList[index].mobile=item.mobile.substring(0,13)
+          }
+          if(beginNum_.test(item.mobile)){
+            this.t_guestList[index].mobile=item.mobile.substring(0,11)
+          }
+          item.mobile=this.t_guestList[index].mobile
+        }
+      }
        if(item.isEncryption){
         if(type==="owner"){
           if(this.t_ownerList[index].mobile!==this.beforeChangeMobile){
@@ -564,7 +585,7 @@ export default {
           }
         }
       }else{
-        if(item.mobile.length===11){
+        if(item.mobile.length>=11){
           let reg = /^1[0-9]{10}$/;
           let reg_ = /^0\d{2,3}-?\d{7,8}$/
           if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
@@ -613,9 +634,9 @@ export default {
 									if(element.name.replace(/\s/g,"")){
 										element.name=element.name.replace(/\s/g,"");
 										if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
-											if (element.encryptionMobile.length === 11) {
+											if (element.encryptionMobile.length === 11||true) {
 											let reg = /^1[0-9]{10}$/;//手机号正则
-											let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+											let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
 											if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
 												if (element.relation) {
 													isOk = true;  
@@ -679,9 +700,9 @@ export default {
 										if(element.name.replace(/\s/g,"")){
 											element.name=element.name.replace(/\s/g,"");
 											if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
-												if (element.encryptionMobile.length === 11) {
+												if (element.encryptionMobile.length === 11||true) {
 												let reg = /^1[0-9]{10}$/;//手机号正则
-												let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+												let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
 												if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
 													if (element.relation) {
 														isOk_ = true;
