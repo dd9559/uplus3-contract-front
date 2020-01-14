@@ -708,7 +708,7 @@
                         this.moneyTypeName = res.data.moneyTypeName
                         this.dep.id = res.data.inObjStoreId
                         this.dep.name = res.data.inObjStore
-                        this.getEmploye(res.data.deptId)
+                        // this.getEmploye(res.data.deptId)
                         if (res.data.filePath) {
                             this.files=[].concat(JSON.parse(res.data.filePath))
                             this.getFiles()
