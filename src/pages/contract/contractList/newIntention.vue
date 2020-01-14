@@ -501,7 +501,6 @@ export default {
       if(val == "editPhone") {
         let beginNum = /^0.*$/
         let beginNum_ = /^1.*$/
-        debugger
         if(this.contractForm.contPersons[index].mobile.length>0){
           if(beginNum.test(this.contractForm.contPersons[index].mobile)){
             this.contractForm.contPersons[index].mobile=this.contractForm.contPersons[index].mobile.substring(0,13)
@@ -510,9 +509,9 @@ export default {
             this.contractForm.contPersons[index].mobile=this.contractForm.contPersons[index].mobile.substring(0,11)
           }
         }
-        this.$nextTick(() => {
-          this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
-        })
+        // this.$nextTick(() => {
+        //   this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
+        // })
       }
       else if(val == "card") {
         this.$nextTick(() => {
@@ -936,7 +935,10 @@ export default {
               });
               return false
           }
-          if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
+          let mobileNum0 = JSON.parse(JSON.stringify(this.contractForm.contPersons[0])).mobile.replace('-','')
+          let mobileNum1 = JSON.parse(JSON.stringify(this.contractForm.contPersons[1])).mobile.replace('-','')
+          // if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
+          if(mobileNum0===mobileNum1){
             this.$message({
               type: "warning",
               message: "业主电话号码和客户电话号码不能重复!"
