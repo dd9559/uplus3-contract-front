@@ -73,7 +73,7 @@
               <li v-for="(item,index) in guestList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
-                  <input v-model="item.encryptionMobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.encryptionMobile" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -698,22 +698,35 @@ export default {
     },
     //手机号验证
     verifyMobile(item,index,type) {
+      let beginNum = /^0.*$/
+      let beginNum_ = /^1.*$/
+      if(item.encryptionMobile.length>0){
+        if(type==="guest"){
+          if(beginNum.test(item.encryptionMobile)){
+            this.guestList[index].encryptionMobile=item.encryptionMobile.substring(0,13)
+          // }else if(beginNum_.test(item.encryptionMobile)){
+          }else{
+            this.guestList[index].encryptionMobile=item.encryptionMobile.substring(0,11)
+          }
+          item.encryptionMobile=this.guestList[index].encryptionMobile
+        }
+      }
       if(item.isEncryption){
         if(type==="guest"){
-          if(this.guestList[index].mobile!==this.beforeChangeMobile){
-            if(Number(item.mobile)){
-              this.guestList[index].mobile=item.mobile;
+          if(this.guestList[index].encryptionMobile!==this.beforeChangeMobile){
+            if(Number(item.encryptionMobile)){
+              this.guestList[index].encryptionMobile=item.encryptionMobile;
             }else{
-              this.guestList[index].mobile='';
+              this.guestList[index].encryptionMobile='';
             }
             this.guestList[index].isEncryption=false;
           }
         }
       }else{
-        if(item.mobile.length===11){
+        if(item.encryptionMobile.length>=11){
           let reg = /^1[0-9]{10}$/;
-          let reg_ = /^0\d{2,3}-?\d{7,8}$/
-          if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
+          let reg_ = /^0\d{2,3}\-?\d{7,8}$/
+          if (!reg.test(item.encryptionMobile)&&!reg_.test(item.encryptionMobile)) {
             this.$message({
               message:'电话号码格式不正确',
               type: "warning"
@@ -909,9 +922,9 @@ export default {
                   element.name=element.name.replace(/\s/g,"");
                   if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                     // 电话号码
-                    if (element.mobile.length === 11) {
+                    if (element.mobile.length === 11||true) {
                     let reg = /^1[0-9]{10}$/;//手机号正则
-                    let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                    let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                     if (reg.test(element.mobile)||reg_.test(element.mobile)) {
                       // 人员关系
                       // if (element.relation) {

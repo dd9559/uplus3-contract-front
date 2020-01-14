@@ -718,16 +718,16 @@ export default {
         if(type==="owner"){
           if(beginNum.test(item.mobile)){
             this.ownerList[index].mobile=item.mobile.substring(0,13)
-          }
-          if(beginNum_.test(item.mobile)){
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
             this.ownerList[index].mobile=item.mobile.substring(0,11)
           }
           item.mobile=this.ownerList[index].mobile
         }else if(type==="guest"){
           if(beginNum.test(item.mobile)){
             this.guestList[index].mobile=item.mobile.substring(0,13)
-          }
-          if(beginNum_.test(item.mobile)){
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
             this.guestList[index].mobile=item.mobile.substring(0,11)
           }
           item.mobile=this.guestList[index].mobile

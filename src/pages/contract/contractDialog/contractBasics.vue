@@ -549,16 +549,16 @@ export default {
         if(type==="owner"){
           if(beginNum.test(item.mobile)){
             this.t_ownerList[index].mobile=item.mobile.substring(0,13)
-          }
-          if(beginNum_.test(item.mobile)){
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
             this.t_ownerList[index].mobile=item.mobile.substring(0,11)
           }
           item.mobile=this.t_ownerList[index].mobile
         }else if(type==="guest"){
           if(beginNum.test(item.mobile)){
             this.t_guestList[index].mobile=item.mobile.substring(0,13)
-          }
-          if(beginNum_.test(item.mobile)){
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
             this.t_guestList[index].mobile=item.mobile.substring(0,11)
           }
           item.mobile=this.t_guestList[index].mobile
