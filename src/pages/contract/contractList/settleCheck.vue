@@ -19,6 +19,7 @@
           <el-select v-model="adjustForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contTypes&&adjustForm.contTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
+              v-if="item.key!=6&&item.key!=5&&item.key!=4"
               :key="item.key"
               :label="item.value"
               :value="item.key">
