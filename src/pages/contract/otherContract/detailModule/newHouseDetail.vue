@@ -157,6 +157,31 @@
         </div>
       </div>
     </div>
+    <div class="msg" v-if="getDetail.vouchers.length>0||getDetail.remarks">
+      <div class="title">其他信息</div>
+      <div class="content">
+        <div class="other" v-if="getDetail.vouchers&&getDetail.vouchers.length>0">
+          <p>附件：</p>
+          <ul class="ulData" style="margin-bottom:10px">
+            <li v-for="(item,index) in getDetail.vouchers" :key="item.index">
+              <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
+                <div class="namePath" @click="previewPhoto(getDetail.vouchers,index)">
+                  <img class="signImage" :src="item.path|getSignImage(getImgList)" alt="" v-if="isPictureFile(item.fileType)">
+                  <upload-cell :type="item.fileType" v-else></upload-cell>
+                  <p>{{item.name}}</p>
+                </div>
+              </el-tooltip>
+            </li>
+          </ul>
+        </div>
+        <div class="other" v-if="getDetail.remarks&&getDetail.remarks.length>0">
+          <p>备注栏：</p>
+          <div class="remarkType">
+            <el-input style="width:600px" type="textarea" disabled :rows="6" maxlength="200" resize='none' @input="inputCode('remarks')" v-model="getDetail.remarks" placeholder="请输入备注内容"></el-input>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- 拨号弹出框 -->
     <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div>
@@ -169,6 +194,8 @@
         </div>
       </div>
     </el-dialog>
+     <!-- 图片预览 -->
+    <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
            
@@ -189,12 +216,19 @@ export default {
         return []
       }
     },
+    imgPathList:{
+      type: Array,
+      default() {
+        return []
+      }
+    },
   },
   data(){
     return{
       callNumber: "",
       dialogVisible: false,
       canCall:true,
+      previewType:'none',
       power:{
         'sign-xf-ht-xq-ly': {
           state: false,
@@ -276,6 +310,20 @@ export default {
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         return time_.substr(0, 16)
       }
+    },
+     /**
+     * 过滤显示图片缩略图
+     * @param val后端返回的所有文件资源遍历的当前项
+     * @param list图片资源获取签名后的临时数组
+     */
+    getSignImage(val,list){
+      if(list.length===0){
+        return '';
+      }else {
+        return list.find(item=>{
+          return item.includes(val)
+        })
+      }
     }
   },
   computed: {
@@ -284,6 +332,9 @@ export default {
     },
     getStoreList: function() {
       return this.storeList;
+    },
+    getImgList: function() {
+      return this.imgPathList;
     },
   }
 };
@@ -380,6 +431,55 @@ export default {
     p {
       line-height: 30px;
     }
+  }
+}
+.other{
+  margin-bottom: 20px;
+  padding-top: 20px;
+  >p{
+    color: #606266;
+    margin-bottom: 10px;
+  }
+  .ulData{
+    display: flex;
+    flex-wrap:wrap;
+    li{
+      margin-right: 10px;
+      position: relative;
+      margin-bottom: 10px;
+      > i{
+        display: none;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: @color-warning;
+        font-size: 20px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.namePath{
+  display: inline-block;
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  border-radius:4px;
+  background: @color-F2;
+  .signImage{
+    width:60px;
+    height: 60px;
+    margin: 1px 0;
+  }
+  > p{
+    padding-top: 5px;
+    display: inline-block;
+    width: 100px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

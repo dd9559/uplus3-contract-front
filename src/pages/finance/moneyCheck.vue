@@ -268,7 +268,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="cellOpera(scope.row,'edit')"
                        v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state">编辑
-            </el-button><div style="color:red" v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId">{{scope.row.auditByName}}正在审核</div><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton">审核</el-button><el-button type="text" @click="cellOpera(scope.row,'del')"
+            </el-button><div style="color:red" v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId">{{scope.row.auditByName}}正在审核</div><el-button type="text" @click="cellOpera(scope.row)" v-if="scope.row.auditButton||scope.row.grabDept">审核</el-button><el-button type="text" @click="cellOpera(scope.row,'del')"
                        v-if="((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&
                        scope.row.isDel===1&&
                        (scope.row.caozuo===1||scope.row.caozuo===2)&&
@@ -475,6 +475,9 @@
                         this.power[item].state = true
                     }
                 }
+            }
+            if(this.$route.query.source&&this.$route.query.source==='uplus'){
+              Object.assign(this.searchForm,{checkStatus:3})
             }
 
             let res = this.getDataList
@@ -735,7 +738,7 @@
                     if(this.getUser.user.empId === item.auditBy){
                         this.toDetails(item)
                     }else{
-                        this.$ajax.get('/api/machine/getAuditAuth',{bizCode:item.payCode,flowType:item.type===1?1:0}).then(res=>{
+                        this.$ajax.get('/api/machine/getAuditAuth',{bizCode:item.payCode,flowType:(item.type===1||item.type===8)?1:0}).then(res=>{
                             res=res.data
                             if(res.status===200){
                                 this.toDetails(item)

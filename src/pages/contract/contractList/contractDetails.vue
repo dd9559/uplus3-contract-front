@@ -5,6 +5,7 @@
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
           <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
+
         <el-tab-pane label="合同详情" name="first">
           <div class="firstDetail" :style="{ height: clientHei }">
             <div class="msg">
@@ -13,7 +14,7 @@
                 <div class="one_">
                   <p style="position:relative;">
                     <span class="tag">合同编号：</span>
-                    <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="bottom">
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.code" placement="top">
                       <div class="contractDetailCode">
                         {{contractDetail.code}}
                       </div>
@@ -22,7 +23,7 @@
                   <p style="position:relative;" v-if="contractDetail.recordType.value===2">
                     <span class="tag">纸质合同编号：</span>
                     <!-- <span class="text">{{contractDetail.pCode}}</span> -->
-                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="bottom">
+                    <el-tooltip class="item" effect="dark" :content="contractDetail.pCode" placement="top">
                       <div class="contractDetailCode">
                         {{contractDetail.pCode}}
                       </div>
@@ -66,8 +67,8 @@
                     <span class="text">{{contractDetail.propertyAddr}}</span>
                   </p>
                 </div>
-                <div class="one_" v-if="contractDetail.recordVersion===2">
-                   <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr}}</span></p>
+                <div class="one_">
+                   <p style="width:1000px"><span class="tag">产权地址：</span><span class="text">{{contractDetail.propertyRightAddr?contractDetail.propertyRightAddr:'-'}}</span></p>
                 </div>
                 <div class="one_">
                   <p><span class="tag">建筑面积：</span><span class="text">{{contractDetail.houseInfo.Square}} m²</span></p>
@@ -102,6 +103,19 @@
               <div class="content">
                 <div class="one_">
                   <p><span class="tag">客源编号：</span><span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span></p>
+                  <!-- <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p> -->
+                  <p v-if="contractDetail.recordVersion===1" style="position:relative;">
+                    <span class="tag">成交经纪人：</span>
+                    <el-tooltip class="item" effect="dark" :content="`${contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}-${contractDetail.dealAgentName?contractDetail.dealAgentName:'-'}`" placement="top">
+                      <div class="contractDetailCode" style="color:#233241;font-weight:100;">
+                        {{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}
+                      </div>
+                    </el-tooltip>
+                  </p>
+                  <p v-if="contractDetail.recordVersion===1">
+                    <span class="tag">店长：</span>
+                    <span class="text">{{contractDetail.dealAgentShopowner?contractDetail.dealAgentShopowner:"--"}}</span>
+                  </p>
                 </div>
                 <div class="table">
                   <el-table :data="clientrData" border header-row-class-name="theader-bg">
@@ -179,13 +193,13 @@
                   <p>房源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                 </div>
                 <div class="table" style="width:1200px;">
-                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg">
+                  <el-table :data="employeeData.houseAgents" border header-row-class-name="theader-bg" key="house">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>
@@ -195,7 +209,12 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>
@@ -220,6 +239,7 @@
                         {{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}
                       </template>
                     </el-table-column>
+                    <!-- employeeData.version 1是3.0系统  0不是3.0系统 -->
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">
                         {{scope.row.level4?scope.row.level4:'-'}}
@@ -254,13 +274,13 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>客源方分成<span>（房客源可分配业绩总计：<span class="orange">{{employeeData.comm?employeeData.comm:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.customerAgents" border header-row-class-name="theader-bg" key="customer">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>
@@ -270,7 +290,12 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>
@@ -329,13 +354,13 @@
                   <div class="one_performance" style="margin-bottom:10px;">
                     <p>交易服务费佣金分成<span>（交易服务费佣金可分配业绩总计：<span class="orange">{{employeeData.tradeFee?employeeData.tradeFee:0}}</span>元）</span></p>
                   </div>
-                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" >
+                  <el-table :data="employeeData.serviceAgents" border header-row-class-name="theader-bg" key="service">
                     <el-table-column label="角色类型">
                       <template slot-scope="scope">
                         {{scope.row.roleName?scope.row.roleName:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="分成比例(%)">
+                    <el-table-column label="分成比例(%)" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.ratio?scope.row.ratio:'0'}}
                       </template>
@@ -345,7 +370,12 @@
                         {{scope.row.assignor?scope.row.assignor:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column label="经纪人工号" min-width="100">
+                    <el-table-column label="登录账号" min-width="100" v-if="getVersion===3">
+                      <template slot-scope="scope">
+                        {{scope.row.loginAccount?scope.row.loginAccount:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column :label="getVersion===3?'员工工号':'经纪人工号'" min-width="100">
                       <template slot-scope="scope">
                         {{scope.row.assignorNum?scope.row.assignorNum:'-'}}
                       </template>
@@ -423,7 +453,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="合同主体" name="second">
+        <el-tab-pane label="合同主体" name="second" v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)">
           <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">
               合同主体
@@ -1750,7 +1780,8 @@ export default {
     },
     //打电话
     call(value,index,type) {
-      var nowTime = (new Date()).getTime();
+      //2019.12.27生成虚拟小号接口变更，虚拟小号10s会失效，所以去掉5分钟才重新获取的限制
+      // var nowTime = (new Date()).getTime();
       var param = {
         plateType:0,
         id:value.pid,
@@ -1759,35 +1790,36 @@ export default {
         calledMobile:value.encryptionMobile,
         calledName:value.name
       };
-      if(type==='owner'){
-        if(this.ownerData[index].time){
-          let oldTime = (nowTime-this.ownerData[index].time);
-          if(oldTime<300000){
-            this.callNumber=this.ownerData[index].virtualNum;
-            this.dialogVisible = true;
-          }else{
-            this.ownerData[index].time=nowTime;
-            this.getVirtualNum(param,index,type);
-          }
-        }else{
-          this.ownerData[index].time=nowTime;
-          this.getVirtualNum(param,index,type);
-        }
-      }else if(type==='guest'){
-        if(this.clientrData[index].time){
-          let oldTime = (nowTime-this.clientrData[index].time);
-          if(oldTime<300000){
-            this.callNumber=this.clientrData[index].virtualNum;
-            this.dialogVisible = true;
-          }else{
-            this.clientrData[index].time=nowTime;
-            this.getVirtualNum(param,index,type);
-          }
-        }else{
-          this.clientrData[index].time=nowTime;
-          this.getVirtualNum(param,index,type);
-        }
-      }
+      this.getVirtualNum(param,index,type);
+      // if(type==='owner'){
+      //   if(this.ownerData[index].time){
+      //     let oldTime = (nowTime-this.ownerData[index].time);
+      //     if(oldTime<300000){
+      //       this.callNumber=this.ownerData[index].virtualNum;
+      //       this.dialogVisible = true;
+      //     }else{
+      //       this.ownerData[index].time=nowTime;
+      //       this.getVirtualNum(param,index,type);
+      //     }
+      //   }else{
+      //     this.ownerData[index].time=nowTime;
+      //     this.getVirtualNum(param,index,type);
+      //   }
+      // }else if(type==='guest'){
+      //   if(this.clientrData[index].time){
+      //     let oldTime = (nowTime-this.clientrData[index].time);
+      //     if(oldTime<300000){
+      //       this.callNumber=this.clientrData[index].virtualNum;
+      //       this.dialogVisible = true;
+      //     }else{
+      //       this.clientrData[index].time=nowTime;
+      //       this.getVirtualNum(param,index,type);
+      //     }
+      //   }else{
+      //     this.clientrData[index].time=nowTime;
+      //     this.getVirtualNum(param,index,type);
+      //   }
+      // }
     },
     //生成虚拟号码
     getVirtualNum(param,index,type){
@@ -1795,20 +1827,20 @@ export default {
         this.canCall=true;
         res=res.data;
         if(res.status===200){
-          if(type==='owner'){
-            this.ownerData[index].virtualNum=res.data.virtualNum
-          }else if(type==='guest'){
-            this.clientrData[index].virtualNum=res.data.virtualNum
-          }
+          // if(type==='owner'){
+          //   this.ownerData[index].virtualNum=res.data.virtualNum
+          // }else if(type==='guest'){
+          //   this.clientrData[index].virtualNum=res.data.virtualNum
+          // }
           this.callNumber=res.data.virtualNum;
           this.dialogVisible = true;
         }
       }).catch(error=>{
-        if(type==='owner'){
-          this.ownerData[index].time=''
-        }else if(type==='guest'){
-          this.clientrData[index].time=''
-        }
+        // if(type==='owner'){
+        //   this.ownerData[index].time=''
+        // }else if(type==='guest'){
+        //   this.clientrData[index].time=''
+        // }
         this.canCall=true;
         this.$message({
           message:error,
@@ -2865,7 +2897,11 @@ export default {
     //非业务人员的判断
     getUserMsg(){
       return this.getUser.isBusiness
-    }
+    },
+    //2.0 3.0 版本判断
+    getVersion(){
+      return this.getUser.version
+    },
   },
   beforeUpdate() {
     this.clientHeight();

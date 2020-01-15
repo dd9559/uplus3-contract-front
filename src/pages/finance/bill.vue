@@ -233,7 +233,7 @@
         <el-table-column min-width="60" label="签约方式" prop="recordType.label"
                          :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="80" label="收付方式">
+        <el-table-column min-width="100" label="收付方式">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
           </template>
@@ -250,9 +250,25 @@
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收款方式" prop="payway" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="80" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="80" label="线下手续费（元）" prop="xxFee" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="80" label="金额（元）">
+          <template slot-scope="scope">
+            <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.amount}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payway&&scope.row.payway.value!==4">{{scope.row.xsFee}}</span>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="80" label="线下手续费（元）">
+          <template slot-scope="scope">
+            <template v-if="scope.row.payway&&scope.row.payway.value===4">
+              <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.fee}}</p>
+            </template>
+            <span v-else>--</span>
+          </template>
+        </el-table-column>
 <!--        <el-table-column min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>-->
         <el-table-column label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">

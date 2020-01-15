@@ -51,11 +51,12 @@
 									<!-- <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div> -->
 									<div class="div1" style="position:relative">
 										<span>业主姓名：</span>
-										<el-tooltip class="item" effect="dark" :content="ownerInfo[0].name" placement="bottom">
+										<el-tooltip class="item" effect="dark" :content="ownerInfo[0].name" placement="bottom" v-if="ownerInfo[0].name">
                       <div class="contractDetailCode">
                         {{ownerInfo[0].name | nullData}}
                       </div>
                     </el-tooltip>
+										<span v-else style="color:#233241;">--</span>
 									</div>
 									<div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
 									<div><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
@@ -108,7 +109,7 @@
           </div>
 				</el-tab-pane>
         <!-- xuneng修改：意向定金打开合同主体限制，照搬买卖租赁 -->
-				<el-tab-pane label="合同主体" name="second">
+				<el-tab-pane label="合同主体" name="second" v-if="power['sign-ht-xq-main-add'].state">
 					<div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
 						<ul class="ulData">
 							<li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
@@ -368,6 +369,7 @@
 		:contId="changeCancelId"
 		:commission="commission"
 		:code="detailData.code"
+		:dialogContType="2"
 		@close="changeCancelDialog"
 		@success="freshChangeCancel"
 		v-if="changeCancel_"></changeCancel>

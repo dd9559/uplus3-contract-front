@@ -677,13 +677,28 @@
                     delete this.nodeList[index].lastChoice
                 }
             },
+            getArrDiff(m, n) {
+                return m.concat(n).filter(function(v, i, arr) {
+                    return arr.indexOf(v) === arr.lastIndexOf(v)
+                })
+            },
+            multiDel(index,type,ar,t) {
+                let arr = this.nodeList[index].choice.filter(item => {
+                    return type !==4 ? item.type === type : item.type === type && item.userId === this.nodeList[index].depType
+                })
+                let arr1 = []
+                arr.forEach(item => {
+                    arr1.push(type !== 4 ? item.userId : item.positionId)
+                })
+                let arr2 = this.getArrDiff(arr1,this.nodeList[index][ar])
+                this.nodeList[index].choice.forEach((item,i) => {
+                    if(type !== 4 ? item.userId === arr2[0] : item.positionId === arr2[0] && item.userId === this.nodeList[index].depType) {
+                        this.nodeList[index].choice.splice(i,1)
+                        this.$set(this.nodeList[index],t,this.nodeList[index][t] - 1)
+                    }
+                })
+            },
             multiSelect(type,index) {
-                function getArrDiff(m, n) {
-                    return m.concat(n).filter(function(v, i, arr) {
-                        return arr.indexOf(v) === arr.lastIndexOf(v)
-
-                    })
-                }
                 if(type === 0) {
                     // 人员
                     if(this.nodeList[index].peopleTime === this.nodeList[index].personArr.length) {
@@ -701,65 +716,49 @@
                         }
                         ++this.nodeList[index].peopleTime
                     } else {
-                        let arr = this.nodeList[index].choice.filter(item => {
-                            return item.type === 0
-                        })
-                        let arr1 = []
-                        arr.forEach(item => {
-                            arr1.push(item.userId)
-                        })
-                        let arr2 = getArrDiff(arr1,this.nodeList[index].personArr)
-                        this.nodeList[index].choice.forEach((item,i) => {
-                            if(item.userId === arr2[0]) {
-                                this.nodeList[index].choice.splice(i,1)
-                                this.$set(this.nodeList[index],'peopleTime',this.nodeList[index].peopleTime - 1)
-                            }
-                        })
+                        this.multiDel(index,type,'personArr','peopleTime')
                     }
                 } else if(type === 1) {
                     // 部门名称
                     if(this.nodeList[index].depsTime === this.nodeList[index].depArr.length) {
-                        for(var i = 0; i < this.depsList.length; i++) {
-                            if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
-                                if(this.version == 2) {
-                                    this.nodeList[index].choice.push({
-                                        type: 1,
-                                        userName: this.depsList[i].name,
-                                        userId: this.depsList[i].id,
-                                        isDefault: 0,
-                                        temp: ""
-                                    })  
+                        this.$ajax.get('/api/organize/selectEmpByDepType', { depId: this.nodeList[index].depArr[this.nodeList[index].depsTime-1] }).then(res => {
+                            res = res.data
+                            if(res.status === 200) {
+                                if(res.data>0) {
+                                    for(var i = 0; i < this.depsList.length; i++) {
+                                        if(this.nodeList[index].depArr[this.nodeList[index].depsTime-1] === this.depsList[i].id) {
+                                            if(this.version == 2) {
+                                                this.nodeList[index].choice.push({
+                                                    type: 1,
+                                                    userName: this.depsList[i].name,
+                                                    userId: this.depsList[i].id,
+                                                    isDefault: 0,
+                                                    temp: ""
+                                                })  
+                                            } else {
+                                                // 3.0环境后台要求多两个属性
+                                                this.nodeList[index].choice.push({
+                                                    type: 1,
+                                                    userName: this.depsList[i].name,
+                                                    userId: this.depsList[i].id,
+                                                    isDefault: 0,
+                                                    temp: "",
+                                                    positionId: null,
+                                                    positionName: null
+                                                })
+                                            }
+                                            break
+                                        }
+                                    }
+                                    ++this.nodeList[index].depsTime
                                 } else {
-                                    // 3.0环境后台要求多两个属性
-                                    this.nodeList[index].choice.push({
-                                        type: 1,
-                                        userName: this.depsList[i].name,
-                                        userId: this.depsList[i].id,
-                                        isDefault: 0,
-                                        temp: "",
-                                        positionId: null,
-                                        positionName: null
-                                    })
+                                    this.$message({message:"该部门下没有人员，请选择其他部门"})
+                                    this.nodeList[index].depArr.splice(this.nodeList[index].depArr.length-1,1)
                                 }
-                                break
                             }
-                        }
-                        ++this.nodeList[index].depsTime
+                        })
                     } else {
-                        let arr = this.nodeList[index].choice.filter(item => {
-                            return item.type === 1
-                        })
-                        let arr1 = []
-                        arr.forEach(item => {
-                            arr1.push(item.userId)
-                        })
-                        let arr2 = getArrDiff(arr1,this.nodeList[index].depArr)
-                        this.nodeList[index].choice.forEach((item,i) => {
-                            if(item.userId === arr2[0]) {
-                                this.nodeList[index].choice.splice(i,1)
-                                this.$set(this.nodeList[index],'depsTime',this.nodeList[index].depsTime - 1)
-                            }
-                        })
+                        this.multiDel(index,type,'depArr','depsTime')
                     }
                 } else if(type === 2) {
                     // 角色
@@ -778,20 +777,7 @@
                         }
                         ++this.nodeList[index].rolesTime
                     } else {
-                        let arr = this.nodeList[index].choice.filter(item => {
-                            return item.type === 2
-                        })
-                        let arr1 = []
-                        arr.forEach(item => {
-                            arr1.push(item.userId)
-                        })
-                        let arr2 = getArrDiff(arr1,this.nodeList[index].roleArr)
-                        this.nodeList[index].choice.forEach((item,i) => {
-                            if(item.userId === arr2[0]) {
-                                this.nodeList[index].choice.splice(i,1)
-                                this.$set(this.nodeList[index],'rolesTime',this.nodeList[index].rolesTime - 1)
-                            }
-                        })
+                        this.multiDel(index,type,'roleArr','rolesTime')
                     }
                 } else if(type === 4) {
                     // 3.0环境 审批人类型是 部门类型+职级
@@ -799,20 +785,7 @@
                         let url = "/api/organize/selectEmpByDepType"
                         this.checkEmp(url,type,index,'depTypeArr','depTypeTime','depType','depTypeStr')
                     } else {
-                        let arr = this.nodeList[index].choice.filter(item => {
-                            return item.type === 4 && item.userId === this.nodeList[index].depType
-                        })
-                        let arr1 = []
-                        arr.forEach(item => {
-                            arr1.push(item.positionId)
-                        })
-                        let arr2 = getArrDiff(arr1,this.nodeList[index].depTypeArr)
-                        this.nodeList[index].choice.forEach((item,i) => {
-                            if(item.positionId === arr2[0] && item.userId === this.nodeList[index].depType) {
-                                this.nodeList[index].choice.splice(i,1)
-                                this.$set(this.nodeList[index],'depTypeTime',this.nodeList[index].depTypeTime - 1)
-                            }
-                        })
+                        this.multiDel(index,type,'depTypeArr','depTypeTime')
                     }
                 }
                 let ar = this.nodeList[index].choice.filter(item => item.isDefault===1)
@@ -898,6 +871,7 @@
                     return false
                 }
                 let isOk
+                let item
                 if(this.isAudit === '0') { //无需审核
                     let arr1 = [{
                         name: "",
@@ -907,10 +881,10 @@
                         userName: "",
                         isAudit: "0"
                     }]
-                    this.nodeList = arr1
+                    item = arr1
                 } else { //需要审核
                     this.copyNodeList = JSON.parse(JSON.stringify(this.nodeList))
-                    let item = this.nodeList
+                    item = [...this.nodeList]
                     for(let i = 1; i < item.length; i++) {
                         isOk = false
                         if(item[i].name) {
@@ -956,7 +930,7 @@
                     }
                 }
                 let param = {
-                    branch: this.nodeList
+                    branch: item
                 }
                 param = Object.assign({},this.aduitForm,param)
                 param.cityId = this.searchForm.cityId

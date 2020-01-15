@@ -199,7 +199,7 @@
           <template slot-scope="scope">
             <div class="btn" v-if="power['sign-ht-info-view'].state" @click="goPreview(scope.row)">预览</div>
             <div style="color:red" v-if="scope.row.toExamineState.value===0&&scope.row.auditId>0&&getUserMsg&&scope.row.auditId!==getUserMsg.empId">{{scope.row.auditName}}正在审核</div>
-            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1) || (((scope.row.contType.value===1||scope.row.contType.value===4||scope.row.contType.value===5)&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId)||(scope.row.auditId<0&&getUserMsg&&(getUserMsg.roleId===22||getUserMsg.roleId===23||fawu)))) ) )" @click="goCheck(scope.row)">审核</div>
+            <div class="btn" v-if="scope.row.toExamineState.value===0&&( ((!(scope.row.auditId>0))&&getUserMsg&&scope.row.grabDept==='true') || (((scope.row.contType.value===1||scope.row.contType.value===4||scope.row.contType.value===5)&&getUserMsg&&scope.row.auditId===getUserMsg.empId) || ((scope.row.contType.value===2||scope.row.contType.value===3)&&((scope.row.auditId===getUserMsg.empId))) ) )" @click="goCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -216,7 +216,7 @@
 
     </div>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :dialogContType="dialogContType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" page="list" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
   </div>
@@ -252,6 +252,7 @@ export default {
       pageSize: 10,
       contractCode: "",
       changeCancel: false,
+      dialogContType:1,//变更解约弹窗是否是意向定金合同
       dialogOperation:"details",
       dictionary: {
         //数据字典
@@ -303,6 +304,11 @@ export default {
     }
   },
   created() {
+    //判断是否为u+跳转 u+跳转列表展示审核中数据
+    if(this.$route.query.source&&this.$route.query.source==="uplus"){
+      // this.contractForm.toExamineState=0
+      this.$set(this.contractForm,'toExamineState',0)
+    }
     this.getDictionary();//字典
     this.remoteMethod();//部门
     // this.getAdmin();//获取当前登录人信息
@@ -449,6 +455,11 @@ export default {
         this.changeCancel = true;
         this.dialogType = "jy";
         this.contId=item.id;
+      }
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
       }
     },
     //关闭变更解约弹窗

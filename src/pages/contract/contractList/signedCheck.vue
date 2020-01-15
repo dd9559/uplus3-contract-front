@@ -131,12 +131,17 @@
               <span v-if="scope.row.state.value===-1" class="blue">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===0" class="yellow">{{scope.row.state.label}}</span>
               <span v-if="scope.row.state.value===1" class="green">{{scope.row.state.label}}</span>
-              <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
+              <!-- <span v-if="scope.row.state.value===2" class="red" :title="scope.row.remarks">{{scope.row.state.label}}</span> -->
+              <el-tooltip class="item" popper-class="tooltipWidth" v-if="scope.row.state.value===2&&scope.row.remarks" effect="dark" placement="top">
+                <span slot="content">{{scope.row.remarks}}</span>
+                <span v-if="scope.row.state.value===2" class="red">{{scope.row.state.label}}</span>
+              </el-tooltip>
+              <span v-if="scope.row.state.value===2&&!scope.row.remarks" class="red">{{scope.row.state.label}}</span>
             </template>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="110">
+        <el-table-column label="上传合同主体时间" min-width="120">
           <template slot-scope="scope">
             <span v-if="scope.row.upTime">{{Number(scope.row.upTime)|timeFormat_hm}}</span>
             <span v-else>-</span>
@@ -170,7 +175,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div style="color:red" v-if="scope.row.state&&scope.row.state.value===0&&scope.row.currentReviewerId>0&&getUserMsg&&scope.row.currentReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state&&scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||((!(scope.row.currentReviewerId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="toCheck(scope.row)">审核</div>
+            <div style="color:red" v-if="scope.row.state&&scope.row.state.value===0&&scope.row.currentReviewerId>0&&getUserMsg&&scope.row.currentReviewerId!==getUserMsg.empId">{{scope.row.currentReviewer}}正在审核</div><div class="btn" v-if="scope.row.state&&scope.row.state.value===0&&((scope.row.currentReviewerId===getUserMsg.empId)||((!(scope.row.currentReviewerId>0))&&getUserMsg&&scope.row.grabDept))" @click="toCheck(scope.row)">审核</div>
           </template>
         </el-table-column>
       </el-table>
@@ -276,6 +281,10 @@ export default {
     }
   },
   created() {
+    //判断是否为u+跳转 u+跳转列表展示审核中数据
+    if(this.$route.query.source&&this.$route.query.source==="uplus"){
+      this.$set(this.contractForm,'state',0)
+    }
     this.getDictionary();//字典
     this.remoteMethod();//部门
     // this.getAdmin();//获取当前登录人信息
@@ -713,6 +722,12 @@ export default {
       width: 30px;
       display: inline-block;
     }
+  }
+}
+.tooltipWidth{
+  span{
+    max-width: 160px;
+    display: inline-block;
   }
 }
 </style>

@@ -18,6 +18,7 @@
           <el-select v-model="contractForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':contractForm.contTypes&&contractForm.contTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
+              v-if="item.key!=6"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -109,6 +110,11 @@ export default {
     }
   },
   created(){
+    //判断是否为u+跳转 u+跳转列表展示审核中数据
+    if(this.$route.query.source&&this.$route.query.source==="uplus"){
+      // this.contractForm.toExamineState=0
+      this.$set(this.contractForm,'toExamineState',0)
+    }
     this.getDictionary();//字典
     this.remoteMethod();//部门
     this.getCancelList()

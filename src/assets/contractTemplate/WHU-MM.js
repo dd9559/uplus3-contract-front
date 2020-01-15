@@ -10,10 +10,10 @@ let Obj={
   }
 
   let sub = {
-    'val5': null,
-    'val6': null,
-    'val11': null,
-    'val12': null,
+    // 'val5': null,
+    // 'val6': null,
+    // 'val11': null,
+    // 'val12': null,
     'val13': null,
     'checkbox_houseType': null,
     'val26': null,
@@ -63,7 +63,7 @@ let Obj={
         return res;
       }
     },
-    'time_val85': null,
+    'val85': null,
     'val86': null,
     'drapdown_taxAgree': {
       stateful: function (val) {
@@ -82,7 +82,7 @@ let Obj={
         return res;
       }
     },
-    'time_val92': null,
+    'val92': null,
     'val93': null,
     'val94': null,
     'val95': null,

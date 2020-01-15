@@ -19,6 +19,7 @@
           <el-select v-model="adjustForm.contractTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contractTypes&&adjustForm.contractTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
+              v-if="item.key!=6&&item.key!=5&&item.key!=4"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -47,9 +48,8 @@
 
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.checkState" placeholder="全部" class="width150" clearable>
-            <el-option label="审核中" value="0"></el-option>
-            <el-option label="通过" value="1"></el-option>
-            <el-option label="驳回" value="2"></el-option>
+            <el-option v-for="item in dictionary['51']" :key="item.key" :label="item.value" :value="item.key" v-if="item.key!==-1">
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -65,13 +65,13 @@
     <!-- 数据列表 -->
     <div class="contract-list">
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" @row-dblclick='toDetail' border>
-        <el-table-column label="合同信息" min-width="130" fixed :formatter="nullFormatter">
+        <el-table-column label="合同信息" min-width="140" fixed :formatter="nullFormatter">
           <template slot-scope="scope">
             <p style="text-align:left;">合同：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.contractCode}}</span></p>
             <p v-if="scope.row.recordType&&scope.row.recordType===2&&scope.row.pCode" style="text-align:left;">纸质合同编号：<span class="blue curPointer" @click="goContractDetail(scope.row)">{{scope.row.pCode}}</span></p>
           </template>
         </el-table-column>
-        <el-table-column label="合同类型" :formatter="nullFormatter" min-width="60">
+        <el-table-column label="合同类型" :formatter="nullFormatter" min-width="80">
           <template slot-scope="scope">
             <p v-if="scope.row.tradeType === 1">租赁</p>
             <p v-if="scope.row.tradeType === 2">
@@ -166,8 +166,8 @@
         <el-table-column label="操作" min-width="120" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
             <div style="color:red;" v-if="scope.row.checkState===0&&scope.row.checkby>0&&getUserMsg&&scope.row.checkby!==getUserMsg.empId">{{scope.row.checkByName}}正在审核</div>
-            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.checkState === 0 && ((scope.row.checkby === getUserMsg.empId)||((!(scope.row.checkby>0))&&scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))>-1))">审核</div>
-            <div v-if="scope.row.checkState!==0||scope.row.checkState===0&&(!(scope.row.checkby>0))&&(scope.row.grabDept&&scope.row.grabDept.indexOf(String(getUserMsg.depId))===-1)">--</div>
+            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.checkState === 0 && ((scope.row.checkby === getUserMsg.empId)||((!(scope.row.checkby>0))&&scope.row.grabDept))">审核</div>
+            <div v-if="scope.row.checkState!==0||scope.row.checkState===0&&(!(scope.row.checkby>0))&&(!scope.row.grabDept)">--</div>
           </template>
         </el-table-column>
       </el-table>
@@ -436,6 +436,7 @@
           "507": "", // 成交总价单位
           "53": "", // 合作方式
           "64": '', //签约方式
+          "51": "", //审核状态
         },
         layerAudit:{},
         checkInfo:[],
@@ -472,6 +473,11 @@
     },
 
     created() {
+      //判断是否为u+跳转 u+跳转列表展示审核中数据
+      if(this.$route.query.source&&this.$route.query.source==="uplus"){
+        // this.adjustForm.checkState=0
+        this.$set(this.adjustForm,'checkState',0)
+      }
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data

@@ -61,7 +61,7 @@
               <li v-for="(item,index) in ownerList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_">
-                  <input v-model="item.encryptionMobile" type="tel" maxlength="11" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.encryptionMobile" placeholder="电话" class="mobile_" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -98,7 +98,7 @@
               <li v-for="(item,index) in guestList" :key="index">
                 <span class="merge">
                   <input v-model="item.name" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_">
-                  <input v-model="item.encryptionMobile" type="tel" maxlength="11" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                  <input v-model="item.encryptionMobile" placeholder="电话" class="mobile_"  @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                 </span>
                 <el-select v-model="item.relation" placeholder="关系" class="relation_">
                   <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -242,7 +242,7 @@ const rule = {
     name: "客源"
   },
 };
-
+let loading = null
 export default {
   mixins: [MIXINS],
   components: {
@@ -466,8 +466,8 @@ export default {
             ]
           }
           console.log(contractDetail)
-           delete contractDetail.contractInfo
-           this.contractForm=contractDetail
+          delete contractDetail.contractInfo
+          this.contractForm=contractDetail
         }
       })
     },
@@ -583,10 +583,17 @@ export default {
     },
      //根据房源id获取房源信息
     getHouseDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         houseId: id,
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           this.canNotInput=true
@@ -621,6 +628,7 @@ export default {
           }
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -629,10 +637,17 @@ export default {
     },
      //根据客源id获取客源信息
     getGuestDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         customerId: id,
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
@@ -675,6 +690,7 @@ export default {
           }
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -766,32 +782,53 @@ export default {
     },
     //手机号验证
     verifyMobile(item,index,type) {
+      let beginNum = /^0.*$/
+      let beginNum_ = /^1.*$/
+      if(item.encryptionMobile.length>0){
+        if(type==="owner"){
+          if(beginNum.test(item.encryptionMobile)){
+            this.ownerList[index].encryptionMobile=item.encryptionMobile.substring(0,13)
+          // }else if(beginNum_.test(item.encryptionMobile)){
+          }else{
+            this.ownerList[index].encryptionMobile=item.encryptionMobile.substring(0,11)
+          }
+          item.encryptionMobile=this.ownerList[index].encryptionMobile
+        }else if(type==="guest"){
+          if(beginNum.test(item.encryptionMobile)){
+            this.guestList[index].encryptionMobile=item.encryptionMobile.substring(0,13)
+          // }else if(beginNum_.test(item.encryptionMobile)){
+          }else{
+            this.guestList[index].encryptionMobile=item.encryptionMobile.substring(0,11)
+          }
+          item.encryptionMobile=this.guestList[index].encryptionMobile
+        }
+      }
       if(item.isEncryption){
         if(type==="owner"){
-          if(this.ownerList[index].mobile!==this.beforeChangeMobile){
-            if(Number(item.mobile)){
-              this.ownerList[index].mobile=item.mobile;
+          if(this.ownerList[index].encryptionMobile!==this.beforeChangeMobile){
+            if(Number(item.encryptionMobile)){
+              this.ownerList[index].encryptionMobile=item.encryptionMobile;
             }else{
-              this.ownerList[index].mobile='';
+              this.ownerList[index].encryptionMobile='';
             }
             // this.ownerList[index].mobile='';
             this.ownerList[index].isEncryption=false;
           }
         }else if(type==="guest"){
-          if(this.guestList[index].mobile!==this.beforeChangeMobile){
-            if(Number(item.mobile)){
-              this.guestList[index].mobile=item.mobile;
+          if(this.guestList[index].encryptionMobile!==this.beforeChangeMobile){
+            if(Number(item.encryptionMobile)){
+              this.guestList[index].encryptionMobile=item.mobile;
             }else{
-              this.guestList[index].mobile='';
+              this.guestList[index].encryptionMobile='';
             }
             this.guestList[index].isEncryption=false;
           }
         }
       }else{
-        if(item.mobile.length===11){
+        if(item.encryptionMobile.length>=11){
           let reg = /^1[0-9]{10}$/;
-          let reg_ = /^0\d{2,3}-?\d{7,8}$/
-          if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
+          let reg_ = /^0\d{2,3}\-?\d{7,8}$/
+          if (!reg.test(item.encryptionMobile)&&!reg_.test(item.encryptionMobile)) {
             this.$message({
               message:'电话号码格式不正确',
               type: "warning"
@@ -974,9 +1011,9 @@ export default {
                   element.name=element.name.replace(/\s/g,"");
                   if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                     // 电话号码
-                    if (element.mobile.length === 11) {
+                    if (element.mobile.length === 11||true) {
                     let reg = /^1[0-9]{10}$/;//手机号正则
-                    let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                    let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                     if (reg.test(element.mobile)||reg_.test(element.mobile)) {
                       // 人员关系
                       if (element.relation) {
@@ -1074,9 +1111,9 @@ export default {
                       element.name=element.name.replace(/\s/g,"");
                       if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
                         // 电话号码
-                        if (element.mobile.length === 11) {
+                        if (element.mobile.length === 11||true) {
                         let reg = /^1[0-9]{10}$/;//手机号正则
-                        let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                        let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                         if (reg.test(element.mobile)||reg_.test(element.mobile)) {
                           // 人员关系
                           if (element.relation) {
@@ -1180,7 +1217,9 @@ export default {
                   if(element.cardType===4){
                     militaryIDList.push(element.encryptionCode);
                   }
-                  ownerMobileList.push(element.mobile);
+                  let obj = JSON.parse(JSON.stringify(element))
+                  obj.mobile=obj.mobile.replace('-','')
+                  ownerMobileList.push(obj.mobile);
                 });
                 let ownerGuestMobile = true
                 if(this.contractForm.transMode===2){
@@ -1206,7 +1245,9 @@ export default {
                     if(element.cardType===4){
                       militaryIDList.push(element.encryptionCode);
                     }
-                    guestMobileList.push(element.mobile);
+                    let obj = JSON.parse(JSON.stringify(element))
+                    obj.mobile=obj.mobile.replace('-','')
+                    guestMobileList.push(obj.mobile);
                   });
                   for (let index = 0; index < guestMobileList.length; index++) {
                     if(ownerMobileList.includes(guestMobileList[index])){

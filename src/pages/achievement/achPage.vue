@@ -119,7 +119,41 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人工号" width="120">
+              <el-table-column label="登录账号" v-if="getUser.version===3" width="120">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.loginAccount+''"
+                    :disabled="scope.row.loginAccount?false:true"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-input v-if="!!scope.row.loginAccount" v-model="scope.row.loginAccount" disabled></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="员工工号" v-if="getUser.version===3" width="120">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum+''"
+                    :disabled="scope.row.assignorNum?false:true"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-input
+                      v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                      v-model="scope.row.assignorNum"
+                      disabled
+                    ></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="经纪人工号" v-else width="120">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -253,7 +287,7 @@
                       v-for="item in shopkeepers"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                   </el-tooltip>
@@ -320,7 +354,7 @@
                       v-for="item in amaldars"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                   </el-tooltip>
@@ -354,7 +388,7 @@
                       v-for="item in managers"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                     </el-tooltip>
@@ -479,7 +513,41 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人工号" width="120">
+              <el-table-column label="登录账号" v-if="getUser.version===3" width="120">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.loginAccount+''"
+                    :disabled="scope.row.loginAccount?false:true"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-input v-if="!!scope.row.loginAccount" v-model="scope.row.loginAccount" disabled></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="员工工号" v-if="getUser.version===3" width="120">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="scope.row.assignorNum+''"
+                    :disabled="scope.row.assignorNum?false:true"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-input
+                      v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                      v-model="scope.row.assignorNum"
+                      disabled
+                    ></el-input>
+                    <el-input v-else v-model="hx" disabled></el-input>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="经纪人工号" v-else width="120">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -611,7 +679,7 @@
                       v-for="item in shopkeepers"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                   </el-tooltip>
@@ -678,7 +746,7 @@
                       v-for="item in amaldars"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                   </el-tooltip>
@@ -712,7 +780,7 @@
                       v-for="item in managers"
                       :key="item.empId"
                       :label="item.name+'-'+item.depName"
-                      :value="item.depId+'-'+item.name"
+                      :value="item.empId+'-'+item.name"
                     ></el-option>
                   </el-select>
                   </el-tooltip>
@@ -812,7 +880,41 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="经纪人工号" width="120">
+                <el-table-column label="登录账号" v-if="getUser.version===3" width="120">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.loginAccount+''"
+                      :disabled="scope.row.loginAccount?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-input v-if="!!scope.row.loginAccount" v-model="scope.row.loginAccount" disabled></el-input>
+                      <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+                <el-table-column label="员工工号" v-if="getUser.version===3" width="120">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="scope.row.assignorNum+''"
+                      :disabled="scope.row.assignorNum?false:true"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-input
+                        v-if="scope.row.assignorNum&&scope.row.assignorNum.length>0"
+                        v-model="scope.row.assignorNum"
+                        disabled
+                      ></el-input>
+                      <el-input v-else v-model="hx" disabled></el-input>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+                <el-table-column label="经纪人工号" v-else width="120">
                   <template slot-scope="scope">
                     <el-tooltip
                       class="item"
@@ -944,7 +1046,7 @@
                           v-for="item in shopkeepers"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
@@ -1011,7 +1113,7 @@
                           v-for="item in amaldars"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
@@ -1045,7 +1147,7 @@
                           v-for="item in managers"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
-                          :value="item.depId+'-'+item.name"
+                          :value="item.empId+'-'+item.name"
                         ></el-option>
                       </el-select>
                     </el-tooltip>
@@ -1729,7 +1831,8 @@ export default {
           pageNum: 1,
           pageSize: 100,
           leave: true,
-          systemtag: this.userInfo.systemtag
+          systemtag: this.userInfo.systemtag,
+          contId: this.contractId2
         };
         this.$ajax.get("/api/organize/employees/pages", param).then(res => {
           if (res.status === 200) {
@@ -1770,6 +1873,7 @@ export default {
 
     // 改变经纪人
     changeAssignors(val, index, type) {
+      debugger
       if (val) {
         let param = {
           id: val
@@ -1777,117 +1881,41 @@ export default {
         this.$ajax
           .get("/api/organize/employee/agent/details", param)
           .then(res => {
-            let data = res.data.data;
+            let {assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel,loginAccount} = res.data.data;
             if (type == 0) {
-              this.houseArr[index].assignor = data.assignor;
-              this.houseArr[index].isJob = data.isJob;
-              this.houseArr[index].level3 = data.level3; //门店
-              this.houseArr[index].shopkeeper = data.shopkeeper; //店长
-              this.houseArr[index].level4 = data.level4; //单组
-              this.houseArr[index].amaldar = data.amaldar; //区经
-              this.houseArr[index].manager = data.manager; //区总
-              this.houseArr[index].assignorId = data.assignorId; //经纪人id
-              this.houseArr[index].storefront3Id = data.storefront3Id; //三级门店
-              this.houseArr[index].storefront4Id = data.storefront4Id; //四级门店
-              this.houseArr[index].managerId = data.managerId; //区总id
-              this.houseArr[index].amaldarId = data.amaldarId; //区经id
-              this.houseArr[index].shopkeeperId = data.shopkeeperId; //店长id
-              this.houseArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-              this.houseArr[index].assignorNum = data.assignorNum;
-              this.houseArr[index].assignorLevel = data.assignorLevel;
-              this.houseArr[index].salesManagerLevel = data.salesManagerLevel;
-            } else if (type == 1) {
-              this.clientArr[index].assignor = data.assignor;
-              this.clientArr[index].isJob = data.isJob;
-              this.clientArr[index].level3 = data.level3; //门店
-              this.clientArr[index].shopkeeper = data.shopkeeper; //店长
-              this.clientArr[index].level4 = data.level4; //单组
-              this.clientArr[index].amaldar = data.amaldar; //区经
-              this.clientArr[index].manager = data.manager; //区总
-              this.clientArr[index].assignorId = data.assignorId; //经纪人id
-              this.clientArr[index].storefront3Id = data.storefront3Id; //三级门店
-              this.clientArr[index].storefront4Id = data.storefront4Id; //四级门店
-              this.clientArr[index].managerId = data.managerId; //区总id
-              this.clientArr[index].amaldarId = data.amaldarId; //区经id
-              this.clientArr[index].shopkeeperId = data.shopkeeperId; //店长id
-              this.clientArr[index].platformFeeRatio = data.platformFeeRatio; //平台费比率
-              this.clientArr[index].assignorNum = data.assignorNum;
-              this.clientArr[index].assignorLevel = data.assignorLevel;
-              this.clientArr[index].salesManagerLevel = data.salesManagerLevel;
+              Object.assign(this.houseArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel,loginAccount})
+            } else if (type == 1){
+              Object.assign(this.clientArr[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel,loginAccount})
             } else {
-              this.serviceAgents[index].assignor = data.assignor;
-              this.serviceAgents[index].isJob = data.isJob;
-              this.serviceAgents[index].level3 = data.level3; //门店
-              this.serviceAgents[index].shopkeeper = data.shopkeeper; //店长
-              this.serviceAgents[index].level4 = data.level4; //单组
-              this.serviceAgents[index].amaldar = data.amaldar; //区经
-              this.serviceAgents[index].manager = data.manager; //区总
-              this.serviceAgents[index].assignorId = data.assignorId; //经纪人id
-              this.serviceAgents[index].storefront3Id = data.storefront3Id; //三级门店
-              this.serviceAgents[index].storefront4Id = data.storefront4Id; //四级门店
-              this.serviceAgents[index].managerId = data.managerId; //区总id
-              this.serviceAgents[index].amaldarId = data.amaldarId; //区经id
-              this.serviceAgents[index].shopkeeperId = data.shopkeeperId; //店长id
-              this.serviceAgents[index].platformFeeRatio =
-                data.platformFeeRatio; //平台费比率
-              this.serviceAgents[index].assignorNum = data.assignorNum;
-              this.serviceAgents[index].assignorLevel = data.assignorLevel;
-              this.serviceAgents[index].salesManagerLevel =
-                data.salesManagerLevel;
+              Object.assign(this.serviceAgents[index],{assignor,isJob,level3,shopkeeper,level4,amaldar,manager,assignorId,storefront3Id,storefront4Id,managerId,amaldarId,shopkeeperId,platformFeeRatio,assignorNum,assignorLevel,salesManagerLevel,loginAccount})
             }
           });
       } else {
+        let initObj={
+          isJob:"",
+          level3:"",
+          shopkeeper:"",
+          level4:"",
+          amaldar:"",
+          manager:"",
+          assignorId:"",
+          storefront3Id:"",
+          storefront4Id:"",
+          managerId:"",
+          amaldarId:"",
+          shopkeeperId:"",
+          platformFeeRatio:"",
+          assignorNum:"",
+          assignorLevel:"",
+          salesManagerLevel:"",
+          loginAccount:""
+        }
         if (type == 0) {
-          this.houseArr[index].isJob = "";
-          this.houseArr[index].level3 = "";
-          this.houseArr[index].shopkeeper = "";
-          this.houseArr[index].level4 = "";
-          this.houseArr[index].amaldar = "";
-          this.houseArr[index].manager = "";
-          this.houseArr[index].assignorId = "";
-          this.houseArr[index].storefront3Id = "";
-          this.houseArr[index].storefront4Id = "";
-          this.houseArr[index].managerId = "";
-          this.houseArr[index].amaldarId = "";
-          this.houseArr[index].shopkeeperId = "";
-          this.houseArr[index].platformFeeRatio = "";
-          this.houseArr[index].assignorNum = "";
-          this.houseArr[index].assignorLevel = "";
-          this.houseArr[index].salesManagerLevel = "";
+          Object.assign(this.houseArr[index],initObj)
         } else if (type == 1) {
-          this.clientArr[index].isJob = "";
-          this.clientArr[index].level3 = "";
-          this.clientArr[index].shopkeeper = "";
-          this.clientArr[index].level4 = "";
-          this.clientArr[index].amaldar = "";
-          this.clientArr[index].manager = "";
-          this.clientArr[index].assignorId = "";
-          this.clientArr[index].storefront3Id = "";
-          this.clientArr[index].storefront4Id = "";
-          this.clientArr[index].managerId = "";
-          this.clientArr[index].amaldarId = "";
-          this.clientArr[index].shopkeeperId = "";
-          this.clientArr[index].platformFeeRatio = "";
-          this.clientArr[index].assignorNum = "";
-          this.clientArr[index].assignorLevel = "";
-          this.clientArr[index].salesManagerLevel = "";
+          Object.assign(this.clientArr[index],initObj)
         } else {
-          this.serviceAgents[index].isJob = "";
-          this.serviceAgents[index].level3 = "";
-          this.serviceAgents[index].shopkeeper = "";
-          this.serviceAgents[index].level4 = "";
-          this.serviceAgents[index].amaldar = "";
-          this.serviceAgents[index].manager = "";
-          this.serviceAgents[index].assignorId = "";
-          this.serviceAgents[index].storefront3Id = "";
-          this.serviceAgents[index].storefront4Id = "";
-          this.serviceAgents[index].managerId = "";
-          this.serviceAgents[index].amaldarId = "";
-          this.serviceAgents[index].shopkeeperId = "";
-          this.serviceAgents[index].platformFeeRatio = "";
-          this.serviceAgents[index].assignorNum = "";
-          this.serviceAgents[index].assignorLevel = "";
-          this.serviceAgents[index].salesManagerLevel = "";
+          Object.assign(this.serviceAgents[index],initObj)
         }
       }
     },
@@ -1962,7 +1990,8 @@ export default {
             pageNum: 1,
             pageSize: 100,
             leave: true,
-            systemtag: this.userInfo.systemtag
+            systemtag: this.userInfo.systemtag,
+            contId:this.contractId2
           };
           this.$ajax.get("/api/organize/employees/pages", param).then(res => {
             if (roleId == 2) {

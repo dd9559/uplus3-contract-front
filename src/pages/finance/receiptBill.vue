@@ -475,7 +475,7 @@
             }
             let arr = [];
             if (urlParam.edit) {
-                this.inObjPerson = false
+                // this.inObjPerson = false
                 this.getDetails({type: 1, payId: urlParam.id})
                 arr = this.$tool.getRouter(['二手房', '财务', Number(urlParam.edit)===1?'收付款单':'收款审核'], Number(urlParam.edit)===1?'/bill':'/moneyCheck?type=1');
                 arr.push({name: '编辑收款', path: this.$route.fullPath});
@@ -708,7 +708,7 @@
                         this.moneyTypeName = res.data.moneyTypeName
                         this.dep.id = res.data.inObjStoreId
                         this.dep.name = res.data.inObjStore
-                        this.getEmploye(res.data.deptId)
+                        // this.getEmploye(res.data.deptId)
                         if (res.data.filePath) {
                             this.files=[].concat(JSON.parse(res.data.filePath))
                             this.getFiles()

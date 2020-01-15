@@ -126,6 +126,33 @@
         <div class="paper-ov">
           <div class="fl"><span class="fb mr-10 ml-28">备注：</span><span>{{comRules}}</span></div>
         </div>
+        <!-- 门店实收分成 -->
+        <div class="dep-receipt" v-if="storeReceiveList.length>0">
+          <p>门店实收分成</p>
+          <table class="paper-table-main">
+            <tr>
+              <td>大区</td>
+              <td>片区</td>
+              <td>门店</td>
+              <td>金额</td>
+            </tr>
+            <tr v-for="(item,index) in storeReceiveList" v-if="index<storeReceiveList.length-1">
+              <td>{{item.managerName|nullFilter}}</td>
+              <td>{{item.amaldarName|nullFilter}}</td>
+              <td>{{item.shopkeeperName|nullFilter}}</td>
+              <td>{{item.amount==='-'?item.amount:`￥${item.amount}`}}</td>
+            </tr>
+            <tr>
+              <td>
+                手续费合计
+              </td>
+              <td>-</td>
+              <td>-</td>
+              <td>￥{{storeReceiveList.slice(-1)[0].fee}}</td>
+            </tr>
+          </table>
+        </div>
+        <!---->
         <div class="pr">
           <div class="paper-ov3">
             <div class="fl fb">收款单位（加盖财务专用章）：</div>
@@ -243,6 +270,12 @@
       signatureType:{//武汉专用，是否使用本地静态签章图片
         type:Number,
         default: 2
+      },
+      storeReceiveList:{
+        type:Array,
+        default(){
+          return []
+        }
       }
     },
     computed: {
@@ -345,6 +378,15 @@
           return e
         }
       }
+    },
+    filters: {
+      nullFilter:function (val) {
+        if (!val) {
+          return '--'
+        } else {
+          return val
+        }
+      }
     }
   }
 </script>
@@ -374,6 +416,37 @@
     }*/
   }
 
+  .dep-receipt{
+    border-top: 1px solid #D7D7D7;
+    margin-top: 15px;
+    >p{
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    table{
+      width: 100%;
+      text-align: center;
+      border-spacing: 0px;
+      border: 1px solid #D7D7D7;
+      td{
+        border-left: 1px solid #D7D7D7;
+        border-bottom: 1px solid #D7D7D7;
+      }
+      tr{
+        >td:first-of-type{
+          border-left: 0px;
+        }
+        &:first-of-type{
+          background-color: #F2F2F2;
+        }
+        &:last-of-type{
+          td{
+            border-bottom: 0px;
+          }
+        }
+      }
+    }
+  }
   .red {
     color: #FF3E3E;
     font-weight: normal;
@@ -425,12 +498,12 @@
     &:nth-of-type(n+2){
       margin-top: 10px;
     }
-    &:nth-of-type(2n+1){
+    &:nth-of-type(n+1){
       page-break-before:always;
     }
-    &:first-of-type{
+    /*&:first-of-type{
       page-break-before: initial;
-    }
+    }*/
   }
 
   .paper-border {

@@ -117,7 +117,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhoneInput, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号" class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item>
@@ -138,7 +138,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].mobile'" :rules="{validator: telPhone, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号"  maxlength=11 class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].mobile" :disabled="canInput" clearable placeholder="手机号" class="ownwidth" @input="cutInfo('editPhone',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -190,7 +190,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].mobile'" :rules="{validator: telPhone,trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" maxlength=11 @input="cutInfo('editPhone',1)"></el-input>
+                  <el-input v-model="contractForm.contPersons[1].mobile" clearable placeholder="手机号" class="ownwidth" @input="cutInfo('editPhone',1)"></el-input>
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
@@ -499,9 +499,19 @@ export default {
 
     cutInfo(val,index){
       if(val == "editPhone") {
-        this.$nextTick(() => {
-          this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
-        })
+        let beginNum = /^0.*$/
+        let beginNum_ = /^1.*$/
+        if(this.contractForm.contPersons[index].mobile.length>0){
+          if(beginNum.test(this.contractForm.contPersons[index].mobile)){
+            this.contractForm.contPersons[index].mobile=this.contractForm.contPersons[index].mobile.substring(0,13)
+          }
+          if(beginNum_.test(this.contractForm.contPersons[index].mobile)){
+            this.contractForm.contPersons[index].mobile=this.contractForm.contPersons[index].mobile.substring(0,11)
+          }
+        }
+        // this.$nextTick(() => {
+        //   this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
+        // })
       }
       else if(val == "card") {
         this.$nextTick(() => {
@@ -606,8 +616,7 @@ export default {
 
     telPhone (rule, value, callback) {
       let myreg = /^[1][0-9]{10}$/;
-      let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
-      // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+      let myreg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
 
       if (!value) {
         return callback(new Error("请输入电话号码"));
@@ -645,8 +654,7 @@ export default {
 
     telPhoneInput (rule, value, callback) {
       let myreg = /^[1][0-9]{10}$/;
-      let myreg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
-      // let myreg2 = /(^[1][0-9]{10}$)|(^[1][0-9]{2}\*{4}[0-9]{4}$)/;
+      let myreg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
 
       if (!value || value == '') {
         return callback();
@@ -927,7 +935,10 @@ export default {
               });
               return false
           }
-          if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
+          let mobileNum0 = JSON.parse(JSON.stringify(this.contractForm.contPersons[0])).mobile.replace('-','')
+          let mobileNum1 = JSON.parse(JSON.stringify(this.contractForm.contPersons[1])).mobile.replace('-','')
+          // if(this.contractForm.contPersons[0].mobile !=='' &&this.contractForm.contPersons[1].mobile !== ''&&((this.contractForm.contPersons[0].mobile).trim() === (this.contractForm.contPersons[1].mobile).trim())){
+          if(mobileNum0===mobileNum1){
             this.$message({
               type: "warning",
               message: "业主电话号码和客户电话号码不能重复!"

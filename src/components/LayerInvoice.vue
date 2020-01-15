@@ -94,7 +94,8 @@
               :printType="printType"
               :paperFail="paperFail"
               :payway="paperInfoData.payway&&paperInfoData.payway.label"
-              :payerType="paperInfoData.payerType"></LayerPaperInfo>
+              :payerType="paperInfoData.payerType"
+              :storeReceiveList="paperInfoData.storeDivide?paperInfoData.storeDivide:[]"></LayerPaperInfo>
           </template>
           <template v-else>
             <LayerPaperInfo
@@ -121,13 +122,14 @@
               :printType="printType"
               :paperFail="paperFail"
               :payway="item.payway&&item.payway.label"
-              :payerType="item.payerType"></LayerPaperInfo>
+              :payerType="item.payerType"
+              :storeReceiveList="item.storeDivide?item.storeDivide:[]"></LayerPaperInfo>
           </template>
         </LayerPrint>
         <!-- :imgSrc="paperInfoData.signImg" -->
       </div>
       <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint"></PdfPrint> -->
-      <p class="print-waring" v-if="FooterShow&&printType!=='all'">温馨提示：打印时，请选择谷歌浏览器</p>
+      <p class="print-waring" v-if="FooterShow&&printType!=='all'&&getUser.version!==3">温馨提示：打印时，请选择谷歌浏览器</p>
     </div>
     <p slot="footer" v-show="FooterShow&&printType!=='all'">
       <el-button round size="small" class="paper-btn" @click="propCloseFn">取消</el-button>
@@ -402,6 +404,14 @@
             let obj = {};
             if (res.data.printTimes || res.data.printDate) {
               obj = res.data;
+            }
+            if(res.data.printResult&&[2,3].includes(res.data.printResult)){
+              this.$message({
+                message:res.data.printResult===2?'业绩审核未通过，无法打印！':'业绩正在申诉中，无法打印！',
+                type:'error'
+              })
+              this.layerLoading.close();
+              return;
             }
             this.paperInfoData = {
               ...this.paperInfoData,

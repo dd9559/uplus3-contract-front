@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{recordVersion==2?dealBasicInfo.propertyRightAddr:'--'}}</span></span>
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr?dealBasicInfo.propertyRightAddr:'-'}}</span></span>
                     </div>
                 </div>
                 <div class="item">
@@ -106,7 +106,7 @@
                 <p class="bold">买方信息</p>
                 <div class="guest msg info">
                     <div class="text mai-mai" v-for="(item,i) in buyerArr" :key="i">
-                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:140px;word-wrap:break-word;">{{item.name}}</span></p>
+                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:135px;word-wrap:break-word;">{{item.name}}</span></p>
                         <p><span>电话：</span><span>{{item.mobile}}</span></p>
                         <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span style="width:160px;word-wrap:break-word;">{{recordVersion==2?item.encryptionCode:'--'}}</span></p>
                     </div>
@@ -148,7 +148,7 @@
                 <p class="bold">卖方信息</p>
                 <div class="owner msg info">
                     <div class="text mai-mai" v-for="(item,i) in sellerArr" :key="i">
-                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:140px;word-wrap:break-word;">{{item.name}}</span></p>
+                        <p><span>{{i==0?'姓名':'共有人'}}：</span><span style="width:135px;word-wrap:break-word;">{{item.name}}</span></p>
                         <p><span>电话：</span><span>{{item.mobile}}</span></p>
                         <p><span>{{item.cardType===1?"身份证":item.cardType===2?"护照":item.cardType===3?"营业执照":"军官证"}}：</span><span style="width:160px;word-wrap:break-word;">{{recordVersion==2?item.encryptionCode:'--'}}</span></p>
                     </div>
@@ -378,10 +378,10 @@ export default {
                         this.report.buyerPaymentMethod = res.data.loanType == 7 ? 1: 2
                     }
                     this.loadType = res.data.loanType ? true : false
-                    if(!this.report.guestShopOwnerName) {
-                        this.report.guestShopOwnerName = res.data.guestInfo.ShopOwnerName
-                        this.report.guestStoreName = res.data.guestInfo.GuestStoreName
-                        this.report.guestShopOwnerMobile = res.data.guestInfo.ShopOwnerMobile
+                    if(!res.data.dealReport) {
+                        this.report.guestShopOwnerName = this.recordVersion === 1 ? res.data.dealAgentShopowner : res.data.guestInfo.ShopOwnerName
+                        this.report.guestStoreName = this.recordVersion === 1 ? res.data.dealAgentStoreName : res.data.guestInfo.GuestStoreName
+                        this.report.guestShopOwnerMobile = this.recordVersion === 1 ? res.data.dealAgentShopownerMobile :res.data.guestInfo.ShopOwnerMobile
                         this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
                         this.report.houseStoreName = res.data.houseInfo.HouseStoreName
                         this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile   
@@ -672,7 +672,7 @@ export default {
                 display: inline-block;
             }
             p:first-child {
-                width: 190px;
+                width: 202px;
             }
             p:nth-child(2) {
                 width: 160px;

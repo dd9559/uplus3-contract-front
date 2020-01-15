@@ -145,7 +145,7 @@
       </span>
     </el-dialog>
     <!-- 变更/解约编辑弹窗 -->
-    <changeCancel :dialogType="canceldialogType" :cancelDialog="changeCancel_" :commission="commission" :cityCode="cityId" :contId="changeCancelId" :code="code" @close="changeCancelDialog" @success="freachChangeCancel" v-if="changeCancel_"></changeCancel>
+    <changeCancel :dialogType="canceldialogType" :dialogContType="dialogContType" :cancelDialog="changeCancel_" :commission="commission" :cityCode="cityId" :contId="changeCancelId" :code="code" @close="changeCancelDialog" @success="freachChangeCancel" v-if="changeCancel_"></changeCancel>
      <!-- 提审确认框 -->
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span>确定提审？</span>
@@ -161,7 +161,7 @@
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
     <!-- 合同资料库弹窗 -->
-    <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+    <el-dialog title="资料库" :visible.sync="dialogContData" width="740px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeContData">
       <div class="contData">
         <div class="classify" v-if="sellerList.length>0">
           <div class="one_" v-for="(item,index) in sellerList" :key="index" v-if="item.value.length>0||((signingState&&signingState.value!==1&&signingState.value!==0)||!signingState)">
@@ -237,7 +237,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer" v-if="(signingState&&signingState.value!==1&&signingState.value!==0)||!signingState">
-        <el-button round @click="dialogContData=false">取消</el-button>
+        <el-button round @click="closeContData">取消</el-button>
         <el-button round type="primary" @click="uploading('上传成功')">保存</el-button>
       </span>
       <!-- 图片预览 -->
@@ -410,6 +410,7 @@ export default {
       dialogEntrust:false,//委托合同审核弹窗
       entrustReason:"",//委托合同审核备注
       signingState:'',//签后审核状态
+      dialogContType:1//变更解约弹窗是否是意向定金合同
     }; 
   },
   created() {
@@ -898,6 +899,12 @@ export default {
             }
             //签后审核状态
             this.signingState=res.data.signingState
+            //变更解约参数  是否是意向定金合同
+            if(res.data.contType.value>3){
+              this.dialogContType=2
+            }else{
+              this.dialogContType=1
+            }
           }
           
           this.isCanAudit=res.data.isCanAudit;
@@ -1092,41 +1099,6 @@ export default {
           type: "error"
         })
       })
-      // if(this.invalidReason.length>0){
-      //   this.invalidReason=this.invalidReason.replace(/\s/g,"")
-      //   if(this.invalidReason.length>0){
-      //     let param = {
-      //       id: this.id,
-      //       reason: this.invalidReason
-      //     };
-      //     this.$ajax.post('/api/contract/invalid', param).then(res=>{
-      //       res=res.data;
-      //       if(res.status===200){
-      //         this.getContImg();
-      //         this.dialogInvalid=false;
-      //         this.$message({
-      //           message:'操作成功',
-      //           type:"success"
-      //         })
-      //       }
-      //     }).catch(error => {
-      //       this.$message({
-      //         message:error,
-      //         type: "error"
-      //       })
-      //     })
-      //   }else{
-      //     this.$message({
-      //       message:'请填写撤单原因',
-      //       type:"warning"
-      //     })
-      //   }
-      // }else{
-      //   this.$message({
-      //     message:'请填写撤单原因',
-      //     type:"warning"
-      //   })
-      // }
     },
     //合同资料库弹窗
     showContData(){
@@ -1134,6 +1106,24 @@ export default {
         this.getContData();
       }
       this.dialogContData=true;
+    },
+    //关闭资料库弹窗
+    closeContData(){
+      this.dialogContData=false
+      // this.buyerList=[]
+      // this.sellerList=[]
+      // this.otherList=[]
+      // this.getContDataType()
+      let arr=[].concat(this.buyerList,this.sellerList,this.otherList)
+      arr.forEach(element => {
+        element.value=[]
+      });
+      // this.sellerList.forEach(element => {
+      //   element.value=[]
+      // });
+      // this.otherList.forEach(element => {
+      //   element.value=[]
+      // });
     },
      //获取合同资料库类型列表
     getContDataType() {

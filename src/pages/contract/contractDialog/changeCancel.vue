@@ -12,7 +12,7 @@
             <span>{{textarea.length}}/100</span>
           </div>
         </div>
-        <div class="box">
+        <div class="box" v-if="getDialogContType===1">
           <p>佣金金额：</p>
           <el-table :data="tableData" border header-row-class-name="theader-bg" style="width: 100%">
             <el-table-column align="center" prop="name"></el-table-column>
@@ -145,6 +145,11 @@
         default:function () {
           return {owner:12,user:24}
         }
+      },
+      //合同类型(租赁买卖代办1 意向定金2)
+      dialogContType:{
+        type:Number,
+        default:1
       }
     },
     data() {
@@ -199,7 +204,10 @@
       },
       getOperationType(){
         return this.operationType==='look'
-      }
+      },
+      getDialogContType(){
+        return this.dialogContType
+      },
     },
 
     methods: {

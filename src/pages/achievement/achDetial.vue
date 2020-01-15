@@ -49,7 +49,19 @@
           >
           </el-table-column>
 
-          <el-table-column label="经纪人工号" width="100">
+          <el-table-column label="登录账号" v-if="getUser.version===3" width="100">
+            <template slot-scope="scope">
+              <p v-if="scope.row.loginAccount">{{scope.row.loginAccount}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="员工工号" v-if="getUser.version===3" width="100">
+            <template slot-scope="scope">
+              <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="经纪人工号" v-else width="100">
             <template slot-scope="scope">
               <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
               <p v-else>-</p>
@@ -171,7 +183,19 @@
           >
           </el-table-column>
 
-          <el-table-column label="经纪人工号" width="100">
+          <el-table-column label="登录账号" v-if="getUser.version===3" width="100">
+            <template slot-scope="scope">
+              <p v-if="scope.row.loginAccount">{{scope.row.loginAccount}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="员工工号" v-if="getUser.version===3" width="100">
+            <template slot-scope="scope">
+              <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+              <p v-else>-</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="经纪人工号" v-else width="100">
             <template slot-scope="scope">
               <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
               <p v-else>-</p>
@@ -291,7 +315,19 @@
             >
             </el-table-column>
 
-            <el-table-column label="经纪人工号" width="100">
+            <el-table-column label="登录账号" v-if="getUser.version===3" width="100">
+              <template slot-scope="scope">
+                <p v-if="scope.row.loginAccount">{{scope.row.loginAccount}}</p>
+                <p v-else>-</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="员工工号" v-if="getUser.version===3" width="100">
+              <template slot-scope="scope">
+                <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
+                <p v-else>-</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="经纪人工号" v-else width="100">
               <template slot-scope="scope">
                 <p v-if="scope.row.assignorNum">{{scope.row.assignorNum}}</p>
                 <p v-else>-</p>

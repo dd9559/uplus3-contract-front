@@ -250,7 +250,7 @@
         <el-table-column label="房客源店长" min-width="150">
           <template slot-scope="scope">
             <p>房：{{scope.row.houseStoreName+"-"+scope.row.houseShopOwner}}</p>
-            <p>客：{{scope.row.guestStoreName+"-"+scope.row.guestShopOwner}}</p>
+            <p>客：{{scope.row.guestStoreName}}-{{scope.row.guestShopOwner?scope.row.guestShopOwner:''}}</p>
           </template>
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
@@ -287,7 +287,12 @@
               <span v-if="scope.row.signingState.value===-1" class="blue">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===0" class="yellow">{{scope.row.signingState.label}}</span>
               <span v-if="scope.row.signingState.value===1" class="green">{{scope.row.signingState.label}}</span>
-              <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span>
+              <!-- <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span> -->
+              <el-tooltip class="item" popper-class="tooltipWidth" v-if="scope.row.signingState.value===2&&scope.row.signingRemarks" effect="dark" placement="top">
+                <span slot="content">{{scope.row.signingRemarks}}</span>
+                <span class="red">{{scope.row.signingState.label}}</span>
+              </el-tooltip>
+              <span v-if="scope.row.signingState.value===2&&!scope.row.signingRemarks" class="red">{{scope.row.signingState.label}}</span>
             </div>
             <div v-else class="blue">待提审</div>
           </template>
@@ -383,7 +388,7 @@
     <!-- 结算弹窗 -->
     <layerSettle :settleDialog="jiesuan" :contId="settleId" :layerAudit="layerSettle" @closeSettle="closeSettle" v-if='settleId'></layerSettle>
     <!-- 变更/解约查看 合同主体上传弹窗 -->
-    <changeCancel :dialogType="dialogType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
+    <changeCancel :dialogType="dialogType" :dialogContType="dialogContType" :cancelDialog="changeCancel" operationType="look" :dialogOperation="dialogOperation" :contId="contId" :code="uploadCode" @close="ChangeCancelDialog" v-if="changeCancel"></changeCancel>
     <!-- 后期进度查看 -->
     <lateProgress title="查看交易流程" ref="lateProgress"></lateProgress>
     <!-- 提审确认框 -->
@@ -664,6 +669,7 @@ export default {
       //合同删除
       deleteDialog:false,
       deleteItem:'',
+      dialogContType:1//变更解约弹窗是否是意向定金合同
     };
   },
   created() {
@@ -1160,6 +1166,11 @@ export default {
         this.dialogType = "jy";
         this.contId=item.id;
       }
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
+      }
     },
     //获取当前部门
     initDepList:function (val) {
@@ -1437,13 +1448,19 @@ export default {
             combineItem.contState.value=combineItem.contractEntrust.entrustState//合同状态
             combineItem.contState.label=combineItem.contractEntrust.entrustState===1?"起草中":combineItem.contractEntrust.entrustState===2?"已签章":"已签约"
           }
+          //签后审核状态
           if(combineItem.signingEntrustState){
-            // this.$set(element,"bgc",true)
             combineItem.signingState={}
             combineItem.signingState.value=combineItem.signingEntrustState.value
             combineItem.signingState.label=combineItem.signingEntrustState.label
           }else{
             combineItem.signingState=''
+          }
+          //签后审核驳回原因
+          if(combineItem.signingEntrustRemarks){
+            combineItem.signingRemarks=combineItem.signingEntrustRemarks
+          }else{
+            combineItem.signingRemarks=''
           }
           
           combineItem.toExamineState.value=combineItem.contractEntrust.examineState//审核状态
@@ -1702,7 +1719,7 @@ export default {
     text-overflow:ellipsis;
     white-space:nowrap;
     overflow:hidden;
-    display: inline-block;
+    // display: inline-block;
   }
 }
 .contract_msg{
@@ -1791,5 +1808,11 @@ export default {
 .submitAudit{
   display: inline-block;
   padding-top: 10px;
+}
+.tooltipWidth{
+  span{
+    max-width: 160px;
+    display: inline-block;
+  }
 }
 </style>

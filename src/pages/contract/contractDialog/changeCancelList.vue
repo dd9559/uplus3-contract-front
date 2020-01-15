@@ -109,7 +109,7 @@
 
       <el-table-column label="操作" min-width="90" fixed="right" class-name="null-formatter">
         <template slot-scope="scope">
-          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div><div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||((!(scope.row.changeRecord.auditId>0))&&getUserMsg&&scope.row.changeRecord.grabDept&&scope.row.changeRecord.grabDept.indexOf(String(getUserMsg.depId))>-1))" @click="goCheck(scope.row)">审核</div>
+          <div style="color:red" v-if="scope.row.changeRecord.examineState===0&&scope.row.changeRecord.auditId>0&&getUserMsg&&scope.row.changeRecord.auditId!==getUserMsg.empId">{{scope.row.changeRecord.auditName}}正在审核</div><div class="btn" v-if="scope.row.changeRecord.examineState===0&&((scope.row.changeRecord.auditId===getUserMsg.empId)||((!(scope.row.changeRecord.auditId>0))&&getUserMsg&&scope.row.changeRecord.grabDept==='true'))" @click="goCheck(scope.row)">审核</div>
         </template>
       </el-table-column>
     </el-table>
@@ -132,6 +132,7 @@
     dialogOperation="details"
     :contId="contId"
     :code="contCode"
+    :dialogContType="dialogContType"
     @close="ChangeCancelDialog"
     @success="freachChangeCancel"
     v-if="changeCancel">
@@ -175,6 +176,7 @@ export default{
         label:false,
       },
       changeCancel:false,
+      dialogContType:1,//变更解约弹窗是否是意向定金合同
       contCode:"",
       contId:"",
       commission:"",
@@ -246,6 +248,11 @@ export default{
     },
     //合同审核
     goCheck(item) {
+      if(item.contType.value>3){
+        this.dialogContType=2
+      }else{
+        this.dialogContType=1
+      }
       let param={
         bizCode:item.code,
         flowType:this.listType==="bg"?9:10

@@ -97,7 +97,7 @@
                 <li v-for="(item,index) in ownerList" :key="index">
                   <span class="merge">
                     <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'owner')" class="name_" :class="{'disabled':canInput}">
-                    <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
+                    <input v-model="item.mobile" :disabled="canInput" type="tel" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'owner')" @keydown="saveMobile(item,index,'owner')">
                   </span>
                   <el-select v-model="item.relation" placeholder="关系" :disabled="canInput" class="relation_">
                     <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -134,7 +134,7 @@
                 <li v-for="(item,index) in guestList" :key="index">
                   <span class="merge">
                     <input v-model="item.name" :disabled="canInput" placeholder="姓名" maxlength="30" @input="inputOnly(index,'guest')"  class="name_" :class="{'disabled':canInput}">
-                    <input v-model="item.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
+                    <input v-model="item.mobile" :disabled="canInput" type="tel" placeholder="电话" class="mobile_" :class="{'disabled':canInput}" @input="verifyMobile(item,index,'guest')" @keydown="saveMobile(item,index,'guest')">
                   </span>
                   <el-select v-model="item.relation" :disabled="canInput" placeholder="关系" class="relation_">
                     <el-option v-for="item in relationList" :key="item.key" :label="item.value" :value="item.value">
@@ -190,7 +190,7 @@
                 <input type="text" v-model="contractForm.otherCooperationInfo.name" :disabled="canInput" maxlength="6" @input="inputOnly(999,'other')" placeholder="请输入姓名" class="dealPrice" :class="{'disabled':canInput}">
               </el-form-item>
               <el-form-item label="联系方式：" class="width-250">
-                <el-input v-model="contractForm.otherCooperationInfo.mobile" :disabled="canInput" type="tel" maxlength="11" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
+                <el-input v-model="contractForm.otherCooperationInfo.mobile" :disabled="canInput" type="tel" placeholder="请输入手机号" style="width:140px" @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
               </el-form-item>
               <el-form-item label="身份证号：" style="width:310px;text-align:right">
                 <el-input v-model="contractForm.otherCooperationInfo.identifyCode" :disabled="canInput" maxlength="18" placeholder="请输入身份证号" @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"></el-input>
@@ -288,12 +288,16 @@
       :contractForm="contractForm"
       v-if="isHaveDetail&&type===2"
       :isOffline="isOffline"
+      :offLineInput="offLine"
+      :sourceBtnCheck="sourceBtnCheck"
       :operationType="type"
       :ownerList_="ownerList_"
       :guestList_="guestList_"
       :ownerList="ownerList"
       :guestList="guestList"
-      :canInput="canInput">
+      :canInput="canInput"
+      :getShowRemark="showRemark"
+      :basicsOptions="basicsOptions">
       </contractBasics>
       <contractBasics
       :contractForm="contractForm"
@@ -332,7 +336,7 @@ const rule = {
     name: "客源"
   }
 };
-
+let loading = null
 export default {
   mixins: [MIXINS],
   components: {
@@ -491,6 +495,7 @@ export default {
       commissionTotal:0,//总佣金
       loanType:0,//7 全款买卖 8 贷款买卖
       showRemark:false,//备注栏折叠展开
+      basicsOptions:[],//基础版经纪人信息
     };
   },
   created() {
@@ -707,9 +712,28 @@ export default {
     },
     //手机号验证
     verifyMobile(item,index,type) {
-      // console.log(Number(item.mobile))
-      //let reg = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/;
-       if(item.isEncryption){
+      let beginNum = /^0.*$/
+      let beginNum_ = /^1.*$/
+      if(item.mobile.length>0){
+        if(type==="owner"){
+          if(beginNum.test(item.mobile)){
+            this.ownerList[index].mobile=item.mobile.substring(0,13)
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
+            this.ownerList[index].mobile=item.mobile.substring(0,11)
+          }
+          item.mobile=this.ownerList[index].mobile
+        }else if(type==="guest"){
+          if(beginNum.test(item.mobile)){
+            this.guestList[index].mobile=item.mobile.substring(0,13)
+          // }else if(beginNum_.test(item.mobile)){
+          }else{
+            this.guestList[index].mobile=item.mobile.substring(0,11)
+          }
+          item.mobile=this.guestList[index].mobile
+        }
+      }
+       if(item.isEncryption){//是否是加密的号码
         if(type==="owner"){
           if(this.ownerList[index].mobile!==this.beforeChangeMobile){
             if(Number(item.mobile)){
@@ -717,7 +741,6 @@ export default {
             }else{
               this.ownerList[index].mobile='';
             }
-            // this.ownerList[index].mobile='';
             this.ownerList[index].isEncryption=false;
           }
         }else if(type==="guest"){
@@ -731,9 +754,9 @@ export default {
           }
         }
       }else{
-        if(item.mobile.length===11){
+        if(item.mobile.length>=11){
           let reg = /^1[0-9]{10}$/;
-          let reg_ = /^0\d{2,3}-?\d{7,8}$/
+          let reg_ = /^0\d{2,3}\-?\d{7,8}$/
           if (!reg.test(item.mobile)&&!reg_.test(item.mobile)) {
             this.$message({
               message:'电话号码格式不正确',
@@ -744,9 +767,20 @@ export default {
       }
     },
     verifyMobile_(value) {
-      if(value.length===11){
+      let beginNum = /^0.*$/
+      let beginNum_ = /^1.*$/
+      if(value.length>0){
+        if(beginNum.test(value)){
+          this.contractForm.otherCooperationInfo.mobile=value.substring(0,13)
+        }
+        if(beginNum_.test(value)){
+          this.contractForm.otherCooperationInfo.mobile=value.substring(0,11)
+        }
+        value=this.contractForm.otherCooperationInfo.mobile
+      }
+      if(value.length>=11){
         let reg = /^1[0-9]{10}$/;
-        let reg_ = /^0\d{2,3}-?\d{7,8}$/
+        let reg_ = /^0\d{2,3}\-?\d{7,8}$/
         if (!reg.test(value)&&!reg_.test(value)) {
           this.$message({
             message:'电话号码格式不正确',
@@ -816,10 +850,11 @@ export default {
                   if (element.name) {
                     if(element.name.replace(/\s/g,"")){
                       element.name=element.name.replace(/\s/g,"");
+                      //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符(待定)
                       if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
-                        if (element.encryptionMobile.length === 11) {
+                        if (element.encryptionMobile.length === 11||true) {
                         let reg = /^1[0-9]{10}$/;//手机号正则
-                        let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                        let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                         if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
                           if (element.relation) {
                             if(this.contractForm.type===1&&element.cardType||this.contractForm.type!==1){
@@ -931,9 +966,9 @@ export default {
                             if(element.name.replace(/\s/g,"")){
                               element.name=element.name.replace(/\s/g,"");
                               if(element.name.indexOf("先生")===-1&&element.name.indexOf("女士")===-1){
-                                if (element.encryptionMobile.length === 11) {
+                                if (element.encryptionMobile.length === 11||true) {
                                 let reg = /^1[0-9]{10}$/;//手机号正则
-                                let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                                let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                                 if (reg.test(element.encryptionMobile)||reg_.test(element.encryptionMobile)) {
                                   if (element.relation) {
                                     if(this.contractForm.type===1&&element.cardType||this.contractForm.type!==1){
@@ -1050,7 +1085,9 @@ export default {
                               if(element.cardType===4){
                                 militaryIDList.push(element.encryptionCode);
                               }
-                              ownerMobileList.push(element.encryptionMobile);
+                              let obj = JSON.parse(JSON.stringify(element))
+                              obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+                              ownerMobileList.push(obj.encryptionMobile);
                             });
 
                             guestArr.forEach(element => {
@@ -1066,7 +1103,9 @@ export default {
                               if(element.cardType===4){
                                 militaryIDList.push(element.encryptionCode);
                               }
-                              guestMobileList.push(element.encryptionMobile);
+                              let obj = JSON.parse(JSON.stringify(element))
+                              obj.encryptionMobile=obj.encryptionMobile.replace('-','')
+                              guestMobileList.push(obj.encryptionMobile);
                             });
                             let ownerGuestMobile = true
                             let otherMobile = true
@@ -1112,7 +1151,7 @@ export default {
                                           if(this.contractForm.otherCooperationInfo.mobile){
                                             mobileOk=false;
                                             let reg = /^1[0-9]{10}$/;
-                                            let reg_ = /^0\d{2,3}-?\d{7,8}$/;//固话正则
+                                            let reg_ = /^0\d{2,3}\-?\d{7,8}$/;//固话正则
                                             if (reg.test(this.contractForm.otherCooperationInfo.mobile)||reg_.test(this.contractForm.otherCooperationInfo.mobile)) {
                                               mobileOk=true;
                                             }else{
@@ -1471,10 +1510,17 @@ export default {
     },
     //根据房源id获取房源信息
     getHousedetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         houseId: id,
       };
       this.$ajax.get("/api/resource/houses/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let houseMsg = res.data;
@@ -1553,6 +1599,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -1561,10 +1608,17 @@ export default {
     },
     //根据客源id获取客源信息
     getGuestDetail(id) {
+      loading=this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.5)'
+      });
       let param = {
         customerId: id,
       };
       this.$ajax.get("/api/resource/customers/one", param).then(res => {
+        loading.close()
         res = res.data;
         if (res.status === 200) {
           let guestMsg = res.data;
@@ -1608,6 +1662,7 @@ export default {
           // this.getAgentMsg(param)
         }
       }).catch(error=>{
+        loading.close()
         this.$message({
           message:error,
           type: "error"
@@ -1802,6 +1857,16 @@ export default {
           this.isHaveDetail=true
           this.countTotal()
           this.contVersion=res.data.recordVersion //合同基本信息版式（1 基础版  2 复杂版）
+          if(this.contVersion===1){
+            //经纪人
+            let option = {
+              empId:res.data.dealAgentId,
+              empName:res.data.dealAgentName,
+              depId:res.data.dealAgentStoreId,
+              depName:res.data.dealAgentStoreName
+            }
+            this.basicsOptions=[option]
+          }
           if(res.data.remarks&&res.data.remarks.length>0){
             this.showRemark=true
           }
@@ -1891,8 +1956,6 @@ export default {
               this.guestList_.push(obj_);
             }
           }
-          console.log(this.ownerList,this.guestList)
-          // debugger
         }
       });
     },
