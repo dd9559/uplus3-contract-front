@@ -102,7 +102,7 @@
           <div class="input-group col" :class="[!firstCreate.state?'no-max':'']" v-if="billStatus">
             <label class="form-label f14 margin-bottom-base">收账账户</label>
             <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择"
-                       v-if="firstCreate.state||firstCreate.content.showAccount">
+                       v-if="firstCreate.state||firstCreate.content.showAccount||firstCreate.content.changeAccount">
               <el-option
                 v-for="item in account"
                 :key="item.id"
@@ -522,7 +522,7 @@
                         if (!res.data.showAccount) {
                             this.firstCreate.state = false
 
-                            if (!this.firstCreate.content.showAccount) {
+                            if (!this.firstCreate.content.showAccount&&!this.firstCreate.content.changeAccount) {
                                 this.activeAdmin = res.data.account[0].accountId
                             }
                             this.getEmploye(res.data.storeId)
