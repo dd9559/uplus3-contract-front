@@ -1865,7 +1865,11 @@ export default {
               depId:res.data.dealAgentStoreId,
               depName:res.data.dealAgentStoreName
             }
-            this.basicsOptions=[option]
+            if(option.empId){
+              this.basicsOptions=[option]
+            }else{
+              this.contractForm.dealAgentId=''
+            }
           }
           if(res.data.remarks&&res.data.remarks.length>0){
             this.showRemark=true

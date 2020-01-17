@@ -564,7 +564,7 @@ export default {
           item.mobile=this.t_guestList[index].mobile
         }
       }
-       if(item.isEncryption){
+      if(item.isEncryption){
         if(type==="owner"){
           if(this.t_ownerList[index].mobile!==this.beforeChangeMobile){
             if(Number(item.mobile)){
