@@ -411,7 +411,7 @@
       <h1 class="f14">审核信息</h1>
 
       <div class="ach-check-list">
-        <el-table :data="checkArr" border>
+        <el-table :data="checkArr" key="tab11" border>
           <!-- examineDate -->
           <el-table-column
             label="时间"
@@ -461,6 +461,7 @@
 
       <div class="ach-divide-list">
         <el-table
+          key="tab12"
           :data="shensuArr"
           class="sushen"
           style="width: 100%"
