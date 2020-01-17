@@ -866,7 +866,7 @@
                             param.outAccount = cardListStatus ? [] : [].concat(this.cardList)
                             param.inAccount = []
                             this.payList.forEach(item => {
-                                if (this.firstCreate.state || this.firstCreate.content.showAccount) {
+                                if (this.firstCreate.state || this.firstCreate.content.showAccount||this.firstCreate.content.changeAccount) {
                                     this.account.find(card => {
                                         if (card.id === this.activeAdmin) {
                                             let obj = {
