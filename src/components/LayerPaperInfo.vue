@@ -127,7 +127,9 @@
           <div class="fl"><span class="fb mr-10 ml-28">备注：</span><span>{{comRules}}</span></div>
         </div>
         <!-- 门店实收分成 -->
-        <div class="dep-receipt" v-if="storeReceiveList.length>0">
+        <!-- 2.4.6需求 去掉门店实收分成 -->
+        <!-- <div class="dep-receipt" v-if="storeReceiveList.length>0"> -->
+        <div class="dep-receipt" v-if="false">
           <p>门店实收分成</p>
           <table class="paper-table-main">
             <tr>
@@ -498,7 +500,7 @@
     &:nth-of-type(n+2){
       margin-top: 10px;
     }
-    &:nth-of-type(n+1){
+    &:nth-of-type(2n){
       page-break-before:always;
     }
     /*&:first-of-type{

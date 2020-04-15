@@ -1293,6 +1293,23 @@
             ></preview>
           </div>
 
+          <!-- 合同备注栏 -->
+          <div class="top20">
+            <div class="house-left">
+              <h1 class="f14">合同备注栏</h1>
+            </div>
+          </div>
+          <div class="ach-divide-list" style="margin-bottom:20px;margin-top:10px;width:600px;">
+            <el-input
+              disabled
+              type="textarea"
+              :rows="3"
+              class="f_l"
+              resize="none"
+              maxlength="200"
+            ></el-input>
+          </div>
+
           <div class="top20">
             <div class="house-left">
               <h1 class="f14">上传业绩分成协议</h1>

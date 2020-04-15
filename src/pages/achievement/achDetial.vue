@@ -577,6 +577,18 @@
         </el-table>
       </div>
 
+      <h1 class="f14" v-if="fujian">合同备注栏</h1>
+      <div style="width:600px;height:80px;margin-top:10px;">
+        <el-input
+          disabled
+          type="textarea"
+          :rows="3"
+          class="f_l"
+          resize="none"
+          maxlength="200"
+        ></el-input>
+      </div>
+
       <h1 class="f14" v-if="fujian">业绩分成协议</h1>
       <ul class="ulData" style="margin-top:10px" v-if="fujian">
         <li v-for="(item,i) in filesList" :key="i">
