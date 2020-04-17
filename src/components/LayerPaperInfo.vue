@@ -128,8 +128,7 @@
         </div>
         <!-- 门店实收分成 -->
         <!-- 2.4.6需求 去掉门店实收分成 -->
-        <!-- <div class="dep-receipt" v-if="storeReceiveList.length>0"> -->
-        <div class="dep-receipt" v-if="false">
+        <!-- <div class="dep-receipt" v-if="storeReceiveList.length>0">
           <p>门店实收分成</p>
           <table class="paper-table-main">
             <tr>
@@ -153,7 +152,7 @@
               <td>￥{{storeReceiveList.slice(-1)[0].fee}}</td>
             </tr>
           </table>
-        </div>
+        </div> -->
         <!---->
         <div class="pr">
           <div class="paper-ov3">
@@ -273,12 +272,13 @@
         type:Number,
         default: 2
       },
-      storeReceiveList:{
-        type:Array,
-        default(){
-          return []
-        }
-      }
+      // 2.4.6需求去掉门店分成
+      // storeReceiveList:{
+      //   type:Array,
+      //   default(){
+      //     return []
+      //   }
+      // }
     },
     computed: {
       comText() {
@@ -494,7 +494,7 @@
   .paper-info {
     width: 860px;
     margin: auto;
-    color: #333;
+    color: #333; 
     overflow: hidden;
     font-size: 14px;
     &:nth-of-type(n+2){
