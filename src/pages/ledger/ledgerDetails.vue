@@ -101,7 +101,11 @@
           </el-table-column>
           <el-table-column min-width="160" label="部门" prop="deptName"
                            :formatter="nullFormatter"></el-table-column>
-          <el-table-column label="类别" prop="moneyType"></el-table-column>
+          <el-table-column label="类别">
+            <template slot-scope="scope">
+              <span v-show="dictionary['762']">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
+            </template>
+          </el-table-column>
           <el-table-column min-width="160" label="费用项">
             <template slot-scope="scope">
               <span v-if="scope.row.moneyDepiction&&scope.row.moneyDepiction.length<=20">{{scope.row.moneyDepiction}}</span>
@@ -128,9 +132,9 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="记账人" min-width="140" prop="recordName">
+          <el-table-column label="记账人" min-width="140">
             <template slot-scope="scope">
-              <span>{{scope.row.deptName+'-'+scope.row.recordName}}</span>
+              <span>{{scope.row.recordDeptName+'-'+scope.row.recordName}}</span>
             </template>
           </el-table-column>
           <el-table-column min-width="120" label="创建时间">
