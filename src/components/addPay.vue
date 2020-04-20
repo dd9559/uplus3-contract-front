@@ -110,7 +110,9 @@ export default {
     };
   },
   created() {
-    this.remoteMethod()
+    if(this.version === 2) {
+        this.remoteMethod()
+    }
     // 编辑支出带出赋值
     if(this.version === 3) {
         this.ruleForm.deptId = this.propData.deptId
@@ -289,9 +291,9 @@ export default {
             let sum = 0
             this.ruleForm.deps.forEach(item => {
                 if(item.level === 5) {
-                    sum += sum + 1
+                    sum += 1
                 }
-                sum += sum + item.fiveLevelNum
+                sum += item.fiveLevelNum
             })
             return sum>0 ? sum : 0
         }
