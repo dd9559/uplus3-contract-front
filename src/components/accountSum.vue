@@ -76,8 +76,6 @@
             :total="total">
             </el-pagination>
         </div>
-
-        <!-- <addPay :dialogVisible="openPay" :version="version" @closePayDialog="closePay" @refreshData="getData" v-if="openPay"></addPay> -->
     </div>
 </template>
 
@@ -211,6 +209,7 @@ export default {
             > li {
             color: @color-6c;
             margin-right: 20px;
+            font-size: 14px;
             }
         }
     }

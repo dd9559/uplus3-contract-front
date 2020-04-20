@@ -266,6 +266,7 @@ export default {
                     this.ruleForm.moneyType = ''
                     this.ruleForm.moneyDepiction = ''
                     this.ruleForm.remark = ''
+                    this.ruleForm.money = ''
                     this.$emit('refreshData',{state: 'success', save: true})
                 } else {
                     this.close()
