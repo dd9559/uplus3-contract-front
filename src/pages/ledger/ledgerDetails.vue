@@ -83,7 +83,7 @@
             </el-button>
             <el-button class="btn-info" type="primary" size="small" @click="operBtn('income')">记收入
             </el-button>
-            <el-dropdown split-button class="margin-left" type="primary" size="small">
+            <el-dropdown split-button class="margin-left" type="primary" size="small" @click="operBtn('pay')" @command="operBtn('pay1')">
               记支出
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>记均摊支出</el-dropdown-item>
@@ -103,7 +103,7 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column label="类别">
             <template slot-scope="scope">
-              <span v-show="dictionary['762']">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
+              <span v-if="dictionary['762']">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
             </template>
           </el-table-column>
           <el-table-column min-width="160" label="费用项">
@@ -215,13 +215,17 @@
         </div>
       </el-dialog>
       <fixed-cost v-if="dialogVisible==='import'" :dialogVisible="dialogVisible==='import'" @close="costClose"></fixed-cost>
+      <add-pay v-if="addPay.state" :version="addPay.version" :dialogVisible="addPay.state" :propData="addPay.data" @closePayDialog="costClose({state:''})" @refreshData="costClose({state:'success'})"></add-pay>
     </template>
+    <AccountSum v-if="activeTab===1"></AccountSum>
   </div>
 </template>
 <script>
   import {FILTER} from "@/assets/js/filter";
   import {MIXINS} from "@/assets/js/mixins";
   import FixedCost from "@/pages/ledger/fixedCost"
+  import AccountSum from "@/components/accountSum"
+  import AddPay from "@/components/addPay"
 
   let form={
     timeRange: '',
@@ -234,7 +238,9 @@
     name: "ledgerDetails",
     mixins: [MIXINS, FILTER],
     components: {
-      FixedCost
+      FixedCost,
+      AccountSum,
+      AddPay
     },
     data: function () {
       return {
@@ -259,6 +265,11 @@
           title: '新增',
           context: Object.create(null),
           checked: false
+        },
+        addPay:{
+          version:1,
+          state:false,
+          data:Object.create(null)
         },
         depName:'',//用于初始化收入框中的部门名称
       }
@@ -347,7 +358,12 @@
       //操作按钮事件
       btnOpera: function (row, type) {
         if(type===1){//数据编辑
-          this.operBtn('income',row)
+          debugger
+          if(row.moneyType===1){
+            this.operBtn('income',row)
+          }else{
+            this.operBtn('pay',row)
+          }
         }else{
           this.cells_del=[].concat(row)
           this.operBtn('del')
@@ -469,7 +485,18 @@
                 moneyType: 1
               })
             }
-
+            break;
+          case 'pay':
+          case 'pay1':
+            if(type==='pay'){
+              this.addPay.version=1
+            }else{
+              this.addPay.version=2
+            }
+            if(!!result){
+              this.addPay=Object.assign(this.addPay,{version:3,data:result})
+            }
+            this.addPay.state=true
         }
       },
       costClose:function(payload){
@@ -477,6 +504,7 @@
           this.getData()
         }
         this.dialogVisible=''
+        this.addPay.state=false
       },
       //金额输入
       cutNum: function (val) {
