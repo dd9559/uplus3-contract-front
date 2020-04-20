@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="740px" :visible="getDialogVisible" @close='close'>
-            <el-form :model="ruleForm" ref="ruleForm" label-width="120px">
-                <el-form-item size="small" label="部门" v-if="version===1" class="form-item">
+		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="30%" :visible="getDialogVisible" @close='close' class="set-dialog">
+            <el-form :model="ruleForm" ref="ruleForm" label-width="110px" size="small">
+                <el-form-item size="small" label="部门" v-if="version===1||version===3" class="form-item">
                     <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
                          @search="searchDep"></select-tree>
                 </el-form-item>
@@ -45,16 +45,16 @@
                     <el-input type="textarea" v-model.trim="ruleForm.remark" maxlength="250"></el-input>
                     <span>{{ruleForm.remark.length}}/250</span>
                 </el-form-item>
-                <el-form-item class="dialog-footer">
-                    <div class="next" v-if="version!=3">
-                        <el-checkbox v-model="checked">继续创建下一个</el-checkbox>
-                    </div>
-                    <div class="confirm-btn">
-                        <el-button @click="close">取 消</el-button>
-                        <el-button type="primary" @click="sureFn(version)">确 定</el-button> 
-                    </div>
-                </el-form-item>
             </el-form>
+            <div class="dialog-footer">
+                <div class="next" v-if="version!=3">
+                    <el-checkbox v-model="checked">继续创建下一个</el-checkbox>
+                </div>
+                <div class="confirm-btn">
+                    <el-button size="small" @click="close">取 消</el-button>
+                    <el-button size="small" type="primary" @click="sureFn(version)">确 定</el-button> 
+                </div>
+            </div>
 		</el-dialog>
 	</div>
 </template>
@@ -261,15 +261,16 @@ export default {
         this.$ajax.post(`/api/accountBook/${urlStr}`,param).then(res => {
             res = res.data
             if(res.status === 200) {
+                this.$message(res.message)
                 if(this.checked) {
                     this.ruleForm.moneyType = ''
                     this.ruleForm.moneyDepiction = ''
                     this.ruleForm.remark = ''
+                    this.$emit('refreshData',{state: 'success', save: true})
                 } else {
                     this.close()
+                    this.$emit('refreshData',{state: 'success', save: false})
                 }
-                this.$message(res.message)
-                this.$emit('refreshData')
             }
         }).catch(error => {
             this.$message({message: error})
@@ -310,13 +311,26 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .el-dialog__body {
-    padding: 20px 100px 10px 0;
+.set-dialog {
+    /deep/ .el-dialog {
+        min-width: 600px;
+    }
+    .el-form {
+        padding: 20px 20px 0;
+    }
 }
-.dialog-footer /deep/ .el-form-item__content {
-    display: flex;
+/deep/ .el-dialog__body {
+    padding: 0 10px;
+}
+.dialog-footer {
+    text-align: right;
+    position: relative;
+    padding: 10px 20px;
     .next {
-        margin-right: 235px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
     }
 }
 .money-item /deep/ .el-form-item__content {
