@@ -46,7 +46,7 @@
                     <el-button class="btn-info" type="primary" size="small" @click="getExcel">导出</el-button>
                 </p>
             </div>
-            <el-table :data="list" border header-row-class-name="theader-bg" style="width: 100%">
+            <el-table :data="list" ref="tableCom" :max-height="tableNumberCom" border header-row-class-name="theader-bg" style="width: 100%">
                 <el-table-column label="月份" prop="moneyTime"></el-table-column>
                 <el-table-column label="部门" prop="deptName"></el-table-column>
                 <el-table-column label="收入（元）" prop="income">
@@ -61,7 +61,7 @@
                 </el-table-column>
                 <el-table-column label="利润（元）" prop="profit">
                     <template slot-scope="scope">
-                        <span :class="scope.row.profit>0?'color-green':scope.row.profit<0?'color-red':''"></span>
+                        <span :class="scope.row.profit>0?'color-green':scope.row.profit<0?'color-red':''">{{scope.row.profit}}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -167,7 +167,17 @@ export default {
         handleCurrentChange(val) {
             this.pageNum = val
             this.getData()
-        }
+        },
+        //重写表格maxHeight设置方法
+        comHeightFn() {
+            if (this.$refs.tableCom && this.$refs.tableComView) {
+                let wh = document.documentElement.clientHeight;
+                let h1 = this.$refs.tableComView.clientHeight+40
+                let h2 = this.$refs.tableCom.$el.clientHeight;
+                let th = wh - h1;
+                this.tableNumberCom = h2 + th;
+            }
+        },
     }
 }
 </script>
@@ -177,10 +187,13 @@ export default {
   .head-area {
       display: flex;
       justify-content: space-between;
+      padding: 15px 15px 0;
+      border: 1px solid #e3e3e3;
+      margin-bottom: 20px;
   }
   .view-context {
+    border: 1px solid #e3e3e3;
     background-color: @color-white;
-    padding: 0 @margin-10;
     /deep/ .theader-bg {
       > th {
         background-color: @bg-th;
@@ -191,7 +204,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: @margin-base 0;
+      margin: 10px;
         > ul {
             display: flex;
             margin-left: 20px;
@@ -206,6 +219,9 @@ export default {
     }
     .color-red {
         color: @color-red;
+    }
+    .pagination-info {
+        text-align: right;
     }
   }
 </style>
