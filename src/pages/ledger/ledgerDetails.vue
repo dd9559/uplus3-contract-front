@@ -50,7 +50,7 @@
           <el-button
             type="primary"
             size="small"
-            @click="getData">查 询
+            @click="getData()">查 询
           </el-button>
           <el-button
             size="small"
@@ -358,7 +358,6 @@
       //操作按钮事件
       btnOpera: function (row, type) {
         if(type===1){//数据编辑
-          debugger
           if(row.moneyType===1){
             this.operBtn('income',row)
           }else{
@@ -443,6 +442,7 @@
                       message:'删除成功'
                     })
                     this.getData()
+                    this.cells_del=[]
                   }
                 }).catch(error=>{
                   this.$message({
@@ -451,6 +451,7 @@
                 })
               }).catch(()=>{
                 this.$refs.tableCom.clearSelection()
+                this.cells_del=[]
               })
             }
             break;
@@ -564,6 +565,7 @@
       text-align: center;
       padding: 12px 30px;
       background-color: #d7d7d7;
+      cursor: pointer;
       &.active-li{
         background-color: #409EFF;
         color: white;
@@ -610,6 +612,7 @@
     justify-content: space-between;
     align-items: center;
     margin: 10px;
+    font-size: 14px;
 
     > ul {
       > li {

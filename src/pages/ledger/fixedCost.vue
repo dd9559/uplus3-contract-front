@@ -173,6 +173,9 @@
       getList:function(){
         let param=Object.assign({},this.dialogDetails,{pageNum:this.currentPage,pageSize: this.pageSize})
         // debugger
+        if(!param.time){
+          return
+        }
         this.$ajax.post('/api/accountBook/selectInputRange',param).then(res=>{
           res=res.data
           if(res.status===200){
