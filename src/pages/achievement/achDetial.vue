@@ -577,6 +577,19 @@
         </el-table>
       </div>
 
+      <h1 class="f14" v-if="this.contRemarks">合同备注栏</h1>
+      <div class="contRemark" v-if="this.contRemarks">
+        <el-input
+          v-model="this.contRemarks"
+          disabled
+          type="textarea"
+          :rows="4"
+          class="f_l"
+          resize="none"
+          maxlength="200"
+        ></el-input>
+      </div>
+
       <h1 class="f14" v-if="fujian">业绩分成协议</h1>
       <ul class="ulData" style="margin-top:10px" v-if="fujian">
         <li v-for="(item,i) in filesList" :key="i">
@@ -713,6 +726,7 @@
         contType: '',
         tradeFee: 0,
         hasServiceAgent: false,//是否勾选交易服务费佣金分成
+        contRemarks:'',//合同备注栏
       };
     },
     created() {
@@ -732,6 +746,12 @@
         this.$ajax.get("/api/achievement/getAchDetails", param).then(res => {
           let data = res.data;
           if (res.status === 200) {
+            //2.4.6新需求 增加合同备注栏
+            if(data.data.contRemarks&&data.data.contRemarks.length>0){
+              this.contRemarks=data.data.contRemarks
+            }else{
+              this.contRemarks=''
+            }
             this.auditIds = data.data.auditIds
             this.shensuArr = data.data.appeals
             for (let i = 0; i < this.shensuArr.length; i++) {
@@ -1025,6 +1045,17 @@
     // min-height: 200px;
     /deep/ th {
       background-color: #eef2fb;
+    }
+  }
+  .contRemark{
+    width:700px;
+    height:80px;
+    margin-top:10px;
+    /deep/.is-disabled{
+      .el-textarea__inner{
+        color:#606266;
+        font-size: 12px;
+      }
     }
   }
 </style>

@@ -1293,6 +1293,24 @@
             ></preview>
           </div>
 
+          <!-- 合同备注栏 -->
+          <div class="top20" v-if="this.contRemarks">
+            <div class="house-left">
+              <h1 class="f14">合同备注栏</h1>
+            </div>
+          </div>
+          <div class="ach-divide-list contRemark" v-if="this.contRemarks">
+            <el-input
+              v-model="this.contRemarks"
+              disabled
+              type="textarea"
+              :rows="4"
+              class="f_l"
+              resize="none"
+              maxlength="200"
+            ></el-input>
+          </div>
+
           <div class="top20">
             <div class="house-left">
               <h1 class="f14">上传业绩分成协议</h1>
@@ -1658,6 +1676,7 @@ export default {
           }
       },
       hasServiceAgent:false,//是否勾选交易服务费佣金分成,20191220新加
+      contRemarks:'',//合同备注栏
     };
   },
   components: {
@@ -2964,6 +2983,13 @@ export default {
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
         if (res.status === 200) {
+          //2.4.6新需求 增加合同备注栏
+          // contRemarks
+          if(res.data.data.contRemarks&&res.data.data.contRemarks.length>0){
+            this.contRemarks=res.data.data.contRemarks
+          }else{
+            this.contRemarks=''
+          }
           this.hasServiceAgent= res.data.data.hasServiceAgent===0?false:true//新加
           this.houseArr = res.data.data.houseAgents;
           for(let i=0;i< this.houseArr.length;i++){
@@ -3719,5 +3745,16 @@ export default {
   right: 4px;
   color: #d6d6d6;
   bottom: 0;
+}
+.contRemark{
+  width:700px;
+  margin-top: 10px;
+  margin-bottom:20px;
+  /deep/.is-disabled{
+    .el-textarea__inner{
+      color:#606266;
+      font-size: 12px;
+    }
+  }
 }
 </style>
