@@ -215,7 +215,7 @@
         </div>
       </el-dialog>
       <fixed-cost v-if="dialogVisible==='import'" :dialogVisible="dialogVisible==='import'" @close="costClose"></fixed-cost>
-      <add-pay v-if="addPay.state" :version="addPay.version" :dialogVisible="addPay.state" :propData="addPay.data" @closePayDialog="costClose({state:''})" @refreshData="costClose({state:'success'})"></add-pay>
+      <add-pay v-if="addPay.state" :version="addPay.version" :dialogVisible="addPay.state" :propData="addPay.data" @closePayDialog="costClose" @refreshData="costClose({state:'success'})"></add-pay>
     </template>
     <AccountSum v-if="activeTab===1"></AccountSum>
   </div>
@@ -500,11 +500,15 @@
         }
       },
       costClose:function(payload){
-        if(payload.state==='success'){
+        if(payload&&payload.state==='success'){
           this.getData()
         }
         this.dialogVisible=''
-        this.addPay.state=false
+        if(payload&&payload.keys().includes('save')){
+          this.addPay.state=payload.save
+        }else{
+          this.addPay.state=false
+        }
       },
       //金额输入
       cutNum: function (val) {
