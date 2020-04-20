@@ -78,6 +78,9 @@ const signedCheck = () => import("@/pages/contract/contractList/signedCheck")
 const Login = () => import("@/login")
 const iframTest = () => import("@/pages/iframe/iframeTest")
 
+//记账本
+const ledger=()=>import("@/pages/ledger/ledgerDetails")
+
 // Vue.use(Router)
 
 export default new Router({
@@ -473,5 +476,9 @@ export default new Router({
       path: "/login",
       component: Login
     },
+    {
+      path: "/ledger",
+      component: ledger
+    }
   ]
 });

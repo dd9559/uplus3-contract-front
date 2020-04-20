@@ -404,7 +404,7 @@ const MIXINS = {
     ])
   },
   mounted() {
-    window.onresize = this.comHeightFn;
+    window.onresize = this.comHeightFn();
 
     for (let item in this.power){
       // this.power[item].state=true

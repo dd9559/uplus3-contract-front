@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view :key="$route.fullPath" v-if="$route.path==='/login'"/>
+    <router-view :key="$route.fullPath" v-if="['/login','/ledger'].includes($route.path)"></router-view>
     <div class="main" v-else>
       <div class="nav">
         <img :src="getImg('logo.png')" alt="">
