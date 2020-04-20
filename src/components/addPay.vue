@@ -2,7 +2,7 @@
 	<div>
 		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="740px" :visible="getDialogVisible" @close='close'>
             <el-form :model="ruleForm" ref="ruleForm" label-width="120px">
-                <el-form-item label="部门" v-if="version===1" class="form-item">
+                <el-form-item size="small" label="部门" v-if="version===1" class="form-item">
                     <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
                          @search="searchDep"></select-tree>
                 </el-form-item>
@@ -29,7 +29,7 @@
                     <el-input v-model.trim="ruleForm.moneyDepiction" maxlength="100" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="金额" class="money-item form-item">
-                    <el-input v-model="ruleForm.money" @input="cutNumber" clearable></el-input>
+                    <el-input v-model="ruleForm.money" @input="cutNumber" clearable><template slot="append">元</template></el-input>
                     <span style="color: red;" v-if="ruleForm.depArray.length&&ruleForm.shareType!==''&&ruleForm.money">
                         共计{{fiveLevelNum}}个门店（分组），平均每个门店（分组）分摊到{{averageMoney}}元</span>
                 </el-form-item>
@@ -269,7 +269,7 @@ export default {
                     this.close()
                 }
                 this.$message(res.message)
-                // this.$emit('refreshData')
+                this.$emit('refreshData')
             }
         }).catch(error => {
             this.$message({message: error})

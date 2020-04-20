@@ -1,8 +1,6 @@
 <template>
     <div class="view-container" ref="tableComView">
-        <ScreeningTop
-        @propQueryFn="queryFn"
-        @propResetFormFn="resetFormFn">
+        <div class="head-area">
             <el-form :inline="true" size="small">
                 <el-form-item label="月份">
                     <el-date-picker
@@ -16,10 +14,21 @@
                 </el-form-item>
                 <el-form-item label="部门">
                     <select-tree :data="DepList" :init="depName" @checkCell="depHandleClick" @clear="clearDep"
-                         @search="searchDep"></select-tree>
+                            @search="searchDep"></select-tree>
                 </el-form-item>
             </el-form>
-        </ScreeningTop>
+            <p style="white-space: nowrap;">
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="queryFn">查 询
+                </el-button>
+                <el-button
+                    size="small"
+                    @click="resetFormFn">重 置
+                </el-button>
+            </p>
+        </div>
         <div class="view-context">
             <div class="table-tool">
                 <ul>
@@ -34,9 +43,7 @@
                     </li>
                 </ul>
                 <p>
-                    <el-button class="btn-info" size="small" @click="getExcel">导出1</el-button>
-                    <el-button class="btn-info" size="small" @click="addFn()">导出1</el-button>
-                    <el-button class="btn-info" size="small" @click="addFn(2)">导出2</el-button>
+                    <el-button class="btn-info" type="primary" size="small" @click="getExcel">导出</el-button>
                 </p>
             </div>
             <el-table :data="list" border header-row-class-name="theader-bg" style="width: 100%">
@@ -52,7 +59,11 @@
                         <span :class="{'color-red':scope.row.expenditure>0}">{{scope.row.expenditure}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="利润（元）" prop="profit"></el-table-column>
+                <el-table-column label="利润（元）" prop="profit">
+                    <template slot-scope="scope">
+                        <span :class="scope.row.profit>0?'color-green':scope.row.profit<0?'color-red':''"></span>
+                    </template>
+                </el-table-column>
             </el-table>
             <el-pagination
             v-if="total"
@@ -66,20 +77,16 @@
             </el-pagination>
         </div>
 
-        <addPay :dialogVisible="openPay" :version="version" @closePayDialog="closePay" @refreshData="getData" v-if="openPay"></addPay>
+        <!-- <addPay :dialogVisible="openPay" :version="version" @closePayDialog="closePay" @refreshData="getData" v-if="openPay"></addPay> -->
     </div>
 </template>
 
 <script>
 import {MIXINS} from "@/assets/js/mixins";
-import addPay from "@/components/addPay";
 
 export default {
     name: "account-sum",
     mixins: [MIXINS],
-    components: {
-        addPay,
-    },
     data() {
         return {
             sumDate: [],
@@ -89,8 +96,6 @@ export default {
             total: 0,
             pageNum: 1,
             pageSize: 20,
-            openPay: false,
-            version: '',
             tableHead: {
                 expenditure: 0,
                 income: 0,
@@ -122,6 +127,7 @@ export default {
             })
         },
         getExcel() {
+            if(!this.total)  return
             let param = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
@@ -132,13 +138,6 @@ export default {
                 param.moneyTimeEnd = this.sumDate[1]
             }
             this.excelCreate('/input/accountBookExcel',param)
-        },
-        addFn(type=1) {
-            this.openPay = true
-            this.version = type
-        },
-        closePay() {
-            this.openPay = false
         },
         clearDep: function () {
             this.depName = ''
@@ -152,8 +151,10 @@ export default {
             this.depName = data.name
         },
         queryFn() {
-            this.pageNum = 1
-            this.getData()
+            if(this.sumDate.length&&this.depName) {
+                this.pageNum = 1
+                this.getData()
+            }
         },
         resetFormFn() {
             this.sumDate = []
@@ -173,6 +174,10 @@ export default {
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  .head-area {
+      display: flex;
+      justify-content: space-between;
+  }
   .view-context {
     background-color: @color-white;
     padding: 0 @margin-10;
