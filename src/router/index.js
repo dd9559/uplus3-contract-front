@@ -80,6 +80,7 @@ const iframTest = () => import("@/pages/iframe/iframeTest")
 
 //记账本
 const ledger=()=>import("@/pages/ledger/ledgerDetails")
+const errorMsg=()=>import("@/errorMsg")
 
 // Vue.use(Router)
 
@@ -479,6 +480,10 @@ export default new Router({
     {
       path: "/ledger",
       component: ledger
+    },
+    {
+      path: "/error",
+      component: errorMsg
     }
   ]
 });

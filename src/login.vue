@@ -119,6 +119,11 @@
               }
             })
           }
+        }).catch(error=>{
+          this.$router.push({
+            path:'/error',
+            query:{msg:error}
+          })
         })
       },
       ...mapMutations([
