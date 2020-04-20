@@ -215,7 +215,7 @@
         </div>
       </el-dialog>
       <fixed-cost v-if="dialogVisible==='import'" :dialogVisible="dialogVisible==='import'" @close="costClose"></fixed-cost>
-      <add-pay v-if="addPay.state" :version="addPay.version" :dialogVisible="addPay.state" :propData="addPay.data" @closePayDialog="costClose" @refreshData="costClose({state:'success'})"></add-pay>
+      <add-pay v-if="addPay.state" :version="addPay.version" :dialogVisible="addPay.state" :propData="addPay.data" @closePayDialog="costClose" @refreshData="costClose"></add-pay>
     </template>
     <AccountSum v-if="activeTab===1"></AccountSum>
   </div>
@@ -504,7 +504,7 @@
           this.getData()
         }
         this.dialogVisible=''
-        if(payload&&payload.keys().includes('save')){
+        if(payload&&Object.keys(payload).includes('save')){
           this.addPay.state=payload.save
         }else{
           this.addPay.state=false
