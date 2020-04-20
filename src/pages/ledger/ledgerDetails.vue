@@ -103,7 +103,7 @@
                            :formatter="nullFormatter"></el-table-column>
           <el-table-column label="类别">
             <template slot-scope="scope">
-              <span v-if="dictionary['762']">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
+              <span v-if="dictionary['762']&&dictionary['762'][`${scope.row.moneyType-1}`]">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
             </template>
           </el-table-column>
           <el-table-column min-width="160" label="费用项">
