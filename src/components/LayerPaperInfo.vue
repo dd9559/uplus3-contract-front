@@ -494,18 +494,18 @@
   .paper-info {
     width: 860px;
     margin: auto;
-    color: #333; 
+    color: #333;
     overflow: hidden;
     font-size: 14px;
     &:nth-of-type(n+2){
       margin-top: 10px;
     }
-    &:nth-of-type(2n){
+    &:nth-of-type(2n+1){
       page-break-before:always;
     }
-    /*&:first-of-type{
+    &:first-of-type{
       page-break-before: initial;
-    }*/
+    }
   }
 
   .paper-border {

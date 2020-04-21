@@ -10,7 +10,7 @@
       <div class="input-group">
         <label class="form-label">部门:</label>
         <div class="margin-left">
-          <select-tree :data="DepList" class="dep-width" @checkCell="depHandleClick"
+          <select-tree :data="DepList" treeType="power" class="dep-width" @checkCell="depHandleClick"
                        @clear="clearDep"></select-tree>
         </div>
       </div>
@@ -31,7 +31,7 @@
     <div class="dialog-result">
       <p>导入固定成本</p>
       <el-table ref="profitTable" border :data="list" max-height="460" header-row-class-name="theader-bg" @select="handleSelectionCell" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" class-name="select-btn"></el-table-column>
         <el-table-column prop="deptName" label="部门" min-width="160"></el-table-column>
         <el-table-column label="费用项" min-width="160">
           <template slot-scope="scope">
@@ -73,7 +73,7 @@
       </el-pagination>
     </div>
     <div slot="footer" class="dialog-footer">
-      <span><el-button size="small" @click="handleClose">取 消</el-button><el-button type="primary" size="small" @click="importCost">导 入</el-button></span>
+      <span><el-button size="small" @click="handleClose">取 消</el-button><el-button type="primary" size="small" class="btn-bg" @click="importCost">导 入</el-button></span>
     </div>
 
   </el-dialog>
@@ -236,6 +236,26 @@
 </script>
 
 <style scoped lang="less">
+  @btn-bg:#38BD8B;
+  .btn-bg{
+    background-color: @btn-bg;
+    color: #ffffff;
+  }
+  /deep/.select-btn{
+    .cell{
+      .is-checked,.is-indeterminate{
+        .el-checkbox__inner{
+          background-color: @btn-bg;
+        }
+      }
+    }
+  }
+  .tooltip-info{
+    span{
+      display: inline-block;
+      max-width: 240px;
+    }
+  }
   .set-dialog{
     /deep/.el-dialog__body{
       padding: 0;
@@ -273,7 +293,7 @@
   }
   /deep/.theader-bg{
     >th{
-      background-color: #eef2fb;
+      background-color: #F5F5F9;
     }
   }
 }

@@ -25,7 +25,7 @@
           <div class="input-group">
             <label>部门:</label>
             <div class="margin-left">
-              <select-tree :data="DepList" key="dep1" :init="searchForm.deptName" @checkCell="depHandleClick"
+              <select-tree :data="DepList" treeType="power" key="dep1" :init="searchForm.deptName" @checkCell="depHandleClick"
                            @clear="clearDep"></select-tree>
             </div>
           </div>
@@ -50,6 +50,7 @@
           <el-button
             type="primary"
             size="small"
+            class="btn-bg"
             @click="getData()">查 询
           </el-button>
           <el-button
@@ -83,7 +84,7 @@
             </el-button>
             <el-button class="btn-info" type="primary" size="small" @click="operBtn('income')">记收入
             </el-button>
-            <el-dropdown split-button class="margin-left" type="primary" size="small" @click="operBtn('pay')" @command="operBtn('pay1')">
+            <el-dropdown split-button class="margin-left color-info" type="primary" size="small" @click="operBtn('pay')" @command="operBtn('pay1')">
               记支出
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>记均摊支出</el-dropdown-item>
@@ -93,7 +94,7 @@
         </div>
         <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
                   class="info-scrollbar" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
+          <el-table-column type="selection" width="55" align="center" class-name="select-btn"></el-table-column>
           <el-table-column min-width="120" label="费用日期">
             <template slot-scope="scope">
               <span>{{scope.row.moneyTime|formatDate}}</span>
@@ -144,8 +145,8 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
             <template slot-scope="scope">
-              <el-button type="text" @click="btnOpera(scope.row,1)">编辑</el-button>
-              <el-button type="text" @click="btnOpera(scope.row,2)">删除</el-button>
+              <el-button type="text" class="font-color" @click="btnOpera(scope.row,1)">编辑</el-button>
+              <el-button type="text" class="font-color" @click="btnOpera(scope.row,2)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -162,6 +163,7 @@
       </div>
       <el-dialog
         :title="dialogDetails.title+'收入'"
+        v-if="dialogVisible==='income'"
         :close-on-click-modal="$tool.closeOnClickModal"
         :visible="dialogVisible==='income'&&Object.keys(dialogDetails.context).length>0"
         width="30%"
@@ -171,7 +173,7 @@
           <div class="input-group">
             <label class="form-label">部门:</label>
             <div class="margin-left">
-              <select-tree :data="DepList" :init="dialogDetails.context.deptName" @checkCell="depHandleClick"
+              <select-tree :data="DepList" treeType="power" :init="dialogDetails.context.deptName" @checkCell="depHandleClick"
                            @clear="clearDep"></select-tree>
             </div>
           </div>
@@ -216,7 +218,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <el-checkbox v-model="dialogDetails.checked" class="btn-remember" v-if="dialogDetails.title==='新增'">继续创建下一个</el-checkbox>
-          <span><el-button @click="handleClose" size="small">取 消</el-button><el-button type="primary" @click="incomeOper()" size="small">确 定</el-button></span>
+          <span><el-button @click="handleClose" size="small">取 消</el-button><el-button type="primary" @click="incomeOper()" class="btn-bg" size="small">确 定</el-button></span>
         </div>
       </el-dialog>
       <fixed-cost v-if="dialogVisible==='import'" :dialogVisible="dialogVisible==='import'" @close="costClose"></fixed-cost>
@@ -440,6 +442,9 @@
             } else {
               this.$confirm('是否确认删除', {
                 showClose: false,
+                confirmButtonClass:'del-btn-bg',
+                customClass:'dialog-del',
+                closeOnClickModal:false
               }).then(() => {
                 let ids=[]
                 this.cells_del.forEach(item=>{
@@ -542,11 +547,36 @@
 
 <style scoped lang="less">
   @import "~@/assets/common.less";
+  @btn-bg:#38BD8B;
   .tooltip-info{
     span{
       display: inline-block;
       max-width: 240px;
     }
+  }
+  /deep/.el-button:hover{
+    background-color: inherit;
+    color: @btn-bg;
+  }
+  /deep/.el-dropdown-menu__item:not(.is-disabled):hover{
+    background-color: #ffffff;
+    color: @btn-bg;
+  }
+  /deep/.select-btn{
+    .cell{
+      .is-checked,.is-indeterminate{
+        .el-checkbox__inner{
+          background-color: @btn-bg;
+        }
+      }
+    }
+  }
+  .btn-bg{
+    background-color: @btn-bg;
+    color: #ffffff;
+  }
+  .font-color{
+    color:@btn-bg;
   }
 
   .view {
@@ -578,7 +608,7 @@
       background-color: #d7d7d7;
       cursor: pointer;
       &.active-li{
-        background-color: #409EFF;
+        background-color: @btn-bg;
         color: white;
       }
     }
@@ -588,13 +618,18 @@
     border: 1px solid #e3e3e3;
     /deep/.theader-bg{
       >th{
-        background-color: #eef2fb;
+        background-color: #F5F5F9;
       }
     }
   }
 
   .pagination-info {
     text-align: right;
+    /deep/ .el-pager{
+      >li.active{
+        color:@btn-bg;
+      }
+    }
   }
 
   .content {
@@ -645,6 +680,16 @@
         }
       }
     }
+    /deep/ .btn-info{
+      background-color: @btn-bg;
+      color: #ffffff;
+    }
+    .color-info{
+      /deep/ .el-button{
+        background-color: @btn-bg;
+        color: #ffffff;
+      }
+    }
   }
 
   .set-dialog {
@@ -671,6 +716,16 @@
       left: 0;
       top: 50%;
       transform: translateY(-50%);
+      &.is-checked{
+        /deep/.is-checked{
+          .el-checkbox__inner{
+            background-color: @btn-bg;
+          }
+        }
+        /deep/.el-checkbox__label{
+          color: @btn-bg;
+        }
+      }
     }
   }
 </style>

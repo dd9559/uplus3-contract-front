@@ -155,6 +155,7 @@
             isControl=false
           }
         }
+        this.treeType==='power'&&(url='/api/access/deps')
         let param = {
           keyword: keyword,
           isControl: isControl

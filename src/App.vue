@@ -408,6 +408,16 @@
 </style>
 <style lang="less">
   @import "~@/assets/common.less";
+  .dialog-del{
+    .del-btn-bg{
+      background-color: #38BD8B;
+      color: #ffffff;
+    }
+    .el-button:hover{
+      background-color: inherit;
+      color: #38BD8B;
+    }
+  }
 
   #app {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
