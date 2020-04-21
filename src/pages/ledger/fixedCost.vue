@@ -215,6 +215,12 @@
             })
           }else{
             let ids=[]
+            if(this.cells_in.length===0){
+              this.$message({
+                message:'请勾选'
+              })
+              return
+            }
             this.cells_in.forEach(item=>{
               ids.push(item.id)
             })
