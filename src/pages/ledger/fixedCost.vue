@@ -2,6 +2,7 @@
   <el-dialog
     title="请选择导入的部门范围"
     :visible="dialogVisible"
+    :close-on-click-modal="$tool.closeOnClickModal"
     class="set-dialog"
     width="70%"
     :before-close="handleClose">

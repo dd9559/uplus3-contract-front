@@ -162,6 +162,7 @@
       </div>
       <el-dialog
         :title="dialogDetails.title+'收入'"
+        :close-on-click-modal="$tool.closeOnClickModal"
         :visible="dialogVisible==='income'&&Object.keys(dialogDetails.context).length>0"
         width="30%"
         class="set-dialog"
