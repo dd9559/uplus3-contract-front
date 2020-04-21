@@ -203,6 +203,7 @@
               type="textarea"
               class="margin-left w400"
               :rows="3"
+              maxlength="250"
               placeholder="请输入内容"
               v-model="dialogDetails.context.remark">
             </el-input>
@@ -290,7 +291,7 @@
           this.currentPage=1
         }
         let param=Object.assign({},this.searchForm,{pageNum:this.currentPage,pageSize:this.pageSize})
-        if(this.searchForm.timeRange.length>0){
+        if(this.searchForm.timeRange&&this.searchForm.timeRange.length>0){
           param.moneyTimeStart=param.timeRange[0]
           param.moneyTimeEnd=param.timeRange[1]
         }
