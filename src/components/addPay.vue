@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="30%" :visible="getDialogVisible" @close='close' class="set-dialog">
+		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="30%" :visible="getDialogVisible" @close='close' class="set-dialog" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <el-form :model="ruleForm" ref="ruleForm" label-width="110px" size="small">
                 <el-form-item size="small" label="部门" v-if="version===1||version===3" class="form-item">
                     <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
