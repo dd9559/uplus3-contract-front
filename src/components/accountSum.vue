@@ -14,12 +14,12 @@
                 </el-form-item>
                 <el-form-item label="部门">
                     <select-tree :data="DepList" :init="depName" @checkCell="depHandleClick" @clear="clearDep"
-                            @search="searchDep"></select-tree>
+                            @search="searchDep" treeType="power"></select-tree>
                 </el-form-item>
             </el-form>
             <p style="white-space: nowrap;">
                 <el-button
-                    type="primary"
+                    style="background-color: #38BD8B; color: white;"
                     size="small"
                     @click="queryFn">查 询
                 </el-button>
@@ -43,7 +43,7 @@
                     </li>
                 </ul>
                 <p>
-                    <el-button class="btn-info" type="primary" size="small" @click="getExcel">导出</el-button>
+                    <el-button class="btn-info" style="background-color: #38BD8B; color: white;" size="small" @click="getExcel">导出</el-button>
                 </p>
             </div>
             <el-table :data="list" ref="tableCom" :max-height="tableNumberCom" border header-row-class-name="theader-bg" style="width: 100%">
@@ -150,6 +150,8 @@ export default {
             if(this.sumDate&&this.sumDate.length&&this.depName) {
                 this.pageNum = 1
                 this.getData()
+            } else {
+                this.$message('请选择月份和部门')
             }
         },
         resetFormFn() {
@@ -192,7 +194,7 @@ export default {
     background-color: @color-white;
     /deep/ .theader-bg {
       > th {
-        background-color: @bg-th;
+        background-color: #F5F5F9;
       }
     }
     .table-tool {

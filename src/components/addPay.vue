@@ -4,7 +4,7 @@
             <el-form :model="ruleForm" ref="ruleForm" label-width="110px" size="small">
                 <el-form-item size="small" label="部门" v-if="version===1||version===3" class="form-item">
                     <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
-                         @search="searchDep"></select-tree>
+                         @search="searchDep" treeType="power"></select-tree>
                 </el-form-item>
                 <el-form-item label="均摊组织范围" v-if="version===2" class="form-item">
                     <el-select v-model="ruleForm.depArray" multiple class="w300" filterable :filter-method="depSearch" @visible-change="visibleFn" @remove-tag="delFn">
@@ -13,13 +13,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="均摊组织类型" v-if="version===2" class="form-item">
+                <el-form-item label="均摊组织类型" v-if="version===2" class="form-item item-color">
                     <el-radio-group v-model="ruleForm.shareType" @change="checkTypeFn">
                     <el-radio-button :label="0">分店</el-radio-button>
                     <el-radio-button :label="1">分组</el-radio-button>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="支出类别" class="form-item">
+                <el-form-item label="支出类别" class="form-item item-color">
                     <el-radio-group v-model="ruleForm.moneyType">
                     <el-radio-button :label="2">动态成本</el-radio-button>
                     <el-radio-button :label="3">固定成本</el-radio-button>
@@ -30,8 +30,7 @@
                 </el-form-item>
                 <el-form-item label="金额" class="money-item form-item">
                     <el-input v-model="ruleForm.money" @input="cutNumber" clearable><template slot="append">元</template></el-input>
-                    <span style="color: red;" v-if="ruleForm.depArray.length&&ruleForm.shareType!==''&&ruleForm.money">
-                        共计{{fiveLevelNum}}个门店（分组），平均每个门店（分组）分摊到{{averageMoney}}元</span>
+                    <span style="color: red;" v-if="ruleForm.depArray.length&&ruleForm.shareType!==''&&ruleForm.money&&divideBool">{{divideTip}}</span>
                 </el-form-item>
                 <el-form-item label="支出时间" class="form-item">
                     <el-date-picker
@@ -52,7 +51,7 @@
                 </div>
                 <div class="confirm-btn">
                     <el-button size="small" @click="close">取 消</el-button>
-                    <el-button size="small" type="primary" @click="sureFn(version)">确 定</el-button> 
+                    <el-button size="small" style="background-color: #38BD8B; color: white;" @click="sureFn(version)">确 定</el-button> 
                 </div>
             </div>
 		</el-dialog>
@@ -106,7 +105,9 @@ export default {
             label: 'name'
         },
         inputTime: null,
-        checked: false
+        checked: false,
+        divideTip: '',
+        divideBool: false
     };
   },
   created() {
@@ -130,8 +131,28 @@ export default {
     },
     cutNumber() {
         this.$nextTick(()=>{
-            if(this.ruleForm.money == 0) return this.ruleForm.money = ''
             this.ruleForm.money = this.$tool.cutFloat({val:this.ruleForm.money,max:999999999.99})
+        })
+    },
+    getTips() {
+        let arr = []
+        this.ruleForm.deps.forEach(item => {
+            arr.push(item.depId+','+item.name)
+        })
+        let param = {
+            deps: arr,
+            shareType: this.ruleForm.shareType,
+            money: this.ruleForm.money
+        }
+        this.$ajax.post('/api/accountBook/getTips', param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+                this.divideTip = res.message
+                this.divideBool = true
+            }
+        }).catch(error => {
+            this.$message({message: error, type: 'error'})
+            this.divideBool = false
         })
     },
     checkTypeFn(val) {
@@ -286,36 +307,29 @@ export default {
     getDialogVisible() {
       return this.dialogVisible;
     },
-    fiveLevelNum() {
-        if(this.ruleForm.shareType === 0) {
-            return this.ruleForm.depArray.length
-        } else {
-            let sum = 0
-            this.ruleForm.deps.forEach(item => {
-                if(item.level === 5) {
-                    sum += 1
-                }
-                sum += item.fiveLevelNum
-            })
-            return sum>0 ? sum : 0
-        }
-    },
-    averageMoney() {
-        if(this.ruleForm.shareType === 0) {
-            return (this.ruleForm.money/this.ruleForm.depArray.length).toFixed(2)
-        } else {
-           if(!this.fiveLevelNum) {
-                return 0
-            } else {
-                return (this.ruleForm.money/this.fiveLevelNum).toFixed(2)
-            } 
-        }
-    }
   },
+  watch: {
+      'ruleForm.depArray'(val) {
+        if(val.length&&this.ruleForm.shareType!==''&&this.ruleForm.money) {
+            this.getTips()
+        }
+      },
+      'ruleForm.shareType'(val) {
+          if(val!==''&&this.ruleForm.depArray.length&&this.ruleForm.money) {
+            this.getTips()
+          }
+      },
+      'ruleForm.money'(val) {
+          if(val>0&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
+            this.getTips()
+          }
+      }
+  }
 };
 </script>
 
 <style lang="less" scoped>
+  @btn-bg:#38BD8B;
 .set-dialog {
     /deep/ .el-dialog {
         min-width: 600px;
@@ -336,6 +350,16 @@ export default {
         left: 20px;
         top: 50%;
         transform: translateY(-50%);
+        .is-checked{
+            /deep/.is-checked{
+                .el-checkbox__inner{
+                    background-color: @btn-bg;
+                }
+            }
+            /deep/.el-checkbox__label{
+                color: @btn-bg;
+            }
+        }
     }
 }
 .money-item /deep/ .el-form-item__content {
@@ -346,6 +370,12 @@ export default {
         content: '*';
         color: red;
         margin-right: 2px;
+    }
+    &.item-color {
+        /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+            background-color: @btn-bg;
+            box-shadow: -1px 0 0 0 @btn-bg;
+        }
     }
 }
 /deep/ .tree-box {
