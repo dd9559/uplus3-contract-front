@@ -124,7 +124,6 @@ const MIXINS = {
      * 获取部门
      */
     remoteMethod:function (type='init') {
-      debugger
       let url = '/api/access/deps/tree'
       if(type === 'power') url = '/api/access/deps'
       this.$ajax.get(url).then(res=>{
