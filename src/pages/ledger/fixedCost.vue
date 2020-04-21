@@ -36,7 +36,7 @@
         <el-table-column label="费用项" min-width="160">
           <template slot-scope="scope">
             <span v-if="scope.row.moneyDepiction&&scope.row.moneyDepiction.length<=20">{{scope.row.moneyDepiction}}</span>
-            <span v-else-if="scope.row.moneyDepiction">--</span>
+            <span v-else-if="!scope.row.moneyDepiction">--</span>
             <el-tooltip v-else popper-class="tooltip-info" effect="dark" placement="top-start">
               <span>{{scope.row.moneyDepiction.substr(0,20)+'...'}}</span>
               <span slot="content">{{scope.row.moneyDepiction}}</span>
@@ -47,7 +47,7 @@
         <el-table-column label="备注" min-width="160">
           <template slot-scope="scope">
             <span v-if="scope.row.remark&&scope.row.remark.length<=20">{{scope.row.remark}}</span>
-            <span v-else-if="scope.row.remark">--</span>
+            <span v-else-if="!scope.row.remark">--</span>
             <el-tooltip v-else popper-class="tooltip-info" effect="dark" placement="top-start">
               <span>{{scope.row.remark.substr(0,20)+'...'}}</span>
               <span slot="content">{{scope.row.remark}}</span>

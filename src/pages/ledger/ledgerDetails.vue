@@ -109,7 +109,7 @@
           <el-table-column min-width="160" label="费用项">
             <template slot-scope="scope">
               <span v-if="scope.row.moneyDepiction&&scope.row.moneyDepiction.length<=20">{{scope.row.moneyDepiction}}</span>
-              <span v-else-if="scope.row.moneyDepiction">--</span>
+              <span v-else-if="!scope.row.moneyDepiction">--</span>
               <el-tooltip v-else popper-class="tooltip-info" effect="dark" placement="top-start">
                 <span>{{scope.row.moneyDepiction.substr(0,20)+'...'}}</span>
                 <span slot="content">{{scope.row.moneyDepiction}}</span>
@@ -182,8 +182,10 @@
           </div>
           <div class="input-group">
             <label class="form-label">金额:</label>
-            <el-input class="w400 margin-left" :clearable="true" size="small" v-model="dialogDetails.context.money"
-                      placeholder="请输入" @input.native="cutNum(dialogDetails.context.money)">
+            <!--<el-input class="w400 margin-left" :clearable="true" size="small" v-model="dialogDetails.context.money"
+                      placeholder="请输入" @input.native="cutNum">-->
+              <input type="text" size="small" class="w400 margin-left el-input__inner" placeholder="请输入" v-model="dialogDetails.context.money"
+                     @input="cutNum">
               <template slot="append">元</template>
             </el-input>
           </div>
@@ -194,6 +196,7 @@
                 v-model="dialogDetails.context.moneyTime"
                 size="small"
                 class="margin-left w400"
+                :picker-options="pickerOptions"
                 value-format="yyyy-MM-dd">
               </el-date-picker>
             </div>
@@ -274,6 +277,11 @@
           data:Object.create(null)
         },
         depName:'',//用于初始化收入框中的部门名称
+        pickerOptions:{
+          disabledDate(time){
+            return Date.now()<time.getTime()
+          }
+        }
       }
     },
     created(){
@@ -514,8 +522,9 @@
         }
       },
       //金额输入
-      cutNum: function (val) {
-        this.$set(this.dialogDetails.context,'money',this.$tool.cutFloat({val, max: 999999999.99}))
+      cutNum: function () {
+        console.log(this.dialogDetails.context.money)
+        this.$set(this.dialogDetails.context,'money',this.$tool.cutFloat({val:this.dialogDetails.context.money, max: 999999999.99}))
       },
       //重写表格maxHeight设置方法
       comHeightFn() {
