@@ -109,11 +109,9 @@ export default {
             let param = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
-                deptId: this.deptId
-            }
-            if(this.sumDate && this.sumDate.length) {
-                param.moneyTimeStart = this.sumDate[0]
-                param.moneyTimeEnd = this.sumDate[1]
+                deptId: this.deptId,
+                moneyTimeStart: this.sumDate[0],
+                moneyTimeEnd: this.sumDate[1],
             }
             this.$ajax.get('/api/accountBook/accountTotal', param).then(res => {
                 res = res.data
@@ -149,7 +147,7 @@ export default {
             this.depName = data.name
         },
         queryFn() {
-            if(this.sumDate.length&&this.depName) {
+            if(this.sumDate&&this.sumDate.length&&this.depName) {
                 this.pageNum = 1
                 this.getData()
             }
