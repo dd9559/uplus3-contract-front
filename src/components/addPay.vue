@@ -112,7 +112,7 @@ export default {
   },
   created() {
     if(this.version === 2) {
-        this.remoteMethod()
+        this.remoteMethod('power')
     }
     // 编辑支出带出赋值
     if(this.version === 3) {
@@ -226,7 +226,7 @@ export default {
         this.DepList = this.accountDepList.map(item=>Object.assign({},item))
     },
     getDepList(keyword) {
-        this.$ajax.get('/api/access/deps/tree', {
+        this.$ajax.get('/api/access/deps', {
             keyword
         }).then(res => {
             res = res.data
@@ -375,6 +375,7 @@ export default {
         /deep/ .el-radio-button__orig-radio:checked+.el-radio-button__inner {
             background-color: @btn-bg;
             box-shadow: -1px 0 0 0 @btn-bg;
+            border-color: @btn-bg;
         }
     }
 }
