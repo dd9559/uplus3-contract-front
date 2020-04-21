@@ -94,7 +94,7 @@
         </div>
         <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
                   class="info-scrollbar" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center" class-name="select-btn"></el-table-column>
+          <el-table-column type="selection" width="55" align="center" fixed="left" class-name="select-btn"></el-table-column>
           <el-table-column min-width="120" label="费用日期">
             <template slot-scope="scope">
               <span>{{scope.row.moneyTime|formatDate}}</span>
@@ -349,7 +349,7 @@
       getExcel: function () {
         this.getData('search')
 
-        let param=Object.assign({},this.searchForm,{pageNum:this.currentPage,pageSize:this.pageSize})
+        let param=Object.assign({},this.searchForm)
         if(this.searchForm.timeRange.length>0){
           param.moneyTimeStart=param.timeRange[0]
           param.moneyTimeEnd=param.timeRange[1]
@@ -594,7 +594,7 @@
       top: 0;
       bottom: 10px;
       left: 15px;
-      border-left: 4px solid #409EFF;
+      border-left: 4px solid @btn-bg;
     }
   }
   ul.tabs{

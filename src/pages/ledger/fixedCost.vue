@@ -31,7 +31,7 @@
     <div class="dialog-result">
       <p>导入固定成本</p>
       <el-table ref="profitTable" border :data="list" max-height="460" header-row-class-name="theader-bg" @select="handleSelectionCell" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" class-name="select-btn"></el-table-column>
+        <el-table-column type="selection" width="55" align="center" fixed="left" class-name="select-btn"></el-table-column>
         <el-table-column prop="deptName" label="部门" min-width="160"></el-table-column>
         <el-table-column label="费用项" min-width="160">
           <template slot-scope="scope">
