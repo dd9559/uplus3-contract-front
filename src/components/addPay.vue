@@ -265,10 +265,12 @@ export default {
             if(res.status === 200) {
                 this.$message(res.message)
                 if(this.checked) {
+                    this.ruleForm.shareType = ''
                     this.ruleForm.moneyType = ''
                     this.ruleForm.moneyDepiction = ''
                     this.ruleForm.remark = ''
                     this.ruleForm.money = ''
+                    this.checked = false
                     this.$emit('refreshData',{state: 'success', save: true})
                 } else {
                     this.close()
