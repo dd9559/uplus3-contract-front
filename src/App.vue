@@ -410,8 +410,11 @@
   @import "~@/assets/common.less";
   .dialog-del{
     .del-btn-bg{
-      background-color: #38BD8B;
+      background-color: #38BD8B !important;
       color: #ffffff;
+      &:hover{
+        background-color: #ffffff !important;
+      }
     }
     .el-button:hover{
       background-color: inherit;

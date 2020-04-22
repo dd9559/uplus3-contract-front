@@ -619,7 +619,7 @@
     color: #ffffff;
   }
   .font-color{
-    color:@btn-bg;
+    color:@btn-bg !important;
   }
 
   .view {
