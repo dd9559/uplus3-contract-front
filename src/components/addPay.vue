@@ -151,6 +151,7 @@ export default {
         }).catch(error => {
             this.$message({message: error, type: 'error'})
             this.divideBool = false
+            this.ruleForm.shareType = ''
         })
     },
     checkTypeFn(val) {
@@ -271,6 +272,7 @@ export default {
   },
   watch: {
       'ruleForm.depArray'(val) {
+        if(!val.length) this.ruleForm.shareType = ''
         if(val.length&&this.ruleForm.shareType!==''&&this.ruleForm.money) {
             this.getTips()
         }

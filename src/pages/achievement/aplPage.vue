@@ -1382,6 +1382,19 @@
 
         </div>
         <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+        <!-- 合同备注栏 -->
+        <h1 class="f14" v-if="this.contRemarks">合同备注栏</h1>
+        <div class="contRemark" v-if="this.contRemarks">
+          <el-input
+            v-model="this.contRemarks"
+            disabled
+            type="textarea"
+            :rows="4"
+            class="f_l"
+            resize="none"
+            maxlength="200"
+          ></el-input>
+        </div>
 
         <div class="top20">
           <div class="house-left">
@@ -1663,6 +1676,7 @@
         preloadFiles: [],
         contType: '',
         hasServiceAgent: false,//是否勾选交易服务费佣金分成
+        contRemarks:'',//合同备注栏
       };
     },
     components: {
@@ -1691,6 +1705,12 @@
       getData() {
         this.$ajax.get('/api/appeal/getExamineInfo', {aId: this.aId}).then(res => {
           if (res.status === 200) {
+            //2.4.6新需求 增加合同备注栏
+            if(data.data.contRemarks&&data.data.contRemarks.length>0){
+              this.contRemarks=data.data.contRemarks
+            }else{
+              this.contRemarks=''
+            }
             this.hasServiceAgent= res.data.data.hasServiceAgent===0?false:true
             this.houseArr = res.data.data.houseAgents;
             this.shensuArr = res.data.data.appeals
@@ -3035,5 +3055,16 @@
 
   /deep/ .sushen tr td .cell {
     line-height: 30px;
+  }
+  .contRemark{
+    width:700px;
+    height:80px;
+    margin-top:10px;
+    /deep/.is-disabled{
+      .el-textarea__inner{
+        color:#606266;
+        font-size: 12px;
+      }
+    }
   }
 </style>
