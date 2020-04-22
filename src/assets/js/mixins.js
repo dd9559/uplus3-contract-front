@@ -29,8 +29,7 @@ const MIXINS = {
       tableBoxCom:null,
       tableNumberCom:null,
       systemTagList: [],
-      systemTagSelect: [],
-      accountDepList: [], //记账本新增均摊支出部门
+      systemTagSelect: []
     }
   },
   watch:{
@@ -130,7 +129,6 @@ const MIXINS = {
         res=res.data
         if(res.status===200){
           this.DepList=[].concat(res.data)
-          this.accountDepList = res.data.map((item=>Object.assign({},item)))
           this.Loading=false
         }
       })

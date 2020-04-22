@@ -3,14 +3,20 @@
 		<el-dialog :title="`${version===1?'新增':version===2?'新增均摊':'编辑'}`+'支出'" width="30%" :visible="getDialogVisible" @close='close' class="set-dialog" :closeOnClickModal="$tool.closeOnClickModal" :close-on-press-escape="$tool.closeOnClickModal">
             <el-form :model="ruleForm" ref="ruleForm" label-width="110px" size="small">
                 <el-form-item size="small" label="部门" v-if="version===1||version===3" class="form-item">
-                    <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
-                         @search="searchDep" treeType="power"></select-tree>
+                    <!-- <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
+                         @search="searchDep" treeType="power"></select-tree> -->
+                    <el-select v-model="ruleForm.deptId" @change="getDepName" filterable>
+                        <el-option v-for="item in DepList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="均摊组织范围" v-if="version===2" class="form-item">
-                    <el-select v-model="ruleForm.depArray" multiple class="w300" filterable :filter-method="depSearch" @visible-change="visibleFn" @remove-tag="delFn">
+                    <!-- <el-select v-model="ruleForm.depArray" multiple class="w300" filterable :filter-method="depSearch" @visible-change="visibleFn" @remove-tag="delFn">
                         <el-option value="">
                             <el-tree :data="DepList" :props="depsProp" accordion @node-click="clickNode"></el-tree>
                         </el-option>
+                    </!-->
+                    <el-select v-model="ruleForm.depArray" multiple filterable class="w300" @change="multiSelect">
+                        <el-option v-for="item in DepList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="均摊组织类型" v-if="version===2" class="form-item item-color">
@@ -99,21 +105,13 @@ export default {
                 return time.getTime() > Date.now();
             }
         },
-        depsProp: {
-            value: 'depId',
-            children: 'subs',
-            label: 'name'
-        },
-        inputTime: null,
         checked: false,
         divideTip: '',
         divideBool: false
     };
   },
   created() {
-    if(this.version === 2) {
-        this.remoteMethod('power')
-    }
+    this.remoteMethod('power')
     // 编辑支出带出赋值
     if(this.version === 3) {
         this.ruleForm.deptId = this.propData.deptId
@@ -137,7 +135,7 @@ export default {
     getTips() {
         let arr = []
         this.ruleForm.deps.forEach(item => {
-            arr.push(item.depId+','+item.name)
+            arr.push(item.id+','+item.name)
         })
         let param = {
             deps: arr,
@@ -181,58 +179,21 @@ export default {
             }
         }
     },
-    clearDep: function () {
-        this.ruleForm.deptId = ''
-        this.ruleForm.deptName = ''
-    },
-    searchDep: function (payload) {
-        // this.clearSelect('emp')
-    },
-    depHandleClick(data) {
-        this.ruleForm.deptId = data.depId
-        this.ruleForm.deptName = data.name
-    },
-    clickNode(data) {
-        if(this.ruleForm.depArray.includes(data.name)) return
-        this.ruleForm.depArray.push(data.name)
-        this.ruleForm.deps.push(data)
-    },
-    delFn(val) {
-        let _index = ''
-        this.ruleForm.deps.find((item,index) => {
-            if(val === item.name) {
-                _index = index
+    getDepName(val) {
+        this.DepList.find(item => {
+            if(item.id === val) {
+                this.ruleForm.deptName = item.name
             }
         })
-        this.ruleForm.deps.splice(_index,1)
     },
-    depSearch(val) {
-        val = val.replace(/\s/g,'')
-        clearTimeout(this.inputTime)
-        this.inputTime = setTimeout(()=>{
-            if(val.length>0){
-                this.getDepList(val)
-            } else {
-                this.initDepList()
-            }
-        },800)
-    },
-    visibleFn(bool) {
-        if(!bool) {
-            this.initDepList()
-        }
-    },
-    initDepList() {
-        this.DepList = this.accountDepList.map(item=>Object.assign({},item))
-    },
-    getDepList(keyword) {
-        this.$ajax.get('/api/access/deps', {
-            keyword
-        }).then(res => {
-            res = res.data
-            if(res.status === 200) {
-                this.DepList = res.data
-            }
+    multiSelect(arr) {
+        this.ruleForm.deps = []
+        arr.forEach(item => {
+            this.DepList.find(ele => {
+                if(item === ele.id) {
+                    this.ruleForm.deps.push(ele)
+                }
+            })
         })
     },
     sureFn(v) {
@@ -268,7 +229,7 @@ export default {
             delete param.deptName
             let _array = []
             param.deps.forEach(item => {
-                _array.push(item.depId+','+item.name)
+                _array.push(item.id+','+item.name)
             })
             param.deps = _array
         } else {
@@ -382,18 +343,18 @@ export default {
 /deep/ .tree-box {
     width: 200px;
 }
-.el-select-dropdown.el-popper {
-    .el-select-dropdown__item {
-      height: 100%;
-      overflow: hidden;
-      padding: 0;
-      .el-tree {
-          margin-right: -17px; /*滚动条的宽度17px*/
-          max-height: 300px;
-          overflow-y: scroll;
-      }
-    }
-}
+// .el-select-dropdown.el-popper {
+//     .el-select-dropdown__item {
+//       height: 100%;
+//       overflow: hidden;
+//       padding: 0;
+//       .el-tree {
+//           margin-right: -17px; /*滚动条的宽度17px*/
+//           max-height: 300px;
+//           overflow-y: scroll;
+//       }
+//     }
+// }
 .el-radio-button, /deep/ .el-radio-button__inner {
     width: 100px;
 }
