@@ -14,7 +14,7 @@
                 </el-form-item>
                 <el-form-item label="部门">
                     <select-tree :data="DepList" :init="depName" @checkCell="depHandleClick" @clear="clearDep"
-                            @search="searchDep" treeType="power"></select-tree>
+                            @search="searchDep"></select-tree>
                 </el-form-item>
             </el-form>
             <p style="white-space: nowrap;">
