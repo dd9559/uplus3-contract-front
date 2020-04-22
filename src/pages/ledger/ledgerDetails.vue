@@ -25,7 +25,7 @@
           <div class="input-group">
             <label>部门:</label>
             <div class="margin-left">
-              <select-tree :data="DepList" treeType="power" key="dep1" :init="searchForm.deptName" @checkCell="depHandleClick"
+              <select-tree :data="DepList" key="dep1" :init="searchForm.deptName" @checkCell="depHandleClick"
                            @clear="clearDep"></select-tree>
             </div>
           </div>
@@ -173,8 +173,16 @@
           <div class="input-group">
             <label class="form-label">部门:</label>
             <div class="margin-left">
-              <select-tree :data="DepList" treeType="power" :init="dialogDetails.context.deptName" @checkCell="depHandleClick"
-                           @clear="clearDep"></select-tree>
+              <!--<select-tree :data="DepList" :init="dialogDetails.context.deptName" @checkCell="depHandleClick"
+                           @clear="clearDep"></select-tree>-->
+              <el-select class="w400" v-model="dialogDetails.context.deptId" placeholder="请选择" size="small" filterable clearable @change="depListHandleClick()" @clear="depListHandleClick('cls')">
+                <el-option
+                  v-for="item in depLists"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </div>
           </div>
           <div class="input-group">
@@ -184,10 +192,10 @@
           </div>
           <div class="input-group">
             <label class="form-label">金额:</label>
-            <!--<el-input class="w400 margin-left" :clearable="true" size="small" v-model="dialogDetails.context.money"
-                      placeholder="请输入" @input.native="cutNum">-->
-              <input type="text" size="small" class="w400 margin-left el-input__inner" placeholder="请输入" v-model="dialogDetails.context.money"
-                     @input="cutNum">
+            <el-input class="w400 margin-left" :clearable="true" size="small" v-model="dialogDetails.context.money"
+                      placeholder="请输入" @input="cutNum">
+              <!--<input type="text" size="small" class="w400 margin-left el-input__inner" placeholder="请输入" v-model="dialogDetails.context.money"
+                     @input="cutNum">-->
               <template slot="append">元</template>
             </el-input>
           </div>
@@ -283,7 +291,8 @@
           disabledDate(time){
             return Date.now()<time.getTime()
           }
-        }
+        },
+        depLists:[],//新增收入部门列表
       }
     },
     created(){
@@ -291,6 +300,21 @@
       this.getDictionary()
     },
     methods: {
+      getDepList:function (keyword='',type='init') {
+        // debugger
+        let url="/api/access/deps";
+        let isControl = true;
+        let param = {
+          keyword: keyword,
+          isControl: isControl
+        }
+        this.$ajax.get(url, param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.depLists=[].concat(res.data)
+          }
+        })
+      },
       changeTab:function(index){
         this.activeTab=index
       },
@@ -316,6 +340,21 @@
             this.list=[].concat(result.list)
             this.total=result.total
           }
+        })
+      },
+      depListHandleClick:function(type='init'){
+        if(type==='cls'){
+          Object.assign(this.dialogDetails.context,{
+            deptName: ''
+          })
+        }
+        this.depLists.find(item=>{
+          if(item.id===this.dialogDetails.context.deptId){
+            Object.assign(this.dialogDetails.context,{
+              deptName: item.name
+            })
+          }
+          return false
         })
       },
       depHandleClick: function (res) {
@@ -476,6 +515,7 @@
           case 'income':
             this.dialogVisible = type
             this.dialogDetails.checked=false//初始化勾选框
+            this.getDepList()
             if(!result){
               this.dialogDetails.title='新增'
               this.dialogDetails.context = Object.assign({}, {

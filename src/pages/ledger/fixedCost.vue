@@ -10,8 +10,16 @@
       <div class="input-group">
         <label class="form-label">部门:</label>
         <div class="margin-left">
-          <select-tree :data="DepList" treeType="power" class="dep-width" @checkCell="depHandleClick"
-                       @clear="clearDep"></select-tree>
+          <!--<select-tree :data="DepList" treeType="power" class="dep-width" @checkCell="depHandleClick"
+                       @clear="clearDep"></select-tree>-->
+          <el-select class="w400" v-model="dialogDetails.depId" placeholder="请选择" size="small" filterable clearable>
+            <el-option
+              v-for="item in depLists"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </div>
       </div>
       <div class="input-group">
@@ -103,6 +111,7 @@
         pageSize:10,
         total:0,
         cells_in:[],//导入数据的id集
+        depLists:[],//新增收入部门列表
       }
     },
     watch:{
@@ -118,13 +127,25 @@
         deep:true
       }
     },
-    /*mounted(){
-      this.dialogDetails=Object.assign({},this.dialogDetails,{
-        depId:'',
-        time:''
-      })
-    },*/
+    mounted(){
+      this.getDepList()
+    },
     methods:{
+      getDepList:function (keyword='',type='init') {
+        // debugger
+        let url="/api/access/deps";
+        let isControl = true;
+        let param = {
+          keyword: keyword,
+          isControl: isControl
+        }
+        this.$ajax.get(url, param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.depLists=[].concat(res.data)
+          }
+        })
+      },
       handleDate:function(time){
         let check=new Date(time)
 
