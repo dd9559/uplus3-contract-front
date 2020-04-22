@@ -100,8 +100,11 @@
               <span>{{scope.row.moneyTime|formatDate}}</span>
             </template>
           </el-table-column>
-          <el-table-column min-width="160" label="部门" prop="deptName"
-                           :formatter="nullFormatter"></el-table-column>
+          <el-table-column min-width="160" label="部门">
+            <template slot-scope="scope">
+              <span>{{scope.row.deptName}}</span><span v-if="scope.row.groupName">-{{scope.row.groupName}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="类别">
             <template slot-scope="scope">
               <span v-if="dictionary['762']&&dictionary['762'][`${scope.row.moneyType-1}`]">{{dictionary['762'][`${scope.row.moneyType-1}`].value}}</span>
