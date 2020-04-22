@@ -586,6 +586,11 @@ let TOOL = {
           title: rule[item].name,
           msg: ""
         };
+        if(type==="[object Null]"){
+          res.msg = "不能为空";
+          reject(res);
+          return;
+        }
         // debugger
         if (type === "[object Number]") {
           if (val <= 0 && typeInfo !== "negativeNum") {

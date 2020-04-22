@@ -122,8 +122,10 @@ const MIXINS = {
     /**
      * 获取部门
      */
-    remoteMethod:function (val) {
-      this.$ajax.get('/api/access/deps/tree',{keyword:val}).then(res=>{
+    remoteMethod:function (type='init') {
+      let url = '/api/access/deps/tree'
+      if(type === 'power') url = '/api/access/deps'
+      this.$ajax.get(url).then(res=>{
         res=res.data
         if(res.status===200){
           this.DepList=[].concat(res.data)
@@ -404,7 +406,7 @@ const MIXINS = {
     ])
   },
   mounted() {
-    window.onresize = this.comHeightFn;
+    window.onresize = this.comHeightFn();
 
     for (let item in this.power){
       // this.power[item].state=true

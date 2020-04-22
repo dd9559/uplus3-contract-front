@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view :key="$route.fullPath" v-if="$route.path==='/login'"/>
+    <router-view :key="$route.fullPath" v-if="['/login','/ledger','/error'].includes($route.path)"></router-view>
     <div class="main" v-else>
       <div class="nav">
         <img :src="getImg('logo.png')" alt="">
@@ -408,6 +408,16 @@
 </style>
 <style lang="less">
   @import "~@/assets/common.less";
+  .dialog-del{
+    .del-btn-bg{
+      background-color: #38BD8B;
+      color: #ffffff;
+    }
+    .el-button:hover{
+      background-color: inherit;
+      color: #38BD8B;
+    }
+  }
 
   #app {
     font-family: "Avenir", Helvetica, Arial, sans-serif;
