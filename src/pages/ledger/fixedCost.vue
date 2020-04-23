@@ -167,8 +167,9 @@
       handleSizeChange:function(){
 
       },
-      handleCurrentChange:function(){
-
+      handleCurrentChange:function(val){
+        this.currentPage=val
+        this.getList('page')
       },
       //表格行数据多选操作
       handleSelectionChange: function (val) {
@@ -192,7 +193,10 @@
           this.cells_in=[].concat(index)
         }
       },
-      getList:function(){
+      getList:function(type='init'){
+        if(type==='init'){
+          this.currentPage=1
+        }
         let param=Object.assign({},this.dialogDetails,{pageNum:this.currentPage,pageSize: this.pageSize})
         // debugger
         if(!param.time){
