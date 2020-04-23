@@ -114,7 +114,7 @@ export default {
     this.remoteMethod('power')
     // 编辑支出带出赋值
     if(this.version === 3) {
-        this.ruleForm.deptId = this.propData.deptId
+        this.ruleForm.deptId = this.propData.groupId ? this.propData.groupId : this.propData.deptId
         this.ruleForm.deptName = this.propData.deptName
         this.ruleForm.moneyType = this.propData.moneyType
         this.ruleForm.moneyDepiction = this.propData.moneyDepiction
