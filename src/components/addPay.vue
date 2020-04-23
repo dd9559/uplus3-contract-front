@@ -341,6 +341,10 @@ export default {
             border-color: @btn-bg;
         }
     }
+    .w300 /deep/ .el-select__tags {
+        max-height: 52px;
+        overflow: auto;
+    }
 }
 /deep/ .tree-box {
     width: 200px;
