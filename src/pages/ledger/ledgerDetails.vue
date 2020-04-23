@@ -72,7 +72,7 @@
               支出<span>{{titleMsg.expenditure}}</span>元
             </li>
             <li>
-              利润<span>{{titleMsg.profit}}</span>元
+              利润<span :style="{'color':titleMsg.profit>0?'#00CC99':'red'}"><i v-if="titleMsg.profit>0">+</i>{{titleMsg.profit}}</span>元
             </li>
           </ul>
           <p>
