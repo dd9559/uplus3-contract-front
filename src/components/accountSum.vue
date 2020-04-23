@@ -39,7 +39,7 @@
                         支出<span class="color-red">{{tableHead.expenditure}}</span>元
                     </li>
                     <li>
-                        利润<span class="color-red">{{tableHead.profit}}</span>元
+                        利润<span :class="tableHead.profit>0?'color-green':tableHead.profit<0?'color-red':''">{{addSum(tableHead.profit)}}</span>元
                     </li>
                 </ul>
                 <p>
@@ -61,7 +61,7 @@
                 </el-table-column>
                 <el-table-column label="利润（元）" prop="profit">
                     <template slot-scope="scope">
-                        <span :class="scope.row.profit>0?'color-green':scope.row.profit<0?'color-red':''">{{scope.row.profit}}</span>
+                        <span :class="scope.row.profit>0?'color-green':scope.row.profit<0?'color-red':''">{{addSum(scope.row.profit)}}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -105,6 +105,9 @@ export default {
 
     },
     methods: {
+        addSum(val) {
+            return val>0 ? `+${val}` : val
+        },
         getData() {
             let param = {
                 pageNum: this.pageNum,
