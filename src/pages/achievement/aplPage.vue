@@ -1706,8 +1706,8 @@
         this.$ajax.get('/api/appeal/getExamineInfo', {aId: this.aId}).then(res => {
           if (res.status === 200) {
             //2.4.6新需求 增加合同备注栏
-            if(data.data.contRemarks&&data.data.contRemarks.length>0){
-              this.contRemarks=data.data.contRemarks
+            if(res.data.data.contRemarks&&res.data.data.contRemarks.length>0){
+              this.contRemarks=res.data.data.contRemarks
             }else{
               this.contRemarks=''
             }
