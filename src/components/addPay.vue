@@ -165,6 +165,7 @@ export default {
                 if(item.level === 5) {
                     this.ruleForm.shareType = ''
                     this.$message({message: '当前选择的均摊组织范围不能分店,组织类型请选择分组', type: 'error'})
+                    return
                 }
             })
         } else {
@@ -177,8 +178,10 @@ export default {
             if(!level_arr.includes(5) && !num_arr.some(item => item>0)) {
                 this.ruleForm.shareType = ''
                 this.$message({message: '当前选择的均摊组织范围不能分组,组织类型请选择分店', type: 'error'})
+                return
             }
         }
+        this.ruleForm.money&&this.getTips()
     },
     getDepName(val) {
         this.DepList.find(item => {
@@ -276,11 +279,6 @@ export default {
         if(val.length&&this.ruleForm.shareType!==''&&this.ruleForm.money) {
             this.getTips()
         }
-      },
-      'ruleForm.shareType'(val) {
-          if(val!==''&&this.ruleForm.depArray.length&&this.ruleForm.money) {
-            this.getTips()
-          }
       },
       'ruleForm.money'(val) {
           if(val>0&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
