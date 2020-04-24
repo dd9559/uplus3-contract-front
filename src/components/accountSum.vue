@@ -126,7 +126,6 @@ export default {
             })
         },
         getExcel() {
-            if(!this.total)  return
             let param = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
