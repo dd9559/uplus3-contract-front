@@ -202,28 +202,47 @@ let contractConfig = {
    */
   initForm: function (config, readonly = 1) {
     config.forEach(function (item) {
-      let dom = document.querySelector(`*[extendparam=${item}]`)
-      if (readonly === 1) {
-        dom.setAttribute("readonly", "readonly");
-        dom.setAttribute('disabled', "disabled")
-        dom.setAttribute('systemParam', "true")
-      }
-      let domType = dom.getAttribute('type')
-      let domTag = dom.getAttribute('tag')
-      //判断标签元素为输入框、下拉框（变相的也算输入框）时清空输入内容，勾选框时取消勾选状态
-      if (domType === 'text' || domType === 'number' || domTag === 'input-auto') {
-        if (dom.tagName.toLocaleLowerCase() === 'input') {
-          dom.value = ''
-          dom.removeAttribute("value")
-        } else {
-          dom.innerHTML = ''
-          //判断是否需要'input-before'类来显示placeholder属性
-          if(item.indexOf('_')==-1){
-            dom.classList.add('input-before')
+      let isCheckBox=(item.indexOf('checkbox')===-1)
+      let dom = isCheckBox?document.querySelector(`*[extendparam=${item}]`):document.querySelectorAll(`*[name=${item.split('_')[1]}]`)//将子项中的勾选框和其他表单元素区别
+      if(isCheckBox){
+        if (readonly === 1) {
+          dom.setAttribute('systemParam', "true");
+          dom.setAttribute("readonly", "readonly");
+          dom.setAttribute("disabled", "disabled");
+        }else{
+          dom.removeAttribute('systemParam');
+          dom.removeAttribute("readonly");
+          dom.removeAttribute("disabled");
+        }
+        let domType = dom.getAttribute('type')
+        let domTag = dom.getAttribute('tag')
+        //判断标签元素为输入框、下拉框（变相的也算输入框）时清空输入内容，勾选框时取消勾选状态
+        if (domType === 'text' || domType === 'number' || domTag === 'input-auto') {
+          if (dom.tagName.toLocaleLowerCase() === 'input') {
+            dom.value = ''
+            dom.removeAttribute("value")
+          } else {
+            dom.innerHTML = ''
+            //判断是否需要'input-before'类来显示placeholder属性
+            if(item.indexOf('_')==-1){
+              dom.classList.add('input-before')
+            }
+            //清空中文数字不可编辑项2020-04-24加
+            let chineseSpan=document.querySelector(`*[extendparam=${item+'_add'}]`)
+            if(chineseSpan){
+              chineseSpan.innerHTML=''
+            }
           }
         }
-      } else {
-        dom.querySelector('p').removeAttribute('checked')
+      }else {
+        dom.forEach(item=>{
+          item.querySelector('p').removeAttribute('checked')
+          if (readonly === 1) {
+            item.setAttribute("readonly", "readonly");
+          }else{
+            item.removeAttribute('readonly')
+          }
+        })
       }
     })
   },
