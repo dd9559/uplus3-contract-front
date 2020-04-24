@@ -305,8 +305,8 @@ export default {
                       bool = true
                   }
               })
+              this.depsList = [...val]
               if(!bool) {
-                  this.depsList = [...val]
                   this.depsList.unshift({
                       id: this.ruleForm.deptId,
                       name: this.ruleForm.deptName
