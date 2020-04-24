@@ -57,7 +57,7 @@
                 </div>
                 <div class="confirm-btn">
                     <el-button size="small" @click="close">取 消</el-button>
-                    <el-button size="small" style="background-color: #38BD8B; color: white;" @click="sureFn(version)">确 定</el-button> 
+                    <el-button size="small" style="background-color: #38BD8B; color: white;" @click="sureFn(version)" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button> 
                 </div>
             </div>
 		</el-dialog>
@@ -107,7 +107,8 @@ export default {
         },
         checked: false,
         divideTip: '',
-        divideBool: false
+        divideBool: false,
+        fullscreenLoading: false
     };
   },
   created() {
@@ -246,9 +247,11 @@ export default {
                 param.id = this.propData.id
             }
         }
+        this.fullscreenLoading = true
         this.$ajax.post(`/api/accountBook/${urlStr}`,param).then(res => {
             res = res.data
             if(res.status === 200) {
+                this.fullscreenLoading = false
                 this.$message(res.message)
                 if(this.checked) {
                     this.ruleForm.shareType = ''
@@ -264,6 +267,7 @@ export default {
                 }
             }
         }).catch(error => {
+            this.fullscreenLoading = false
             this.$message({message: error})
         })
     }
