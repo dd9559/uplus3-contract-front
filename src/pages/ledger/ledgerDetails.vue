@@ -229,7 +229,7 @@
         </div>
         <div slot="footer" class="dialog-footer">
           <el-checkbox v-model="dialogDetails.checked" class="btn-remember" v-if="dialogDetails.title==='新增'">继续创建下一个</el-checkbox>
-          <span><el-button @click="handleClose" size="small">取 消</el-button><el-button type="primary" @click="incomeOper()" class="btn-bg" size="small">确 定</el-button></span>
+          <span><el-button @click="handleClose" size="small">取 消</el-button><el-button type="primary" @click="incomeOper()" class="btn-bg" size="small" :disabled="fullscreenLoading">确 定</el-button></span>
         </div>
       </el-dialog>
       <fixed-cost v-if="dialogVisible==='import'" :dialogVisible="dialogVisible==='import'" @close="costClose"></fixed-cost>
@@ -296,6 +296,7 @@
           }
         },
         depLists:[],//新增收入部门列表
+        fullscreenLoading:false,//新增定时器
       }
     },
     created(){
@@ -445,6 +446,7 @@
           if(edit){
             url='/accountBook/updateAccountBook'
           }
+          this.fullscreenLoading=true
           this.$ajax.post('/api'+url,param).then(res=>{
             if(this.dialogDetails.checked&&!edit){
               this.dialogDetails.context=Object.assign({},this.dialogDetails.context,{
@@ -455,11 +457,13 @@
             }else {
               this.dialogVisible=''
             }
+            this.fullscreenLoading=false
             this.$message({
               message:!edit?'新增成功':'编辑成功'
             })
             this.getData()
           }).catch(error=>{
+            this.fullscreenLoading=false
             this.$message({
               message:error
             })
