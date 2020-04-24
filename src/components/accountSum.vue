@@ -129,17 +129,22 @@ export default {
             })
         },
         getExcel() {
-            this.getData('search')
-            let param = {
-                pageNum: this.pageNum,
-                pageSize: this.pageSize,
-                deptId: this.deptId
+            if(this.sumDate&&this.sumDate.length&&this.depName) {
+                this.getData('search')
+                let param = {
+                    pageNum: this.pageNum,
+                    pageSize: this.pageSize,
+                    deptId: this.deptId
+                }
+                if(this.sumDate && this.sumDate.length) {
+                    param.moneyTimeStart = this.sumDate[0]
+                    param.moneyTimeEnd = this.sumDate[1]
+                }
+                this.excelCreate('/input/accountBookExcel',param)
+            } else {
+                this.$message('请选择月份和部门')
+                return
             }
-            if(this.sumDate && this.sumDate.length) {
-                param.moneyTimeStart = this.sumDate[0]
-                param.moneyTimeEnd = this.sumDate[1]
-            }
-            this.excelCreate('/input/accountBookExcel',param)
         },
         clearDep: function () {
             this.depName = ''
