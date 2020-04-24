@@ -32,7 +32,7 @@
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="费用项" class="form-item">
-                    <el-input v-model.trim="ruleForm.moneyDepiction" maxlength="100" clearable></el-input>
+                    <el-input v-model="ruleForm.moneyDepiction" maxlength="100" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="金额" class="money-item form-item">
                     <el-input v-model="ruleForm.money" @input="cutNumber" clearable><template slot="append">元</template></el-input>
@@ -47,7 +47,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item label="备注" class="remark-input">
-                    <el-input type="textarea" v-model.trim="ruleForm.remark" maxlength="250"></el-input>
+                    <el-input type="textarea" v-model="ruleForm.remark" maxlength="250"></el-input>
                     <span>{{ruleForm.remark.length}}/250</span>
                 </el-form-item>
             </el-form>
@@ -57,7 +57,7 @@
                 </div>
                 <div class="confirm-btn">
                     <el-button size="small" @click="close">取 消</el-button>
-                    <el-button size="small" style="background-color: #38BD8B; color: white;" @click="sureFn(version)" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button> 
+                    <el-button size="small" style="background-color: #38BD8B; color: white;" @click="sureFn(version)" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
                 </div>
             </div>
 		</el-dialog>
@@ -231,7 +231,7 @@ export default {
                 return
             }
         }
-        
+
         this.ruleForm.moneyTime = this.$tool.dateFormat(this.ruleForm.moneyTime)
         let param = {...this.ruleForm}
         let urlStr = 'insertAccountBook'
