@@ -454,6 +454,7 @@
                 money: '',
                 remark: ''
               })
+              this.dialogDetails.checked=false
             }else {
               this.dialogVisible=''
             }
