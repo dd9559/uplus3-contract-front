@@ -156,6 +156,7 @@ export default {
         })
     },
     checkTypeFn(val) {
+        debugger
         if(!this.ruleForm.depArray.length) {
             this.ruleForm.shareType = ''
             this.$message({message: '请先选择均摊组织范围', type: 'error'})
@@ -182,7 +183,7 @@ export default {
                 return
             }
         }
-        this.ruleForm.money&&this.getTips()
+        (this.ruleForm.shareType!==''&&this.ruleForm.money)&&this.getTips()
     },
     getDepName(val) {
         this.DepList.find(item => {
