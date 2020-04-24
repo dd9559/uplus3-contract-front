@@ -108,7 +108,10 @@ export default {
         addSum(val) {
             return val>0 ? `+${val}` : val
         },
-        getData() {
+        getData(type='search') {
+            if(type==='search'){
+                this.pageNum = 1
+            }
             let param = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,
@@ -126,6 +129,7 @@ export default {
             })
         },
         getExcel() {
+            this.getData('search')
             let param = {
                 pageNum: this.pageNum,
                 pageSize: this.pageSize,

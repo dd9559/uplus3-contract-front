@@ -6,7 +6,7 @@
                     <!-- <select-tree :data="DepList" :init="ruleForm.deptName" @checkCell="depHandleClick" @clear="clearDep"
                          @search="searchDep" treeType="power"></select-tree> -->
                     <el-select v-model="ruleForm.deptId" @change="getDepName" filterable>
-                        <el-option v-for="item in DepList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                        <el-option v-for="item in version===1?DepList:depsList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="均摊组织范围" v-if="version===2" class="form-item">
@@ -108,7 +108,8 @@ export default {
         checked: false,
         divideTip: '',
         divideBool: false,
-        fullscreenLoading: false
+        fullscreenLoading: false,
+        depsList: []
     };
   },
   created() {
@@ -156,7 +157,6 @@ export default {
         })
     },
     checkTypeFn(val) {
-        debugger
         if(!this.ruleForm.depArray.length) {
             this.ruleForm.shareType = ''
             this.$message({message: '请先选择均摊组织范围', type: 'error'})
@@ -186,11 +186,18 @@ export default {
         (this.ruleForm.shareType!==''&&this.ruleForm.money)&&this.getTips()
     },
     getDepName(val) {
+        let flag = false
         this.DepList.find(item => {
             if(item.id === val) {
                 this.ruleForm.deptName = item.name
+                flag = true
             }
         })
+        if(!flag) {
+            this.$message('没有权限无法选择')
+            this.ruleForm.deptId = ''
+            this.ruleForm.deptName = ''
+        }
     },
     multiSelect(arr) {
         this.ruleForm.deps = []
@@ -288,6 +295,23 @@ export default {
       'ruleForm.money'(val) {
           if(val>0&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
             this.getTips()
+          }
+      },
+      DepList(val) {
+          if(this.version===3) {
+              let bool = false
+              val.find(item => {
+                  if(item.id === this.ruleForm.deptId) {
+                      bool = true
+                  }
+              })
+              if(!bool) {
+                  this.depsList = [...val]
+                  this.depsList.unshift({
+                      id: this.ruleForm.deptId,
+                      name: this.ruleForm.deptName
+                  })
+              }
           }
       }
   }
