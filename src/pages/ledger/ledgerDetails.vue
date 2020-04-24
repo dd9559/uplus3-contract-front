@@ -304,18 +304,26 @@
       this.getDictionary()
     },
     methods: {
-      getDepList:function (keyword='',type='init') {
+      getDepList:function (dep) {
         // debugger
         let url="/api/access/deps";
         let isControl = true;
         let param = {
-          keyword: keyword,
+          keyword: '',
           isControl: isControl
         }
         this.$ajax.get(url, param).then(res => {
           res = res.data
           if (res.status === 200) {
             this.depLists=[].concat(res.data)
+            if(dep&&dep.deptId){
+              let state=this.depLists.some(item=>{
+                return item.id===dep.deptId
+              })
+              if(!state){
+                this.depLists.unshift({id:this.dialogDetails.context.deptId,name:this.dialogDetails.context.deptName,flag:99})
+              }
+            }
           }
         })
       },
@@ -354,9 +362,19 @@
         }
         this.depLists.find(item=>{
           if(item.id===this.dialogDetails.context.deptId){
-            Object.assign(this.dialogDetails.context,{
-              deptName: item.name
-            })
+            if(item.flag&&item.flag===99){
+              this.$message({
+                message:'没有权限无法选择'
+              })
+              Object.assign(this.dialogDetails.context,{
+                deptName: '',
+                deptId: ''
+              })
+            }else{
+              Object.assign(this.dialogDetails.context,{
+                deptName: item.name
+              })
+            }
           }
           return false
         })
@@ -523,7 +541,7 @@
           case 'income':
             this.dialogVisible = type
             this.dialogDetails.checked=false//初始化勾选框
-            this.getDepList()
+            this.getDepList(result)
             if(!result){
               this.dialogDetails.title='新增'
               this.dialogDetails.context = Object.assign({}, {
@@ -538,6 +556,7 @@
             }else {
               this.dialogDetails.title='编辑'
               let {id,deptId,deptName,moneyDepiction,money,moneyTime,remark}=result
+              console.log(this.depLists)
               this.dialogDetails.context = Object.assign({}, this.dialogDetails.context, {
                 id,
                 deptId,
@@ -589,7 +608,7 @@
           this.tableNumberCom = h2 + th;
         }
       },
-    }
+    },
   }
 </script>
 
