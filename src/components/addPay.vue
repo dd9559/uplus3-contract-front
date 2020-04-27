@@ -293,7 +293,7 @@ export default {
         }
       },
       'ruleForm.money'(val) {
-          if(val>0&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
+          if(val&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
             this.getTips()
           }
       },
