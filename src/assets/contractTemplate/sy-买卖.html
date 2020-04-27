@@ -204,7 +204,27 @@
       display: inline-block;
       width: 230px;
     }
-
+    .ulbox {
+      overflow: hidden;
+      margin-top: 50px;
+    }
+    .ulbox li {
+      float: left;
+      box-sizing: border-box;
+      width: 50%;
+      margin-bottom: 10px;
+    }
+    .ulbox li span {
+      display: inline-block;
+      border-bottom: 1px solid gray;
+    }
+    .signTime{
+      padding: 10px 0 10px 340px;
+    }
+    .signTime span{
+      display: inline-block;
+      border-bottom: 1px solid gray;
+    }
     .page1 {
       break-before: page;
       page-break-before: always;
@@ -277,7 +297,7 @@
       <div class="lh-18"></div>
 
       <p id="three" class="navTitle bold">第三条、成交方式</p>
-      <div class="lh-18">出卖人与买受人通过<span class="input-before" tag="input-auto" extendParam="val30"></span>居间介绍成交。</div>
+      <div class="lh-18">出卖人与买受人通过<span systemparam="singleCompany" tag="input-auto"></span>居间介绍成交。</div>
 
       <p id="four" class="navTitle bold">第四条、房产转让价格</p>
       <div class="lh-18">（一）该房产转让价格为按套转让，转让价格为人民币<span class="input-before" tag="input-auto" extendParam="val31" listen="number"></span>元（大写<span tag="input-auto" extendParam="val31_add" systempatam="true"></span>圆整）。此转让价：</div>
@@ -362,7 +382,7 @@
       <p class="navTitle bold" id="fourteen">第十四条、第十四条、生效要件</p>
       <div class="lh-18">本合同自买卖双方签字之日起生效，双方各自保证其委托代理真实有效。本合同一式四份，出卖人、买受人、居间方、房地产管理部门各一份。</div>
 
-      <div class="sign-pos">
+      <!-- <div class="sign-pos">
         <p>甲方：</p><p>乙方：</p><p>丙方：</p>
       </div>
       <div class="sign-pos">
@@ -370,7 +390,22 @@
       </div>
       <div class="sign-pos">
         <p>日期：</p><p>日期：</p><p>日期：</p>
+      </div> -->
+      <div class="ulbox">
+        <ul>
+          <li style="padding-left: 6px;">出卖人(签章)：<span style="width:210px;"></span></li>
+          <li style="padding-left: 6px;">买受人(签章)：<span style="width:210px;"></span></li>
+        </ul>
+        <ul>
+          <li>【法定代表人】：<span style="width:200px;"></span></li>
+          <li>【法定代表人】：<span style="width:200px;"></span></li>
+        </ul>
+        <ul>
+          <li>【委托代理人】(签章)：<span style="width:152px;"></span></li>
+          <li>【委托代理人】(签章)：<span style="width:152px;"></span></li>
+        </ul>
       </div>
+      <div class="signTime">合同签订时间：<span style="width:100px;"></span>年<span style="width:50px;"></span>月<span style="width:50px;"></span>日</div>
     </div>
 
     <div class="page1">

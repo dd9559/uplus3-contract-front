@@ -35,7 +35,7 @@ let sub = {
   },
   'checkbox_lease': null,
   'val29': null,
-  'val30': null,
+  // 'val30': null,//第三条
   'val31': null,
   'checkbox_Transferprice':null,
   'checkbox_Parkingspace':{
@@ -258,7 +258,7 @@ let msg={
   ownerTel: "18888888888",
   ownerTels: "",
   propertyAddr: "a市b区c",
-  singleCompany: "",
+  singleCompany: "是的噶几开会说",
   dealPrice:1000,
   dealPriceUpper:'壹仟',
   square:160
@@ -266,7 +266,7 @@ let msg={
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
+  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
