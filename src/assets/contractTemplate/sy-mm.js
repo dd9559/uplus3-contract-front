@@ -265,37 +265,13 @@ let msg={
 }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  let arr = []
-  if (readonlyItem === 'signDate') {
-    let time = new Date(msg.signDate)
-    arr.push(time.getFullYear())
-    arr.push(time.getMonth() + 1)
-    arr.push(time.getDate())
-  }
 
-  let readonlyArr = ['ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
-  if (onlyReadDom.length > 0) {
-    onlyReadDom.forEach((element, index) => {
-      if (readonlyItem === 'signDate') {
-        element.setAttribute('value', arr[index])
-      } else if (readonlyItem === "companyNames") {
-        element.innerHTML = msg[readonlyItem][0]
+  let readonlyArr = ['code','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
+  if(onlyReadDom.length>0){
+    onlyReadDom.forEach((element,index) => {
+      if(readonlyArr.includes(readonlyItem)){
+        element.innerHTML=msg[readonlyItem]
         element.classList.remove('input-before')
-      } else if (readonlyArr.includes(readonlyItem)) {
-        if (element.getAttribute("systemparam") === "propertyAddr") {
-          let value = msg["propertyAddr"]
-          if (value.substring(0, 3) === "淄博市") {
-            element.innerHTML = value.replace("淄博市", '')
-          } else {
-            element.innerHTML = value
-          }
-        } else {
-          element.innerHTML = msg[readonlyItem]
-        }
-        element.classList.remove('input-before')
-      } else {
-        element.value = msg[readonlyItem]
-        element.setAttribute('value', msg[readonlyItem])
       }
     })
   }

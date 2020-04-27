@@ -226,7 +226,7 @@
   </div>
   <div>
     <div class="title bold"><p>存量房买卖合同</p></div>
-    <div class="bold" style="text-align: right;margin-bottom: 30px;"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
+    <div class="bold" style="text-align: right;margin-bottom: 30px;"><span>合同编号：<span systemparam="code" tag="input-auto"></span></span></div>
     <div class="note">
       <p>1、本合同文本适用于存量房买卖。存量房，即二手房，是指通过办理转移登记取得房屋所有权证的房屋。</p>
       <p>2、签订本合同前，出卖人应当向买受人出示房屋所有权证、土地使用权证及其他有关证书和证明文件。</p>
@@ -234,35 +234,35 @@
     </div>
     <div class="cw_message">
       <ul>
-        <li><span>出卖人（甲方）：</span><span systemparam="ownerName" tag="input-auto"></span></li>
-        <li><span>证件号码：</span><span systemparam="ownerID" tag="input-auto"></span></li>
+        <li><span>房屋出卖人：</span><span systemparam="ownerName" tag="input-auto"></span></li>
+        <!-- <li><span>证件号码：</span><span systemparam="ownerID" tag="input-auto"></span></li> -->
       </ul>
       <ul>
-        <li><span>房产共有权人：</span><span systemparam="ownerNames" tag="input-auto"></span></li>
-        <li><span>证件号码：</span><span systemparam="ownerIDs" tag="input-auto"></span></li>
+        <li><span>共有权人：</span><span systemparam="ownerNames" tag="input-auto"></span></li>
+        <!-- <li><span>证件号码：</span><span systemparam="ownerIDs" tag="input-auto"></span></li> -->
       </ul>
       <ul>
         <li><span>代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val5"></span></li>
-        <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before" extendParam="val6"></span></li>
+        <!-- <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before" extendParam="val6"></span></li> -->
       </ul>
       <ul>
-        <li><span>买受人（乙方）：</span><span systemparam="guestName" tag="input-auto"></span></li>
-        <li><span>身份证/护照/工商注册号：</span><span systemparam="guestID" tag="input-auto"></span></li>
+        <li><span>房屋买受人：</span><span systemparam="guestName" tag="input-auto"></span></li>
+        <!-- <li><span>身份证/护照/工商注册号：</span><span systemparam="guestID" tag="input-auto"></span></li> -->
       </ul>
       <ul>
-        <li><span>房产共有权人：</span><span systemparam="guestNames" tag="input-auto"></span></li>
-        <li><span>证件号码：</span><span systemparam="guestIDs" tag="input-auto"></span></li>
+        <li><span>共同买受人：</span><span systemparam="guestNames" tag="input-auto"></span></li>
+        <!-- <li><span>证件号码：</span><span systemparam="guestIDs" tag="input-auto"></span></li> -->
       </ul>
       <ul>
         <li><span>代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val11"></span></li>
-        <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before" extendParam="val12"></span></li>
+        <!-- <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before" extendParam="val12"></span></li> -->
       </ul>
     </div>
     <div class="cw_agreement">
       <p>根据《中华人民共和国合同法》、《中华人民共和国城市房地产管理法》、《中华人民共和国物权法》及其他有关法律、法规的规定，买卖双方在平等、自愿、协商一致的基础上就存量房屋买卖事宜达成如下协议：</p>
 
       <p id="one" class="navTitle bold">第一条、房屋基本情况 </p>
-      <div class="lh-18">出卖人所售房屋坐落为<span systemparam="propertyAddr" tag="input-auto" extendParam="val13"></span>市<span systemparam="propertyAddr" tag="input-auto" extendParam="val14"></span>。<div class="info-checkbox" name="houseUse"><p type="check"></p>房屋产权证</div><div class="info-checkbox" name="houseUse"><p type="check"></p>合同房备案确认单</div>所载建筑面积为<span tag="input-auto" class="text-limit input-before" extendParam="val15" listen="number"></span>平方米。<div class="info-checkbox" name="houseUsing"><p type="check"></p>该房屋</div>已取得房屋所有权证/不动产权证书，证号为：<span tag="input-auto" class="text-limit input-before" extendParam="val16"></span>；该房屋占用的建设用地，土地性质：<span tag="input-auto" class="text-limit input-before" extendParam="val17"></span>；国有土地使用证/不动产权证书号：<span tag="input-auto" class="text-limit input-before" extendParam="val18"></span>，填发单位：<span tag="input-auto" class="text-limit input-before" extendParam="val19"></span>。<div class="info-checkbox" name="houseUsing"><p type="check"></p>该房屋</div>未取得房屋所有权证，购房合同编号为<span tag="input-auto" class="text-limit input-before" extendParam="val20"></span>，出卖人保证本合同项下房屋可以在所在区局规定的正常时间内办理出卖人名下不动产权证书，办证费用由<div class="info-checkbox" name="bear"><p type="check"></p>出卖人承担</div><div class="info-checkbox" name="bear"><p type="check"></p>买受人承担</div>。</div>
+      <div class="lh-18">出卖人所售房屋坐落为<span systemparam="propertyAddr" tag="input-auto" extendParam="val14"></span>。<div class="info-checkbox" name="houseUse"><p type="check"></p>房屋产权证</div><div class="info-checkbox" name="houseUse"><p type="check"></p>合同房备案确认单</div>所载建筑面积为<span tag="input-auto" class="text-limit input-before" extendParam="val15" listen="number"></span>平方米。<div class="info-checkbox" name="houseUsing"><p type="check"></p>该房屋</div>已取得房屋所有权证/不动产权证书，证号为：<span tag="input-auto" class="text-limit input-before" extendParam="val16"></span>；该房屋占用的建设用地，土地性质：<span tag="input-auto" class="text-limit input-before" extendParam="val17"></span>；国有土地使用证/不动产权证书号：<span tag="input-auto" class="text-limit input-before" extendParam="val18"></span>，填发单位：<span tag="input-auto" class="text-limit input-before" extendParam="val19"></span>。<div class="info-checkbox" name="houseUsing"><p type="check"></p>该房屋</div>未取得房屋所有权证，购房合同编号为<span tag="input-auto" class="text-limit input-before" extendParam="val20"></span>，出卖人保证本合同项下房屋可以在所在区局规定的正常时间内办理出卖人名下不动产权证书，办证费用由<div class="info-checkbox" name="bear"><p type="check"></p>出卖人承担</div><div class="info-checkbox" name="bear"><p type="check"></p>买受人承担</div>。</div>
 
       <p id="two" class="navTitle bold">第二条、房屋权属情况</p>
       <div class="lh-18">（一）该房屋性质为：<div class="info-checkbox" name="Housingnature"><p type="check"></p>商品房</div>；<div class="info-checkbox" name="Housingnature"><p type="check"></p>已购公有住房</div>；<div class="info-checkbox" name="Housingnature"><p type="check"></p>购房合同满5年的经济适用房</div>。</div>
@@ -472,7 +472,7 @@
         if(window.location.host==='localhost:8080'){
           if(addrList[i].indexOf('bundle')>-1){
             // addrList[i]=host_other+'/'+addrList[i]
-            addrList[i]='./mm-lc.js'
+            addrList[i]='./sy-mm.js'
           }else{
             addrList[i]=host_other+'/'+addrList[i]
           }
@@ -488,7 +488,7 @@
           document.head.appendChild(hm);
         }else{
           var hm = document.createElement("script");
-          addrList[i].includes('mm-lc')&&(hm.type = 'module');
+          addrList[i].includes('sy-mm')&&(hm.type = 'module');
           hm.src = addrList[i];
           var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
           s.parentNode.insertBefore(hm,s);
