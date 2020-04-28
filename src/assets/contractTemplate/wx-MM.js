@@ -91,7 +91,6 @@ let Obj={
     'checkbox_deposit':null,
     'checkbox_structure':null,
     'checkbox_structure1':null,
-    'checkbox_deposit':null,
     'time_val50':null,
     'val51':null,
     'val52':null,
