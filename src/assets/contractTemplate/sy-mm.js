@@ -235,8 +235,8 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg={
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+/*let msg={
   code: "S0001191107007",
   companyNames: ["金银湖三级门店哦"],
   guestCardType: "军官证",
@@ -262,7 +262,7 @@ let msg={
   dealPrice:1000,
   dealPriceUpper:'壹仟',
   square:160
-}
+}*/
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 

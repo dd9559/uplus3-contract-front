@@ -248,7 +248,7 @@
   </div>
   <div>
     <div class="title bold"><p>存量房买卖合同</p></div>
-    <div class="bold" style="text-align: right;margin-bottom: 30px;"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
+    <div class="bold" style="text-align: right;margin-bottom: 30px;"><span>合同编号：<span systemparam="code" tag="input-auto"></span></span></div>
     <div class="note">
       <p>1、本合同文本适用于存量房买卖。存量房，即二手房，是指通过办理转移登记取得房屋所有权证的房屋。</p>
       <p>2、签订本合同前，出卖人应当向买受人出示房屋所有权证、土地使用权证及其他有关证书和证明文件。</p>
@@ -299,7 +299,7 @@
       <div class="lh-18"></div>
 
       <p id="three" class="navTitle bold">第三条、成交方式</p>
-      <div class="lh-18">出卖人与买受人通过<span tag="input-auto" systemparam="singleCompany"></span>居间介绍成交。</div>
+      <div class="lh-18">出卖人与买受人通过<span tag="input-auto" company="true" class="input-before text-limit" systemparam="companyNames" extendParam="val30"></span>居间介绍成交。</div>
 
       <p id="four" class="navTitle bold">第四条、房产转让价格</p>
       <div class="lh-18">（一）该房产转让价格为按套转让，转让价格为人民币<span class="input-before" tag="input-auto" extendParam="val31" listen="number"></span>元（大写<span tag="input-auto" extendParam="val31_add" systempatam="true"></span>圆整）。此转让价：</div>

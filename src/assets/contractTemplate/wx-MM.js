@@ -36,6 +36,7 @@ let Obj={
     },
     'checkbox_lease': null,
     'val29':null,
+    'val30':null,
     'val31':null,
     'checkbox_Transferprice': null,
     'checkbox_Parkingspace':{
@@ -277,11 +278,15 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
+  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square','companyNames']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
-        element.innerHTML=msg[readonlyItem]
+        if(readonlyItem==='companyNames') {
+          element.innerHTML=msg[readonlyItem][0]
+        } else {
+          element.innerHTML=msg[readonlyItem]
+        }
         element.classList.remove('input-before')
       }
     })
@@ -336,6 +341,23 @@ contractConfig.checkboxListener(function(){},function(obj,index){
     }
     boxArray.forEach((item,i)=>{
       // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
+      if(item===obj.currentTarget){
+        if(item.querySelector('p').getAttribute('checked')){
+          if(i===0){
+            contractConfig.initForm(checkIO[0],0)
+          }else {
+            contractConfig.initForm(checkIO[0],1)
+          }
+        }else{
+          contractConfig.initForm(checkIO[0],1)
+        }
+      }
+    })
+  }else if(attr==='pay'){
+    let checkIO={
+      0: ['val36']
+    }
+    boxArray.forEach((item,i)=>{
       if(item===obj.currentTarget){
         if(item.querySelector('p').getAttribute('checked')){
           if(i===0){
