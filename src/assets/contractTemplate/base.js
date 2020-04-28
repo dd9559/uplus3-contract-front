@@ -211,7 +211,7 @@ let contractConfig = {
           dom.setAttribute("disabled", "disabled");
         }else{
           dom.removeAttribute('systemParam');
-          dom.removeAttribute("readonly");
+          // dom.removeAttribute("readonly");
           dom.removeAttribute("disabled");
         }
         let domType = dom.getAttribute('type')
