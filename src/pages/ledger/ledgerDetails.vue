@@ -464,6 +464,12 @@
           if(edit){
             url='/accountBook/updateAccountBook'
           }
+          if(param.money<=0){
+            this.$message({
+              message:'金额必须大于0元'
+            })
+            return 
+          }
           this.fullscreenLoading=true
           this.$ajax.post('/api'+url,param).then(res=>{
             if(this.dialogDetails.checked&&!edit){
