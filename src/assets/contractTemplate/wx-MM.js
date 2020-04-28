@@ -353,6 +353,23 @@ contractConfig.checkboxListener(function(){},function(obj,index){
         }
       }
     })
+  }else if(attr==='pay'){
+    let checkIO={
+      0: ['val36']
+    }
+    boxArray.forEach((item,i)=>{
+      if(item===obj.currentTarget){
+        if(item.querySelector('p').getAttribute('checked')){
+          if(i===0){
+            contractConfig.initForm(checkIO[0],0)
+          }else {
+            contractConfig.initForm(checkIO[0],1)
+          }
+        }else{
+          contractConfig.initForm(checkIO[0],1)
+        }
+      }
+    })
   }
 })
 
