@@ -130,9 +130,10 @@ export default {
       this.$emit("closePayDialog");
     },
     cutNumber() {
-        this.$nextTick(()=>{
-            this.ruleForm.money = this.$tool.cutFloat({val:this.ruleForm.money,max:999999999.99})
-        })
+        this.ruleForm.money = this.$tool.cutFloat({val:this.ruleForm.money,max:999999999.99})
+        if(this.ruleForm.money&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
+            this.getTips()
+        }
     },
     getTips() {
         let arr = []
@@ -291,11 +292,6 @@ export default {
         if(val.length&&this.ruleForm.shareType!==''&&this.ruleForm.money) {
             this.getTips()
         }
-      },
-      'ruleForm.money'(val) {
-          if(val&&this.ruleForm.depArray.length&&this.ruleForm.shareType!=='') {
-            this.getTips()
-          }
       },
       DepList(val) {
           if(this.version===3) {
