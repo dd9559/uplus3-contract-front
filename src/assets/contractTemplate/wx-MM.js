@@ -36,6 +36,7 @@ let Obj={
     },
     'checkbox_lease': null,
     'val29':null,
+    'val30':null,
     'val31':null,
     'checkbox_Transferprice': null,
     'checkbox_Parkingspace':{
@@ -277,11 +278,15 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
+  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square','companyNames']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
-        element.innerHTML=msg[readonlyItem]
+        if(readonlyItem==='companyNames') {
+          element.innerHTML=msg[readonlyItem][0]
+        } else {
+          element.innerHTML=msg[readonlyItem]
+        }
         element.classList.remove('input-before')
       }
     })
