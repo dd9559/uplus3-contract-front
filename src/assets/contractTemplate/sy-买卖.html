@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
   <link rel="stylesheet" href="/datepicker.css"/>
-  <title>十堰买卖合同</title>
+  <title>芜湖买卖合同</title>
   <style>
     body{
       font-family: SimHei;
@@ -231,6 +231,18 @@
       height: 25px;
       border-bottom: 1px solid gray;
     }
+    .cover-fm{
+      margin-bottom: 400px;
+    }
+    .coverStyle{
+      text-align: center;
+      font-size: 70px;
+      font-weight: bold;
+      margin-top: 400px;
+    }
+    .coverStyle p{
+      line-height: 1;
+    }
     .page1 {
       break-before: page;
       page-break-before: always;
@@ -250,7 +262,14 @@
       <span>取消</span>
     </p>
   </div>
-  <div>
+  <!-- 封面 -->
+  <div class="cover-fm">
+    <div class="coverStyle">
+      <p>存量房买卖合同</p>
+    </div>
+  </div>
+  <!-- 封面结束 -->
+  <div class="page1">
     <div class="title bold"><p>存量房买卖合同</p></div>
     <div class="bold" style="text-align: right;margin-bottom: 30px;"><span>合同编号：<span systemparam="code" tag="input-auto"></span></span></div>
     <div class="note">
@@ -415,7 +434,7 @@
     </div>
 
     <div class="page1">
-      <div>关于装饰、装修、家具、家电等附属设施清单的约定：<div class="info-checkbox"><p type="check"></p>有</div>/<div class="info-checkbox"><p type="check"></p>无</div>（若家私清单与合同约定不符的，以家私清单为准）</div>
+      <div>关于装饰、装修、家具、家电等附属设施清单的约定：<div class="info-checkbox"><p type="check" nocheck="true"></p>有</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>无</div>（若家私清单与合同约定不符的，以家私清单为准）</div>
       <p>以下附属设施随房屋一并转移并交付给买受人：</p>
       <table border="1" class="table-style textcenter">
         <tr>
@@ -423,7 +442,7 @@
           <td colspan="9" style="text-align: left;padding-left: 10px;">以下装饰、装修及附属设施保持原状：</td>
         </tr>
         <tr>
-          <td colspan="9" style="text-align: left;padding-left: 10px;"><div class="info-checkbox"><p type="check"></p>卫浴设施设备</div>/<div class="info-checkbox"><p type="check"></p>整体橱柜</div>/<div class="info-checkbox"><p type="check"></p>地板</div>/<div class="info-checkbox"><p type="check"></p>墙壁</div>/<div class="info-checkbox"><p type="check"></p>门、窗</div>/<div class="info-checkbox"><p type="check"></p>热水器</div>/<div class="info-checkbox"><p type="check"></p>暖气片</div></td>
+          <td colspan="9" style="text-align: left;padding-left: 10px;"><div class="info-checkbox"><p type="check" nocheck="true"></p>卫浴设施设备</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>整体橱柜</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>地板</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>墙壁</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>门、窗</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>热水器</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>暖气片</div></td>
         </tr>
         <tr>
           <td colspan="9" style="text-align: left;padding-left: 10px;">其他：</td>
@@ -493,18 +512,24 @@
         </tr>
       </table>
       <div class="other">
-        其他约定：<div class="info-checkbox"><p type="check"></p>有</div>/<div class="info-checkbox"><p type="check"></p>无</div>
+        <span>其他约定：<div class="info-checkbox"><p type="check" nocheck="true"></p>有</div>/<div class="info-checkbox"><p type="check" nocheck="true"></p>无</div></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </div>
 </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!--<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mm_sy20200430.js"></script>
-<!--<script>
+<script type="text/javascript" src="/js/bundle_mm_whu20200107.js"></script>-->
+<script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -540,5 +565,5 @@
       }
     }
   })();
-</script>-->
+</script>
 </html>
