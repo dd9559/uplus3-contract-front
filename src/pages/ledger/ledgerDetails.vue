@@ -224,7 +224,7 @@
               placeholder="请输入内容"
               v-model="dialogDetails.context.remark">
             </el-input>
-            <span style="position: absolute;right: 55px;bottom: 5px;background-color: white;">{{!dialogDetails.context.remark?0:dialogDetails.context.remark.trim().length}}/250</span>
+            <span style="position: absolute;right: 55px;bottom: 5px;background-color: white;">{{!dialogDetails.context.remark?0:dialogDetails.context.remark.length}}/250</span>
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
