@@ -35,7 +35,7 @@ let sub = {
   },
   'checkbox_lease': null,
   'val29': null,
-  // 'val30': null,//第三条
+  'val30': null,//第三条
   'val31': null,
   'checkbox_Transferprice':null,
   'checkbox_Parkingspace':{
@@ -266,10 +266,13 @@ let msg={
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','singleCompany','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
+  let readonlyArr = ['code','companyNames','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
-      if(readonlyArr.includes(readonlyItem)){
+      if(readonlyItem==="companyNames"&&msg['companyNames'].length>0){
+        element.innerHTML=msg[readonlyItem][0]
+        element.classList.remove('input-before')
+      }else if(readonlyArr.includes(readonlyItem)){
         element.innerHTML=msg[readonlyItem]
         element.classList.remove('input-before')
       }
