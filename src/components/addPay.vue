@@ -232,7 +232,10 @@ export default {
                 return
             }
         }
-
+        if(this.ruleForm.money<=0){
+            this.$message('金额必须大于0元')
+            return
+        }
         this.ruleForm.moneyTime = this.$tool.dateFormat(this.ruleForm.moneyTime)
         let param = {...this.ruleForm}
         let urlStr = 'insertAccountBook'
