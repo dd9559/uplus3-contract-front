@@ -36,7 +36,7 @@ let Obj={
       }
     },
     val90:null,
-    drapdown_handle: {
+    /*drapdown_handle: {
       stateful: function (val) {
         let res = null;
         switch (val.toLowerCase()) {
@@ -49,7 +49,7 @@ let Obj={
         }
         return res;
       }
-    },
+    },*/
     drapdown_deal: {
       stateful: function (val) {
         let res = null;
