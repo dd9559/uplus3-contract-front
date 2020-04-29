@@ -1,8 +1,8 @@
 <template>
   <div class="view" ref="tableComView">
     <p class="view-title">U+3.0记账本</p>
-    <ul class="tabs" v-if="power['sign-book-mx-query'].state&&power['sign-book-hz-query'].state">
-      <li v-for="(item,index) in tabs" @click="changeTab(index)" :class="{'active-li':index===activeTab}">{{item}}</li>
+    <ul class="tabs">
+      <li v-for="(item,index) in tabs" @click="changeTab(index)" :class="{'active-li':index===activeTab}" v-if="(index===0&&power['sign-book-mx-query'].state)||(index===1&&power['sign-book-hz-query'].state)">{{item}}</li>
     </ul>
     <template v-if="activeTab===0">
       <div class="content">
@@ -92,7 +92,7 @@
             </el-dropdown>
           </p>
         </div>
-        <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
+        <el-table ref="tableCom" key="tab11" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
                   class="info-scrollbar" style="width: 100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" fixed="left" class-name="select-btn"></el-table-column>
           <el-table-column min-width="120" label="费用日期">
@@ -327,6 +327,8 @@
     created(){
       this.getData()
       this.getDictionary()
+    },
+    mounted(){
       if(this.power['sign-book-hz-query'].state&&!this.power['sign-book-mx-query'].state){
         this.activeTab=1
       }
