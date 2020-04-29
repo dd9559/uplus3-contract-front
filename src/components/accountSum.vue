@@ -204,7 +204,7 @@ export default {
       justify-content: space-between;
       padding: 15px 15px 0;
       border: 1px solid #e3e3e3;
-      margin-bottom: 20px;
+      margin: 20px 0;
   }
   .view-context {
     border: 1px solid #e3e3e3;
