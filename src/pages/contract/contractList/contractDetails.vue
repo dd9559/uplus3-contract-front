@@ -477,7 +477,7 @@
                 <i v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState" class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'main')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button v-loading.fullscreen.lock="fullscreenLoading" type="primary" round class="search_btn" @click="saveFile('main')" v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
           <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)">
             <p class="mainTitle">委托合同主体</p>
@@ -499,7 +499,7 @@
                 <i v-if="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState" class="iconfont icon-tubiao-6" @click="ZTdelectData(index,item.path,'WT')" :class="{'deleteShow':isDelete===item.index+item.path}"></i>
               </li>
             </ul>
-            <el-button type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
+            <el-button v-loading.fullscreen.lock="fullscreenLoading" type="primary" round class="search_btn" @click="saveFile('WT')" v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)">确认上传</el-button>  <!-- 合同主体上传 -->
           </div>
         </el-tab-pane>
 
@@ -1650,6 +1650,7 @@ export default {
       dialogDel:false,
       agencyShow:false, //委托合同组件显示
       isHaveDetail:false,//合同详情已返回
+      fullscreenLoading:false,//合同主体上传loading
     };
   },
   created() {
@@ -2384,7 +2385,9 @@ export default {
     },
     //保存上传文件(合同主体)
     saveFile(type) {
+      debugger
       if(this.uploadList.length>0&&type==="main"||this.entrustUploadList.length>0&&type==="WT"){
+        this.fullscreenLoading=true
         let param = {
           contId:this.id,
           // datas:this.uploadList
@@ -2398,6 +2401,7 @@ export default {
         this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
           res=res.data;
           if(res.status===200){
+            this.fullscreenLoading=false
             this.getContractDetail();
             if(type==="main"){
               //若为温州合同且第一次上传合同主体 需跳转到业绩编辑页面
@@ -2440,6 +2444,7 @@ export default {
             }
           }
         }).catch(error=>{
+          this.fullscreenLoading=false
           this.$message({
             message:error,
             type:'error'
