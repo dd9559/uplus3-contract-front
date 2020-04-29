@@ -310,7 +310,7 @@
             name: '导入固定成本'
           },
           'sign-book-mx-query': {
-            state: true,
+            state: false,
             name: '账目明细查询'
           },
           'sign-book-mx-export': {
