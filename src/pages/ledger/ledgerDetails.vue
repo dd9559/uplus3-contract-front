@@ -1,7 +1,7 @@
 <template>
   <div class="view" ref="tableComView">
     <p class="view-title">U+3.0记账本</p>
-    <ul class="tabs">
+    <ul class="tabs" v-if="power['sign-book-mx-query'].state&&power['sign-book-hz-query'].state">
       <li v-for="(item,index) in tabs" @click="changeTab(index)" :class="{'active-li':index===activeTab}">{{item}}</li>
     </ul>
     <template v-if="activeTab===0">
@@ -72,19 +72,19 @@
               支出<span>{{titleMsg.expenditure}}</span>元
             </li>
             <li>
-              利润<span :style="{'color':titleMsg.profit>0?'#00CC99':'red'}"><i v-if="titleMsg.profit>0">+</i>{{titleMsg.profit}}</span>元
+              利润<span :style="{'color':titleMsg.profit>0?'#00CC99':titleMsg.profit===0?'#000000':'red'}"><i v-if="titleMsg.profit>0">+</i>{{titleMsg.profit}}</span>元
             </li>
           </ul>
           <p>
-            <el-button class="btn-info" type="primary" size="small" @click="operBtn('del')">批量删除
+            <el-button class="btn-info" type="primary" size="small" @click="operBtn('del')" v-if="power['sign-book-mx-add'].state">批量删除
             </el-button>
-            <el-button class="btn-info" type="primary" size="small" @click="getExcel">导出
+            <el-button class="btn-info" type="primary" size="small" @click="getExcel" v-if="power['sign-book-mx-export'].state">导出
             </el-button>
-            <el-button class="btn-info" type="primary" size="small" @click="operBtn('import')">导入固定成本
+            <el-button class="btn-info" type="primary" size="small" @click="operBtn('import')" v-if="power['sign-book-mx-insert'].state">导入固定成本
             </el-button>
-            <el-button class="btn-info" type="primary" size="small" @click="operBtn('income')">记收入
+            <el-button class="btn-info" type="primary" size="small" @click="operBtn('income')" v-if="power['sign-book-mx-add'].state">记收入
             </el-button>
-            <el-dropdown split-button class="margin-left color-info" type="primary" size="small" @click="operBtn('pay')" @command="operBtn('pay1')">
+            <el-dropdown split-button class="margin-left color-info" type="primary" size="small" @click="operBtn('pay')" @command="operBtn('pay1')" v-if="power['sign-book-mx-add'].state">
               记支出
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>记均摊支出</el-dropdown-item>
@@ -148,8 +148,11 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
             <template slot-scope="scope">
-              <el-button type="text" class="font-color" @click="btnOpera(scope.row,1)">编辑</el-button>
-              <el-button type="text" class="font-color" @click="btnOpera(scope.row,2)">删除</el-button>
+              <template v-if="power['sign-book-mx-add'].state">
+                <el-button type="text" class="font-color" @click="btnOpera(scope.row,1)">编辑</el-button>
+                <el-button type="text" class="font-color" @click="btnOpera(scope.row,2)">删除</el-button>
+              </template>
+              <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
@@ -297,11 +300,36 @@
         },
         depLists:[],//新增收入部门列表
         fullscreenLoading:false,//新增定时器
+        power: {
+          'sign-book-mx-add': {
+            state: false,
+            name: '新增'
+          },
+          'sign-book-mx-insert': {
+            state: false,
+            name: '导入固定成本'
+          },
+          'sign-book-mx-query': {
+            state: true,
+            name: '账目明细查询'
+          },
+          'sign-book-mx-export': {
+            state: false,
+            name: '导出'
+          },
+          'sign-book-hz-query': {
+            state: false,
+            name: '账目汇总查询'
+          },
+        }
       }
     },
     created(){
       this.getData()
       this.getDictionary()
+      if(this.power['sign-book-hz-query'].state&&!this.power['sign-book-mx-query'].state){
+        this.activeTab=1
+      }
     },
     methods: {
       getDepList:function (dep) {
@@ -463,6 +491,12 @@
           let edit=(this.dialogDetails.title==='编辑')
           if(edit){
             url='/accountBook/updateAccountBook'
+          }
+          if(param.money<=0){
+            this.$message({
+              message:'金额必须大于0元'
+            })
+            return
           }
           this.fullscreenLoading=true
           this.$ajax.post('/api'+url,param).then(res=>{
@@ -666,7 +700,7 @@
   }
   ul.tabs{
     margin: 0;
-    padding: 15px 0;
+    padding: 15px 0 0;
     >li{
       display: inline-block;
       /*min-width: 100px;*/
@@ -703,7 +737,7 @@
     display: flex;
     justify-content: space-between;
     padding: 15px 15px 0;
-    margin-bottom: 20px;
+    margin: 20px 0;
     border: 1px solid #e3e3e3;
 
     .search-content {
