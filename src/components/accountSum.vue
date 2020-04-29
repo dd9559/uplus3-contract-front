@@ -43,7 +43,7 @@
                     </li>
                 </ul>
                 <p>
-                    <el-button class="btn-info" style="background-color: #38BD8B; color: white;" size="small" @click="getExcel">导出</el-button>
+                    <el-button class="btn-info" style="background-color: #38BD8B; color: white;" size="small" @click="getExcel" v-if="power['sign-book-hz-export'].state">导出</el-button>
                 </p>
             </div>
             <el-table :data="list" ref="tableCom" :max-height="tableNumberCom" border header-row-class-name="theader-bg" style="width: 100%">
@@ -98,6 +98,12 @@ export default {
                 expenditure: 0,
                 income: 0,
                 profit: 0
+            },
+            power: {
+                'sign-book-hz-export':{
+                    name: '导出',
+                    state: false
+                }
             }
         }
     },
@@ -198,7 +204,7 @@ export default {
       justify-content: space-between;
       padding: 15px 15px 0;
       border: 1px solid #e3e3e3;
-      margin-bottom: 20px;
+      margin: 20px 0;
   }
   .view-context {
     border: 1px solid #e3e3e3;
