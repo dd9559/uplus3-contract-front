@@ -1,6 +1,6 @@
 <template>
-  <div class="view" ref="tableComView">
-    <p class="view-title">U+3.0记账本</p>
+  <div class="view" ref="tableComView" v-if="power['sign-book-mx-query'].state||power['sign-book-hz-query'].state">
+    <p class="view-title">记账本</p>
     <ul class="tabs">
       <li v-for="(item,index) in tabs" @click="changeTab(index)" :class="{'active-li':index===activeTab}" v-if="(index===0&&power['sign-book-mx-query'].state)||(index===1&&power['sign-book-hz-query'].state)">{{item}}</li>
     </ul>
@@ -325,12 +325,19 @@
       }
     },
     created(){
-      this.getData()
       this.getDictionary()
     },
     mounted(){
+      document.title='记账本'
       if(this.power['sign-book-hz-query'].state&&!this.power['sign-book-mx-query'].state){
         this.activeTab=1
+      }
+      if(!this.power['sign-book-hz-query'].state&&!this.power['sign-book-mx-query'].state){
+        this.$message({
+          message:'无查询权限'
+        })
+      }else{
+        this.getData()
       }
     },
     methods: {
