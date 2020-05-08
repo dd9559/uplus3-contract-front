@@ -2410,7 +2410,8 @@ export default {
             if(type==="main"){
               //若为温州合同且第一次上传合同主体 需跳转到业绩编辑页面
               //城市id40为测试环境城市钟祥  正式环境需去掉
-              if((this.contractDetail.cityCode===16||this.contractDetail.cityCode===40)&&this.contractDetail.contState.value!=3){
+              // if((this.contractDetail.cityCode===16||this.contractDetail.cityCode===40)&&this.contractDetail.contState.value!=3){
+              if((this.contractDetail.cityCode===16)&&this.contractDetail.contState.value!=3){
                 let that = this
                 this.$message({
                   message:'即将跳转到业绩页面',
