@@ -325,7 +325,7 @@
       },
       getUrl: function (file, maxSize) {
         return new Promise((resolve, reject) => {
-          this.$ajax.get('/api/load/generateSignature', {dir: file, maxSize: maxSize}).then(res => {
+          this.$ajax.get('/api/load/generateSignature', {dir: file, maxSize: maxSize,aclNum:1}).then(res => {
             res = res.data
             if (res.status === 200) {
               resolve(res.data)
