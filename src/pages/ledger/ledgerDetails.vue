@@ -643,13 +643,15 @@
       },
       //重写表格maxHeight设置方法
       comHeightFn() {
-        if (this.$refs.tableCom && this.$refs.tableComView) {
-          let wh = document.documentElement.clientHeight;
-          let h1 = this.$refs.tableComView.clientHeight+40
-          let h2 = this.$refs.tableCom.$el.clientHeight;
-          let th = wh - h1;
-          this.tableNumberCom = h2 + th;
-        }
+        this.$nextTick(()=>{
+          if (this.$refs.tableCom && this.$refs.tableComView) {
+            let wh = document.documentElement.clientHeight;
+            let h1 = this.$refs.tableComView.clientHeight+40
+            let h2 = this.$refs.tableCom.$el.clientHeight;
+            let th = wh - h1;
+            this.tableNumberCom = h2 + th;
+          }
+        })
       },
     },
   }
