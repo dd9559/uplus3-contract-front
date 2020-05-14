@@ -4,7 +4,7 @@
       <el-form :inline="true" :model="contractForm" class="add-form" size="small" :style="{ height: clientHei }">
         <!-- 合同信息 -->
         <div class="contractMsg">
-          <p>合同信息</p>
+          <p>合同信息<span class="toCommission" v-if="false"><span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span><span class="toCommissionStyle" @click="toCommission">是否转佣</span><span>应收金额（元）：</span><span>已收金额（元）：</span><span>未收金额（元）：</span><span>已退金额（元）：</span><span v-if="isToCommission">转佣金额（元）：</span></span></p>
           <div class="form-content">
             <el-form-item label="签约时间：" style="text-align:right;width:285px;" class="form-label">
               <el-date-picker
@@ -496,6 +496,7 @@ export default {
       loanType:0,//7 全款买卖 8 贷款买卖
       showRemark:false,//备注栏折叠展开
       basicsOptions:[],//基础版经纪人信息
+      isToCommission:false// 是否转佣
     };
   },
   created() {
@@ -2118,6 +2119,11 @@ export default {
         }
       }
       return false;
+    },
+    //是否转佣
+    toCommission(){
+      this.isToCommission=!this.isToCommission
+      console.log(this.isToCommission)
     }
   },
   mounted(){
@@ -2550,5 +2556,39 @@ export default {
     padding-right: 20px;
     font-size: 12px;
   }
+}
+.toCommission{
+  cursor: pointer;
+  display: inline-block;
+  .attention {
+    color: #ccc !important;
+    font-weight: normal;
+  }
+  .attention_ {
+    color: @color-blue !important;
+  }
+  padding-left: 65px;
+  font-weight:normal;
+  color:red;
+  span{
+    font-size: 14px !important;
+    &:nth-child(2){
+      color:black;
+    }
+    &:nth-child(n+2){
+      padding-right: 30px;
+    }
+  }
+  // .toCommissionStyle{
+    
+    // &::before{
+    //   content: '';
+    //   display: inline-block;
+    //   width: 10px;
+    //   height: 10px;
+    //   border: 1px solid black;
+    //   border-radius: 3px;
+    // }
+  // }
 }
 </style>

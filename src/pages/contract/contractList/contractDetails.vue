@@ -2016,8 +2016,9 @@ export default {
               if (!window.location.origin) {
                 window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
               }
-              let http = window.location.origin
-              let src = `${http}/api/record/download?recording=${element.recording}`
+              // let http = window.location.origin
+              // let src = `${http}/api/record/download?recording=${element.recording}`
+              let src = element.recording
               element.recordSrc=src
               element.recordTime=0
               element.secondTime=0
