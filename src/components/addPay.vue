@@ -9,7 +9,7 @@
                         <el-option v-for="item in version===1?DepList:depsList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="均摊组织范围" v-if="version===2" class="form-item">
+                <el-form-item label="均摊部门范围" v-if="version===2" class="form-item">
                     <!-- <el-select v-model="ruleForm.depArray" multiple class="w300" filterable :filter-method="depSearch" @visible-change="visibleFn" @remove-tag="delFn">
                         <el-option value="">
                             <el-tree :data="DepList" :props="depsProp" accordion @node-click="clickNode"></el-tree>
@@ -19,7 +19,7 @@
                         <el-option v-for="item in DepList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="均摊组织类型" v-if="version===2" class="form-item item-color">
+                <el-form-item label="均摊部门类型" v-if="version===2" class="form-item item-color">
                     <el-radio-group v-model="ruleForm.shareType" @change="checkTypeFn">
                     <el-radio-button :label="0">分店</el-radio-button>
                     <el-radio-button :label="1">分组</el-radio-button>
@@ -160,14 +160,14 @@ export default {
     checkTypeFn(val) {
         if(!this.ruleForm.depArray.length) {
             this.ruleForm.shareType = ''
-            this.$message({message: '请先选择均摊组织范围', type: 'error'})
+            this.$message({message: '请先选择均摊部门范围', type: 'error'})
             return
         }
         if(val == 0) {
             this.ruleForm.deps.find(item => {
                 if(item.level === 5) {
                     this.ruleForm.shareType = ''
-                    this.$message({message: '当前选择的均摊组织范围不能分店,组织类型请选择分组', type: 'error'})
+                    this.$message({message: '当前选择的均摊部门范围不能分店,部门类型请选择分组', type: 'error'})
                     return
                 }
             })
@@ -180,7 +180,7 @@ export default {
             })
             if(!level_arr.includes(5) && !num_arr.some(item => item>0)) {
                 this.ruleForm.shareType = ''
-                this.$message({message: '当前选择的均摊组织范围不能分组,组织类型请选择分店', type: 'error'})
+                this.$message({message: '当前选择的均摊部门范围不能分组,部门类型请选择分店', type: 'error'})
                 return
             }
         }
@@ -219,8 +219,8 @@ export default {
         ]
         if(v === 2) {
             Rules.unshift(
-                { val: this.ruleForm.deps.length, msg: '均摊组织范围' },
-                { val: String(this.ruleForm.shareType), msg: '均摊组织类型' }
+                { val: this.ruleForm.deps.length, msg: '均摊部门范围' },
+                { val: String(this.ruleForm.shareType), msg: '均摊部门类型' }
             )
         } else {
             Rules.unshift({ val: this.ruleForm.deptId, msg: '部门' })

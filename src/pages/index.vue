@@ -29,6 +29,7 @@
     },
     created(){
       this.Index=this.getPath
+      this.$parent.loadingState=false
     },
     methods: {
       toLink: function (item, index) {

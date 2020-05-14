@@ -17,7 +17,7 @@
                     </el-form-item>
                      <el-form-item label="关键字">
                         <el-input v-model="keyword" placeholder="操作内容" size="small"></el-input>
-                    </el-form-item> 
+                    </el-form-item>
                     <el-form-item label="部门" class="dep">
                          <select-tree :data="DepList" :init="departmentName" @checkCell="depHandleClick" @clear="clearDep" @search="searchDep"></select-tree>
                         <!-- <el-select style="width:160px" :clearable="true" ref="tree" size="small" remote :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="departmentName" placeholder="请选择">
@@ -68,7 +68,7 @@
                 </el-table-column>
                 <el-table-column width='180' label="操作人">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.createByDepName }}{{ scope.row.createByName }}</span>
+                        <span>{{ scope.row.createByDepName }}-{{ scope.row.createByName }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="功能模块" width="130" prop="objectType.label"></el-table-column>
@@ -209,7 +209,7 @@
                     plateType:this.bustype
                 }
                 if(this.version === 3) param.systemtag = this.systemtag
-                
+
                 if(type === 'search') {
                     sessionStorage.setItem('sessionQuery',JSON.stringify({
                         path:'/operationLog',

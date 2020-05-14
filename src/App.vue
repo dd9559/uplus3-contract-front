@@ -54,6 +54,7 @@
           <p class="slider-bar-control" @click="toCollapse"></p>
         </div>
         <router-view></router-view>
+        <p style="flex:1;align-self: center;font-size: 30px;text-align: center;" v-if="loadingState">loading...</p>
       </div>
     </div>
   </div>
@@ -71,6 +72,7 @@
                 collapse: false,//menu是否折叠
                 activeClass: [],//当前选择项的上级id
                 testIndex: '',
+              loadingState:true,
             }
         },
         created() {
