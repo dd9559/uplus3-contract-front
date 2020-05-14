@@ -180,7 +180,7 @@ export default {
         },
         handleCurrentChange(val) {
             this.pageNum = val
-            this.getData()
+            this.getData('page')
         },
         //重写表格maxHeight设置方法
         comHeightFn() {
