@@ -135,7 +135,7 @@ export default {
             })
         },
         getExcel() {
-            if(this.sumDate&&this.sumDate.length&&this.depName) {
+            if(this.sumDate&&this.sumDate.length) {
                 this.getData('search')
                 let param = {
                     pageNum: this.pageNum,
@@ -148,8 +148,7 @@ export default {
                 }
                 this.excelCreate('/input/accountBookExcel',param)
             } else {
-                this.$message('请选择月份和部门')
-                return
+                this.$message('请选择月份')
             }
         },
         clearDep: function () {
@@ -164,11 +163,11 @@ export default {
             this.depName = data.name
         },
         queryFn() {
-            if(this.sumDate&&this.sumDate.length&&this.depName) {
+            if(this.sumDate&&this.sumDate.length) {
                 this.pageNum = 1
                 this.getData()
             } else {
-                this.$message('请选择月份和部门')
+                this.$message('请选择月份')
             }
         },
         resetFormFn() {
@@ -187,7 +186,7 @@ export default {
         comHeightFn() {
             if (this.$refs.tableCom && this.$refs.tableComView) {
                 let wh = document.documentElement.clientHeight;
-                let h1 = this.$refs.tableComView.clientHeight+40
+                let h1 = this.$refs.tableComView.clientHeight+160
                 let h2 = this.$refs.tableCom.$el.clientHeight;
                 let th = wh - h1;
                 this.tableNumberCom = h2 + th;
