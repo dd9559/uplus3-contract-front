@@ -79,7 +79,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // }
 for (let readonlyItem in msg) {
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  
+
     let readonlyArr = ['code','companyNames','ownerName','guestName','propertyAddr','ownerCommission','ownerCommissionUpper','custCommission','custCommissionUpper']
     if(onlyReadDom.length>0){
       onlyReadDom.forEach((element,index) => {
@@ -87,7 +87,16 @@ for (let readonlyItem in msg) {
           element.innerHTML=msg[readonlyItem][0]
           element.classList.remove('input-before')
         }else if(readonlyArr.includes(readonlyItem)){
-          element.innerHTML=msg[readonlyItem]
+          if (element.getAttribute("systemparam") === "propertyAddr") {
+            let value = msg["propertyAddr"]
+            if (value.substring(0, 3) === "十堰市") {
+              element.innerHTML = value.replace("十堰市", '')
+            } else {
+              element.innerHTML = value
+            }
+          }else{
+            element.innerHTML=msg[readonlyItem]
+          }
           element.classList.remove('input-before')
         }
       })
