@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
+          <dealReport v-if="isHaveDetail" :defaultInfo="contractDetail" :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
 
         <el-tab-pane label="合同详情" name="first">
@@ -1679,15 +1679,13 @@ export default {
       this.name="agency";
       this.agencyShow = true
     }
-    this.getTransFlow();//交易类型
+    // this.getTransFlow();//交易类型
     this.getContractDetail();//合同详情
     this.getDictionary();//字典
-    this.getAchievement();//业绩分成
     this.getContDataType();//获取合同集料库类型
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
-    this.getAttachment()//合同附件列表
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
@@ -1761,13 +1759,35 @@ export default {
     handleClick(tab, event) {
       console.log(tab.name);
       this.name=tab.name;
-      if(tab.name==="second"){
+      if(tab.name==="first"){
+        this.getAchievement();//业绩分成
+      }else if(tab.name==="second"){
         if(this.contractDetail.contState.value<2&&this.contractDetail.recordType.value===1){
           this.$message({
             message:'合同未签章,不允许上传合同主体',
             type:'warning'
           })
         }
+        if(this.contractDetail.contState.value===3){
+          //合同主体
+          let param = {
+            id:this.id
+          }
+          this.getContractBody(param);//获取合同主体
+        }
+        if(this.contractDetail.contractEntrust&&this.contractDetail.contractEntrust.entrustState===3){
+          //委托合同主体
+          let param = {
+            id:this.id,
+            isentrust:1
+          }
+          this.getContractBody(param);//获取委托合同主体
+        }
+      }else if(tab.name==="third"){
+        if(this.contractDetail.isHaveData){
+            this.getContData()
+          }
+        this.getAttachment()//合同附件列表
       }else if(tab.name==="fifth"){
         this.getAuditList();//合同审核信息
         this.getEntrustMsg();//委托
@@ -2229,24 +2249,6 @@ export default {
             ) {
               this.clientrData.push(this.contractDetail.contPersons[i]);
             }
-          }
-          if(res.data.isHaveData){
-            this.getContData()
-          }
-          //合同主体
-          if(res.data.contState.value===3){
-            let param = {
-              id:this.id
-            }
-            this.getContractBody(param);//获取合同主体
-          }
-          //委托合同主体
-          if(res.data.contractEntrust&&res.data.contractEntrust.entrustState===3){
-            let param = {
-              id:this.id,
-              isentrust:1
-            }
-            this.getContractBody(param);//获取委托合同主体
           }
         }
       }).catch(error=>{

@@ -553,6 +553,12 @@ export default {
 	},
 
 	methods: {
+		// if(res.data.data.isHaveData ==1){ //判断有无上传过资料库，有的话返回上传过的信息
+		// 				this.getContData()
+		// 			}
+		// 			if(this.contState===3){
+		// 				this.getContractBody();//获取合同主体
+		// 			}
 		handleClick(tab, event) {
 			this.name=tab.name;
 			if(tab.name==="second"){
@@ -561,8 +567,15 @@ export default {
             message:'合同未签章,不允许上传合同主体',
             type:'warning'
           })
-        }
-      }else if(tab.name==="fourth"){
+				}
+				if(this.contState===3){
+					this.getContractBody();//获取合同主体
+				}
+      }else if(tab.name==="third"){
+				if(this.detailData.isHaveData ==1){ //判断有无上传过资料库，有的话返回上传过的信息
+					this.getContData()
+				}
+			}else if(tab.name==="fourth"){
 				this.getAuditList()//合同审核
 				this.getAuditList(9)//变更审核
 				this.getAuditList(10)//解约审核
@@ -992,12 +1005,6 @@ export default {
 								this.custInfo.unshift(contperson[i])
 							}
 						}
-					}
-					if(res.data.data.isHaveData ==1){ //判断有无上传过资料库，有的话返回上传过的信息
-						this.getContData()
-					}
-					if(this.contState===3){
-						this.getContractBody();//获取合同主体
 					}
 				}
 			})
