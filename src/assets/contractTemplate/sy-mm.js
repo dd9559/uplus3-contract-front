@@ -2,7 +2,7 @@ import {contractConfig, toChineseNumber} from "./base.js"
 
 let sub = {
   'checkbox_houseUse':null,
-  'val15':null,
+  // 'val15':null,
   'checkbox_houseUsing':{
     stateful:function (val) {
       return val===0?{'val16':null,'val17':null,'val18':null,'val19':null}:{'val20':null,'checkbox_bear':null}

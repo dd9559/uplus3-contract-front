@@ -490,7 +490,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-fs'].state&&(userInfo&&scope.row.finalAuditorId===userInfo.empId)"
+                    v-if="power['sign-yj-rev-fs'].state&&userInfo"
                   >反审核</span><span
                   @click.stop="shenSu(scope.row,scope.$index)"
                   style="cursor:pointer;"
