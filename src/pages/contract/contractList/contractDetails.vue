@@ -3,7 +3,7 @@
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
-          <dealReport :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
+          <dealReport v-if="isHaveDetail" :defaultInfo="contractDetail" :contType="contType" :id="id" :saveBtnShow="saveBtnShow" :reportFlowShow="reportFlowShow" @changeBtnStatus="BtnShowFn"></dealReport>
         </el-tab-pane>
 
         <el-tab-pane label="合同详情" name="first">
