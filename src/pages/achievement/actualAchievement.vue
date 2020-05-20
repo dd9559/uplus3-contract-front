@@ -3,7 +3,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="search">
-          <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号" placement="top">
+          <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号/经纪人姓名" placement="top">
             <el-input
               class="w200"
               v-model="propForm.search"

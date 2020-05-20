@@ -54,6 +54,10 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
+                  <p>
+                    <span class="tag">预计过户时间：</span>
+                    <span class="text">{{contractDetail.signDateLast}}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -1412,7 +1416,8 @@ export default {
         toExamineState: {},
         laterStageState:{},
         contChangeState:{},
-        report: {}
+        report: {},
+        signDateLast:''
       },
       //业主信息
       ownerData: [],
