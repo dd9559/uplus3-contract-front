@@ -1662,6 +1662,8 @@ export default {
     if(this.contType === '2' || this.contType === '3') {
       this.activeName = "deal-report"
       this.name = "deal-report"
+    }else{
+      this.getAchievement()//业绩分成
     }
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
@@ -1681,6 +1683,7 @@ export default {
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin();//获取当前登录人信息
+    
   },
   beforeRouteEnter(to,from,next){
     next(vm=>{
