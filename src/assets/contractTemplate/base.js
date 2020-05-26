@@ -122,6 +122,12 @@ let contractConfig = {
             textArea.value = ''
           }
         }
+        document.onkeydown=function(e){
+          if(e.key==='Enter'){
+            let btns=document.querySelector('.control-btn').getElementsByTagName('span')
+            btns[0].click()
+          }
+        }
         document.querySelector('.control-btn').onclick = function (e) {
           let btn = e.target.innerHTML
           if (btn === '取消') {
