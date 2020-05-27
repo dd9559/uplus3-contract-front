@@ -119,6 +119,39 @@
                   }
                   reader.readAsDataURL(item.getNative())
                 })
+              }else{
+                up.files.forEach((item,index)=>{
+                  if(item.type!=='image/png'){
+                    return
+                  }else if(item.size<=3*1024*1024){
+                    return
+                  }else{
+                    var reader = new FileReader()
+                    reader.onload = function () {
+                      var picture = new Image()
+                      picture.src = this.result
+                      picture.onload = function (e) {
+                        var config = e.target
+                        let {width, height} = config
+                        let mix = 1//默认图片缩放比例
+                        let canvas=document.createElement('canvas')
+                        let img=canvas.getContext('2d')
+
+                        canvas.width = width * mix
+                        canvas.height = height * mix
+
+                        img.drawImage(this, 0, 0, width * mix, height * mix)
+                        //压缩图片返回url
+                        canvas.toBlob(function (blob) {
+                          let picture_qz =new File([blob],`${item.name.split('.')[0]}.png`)
+                          that.uploader.removeFile(item)
+                          that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
+                        },'image/jpeg',0.1)
+                      }
+                    }
+                    reader.readAsDataURL(item.getNative())
+                  }
+                })
               }
               /*let fileType=get_suffix(files[0].name).toLowerCase();
               if(that.rules.length>0){
