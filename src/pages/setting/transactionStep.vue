@@ -138,14 +138,14 @@
                     <div class="input-group">
                         <label>步骤类型:</label>
                         <span>{{stepBusiness.stepsTypeName}}</span>
-                        <label class="step-name step-left">后期标记:</label>
+                        <!-- <label class="step-name step-left">后期标记:</label>
                         <span>
                             <el-radio-group v-model="stepBusiness.radioValue">
                                 <el-radio v-for="item in stepBusiness.radioGroup"
                                     :key="item.name"
                                     :label="item.label">{{item.name}}</el-radio>
                             </el-radio-group>
-                        </span>
+                        </span> -->
                     </div>
                     <div class="input-group">
                         <label class="step-name">步骤名称:</label>
@@ -295,7 +295,7 @@ export default {
                 planDays: "",
                 overTimeDays: 0,
                 isSms: 0,
-                ...radioGroup
+                // ...radioGroup
             },
             //新增和编辑交易步骤 表格行
             tableForm: [
@@ -462,7 +462,7 @@ export default {
                     planDays: "",
                     overTimeDays: 0,
                     isSms: 0,
-                    ...radioGroup
+                    // ...radioGroup
                 };
                 this.stepBusiness = obj;
             }
@@ -549,9 +549,10 @@ export default {
             }
         },
         confirmForm() {
-            if (this.stepBusiness.radioValue.length < 1) {
-                this.$message("请选择后期标记");
-            } else if (this.stepBusiness.name === "") {
+            // if (this.stepBusiness.radioValue.length < 1) {
+            //     this.$message("请选择后期标记");
+            // } else 
+            if (this.stepBusiness.name === "") {
                 this.$message("步骤名称不能为空");
             } else {
                 if (this.stepBusiness.planDays) {
@@ -668,7 +669,7 @@ export default {
                         planDays: row.planDays,
                         overTimeDays: 0,
                         isSms: 0,
-                        ...radioGroup
+                        // ...radioGroup
                     };
                     this.stepBusiness = obj;
                 }
