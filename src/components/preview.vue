@@ -126,7 +126,7 @@
       opera:function (type) {
         switch (type){
           case 1:
-            this.fileSign([].concat(this.imgSrc.split('?')[0]),'download',false)
+            this.fileSign([].concat(this.imgSrc.split('?')[0]),'download')
             break
           case 2:
             this.transform+=90

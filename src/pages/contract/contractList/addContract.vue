@@ -8,10 +8,10 @@
                 :style="{ height: clientHei }">
                 <!-- 合同信息 -->
                 <div class="contractMsg">
-                    <p>合同信息<span class="toCommission"
-                            v-if="false"><span class="attention iconfont icon-tubiao-10"
+                    <p>合同信息<span v-if="isDeal"
+                            class="toCommission"><span class="attention iconfont icon-tubiao-10"
                                 :class="{'attention_':isToCommission}"></span><span class="toCommissionStyle"
-                                @click="toCommission">是否转佣</span><span>应收金额（元）：</span><span>已收金额（元）：</span><span>未收金额（元）：</span><span>已退金额（元）：</span><span v-if="isToCommission">转佣金额（元）：</span></span></p>
+                                @click="toCommission">是否转佣</span><span>应收金额（元）：{{contractForm.receivableCommission}}</span><span>已收金额（元）：{{contractForm.receivedCommission}}</span><span>未收金额（元）：{{contractForm.uncollectedCommission}}</span><span>已退金额（元）：{{contractForm.retiredCommission}}</span><span v-if="isToCommission && false">转佣金额（元）：</span></span></p>
                     <div class="form-content">
                         <el-form-item label="签约时间："
                             style="text-align:right;width:285px;"
@@ -44,6 +44,11 @@
                                 :disabled="true"
                                 style="width:140px"
                                 v-if="contractForm.type===3"></el-input>
+                            <el-input placeholder="请输入内容"
+                                value="意向"
+                                :disabled="true"
+                                style="width:140px"
+                                v-if="contractForm.type===4"></el-input>
                         </el-form-item>
                         <el-form-item label="纸质合同编号："
                             class="width-250 form-label"
@@ -655,8 +660,8 @@ const rule = {
     signDate: {
         name: "签约日期"
     },
-    signDateLast:{
-      name:"预计过户时间"
+    signDateLast: {
+        name: "预计过户时间"
     },
     // transFlowCode: {
     //   name: "交易流程",
@@ -832,7 +837,7 @@ export default {
             },
             pickerOptionsLast: {
                 disabledDate(time) {
-                    let n = 24*60*60*1000;
+                    let n = 24 * 60 * 60 * 1000;
                     return time.getTime() + n < Date.now();
                 }
             },
@@ -844,6 +849,12 @@ export default {
             basicsOptions: [], //基础版经纪人信息
             isToCommission: false // 是否转佣
         };
+    },
+    computed: {
+        isDeal() {
+            let { isDeal = 0 } = this.$route.query || {};
+            return isDeal;
+        }
     },
     created() {
         let backMsg = JSON.parse(localStorage.getItem("backMsg"));
@@ -887,6 +898,10 @@ export default {
         // this.getExtendParams();//扩展参数
         this.getShopList(); //门店
         this.getAdmin(); //获取当前登录人信息
+        if (this.$route.query.isDeal) {
+            this.id = this.$route.query.id;
+            this.getContractDetail();
+        }
     },
     methods: {
         //获取合同基本信息版式（1 基础版  2 复杂版）
@@ -2182,7 +2197,7 @@ export default {
             } else {
                 param.recordType = 1;
             }
-            if (this.type === 1) {
+            if (this.type === 1 && !this.isDeal) {
                 //新增
                 var url = "/api/contract/addContract";
                 if (this.isOffline === 1) {
@@ -2245,7 +2260,8 @@ export default {
                             type: "error"
                         });
                     });
-            } else if (this.type === 2) {
+            } else{
+                //  if (this.type === 2) 
                 //编辑
                 if (this.contractForm.type === 1) {
                     delete param.leaseCont.contChangeState;
@@ -2281,6 +2297,20 @@ export default {
                 if (this.isOffline === 1) {
                     url = "/api/contract/addLocalContract";
                 }
+
+                if(this.isDeal){
+                    
+                    param.dealById = this.id
+                    if(this.isToCommission){
+                        param.isTransfeOfCommission = this.isToCommission
+                    }else{
+                        delete param.isTransfeOfCommission
+                    }
+                }else{
+                    delete param.dealById
+                }
+
+
                 this.$ajax
                     .postJSON(url, param)
                     .then(res => {
@@ -2860,12 +2890,20 @@ export default {
                         this.loanType = res.data.loanType;
                     }
                     // this.contractForm.signDate = res.data.signDate.substr(0, 10);
-                    this.contractForm.type = res.data.contType.value;
+                    let isDealTpe =
+                        this.contractForm.houseinfoCode &&
+                        this.contractForm.houseinfoCode.search("Z") === 0
+                            ? 1
+                            : 2;
+                    this.contractForm.type = this.$route.query.isDeal
+                        ? Number(isDealTpe)
+                        : res.data.contType.value;
                     //合同状态为已签约且未结算时只允许编辑房客源编号
                     if (
                         this.contractForm.recordType.value === 1 &&
                         res.data.resultState.value === 1 &&
-                        res.data.contState.value === 3
+                        res.data.contState.value === 3 &&
+                        !this.$route.query.isDeal
                     ) {
                         this.canInput = true;
                     }
@@ -3252,7 +3290,6 @@ export default {
         //是否转佣
         toCommission() {
             this.isToCommission = !this.isToCommission;
-            console.log(this.isToCommission);
         }
     },
     mounted() {

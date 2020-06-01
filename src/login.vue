@@ -22,8 +22,6 @@
       // this.setPath([])
       if (param.newToken) {
         document.cookie = `ERP-Test=${this.$route.query.newToken}`;
-      }if (param.onlineToken) {
-        document.cookie = `ERP=${this.$route.query.onlineToken}`;
       } else if (param.empcode) {
         for (let item in param) {
           if (item === 'empcode') {
