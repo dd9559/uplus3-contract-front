@@ -223,8 +223,14 @@ const MIXINS = {
     /**
      * 获取签名
      */
-    fileSign:async function (arr,type) {
+    fileSign:async function (arr,type,mini=true) {
       let param={urls:arr.join(',')}
+      if(mini){
+        param.style='jjw-sign-resize'
+      }else{
+        param.style='jjw-sign-big'
+      }
+
       if(type==='download'){
         param.rct='application%2Foctet-stream'
       }
@@ -280,7 +286,7 @@ const MIXINS = {
                     arr2.push(e.path);
                 }
             })
-            this.fileSign(arr2,downType)
+            this.fileSign(arr2,downType,false)
         }else{
             // 其他文件 下载
             if(downType===2){//合同主体

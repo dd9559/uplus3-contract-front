@@ -2179,6 +2179,8 @@ export default {
         if (this.contType === "2" || this.contType === "3") {
             this.activeName = "deal-report";
             this.name = "deal-report";
+        }else{
+            this.getAchievement()//业绩分成
         }
         if (this.$route.query.type === "dataBank") {
             this.activeName = "third";
