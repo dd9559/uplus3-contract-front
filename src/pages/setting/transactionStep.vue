@@ -140,8 +140,8 @@
                         <span>{{stepBusiness.stepsTypeName}}</span>
                         <label class="step-name step-left">后期标记:</label>
                         <span>
-                            <el-radio-group v-model="stepBusiness.radioValue">
-                                <el-radio v-for="item in stepBusiness.radioGroup"
+                            <el-radio-group v-model="stepBusiness.remarkAfter">
+                                <el-radio v-for="item in radioGroup"
                                     :key="item.name"
                                     :label="item.label">{{item.name}}</el-radio>
                             </el-radio-group>
@@ -161,7 +161,7 @@
                         <el-input class="plan-days"
                             maxlength="3"
                             v-model="stepBusiness.planDays"
-                            @keyup.native="getInt('planDays')"
+                            @input="inputOnly"
                             size="small"></el-input>
                     </div>
                     <div class="menu-table">
@@ -248,27 +248,6 @@ const infoType = [
     "EXCEL",
     "Word"
 ];
-const radioGroup = {
-    radioValue: "",
-    radioGroup: [
-        {
-            name: "过户",
-            label: 1
-        },
-        {
-            name: "纠纷",
-            label: 2
-        },
-        {
-            name: "诉讼",
-            label: 3
-        },
-        {
-            name: "无",
-            label: 4
-        }
-    ]
-};
 
 export default {
     mixins: [FILTER, MIXINS],
@@ -295,8 +274,26 @@ export default {
                 planDays: "",
                 overTimeDays: 0,
                 isSms: 0,
-                ...radioGroup
+                remarkAfter: "",
             },
+            radioGroup: [
+                {
+                    name: "过户",
+                    label: 1
+                },
+                {
+                    name: "纠纷",
+                    label: 2
+                },
+                {
+                    name: "诉讼",
+                    label: 3
+                },
+                {
+                    name: "无",
+                    label: 0
+                }
+            ],
             //新增和编辑交易步骤 表格行
             tableForm: [
                 {
@@ -462,7 +459,7 @@ export default {
                     planDays: "",
                     overTimeDays: 0,
                     isSms: 0,
-                    ...radioGroup
+                    remarkAfter: ''
                 };
                 this.stepBusiness = obj;
             }
@@ -549,28 +546,11 @@ export default {
             }
         },
         confirmForm() {
-            // if (this.stepBusiness.radioValue.length < 1) {
-            //     this.$message("请选择后期标记");
-            // } else 
-            if (this.stepBusiness.name === "") {
+            if (this.stepBusiness.remarkAfter.length < 1) {
+                this.$message("请选择后期标记");
+            } else if (this.stepBusiness.name === "") {
                 this.$message("步骤名称不能为空");
             } else {
-                if (this.stepBusiness.planDays) {
-                    if (!/^[0-9]+$/.test(this.stepBusiness.planDays)) {
-                        this.$message({
-                            message: "计划天数请输入正整数",
-                            type: "warning"
-                        });
-                        return false;
-                    }
-                    if (Number(this.stepBusiness.planDays) > 365) {
-                        this.$message({
-                            message: "计划天数不能超过365天",
-                            type: "warning"
-                        });
-                        return false;
-                    }
-                }
                 let isOk;
                 if (this.tableForm.length) {
                     this.tableForm.forEach(item => {
@@ -666,10 +646,10 @@ export default {
                         stepsTypeId: row.stepsTypeId,
                         stepsTypeName: row.stepsTypeName,
                         name: row.name,
-                        planDays: row.planDays,
+                        planDays: row.planDays?row.planDays:'',
                         overTimeDays: 0,
                         isSms: 0,
-                        ...radioGroup
+                        remarkAfter: row.remarkAfter
                     };
                     this.stepBusiness = obj;
                 }
@@ -739,18 +719,13 @@ export default {
                     });
             });
         },
-        //获取整数
-        getInt: function(param, int = 1) {
-            this.stepBusiness[param] = this.stepBusiness[param].replace(
-                /[^\d]/g,
-                ""
-            );
-            if (int) {
-                this.stepBusiness[param] = this.stepBusiness[param].replace(
-                    ".",
-                    ""
-                );
-            }
+        inputOnly() {
+            this.$nextTick(()=>{
+                if(this.stepBusiness.planDays>365) {
+                    return this.stepBusiness.planDays = ''
+                }
+                this.stepBusiness.planDays = this.$tool.numberInput(this.stepBusiness.planDays,2)
+            })
         }
     },
     computed: {

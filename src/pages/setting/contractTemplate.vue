@@ -28,13 +28,13 @@
                 </el-select>
             </el-form-item>
         </el-form>
-        <div class="line-bj"></div>
+        <!-- <div class="line-bj"></div>
         <ul class="line-tabs">
             <li v-for="item in powerArr"
                 :class="[activeItem===item.id?'on':'']"
                 @click="checkTab(item)"
                 :key="item.id">{{item.name}}</li>
-        </ul>
+        </ul> -->
         <div class="data-list">
             <el-table :data="list"
                 style="width: 100%"
@@ -260,17 +260,17 @@ export default {
                     name: "查询"
                 }
             },
-            powerArr: [
-                {
-                    name: "PC端合同模板",
-                    id: 3
-                },
-                {
-                    name: "手机端合同模板",
-                    id: 1
-                }
-            ],
-            activeItem: 3
+            // powerArr: [
+            //     {
+            //         name: "PC端合同模板",
+            //         id: 3
+            //     },
+            //     {
+            //         name: "手机端合同模板",
+            //         id: 1
+            //     }
+            // ],
+            // activeItem: 3
         };
     },
     created() {
@@ -329,7 +329,7 @@ export default {
             let param = {
                 cityId: this.selectCity,
                 systemTag: this.tixiid,
-                platform:this.activeItem
+                // platform:this.activeItem
             };
             this.$ajax
                 .get("/api/setting/contractTemplate/list", param)
@@ -487,10 +487,10 @@ export default {
                 });
             }
         },
-        checkTab(row) {
-            this.activeItem = row.id;
-            this.getList();
-        }
+        // checkTab(row) {
+        //     this.activeItem = row.id;
+        //     this.getList();
+        // }
     },
     watch: {
         tixiid(newdata) {
@@ -716,28 +716,28 @@ export default {
 }
 
 // 2020-05-21
-.line-bj {
-    background-color: #f5f5f5;
-    height: 20px;
-}
+// .line-bj {
+//     background-color: #f5f5f5;
+//     height: 20px;
+// }
 .el-form-container {
     padding: 6px 10px;
 }
-.line-tabs {
-    padding: 5px 10px;
-    display: flex;
-    height: 40px;
-    & > li {
-        padding: 0 10px;
-        align-items: center;
-        display: flex;
-        margin-right: 30px;
-        font-size: 14px;
-        cursor: pointer;
-        &.on {
-            color: #478de3;
-            border-bottom: 2px solid #478de3;
-        }
-    }
-}
+// .line-tabs {
+//     padding: 5px 10px;
+//     display: flex;
+//     height: 40px;
+//     & > li {
+//         padding: 0 10px;
+//         align-items: center;
+//         display: flex;
+//         margin-right: 30px;
+//         font-size: 14px;
+//         cursor: pointer;
+//         &.on {
+//             color: #478de3;
+//             border-bottom: 2px solid #478de3;
+//         }
+//     }
+// }
 </style>
