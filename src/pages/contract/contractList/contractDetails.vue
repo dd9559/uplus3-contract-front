@@ -80,7 +80,7 @@
                                         <span class="tag">佣金合计：</span>
                                         <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                                     </p>
-                                    <p>
+                                    <p v-if="showTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
                                         <span class="tag">预计过户时间：</span>
                                         <span class="text">{{contractDetail.signDateLast}}</span>
                                     </p>

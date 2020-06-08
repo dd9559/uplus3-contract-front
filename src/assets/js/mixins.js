@@ -409,7 +409,11 @@ const MIXINS = {
       'getBodyScollShow',
       'getSearchQuery',
       'getDataList'
-    ])
+    ]),
+    // 兰州3.0
+    showTransferTime() {
+        return this.getUser.version===3&&this.getUser.user.cityId===25
+    }
   },
   mounted() {
     window.onresize = this.comHeightFn();

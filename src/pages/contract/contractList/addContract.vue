@@ -66,11 +66,12 @@
                         </el-form-item>
                         <el-form-item label="预计过户时间："
                             style="text-align:right;width:280px;"
-                            class="form-label">
+                            class="form-label"
+                            v-if="showTransferTime&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker style="width:140px"
                                 v-model="contractForm.signDateLast"
                                 :disabled="type===2?true:false"
-                                type="datetime"
+                                type="date"
                                 format="yyyy-MM-dd"
                                 value-format="yyyy-MM-dd"
                                 placeholder="选择日期时间"
@@ -1206,6 +1207,10 @@ export default {
             // if(this.contractForm.type!==1){
             //   delete rule_.transFlowCode
             // }
+            if(!this.showTransferTime) {
+                // 非兰州无预计过户时间
+                delete rule_.signDateLast
+            }
             if (this.isOffline !== 1) {
                 delete rule_.pCode;
             }
