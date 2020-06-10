@@ -337,7 +337,7 @@ export default {
                     res = res.data;
                     if (res.status === 200) {
                         this.list = res.data;
-                        // this.cityName = res.data[0].cityName;
+                        this.cityName = res.data[0].cityName;
                     }
                 })
                 .catch(error => {
