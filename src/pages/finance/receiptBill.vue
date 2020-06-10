@@ -765,7 +765,7 @@ export default {
     },
     getPayAccount(id) {
       this.$ajax
-        .get("/api//payInfo/getPayAccount", {
+        .get("/api/payInfo/getPayAccount", {
           payId: id
         })
         .then(res => {
@@ -1402,7 +1402,8 @@ export default {
     getAcount: function(empId) {
       let param = {
         contId: this.form.contId,
-        empId: empId
+        empId: empId,
+        payId: this.$route.query.id
       };
       this.$ajax.get("/api/payInfo/selectProceedsAccount", param).then(res => {
         res = res.data;
