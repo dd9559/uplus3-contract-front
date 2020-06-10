@@ -408,10 +408,10 @@
                         <el-button type="text"
                             @click="btnOpera(scope.row,1)"
                             v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state">编辑</el-button><template v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
-                            <el-button type="text"
+                            <!-- <el-button type="text"
                                 @click="btnOpera(scope.row,2)"
                                 v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
-                            </el-button>
+                            </el-button> -->
                         </template>
                         <div v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2">
                             <el-button type="text"

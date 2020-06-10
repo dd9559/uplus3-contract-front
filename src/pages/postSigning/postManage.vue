@@ -929,7 +929,7 @@ import LayerScrollAuto from "@/components/LayerScrollAuto";
 
 // 合同
 const STATE = {
-    start: "已结束", //已结束
+    start: "已结案", //已结束
     end: 1, //后期所有步骤办理完
     err: 2 //解约合同
 };
@@ -1357,6 +1357,7 @@ export default {
         // 查询
         queryFn() {
             this.pageNum = 1;
+            console.log(this.propForm.dateTime);
             this.getData("search");
         },
         // 部门回调
@@ -2176,6 +2177,12 @@ export default {
             if (this.propForm.dateMo) {
                 datamo = [...this.propForm.dateMo];
             }
+            let addDate="";
+            if(this.propForm.dateTime){
+                addDate=[...this.propForm.dateTime];
+               console.log( this.dateFormat(addDate[0]));
+               console.log( this.dateFormat(addDate[1]));
+            }
             let dataMoBool = datamo.length === 2;
             // 办理日期
             if (this.propForm.region === RECEIVINGDATE.end && dataMoBool) {
@@ -2208,9 +2215,11 @@ export default {
                 keyword: this.propForm.search,
                 depAttr: this.propForm.depAttr,
                 areaName: this.propForm.areaName,
-                recordType: this.propForm.recordType
+                recordType: this.propForm.recordType,
+                estTransferTimeStar:addDate?this.dateFormat(addDate[0]):"",
+                estTransferTimeEnd:addDate?this.dateFormat(addDate[1]):""
             };
-
+           
             let { dateTime = "",regionTime=0 } = this.propForm || {};
             if (!regionTime) {
                 // 实际过户时间
