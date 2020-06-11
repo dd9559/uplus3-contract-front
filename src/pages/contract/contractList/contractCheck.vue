@@ -640,8 +640,8 @@ export default {
           combineItem.nextAuditId=combineItem.contractEntrust.nextAuditId
           combineItem.nextAuditName=combineItem.contractEntrust.nextAuditName
           combineItem.nextAuditStoreName=combineItem.contractEntrust.nextAuditStoreName
-            //抢单部门字段
-            combineItem.grabDept=combineItem.contractEntrust.grabDept
+          //抢单部门字段 true表示有抢单权限
+          combineItem.grabDept=combineItem.contractEntrust.grabDept
           arr.forEach((ele,i) => {
             if(ele.contractEntrust&&ele.contractEntrust.id===element.contractEntrust.id&&!ele.isCombine){
               arr.splice(i+1,0,combineItem)
