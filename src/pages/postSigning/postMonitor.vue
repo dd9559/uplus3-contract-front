@@ -32,6 +32,7 @@
                     prop="late">
                         <el-select
                         v-model="propForm.late"
+                        filterable
                         placeholder="交易步骤"
                         class="w100">
                             <el-option
@@ -164,9 +165,10 @@
                             纸质合同编号:
                             <span class="blue" @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.pCode}}</span>
                         </p>
+                        <p>{{scope.row.remarkAfter.value > 0 ?scope.row.remarkAfter.label:''}}</p>
                     </template>
                 </el-table-column>
-                <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
+                <el-table-column prop="recordType.label" label="签约方式" min-width="80"></el-table-column>
                 <el-table-column label="接收日期" min-width="90">
                     <template slot-scope="scope">
                         {{dateFormat(scope.row.receiveTime)}}
