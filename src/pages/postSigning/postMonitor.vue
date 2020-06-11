@@ -165,7 +165,7 @@
                             纸质合同编号:
                             <span class="blue" @click="contractFn(scope.row)" style="cursor:pointer;">{{scope.row.pCode}}</span>
                         </p>
-                        <p>{{scope.row.remarkAfter.value > 0 ?scope.row.remarkAfter.label:''}}</p>
+                        <p>{{(scope.row.remarkAfter&&scope.row.remarkAfter.value > 0 )?scope.row.remarkAfter.label:''}}</p>
                     </template>
                 </el-table-column>
                 <el-table-column prop="recordType.label" label="签约方式" min-width="80"></el-table-column>
