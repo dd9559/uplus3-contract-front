@@ -2155,9 +2155,7 @@ export default {
             let guestArr = this.guestList.map(item => Object.assign({}, item));
             ownerArr.forEach((element, index) => {
                 if (element.isEncryption) {
-                    element.encryptionMobile = this.ownerList_[
-                        index
-                    ].encryptionMobile;
+                    element.encryptionMobile = this.ownerList_[index].encryptionMobile;
                 } else {
                     element.encryptionMobile = element.mobile;
                 }
@@ -2166,9 +2164,7 @@ export default {
             });
             guestArr.forEach((element, index) => {
                 if (element.isEncryption) {
-                    element.encryptionMobile = this.guestList_[
-                        index
-                    ].encryptionMobile;
+                    element.encryptionMobile = this.guestList_[index].encryptionMobile;
                 } else {
                     element.encryptionMobile = element.mobile;
                 }
@@ -2182,10 +2178,7 @@ export default {
                     type: this.type,
                     haveExamine: this.haveExamine
                 };
-            } else if (
-                this.contractForm.type === 2 ||
-                this.contractForm.type === 3
-            ) {
+            } else if (this.contractForm.type === 2 || this.contractForm.type === 3) {
                 //买卖代办合同
                 var param = {
                     saleCont: this.contractForm,
@@ -2202,15 +2195,38 @@ export default {
             } else {
                 param.recordType = 1;
             }
-            if (this.type === 1 && !this.isDeal) {
+            if (this.type === 1) {
                 //新增
+                if(this.isDeal){
+                    let paramType = this.contractForm.type === 1 ? "leaseCont" : "saleCont"
+                    delete param[paramType].contChangeState;
+                    delete param[paramType].contState;
+                    delete param[paramType].contType;
+                    delete param[paramType].laterStageState;
+                    delete param[paramType].toExamineState;
+                    delete param[paramType].previewImg;
+                    delete param[paramType].subscriptionTerm;
+                    delete param[paramType].updateTime;
+                    delete param[paramType].distributableAchievement;
+                    delete param[paramType].achievementState;
+                    delete param[paramType].recordType;
+                    delete param[paramType].resultState;
+                
+                    param[paramType].dealById = this.id
+                    param[paramType].dealByCode = this.contractForm.code
+                    if(this.isToCommission){
+                        param[paramType].isTransfeOfCommission = this.isToCommission
+                    }else{
+                        delete param.isTransfeOfCommission
+                    }
+                }else{
+                    delete param.dealById
+                }
                 var url = "/api/contract/addContract";
                 if (this.isOffline === 1) {
                     url = "/api/contract/addLocalContract";
                 }
-                this.$ajax
-                    .postJSON(url, param)
-                    .then(res => {
+                this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
@@ -2230,14 +2246,10 @@ export default {
                             } else {
                                 let contractMsg = res.data;
                                 this.hidBtn = 1;
-                                sessionStorage.setItem(
-                                    "contractMsg",
-                                    JSON.stringify(contractMsg)
-                                );
+                                sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
                                 if (contractMsg.singleCompany) {
                                     this.singleCompany = true;
-                                    this.singleCompanyName =
-                                        contractMsg.singleCompany;
+                                    this.singleCompanyName = contractMsg.singleCompany;
                                 } else {
                                     this.$router.push({
                                         path: "/extendParams"
@@ -2248,16 +2260,7 @@ export default {
                     })
                     .catch(error => {
                         this.fullscreenLoading = false;
-                        if (
-                            error !==
-                                "该合同房源已被其他合同录入，请重新选择房源！" &&
-                            error !==
-                                "该合同下的房源客源不属于同一个体系，请重新选择！" &&
-                            error !==
-                                "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" &&
-                            error !== "合同编号已存在，请重新输入！" &&
-                            error !== "合同编号不符合规范！"
-                        ) {
+                        if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
                             this.canClick = true;
                         }
                         this.$message({
@@ -2281,10 +2284,7 @@ export default {
                     delete param.leaseCont.achievementState;
                     delete param.leaseCont.recordType;
                     delete param.leaseCont.resultState;
-                } else if (
-                    this.contractForm.type === 2 ||
-                    this.contractForm.type === 3
-                ) {
+                } else if ( this.contractForm.type === 2 || this.contractForm.type === 3 ) {
                     delete param.saleCont.contChangeState;
                     delete param.saleCont.contState;
                     delete param.saleCont.contType;
@@ -2302,19 +2302,6 @@ export default {
                 if (this.isOffline === 1) {
                     url = "/api/contract/addLocalContract";
                 }
-
-                if(this.isDeal){
-                    
-                    param.dealById = this.id
-                    if(this.isToCommission){
-                        param.isTransfeOfCommission = this.isToCommission
-                    }else{
-                        delete param.isTransfeOfCommission
-                    }
-                }else{
-                    delete param.dealById
-                }
-
 
                 this.$ajax
                     .postJSON(url, param)
@@ -2895,14 +2882,8 @@ export default {
                         this.loanType = res.data.loanType;
                     }
                     // this.contractForm.signDate = res.data.signDate.substr(0, 10);
-                    let isDealTpe =
-                        this.contractForm.houseinfoCode &&
-                        this.contractForm.houseinfoCode.search("Z") === 0
-                            ? 1
-                            : 2;
-                    this.contractForm.type = this.$route.query.isDeal
-                        ? Number(isDealTpe)
-                        : res.data.contType.value;
+                    let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
+                    this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
                     //合同状态为已签约且未结算时只允许编辑房客源编号
                     if (
                         this.contractForm.recordType.value === 1 &&
