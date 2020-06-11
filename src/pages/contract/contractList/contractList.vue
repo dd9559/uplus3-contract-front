@@ -843,6 +843,57 @@
         <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- u+转成交弹框 -->
+    <el-dialog title="转成交" :visible.sync="uPlusIsShow" width="800px" class="uPluseDialog">
+      <div>
+        <ul class="uPlus-class">
+          <li class="li" style="width:100%;">
+            <em class="cl-999">房源编号：</em>S0000182625
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">建筑面积：</em>99㎡
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">业主姓名：</em>黄小茹
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">物业地址：</em>东湖雅居雅居1栋1单元2003
+          </li>
+        </ul>
+        <p style="margin-bottom:20px;">选择合同类型：</p>
+        <el-select
+          v-model="contractForm.contState"
+          placeholder="合同类型"
+          :clearable="true"
+          style="width:600px"
+        >
+          <el-option
+            v-for="item in dictionary['71']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          ></el-option>
+        </el-select>
+        <p style="margin-bottom:20px;">选择签约方式：</p>
+        <el-select
+          v-model="contractForm.contState"
+          placeholder="签约方式"
+          :clearable="true"
+          style="width:600px"
+        >
+          <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          ></el-option>
+        </el-select>
+        <p class="dialog-footer">
+          <el-button round @click="uPlusIsShow = false">取 消</el-button>
+          <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
+        </p>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -1071,7 +1122,9 @@ export default {
       //合同删除
       deleteDialog: false,
       deleteItem: "",
-      dialogContType: 1 //变更解约弹窗是否是意向定金合同
+      dialogContType: 1, //变更解约弹窗是否是意向定金合同
+      uPlusIsShow: false,
+      uPlusHouseDetail: null
     };
   },
   created() {
@@ -1081,6 +1134,10 @@ export default {
         "//" +
         window.location.hostname +
         (window.location.port ? ":" + window.location.port : "");
+    }
+    if (this.$route.query.turnDeal) {
+      this.uPlusIsShow = true;
+      this.getUplusHouseDetail(117809);
     }
     this.http = window.location.origin;
     this.getAdmin(); //获取当前登录人信息
@@ -1898,6 +1955,28 @@ export default {
           isDeal: 1
         }
       });
+    },
+    //获取U+房源详情
+    getUplusHouseDetail(id) {
+      let param = {
+        houseId: id
+      };
+      this.$ajax
+        .get("/api/resource/houses/one", param)
+        .then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            console.log("获取房源详情");
+            console.log(res);
+            this.uPlusHouseDetail = res.data;
+            console.log(this.uPlusHouseDetail);
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: error
+          });
+        });
     }
   },
   computed: {
@@ -2323,6 +2402,30 @@ export default {
   span {
     max-width: 160px;
     display: inline-block;
+  }
+}
+.uPluseDialog {
+  padding: 50px;
+  // padding-bottom: 200px;
+  .uPlus-class {
+    width: 800px;
+    padding: 20px;
+
+    overflow: hidden;
+    li {
+      width: 300px !important;
+      height: 50px;
+      float: left;
+      // margin: 20px 0 0 100px;
+
+      // &:first-of-type{
+      //   margin-left: 0;
+      // }
+    }
+  }
+  .dialog-footer {
+    text-align: center;
+    padding: 50px 0 50px 0;
   }
 }
 </style>

@@ -132,6 +132,9 @@ export default {
       this.$refs.popover.showPopper = false; //z改动
       // }
       this.inputVal = data.name;
+      if (!data.depId) {
+        data.depId = data.id;
+      }
       this.$emit("checkCell", data);
     },
     opera: function(type, e) {
