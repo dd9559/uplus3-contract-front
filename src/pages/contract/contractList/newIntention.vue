@@ -1126,7 +1126,6 @@ export default {
       param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
       param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
       param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
-      debugger
       let price=''
       if(param.igdCont.houseInfo.ListingPrice){
         price = String(param.igdCont.houseInfo.ListingPrice)

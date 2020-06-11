@@ -1951,7 +1951,7 @@ export default {
           id: row.id,
           operateType: 1,
           type: row.contType.value,
-          isOffline: row.recordType.value,
+          isOffline: row.recordType.value===1?0:1,
           isDeal: 1
         }
       });
