@@ -1,22 +1,33 @@
 <template>
     <div class="view-container">
         <div v-if="contVersion===2">
-            <el-form :inline="true"
-                :model="contractForm"
-                class="add-form"
-                size="small"
-                :style="{ height: clientHei }">
+            <el-form 
+            :inline="true"
+            :model="contractForm"
+            class="add-form"
+            size="small"
+            :style="{ height: clientHei }">
                 <!-- 合同信息 -->
                 <div class="contractMsg">
-                    <p>合同信息<span v-if="isDeal"
-                            class="toCommission"><span class="attention iconfont icon-tubiao-10"
-                                :class="{'attention_':isToCommission}"></span><span class="toCommissionStyle"
-                                @click="toCommission">是否转佣</span><span>应收金额（元）：{{contractForm.receivableCommission}}</span><span>已收金额（元）：{{contractForm.receivedCommission}}</span><span>未收金额（元）：{{contractForm.uncollectedCommission}}</span><span>已退金额（元）：{{contractForm.retiredCommission}}</span><span v-if="isToCommission && false">转佣金额（元）：</span></span></p>
+                    <p>
+                        合同信息
+                        <span v-if="isDeal" class="toCommission">
+                            <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>
+                            <span class="toCommissionStyle" @click="toCommission">是否转佣</span>
+                            <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
+                            <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
+                            <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
+                            <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
+                            <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span>
+                        </span>
+                    </p>
                     <div class="form-content">
-                        <el-form-item label="签约时间："
+                        <el-form-item 
+                            label="签约时间："
                             style="text-align:right;width:285px;"
                             class="form-label">
-                            <el-date-picker style="width:180px"
+                            <el-date-picker 
+                                style="width:180px"
                                 :disabled="type===2?true:false"
                                 v-model="contractForm.signDate"
                                 type="datetime"
@@ -27,34 +38,44 @@
                                 default-time="12:00:00">
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item label="合同类型："
+                        <el-form-item 
+                            label="合同类型："
                             class="width-250">
-                            <el-input placeholder="请输入内容"
+                            <el-input 
+                                placeholder="请输入内容"
                                 value="租赁"
                                 :disabled="true"
                                 style="width:140px"
-                                v-if="contractForm.type===1"></el-input>
-                            <el-input placeholder="请输入内容"
+                                v-if="contractForm.type===1">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
                                 :value="loanType===7?'全款买卖':loanType===8?'贷款买卖':'买卖'"
                                 :disabled="true"
                                 style="width:140px"
-                                v-if="contractForm.type===2"></el-input>
-                            <el-input placeholder="请输入内容"
+                                v-if="contractForm.type===2">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
                                 value="代办"
                                 :disabled="true"
                                 style="width:140px"
-                                v-if="contractForm.type===3"></el-input>
-                            <el-input placeholder="请输入内容"
+                                v-if="contractForm.type===3">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
                                 value="意向"
                                 :disabled="true"
                                 style="width:140px"
                                 v-if="contractForm.type===4"></el-input>
                         </el-form-item>
-                        <el-form-item label="纸质合同编号："
+                        <el-form-item 
+                            label="纸质合同编号："
                             class="width-250 form-label"
                             style="width:340px;"
                             v-if="isOffline===1">
-                            <input style="width:200px;"
+                            <input 
+                                style="width:200px;"
                                 type="text"
                                 :disabled="canInput"
                                 maxlength="30"
@@ -64,11 +85,13 @@
                                 class="dealPrice"
                                 :class="{'disabled':canInput}">
                         </el-form-item>
-                        <el-form-item label="预计过户时间："
+                        <el-form-item 
+                            label="预计过户时间："
                             style="text-align:right;width:280px;"
                             class="form-label"
                             v-if="showTransferTime&&(contractForm.type===2||contractForm.type===3)">
-                            <el-date-picker style="width:140px"
+                            <el-date-picker 
+                                style="width:140px"
                                 v-model="contractForm.signDateLast"
                                 :disabled="type===2?true:false"
                                 type="date"
@@ -80,9 +103,11 @@
                             </el-date-picker>
                         </el-form-item>
                         <br>
-                        <el-form-item label="客户佣金："
+                        <el-form-item 
+                            label="客户佣金："
                             class="width-250">
-                            <input type="text"
+                            <input 
+                                type="text"
                                 :disabled="canInput"
                                 v-model="contractForm.custCommission"
                                 @input="cutNumber('custCommission')"
@@ -92,9 +117,11 @@
                                 :class="{'disabled':canInput}">
                             <i class="yuan">元</i>
                         </el-form-item>
-                        <el-form-item label="业主佣金："
+                        <el-form-item 
+                            label="业主佣金："
                             style="text-align:right;width:285px;">
-                            <input type="text"
+                            <input 
+                                type="text"
                                 :disabled="canInput"
                                 v-model="contractForm.ownerCommission"
                                 @input="cutNumber('ownerCommission')"
@@ -104,9 +131,11 @@
                                 :class="{'disabled':canInput}">
                             <i class="yuan">元</i>
                         </el-form-item>
-                        <el-form-item label="总佣金："
+                        <el-form-item 
+                            label="总佣金："
                             style="text-align:right;width:280px;">
-                            <input placeholder="请输入内容"
+                            <input 
+                                placeholder="请输入内容"
                                 :value="commissionTotal"
                                 :disabled="true"
                                 class="dealPrice disabled">
@@ -848,7 +877,8 @@ export default {
             loanType: 0, //7 全款买卖 8 贷款买卖
             showRemark: false, //备注栏折叠展开
             basicsOptions: [], //基础版经纪人信息
-            isToCommission: false // 是否转佣
+            isToCommission: false, // 是否转佣
+            toCommissionSum:0,//转佣金额
         };
     },
     computed: {
@@ -2884,24 +2914,19 @@ export default {
                     // this.contractForm.signDate = res.data.signDate.substr(0, 10);
                     let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
                     this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
+                    if(this.$route.query.isDeal){
+                        this.toCommissionSum = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission)
+                    }
+
                     //合同状态为已签约且未结算时只允许编辑房客源编号
-                    if (
-                        this.contractForm.recordType.value === 1 &&
-                        res.data.resultState.value === 1 &&
-                        res.data.contState.value === 3 &&
-                        !this.$route.query.isDeal
-                    ) {
+                    if (this.contractForm.recordType.value === 1 && res.data.resultState.value === 1 && res.data.contState.value === 3 && !this.$route.query.isDeal) {
                         this.canInput = true;
                     }
                     //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
-                    if (
-                        this.contractForm.recordType.value === 2 &&
-                        this.contractForm.contState.value === 3
-                    ) {
+                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3) {
                         this.offLine = true;
                     }
-                    this.sourceBtnCheck =
-                        res.data.contState.value === 3 ? false : true;
+                    this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
                     let rightAddress = res.data.propertyRightAddr;
                     let index1 = rightAddress.indexOf("市");
                     let index2 = rightAddress.indexOf("区");
@@ -2945,32 +2970,18 @@ export default {
                     }
                     this.ownerList = [];
                     this.guestList = [];
-                    for (
-                        var i = 0;
-                        i < this.contractForm.contPersons.length;
-                        i++
-                    ) {
-                        if (
-                            this.contractForm.contPersons[i].personType
-                                .value === 1
-                        ) {
+                    for ( var i = 0; i < this.contractForm.contPersons.length; i++ ) {
+                        if ( this.contractForm.contPersons[i].personType.value === 1 ) {
                             let element = {
                                 name: this.contractForm.contPersons[i].name,
                                 mobile: this.contractForm.contPersons[i].mobile,
                                 pid: this.contractForm.contPersons[i].pid,
-                                encryptionMobile: this.contractForm.contPersons[
-                                    i
-                                ].encryptionMobile,
-                                relation: this.contractForm.contPersons[i]
-                                    .relation,
-                                propertyRightRatio: this.contractForm
-                                    .contPersons[i].propertyRightRatio,
-                                identifyCode: this.contractForm.contPersons[i]
-                                    .identifyCode,
-                                encryptionCode: this.contractForm.contPersons[i]
-                                    .encryptionCode,
-                                cardType: this.contractForm.contPersons[i]
-                                    .cardType,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
                                 type: 1,
                                 isEncryption: true
                             };
@@ -2979,27 +2990,17 @@ export default {
                             this.ownerList.push(obj);
                             let obj_ = Object.assign({}, element);
                             this.ownerList_.push(obj_);
-                        } else if (
-                            this.contractForm.contPersons[i].personType
-                                .value === 2
-                        ) {
+                        } else if (this.contractForm.contPersons[i].personType.value === 2) {
                             let element = {
                                 name: this.contractForm.contPersons[i].name,
                                 mobile: this.contractForm.contPersons[i].mobile,
                                 pid: this.contractForm.contPersons[i].pid,
-                                encryptionMobile: this.contractForm.contPersons[
-                                    i
-                                ].encryptionMobile,
-                                relation: this.contractForm.contPersons[i]
-                                    .relation,
-                                propertyRightRatio: this.contractForm
-                                    .contPersons[i].propertyRightRatio,
-                                identifyCode: this.contractForm.contPersons[i]
-                                    .identifyCode,
-                                encryptionCode: this.contractForm.contPersons[i]
-                                    .encryptionCode,
-                                cardType: this.contractForm.contPersons[i]
-                                    .cardType,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
                                 type: 2,
                                 isEncryption: true
                             };
