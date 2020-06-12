@@ -718,8 +718,7 @@ export default {
       this.$router.push({
         path: "receiptBill",
         query: {
-          collect: 1,
-          edit: 1
+          collect: 1
         }
       });
     },
