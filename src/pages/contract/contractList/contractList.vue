@@ -270,49 +270,24 @@
           </span>
         </div>
         <div>
-          <div
-            class="haveSon"
-            :class="{'showOnLine':showOnLine}"
-            @mouseover="moveIn('online')"
-            @mouseout="moveOut('online')"
-            v-if="power['sign-ht-info-add'].state"
-          >
+          <div class="haveSon" :class="{'showOnLine':showOnLine}" @mouseover="moveIn('online')" @mouseout="moveOut('online')" v-if="power['sign-ht-info-add'].state" >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
               <ul class="mainList">
-                <li
-                  v-for="item in dictionary['71']"
-                  :key="item.key"
-                  @click="addOnLine(item)"
-                  style="position:relative;"
-                >
+                <li v-for="item in dictionary['71']" :key="item.key" @click="addOnLine(item)" style="position:relative;" >
                   {{item.value}}
-                  <i
-                    class="el-icon-caret-right"
-                    v-if="item.key===2&&item.children"
-                    style="position:absolute;top:10px;left:55px;"
-                  ></i>
+                  <i class="el-icon-caret-right" v-if="item.key===2&&item.children" style="position:absolute;top:10px;left:55px;" ></i>
                   <div class="childrenModule" v-if="item.key===2&&item.children">
                     <ul class="childrenList">
-                      <li
-                        v-for="item_ in item.children"
-                        :key="item_.key"
-                        @click="addOnLine(item_)"
-                      >{{item_.value}}</li>
+                      <li v-for="item_ in item.children" :key="item_.key" @click="addOnLine(item_)" >{{item_.value}}</li>
                     </ul>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <div
-            class="haveSon"
-            :class="{'showOnLine':showOffLine}"
-            @mouseover="moveIn('offline')"
-            @mouseout="moveOut('offline')"
-            v-if="power['sign-ht-info-addoffline'].state"
-          >
+          <div class="haveSon" :class="{'showOnLine':showOffLine}" @mouseover="moveIn('offline')" @mouseout="moveOut('offline')" v-if="power['sign-ht-info-addoffline'].state" >
             录入线下合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['65']">
@@ -1522,9 +1497,7 @@ export default {
           recordType: 1,
           type: val.key
         };
-        this.$ajax
-          .get("/api/contract/checkContTemplate", param)
-          .then(res => {
+        this.$ajax.get("/api/contract/checkContTemplate", param).then(res => {
             res = res.data;
             if (res.status === 200) {
               localStorage.removeItem("backMsg");
@@ -1534,7 +1507,8 @@ export default {
                   query: {
                     type: val.key,
                     operateType: 1,
-                    isOffline: 0
+                    // isOffline: 0
+                    recordType:1
                   }
                 });
               } else if (val.key === 7 || val.key === 8) {
@@ -1543,7 +1517,8 @@ export default {
                   query: {
                     type: 2,
                     operateType: 1,
-                    isOffline: 0,
+                    // isOffline: 0,
+                    recordType:1,
                     loanType: val.key
                   }
                 });
@@ -1553,7 +1528,8 @@ export default {
                   query: {
                     contType: val.key,
                     operateType: 1,
-                    isOffline: 0
+                    // isOffline: 0
+                    recordType:1,
                   }
                 });
               }
@@ -1582,7 +1558,8 @@ export default {
             query: {
               type: val.key,
               operateType: 1,
-              isOffline: 1
+              // isOffline: 1
+              recordType:2,
             }
           });
         } else if (val.key === 7 || val.key === 8) {
@@ -1591,7 +1568,8 @@ export default {
             query: {
               type: 2,
               operateType: 1,
-              isOffline: 1,
+              // isOffline: 1,
+              recordType:1,
               loanType: val.key
             }
           });
@@ -1601,7 +1579,8 @@ export default {
             query: {
               contType: val.key,
               operateType: 1,
-              isOffline: 1
+              // isOffline: 1
+              recordType:1,
             }
           });
         }

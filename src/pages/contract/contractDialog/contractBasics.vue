@@ -23,7 +23,7 @@
             <el-input placeholder="请输入内容" value="买卖" :disabled="true" style="width:140px" v-if="contractForm.type===2"></el-input>
             <el-input placeholder="请输入内容" value="代办" :disabled="true" style="width:140px" v-if="contractForm.type===3"></el-input>
           </el-form-item>
-          <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="isOffline===1">
+          <el-form-item label="纸质合同编号：" class="width-250 form-label" style="width:340px;" v-if="recordType===2">
             <input style="width:200px;" type="text" :disabled="canInput" maxlength="30" v-model="contractForm.pCode" @input="inputCode" placeholder="请输入" class="dealPrice" :class="{'disabled':canInput}">
           </el-form-item>
           <br>
@@ -299,9 +299,13 @@ export default {
       }
     },
     //线上线下合同
-    isOffline:{
+    recordType:{
       type:Number,
       default: 1
+    },
+    houseId:{
+      type:Number,
+      default:0
     },
     //是否能输入
     canInput:{
@@ -446,6 +450,9 @@ export default {
     this.countTotal()
     if(this.operationType===2){
       this.countTotal()
+    }
+    if(this.houseId){
+      this.getHousedetail(this.houseId)
     }
   },
   methods: {
@@ -601,7 +608,7 @@ export default {
     isSave(value) {
       var rule_ = JSON.parse(JSON.stringify(rule))
       this.haveExamine=value;
-      if(this.isOffline!==1){
+      if(this.recordType!=2){
         delete rule_.pCode
       }
       if(!this.contractForm.signDate){
@@ -870,7 +877,7 @@ export default {
           haveExamine:this.haveExamine
         };
       }
-      if(this.isOffline===1){
+      if(this.recordType===2){
         param.recordType=2
       }else{
         param.recordType=1
@@ -878,14 +885,14 @@ export default {
       param.recordVersion=1//温州简单/复杂版  1简单 2复杂
       if(this.operationType===1){//新增
         var url = '/api/contract/addContract';
-        if(this.isOffline===1){
+        if(this.recordType===2){
           url = '/api/contract/addLocalContract'
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            if(this.isOffline===1){
+            if(this.recordType===2){
               this.$message({
                 message:"创建成功",
                 type: "success"
@@ -951,14 +958,14 @@ export default {
           delete param.saleCont.resultState
         }
         var url = '/api/contract/updateContract';
-        if(this.isOffline===1){
+        if(this.recordType===2){
           url = '/api/contract/addLocalContract'
         }
         this.$ajax.postJSON(url, param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading=false;
-            if(this.isOffline===1){
+            if(this.recordType===2){
               this.$message({
                 message:"保存成功",
                 type: "success"

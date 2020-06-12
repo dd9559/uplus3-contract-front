@@ -1,566 +1,544 @@
 <template>
-  <div class="view-container">
-    <div v-if="contVersion===2">
-      <el-form
-        :inline="true"
-        :model="contractForm"
-        class="add-form"
-        size="small"
-        :style="{ height: clientHei }"
-      >
-        <!-- 合同信息 -->
-        <div class="contractMsg">
-          <p>
-            合同信息
-            <span v-if="isDeal" class="toCommission">
-              <span
-                class="attention iconfont icon-tubiao-10"
-                :class="{'attention_':isToCommission}"
-              ></span>
-              <span class="toCommissionStyle" @click="toCommission">是否转佣</span>
-              <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
-              <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
-              <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
-              <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
-              <span v-if="isToCommission && false">转佣金额（元）：</span>
-            </span>
-          </p>
-          <div class="form-content">
-            <el-form-item label="签约时间：" style="text-align:right;width:285px;" class="form-label">
-              <el-date-picker
-                style="width:180px"
-                :disabled="type===2?true:false"
-                v-model="contractForm.signDate"
-                type="datetime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="选择日期时间"
-                :picker-options="pickerOptions"
-                default-time="12:00:00"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item label="合同类型：" class="width-250">
-              <el-input
-                placeholder="请输入内容"
-                value="租赁"
-                :disabled="true"
-                style="width:140px"
-                v-if="contractForm.type===1"
-              ></el-input>
-              <el-input
-                placeholder="请输入内容"
-                :value="loanType===7?'全款买卖':loanType===8?'贷款买卖':'买卖'"
-                :disabled="true"
-                style="width:140px"
-                v-if="contractForm.type===2"
-              ></el-input>
-              <el-input
-                placeholder="请输入内容"
-                value="代办"
-                :disabled="true"
-                style="width:140px"
-                v-if="contractForm.type===3"
-              ></el-input>
-              <el-input
-                placeholder="请输入内容"
-                value="意向"
-                :disabled="true"
-                style="width:140px"
-                v-if="contractForm.type===4"
-              ></el-input>
-            </el-form-item>
-            <el-form-item
-              label="纸质合同编号："
-              class="width-250 form-label"
-              style="width:340px;"
-              v-if="isOffline===1"
-            >
-              <input
-                style="width:200px;"
-                type="text"
-                :disabled="canInput"
-                maxlength="30"
-                v-model="contractForm.pCode"
-                @input="inputCode('pCode')"
-                placeholder="请输入"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-            </el-form-item>
-            <el-form-item
-              label="预计过户时间："
-              style="text-align:right;width:280px;"
-              class="form-label"
-              v-if="showTransferTime&&(contractForm.type===2||contractForm.type===3)"
-            >
-              <el-date-picker
-                style="width:140px"
-                v-model="contractForm.signDateLast"
-                :disabled="type===2?true:false"
-                type="date"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期时间"
-                :picker-options="pickerOptionsLast"
-                default-time="12:00:00"
-              ></el-date-picker>
-            </el-form-item>
-            <br />
-            <el-form-item label="客户佣金：" class="width-250">
-              <input
-                type="text"
-                :disabled="canInput"
-                v-model="contractForm.custCommission"
-                @input="cutNumber('custCommission')"
-                @change="countTotal"
-                placeholder="请输入内容"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-              <i class="yuan">元</i>
-            </el-form-item>
-            <el-form-item label="业主佣金：" style="text-align:right;width:285px;">
-              <input
-                type="text"
-                :disabled="canInput"
-                v-model="contractForm.ownerCommission"
-                @input="cutNumber('ownerCommission')"
-                @change="countTotal"
-                placeholder="请输入内容"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-              <i class="yuan">元</i>
-            </el-form-item>
-            <el-form-item label="总佣金：" style="text-align:right;width:280px;">
-              <input
-                placeholder="请输入内容"
-                :value="commissionTotal"
-                :disabled="true"
-                class="dealPrice disabled"
-              />
-              <i class="yuan">元</i>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 房源信息 -->
-        <div class="houseMsg">
-          <p>房源信息</p>
-          <div class="form-content">
-            <el-form-item label="房源编号：" class="width-250" :class="{'form-label':type===1}">
-              <span
-                class="select"
-                @click="showDialog('house')"
-                v-if="(sourceBtnCheck||canInput||!offLine)||(isDeal&&isDeal==1)"
-              >{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
-              <span class="select_" v-else>{{contractForm.houseinfoCode}}</span>
-            </el-form-item>
-            <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'" class="form-label width-250">
-              <input
-                type="text"
-                :disabled="canInput"
-                v-model="contractForm.dealPrice"
-                @input="cutNumber('dealPrice')"
-                placeholder="请输入内容"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-              <i class="yuan" v-if="contractForm.type!==1">元</i>
-            </el-form-item>
-            <el-form-item v-if="contractForm.type===1">
-              <el-select
-                :disabled="canInput"
-                v-model="contractForm.timeUnit"
-                placeholder="请选择"
-                style="width:105px"
-              >
-                <el-option
-                  v-for="item in dictionary['507']"
-                  :key="item.key"
-                  :label="`元 / ${item.value}`"
-                  :value="item.key"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
-            </el-form-item>
-            <br />
-            <el-form-item
-              label="物业地址："
-              :class="{'form-label':type===1}"
-              style="width:605px;text-align:right"
-            >
-              <span
-                class="propertyAddress"
-                v-if="contractForm.houseinfoCode"
-              >{{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}</span>
-              <span class="propertyAddress color_" v-else>物业地址</span>
-            </el-form-item>
-            <!-- 温州不需要建成年代 -->
-            <el-form-item
-              label="建成年代："
-              :class="{'form-label':type===1}"
-              style="width:250px;text-align:right"
-              v-if="userMsg.cityId!=16"
-            >
-              <span
-                class="CompleteYear"
-                style="width:150px;"
-                v-if="contractForm.houseInfo.CompleteYear"
-              >{{contractForm.houseInfo.CompleteYear}}</span>
-              <span class="CompleteYear color_" style="width:150px;" v-else>建成年代</span>
-            </el-form-item>
-            <br />
-            <el-form-item label="产权地址：" class="form-label" style="width:750px;text-align:right">
-              <input
-                v-model="rightAddrCity"
-                :disabled="canInput"
-                maxlength="10"
-                placeholder="请输入"
-                @input="cutAddress('city')"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-                style="width:100px"
-              /> 市
-              <input
-                v-model="rightAddrArea"
-                :disabled="canInput"
-                maxlength="10"
-                placeholder="请输入"
-                @input="cutAddress('area')"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-                style="width:100px"
-              /> 区
-              <input
-                v-model="rightAddrDetail"
-                :disabled="canInput"
-                maxlength="70"
-                placeholder="详细地址"
-                @input="cutAddress('detail')"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-                style="width:400px"
-              />
-            </el-form-item>
-            <br />
-            <el-form-item label="建筑面积：" class="width-250">
-              <input
-                type="text"
-                v-model="contractForm.houseInfo.Square"
-                :disabled="canInput"
-                @input="cutNumber('Square')"
-                placeholder="请输入内容"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-              <i class="yuan">㎡</i>
-            </el-form-item>
-            <el-form-item label="套内面积：" class="width-250">
-              <input
-                type="text"
-                v-model="contractForm.houseInfo.SquareUse"
-                :disabled="canInput"
-                @input="cutNumber('SquareUse')"
-                placeholder="请输入内容"
-                class="dealPrice"
-                :class="{'disabled':canInput}"
-              />
-              <i class="yuan">㎡</i>
-            </el-form-item>
-            <br />
-            <el-form-item label="业主信息：" class="form-label" style="padding-left:18px">
-              <ul class="peopleMsg">
-                <li v-for="(item,index) in ownerList" :key="index">
-                  <span class="merge">
-                    <input
-                      v-model="item.name"
-                      :disabled="canInput"
-                      placeholder="姓名"
-                      maxlength="30"
-                      @input="inputOnly(index,'owner')"
-                      class="name_"
-                      :class="{'disabled':canInput}"
-                    />
-                    <input
-                      v-model="item.mobile"
-                      :disabled="canInput"
-                      type="tel"
-                      placeholder="电话"
-                      class="mobile_"
-                      :class="{'disabled':canInput}"
-                      @input="verifyMobile(item,index,'owner')"
-                      @keydown="saveMobile(item,index,'owner')"
-                    />
-                  </span>
-                  <el-select
-                    v-model="item.relation"
-                    placeholder="关系"
-                    :disabled="canInput"
-                    class="relation_"
-                  >
-                    <el-option
-                      v-for="item in relationList"
-                      :key="item.key"
-                      :label="item.value"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                  <span class="shell" v-if="contractForm.type!=1">
-                    <input
-                      type="text"
-                      v-model="item.propertyRightRatio"
-                      :disabled="canInput"
-                      @input="cutNumber_(index,'owner')"
-                      placeholder="产权比"
-                      class="propertyRight"
-                      :class="{'disabled':canInput}"
-                    />
-                  </span>
-                  <el-select
-                    v-model="item.cardType"
-                    :disabled="canInput"
-                    placeholder="证件类型"
-                    class="idtype"
-                    @change="changeCadrType($event,index,'owner')"
-                  >
-                    <el-option
-                      v-for="item in dictionary['633']"
-                      :key="item.key"
-                      :label="item.value"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                  <input
-                    v-model="item.encryptionCode"
-                    type="text"
-                    :disabled="canInput"
-                    :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
-                    placeholder="请输入证件号"
-                    class="idCard_"
-                    :class="{'disabled':canInput}"
-                    @input="verifyIdcard(item)"
-                  />
-                  <span @click.stop="addcommissionData" class="icon" v-if="!canInput">
-                    <i class="iconfont icon-tubiao_shiyong-14"></i>
-                  </span>
-                  <span
-                    @click.stop="delPeople(index,'owner')"
-                    v-if="ownerList.length>1&&!canInput"
-                    class="icon"
-                  >
-                    <i class="iconfont icon-tubiao_shiyong-4"></i>
-                  </span>
-                </li>
-              </ul>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 客源信息 -->
-        <div class="houseMsg">
-          <p>客源信息</p>
-          <div class="form-content">
-            <el-form-item label="客源编号：" class="width-250" :class="{'form-label':type===1}">
-              <span
-                class="select"
-                @click="showDialog('guest')"
-                v-if="(sourceBtnCheck||canInput||!offLine)||(isDeal&&isDeal==1)"
-              >{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
-              <span class="select_" v-else>{{contractForm.guestinfoCode}}</span>
-            </el-form-item>
-            <br />
-            <el-form-item label="客户信息：" class="form-label" style="padding-left:18px">
-              <ul class="peopleMsg">
-                <li v-for="(item,index) in guestList" :key="index">
-                  <span class="merge">
-                    <input
-                      v-model="item.name"
-                      :disabled="canInput"
-                      placeholder="姓名"
-                      maxlength="30"
-                      @input="inputOnly(index,'guest')"
-                      class="name_"
-                      :class="{'disabled':canInput}"
-                    />
-                    <input
-                      v-model="item.mobile"
-                      :disabled="canInput"
-                      type="tel"
-                      placeholder="电话"
-                      class="mobile_"
-                      :class="{'disabled':canInput}"
-                      @input="verifyMobile(item,index,'guest')"
-                      @keydown="saveMobile(item,index,'guest')"
-                    />
-                  </span>
-                  <el-select
-                    v-model="item.relation"
-                    :disabled="canInput"
-                    placeholder="关系"
-                    class="relation_"
-                  >
-                    <el-option
-                      v-for="item in relationList"
-                      :key="item.key"
-                      :label="item.value"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                  <span class="shell" v-if="contractForm.type!=1">
-                    <input
-                      type="text"
-                      v-model="item.propertyRightRatio"
-                      :disabled="canInput"
-                      @input="cutNumber_(index,'guest')"
-                      placeholder="产权比"
-                      class="propertyRight"
-                      :class="{'disabled':canInput}"
-                    />
-                  </span>
-                  <el-select
-                    v-model="item.cardType"
-                    :disabled="canInput"
-                    placeholder="证件类型"
-                    class="idtype"
-                    @change="changeCadrType($event,index,'guest')"
-                  >
-                    <el-option
-                      v-for="item in dictionary['633']"
-                      :key="item.key"
-                      :label="item.value"
-                      :value="item.key"
-                    ></el-option>
-                  </el-select>
-                  <input
-                    id="guestCard"
-                    v-model="item.encryptionCode"
-                    :disabled="canInput"
-                    :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
-                    type="text"
-                    placeholder="请输入证件号"
-                    class="idCard_"
-                    :class="{'disabled':canInput}"
-                    @input="verifyIdcard(item)"
-                  />
-                  <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
-                    <i class="iconfont icon-tubiao_shiyong-14"></i>
-                  </span>
-                  <span
-                    @click.stop="delPeople(index,'guest')"
-                    v-if="guestList.length>1&&!canInput"
-                    class="icon"
-                  >
-                    <i class="iconfont icon-tubiao_shiyong-4"></i>
-                  </span>
-                </li>
-              </ul>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 合同备注 -->
-        <div class="houseMsg">
-          <p @click="showRemarkTab" class="thirdParty">
-            备注栏
-            <span class="attention iconfont icon-tubiao-10" :class="{'attention_':showRemark}"></span>
-          </p>
-          <div class="remarkType" v-show="showRemark">
-            <el-form-item style="padding-left:20px;position:relative;">
-              <!-- @input="inputCode('remarks')" -->
-              <el-input
-                type="textarea"
-                :rows="6"
-                maxlength="200"
-                resize="none"
-                :disabled="canInput"
-                v-model="contractForm.remarks"
-                placeholder="请输入备注内容"
-              ></el-input>
-              <span class="textLength">{{contractForm.remarks.length}}/200</span>
-            </el-form-item>
-          </div>
-        </div>
-        <!-- 三方合作 -->
-        <div class="houseMsg">
-          <p @click="toCooperation" class="thirdParty">
-            三方合作
-            <span class="attention iconfont icon-tubiao-10" :class="{'attention_':cooperation}"></span>
-          </p>
-          <div class="cooperation" v-show="cooperation">
-            <div>
-              <el-form-item label="扣合作费：" class="width-250">
-                <input
-                  type="text"
-                  v-model="contractForm.otherCooperationCost"
-                  :disabled="canInput"
-                  @input="cutNumber('otherCooperationCost')"
-                  placeholder="请输入内容"
-                  class="dealPrice"
-                  :class="{'disabled':canInput}"
-                />
-                <i class="yuan">元</i>
-              </el-form-item>
-              <el-form-item label="类型：" class="width-250">
-                <el-select
-                  v-model="contractForm.otherCooperationInfo.type"
-                  :disabled="canInput"
-                  placeholder="请选择"
-                  style="width:140px"
-                >
-                  <el-option label="无" :value="0"></el-option>
-                  <el-option
-                    v-for="item in dictionary['517']"
-                    :key="item.key"
-                    :label="item.value"
-                    :value="item.key"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <br />
-              <el-form-item label="合作方姓名：" class="width-250">
-                <input
-                  type="text"
-                  v-model="contractForm.otherCooperationInfo.name"
-                  :disabled="canInput"
-                  maxlength="6"
-                  @input="inputOnly(999,'other')"
-                  placeholder="请输入姓名"
-                  class="dealPrice"
-                  :class="{'disabled':canInput}"
-                />
-              </el-form-item>
-              <el-form-item label="联系方式：" class="width-250">
-                <el-input
-                  v-model="contractForm.otherCooperationInfo.mobile"
-                  :disabled="canInput"
-                  type="tel"
-                  placeholder="请输入手机号"
-                  style="width:140px"
-                  @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="身份证号：" style="width:310px;text-align:right">
-                <el-input
-                  v-model="contractForm.otherCooperationInfo.identifyCode"
-                  :disabled="canInput"
-                  maxlength="18"
-                  placeholder="请输入身份证号"
-                  @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"
-                ></el-input>
-              </el-form-item>
-              <br />
-              <el-form-item label="备注：" style="padding-left:51px">
-                <!-- @input="inputCode('cooperation')" -->
-                <el-input
-                  type="textarea"
-                  :rows="6"
-                  maxlength="200"
-                  resize="none"
-                  :disabled="canInput"
-                  v-model="contractForm.otherCooperationInfo.remarks"
-                  placeholder="无备注内容"
-                ></el-input>
-              </el-form-item>
+    <div class="view-container">
+        <div v-if="contVersion===2">
+            <el-form 
+            :inline="true"
+            :model="contractForm"
+            class="add-form"
+            size="small"
+            :style="{ height: clientHei }">
+                <!-- 合同信息 -->
+                <div class="contractMsg">
+                    <p>
+                        合同信息
+                        <span v-if="isDeal" class="toCommission">
+                            <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>
+                            <span class="toCommissionStyle" @click="toCommission">是否转佣</span>
+                            <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
+                            <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
+                            <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
+                            <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
+                            <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span>
+                        </span>
+                    </p>
+                    <div class="form-content">
+                        <el-form-item 
+                            label="签约时间："
+                            style="text-align:right;width:285px;"
+                            class="form-label">
+                            <el-date-picker 
+                                style="width:180px"
+                                :disabled="type===2?true:false"
+                                v-model="contractForm.signDate"
+                                type="datetime"
+                                format="yyyy-MM-dd HH:mm"
+                                value-format="yyyy-MM-dd HH:mm:ss"
+                                placeholder="选择日期时间"
+                                :picker-options="pickerOptions"
+                                default-time="12:00:00">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item 
+                            label="合同类型："
+                            class="width-250">
+                            <el-input 
+                                placeholder="请输入内容"
+                                value="租赁"
+                                :disabled="true"
+                                style="width:140px"
+                                v-if="contractForm.type===1">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
+                                :value="loanType===7?'全款买卖':loanType===8?'贷款买卖':'买卖'"
+                                :disabled="true"
+                                style="width:140px"
+                                v-if="contractForm.type===2">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
+                                value="代办"
+                                :disabled="true"
+                                style="width:140px"
+                                v-if="contractForm.type===3">
+                            </el-input>
+                            <el-input 
+                                placeholder="请输入内容"
+                                value="意向"
+                                :disabled="true"
+                                style="width:140px"
+                                v-if="contractForm.type===4"></el-input>
+                        </el-form-item>
+                        <el-form-item 
+                            label="纸质合同编号："
+                            class="width-250 form-label"
+                            style="width:340px;"
+                            v-if="recordType===2">
+                            <input 
+                                style="width:200px;"
+                                type="text"
+                                :disabled="canInput"
+                                maxlength="30"
+                                v-model="contractForm.pCode"
+                                @input="inputCode('pCode')"
+                                placeholder="请输入"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                        </el-form-item>
+                        <el-form-item 
+                            label="预计过户时间："
+                            style="text-align:right;width:280px;"
+                            class="form-label"
+                            v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
+                            <el-date-picker 
+                                style="width:140px"
+                                v-model="contractForm.signDateLast"
+                                :disabled="type===2?true:false"
+                                type="date"
+                                format="yyyy-MM-dd"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择日期时间"
+                                :picker-options="pickerOptionsLast"
+                                default-time="12:00:00">
+                            </el-date-picker>
+                        </el-form-item>
+                        <br>
+                        <el-form-item 
+                            label="客户佣金："
+                            class="width-250">
+                            <input 
+                                type="text"
+                                :disabled="canInput"
+                                v-model="contractForm.custCommission"
+                                @input="cutNumber('custCommission')"
+                                @change="countTotal"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="yuan">元</i>
+                        </el-form-item>
+                        <el-form-item 
+                            label="业主佣金："
+                            style="text-align:right;width:285px;">
+                            <input 
+                                type="text"
+                                :disabled="canInput"
+                                v-model="contractForm.ownerCommission"
+                                @input="cutNumber('ownerCommission')"
+                                @change="countTotal"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="yuan">元</i>
+                        </el-form-item>
+                        <el-form-item 
+                            label="总佣金："
+                            style="text-align:right;width:280px;">
+                            <input 
+                                placeholder="请输入内容"
+                                :value="commissionTotal"
+                                :disabled="true"
+                                class="dealPrice disabled">
+                            <i class="yuan">元</i>
+                        </el-form-item>
+                    </div>
+                </div>
+                <!-- 房源信息 -->
+                <div class="houseMsg">
+                    <p>房源信息</p>
+                    <div class="form-content">
+                        <el-form-item label="房源编号："
+                            class="width-250"
+                            :class="{'form-label':type===1}">
+                            <span class="select"
+                                @click="showDialog('house')"
+                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+                            <span class="select_"
+                                v-else>{{contractForm.houseinfoCode}}</span>
+                        </el-form-item>
+                        <el-form-item :label="contractForm.type===1?'租金：':'成交总价：'"
+                            class="form-label width-250">
+                            <input type="text"
+                                :disabled="canInput"
+                                v-model="contractForm.dealPrice"
+                                @input="cutNumber('dealPrice')"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="yuan"
+                                v-if="contractForm.type!==1">元</i>
+                        </el-form-item>
+                        <el-form-item v-if="contractForm.type===1">
+                            <el-select :disabled="canInput"
+                                v-model="contractForm.timeUnit"
+                                placeholder="请选择"
+                                style="width:105px">
+                                <el-option v-for="item in dictionary['507']"
+                                    :key="item.key"
+                                    :label="`元 / ${item.value}`"
+                                    :value="item.key"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            <span class="chineseNum">{{contractForm.dealPrice|moneyFormat}}</span>
+                        </el-form-item>
+                        <br>
+                        <el-form-item label="物业地址："
+                            :class="{'form-label':type===1}"
+                            style="width:605px;text-align:right">
+                            <span class="propertyAddress"
+                                v-if="contractForm.houseinfoCode">
+                                {{contractForm.houseInfo.EstateName.replace(/\s/g,"")+' '+contractForm.houseInfo.BuildingName.replace(/\s/g,"")+contractForm.houseInfo.Unit.replace(/\s/g,"")+contractForm.houseInfo.RoomNo.replace(/\s/g,"")}}
+                            </span>
+                            <span class="propertyAddress color_"
+                                v-else>物业地址</span>
+                        </el-form-item>
+                        <!-- 温州不需要建成年代 -->
+                        <el-form-item label="建成年代："
+                            :class="{'form-label':type===1}"
+                            style="width:250px;text-align:right"
+                            v-if="userMsg.cityId!=16">
+                            <span class="CompleteYear"
+                                style="width:150px;"
+                                v-if="contractForm.houseInfo.CompleteYear">
+                                {{contractForm.houseInfo.CompleteYear}}
+                            </span>
+                            <span class="CompleteYear color_"
+                                style="width:150px;"
+                                v-else>建成年代</span>
+                        </el-form-item>
+                        <br>
+                        <el-form-item label="产权地址："
+                            class="form-label"
+                            style="width:750px;text-align:right">
+                            <input v-model="rightAddrCity"
+                                :disabled="canInput"
+                                maxlength="10"
+                                placeholder="请输入"
+                                @input="cutAddress('city')"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}"
+                                style="width:100px" /> 市
+                            <input v-model="rightAddrArea"
+                                :disabled="canInput"
+                                maxlength="10"
+                                placeholder="请输入"
+                                @input="cutAddress('area')"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}"
+                                style="width:100px" /> 区
+                            <input v-model="rightAddrDetail"
+                                :disabled="canInput"
+                                maxlength="70"
+                                placeholder="详细地址"
+                                @input="cutAddress('detail')"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}"
+                                style="width:400px" />
+                        </el-form-item>
+                        <br>
+                        <el-form-item label="建筑面积："
+                            class="width-250">
+                            <input type="text"
+                                v-model="contractForm.houseInfo.Square"
+                                :disabled="canInput"
+                                @input="cutNumber('Square')"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="yuan">㎡</i>
+                        </el-form-item>
+                        <el-form-item label="套内面积："
+                            class="width-250">
+                            <input type="text"
+                                v-model="contractForm.houseInfo.SquareUse"
+                                :disabled="canInput"
+                                @input="cutNumber('SquareUse')"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="yuan">㎡</i>
+                        </el-form-item>
+                        <br>
+                        <el-form-item label="业主信息："
+                            class="form-label"
+                            style="padding-left:18px">
+                            <ul class="peopleMsg">
+                                <li v-for="(item,index) in ownerList"
+                                    :key="index">
+                                    <span class="merge">
+                                        <input v-model="item.name"
+                                            :disabled="canInput"
+                                            placeholder="姓名"
+                                            maxlength="30"
+                                            @input="inputOnly(index,'owner')"
+                                            class="name_"
+                                            :class="{'disabled':canInput}">
+                                        <input v-model="item.mobile"
+                                            :disabled="canInput"
+                                            type="tel"
+                                            placeholder="电话"
+                                            class="mobile_"
+                                            :class="{'disabled':canInput}"
+                                            @input="verifyMobile(item,index,'owner')"
+                                            @keydown="saveMobile(item,index,'owner')">
+                                    </span>
+                                    <el-select v-model="item.relation"
+                                        placeholder="关系"
+                                        :disabled="canInput"
+                                        class="relation_">
+                                        <el-option v-for="item in relationList"
+                                            :key="item.key"
+                                            :label="item.value"
+                                            :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                    <span class="shell"
+                                        v-if="contractForm.type!=1"><input type="text"
+                                            v-model="item.propertyRightRatio"
+                                            :disabled="canInput"
+                                            @input="cutNumber_(index,'owner')"
+                                            placeholder="产权比"
+                                            class="propertyRight"
+                                            :class="{'disabled':canInput}"></span>
+                                    <el-select v-model="item.cardType"
+                                        :disabled="canInput"
+                                        placeholder="证件类型"
+                                        class="idtype"
+                                        @change="changeCadrType($event,index,'owner')">
+                                        <el-option v-for="item in dictionary['633']"
+                                            :key="item.key"
+                                            :label="item.value"
+                                            :value="item.key">
+                                        </el-option>
+                                    </el-select>
+                                    <input v-model="item.encryptionCode"
+                                        type="text"
+                                        :disabled="canInput"
+                                        :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
+                                        placeholder="请输入证件号"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="verifyIdcard(item)">
+                                    <span @click.stop="addcommissionData"
+                                        class="icon"
+                                        v-if="!canInput">
+                                        <i class="iconfont icon-tubiao_shiyong-14"></i>
+                                    </span>
+                                    <span @click.stop="delPeople(index,'owner')"
+                                        v-if="ownerList.length>1&&!canInput"
+                                        class="icon">
+                                        <i class="iconfont icon-tubiao_shiyong-4"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                        </el-form-item>
+                    </div>
+                </div>
+                <!-- 客源信息 -->
+                <div class="houseMsg">
+                    <p>客源信息</p>
+                    <div class="form-content">
+                        <el-form-item label="客源编号："
+                            class="width-250"
+                            :class="{'form-label':type===1}">
+                            <span class="select"
+                                @click="showDialog('guest')"
+                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+                            <span class="select_"
+                                v-else>{{contractForm.guestinfoCode}}</span>
+                        </el-form-item>
+                        <br>
+                        <el-form-item label="客户信息："
+                            class="form-label"
+                            style="padding-left:18px">
+                            <ul class="peopleMsg">
+                                <li v-for="(item,index) in guestList"
+                                    :key="index">
+                                    <span class="merge">
+                                        <input v-model="item.name"
+                                            :disabled="canInput"
+                                            placeholder="姓名"
+                                            maxlength="30"
+                                            @input="inputOnly(index,'guest')"
+                                            class="name_"
+                                            :class="{'disabled':canInput}">
+                                        <input v-model="item.mobile"
+                                            :disabled="canInput"
+                                            type="tel"
+                                            placeholder="电话"
+                                            class="mobile_"
+                                            :class="{'disabled':canInput}"
+                                            @input="verifyMobile(item,index,'guest')"
+                                            @keydown="saveMobile(item,index,'guest')">
+                                    </span>
+                                    <el-select v-model="item.relation"
+                                        :disabled="canInput"
+                                        placeholder="关系"
+                                        class="relation_">
+                                        <el-option v-for="item in relationList"
+                                            :key="item.key"
+                                            :label="item.value"
+                                            :value="item.value">
+                                        </el-option>
+                                    </el-select>
+                                    <span class="shell"
+                                        v-if="contractForm.type!=1"><input type="text"
+                                            v-model="item.propertyRightRatio"
+                                            :disabled="canInput"
+                                            @input="cutNumber_(index,'guest')"
+                                            placeholder="产权比"
+                                            class="propertyRight"
+                                            :class="{'disabled':canInput}"></span>
+                                    <el-select v-model="item.cardType"
+                                        :disabled="canInput"
+                                        placeholder="证件类型"
+                                        class="idtype"
+                                        @change="changeCadrType($event,index,'guest')">
+                                        <el-option v-for="item in dictionary['633']"
+                                            :key="item.key"
+                                            :label="item.value"
+                                            :value="item.key">
+                                        </el-option>
+                                    </el-select>
+                                    <input id="guestCard"
+                                        v-model="item.encryptionCode"
+                                        :disabled="canInput"
+                                        :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
+                                        type="text"
+                                        placeholder="请输入证件号"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="verifyIdcard(item)">
+                                    <span @click.stop="addcommissionData1"
+                                        class="icon"
+                                        v-if="!canInput">
+                                        <i class="iconfont icon-tubiao_shiyong-14"></i>
+                                    </span>
+                                    <span @click.stop="delPeople(index,'guest')"
+                                        v-if="guestList.length>1&&!canInput"
+                                        class="icon">
+                                        <i class="iconfont icon-tubiao_shiyong-4"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                        </el-form-item>
+                    </div>
+                </div>
+                <!-- 合同备注 -->
+                <div class="houseMsg">
+                    <p @click="showRemarkTab"
+                        class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10"
+                            :class="{'attention_':showRemark}"></span></p>
+                    <div class="remarkType"
+                        v-show="showRemark">
+                        <el-form-item style="padding-left:20px;position:relative;">
+                            <!-- @input="inputCode('remarks')" -->
+                            <el-input type="textarea"
+                                :rows="6"
+                                maxlength="200"
+                                resize='none'
+                                :disabled="canInput"
+                                v-model="contractForm.remarks"
+                                placeholder="请输入备注内容"></el-input>
+                            <span class="textLength">{{contractForm.remarks.length}}/200</span>
+                        </el-form-item>
+                    </div>
+                </div>
+                <!-- 三方合作 -->
+                <div class="houseMsg">
+                    <p @click="toCooperation"
+                        class="thirdParty">三方合作 <span class="attention iconfont icon-tubiao-10"
+                            :class="{'attention_':cooperation}"></span></p>
+                    <div class="cooperation"
+                        v-show="cooperation">
+                        <div>
+                            <el-form-item label="扣合作费："
+                                class="width-250">
+                                <input type="text"
+                                    v-model="contractForm.otherCooperationCost"
+                                    :disabled="canInput"
+                                    @input="cutNumber('otherCooperationCost')"
+                                    placeholder="请输入内容"
+                                    class="dealPrice"
+                                    :class="{'disabled':canInput}">
+                                <i class="yuan">元</i>
+                            </el-form-item>
+                            <el-form-item label="类型："
+                                class="width-250">
+                                <el-select v-model="contractForm.otherCooperationInfo.type"
+                                    :disabled="canInput"
+                                    placeholder="请选择"
+                                    style="width:140px">
+                                    <el-option label="无"
+                                        :value="0">
+                                    </el-option>
+                                    <el-option v-for="item in dictionary['517']"
+                                        :key="item.key"
+                                        :label="item.value"
+                                        :value="item.key">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <br>
+                            <el-form-item label="合作方姓名："
+                                class="width-250">
+                                <input type="text"
+                                    v-model="contractForm.otherCooperationInfo.name"
+                                    :disabled="canInput"
+                                    maxlength="6"
+                                    @input="inputOnly(999,'other')"
+                                    placeholder="请输入姓名"
+                                    class="dealPrice"
+                                    :class="{'disabled':canInput}">
+                            </el-form-item>
+                            <el-form-item label="联系方式："
+                                class="width-250">
+                                <el-input v-model="contractForm.otherCooperationInfo.mobile"
+                                    :disabled="canInput"
+                                    type="tel"
+                                    placeholder="请输入手机号"
+                                    style="width:140px"
+                                    @input="verifyMobile_(contractForm.otherCooperationInfo.mobile)"></el-input>
+                            </el-form-item>
+                            <el-form-item label="身份证号："
+                                style="width:310px;text-align:right">
+                                <el-input v-model="contractForm.otherCooperationInfo.identifyCode"
+                                    :disabled="canInput"
+                                    maxlength="18"
+                                    placeholder="请输入身份证号"
+                                    @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"></el-input>
+                            </el-form-item>
+                            <br>
+                            <el-form-item label="备注："
+                                style="padding-left:51px">
+                                <!-- @input="inputCode('cooperation')" -->
+                                <el-input type="textarea"
+                                    :rows="6"
+                                    maxlength="200"
+                                    resize='none'
+                                    :disabled="canInput"
+                                    v-model="contractForm.otherCooperationInfo.remarks"
+                                    placeholder="无备注内容"></el-input>
+                            </el-form-item>
+                        </div>
+                    </div>
+                </div>
+            </el-form>
+            <div class="btn">
+                <div>
+                    <div v-if="type===2">
+                        <p><span>录入时间：</span>{{contractForm.createTime|formatTime}}</p>
+                        <p><span>录入人：</span>{{contractForm.recordDeptName}}-{{contractForm.recordName}}</p>
+                        <p><span>最后修改：</span>{{contractForm.updateTime|formatTime}}</p>
+                    </div>
+                </div>
+                <div>
+                    <el-button type="primary"
+                        round
+                        @click="isSave(0)"
+                        :disabled="canClick">{{canInput?"保存":"保存并进入下一步"}}</el-button>
+                </div>
             </div>
           </div>
         </div>
@@ -632,6 +610,7 @@
           </ul>
           <p>否则合同将无效，之后收款所开票据无效！！！</p>
         </div>
+<<<<<<< HEAD
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogSave = false" size="small">不确认</el-button>
           <el-button
@@ -701,6 +680,29 @@
               {{item.empName+"·"+item.deptName}}
             </li>
           </ul>
+=======
+        <div v-else>
+            <contractBasics :contractForm="contractForm"
+                v-if="isHaveDetail&&type===2"
+                :recordType="recordType"
+                :offLineInput="offLine"
+                :sourceBtnCheck="sourceBtnCheck"
+                :operationType="type"
+                :ownerList_="ownerList_"
+                :guestList_="guestList_"
+                :ownerList="ownerList"
+                :guestList="guestList"
+                :canInput="canInput"
+                :getShowRemark="showRemark"
+                :basicsOptions="basicsOptions">
+            </contractBasics>
+            <contractBasics :contractForm="contractForm"
+                v-if="isHaveDetail&&type===1"
+                :recordType="recordType"
+                :houseId="houseId"
+                :operationType="type">
+            </contractBasics>
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
         </div>
       </el-dialog>
       <!-- 设置/转交审核人 -->
@@ -1059,6 +1061,7 @@ export default {
     clientHeight() {
       this.clientHei = document.documentElement.clientHeight - 160 + "px";
     },
+<<<<<<< HEAD
     addcommissionData() {
       if (this.ownerList.length < 4) {
         this.ownerList.push({
@@ -1096,6 +1099,172 @@ export default {
           type: "warning"
         });
       }
+=======
+    data() {
+        return {
+            clientHei: "",
+            contractForm: {
+                // type: 2,
+                houseinfoCode: "",
+                guestinfoCode: "",
+                signDate: "",
+                signDateLast: "",
+                payType: 1,
+                dealPrice: "",
+                contPersons: [],
+                propertyRightAddr: "",
+                houseInfo: {
+                    HouseStoreCode: "",
+                    ShopOwnerMobile: "",
+                    ShopOwnerName: ""
+                },
+                guestInfo: {
+                    ShopOwnerMobile: "",
+                    ShopOwnerName: ""
+                },
+                otherCooperationInfo: {
+                    identifyCode: "",
+                    mobile: ""
+                },
+                isHaveCooperation: 0,
+                remarks: ""
+            },
+            //业主信息
+            ownerList: [
+                {
+                    type: 1,
+                    encryptionCode: "",
+                    mobile: "",
+                    relation: "",
+                    cardType: "",
+                    name: "",
+                    propertyRightRatio: ""
+                }
+            ],
+            ownerList_: [],
+            //客户信息
+            guestList: [
+                {
+                    type: 2,
+                    encryptionCode: "",
+                    mobile: "",
+                    relation: "",
+                    cardType: "",
+                    name: "",
+                    propertyRightRatio: ""
+                }
+            ],
+            guestList_: [],
+            dialogType: "",
+            isShowDialog: false,
+            dialogSave: false,
+            //三方合作
+            cooperation: false,
+            //操作类型  默认是添加
+            type: 1,
+            recordType: "", //判断创建合同为1线上，2线下，10无纸化
+            dictionary: {
+                //数据字典
+                "514": "", //产权状态
+                "507": "", //时间单位
+                "517": "", //第三方合作类型
+                "12": "", //第三方合作类型
+                "556": "", //付款方式
+                "633": "" //证件类型(护照,身份证,营业执照)
+            },
+            transFlowList: [],
+            contractType: "",
+            loading: false,
+            //门店选择列表
+            options: [],
+            options_: [],
+            //人员关系列表
+            relationList: [],
+            //编辑时的合同id
+            id: "",
+            //扩展参数类型
+            parameterList: [],
+            //扩展参数验证
+            parameterRule: {},
+            fullscreenLoading: false,
+            hintText: "",
+            haveExamine: 0,
+            //人员信息下标
+            peopleIndex: "",
+            dialogDel: false,
+            delType: "",
+            choseHcode: 0, //选择的房源编号
+            choseGcode: 0, //选择的客源编号
+            dialogSuccess: false,
+            detailCode: "",
+            detailId: "",
+            //改变之前的手机号
+            beforeChangeMobile: "",
+            checkPerson: {
+                state: false,
+                type: 1,
+                code: "",
+                flowType: 3,
+                label: false
+            },
+            userMsg: {}, //当前登录人信息
+            recordId: "", //合同创建人id
+            canClick: false,
+            //权限配置
+            power: {
+                "sign-ht-info-toverify": {
+                    state: false,
+                    name: "提交审核" //编辑+提审
+                },
+                "sign-ht-info-sverify": {
+                    state: false,
+                    name: "提交审核" //新增+提审
+                },
+                "sign-com-htdetail": {
+                    state: false,
+                    name: "合同详情"
+                },
+                "sign-ht-xq-data-add": {
+                    state: false,
+                    name: "编辑资料库"
+                }
+            },
+            rightAddrCity: "",
+            rightAddrArea: "",
+            rightAddrDetail: "",
+            singleCompany: false, //单公司提示框
+            singleCompanyName: "",
+            agentsDialog: false,
+            agentsList: [], //分成人列表
+            sourceBtnCheck: true, //房客源是否可选择
+            //是否能输入（已签约 未结算）
+            canInput: false,
+            //线下合同已签约状态编辑
+            offLine: false,
+            //日期选择器禁止选择未来时间
+            pickerOptions: {
+                disabledDate(time) {
+                    return time.getTime() > Date.now();
+                }
+            },
+            pickerOptionsLast: {
+                disabledDate(time) {
+                    let n = 24 * 60 * 60 * 1000;
+                    return time.getTime() + n < Date.now();
+                }
+            },
+            isHaveDetail: false,
+            contVersion: 2, //合同基本信息版式（1 基础版  2 复杂版）
+            commissionTotal: 0, //总佣金
+            loanType: 0, //7 全款买卖 8 贷款买卖
+            showRemark: false, //备注栏折叠展开
+            basicsOptions: [], //基础版经纪人信息
+            isToCommission: false, // 是否转佣
+            toCommissionSum:0,//转佣金额
+
+            houseId:0,//转成交房源id
+        };
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
     },
     //删除联系人确认框
     delPeople(index, type) {
@@ -1125,6 +1294,7 @@ export default {
         }
       }
     },
+<<<<<<< HEAD
     //第三方
     toCooperation() {
       this.cooperation = !this.cooperation;
@@ -1166,6 +1336,38 @@ export default {
               type: "warning"
             });
           }
+=======
+    created() {
+        let backMsg = JSON.parse(localStorage.getItem("backMsg"));
+        if (backMsg) {
+            //存在则是从h5页面返回  需走编辑逻辑
+            let contMsg = JSON.parse(sessionStorage.getItem("contractMsg"));
+            this.contractForm.type = parseInt(contMsg.type); //合同类型
+            this.type = 2; //编辑
+            this.id = parseInt(contMsg.id);
+            this.getContractDetail();
+        } else {
+            this.contractForm.type = Number(this.$route.query.type);
+            if (this.$route.query.loanType) {
+                this.loanType = Number(this.$route.query.loanType);
+            }
+            this.recordType = parseInt(this.$route.query.recordType);
+            if (this.$route.query.operateType) {
+                this.type = parseInt(this.$route.query.operateType);
+                if (this.type == 2) {
+                    this.id = parseInt(this.$route.query.id);
+                    this.getContractDetail();
+                } else if (this.type == 1) {
+                    this.getNewData();
+                    this.isHaveDetail = true;
+                    this.getVersion();
+                    if(Number(this.$route.query.turnDeal)===1){//房源转成交需要获取房源详情
+                    this.houseId = Number(this.$route.query.houseId)
+                        this.getHousedetail(this.houseId)
+                    }
+                }
+            }
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
         }
       } else {
         if (value.encryptionCode.length === 18) {
@@ -1474,6 +1676,7 @@ export default {
                     break;
                   }
                 }
+<<<<<<< HEAD
                 if (isOk) {
                   if (ownerRightRatio === 100 || this.contractForm.type === 1) {
                     if (this.contractForm.guestInfo.GuestStoreCode) {
@@ -1499,6 +1702,55 @@ export default {
                         if (element.name) {
                           if (element.name.replace(/\s/g, "")) {
                             element.name = element.name.replace(/\s/g, "");
+=======
+            }
+        },
+        //验证合同信息
+        isSave(value) {
+            var rule_ = JSON.parse(JSON.stringify(rule));
+            this.haveExamine = value;
+            // if(value){
+            //   this.hintText='确定提审？'
+            // }else{
+            //   this.hintText='确定保存合同？'
+            // }
+            //验证合同信息
+            // if(this.contractForm.type!==1){
+            //   delete rule_.transFlowCode
+            // }
+            if(!this.showTransferTime) {
+                // 非兰州无预计过户时间
+                delete rule_.signDateLast
+            }
+            if (this.recordType != 2) {
+                delete rule_.pCode;
+            }
+            if (!this.contractForm.signDate) {
+                this.contractForm.signDate = "";
+            }
+            // if(!this.contractForm.transFlowCode){
+            //   this.contractForm.transFlowCode=''
+            // }
+            if (this.contractForm.pCode) {
+                this.contractForm.pCode = this.contractForm.pCode.replace(/\s+/g,"");
+            }
+            if (!this.contractForm.pCode) {
+                this.contractForm.pCode = "";
+            }
+            this.$tool
+                .checkForm(this.contractForm, rule_)
+                .then(() => {
+                    if (
+                        this.contractForm.custCommission > 0 ||
+                        this.contractForm.ownerCommission > 0
+                    ) {
+                        //佣金
+                        if (this.contractForm.dealPrice > 0) {
+                            // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
+                            // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+                            // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+                            // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
                             if (
                               element.name.indexOf("先生") === -1 &&
                               element.name.indexOf("女士") === -1
@@ -1633,6 +1885,7 @@ export default {
                           this.$message({
                             message: "客源信息-客户姓名不能为空",
                             type: "warning"
+<<<<<<< HEAD
                           });
                           break;
                         }
@@ -1794,6 +2047,205 @@ export default {
                                             message: "三方合作-电话号码不正确",
                                             type: "warning"
                                           });
+=======
+                        });
+                    }
+                })
+                .catch(error => {
+                    this.$message({
+                        message: `${error.title.length < 3 ? "" : "合同信息-"}${
+                            error.title
+                        }${error.msg}`,
+                        type: "warning"
+                    });
+                });
+        },
+        saveCont() {
+            this.fullscreenLoading = true;
+            this.addContract();
+        },
+        // 新增/编辑合同
+        addContract() {
+            this.fullscreenLoading = true;
+            this.dialogSave = false;
+            this.contractForm.contPersons = [];
+            let ownerArr = this.ownerList.map(item => Object.assign({}, item));
+            let guestArr = this.guestList.map(item => Object.assign({}, item));
+            ownerArr.forEach((element, index) => {
+                if (element.isEncryption) {
+                    element.encryptionMobile = this.ownerList_[index].encryptionMobile;
+                } else {
+                    element.encryptionMobile = element.mobile;
+                }
+                delete element.isEncryption;
+                this.contractForm.contPersons.push(element);
+            });
+            guestArr.forEach((element, index) => {
+                if (element.isEncryption) {
+                    element.encryptionMobile = this.guestList_[index].encryptionMobile;
+                } else {
+                    element.encryptionMobile = element.mobile;
+                }
+                delete element.isEncryption;
+                this.contractForm.contPersons.push(element);
+            });
+            if (this.contractForm.type === 1) {
+                //租赁合同
+                var param = {
+                    leaseCont: this.contractForm,
+                    type: this.type,
+                    haveExamine: this.haveExamine
+                };
+            } else if (this.contractForm.type === 2 || this.contractForm.type === 3) {
+                //买卖代办合同
+                var param = {
+                    saleCont: this.contractForm,
+                    type: this.type,
+                    haveExamine: this.haveExamine
+                };
+                if (this.loanType) {
+                    //武汉买卖分贷款 全款
+                    param.loanType = this.loanType;
+                }
+            }
+            // if (this.recordType === 2) {
+            //     param.recordType = 2;
+            // } else {
+            //     param.recordType = 1;
+            // }
+            param.recordType=this.recordType
+            if (this.type === 1) {
+                //新增
+                if(this.isDeal){
+                    let paramType = this.contractForm.type === 1 ? "leaseCont" : "saleCont"
+                    delete param[paramType].contChangeState;
+                    delete param[paramType].contState;
+                    delete param[paramType].contType;
+                    delete param[paramType].laterStageState;
+                    delete param[paramType].toExamineState;
+                    delete param[paramType].previewImg;
+                    delete param[paramType].subscriptionTerm;
+                    delete param[paramType].updateTime;
+                    delete param[paramType].distributableAchievement;
+                    delete param[paramType].achievementState;
+                    delete param[paramType].recordType;
+                    delete param[paramType].resultState;
+                
+                    param[paramType].dealById = this.id
+                    param[paramType].dealByCode = this.contractForm.code
+                    if(this.isToCommission){
+                        param[paramType].isTransfeOfCommission = this.isToCommission
+                    }else{
+                        delete param.isTransfeOfCommission
+                    }
+                }else{
+                    delete param.dealById
+                }
+                var url = "/api/contract/addContract";
+                if (this.recordType === 2) {
+                    url = "/api/contract/addLocalContract";
+                }
+                this.$ajax.postJSON(url, param).then(res => {
+                        res = res.data;
+                        if (res.status === 200) {
+                            this.fullscreenLoading = false;
+                            if (this.recordType === 2) {
+                                this.$message({
+                                    message: "创建成功",
+                                    type: "success"
+                                });
+                                this.$router.push({
+                                    path: "/contractDetails",
+                                    query: {
+                                        id: res.data.id,
+                                        contType: this.contractForm.type,
+                                        type: "contBody"
+                                    }
+                                });
+                            } else {
+                                let contractMsg = res.data;
+                                this.hidBtn = 1;
+                                sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
+                                if (contractMsg.singleCompany) {
+                                    this.singleCompany = true;
+                                    this.singleCompanyName = contractMsg.singleCompany;
+                                } else {
+                                    this.$router.push({
+                                        path: "/extendParams"
+                                    });
+                                }
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        this.fullscreenLoading = false;
+                        if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
+                            this.canClick = true;
+                        }
+                        this.$message({
+                            message: error,
+                            type: "error"
+                        });
+                    });
+            } else{
+                //  if (this.type === 2) 
+                //编辑
+                if (this.contractForm.type === 1) {
+                    delete param.leaseCont.contChangeState;
+                    delete param.leaseCont.contState;
+                    delete param.leaseCont.contType;
+                    delete param.leaseCont.laterStageState;
+                    delete param.leaseCont.toExamineState;
+                    delete param.leaseCont.previewImg;
+                    delete param.leaseCont.subscriptionTerm;
+                    delete param.leaseCont.updateTime;
+                    delete param.leaseCont.distributableAchievement;
+                    delete param.leaseCont.achievementState;
+                    delete param.leaseCont.recordType;
+                    delete param.leaseCont.resultState;
+                } else if ( this.contractForm.type === 2 || this.contractForm.type === 3 ) {
+                    delete param.saleCont.contChangeState;
+                    delete param.saleCont.contState;
+                    delete param.saleCont.contType;
+                    delete param.saleCont.laterStageState;
+                    delete param.saleCont.toExamineState;
+                    delete param.saleCont.previewImg;
+                    delete param.saleCont.subscriptionTerm;
+                    delete param.saleCont.updateTime;
+                    delete param.saleCont.distributableAchievement;
+                    delete param.saleCont.achievementState;
+                    delete param.saleCont.recordType;
+                    delete param.saleCont.resultState;
+                }
+                var url = "/api/contract/updateContract";
+                if (this.recordType === 2) {
+                    url = "/api/contract/addLocalContract";
+                }
+
+                this.$ajax
+                    .postJSON(url, param)
+                    .then(res => {
+                        res = res.data;
+                        if (res.status === 200) {
+                            this.fullscreenLoading = false;
+                            if (this.recordType === 2) {
+                                this.$message({
+                                    message: "保存成功",
+                                    type: "success"
+                                });
+                                if (this.canInput) {
+                                    //已签约状态编辑完成跳转合同列表
+                                    this.$router.push({
+                                        path: "/contractList"
+                                    });
+                                } else {
+                                    this.$router.push({
+                                        path: "/contractDetails",
+                                        query: {
+                                            id: res.data.id,
+                                            contType: this.contractForm.type,
+                                            type: "contBody"
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
                                         }
                                       }
                                       if (
@@ -1979,6 +2431,7 @@ export default {
                     type: "contBody"
                   }
                 });
+<<<<<<< HEAD
               } else {
                 let contractMsg = res.data;
                 this.hidBtn = 1;
@@ -1993,6 +2446,221 @@ export default {
                   this.$router.push({
                     path: "/extendParams"
                   });
+=======
+                let param1 = {
+                    depId: id,
+                    type: 1
+                };
+                this.$ajax
+                    .get("/api/organize/dep/manager", param1)
+                    .then(res => {
+                        res = res.data;
+                        if (res.status === 200) {
+                            if (res.data) {
+                                this.contractForm.guestInfo.ShopOwnerName =
+                                    res.data.name;
+                                this.contractForm.guestInfo.ShopOwnerMobile =
+                                    res.data.mobile;
+                            } else {
+                                let param2 = {
+                                    depId: id,
+                                    type: 2
+                                };
+                                this.$ajax
+                                    .get("/api/organize/dep/manager", param2)
+                                    .then(res => {
+                                        res = res.data;
+                                        if (res.status === 200) {
+                                            if (res.data) {
+                                                this.contractForm.guestInfo.ShopOwnerName =
+                                                    res.data.name;
+                                                this.contractForm.guestInfo.ShopOwnerMobile =
+                                                    res.data.mobile;
+                                            } else {
+                                                let param3 = {
+                                                    depId: id,
+                                                    type: 3
+                                                };
+                                                this.$ajax
+                                                    .get(
+                                                        "/api/organize/dep/manager",
+                                                        param3
+                                                    )
+                                                    .then(res => {
+                                                        res = res.data;
+                                                        if (
+                                                            res.status === 200
+                                                        ) {
+                                                            if (res.data) {
+                                                                this.contractForm.guestInfo.ShopOwnerName =
+                                                                    res.data.name;
+                                                                this.contractForm.guestInfo.ShopOwnerMobile =
+                                                                    res.data.mobile;
+                                                            } else {
+                                                                this.$message({
+                                                                    message:
+                                                                        "该门店没有店长"
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                            }
+                                        }
+                                    });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        this.$message({
+                            message: error
+                        });
+                    });
+            }
+        },
+        allClear(type) {
+            if (type === "owner") {
+                this.contractForm.houseInfo.ShopOwnerName = "";
+                this.contractForm.houseInfo.ShopOwnerMobile = "";
+            } else if (type === "guest") {
+                this.contractForm.guestInfo.ShopOwnerName = "";
+                this.contractForm.guestInfo.ShopOwnerMobile = "";
+            }
+        },
+        //获取合同信息
+        getContractDetail() {
+            let param = {
+                id: this.id
+            };
+            this.$ajax.get("/api/contract/detail", param).then(res => {
+                res = res.data;
+                if (res.status === 200) {
+                    this.contractForm = res.data;
+                    this.recordId = res.data.recordId;
+                    this.isHaveDetail = true;
+                    this.countTotal();
+                    this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
+                    if (this.contVersion === 1) {
+                        //经纪人
+                        let option = {
+                            empId: res.data.dealAgentId,
+                            empName: res.data.dealAgentName,
+                            depId: res.data.dealAgentStoreId,
+                            depName: res.data.dealAgentStoreName
+                        };
+                        if (option.empId) {
+                            this.basicsOptions = [option];
+                        } else {
+                            this.contractForm.dealAgentId = "";
+                        }
+                    }
+                    if (res.data.remarks && res.data.remarks.length > 0) {
+                        this.showRemark = true;
+                    }
+                    if (res.data.loanType) {
+                        //武汉买卖 全款贷款
+                        this.loanType = res.data.loanType;
+                    }
+                    // this.contractForm.signDate = res.data.signDate.substr(0, 10);
+                    let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
+                    this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
+                    if(this.$route.query.isDeal){
+                        this.toCommissionSum = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission)
+                    }
+
+                    //合同状态为已签约且未结算时只允许编辑房客源编号
+                    if (this.contractForm.recordType.value === 1 && res.data.resultState.value === 1 && res.data.contState.value === 3 && !this.$route.query.isDeal) {
+                        this.canInput = true;
+                    }
+                    //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
+                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3) {
+                        this.offLine = true;
+                    }
+                    this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
+                    let rightAddress = res.data.propertyRightAddr;
+                    let index1 = rightAddress.indexOf("市");
+                    let index2 = rightAddress.indexOf("区");
+                    if (index1 > 0) {
+                        this.rightAddrCity = rightAddress.substring(0, index1);
+                    }
+                    if (index2 > 0) {
+                        if (index1 > 0) {
+                            this.rightAddrArea = rightAddress.substring(
+                                index1 + 1,
+                                index2
+                            );
+                        } else {
+                            this.rightAddrArea = rightAddress.substring(
+                                0,
+                                index2
+                            );
+                        }
+                    }
+                    if (index1 > 0 && index2 > 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index2 + 1
+                        );
+                    } else if (index1 > 0 && index2 < 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index1 + 1
+                        );
+                    } else if (index1 < 0 && index2 > 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index2 + 1
+                        );
+                    } else {
+                        this.rightAddrDetail = rightAddress;
+                    }
+
+                    // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
+                    // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
+                    // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
+                    if (res.data.isHaveCooperation) {
+                        this.cooperation = true;
+                    }
+                    this.ownerList = [];
+                    this.guestList = [];
+                    for ( var i = 0; i < this.contractForm.contPersons.length; i++ ) {
+                        if ( this.contractForm.contPersons[i].personType.value === 1 ) {
+                            let element = {
+                                name: this.contractForm.contPersons[i].name,
+                                mobile: this.contractForm.contPersons[i].mobile,
+                                pid: this.contractForm.contPersons[i].pid,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
+                                type: 1,
+                                isEncryption: true
+                            };
+                            let obj = Object.assign({}, element);
+                            // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+                            this.ownerList.push(obj);
+                            let obj_ = Object.assign({}, element);
+                            this.ownerList_.push(obj_);
+                        } else if (this.contractForm.contPersons[i].personType.value === 2) {
+                            let element = {
+                                name: this.contractForm.contPersons[i].name,
+                                mobile: this.contractForm.contPersons[i].mobile,
+                                pid: this.contractForm.contPersons[i].pid,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
+                                type: 2,
+                                isEncryption: true
+                            };
+                            let obj = Object.assign({}, element);
+                            // obj.mobile=obj.mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+                            this.guestList.push(obj);
+                            let obj_ = Object.assign({}, element);
+                            this.guestList_.push(obj_);
+                        }
+                    }
+>>>>>>> 297891f758cbf86726b848d5ee6b770f5ba06cf6
                 }
               }
             }
