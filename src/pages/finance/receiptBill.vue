@@ -43,7 +43,7 @@
               </el-tooltip>
             </div>
             <moneyTypePop
-              v-if="!isentrust"
+              v-if="!isentrust||$route.query.collect"
               ref="moneyType"
               :data="moneyType"
               :init="moneyTypeName"
@@ -72,7 +72,9 @@
               <div class="address-slelect" @click="addressClickFn">
                 <span
                   :class="[addressLabel.name?'':'cl-gray']"
-                >{{addressLabel.name?addressLabel.name:addressLabel.val + addressValCom.name}}</span>
+                >{{addressLabel.selectCode?addressLabel.selectCode:"请选择"}}</span>
+                <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val}}</span> -->
+                <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val + addressValCom.name}}</span> -->
                 <i class="el-icon-arrow-down"></i>
               </div>
             </div>
@@ -640,13 +642,15 @@ export default {
           id: 1
         }
       ],
-      addressVal: 0,
+      addressVal: "",
       isShowDialog: false,
       addAountOther: {
         houseInfo: "", //房源
         guestInfo: "", //客源
         propertyRightAddr: "" //物业地址
-      }
+      },
+      isFukuanFangInput: false,
+      shoufuType: ""
     };
   },
   mounted() {
@@ -654,23 +658,26 @@ export default {
     this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : "";
     this.isentrust = Number(urlParam.isentrust) === 0 ? false : true;
     // this.billStatus=this.isentrust
-    this.getPayAccount(urlParam.id);
+    // let { user = {} } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
     this.getMoneyType();
     this.getDictionary();
     // this.remoteMethod()
     this.getDropdown();
     // this.getReceiptman()
     // this.getAdmin()
-    this.addInit(urlParam.contId);
     // !this.isentrust&&this.getFirstTime_receipt(urlParam.contId)//非委托合同才调用
-
+    console.log("=====");
+    console.log(this.getUser);
     if (urlParam.code) {
       this.uploadScane.id = urlParam.code;
     }
     let arr = [];
     if (urlParam.edit) {
       // this.inObjPerson = false
-      this.getDetails({ type: 1, payId: urlParam.id });
+      if (!urlParam.collect) {
+        this.getDetails({ type: 1, payId: urlParam.id });
+      }
+
       arr = this.$tool.getRouter(
         [
           "二手房",
@@ -695,12 +702,27 @@ export default {
 
     // 设置收款人
     let { user = {} } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
+    this.dep.id = user.depId;
+    this.dep.name = user.depName;
     if (user.depId && urlParam.collect) {
+      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"]);
+      arr.push({ name: "创建收款", path: this.$route.fullPath });
+      this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
       this.inputPerson = true;
+      this.dep.id = user.depId;
+      this.dep.name = user.depName;
       //设置收款账户
       this.getCompanyBanks(user.depId);
+      this.form.inObj = user.name;
+    } else {
+      this.addInit(urlParam.contId);
+      // this.getPayAccount(urlParam.id);
+      this.dep.id = user.depId;
+      this.dep.name = user.depName;
+      this.form.inObjId = user.empId;
+      this.form.inObj = user.name;
     }
   },
   methods: {
@@ -773,7 +795,9 @@ export default {
           if (res.status === 200) {
             console.log("=====");
             console.log(res);
-            this.activeAdmin = res.data.account[0].accountId;
+            if (res.data.account) {
+              this.activeAdmin = res.data.account[0].accountId;
+            }
           }
         });
     },
@@ -893,7 +917,7 @@ export default {
       if (this.firstCreate.state) {
         this.activeAdmin = "";
       }
-      this.account = [];
+      // this.account = [];
     },
     handleNodeClick(data) {
       this.getEmploye(data.depId, 1, false);
@@ -1129,11 +1153,19 @@ export default {
         param.createTime = "";
       }
       if (this.isentrust) {
-        Object.assign(param, {
-          moneyType: -1,
-          moneyTypePid: -1,
-          type: 8
-        });
+        if (this.$route.query.collect) {
+          Object.assign(param, {
+            moneyType: -1,
+            moneyTypePid: -1,
+            type: 1
+          });
+        } else {
+          Object.assign(param, {
+            moneyType: -1,
+            moneyTypePid: -1,
+            type: 8
+          });
+        }
       }
       arr.push(this.$tool.checkForm(param, rule));
       //支付信息验证
@@ -1462,6 +1494,9 @@ export default {
      * @param item
      */
     getOption: function(item, type) {
+      console.log("======");
+      console.log(item);
+      console.log(type);
       let obj = {};
       let list = type === 1 ? this.dropdown : this.EmployeList;
       list.find(tip => {
@@ -1469,7 +1504,14 @@ export default {
           if (type === 1) {
             obj.outObjId = tip.custId;
             obj.outObj = tip.custName;
-            this.inputPerson = true;
+            if (
+              (item == 1 && this.$route.query.code) ||
+              (item == 2 && this.$route.query.code)
+            ) {
+              this.inputPerson = false;
+            } else {
+              this.inputPerson = true;
+            }
           } else {
             obj.inObj = tip.name;
             if (this.firstCreate.state) {
@@ -1526,7 +1568,9 @@ export default {
     },
     // 获取房源客源
     addressClickFn() {
-      this.isShowDialog = true;
+      if (this.addressVal === 0 || this.addressVal === 1) {
+        this.isShowDialog = true;
+      }
     },
     addressChangeFn() {
       this.addressLabel = {
@@ -1545,41 +1589,67 @@ export default {
       console.log("房客源");
       console.log(value);
       if (value) {
-        this.getHousedetail(value.selectCode).then(res => {
-          console.log("------");
-          console.log(res);
-          if (value.dialogType == "guest") {
-            this.addAountOther.guestInfo = res;
-          } else {
-            this.addAountOther.houseInfo = res;
-          }
-        });
-        this.addressLabel.selectCode = value.selectCode;
+        if (value.dialogType == "house") {
+          this.addressLabel.selectCode = 123;
+          this.getHousedetail(value.selectCode, 1).then(res => {
+            console.log("------");
+            console.log(res);
+            this.addressLabel.selectCode = res.PropertyNo;
+            if (value.dialogType == "guest") {
+              this.addAountOther.guestInfo = res;
+            } else {
+              this.addAountOther.houseInfo = res;
+            }
+          });
+        } else {
+          this.getHousedetail(value.selectCode, 2).then(res => {
+            console.log("------");
+            console.log(res);
+            this.addressLabel.selectCode = res.InquiryNo;
+            if (value.dialogType == "guest") {
+              this.addAountOther.guestInfo = res;
+            } else {
+              this.addAountOther.houseInfo = res;
+            }
+          });
+        }
       }
       this.isShowDialog = false;
     },
     //根据房源id获取房源信息
-    getHousedetail(id) {
+    getHousedetail(id, type) {
       return new Promise((resolve, reject) => {
-        let param = {
-          houseId: id
-        };
+        let param, url;
+        if (type == 1) {
+          url = "/api/resource/houses/one";
+          param = {
+            houseId: id
+          };
+        } else {
+          url = "/api/resource/customers/one";
+          param = {
+            customerId: id
+          };
+        }
+
         this.$ajax
-          .get("/api/resource/houses/one", param)
+          .get(url, param)
           .then(res => {
             res = res.data;
             if (res.status === 200) {
               let houseMsg = res.data;
-              this.addressLabel = {
-                ...this.addressLabel,
-                label:
-                  houseMsg.EstateName.replace(/\s/g, "") +
-                  " " +
-                  houseMsg.BuildingName.replace(/\s/g, "") +
-                  houseMsg.Unit.replace(/\s/g, "") +
-                  houseMsg.RoomNo.replace(/\s/g, ""),
-                name: houseMsg.PropertyNo
-              };
+              if (type == 1) {
+                this.addressLabel = {
+                  ...this.addressLabel,
+                  label:
+                    houseMsg.EstateName.replace(/\s/g, "") +
+                    " " +
+                    houseMsg.BuildingName.replace(/\s/g, "") +
+                    houseMsg.Unit.replace(/\s/g, "") +
+                    houseMsg.RoomNo.replace(/\s/g, ""),
+                  name: houseMsg.PropertyNo
+                };
+              }
               resolve(res.data);
             }
           })
