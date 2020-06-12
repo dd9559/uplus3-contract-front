@@ -73,7 +73,7 @@
                             label="纸质合同编号："
                             class="width-250 form-label"
                             style="width:340px;"
-                            v-if="isOffline===1">
+                            v-if="recordType===2">
                             <input 
                                 style="width:200px;"
                                 type="text"
@@ -89,7 +89,7 @@
                             label="预计过户时间："
                             style="text-align:right;width:280px;"
                             class="form-label"
-                            v-if="showTransferTime&&(contractForm.type===2||contractForm.type===3)">
+                            v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker 
                                 style="width:140px"
                                 v-model="contractForm.signDateLast"
@@ -659,7 +659,7 @@
         <div v-else>
             <contractBasics :contractForm="contractForm"
                 v-if="isHaveDetail&&type===2"
-                :isOffline="isOffline"
+                :recordType="recordType"
                 :offLineInput="offLine"
                 :sourceBtnCheck="sourceBtnCheck"
                 :operationType="type"
@@ -673,7 +673,7 @@
             </contractBasics>
             <contractBasics :contractForm="contractForm"
                 v-if="isHaveDetail&&type===1"
-                :isOffline="isOffline"
+                :recordType="recordType"
                 :operationType="type">
             </contractBasics>
         </div>
@@ -780,7 +780,7 @@ export default {
             cooperation: false,
             //操作类型  默认是添加
             type: 1,
-            isOffline: "", //判断创建合同为0=线上，1=线下
+            recordType: "", //判断创建合同为1线上，2线下，10无纸化
             dictionary: {
                 //数据字典
                 "514": "", //产权状态
@@ -901,7 +901,7 @@ export default {
             if (this.$route.query.loanType) {
                 this.loanType = Number(this.$route.query.loanType);
             }
-            this.isOffline = parseInt(this.$route.query.isOffline);
+            this.recordType = parseInt(this.$route.query.recordType);
             if (this.$route.query.operateType) {
                 this.type = parseInt(this.$route.query.operateType);
                 if (this.type == 2) {
@@ -911,6 +911,9 @@ export default {
                     this.getNewData();
                     this.isHaveDetail = true;
                     this.getVersion();
+                    if(Number(this.$route.query.turnDeal)===1){//房源转成交需要获取房源详情
+                        this.getHousedetail(this.$route.query.houseId)
+                    }
                 }
             }
         }
@@ -1241,7 +1244,7 @@ export default {
                 // 非兰州无预计过户时间
                 delete rule_.signDateLast
             }
-            if (this.isOffline !== 1) {
+            if (this.recordType != 2) {
                 delete rule_.pCode;
             }
             if (!this.contractForm.signDate) {
@@ -1251,10 +1254,7 @@ export default {
             //   this.contractForm.transFlowCode=''
             // }
             if (this.contractForm.pCode) {
-                this.contractForm.pCode = this.contractForm.pCode.replace(
-                    /\s+/g,
-                    ""
-                );
+                this.contractForm.pCode = this.contractForm.pCode.replace(/\s+/g,"");
             }
             if (!this.contractForm.pCode) {
                 this.contractForm.pCode = "";
@@ -2220,11 +2220,12 @@ export default {
                     param.loanType = this.loanType;
                 }
             }
-            if (this.isOffline === 1) {
-                param.recordType = 2;
-            } else {
-                param.recordType = 1;
-            }
+            // if (this.recordType === 2) {
+            //     param.recordType = 2;
+            // } else {
+            //     param.recordType = 1;
+            // }
+            param.recordType=this.recordType
             if (this.type === 1) {
                 //新增
                 if(this.isDeal){
@@ -2253,14 +2254,14 @@ export default {
                     delete param.dealById
                 }
                 var url = "/api/contract/addContract";
-                if (this.isOffline === 1) {
+                if (this.recordType === 2) {
                     url = "/api/contract/addLocalContract";
                 }
                 this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
-                            if (this.isOffline === 1) {
+                            if (this.recordType === 2) {
                                 this.$message({
                                     message: "创建成功",
                                     type: "success"
@@ -2329,7 +2330,7 @@ export default {
                     delete param.saleCont.resultState;
                 }
                 var url = "/api/contract/updateContract";
-                if (this.isOffline === 1) {
+                if (this.recordType === 2) {
                     url = "/api/contract/addLocalContract";
                 }
 
@@ -2339,7 +2340,7 @@ export default {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
-                            if (this.isOffline === 1) {
+                            if (this.recordType === 2) {
                                 this.$message({
                                     message: "保存成功",
                                     type: "success"
