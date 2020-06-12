@@ -463,6 +463,9 @@ export default {
           this.getContractDetail();
         }else{
           this.getNewData()
+          if(Number(this.$route.query.turnDeal)===1){//房源转成交需要获取房源详情
+            this.getHousedetail(this.$route.query.houseId)
+          }
         }
       }
     }

@@ -674,6 +674,7 @@
             <contractBasics :contractForm="contractForm"
                 v-if="isHaveDetail&&type===1"
                 :recordType="recordType"
+                :houseId="houseId"
                 :operationType="type">
             </contractBasics>
         </div>
@@ -879,6 +880,8 @@ export default {
             basicsOptions: [], //基础版经纪人信息
             isToCommission: false, // 是否转佣
             toCommissionSum:0,//转佣金额
+
+            houseId:0,//转成交房源id
         };
     },
     computed: {
@@ -912,7 +915,8 @@ export default {
                     this.isHaveDetail = true;
                     this.getVersion();
                     if(Number(this.$route.query.turnDeal)===1){//房源转成交需要获取房源详情
-                        this.getHousedetail(this.$route.query.houseId)
+                    this.houseId = Number(this.$route.query.houseId)
+                        this.getHousedetail(this.houseId)
                     }
                 }
             }

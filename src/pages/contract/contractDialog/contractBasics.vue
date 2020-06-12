@@ -303,6 +303,10 @@ export default {
       type:Number,
       default: 1
     },
+    houseId:{
+      type:Number,
+      default:0
+    },
     //是否能输入
     canInput:{
       type:Boolean,
@@ -446,6 +450,9 @@ export default {
     this.countTotal()
     if(this.operationType===2){
       this.countTotal()
+    }
+    if(this.houseId){
+      this.getHousedetail(this.houseId)
     }
   },
   methods: {
