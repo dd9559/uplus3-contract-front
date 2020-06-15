@@ -2764,8 +2764,11 @@ export default {
                     this.contractForm = res.data;
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
-                    this.recordType=this.contractForm.recordType.value
-                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
+                    this.recordType=this.contractForm.recordType.value;
+                    // if(this.contractForm.estTransferTime){
+                    //     this.contractForm.estTransferTime=TOOL.dateFormat(this.contractForm.estTransferTime);
+                    // }
+                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime)):this.$set(this.contractForm,'estTransferTime','')
                     this.countTotal();
                     this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
                     if (this.contVersion === 1) {
