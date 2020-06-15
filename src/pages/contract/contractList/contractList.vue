@@ -270,24 +270,49 @@
           </span>
         </div>
         <div>
-          <div class="haveSon" :class="{'showOnLine':showOnLine}" @mouseover="moveIn('online')" @mouseout="moveOut('online')" v-if="power['sign-ht-info-add'].state" >
+          <div
+            class="haveSon"
+            :class="{'showOnLine':showOnLine}"
+            @mouseover="moveIn('online')"
+            @mouseout="moveOut('online')"
+            v-if="power['sign-ht-info-add'].state"
+          >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
               <ul class="mainList">
-                <li v-for="item in dictionary['71']" :key="item.key" @click="addOnLine(item)" style="position:relative;" >
+                <li
+                  v-for="item in dictionary['71']"
+                  :key="item.key"
+                  @click="addOnLine(item)"
+                  style="position:relative;"
+                >
                   {{item.value}}
-                  <i class="el-icon-caret-right" v-if="item.key===2&&item.children" style="position:absolute;top:10px;left:55px;" ></i>
+                  <i
+                    class="el-icon-caret-right"
+                    v-if="item.key===2&&item.children"
+                    style="position:absolute;top:10px;left:55px;"
+                  ></i>
                   <div class="childrenModule" v-if="item.key===2&&item.children">
                     <ul class="childrenList">
-                      <li v-for="item_ in item.children" :key="item_.key" @click="addOnLine(item_)" >{{item_.value}}</li>
+                      <li
+                        v-for="item_ in item.children"
+                        :key="item_.key"
+                        @click="addOnLine(item_)"
+                      >{{item_.value}}</li>
                     </ul>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
-          <div class="haveSon" :class="{'showOnLine':showOffLine}" @mouseover="moveIn('offline')" @mouseout="moveOut('offline')" v-if="power['sign-ht-info-addoffline'].state" >
+          <div
+            class="haveSon"
+            :class="{'showOnLine':showOffLine}"
+            @mouseover="moveIn('offline')"
+            @mouseout="moveOut('offline')"
+            v-if="power['sign-ht-info-addoffline'].state"
+          >
             录入线下合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['65']">
@@ -823,35 +848,34 @@
       <div>
         <ul class="uPlus-class">
           <li class="li" style="width:100%;">
-            <em class="cl-999">房源编号：</em>S0000182625
+            <em class="cl-999">房源编号：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.PropertyNo}}
           </li>
           <li class="li" style="width:100%;">
-            <em class="cl-999">建筑面积：</em>99㎡
+            <em class="cl-999">建筑面积：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.Square}}㎡
           </li>
           <li class="li" style="width:100%;">
-            <em class="cl-999">业主姓名：</em>黄小茹
+            <em class="cl-999">业主姓名：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.OwnerInfoList[0].OwnerName}}
           </li>
           <li class="li" style="width:100%;">
-            <em class="cl-999">物业地址：</em>东湖雅居雅居1栋1单元2003
+            <em class="cl-999">物业地址：</em>
+            {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
           </li>
         </ul>
         <p style="margin-bottom:20px;">选择合同类型：</p>
-        <el-select
-          v-model="contractForm.contState"
-          placeholder="合同类型"
-          :clearable="true"
-          style="width:600px"
-        >
+        <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px">
           <el-option
-            v-for="item in dictionary['71']"
+            v-for="item in uPlusDictionary71"
             :key="item.key"
             :label="item.value"
             :value="item.key"
           ></el-option>
         </el-select>
-        <p style="margin-bottom:20px;">选择签约方式：</p>
+        <p style="margin-bottom:20px;overflow: hidden;margin-top:20px;">选择签约方式：</p>
         <el-select
-          v-model="contractForm.contState"
+          v-model="uPlusQianyueType"
           placeholder="签约方式"
           :clearable="true"
           style="width:600px"
@@ -865,7 +889,7 @@
         </el-select>
         <p class="dialog-footer">
           <el-button round @click="uPlusIsShow = false">取 消</el-button>
-          <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
+          <el-button round type="primary" @click="skipAddCont()">确 定</el-button>
         </p>
       </div>
     </el-dialog>
@@ -1099,7 +1123,11 @@ export default {
       deleteItem: "",
       dialogContType: 1, //变更解约弹窗是否是意向定金合同
       uPlusIsShow: false,
-      uPlusHouseDetail: null
+      uPlusHouseDetail: null,
+      uPlusDictionary71: [],
+      isDealType: "", //判断房源是租赁还是买卖类型，1租赁，2买卖
+      uPlusContType: "",
+      uPlusQianyueType: ""
     };
   },
   created() {
@@ -1112,7 +1140,7 @@ export default {
     }
     if (this.$route.query.turnDeal) {
       this.uPlusIsShow = true;
-      this.getUplusHouseDetail(117809);
+      this.getUplusHouseDetail(this.$route.query.houseId);
     }
     this.http = window.location.origin;
     this.getAdmin(); //获取当前登录人信息
@@ -1497,7 +1525,9 @@ export default {
           recordType: 1,
           type: val.key
         };
-        this.$ajax.get("/api/contract/checkContTemplate", param).then(res => {
+        this.$ajax
+          .get("/api/contract/checkContTemplate", param)
+          .then(res => {
             res = res.data;
             if (res.status === 200) {
               localStorage.removeItem("backMsg");
@@ -1508,7 +1538,7 @@ export default {
                     type: val.key,
                     operateType: 1,
                     // isOffline: 0
-                    recordType:1
+                    recordType: 1
                   }
                 });
               } else if (val.key === 7 || val.key === 8) {
@@ -1518,7 +1548,7 @@ export default {
                     type: 2,
                     operateType: 1,
                     // isOffline: 0,
-                    recordType:1,
+                    recordType: 1,
                     loanType: val.key
                   }
                 });
@@ -1529,7 +1559,7 @@ export default {
                     contType: val.key,
                     operateType: 1,
                     // isOffline: 0
-                    recordType:1,
+                    recordType: 1
                   }
                 });
               }
@@ -1559,7 +1589,7 @@ export default {
               type: val.key,
               operateType: 1,
               // isOffline: 1
-              recordType:2,
+              recordType: 2
             }
           });
         } else if (val.key === 7 || val.key === 8) {
@@ -1949,6 +1979,34 @@ export default {
             console.log(res);
             this.uPlusHouseDetail = res.data;
             console.log(this.uPlusHouseDetail);
+            this.isDealType =
+              this.uPlusHouseDetail.PropertyNo &&
+              this.uPlusHouseDetail.PropertyNo.search("Z") === 0
+                ? 1
+                : 2;
+            // this.uPlusDictionary71 = this.dictionary["71"];
+            if (this.isDealType == 1) {
+              //房源编号为租赁
+              this.dictionary["71"].map((item, index) => {
+                if (item.key == 2 || item.key == 3) {
+                  return;
+                } else {
+                  this.uPlusDictionary71.push(item);
+                }
+              });
+            } else if (this.isDealType == 2) {
+              //房源编号为买卖
+              this.dictionary["71"] &&
+                this.dictionary["71"].map((item, index) => {
+                  if (item.key == 1) {
+                    return;
+                  } else {
+                    this.uPlusDictionary71.push(item);
+                  }
+                });
+            }
+            console.log("========");
+            console.log(this.uPlusDictionary71);
           }
         })
         .catch(error => {
@@ -1956,6 +2014,50 @@ export default {
             message: error
           });
         });
+    },
+    // 跳转新增合同
+    skipAddCont() {
+      if (this.uPlusContType == "") {
+        this.$message({
+          message: "请选择合同类型",
+          type: "warning"
+        });
+        return;
+      }
+      if (this.uPlusQianyueType == "") {
+        this.$message({
+          message: "请选择签约方式",
+          type: "warning"
+        });
+        return;
+      }
+      if (
+        this.uPlusContType === 1 ||
+        this.uPlusContType === 2 ||
+        this.uPlusContType === 3
+      ) {
+        this.$router.push({
+          path: "/addContract",
+          query: {
+            type: this.uPlusContType,
+            operateType: 1,
+            recordType: this.uPlusQianyueType,
+            houseId: this.$route.query.houseId,
+            turnDeal: 1
+          }
+        });
+      } else if (this.uPlusContType === 4 || this.uPlusContType === 5) {
+        this.$router.push({
+          path: "/newIntention",
+          query: {
+            contType: this.uPlusContType,
+            operateType: 1,
+            recordType: this.uPlusQianyueType,
+            houseId: this.$route.query.houseId,
+            turnDeal: 1
+          }
+        });
+      }
     }
   },
   computed: {
