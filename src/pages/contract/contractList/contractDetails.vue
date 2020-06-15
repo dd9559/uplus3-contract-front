@@ -615,11 +615,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane
-          label="合同主体"
-          name="second"
-          v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
-          >
+        <el-tab-pane label="合同主体" name="second" v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)" >
           <div
             class="contractSubject"
             v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)"
@@ -757,11 +753,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane
-          label="资料库"
-          name="third"
-          v-if="power['sign-ht-xq-data'].state"
-          >
+        <el-tab-pane label="资料库" name="third" v-if="power['sign-ht-xq-data'].state" >
           <div
             class="dataBank"
             v-if="power['sign-ht-xq-data'].state"

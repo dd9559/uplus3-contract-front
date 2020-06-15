@@ -4,8 +4,7 @@
         id="intention">
         <div class="detailbox"
             v-if="detailData.contState">
-            <el-tabs v-model="activeName"
-                @tab-click="handleClick">
+            <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane :label="detailData.contType.value === 4 ? '意向金详情':'定金详情'"
                     name="first"
                     class="first-tab">
@@ -1223,12 +1222,10 @@ export default {
                 let param = {
                     contId: this.$route.query.id,
                     datas: this.uploadList
-                };
-                this.$ajax
-                    .postJSON("/api/contract/uploadContBody", param)
-                    .then(res => {
+                }
+                this.$ajax.postJSON("/api/contract/uploadContBody", param).then(res => {
                         if (res.data.status === 200) {
-                            // this.getContractBody();
+                            this.getContractBody();
                             this.getDetail();
                             this.$message({
                                 message: "上传成功",
