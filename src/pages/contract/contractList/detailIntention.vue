@@ -57,19 +57,17 @@
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
                                 <li>
-                                    <div class="div1"
-                                        v-if="detailData.houseInfo.SquareUse"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
+                                    <div class="div1" v-if="detailData.houseInfo.SquareUse"><span>套内面积：</span>{{detailData.houseInfo.SquareUse | nullData}}㎡</div>
                                     <div class="div1"
                                         v-else><span>套内面积：</span>--</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
                                     <div><span>产权地址：</span>{{detailData.propertyRightAddr | nullData}}</div>
                                 </li>
                                 <li>
-                                    <!-- <div class="div1"><span>业主姓名：</span>{{ownerInfo[0].name | nullData}}</div> -->
-                                    <div class="div1"
-                                        style="position:relative">
+                                    <div class="div1" style="position:relative">
                                         <span>业主姓名：</span>
-                                        <el-tooltip class="item"
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].name">{{ownerInfo[0].name | nullData}}</span>
+                                        <!-- <el-tooltip class="item"
                                             effect="dark"
                                             :content="ownerInfo[0].name"
                                             placement="bottom"
@@ -79,10 +77,10 @@
                                             </div>
                                         </el-tooltip>
                                         <span v-else
-                                            style="color:#233241;">--</span>
+                                            style="color:#233241;">--</span> -->
                                     </div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
-                                    <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
+                                    <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="ownerInfo[0].identifyCode">{{ownerInfo[0].identifyCode | nullData}}</span></div>
                                     <!-- <div><span>邮箱：</span>{{detailData.email}}</div>  -->
                                 </li>
                             </ul>
@@ -98,18 +96,19 @@
                                     <div class="div1"
                                         style="position:relative">
                                         <span>客户姓名：</span>
-                                        <el-tooltip class="item"
+                                        <span class="ellipsisStyle" :title="custInfo[0].name">{{custInfo[0].name | nullData}}</span>
+                                        <!-- <el-tooltip class="item"
                                             effect="dark"
                                             :content="custInfo[0].name"
                                             placement="bottom">
                                             <div class="contractDetailCode">
                                                 {{custInfo[0].name}}
                                             </div>
-                                        </el-tooltip>
+                                        </el-tooltip> -->
                                     </div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
-                                    <div class="div2"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span>{{custInfo[0].identifyCode | nullData}}</div>
-									<div><span>邮箱：</span>{{detailData.email}}</div>
+                                    <div class="div2"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="custInfo[0].identifyCode">{{custInfo[0].identifyCode | nullData}}</span></div>
+									<!-- <div><span>邮箱：</span>{{detailData.email}}</div> -->
                                 </li>
                             </ul>
                         </ul>
@@ -1827,6 +1826,15 @@ export default {
 .dataBank {
     overflow-y: auto;
     // padding-top: 10px;
+}
+.ellipsisStyle{
+    display: inline-block;
+    width: 120px;
+    color: #233241 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: top
 }
 </style>
 
