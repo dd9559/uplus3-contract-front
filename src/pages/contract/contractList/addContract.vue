@@ -92,8 +92,8 @@
                             v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker 
                                 style="width:140px"
-                                v-model="contractForm.signDateLast"
-                                :disabled="type===2?true:false"
+                                v-model="contractForm.estTransferTime"
+                                :disabled="canInput"
                                 type="date"
                                 format="yyyy-MM-dd"
                                 value-format="yyyy-MM-dd"
@@ -152,7 +152,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('house')"
-                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.houseinfoCode}}</span>
                         </el-form-item>
@@ -344,7 +344,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('guest')"
-                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.guestinfoCode}}</span>
                         </el-form-item>
@@ -691,22 +691,15 @@ const rule = {
     signDate: {
         name: "签约日期"
     },
-    signDateLast: {
+    estTransferTime: {
         name: "预计过户时间"
     },
-    // transFlowCode: {
-    //   name: "交易流程",
-    // },
     pCode: {
         name: "纸质合同编号"
     },
     houseinfoCode: {
         name: "房源"
     },
-    // dealPrice: {
-    //   name: "成交总价",
-    //   type: "money"
-    // },
     guestinfoCode: {
         name: "客源"
     }
@@ -727,7 +720,7 @@ export default {
                 houseinfoCode: "",
                 guestinfoCode: "",
                 signDate: "",
-                signDateLast: "",
+                estTransferTime: "",
                 payType: 1,
                 dealPrice: "",
                 contPersons: [],
@@ -1244,9 +1237,9 @@ export default {
             // if(this.contractForm.type!==1){
             //   delete rule_.transFlowCode
             // }
-            if(!this.showTransferTime) {
+            if(this.userMsg.cityId!=52||(this.userMsg.cityId===52&&this.contractForm.type===1)) {
                 // 非兰州无预计过户时间
-                delete rule_.signDateLast
+                delete rule_.estTransferTime
             }
             if (this.recordType != 2) {
                 delete rule_.pCode;
