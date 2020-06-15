@@ -72,9 +72,9 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p v-if="contractDetail.signDateLast&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
+                  <p v-if="contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
                     <span class="tag">预计过户时间：</span>
-                    <span class="text">{{contractDetail.signDateLast}}</span>
+                    <span class="text">{{contractDetail.estTransferTime|formatDate}}</span>
                   </p>
                 </div>
               </div>
@@ -2392,7 +2392,7 @@ export default {
         laterStageState: {},
         contChangeState: {},
         report: {},
-        signDateLast: ""
+        estTransferTime: ""
       },
       //业主信息
       ownerData: [],
