@@ -67,21 +67,24 @@
                                     <div class="div1" style="position:relative">
                                         <span>业主姓名：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].name">{{ownerInfo[0].name | nullData}}</span>
-                                        <!-- <el-tooltip class="item"
-                                            effect="dark"
-                                            :content="ownerInfo[0].name"
-                                            placement="bottom"
-                                            v-if="ownerInfo[0].name">
-                                            <div class="contractDetailCode">
-                                                {{ownerInfo[0].name | nullData}}
-                                            </div>
-                                        </el-tooltip>
-                                        <span v-else
-                                            style="color:#233241;">--</span> -->
                                     </div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
                                     <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="ownerInfo[0].identifyCode">{{ownerInfo[0].identifyCode | nullData}}</span></div>
-                                    <!-- <div><span>邮箱：</span>{{detailData.email}}</div>  -->
+                                    <div v-if="detailData.recordType&&detailData.recordType===10"><span>邮箱：</span>{{detailData.email}}</div> 
+                                </li>
+                                <li v-if="detailData.recordType&&detailData.recordType===10">
+                                    <div class="div1" style="position:relative">
+                                        <span>企业名称：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{ownerInfo[0].companyName | nullData}}</span>
+                                    </div>
+                                    <div class="div1" style="position:relative">
+                                        <span>法人名称：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{ownerInfo[0].lepName | nullData}}</span>
+                                    </div>
+                                    <div class="div1" style="position:relative">
+                                        <span>法人身份证号：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
+                                    </div>
                                 </li>
                             </ul>
                         </ul>
@@ -97,18 +100,24 @@
                                         style="position:relative">
                                         <span>客户姓名：</span>
                                         <span class="ellipsisStyle" :title="custInfo[0].name">{{custInfo[0].name | nullData}}</span>
-                                        <!-- <el-tooltip class="item"
-                                            effect="dark"
-                                            :content="custInfo[0].name"
-                                            placement="bottom">
-                                            <div class="contractDetailCode">
-                                                {{custInfo[0].name}}
-                                            </div>
-                                        </el-tooltip> -->
                                     </div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
                                     <div class="div2"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="custInfo[0].identifyCode">{{custInfo[0].identifyCode | nullData}}</span></div>
-									<!-- <div><span>邮箱：</span>{{detailData.email}}</div> -->
+									<div v-if="detailData.recordType&&detailData.recordType===10"><span>邮箱：</span>{{detailData.email}}</div>
+                                </li>
+                                <li v-if="detailData.recordType&&detailData.recordType===10">
+                                    <div class="div1" style="position:relative">
+                                        <span>企业名称：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{ownerInfo[0].companyName | nullData}}</span>
+                                    </div>
+                                    <div class="div1" style="position:relative">
+                                        <span>法人名称：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{ownerInfo[0].lepName | nullData}}</span>
+                                    </div>
+                                    <div class="div1" style="position:relative">
+                                        <span>法人身份证号：</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
+                                    </div>
                                 </li>
                             </ul>
                         </ul>
