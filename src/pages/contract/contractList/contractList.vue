@@ -1960,7 +1960,7 @@ export default {
           id: row.id,
           operateType: 1,
           type: row.contType.value,
-          isOffline: row.recordType.value === 1 ? 0 : 1,
+          recordType: row.recordType.value,
           isDeal: 1
         }
       });
