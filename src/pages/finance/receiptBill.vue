@@ -1068,6 +1068,9 @@ export default {
           this.form = Object.assign({}, this.form, obj);
           this.getAcount(this.form.inObjId);
           // this.hideCardList()
+          if (this.$route.query.collect && this.$route.query.contId == 0) {
+             
+          }
         }
       });
     },
