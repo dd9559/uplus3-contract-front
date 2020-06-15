@@ -1569,7 +1569,7 @@ export default {
               type: 2,
               operateType: 1,
               // isOffline: 1,
-              recordType:1,
+              recordType:2,
               loanType: val.key
             }
           });
@@ -1580,7 +1580,7 @@ export default {
               contType: val.key,
               operateType: 1,
               // isOffline: 1
-              recordType:1,
+              recordType:2,
             }
           });
         }

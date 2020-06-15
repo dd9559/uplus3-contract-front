@@ -152,7 +152,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('house')"
-                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.houseinfoCode}}</span>
                         </el-form-item>
@@ -344,7 +344,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('guest')"
-                                v-if="sourceBtnCheck||canInput||!offLine">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.guestinfoCode}}</span>
                         </el-form-item>

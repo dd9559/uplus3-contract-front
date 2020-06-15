@@ -37,6 +37,10 @@
                     <span class="tag">签约时间：</span>
                     <span class="text">{{contractDetail.signDate}}</span>
                   </p>
+                  <!-- <p>
+                    <span class="tag">预计过户时间：</span>
+                    <span class="text">{{contractDetail.signDateLast}}</span>
+                  </p> -->
                   <p>
                     <span class="tag">合同类型：</span>
                     <span class="text" v-if="contractDetail.contType.value===1" >租赁</span>
@@ -68,7 +72,7 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p v-if="showTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
+                  <p v-if="contractDetail.signDateLast&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
                     <span class="tag">预计过户时间：</span>
                     <span class="text">{{contractDetail.signDateLast}}</span>
                   </p>
