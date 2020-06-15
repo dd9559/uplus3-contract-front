@@ -83,7 +83,7 @@
                                     </div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
                                     <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span>{{ownerInfo[0].identifyCode | nullData}}</div>
-									 <div><span>邮箱：</span>{{detailData.email}}</div>
+                                    <!-- <div><span>邮箱：</span>{{detailData.email}}</div>  -->
                                 </li>
                             </ul>
                         </ul>
@@ -857,7 +857,7 @@ export default {
                     id: this.$route.query.id,
                     operateType: 2,
                     formDetail: true,
-                    isOffline: this.detailData.recordType.value === 2 ? 1 : 2
+                    recordType: this.detailData.recordType.value
                 }
             });
         },

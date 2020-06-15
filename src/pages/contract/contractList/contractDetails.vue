@@ -128,7 +128,10 @@
                     <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2" >
                       <template slot-scope="scope">{{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}</template>
                     </el-table-column>
-                    <el-table-column prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="conmpanyName" label="企业名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="lepName" label="法人名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -170,7 +173,10 @@
                     <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2" >
                       <template slot-scope="scope">{{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}</template>
                     </el-table-column>
-                    <el-table-column prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="conmpanyName" label="企业名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="lepName" label="法人名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -2933,7 +2939,7 @@ export default {
           id: this.contractDetail.id,
           operateType: 2,
           type: this.contType,
-          isOffline: this.contractDetail.recordType.value === 2 ? 1 : 2
+          recordType: this.contractDetail.recordType.value
         }
       });
     },

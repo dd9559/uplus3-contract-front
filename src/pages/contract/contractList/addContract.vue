@@ -11,7 +11,7 @@
                 <div class="contractMsg">
                     <p>
                         合同信息
-                        <span v-if="isDeal" class="toCommission">
+                        <span v-if="isDeal||contractForm.dealById" class="toCommission">
                             <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>
                             <span class="toCommissionStyle" @click="toCommission">是否转佣</span>
                             <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
@@ -89,7 +89,7 @@
                             label="预计过户时间："
                             style="text-align:right;width:280px;"
                             class="form-label"
-                            v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
+                            v-if="userMsg.cityId!=52&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker 
                                 style="width:140px"
                                 v-model="contractForm.estTransferTime"
@@ -264,72 +264,109 @@
                             class="form-label"
                             style="padding-left:18px">
                             <ul class="peopleMsg">
-                                <li v-for="(item,index) in ownerList"
-                                    :key="index">
-                                    <span class="merge">
-                                        <input v-model="item.name"
+                                <li v-for="(item,index) in ownerList" :key="index">
+                                    <div>
+                                        <span class="merge">
+                                            <input v-model="item.name"
+                                                :disabled="canInput"
+                                                placeholder="姓名"
+                                                maxlength="30"
+                                                @input="inputOnly(index,'owner')"
+                                                class="name_"
+                                                :class="{'disabled':canInput}">
+                                            <input v-model="item.mobile"
+                                                :disabled="canInput"
+                                                type="tel"
+                                                placeholder="电话"
+                                                class="mobile_"
+                                                :class="{'disabled':canInput}"
+                                                @input="verifyMobile(item,index,'owner')"
+                                                @keydown="saveMobile(item,index,'owner')">
+                                        </span>
+                                        <el-select v-model="item.relation"
+                                            placeholder="关系"
                                             :disabled="canInput"
-                                            placeholder="姓名"
-                                            maxlength="30"
-                                            @input="inputOnly(index,'owner')"
-                                            class="name_"
-                                            :class="{'disabled':canInput}">
-                                        <input v-model="item.mobile"
+                                            class="relation_">
+                                            <el-option v-for="item in relationList"
+                                                :key="item.key"
+                                                :label="item.value"
+                                                :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                        <span class="shell"
+                                            v-if="contractForm.type!=1"><input type="text"
+                                                v-model="item.propertyRightRatio"
+                                                :disabled="canInput"
+                                                @input="cutNumber_(index,'owner')"
+                                                placeholder="产权比"
+                                                class="propertyRight"
+                                                :class="{'disabled':canInput}"></span>
+                                        <el-select v-model="item.cardType"
                                             :disabled="canInput"
-                                            type="tel"
-                                            placeholder="电话"
-                                            class="mobile_"
+                                            placeholder="证件类型"
+                                            class="idtype"
+                                            @change="changeCadrType($event,index,'owner')">
+                                            <el-option v-for="item in dictionary['633']"
+                                                :key="item.key"
+                                                :label="item.value"
+                                                :value="item.key">
+                                            </el-option>
+                                        </el-select>
+                                        <input v-model="item.encryptionCode"
+                                            type="text"
+                                            :disabled="canInput"
+                                            :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
+                                            placeholder="请输入证件号"
+                                            class="idCard_"
                                             :class="{'disabled':canInput}"
-                                            @input="verifyMobile(item,index,'owner')"
-                                            @keydown="saveMobile(item,index,'owner')">
-                                    </span>
-                                    <el-select v-model="item.relation"
-                                        placeholder="关系"
-                                        :disabled="canInput"
-                                        class="relation_">
-                                        <el-option v-for="item in relationList"
-                                            :key="item.key"
-                                            :label="item.value"
-                                            :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                    <span class="shell"
-                                        v-if="contractForm.type!=1"><input type="text"
-                                            v-model="item.propertyRightRatio"
+                                            @input="verifyIdcard(item)">
+
+                                        <input v-model="item.email"
+                                            v-if="recordType===10"
+                                            type="text"
                                             :disabled="canInput"
-                                            @input="cutNumber_(index,'owner')"
-                                            placeholder="产权比"
-                                            class="propertyRight"
-                                            :class="{'disabled':canInput}"></span>
-                                    <el-select v-model="item.cardType"
-                                        :disabled="canInput"
-                                        placeholder="证件类型"
-                                        class="idtype"
-                                        @change="changeCadrType($event,index,'owner')">
-                                        <el-option v-for="item in dictionary['633']"
-                                            :key="item.key"
-                                            :label="item.value"
-                                            :value="item.key">
-                                        </el-option>
-                                    </el-select>
-                                    <input v-model="item.encryptionCode"
+                                            placeholder="邮箱（选填）"
+                                            class="idCard_"
+                                            :class="{'disabled':canInput}"
+                                            @input="inputEmail(item)">
+
+                                        <span @click.stop="addcommissionData"
+                                            class="icon"
+                                            v-if="!canInput">
+                                            <i class="iconfont icon-tubiao_shiyong-14"></i>
+                                        </span>
+                                        <span @click.stop="delPeople(index,'owner')"
+                                            v-if="ownerList.length>1&&!canInput"
+                                            class="icon">
+                                            <i class="iconfont icon-tubiao_shiyong-4"></i>
+                                        </span>
+                                    </div>
+                                    <div style="margin-top:10px" v-if="item.cardType===3&&recordType===10">
+                                        <input v-model="item.companyName"
                                         type="text"
                                         :disabled="canInput"
-                                        :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
-                                        placeholder="请输入证件号"
+                                        placeholder="企业名称"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
-                                        @input="verifyIdcard(item)">
-                                    <span @click.stop="addcommissionData"
-                                        class="icon"
-                                        v-if="!canInput">
-                                        <i class="iconfont icon-tubiao_shiyong-14"></i>
-                                    </span>
-                                    <span @click.stop="delPeople(index,'owner')"
-                                        v-if="ownerList.length>1&&!canInput"
-                                        class="icon">
-                                        <i class="iconfont icon-tubiao_shiyong-4"></i>
-                                    </span>
+                                        @input="inputLegalP(item,'companyName')">
+                                    
+                                        <input v-model="item.lepName"
+                                        type="text"
+                                        :disabled="canInput"
+                                        placeholder="法人名称"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="inputLegalP(item,'lepName')">
+                                    
+                                        <input v-model="item.lepIdentity"
+                                        type="text"
+                                        :disabled="canInput"
+                                        placeholder="法人身份证号"
+                                        maxlength="18"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="inputLegalP(item,'lepIdentity')">
+                                    </div>
                                 </li>
                             </ul>
                         </el-form-item>
@@ -353,73 +390,100 @@
                             class="form-label"
                             style="padding-left:18px">
                             <ul class="peopleMsg">
-                                <li v-for="(item,index) in guestList"
-                                    :key="index">
-                                    <span class="merge">
-                                        <input v-model="item.name"
+                                <li v-for="(item,index) in guestList" :key="index">
+                                    <div>
+                                        <span class="merge">
+                                            <input v-model="item.name"
+                                                :disabled="canInput"
+                                                placeholder="姓名"
+                                                maxlength="30"
+                                                @input="inputOnly(index,'guest')"
+                                                class="name_"
+                                                :class="{'disabled':canInput}">
+                                            <input v-model="item.mobile"
+                                                :disabled="canInput"
+                                                type="tel"
+                                                placeholder="电话"
+                                                class="mobile_"
+                                                :class="{'disabled':canInput}"
+                                                @input="verifyMobile(item,index,'guest')"
+                                                @keydown="saveMobile(item,index,'guest')">
+                                        </span>
+                                        <el-select v-model="item.relation" :disabled="canInput" placeholder="关系" class="relation_">
+                                            <el-option v-for="item in relationList"
+                                                :key="item.key"
+                                                :label="item.value"
+                                                :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                        <span class="shell" v-if="contractForm.type!=1">
+                                            <input type="text"
+                                                v-model="item.propertyRightRatio"
+                                                :disabled="canInput"
+                                                @input="cutNumber_(index,'guest')"
+                                                placeholder="产权比"
+                                                class="propertyRight"
+                                                :class="{'disabled':canInput}"></span>
+                                        <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                                            <el-option v-for="item in dictionary['633']"
+                                                :key="item.key"
+                                                :label="item.value"
+                                                :value="item.key">
+                                            </el-option>
+                                        </el-select>
+                                        <input id="guestCard"
+                                            v-model="item.encryptionCode"
                                             :disabled="canInput"
-                                            placeholder="姓名"
-                                            maxlength="30"
-                                            @input="inputOnly(index,'guest')"
-                                            class="name_"
-                                            :class="{'disabled':canInput}">
-                                        <input v-model="item.mobile"
-                                            :disabled="canInput"
-                                            type="tel"
-                                            placeholder="电话"
-                                            class="mobile_"
+                                            :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
+                                            type="text"
+                                            placeholder="请输入证件号"
+                                            class="idCard_"
                                             :class="{'disabled':canInput}"
-                                            @input="verifyMobile(item,index,'guest')"
-                                            @keydown="saveMobile(item,index,'guest')">
-                                    </span>
-                                    <el-select v-model="item.relation"
-                                        :disabled="canInput"
-                                        placeholder="关系"
-                                        class="relation_">
-                                        <el-option v-for="item in relationList"
-                                            :key="item.key"
-                                            :label="item.value"
-                                            :value="item.value">
-                                        </el-option>
-                                    </el-select>
-                                    <span class="shell"
-                                        v-if="contractForm.type!=1"><input type="text"
-                                            v-model="item.propertyRightRatio"
+                                            @input="verifyIdcard(item)">
+
+                                        <input v-model="item.email"
+                                            v-if="recordType===10"
+                                            type="text"
                                             :disabled="canInput"
-                                            @input="cutNumber_(index,'guest')"
-                                            placeholder="产权比"
-                                            class="propertyRight"
-                                            :class="{'disabled':canInput}"></span>
-                                    <el-select v-model="item.cardType"
-                                        :disabled="canInput"
-                                        placeholder="证件类型"
-                                        class="idtype"
-                                        @change="changeCadrType($event,index,'guest')">
-                                        <el-option v-for="item in dictionary['633']"
-                                            :key="item.key"
-                                            :label="item.value"
-                                            :value="item.key">
-                                        </el-option>
-                                    </el-select>
-                                    <input id="guestCard"
-                                        v-model="item.encryptionCode"
-                                        :disabled="canInput"
-                                        :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
+                                            placeholder="邮箱（选填）"
+                                            class="idCard_"
+                                            :class="{'disabled':canInput}"
+                                            @input="inputEmail(item)">
+
+                                        <span @click.stop="addcommissionData1" class="icon" v-if="!canInput">
+                                            <i class="iconfont icon-tubiao_shiyong-14"></i>
+                                        </span>
+                                        <span @click.stop="delPeople(index,'guest')" v-if="guestList.length>1&&!canInput" class="icon">
+                                            <i class="iconfont icon-tubiao_shiyong-4"></i>
+                                        </span>
+                                    </div>
+                                    
+                                    <div style="margin-top:10px" v-if="item.cardType===3&&recordType===10">
+                                        <input v-model="item.companyName"
                                         type="text"
-                                        placeholder="请输入证件号"
+                                        :disabled="canInput"
+                                        placeholder="企业名称"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
-                                        @input="verifyIdcard(item)">
-                                    <span @click.stop="addcommissionData1"
-                                        class="icon"
-                                        v-if="!canInput">
-                                        <i class="iconfont icon-tubiao_shiyong-14"></i>
-                                    </span>
-                                    <span @click.stop="delPeople(index,'guest')"
-                                        v-if="guestList.length>1&&!canInput"
-                                        class="icon">
-                                        <i class="iconfont icon-tubiao_shiyong-4"></i>
-                                    </span>
+                                        @input="inputLegalP(item,'companyName')">
+                                    
+                                        <input v-model="item.lepName"
+                                        type="text"
+                                        :disabled="canInput"
+                                        placeholder="法人名称"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="inputLegalP(item,'lepName')">
+                                    
+                                        <input v-model="item.lepIdentity"
+                                        type="text"
+                                        :disabled="canInput"
+                                        placeholder="法人身份证号"
+                                        maxlength="18"
+                                        class="idCard_"
+                                        :class="{'disabled':canInput}"
+                                        @input="inputLegalP(item,'lepIdentity')">
+                                    </div>
                                 </li>
                             </ul>
                         </el-form-item>
@@ -750,7 +814,11 @@ export default {
                     relation: "",
                     cardType: "",
                     name: "",
-                    propertyRightRatio: ""
+                    propertyRightRatio: "",
+                    email:"",
+                    lepName:"",
+                    companyName:"",
+                    lepIdentity:"",
                 }
             ],
             ownerList_: [],
@@ -763,7 +831,11 @@ export default {
                     relation: "",
                     cardType: "",
                     name: "",
-                    propertyRightRatio: ""
+                    propertyRightRatio: "",
+                    email:"",
+                    lepName:"",
+                    companyName:"",
+                    lepIdentity:"",
                 }
             ],
             guestList_: [],
@@ -949,17 +1021,18 @@ export default {
         //计算总佣金
         countTotal() {
             let owner = Number(
-                this.contractForm.ownerCommission
-                    ? this.contractForm.ownerCommission
-                    : 0
+                this.contractForm.ownerCommission ? this.contractForm.ownerCommission : 0
             );
             let cust = Number(
-                this.contractForm.custCommission
-                    ? this.contractForm.custCommission
-                    : 0
+                this.contractForm.custCommission ? this.contractForm.custCommission : 0
             );
             if (cust || owner) {
                 let total = cust + owner;
+                if(this.$route.query.isDeal||this.contractForm.dealById){//转成交合同
+                    total = cust + owner + Number(this.toCommissionSum)
+                }else{
+                    total = cust + owner;
+                }
                 this.commissionTotal = this.fomatFloat(total, 2);
             }
         },
@@ -1224,19 +1297,23 @@ export default {
                 }
             }
         },
+        //法人验证
+        inputLegalP(val,name){
+            if(name!="lepIdentity"){
+                val[name]=this.$tool.textInput(val[name]);
+            }else{
+                if(val[name]&&val[name].length==18&&!this.isIdCardNo(val[name])){
+                    this.$message({
+                        message: "身份证格式不正确",
+                        type: "warning"
+                    });
+                }
+            }
+        },
         //验证合同信息
         isSave(value) {
             var rule_ = JSON.parse(JSON.stringify(rule));
             this.haveExamine = value;
-            // if(value){
-            //   this.hintText='确定提审？'
-            // }else{
-            //   this.hintText='确定保存合同？'
-            // }
-            //验证合同信息
-            // if(this.contractForm.type!==1){
-            //   delete rule_.transFlowCode
-            // }
             if(this.userMsg.cityId!=52||(this.userMsg.cityId===52&&this.contractForm.type===1)) {
                 // 非兰州无预计过户时间
                 delete rule_.estTransferTime
@@ -1247,191 +1324,87 @@ export default {
             if (!this.contractForm.signDate) {
                 this.contractForm.signDate = "";
             }
-            // if(!this.contractForm.transFlowCode){
-            //   this.contractForm.transFlowCode=''
-            // }
             if (this.contractForm.pCode) {
                 this.contractForm.pCode = this.contractForm.pCode.replace(/\s+/g,"");
             }
             if (!this.contractForm.pCode) {
                 this.contractForm.pCode = "";
             }
-            this.$tool
-                .checkForm(this.contractForm, rule_)
-                .then(() => {
-                    if (
-                        this.contractForm.custCommission > 0 ||
-                        this.contractForm.ownerCommission > 0
-                    ) {
-                        //佣金
-                        if (this.contractForm.dealPrice > 0) {
-                            // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
-                            // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
-                            // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
-                            // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
-                            if (
-                                this.rightAddrCity &&
-                                this.rightAddrArea &&
-                                this.rightAddrDetail
-                            ) {
-                                this.contractForm.propertyRightAddr =
-                                    this.rightAddrCity +
-                                    "市" +
-                                    this.rightAddrArea +
-                                    "区" +
-                                    this.rightAddrDetail;
-                                // if(this.contractForm.propertyCard){
-                                //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
-                                // }
-                                // if(this.contractForm.propertyCard||this.contractForm.type===1){
-                                //业主产权比
-                                let ownerRightRatio = 0;
+            this.$tool.checkForm(this.contractForm, rule_).then(() => {
+                if (this.contractForm.custCommission > 0 || this.contractForm.ownerCommission > 0 ) {
+                    //佣金
+                    if (this.contractForm.dealPrice > 0) {
+                        // if((Number(this.contractForm.custCommission?this.contractForm.custCommission:0)+Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0))<=this.contractForm.dealPrice){
+                        // this.contractForm.propertyRightAddr = this.contractForm.propertyRightAddr.replace(/\s+/g,"")
+                        // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
+                        // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
+                        if ( this.rightAddrCity && this.rightAddrArea && this.rightAddrDetail ) {
+                            this.contractForm.propertyRightAddr = this.rightAddrCity + "市" + this.rightAddrArea + "区" + this.rightAddrDetail;
+                            // if(this.contractForm.propertyCard){
+                            //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
+                            // }
+                            // if(this.contractForm.propertyCard||this.contractForm.type===1){
+                            //业主产权比
+                            let ownerRightRatio = 0;
 
-                                let isOk;
-                                // this.ownerList.forEach(element => {
-                                let ownerArr = this.ownerList.map(item =>
-                                    Object.assign({}, item)
-                                );
-                                ownerArr.forEach((element, index) => {
-                                    if (element.isEncryption) {
-                                        element.encryptionMobile = this.ownerList_[
-                                            index
-                                        ].encryptionMobile;
-                                    } else {
-                                        element.encryptionMobile =
-                                            element.mobile;
-                                    }
-                                });
+                            let isOk;
+                            // this.ownerList.forEach(element => {
+                            let ownerArr = this.ownerList.map(item =>
+                                Object.assign({}, item)
+                            );
+                            ownerArr.forEach((element, index) => {
+                                if (element.isEncryption) {
+                                    element.encryptionMobile = this.ownerList_[index].encryptionMobile;
+                                } else {
+                                    element.encryptionMobile = element.mobile;
+                                }
+                            });
 
-                                for (var i = 0; i < ownerArr.length; i++) {
-                                    let element = ownerArr[i];
-                                    isOk = false;
-                                    if (element.name) {
-                                        if (element.name.replace(/\s/g, "")) {
-                                            element.name = element.name.replace(
-                                                /\s/g,
-                                                ""
-                                            );
-                                            //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符(待定)
-                                            if (
-                                                element.name.indexOf("先生") ===
-                                                    -1 &&
-                                                element.name.indexOf("女士") ===
-                                                    -1
-                                            ) {
-                                                if (
-                                                    element.encryptionMobile
-                                                        .length === 11 ||
-                                                    true
-                                                ) {
-                                                    let reg = /^1[0-9]{10}$/; //手机号正则
-                                                    let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
-                                                    if (
-                                                        reg.test(
-                                                            element.encryptionMobile
-                                                        ) ||
-                                                        reg_.test(
-                                                            element.encryptionMobile
-                                                        )
-                                                    ) {
-                                                        if (element.relation) {
-                                                            if (
-                                                                (this
-                                                                    .contractForm
-                                                                    .type ===
-                                                                    1 &&
-                                                                    element.cardType) ||
-                                                                this
-                                                                    .contractForm
-                                                                    .type !== 1
-                                                            ) {
-                                                                if (
-                                                                    this
-                                                                        .type ===
-                                                                    2
-                                                                ) {
-                                                                    if (
-                                                                        !element.propertyRightRatio
-                                                                    ) {
-                                                                        element.propertyRightRatio =
-                                                                            "0";
-                                                                    }
+                            for (var i = 0; i < ownerArr.length; i++) {
+                                let element = ownerArr[i];
+                                isOk = false;
+                                if (element.name) {
+                                    if (element.name.replace(/\s/g, "")) {
+                                        element.name = element.name.replace(/\s/g,"");
+                                        //2020.01.09 更改需求 温州客户业主姓名可以存在 ‘先生’ ‘女士’ 字符(待定)
+                                        if ( element.name.indexOf("先生") === -1 && element.name.indexOf("女士") === -1) {
+                                            if (element.encryptionMobile.length === 11 || true ) {
+                                                let reg = /^1[0-9]{10}$/; //手机号正则
+                                                let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
+                                                if (reg.test(element.encryptionMobile) || reg_.test(element.encryptionMobile)) {
+                                                    if (element.relation) {
+                                                        if ((this.contractForm.type === 1 && element.cardType) || this.contractForm.type !== 1) {
+                                                            if (this.type ===2) {
+                                                                if (!element.propertyRightRatio) {
+                                                                    element.propertyRightRatio = "0";
                                                                 }
-                                                                if (
-                                                                    (element.propertyRightRatio &&
-                                                                        element.propertyRightRatio >
-                                                                            0) ||
-                                                                    element.propertyRightRatio ===
-                                                                        "0" ||
-                                                                    this
-                                                                        .contractForm
-                                                                        .type ===
-                                                                        1
-                                                                ) {
-                                                                    if (
-                                                                        element.encryptionCode.replace(
-                                                                            /\s/g,
-                                                                            ""
-                                                                        )
-                                                                    ) {
-                                                                        // if(this.contractForm.type===1){
-                                                                        if (
-                                                                            element.cardType !==
-                                                                            1
-                                                                        ) {
-                                                                            element.encryptionCode = element.encryptionCode.replace(
-                                                                                /[&\|\\\*^%$#@\-]/g,
-                                                                                ""
-                                                                            );
-                                                                        }
-                                                                        // }
-                                                                        if (
-                                                                            (element.cardType ===
-                                                                                1 &&
-                                                                                this.isIdCardNo(
-                                                                                    element.encryptionCode
-                                                                                )) ||
-                                                                            (element.cardType ===
-                                                                                2 &&
-                                                                                element
-                                                                                    .encryptionCode
-                                                                                    .length <=
-                                                                                    30) ||
-                                                                            (element.cardType ===
-                                                                                3 &&
-                                                                                element
-                                                                                    .encryptionCode
-                                                                                    .length <=
-                                                                                    20) ||
-                                                                            (element.cardType ===
-                                                                                4 &&
-                                                                                element
-                                                                                    .encryptionCode
-                                                                                    .length <=
-                                                                                    10)
-                                                                        ) {
+                                                            }
+                                                            if ((element.propertyRightRatio && element.propertyRightRatio > 0) || element.propertyRightRatio === "0" || this.contractForm.type === 1) {
+                                                                if (element.encryptionCode.replace(/\s/g,"")) {
+                                                                    if (element.cardType !== 1 ) {
+                                                                        element.encryptionCode = element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"");
+                                                                    }
+                                                                    if ((element.cardType === 1 && this.isIdCardNo(element.encryptionCode)) ||(element.cardType ===2 &&element.encryptionCode.length <=30) || (element.cardType === 4 && element.encryptionCode.length <= 10)) {
+                                                                        isOk = true;
+                                                                        ownerRightRatio+=element.propertyRightRatio-0;
+                                                                    } else if(element.cardType === 3 && element.encryptionCode.length <= 20){
+                                                                        element.lepIdentity = element.lepIdentity?element.lepIdentity.replace(/[&\|\\\*^%$#@\-]/g,""):'';
+                                                                        if(this.recordType===10&&element.companyName&&element.lepName&&element.lepIdentity&&this.isIdCardNo(element.lepIdentity)||this.recordType!=10){
                                                                             isOk = true;
-                                                                            ownerRightRatio +=
-                                                                                element.propertyRightRatio -
-                                                                                0;
-                                                                        } else {
+                                                                            ownerRightRatio+=element.propertyRightRatio-0;
+                                                                        }else{
                                                                             this.$message(
                                                                                 {
-                                                                                    message:
-                                                                                        "房源信息-业主证件号不正确",
-                                                                                    type:
-                                                                                        "warning"
+                                                                                    message:`房源信息-业主${!element.companyName?'企业名称':!element.lepName?'法人名称':'法人身份证号码'}不正确`,
+                                                                                    type:"warning"
                                                                                 }
                                                                             );
-                                                                            break;
                                                                         }
-                                                                    } else {
+                                                                    }else {
                                                                         this.$message(
                                                                             {
-                                                                                message:
-                                                                                    "房源信息-业主证件号不能为空",
-                                                                                type:
-                                                                                    "warning"
+                                                                                message:"房源信息-业主证件号不正确",
+                                                                                type:"warning"
                                                                             }
                                                                         );
                                                                         break;
@@ -1439,35 +1412,36 @@ export default {
                                                                 } else {
                                                                     this.$message(
                                                                         {
-                                                                            message:
-                                                                                "房源信息-业主产权比不能为空或负",
-                                                                            type:
-                                                                                "warning"
+                                                                            message:"房源信息-业主证件号不能为空",
+                                                                            type:"warning"
                                                                         }
                                                                     );
                                                                     break;
                                                                 }
                                                             } else {
-                                                                this.$message({
-                                                                    message:
-                                                                        "房源信息-业主证件类型不能为空",
-                                                                    type:
-                                                                        "warning"
-                                                                });
+                                                                this.$message(
+                                                                    {
+                                                                        message:
+                                                                            "房源信息-业主产权比不能为空或负",
+                                                                        type:
+                                                                            "warning"
+                                                                    }
+                                                                );
                                                                 break;
                                                             }
                                                         } else {
                                                             this.$message({
                                                                 message:
-                                                                    "房源信息-业主关系不能为空",
-                                                                type: "warning"
+                                                                    "房源信息-业主证件类型不能为空",
+                                                                type:
+                                                                    "warning"
                                                             });
                                                             break;
                                                         }
                                                     } else {
                                                         this.$message({
                                                             message:
-                                                                "房源信息-业主电话号码不正确",
+                                                                "房源信息-业主关系不能为空",
                                                             type: "warning"
                                                         });
                                                         break;
@@ -1483,7 +1457,7 @@ export default {
                                             } else {
                                                 this.$message({
                                                     message:
-                                                        "房源信息-业主姓名不正确",
+                                                        "房源信息-业主电话号码不正确",
                                                     type: "warning"
                                                 });
                                                 break;
@@ -1491,7 +1465,7 @@ export default {
                                         } else {
                                             this.$message({
                                                 message:
-                                                    "房源信息-业主姓名不能为空",
+                                                    "房源信息-业主姓名不正确",
                                                 type: "warning"
                                             });
                                             break;
@@ -1504,182 +1478,77 @@ export default {
                                         });
                                         break;
                                     }
+                                } else {
+                                    this.$message({
+                                        message:
+                                            "房源信息-业主姓名不能为空",
+                                        type: "warning"
+                                    });
+                                    break;
                                 }
-                                if (isOk) {
-                                    if (
-                                        ownerRightRatio === 100 ||
-                                        this.contractForm.type === 1
-                                    ) {
-                                        if (
-                                            this.contractForm.guestInfo
-                                                .GuestStoreCode
-                                        ) {
-                                            //客户产权比
-                                            let guestRightRatio = 0;
-                                            let isOk_;
-                                            // this.guestList.forEach(element => {
-                                            let guestArr = this.guestList.map(
-                                                item => Object.assign({}, item)
-                                            );
-                                            guestArr.forEach(
-                                                (element, index) => {
-                                                    if (element.isEncryption) {
-                                                        element.encryptionMobile = this.guestList_[
-                                                            index
-                                                        ].encryptionMobile;
-                                                    } else {
-                                                        element.encryptionMobile =
-                                                            element.mobile;
-                                                    }
-                                                }
-                                            );
-                                            for (
-                                                var i = 0;
-                                                i < guestArr.length;
-                                                i++
-                                            ) {
-                                                let element = guestArr[i];
-                                                isOk_ = false;
-                                                if (element.name) {
-                                                    if (
-                                                        element.name.replace(
-                                                            /\s/g,
-                                                            ""
-                                                        )
-                                                    ) {
-                                                        element.name = element.name.replace(
-                                                            /\s/g,
-                                                            ""
-                                                        );
-                                                        if (
-                                                            element.name.indexOf(
-                                                                "先生"
-                                                            ) === -1 &&
-                                                            element.name.indexOf(
-                                                                "女士"
-                                                            ) === -1
-                                                        ) {
-                                                            if (
-                                                                element
-                                                                    .encryptionMobile
-                                                                    .length ===
-                                                                    11 ||
-                                                                true
-                                                            ) {
-                                                                let reg = /^1[0-9]{10}$/; //手机号正则
-                                                                let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
-                                                                if (
-                                                                    reg.test(
-                                                                        element.encryptionMobile
-                                                                    ) ||
-                                                                    reg_.test(
-                                                                        element.encryptionMobile
-                                                                    )
-                                                                ) {
-                                                                    if (
-                                                                        element.relation
-                                                                    ) {
-                                                                        if (
-                                                                            (this
-                                                                                .contractForm
-                                                                                .type ===
-                                                                                1 &&
-                                                                                element.cardType) ||
-                                                                            this
-                                                                                .contractForm
-                                                                                .type !==
-                                                                                1
-                                                                        ) {
-                                                                            if (
-                                                                                this
-                                                                                    .type ===
-                                                                                2
-                                                                            ) {
-                                                                                if (
-                                                                                    !element.propertyRightRatio
-                                                                                ) {
-                                                                                    element.propertyRightRatio =
-                                                                                        "0";
-                                                                                }
+                            }
+                            if (isOk) {
+                                if ( ownerRightRatio === 100 || this.contractForm.type === 1) {
+                                    if (this.contractForm.guestInfo.GuestStoreCode) {
+                                        //客户产权比
+                                        let guestRightRatio = 0;
+                                        let isOk_;
+                                        // this.guestList.forEach(element => {
+                                        let guestArr = this.guestList.map(
+                                            item => Object.assign({}, item)
+                                        );
+                                        guestArr.forEach(
+                                            (element, index) => {
+                                                if (element.isEncryption) {
+                                                    element.encryptionMobile = this.guestList_[index].encryptionMobile;
+                                                } else {element.encryptionMobile = element.mobile;}
+                                            }
+                                        );
+                                        for (var i = 0;i < guestArr.length;i++) {
+                                            let element = guestArr[i];
+                                            isOk_ = false;
+                                            if (element.name) {
+                                                if (element.name.replace(/\s/g,"")) {element.name = element.name.replace(/\s/g,"");
+                                                    if (element.name.indexOf("先生") === -1 && element.name.indexOf("女士") === -1) {
+                                                        if (element.encryptionMobile.length===11||true) {
+                                                            let reg = /^1[0-9]{10}$/; //手机号正则
+                                                            let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
+                                                            if (reg.test(element.encryptionMobile)||reg_.test( element.encryptionMobile)) {
+                                                                if (element.relation) {
+                                                                    if ((this.contractForm.type===1&&element.cardType)||this.contractForm.type!==1) {
+                                                                        if (this.type ===2) {
+                                                                            if (!element.propertyRightRatio) {
+                                                                                element.propertyRightRatio="0";
                                                                             }
-                                                                            if (
-                                                                                (element.propertyRightRatio &&
-                                                                                    element.propertyRightRatio >
-                                                                                        0) ||
-                                                                                element.propertyRightRatio ===
-                                                                                    "0" ||
-                                                                                this
-                                                                                    .contractForm
-                                                                                    .type ===
-                                                                                    1
-                                                                            ) {
-                                                                                if (
-                                                                                    element.encryptionCode.replace(
-                                                                                        /\s/g,
-                                                                                        ""
-                                                                                    )
-                                                                                ) {
-                                                                                    if (
-                                                                                        this
-                                                                                            .contractForm
-                                                                                            .type ===
-                                                                                        1
-                                                                                    ) {
-                                                                                        if (
-                                                                                            element.cardType !==
-                                                                                            1
-                                                                                        ) {
-                                                                                            element.encryptionCode = element.encryptionCode.replace(
-                                                                                                /[&\|\\\*^%$#@\-]/g,
-                                                                                                ""
-                                                                                            );
-                                                                                        }
+                                                                        }
+                                                                        if ((element.propertyRightRatio&&element.propertyRightRatio>0)||element.propertyRightRatio==="0"||this.contractForm.type===1) {
+                                                                            if (element.encryptionCode.replace(/\s/g,"")) {
+                                                                                if (this.contractForm.type===1) {
+                                                                                    if (element.cardType!==1) {
+                                                                                        element.encryptionCode = element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"");
                                                                                     }
-                                                                                    if (
-                                                                                        (element.cardType ===
-                                                                                            1 &&
-                                                                                            this.isIdCardNo(
-                                                                                                element.encryptionCode
-                                                                                            )) ||
-                                                                                        (element.cardType ===
-                                                                                            2 &&
-                                                                                            element
-                                                                                                .encryptionCode
-                                                                                                .length <=
-                                                                                                30) ||
-                                                                                        (element.cardType ===
-                                                                                            3 &&
-                                                                                            element
-                                                                                                .encryptionCode
-                                                                                                .length <=
-                                                                                                20) ||
-                                                                                        (element.cardType ===
-                                                                                            4 &&
-                                                                                            element
-                                                                                                .encryptionCode
-                                                                                                .length <=
-                                                                                                10)
-                                                                                    ) {
+                                                                                }
+                                                                                if ((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length<=30)||(element.cardType===4&&element.encryptionCode.length <=10)) {
+                                                                                    isOk_ = true;
+                                                                                    guestRightRatio += element.propertyRightRatio - 0;
+                                                                                } else if(element.cardType === 3 && element.encryptionCode.length <= 20){
+                                                                                    element.lepIdentity = element.lepIdentity?element.lepIdentity.replace(/[&\|\\\*^%$#@\-]/g,""):'';
+                                                                                    if(this.recordType===10&&element.companyName&&element.lepName&&element.lepIdentity&&this.isIdCardNo(element.lepIdentity)||this.recordType!=10){
                                                                                         isOk_ = true;
-                                                                                        guestRightRatio +=
-                                                                                            element.propertyRightRatio -
-                                                                                            0;
-                                                                                    } else {
+                                                                                        guestRightRatio += element.propertyRightRatio - 0;
+                                                                                    }else{
                                                                                         this.$message(
                                                                                             {
-                                                                                                message:
-                                                                                                    "客源信息-客户证件号不正确",
-                                                                                                type:
-                                                                                                    "warning"
+                                                                                                message:`客源信息-客户${!element.companyName?'企业名称':!element.lepName?'法人名称':'法人身份证号码'}不正确`,
+                                                                                                type:"warning"
                                                                                             }
                                                                                         );
-                                                                                        break;
                                                                                     }
-                                                                                } else {
+                                                                                }else {
                                                                                     this.$message(
                                                                                         {
                                                                                             message:
-                                                                                                "客源信息-客户证件号不能为空",
+                                                                                                "客源信息-客户证件号不正确",
                                                                                             type:
                                                                                                 "warning"
                                                                                         }
@@ -1690,7 +1559,7 @@ export default {
                                                                                 this.$message(
                                                                                     {
                                                                                         message:
-                                                                                            "客源信息-客户产权比不能为空或负",
+                                                                                            "客源信息-客户证件号不能为空",
                                                                                         type:
                                                                                             "warning"
                                                                                     }
@@ -1701,7 +1570,7 @@ export default {
                                                                             this.$message(
                                                                                 {
                                                                                     message:
-                                                                                        "客源信息-客户证件类型不能为空",
+                                                                                        "客源信息-客户产权比不能为空或负",
                                                                                     type:
                                                                                         "warning"
                                                                                 }
@@ -1712,7 +1581,7 @@ export default {
                                                                         this.$message(
                                                                             {
                                                                                 message:
-                                                                                    "客源信息-客户关系不能为空",
+                                                                                    "客源信息-客户证件类型不能为空",
                                                                                 type:
                                                                                     "warning"
                                                                             }
@@ -1723,7 +1592,7 @@ export default {
                                                                     this.$message(
                                                                         {
                                                                             message:
-                                                                                "客源信息-客户电话号码不正确",
+                                                                                "客源信息-客户关系不能为空",
                                                                             type:
                                                                                 "warning"
                                                                         }
@@ -1731,26 +1600,29 @@ export default {
                                                                     break;
                                                                 }
                                                             } else {
-                                                                this.$message({
-                                                                    message:
-                                                                        "客源信息-客户电话号码不正确",
-                                                                    type:
-                                                                        "warning"
-                                                                });
+                                                                this.$message(
+                                                                    {
+                                                                        message:
+                                                                            "客源信息-客户电话号码不正确",
+                                                                        type:
+                                                                            "warning"
+                                                                    }
+                                                                );
                                                                 break;
                                                             }
                                                         } else {
                                                             this.$message({
                                                                 message:
-                                                                    "客源信息-客户姓名不正确",
-                                                                type: "warning"
+                                                                    "客源信息-客户电话号码不正确",
+                                                                type:
+                                                                    "warning"
                                                             });
                                                             break;
                                                         }
                                                     } else {
                                                         this.$message({
                                                             message:
-                                                                "客源信息-客户姓名不能为空",
+                                                                "客源信息-客户姓名不正确",
                                                             type: "warning"
                                                         });
                                                         break;
@@ -1763,411 +1635,419 @@ export default {
                                                     });
                                                     break;
                                                 }
+                                            } else {
+                                                this.$message({
+                                                    message:
+                                                        "客源信息-客户姓名不能为空",
+                                                    type: "warning"
+                                                });
+                                                break;
                                             }
-                                            if (isOk_) {
-                                                if (
-                                                    guestRightRatio === 100 ||
-                                                    this.contractForm.type === 1
-                                                ) {
-                                                    // 验证手机号是否重复  2019.10.17 张丽茹更改需求 业主之间电话号码可以重复 客户之间电话号码可以重复 但业主和客户电话号码不能重复
-                                                    let ownerMobileList = [];
-                                                    let guestMobileList = [];
-                                                    //验证身份证是否重复
-                                                    let IdCardList = [];
-                                                    //验证护照是否重复
-                                                    let passportList = [];
-                                                    //验证营业执照是否重复
-                                                    let businessList = [];
-                                                    //验证军官证是否重复
-                                                    let militaryIDList = [];
+                                        }
+                                        if (isOk_) {
+                                            if (
+                                                guestRightRatio === 100 ||
+                                                this.contractForm.type === 1
+                                            ) {
+                                                // 验证手机号是否重复  2019.10.17 张丽茹更改需求 业主之间电话号码可以重复 客户之间电话号码可以重复 但业主和客户电话号码不能重复
+                                                let ownerMobileList = [];
+                                                let guestMobileList = [];
+                                                //验证身份证是否重复
+                                                let IdCardList = [];
+                                                //验证护照是否重复
+                                                let passportList = [];
+                                                //验证营业执照是否重复
+                                                let businessList = [];
+                                                //验证军官证是否重复
+                                                let militaryIDList = [];
 
-                                                    ownerArr.forEach(
-                                                        element => {
-                                                            if (
-                                                                element.cardType ===
-                                                                1
-                                                            ) {
-                                                                IdCardList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                2
-                                                            ) {
-                                                                passportList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                3
-                                                            ) {
-                                                                businessList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                4
-                                                            ) {
-                                                                militaryIDList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            let obj = JSON.parse(
-                                                                JSON.stringify(
-                                                                    element
-                                                                )
-                                                            );
-                                                            obj.encryptionMobile = obj.encryptionMobile.replace(
-                                                                "-",
-                                                                ""
-                                                            );
-                                                            ownerMobileList.push(
-                                                                obj.encryptionMobile
+                                                ownerArr.forEach(
+                                                    element => {
+                                                        if (
+                                                            element.cardType ===
+                                                            1
+                                                        ) {
+                                                            IdCardList.push(
+                                                                element.encryptionCode
                                                             );
                                                         }
-                                                    );
-
-                                                    guestArr.forEach(
-                                                        element => {
-                                                            if (
-                                                                element.cardType ===
-                                                                1
-                                                            ) {
-                                                                IdCardList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                2
-                                                            ) {
-                                                                passportList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                3
-                                                            ) {
-                                                                businessList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            if (
-                                                                element.cardType ===
-                                                                4
-                                                            ) {
-                                                                militaryIDList.push(
-                                                                    element.encryptionCode
-                                                                );
-                                                            }
-                                                            let obj = JSON.parse(
-                                                                JSON.stringify(
-                                                                    element
-                                                                )
-                                                            );
-                                                            obj.encryptionMobile = obj.encryptionMobile.replace(
-                                                                "-",
-                                                                ""
-                                                            );
-                                                            guestMobileList.push(
-                                                                obj.encryptionMobile
+                                                        if (
+                                                            element.cardType ===
+                                                            2
+                                                        ) {
+                                                            passportList.push(
+                                                                element.encryptionCode
                                                             );
                                                         }
-                                                    );
-                                                    let ownerGuestMobile = true;
-                                                    let otherMobile = true;
-                                                    if (
-                                                        this.contractForm
-                                                            .isHaveCooperation ===
-                                                            1 &&
-                                                        this.contractForm
-                                                            .otherCooperationInfo
-                                                            .mobile
-                                                    ) {
-                                                        // mobileList.push(this.contractForm.otherCooperationInfo.mobile)
-                                                        let allMobileList = ownerMobileList.concat(
-                                                            guestMobileList
+                                                        if (
+                                                            element.cardType ===
+                                                            3
+                                                        ) {
+                                                            businessList.push(
+                                                                element.encryptionCode
+                                                            );
+                                                        }
+                                                        if (
+                                                            element.cardType ===
+                                                            4
+                                                        ) {
+                                                            militaryIDList.push(
+                                                                element.encryptionCode
+                                                            );
+                                                        }
+                                                        let obj = JSON.parse(
+                                                            JSON.stringify(
+                                                                element
+                                                            )
                                                         );
-                                                        for (
-                                                            let i = 0;
-                                                            i <
-                                                            allMobileList.length;
-                                                            i++
+                                                        obj.encryptionMobile = obj.encryptionMobile.replace(
+                                                            "-",
+                                                            ""
+                                                        );
+                                                        ownerMobileList.push(
+                                                            obj.encryptionMobile
+                                                        );
+                                                    }
+                                                );
+
+                                                guestArr.forEach(
+                                                    element => {
+                                                        if (
+                                                            element.cardType ===
+                                                            1
                                                         ) {
-                                                            if (
-                                                                allMobileList[
-                                                                    i
-                                                                ] ===
-                                                                this
-                                                                    .contractForm
-                                                                    .otherCooperationInfo
-                                                                    .mobile
-                                                            ) {
-                                                                otherMobile = false;
-                                                                break;
-                                                            }
+                                                            IdCardList.push(
+                                                                element.encryptionCode
+                                                            );
                                                         }
-                                                        for (
-                                                            let index = 0;
-                                                            index <
-                                                            guestMobileList.length;
-                                                            index++
+                                                        if (
+                                                            element.cardType ===
+                                                            2
                                                         ) {
-                                                            if (
-                                                                ownerMobileList.includes(
-                                                                    guestMobileList[
-                                                                        index
-                                                                    ]
-                                                                )
-                                                            ) {
-                                                                ownerGuestMobile = false;
-                                                                break;
-                                                            }
+                                                            passportList.push(
+                                                                element.encryptionCode
+                                                            );
                                                         }
-                                                    } else {
-                                                        for (
-                                                            let index = 0;
-                                                            index <
-                                                            guestMobileList.length;
-                                                            index++
+                                                        if (
+                                                            element.cardType ===
+                                                            3
                                                         ) {
-                                                            if (
-                                                                ownerMobileList.includes(
-                                                                    guestMobileList[
-                                                                        index
-                                                                    ]
-                                                                )
-                                                            ) {
-                                                                ownerGuestMobile = false;
-                                                                break;
-                                                            }
+                                                            businessList.push(
+                                                                element.encryptionCode
+                                                            );
+                                                        }
+                                                        if (
+                                                            element.cardType ===
+                                                            4
+                                                        ) {
+                                                            militaryIDList.push(
+                                                                element.encryptionCode
+                                                            );
+                                                        }
+                                                        let obj = JSON.parse(
+                                                            JSON.stringify(
+                                                                element
+                                                            )
+                                                        );
+                                                        obj.encryptionMobile = obj.encryptionMobile.replace(
+                                                            "-",
+                                                            ""
+                                                        );
+                                                        guestMobileList.push(
+                                                            obj.encryptionMobile
+                                                        );
+                                                    }
+                                                );
+                                                let ownerGuestMobile = true;
+                                                let otherMobile = true;
+                                                if (
+                                                    this.contractForm
+                                                        .isHaveCooperation ===
+                                                        1 &&
+                                                    this.contractForm
+                                                        .otherCooperationInfo
+                                                        .mobile
+                                                ) {
+                                                    // mobileList.push(this.contractForm.otherCooperationInfo.mobile)
+                                                    let allMobileList = ownerMobileList.concat(
+                                                        guestMobileList
+                                                    );
+                                                    for (
+                                                        let i = 0;
+                                                        i <
+                                                        allMobileList.length;
+                                                        i++
+                                                    ) {
+                                                        if (
+                                                            allMobileList[
+                                                                i
+                                                            ] ===
+                                                            this
+                                                                .contractForm
+                                                                .otherCooperationInfo
+                                                                .mobile
+                                                        ) {
+                                                            otherMobile = false;
+                                                            break;
                                                         }
                                                     }
-                                                    if (
-                                                        this.contractForm
-                                                            .isHaveCooperation ===
-                                                            1 &&
+                                                    for (
+                                                        let index = 0;
+                                                        index <
+                                                        guestMobileList.length;
+                                                        index++
+                                                    ) {
+                                                        if (
+                                                            ownerMobileList.includes(
+                                                                guestMobileList[
+                                                                    index
+                                                                ]
+                                                            )
+                                                        ) {
+                                                            ownerGuestMobile = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    for (
+                                                        let index = 0;
+                                                        index <
+                                                        guestMobileList.length;
+                                                        index++
+                                                    ) {
+                                                        if (
+                                                            ownerMobileList.includes(
+                                                                guestMobileList[
+                                                                    index
+                                                                ]
+                                                            )
+                                                        ) {
+                                                            ownerGuestMobile = false;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if (
+                                                    this.contractForm
+                                                        .isHaveCooperation ===
+                                                        1 &&
+                                                    this.contractForm
+                                                        .otherCooperationInfo
+                                                        .identifyCode
+                                                ) {
+                                                    IdCardList.push(
                                                         this.contractForm
                                                             .otherCooperationInfo
                                                             .identifyCode
-                                                    ) {
-                                                        IdCardList.push(
-                                                            this.contractForm
-                                                                .otherCooperationInfo
-                                                                .identifyCode
-                                                        );
-                                                    }
-                                                    let IdCardList_ = Array.from(
-                                                        new Set(IdCardList)
                                                     );
-                                                    let passportList_ = Array.from(
-                                                        new Set(passportList)
-                                                    );
-                                                    let businessList_ = Array.from(
-                                                        new Set(businessList)
-                                                    );
-                                                    let militaryIDList_ = Array.from(
-                                                        new Set(militaryIDList)
-                                                    );
+                                                }
+                                                let IdCardList_ = Array.from(
+                                                    new Set(IdCardList)
+                                                );
+                                                let passportList_ = Array.from(
+                                                    new Set(passportList)
+                                                );
+                                                let businessList_ = Array.from(
+                                                    new Set(businessList)
+                                                );
+                                                let militaryIDList_ = Array.from(
+                                                    new Set(militaryIDList)
+                                                );
+                                                if (
+                                                    ownerGuestMobile &&
+                                                    otherMobile
+                                                ) {
                                                     if (
-                                                        ownerGuestMobile &&
-                                                        otherMobile
+                                                        IdCardList.length ===
+                                                        IdCardList_.length
                                                     ) {
                                                         if (
-                                                            IdCardList.length ===
-                                                            IdCardList_.length
+                                                            passportList.length ===
+                                                            passportList_.length
                                                         ) {
                                                             if (
-                                                                passportList.length ===
-                                                                passportList_.length
+                                                                businessList.length ===
+                                                                businessList_.length
                                                             ) {
                                                                 if (
-                                                                    businessList.length ===
-                                                                    businessList_.length
+                                                                    militaryIDList.length ===
+                                                                    militaryIDList_.length
                                                                 ) {
+                                                                    //验证三方合作
                                                                     if (
-                                                                        militaryIDList.length ===
-                                                                        militaryIDList_.length
+                                                                        this
+                                                                            .contractForm
+                                                                            .isHaveCooperation
                                                                     ) {
-                                                                        //验证三方合作
+                                                                        let mobileOk = true;
+                                                                        let IDcardOk = true;
                                                                         if (
                                                                             this
                                                                                 .contractForm
-                                                                                .isHaveCooperation
+                                                                                .otherCooperationInfo
+                                                                                .mobile
                                                                         ) {
-                                                                            let mobileOk = true;
-                                                                            let IDcardOk = true;
+                                                                            mobileOk = false;
+                                                                            let reg = /^1[0-9]{10}$/;
+                                                                            let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
                                                                             if (
-                                                                                this
-                                                                                    .contractForm
-                                                                                    .otherCooperationInfo
-                                                                                    .mobile
+                                                                                reg.test(
+                                                                                    this
+                                                                                        .contractForm
+                                                                                        .otherCooperationInfo
+                                                                                        .mobile
+                                                                                ) ||
+                                                                                reg_.test(
+                                                                                    this
+                                                                                        .contractForm
+                                                                                        .otherCooperationInfo
+                                                                                        .mobile
+                                                                                )
                                                                             ) {
-                                                                                mobileOk = false;
-                                                                                let reg = /^1[0-9]{10}$/;
-                                                                                let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
-                                                                                if (
-                                                                                    reg.test(
-                                                                                        this
-                                                                                            .contractForm
-                                                                                            .otherCooperationInfo
-                                                                                            .mobile
-                                                                                    ) ||
-                                                                                    reg_.test(
-                                                                                        this
-                                                                                            .contractForm
-                                                                                            .otherCooperationInfo
-                                                                                            .mobile
-                                                                                    )
-                                                                                ) {
-                                                                                    mobileOk = true;
-                                                                                } else {
-                                                                                    this.$message(
-                                                                                        {
-                                                                                            message:
-                                                                                                "三方合作-电话号码不正确",
-                                                                                            type:
-                                                                                                "warning"
-                                                                                        }
-                                                                                    );
-                                                                                }
+                                                                                mobileOk = true;
+                                                                            } else {
+                                                                                this.$message(
+                                                                                    {
+                                                                                        message:
+                                                                                            "三方合作-电话号码不正确",
+                                                                                        type:
+                                                                                            "warning"
+                                                                                    }
+                                                                                );
                                                                             }
+                                                                        }
+                                                                        if (
+                                                                            this
+                                                                                .contractForm
+                                                                                .otherCooperationInfo
+                                                                                .identifyCode
+                                                                        ) {
+                                                                            IDcardOk = false;
                                                                             if (
-                                                                                this
-                                                                                    .contractForm
-                                                                                    .otherCooperationInfo
-                                                                                    .identifyCode
+                                                                                this.isIdCardNo(
+                                                                                    this
+                                                                                        .contractForm
+                                                                                        .otherCooperationInfo
+                                                                                        .identifyCode
+                                                                                )
                                                                             ) {
-                                                                                IDcardOk = false;
-                                                                                if (
-                                                                                    this.isIdCardNo(
-                                                                                        this
-                                                                                            .contractForm
-                                                                                            .otherCooperationInfo
-                                                                                            .identifyCode
-                                                                                    )
-                                                                                ) {
-                                                                                    IDcardOk = true;
-                                                                                } else {
-                                                                                    this.$message(
-                                                                                        {
-                                                                                            message:
-                                                                                                "三方合作-身份证号不正确",
-                                                                                            type:
-                                                                                                "warning"
-                                                                                        }
-                                                                                    );
-                                                                                }
+                                                                                IDcardOk = true;
+                                                                            } else {
+                                                                                this.$message(
+                                                                                    {
+                                                                                        message:
+                                                                                            "三方合作-身份证号不正确",
+                                                                                        type:
+                                                                                            "warning"
+                                                                                    }
+                                                                                );
                                                                             }
-                                                                            if (
-                                                                                mobileOk &&
-                                                                                IDcardOk
-                                                                            ) {
-                                                                                this.dialogSave = true;
-                                                                            }
-                                                                        } else {
+                                                                        }
+                                                                        if (
+                                                                            mobileOk &&
+                                                                            IDcardOk
+                                                                        ) {
                                                                             this.dialogSave = true;
                                                                         }
                                                                     } else {
-                                                                        this.$message(
-                                                                            {
-                                                                                message:
-                                                                                    "军官证重复",
-                                                                                type:
-                                                                                    "warning"
-                                                                            }
-                                                                        );
+                                                                        this.dialogSave = true;
                                                                     }
                                                                 } else {
                                                                     this.$message(
                                                                         {
                                                                             message:
-                                                                                "营业执照重复",
+                                                                                "军官证重复",
                                                                             type:
                                                                                 "warning"
                                                                         }
                                                                     );
                                                                 }
                                                             } else {
-                                                                this.$message({
-                                                                    message:
-                                                                        "护照重复",
-                                                                    type:
-                                                                        "warning"
-                                                                });
+                                                                this.$message(
+                                                                    {
+                                                                        message:
+                                                                            "营业执照重复",
+                                                                        type:
+                                                                            "warning"
+                                                                    }
+                                                                );
                                                             }
                                                         } else {
                                                             this.$message({
                                                                 message:
-                                                                    "身份证号重复",
-                                                                type: "warning"
+                                                                    "护照重复",
+                                                                type:
+                                                                    "warning"
                                                             });
                                                         }
                                                     } else {
                                                         this.$message({
                                                             message:
-                                                                "电话号码重复",
+                                                                "身份证号重复",
                                                             type: "warning"
                                                         });
                                                     }
                                                 } else {
                                                     this.$message({
                                                         message:
-                                                            "客源信息-客户产权比和必须为100%",
+                                                            "电话号码重复",
                                                         type: "warning"
                                                     });
                                                 }
+                                            } else {
+                                                this.$message({
+                                                    message:
+                                                        "客源信息-客户产权比和必须为100%",
+                                                    type: "warning"
+                                                });
                                             }
-                                        } else {
-                                            this.$message({
-                                                message:
-                                                    "客源信息-客源方门店不能为空",
-                                                type: "warning"
-                                            });
                                         }
                                     } else {
                                         this.$message({
                                             message:
-                                                "房源信息-业主产权比和必须为100%",
+                                                "客源信息-客源方门店不能为空",
                                             type: "warning"
                                         });
                                     }
+                                } else {
+                                    this.$message({
+                                        message:
+                                            "房源信息-业主产权比和必须为100%",
+                                        type: "warning"
+                                    });
                                 }
-                            } else {
-                                this.$message({
-                                    message: "房源信息-产权地址未填写完整",
-                                    type: "warning"
-                                });
                             }
                         } else {
                             this.$message({
-                                message: `房源信息-${
-                                    this.contractForm.type === 1
-                                        ? "租金"
-                                        : "成交总价"
-                                }不能为零`,
+                                message: "房源信息-产权地址未填写完整",
                                 type: "warning"
                             });
                         }
                     } else {
                         this.$message({
-                            message: "合同信息-佣金不能为零",
+                            message: `房源信息-${
+                                this.contractForm.type === 1
+                                    ? "租金"
+                                    : "成交总价"
+                            }不能为零`,
                             type: "warning"
                         });
                     }
-                })
-                .catch(error => {
+                } else {
                     this.$message({
-                        message: `${error.title.length < 3 ? "" : "合同信息-"}${
-                            error.title
-                        }${error.msg}`,
+                        message: "合同信息-佣金不能为零",
                         type: "warning"
                     });
+                }
+            })
+            .catch(error => {
+                this.$message({
+                    message: `${error.title.length < 3 ? "" : "合同信息-"}${
+                        error.title
+                    }${error.msg}`,
+                    type: "warning"
                 });
+            });
         },
         saveCont() {
             this.fullscreenLoading = true;
@@ -2242,11 +2122,7 @@ export default {
                 
                     param[paramType].dealById = this.id
                     param[paramType].dealByCode = this.contractForm.code
-                    if(this.isToCommission){
-                        param[paramType].isTransfeOfCommission = this.isToCommission
-                    }else{
-                        delete param.isTransfeOfCommission
-                    }
+                    param[paramType].isTransfeOfCommission = this.isToCommission
                 }else{
                     delete param.dealById
                 }
@@ -2312,6 +2188,7 @@ export default {
                     delete param.leaseCont.achievementState;
                     delete param.leaseCont.recordType;
                     delete param.leaseCont.resultState;
+                    param.leaseCont.isTransfeOfCommission = this.isToCommission
                 } else if ( this.contractForm.type === 2 || this.contractForm.type === 3 ) {
                     delete param.saleCont.contChangeState;
                     delete param.saleCont.contState;
@@ -2325,6 +2202,7 @@ export default {
                     delete param.saleCont.achievementState;
                     delete param.saleCont.recordType;
                     delete param.saleCont.resultState;
+                    param.saleCont.isTransfeOfCommission = this.isToCommission
                 }
                 var url = "/api/contract/updateContract";
                 if (this.recordType === 2) {
@@ -2886,6 +2764,8 @@ export default {
                     this.contractForm = res.data;
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
+                    this.recordType=this.contractForm.recordType.value
+                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
                     this.countTotal();
                     this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
                     if (this.contVersion === 1) {
@@ -2910,9 +2790,11 @@ export default {
                         this.loanType = res.data.loanType;
                     }
                     // this.contractForm.signDate = res.data.signDate.substr(0, 10);
+                    // this.isDeal=this.contractForm.dealById?1:0 //是否是转成交的合同
+                    this.isToCommission=this.contractForm.isTransfeOfCommission?true:false
                     let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
                     this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
-                    if(this.$route.query.isDeal){
+                    if(this.$route.query.isDeal||this.contractForm.dealById){
                         this.toCommissionSum = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission)
                     }
 
@@ -2980,6 +2862,9 @@ export default {
                                 identifyCode: this.contractForm.contPersons[i].identifyCode,
                                 encryptionCode: this.contractForm.contPersons[i].encryptionCode,
                                 cardType: this.contractForm.contPersons[i].cardType,
+                                lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
+                                companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
+                                lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,
                                 type: 1,
                                 isEncryption: true
                             };
@@ -2999,6 +2884,9 @@ export default {
                                 identifyCode: this.contractForm.contPersons[i].identifyCode,
                                 encryptionCode: this.contractForm.contPersons[i].encryptionCode,
                                 cardType: this.contractForm.contPersons[i].cardType,
+                                lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
+                                companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
+                                lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,
                                 type: 2,
                                 isEncryption: true
                             };
@@ -3624,7 +3512,7 @@ export default {
         li {
             min-width: 540px;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             .merge {
                 border: 1px solid #dcdfe6;
                 padding: 7px 2px;
