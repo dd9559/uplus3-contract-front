@@ -130,6 +130,22 @@
                   <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                </el-form-item>
+                <br>
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
+                </el-form-item>
+
               </el-form-item>
               <el-form-item label="业主信息：" class="disb" required v-if="contractForm.type==5">
 
@@ -149,6 +165,22 @@
 
                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                </el-form-item>
+                <br>
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -201,6 +233,22 @@
 
                 <el-form-item :prop="'contPersons[' + 1 + '].identifyCode'" :rules="{validator: idCard1, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[1].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[1].cardType===1?18:contractForm.contPersons[1].cardType===2?30:contractForm.contPersons[1].cardType===3?20:10" @clear="clearIdentify(1)" @input="cutInfo('card',1)">></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10">
+                  <el-input v-model="contractForm.contPersons[1].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                </el-form-item>
+                <br>
+                <el-form-item v-if="recordType===10" :prop="'contPersons[' + 1 + '].companyName'" :rules="{validator: nameExp, trigger:'change'}">
+                  <el-input v-model="contractForm.contPersons[1].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10" :prop="'contPersons[' + 1 + '].lepName'" :rules="{validator: nameExp, trigger:'change'}">
+                  <el-input v-model="contractForm.contPersons[1].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10" :prop="'contPersons[' + 1 + '].lepIdentity'" :rules="{validator: lepIdentity, trigger:'change'}">
+                  <el-input v-model="contractForm.contPersons[1].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -354,9 +402,12 @@ export default {
             encryptionCode: "",
             identifyCode: '',
             cardType:'',
-
-            type: 1
-            // relation: ''
+            email:"",
+            lepName:"",
+            companyName:"",
+            lepIdentity:"",
+            type: 1,
+            relation: ''
           },
           //客户信息
           {
@@ -366,6 +417,10 @@ export default {
             encryptionCode: "",
             identifyCode: '',
             cardType:'',
+            email:"",
+            lepName:"",
+            companyName:"",
+            lepIdentity:"",
             type: 2,
             relation: ""
           }
@@ -516,12 +571,12 @@ export default {
         //   this.contractForm.contPersons[index].mobile = this.contractForm.contPersons[index].mobile.toString().replace(/\D/g,"")
         // })
       }
-      else if(val == "card") {
+      else if(val == "card"||val=="lepIdentity") {
         this.$nextTick(() => {
          this.contractForm.contPersons[index].identifyCode = this.contractForm.contPersons[index].identifyCode.toString().replace(/\s/g,"")
         })
       }
-      else if(val == "name") {
+      else if(val == "name"||val=="lepName"||val=="companyName") {
         this.$nextTick(() => {
          this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
         })
@@ -586,6 +641,15 @@ export default {
         else{
           callback()
         }
+      }
+    },
+
+    lepIdentity(rule, value, callback){
+      if (!value || value == '') {
+          return callback(new Error("请输入证件号"));
+      } else if (!this.isIdCardNo(value)) {
+        // debugger
+        callback(new Error("请输入正确格式的证件号"));
       }
     },
 
@@ -876,16 +940,20 @@ export default {
               this.contractForm.contPersons[0].identifyCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[0].encryptionCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[0].type = res.data.contPersons[i].personType.value;
-            } else if (
-              this.contractForm.contPersons[i].personType.value === 2
-            ) {
+              this.contractForm.contPersons[0].lepName=res.data.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName;
+              this.contractForm.contPersons[0].companyName=res.data.contPersons[i].companyName==='-'?'':res.data.contPersons[i].companyName;
+              this.contractForm.contPersons[0].lepIdentity=res.data.contPersons[i].lepIdentity==='-'?'':res.data.contPersons[i].lepIdentity;
+            } else if ( this.contractForm.contPersons[i].personType.value === 2 ) {
               this.contractForm.contPersons[1].name = res.data.contPersons[i].name;
               this.contractForm.contPersons[1].encryptionMobile = res.data.contPersons[i].mobile;
               this.contractForm.contPersons[1].mobile = res.data.contPersons[i].mobile;
               this.contractForm.contPersons[1].relation = res.data.contPersons[i].relation;
               this.contractForm.contPersons[1].identifyCode = res.data.contPersons[i].identifyCode,
-              this.contractForm.contPersons[0].encryptionCode =  res.data.contPersons[i].identifyCode;
+              this.contractForm.contPersons[1].encryptionCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
+              this.contractForm.contPersons[1].lepName=res.data.contPersons[i].lepName==='-'?'':res.data.contPersons[i].lepName;
+              this.contractForm.contPersons[1].companyName=res.data.contPersons[i].companyName==='-'?'':res.data.contPersons[i].companyName;
+              this.contractForm.contPersons[1].lepIdentity= res.data.contPersons[i].lepIdentity==='-'?'':res.data.contPersons[i].lepIdentity;
             }
           }
         }
