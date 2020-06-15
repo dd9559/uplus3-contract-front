@@ -266,7 +266,9 @@
                 style="cursor:pointer;"
               >{{scope.row.pCode}}</span>
             </p>
-            <p>{{(scope.row.remarkAfter&&scope.row.remarkAfter.value > 0 )?scope.row.remarkAfter.label:''}}</p>
+            <p
+              :class="{'remark':scope.row.remarkAfter&&scope.row.remarkAfter.value == 0}"
+            >{{scope.row.remarkAfter.value >0?scope.row.remarkAfter.label:""}}</p>
           </template>
         </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
@@ -322,7 +324,7 @@
           <template slot-scope="scope">{{dateFormat(scope.row.receiveTime)}}</template>
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" label="预计过户时间" min-width="100">
-          <template slot-scope="scope">{{dateFormat(scope.row.receiveTime)}}</template>
+          <template slot-scope="scope">{{dateFormat(scope.row.estTransferTime)}}</template>
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" label="实际过户时间" min-width="100">
           <template slot-scope="scope">{{dateFormat(scope.row.transferTime)}}</template>
@@ -2186,12 +2188,12 @@ export default {
       if (this.propForm.dateMo) {
         datamo = [...this.propForm.dateMo];
       }
-      let addDate = "";
-      if (this.propForm.dateTime) {
-        addDate = [...this.propForm.dateTime];
-        console.log(this.dateFormat(addDate[0]));
-        console.log(this.dateFormat(addDate[1]));
-      }
+      // let addDate = "";
+      // if (this.propForm.dateTime) {
+      //   addDate = [...this.propForm.dateTime];
+      //   console.log(this.dateFormat(addDate[0]));
+      //   console.log(this.dateFormat(addDate[1]));
+      // }
       let dataMoBool = datamo.length === 2;
       // 办理日期
       if (this.propForm.region === RECEIVINGDATE.end && dataMoBool) {
@@ -2224,23 +2226,28 @@ export default {
         keyword: this.propForm.search,
         depAttr: this.propForm.depAttr,
         areaName: this.propForm.areaName,
-        recordType: this.propForm.recordType,
-        estTransferTimeStar: addDate ? this.dateFormat(addDate[0]) : "",
-        estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
+        recordType: this.propForm.recordType
+        // estTransferTimeStar: addDate ? this.dateFormat(addDate[0]) : "",
+        // estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
       };
 
       let { dateTime = "", regionTime = 0 } = this.propForm || {};
-      if (!regionTime) {
-        // 实际过户时间
-        if (dateTime) {
-        }
-      } else {
-        //预计过户时间
+      if (regionTime) {
+        //实际过户时间
         if (dateTime) {
           paramObj = {
             ...paramObj,
             transferTimeStar: this.dateFormat(dateTime[0]), //实际过户时间（起）
             transferTimeEnd: this.dateFormat(dateTime[1]) //实际过户时间（终）
+          };
+        }
+      } else {
+        // 预计过户时间
+        if (dateTime) {
+          paramObj = {
+            ...paramObj,
+            estTransferTimeStar: this.dateFormat(dateTime[0]), //预计过户时间（起）
+            estTransferTimeEnd: this.dateFormat(dateTime[1]) //预计过户时间（终）
           };
         }
       }
@@ -2405,6 +2412,10 @@ export default {
         });
     },
     regionTimeChangeFn() {
+      this.propForm.dateTime = "";
+      this.propForm.transferTimeStar = "";
+      this.propForm.transferTimeEnd = "";
+      this.propForm.dateTime = "";
       this.propForm.dateTime = "";
     }
   },

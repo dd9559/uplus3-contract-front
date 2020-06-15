@@ -367,7 +367,8 @@
           </el-table-column>
           <el-table-column label="上传人" min-width="90">
             <template slot-scope="scope">
-              <p>{{scope.row.assignor||'--'}}</p>
+              <p>{{(scope.row.uploadDepName?scope.row.uploadDepName:'-')+ "-" + (scope.row.uploadName?scope.row.uploadName:'-')}}</p>
+              <!-- <p>{{scope.row.uploadDepName?scope.row.uploadDepName:"无"+"-"+scope.row.uploadName?scope.row.uploadName:"无"}}</p> -->
             </template>
           </el-table-column>
           <el-table-column prop="propertyAddr" label="物业地址" min-width="120">
@@ -462,6 +463,11 @@
           <el-table-column label="实收/应收" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.receivedCommission+'/'+scope.row.receivableCommission}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="收佣状态" min-width="90">
+            <template slot-scope="scope">
+              <p>{{scope.row.receiveAmountState.label}}</p>
             </template>
           </el-table-column>
           <el-table-column label="交易服务费（元）" min-width="90">
