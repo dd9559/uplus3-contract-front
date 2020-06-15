@@ -900,16 +900,32 @@ export default {
     btnOpera: function(row, type) {
       this.activeRow = Object.assign({}, row);
       if (type === 1) {
-        this.$router.push({
-          path: "receiptBill",
-          query: {
-            edit: 1,
-            id: row.id,
-            contId: row.contId,
-            code: row.contCode,
-            isentrust: row.type === 8 ? 1 : 0
-          }
-        });
+        console.log("++++++");
+        console.log(row.contId);
+        if (row.contId) {
+          this.$router.push({
+            path: "receiptBill",
+            query: {
+              edit: 1,
+              id: row.id,
+              contId: row.contId,
+              code: row.contCode,
+              isentrust: row.type === 8 ? 1 : 0
+            }
+          });
+        } else {
+          this.$router.push({
+            path: "receiptBill",
+            query: {
+              edit: 1,
+              id: row.id,
+              contId: row.contId,
+              code: row.contCode,
+              isentrust: row.type === 8 ? 1 : 0,
+              collect: 1
+            }
+          });
+        }
       } else if (type === 2) {
         this.layer.show = true;
         this.layer.content = [].concat(row);

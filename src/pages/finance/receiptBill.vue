@@ -704,7 +704,7 @@ export default {
     let { user = {} } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
     this.dep.id = user.depId;
     this.dep.name = user.depName;
-    if (user.depId && urlParam.collect) {
+    if (user.depId && urlParam.collect && urlParam.contId != 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"]);
       arr.push({ name: "创建收款", path: this.$route.fullPath });
       this.setPath(arr);
@@ -716,6 +716,19 @@ export default {
       //设置收款账户
       this.getCompanyBanks(user.depId);
       this.form.inObj = user.name;
+    } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
+      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"]);
+      arr.push({ name: "创建收款", path: this.$route.fullPath });
+      this.setPath(arr);
+      this.handleNodeClick(user);
+      this.form.inObjId = user.empId;
+      this.inputPerson = true;
+      this.dep.id = user.depId;
+      this.dep.name = user.depName;
+      //设置收款账户
+      this.getCompanyBanks(user.depId);
+      this.form.inObj = user.name;
+      this.getDetails({ type: 1, payId: urlParam.id });
     } else {
       this.addInit(urlParam.contId);
       // this.getPayAccount(urlParam.id);

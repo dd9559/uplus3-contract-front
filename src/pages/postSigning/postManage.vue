@@ -53,7 +53,15 @@
             </el-select>
           </el-form-item>
           <el-form-item prop="steps">
-            <el-select v-model="propForm.steps" placeholder="交易步骤" class="w110">
+            <el-select
+              v-model="propForm.steps"
+              placeholder="交易步骤"
+              class="w110"
+              filterable
+              remote
+              reserve-keyword
+              :clearable="true"
+            >
               <el-option
                 v-for="item in rules.steps"
                 :key="'steps'+item.id"
@@ -267,8 +275,8 @@
               >{{scope.row.pCode}}</span>
             </p>
             <p
-              :class="{'remark':scope.row.remarkAfter&&scope.row.remarkAfter.value == 0}"
-            >{{scope.row.remarkAfter.value >0?scope.row.remarkAfter.label:""}}</p>
+              :class="[scope.row.remarkAfter&&scope.row.remarkAfter.value > 0?'remark':'']"
+            >{{(scope.row.remarkAfter&&scope.row.remarkAfter.value >0)?(scope.row.remarkAfter&&scope.row.remarkAfter.label):""}}</p>
           </template>
         </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" min-width="60"></el-table-column>
@@ -1370,6 +1378,11 @@ export default {
       // this.getData();
       this.EmployeList = [];
       this.propForm.recordType = "";
+      this.propForm.dateTime = "";
+      this.propForm.transferTimeStar = "";
+      this.propForm.transferTimeEnd = "";
+      this.propForm.dateTime = "";
+      this.propForm.dateTime = "";
     },
     // 查询
     queryFn() {
