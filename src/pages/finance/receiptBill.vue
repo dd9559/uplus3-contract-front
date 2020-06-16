@@ -71,7 +71,7 @@
               </el-select>
               <div class="address-slelect" @click="addressClickFn">
                 <span
-                  :class="[addressLabel.name?'':'cl-gray']"
+                  :class="[addressLabel.selectCode?'':'cl-gray']"
                 >{{addressLabel.selectCode?addressLabel.selectCode:"请选择"}}</span>
                 <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val}}</span> -->
                 <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val + addressValCom.name}}</span> -->
@@ -705,8 +705,8 @@ export default {
     this.dep.id = user.depId;
     this.dep.name = user.depName;
     if (user.depId && urlParam.collect && urlParam.contId != 0) {
-      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"]);
-      arr.push({ name: "创建收款", path: this.$route.fullPath });
+      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
+      arr.push({ name: "编辑收款", path: this.$route.fullPath });
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -717,8 +717,8 @@ export default {
       this.getCompanyBanks(user.depId);
       this.form.inObj = user.name;
     } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
-      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"]);
-      arr.push({ name: "创建收款", path: this.$route.fullPath });
+      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
+      arr.push({ name: "编辑收款", path: this.$route.fullPath });
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -1069,7 +1069,28 @@ export default {
           this.getAcount(this.form.inObjId);
           // this.hideCardList()
           if (this.$route.query.collect && this.$route.query.contId == 0) {
-             
+            if (res.data.houseinfoJson) {
+              let houseinfoJson = JSON.parse(res.data.houseinfoJson);
+              console.log("房源详情");
+              console.log(houseinfoJson);
+              this.addressVal = 0;
+              this.addAountOther.houseInfo = houseinfoJson;
+              console.log(this.addressLabel.selectCode);
+              this.addressLabel.selectCode = houseinfoJson.PropertyNo;
+              this.addressLabel.label =
+                houseinfoJson.EstateName +
+                houseinfoJson.BuildingName +
+                houseinfoJson.Unit +
+                houseinfoJson.RoomNo;
+            }
+            if (res.data.guestinfoJson) {
+              let guestinfoJson = JSON.parse(res.data.guestinfoJson);
+              console.log("客源详情");
+              console.log(guestinfoJson);
+              this.addAountOther.guestInfo = guestinfoJson;
+              this.addressVal = 1;
+              this.addressLabel.selectCode = guestinfoJson.InquiryNo;
+            }
           }
         }
       });
@@ -1606,10 +1627,7 @@ export default {
       console.log(value);
       if (value) {
         if (value.dialogType == "house") {
-          this.addressLabel.selectCode = 123;
           this.getHousedetail(value.selectCode, 1).then(res => {
-            console.log("------");
-            console.log(res);
             this.addressLabel.selectCode = res.PropertyNo;
             if (value.dialogType == "guest") {
               this.addAountOther.guestInfo = res;
@@ -1619,8 +1637,6 @@ export default {
           });
         } else {
           this.getHousedetail(value.selectCode, 2).then(res => {
-            console.log("------");
-            console.log(res);
             this.addressLabel.selectCode = res.InquiryNo;
             if (value.dialogType == "guest") {
               this.addAountOther.guestInfo = res;
