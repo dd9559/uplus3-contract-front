@@ -115,7 +115,7 @@
                 <div class="table">
                   <el-table :data="ownerData" border header-row-class-name="theader-bg" >
                     <el-table-column prop="name" label="业主姓名" ></el-table-column>
-                    <el-table-column label="电话">
+                    <el-table-column label="电话" min-width="120">
                       <template slot-scope="scope">
                         {{scope.row.mobile}}
                         <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'owner')" v-if="power['sign-ht-xq-ly-call'].state" ></i>
@@ -128,10 +128,10 @@
                     <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2" >
                       <template slot-scope="scope">{{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}</template>
                     </el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="email" label="邮箱" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="conmpanyName" label="企业名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="lepName" label="法人名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="conmpanyName" label="企业名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="lepName" label="法人名称" ></el-table-column>
+                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -160,7 +160,7 @@
                 <div class="table">
                   <el-table :data="clientrData" border header-row-class-name="theader-bg" >
                     <el-table-column prop="name" label="客户姓名" ></el-table-column>
-                    <el-table-column label="电话">
+                    <el-table-column label="电话" min-width="120">
                       <template slot-scope="scope">
                         {{scope.row.mobile}}
                         <i class="iconfont icon-tubiao_shiyong-16" @click="call(scope.row,scope.$index,'guest')" v-if="power['sign-ht-xq-ly-call'].state" ></i>
@@ -173,10 +173,10 @@
                     <el-table-column min-width="150" label="证件号码" v-if="contractDetail.recordVersion===2" >
                       <template slot-scope="scope">{{scope.row.cardType===1?'身份证号：':scope.row.cardType===2?'护照：':scope.row.cardType===3?'营业执照：':'军官证：'}}{{scope.row.identifyCode}}</template>
                     </el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="email" label="邮箱" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="conmpanyName" label="企业名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="lepName" label="法人名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="email" label="邮箱" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="conmpanyName" label="企业名称" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" prop="lepName" label="法人名称" ></el-table-column>
+                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -3530,21 +3530,21 @@ export default {
         if (res.status === 200) {
           let dataType = JSON.parse(res.data);
           dataType.forEach(element => {
-            if (element.type === "1") {
+            if (Number(element.type) === 1) {
               let item = {};
               item.value = [];
               item.kind = element.type;
               item.title = element.name;
               item.isrequire = element.isNecessary;
               this.buyerList.push(item);
-            } else if (element.type === "2") {
+            } else if (Number(element.type) === 1) {
               let item = {};
               item.value = [];
               item.kind = element.type;
               item.title = element.name;
               item.isrequire = element.isNecessary;
               this.sellerList.push(item);
-            } else if (element.type === "3") {
+            } else if (Number(element.type) === 1) {
               let item = {};
               item.value = [];
               item.kind = element.type;
