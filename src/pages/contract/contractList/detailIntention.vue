@@ -159,7 +159,7 @@
                             <el-button round
                                 type="primary"
                                 class="search_btn"
-                                v-if="(power['sign-ht-info-edit'].state&&detailData.recordType.value===1&&detailData.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&detailData.recordType.value===2&&(detailData.contState.value!=3||detailData.contState.value===3&&detailData.resultState.value===1&&!getUserMsg))"
+                                v-if="(power['sign-ht-info-edit'].state&&detailData.recordType.value!=2&&detailData.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&detailData.recordType.value===2&&(detailData.contState.value!=3||detailData.contState.value===3&&detailData.resultState.value===1&&!getUserMsg))"
                                 @click="onEdit(detailData.contType)">编辑</el-button>
                             <el-button round
                                 type="primary"
