@@ -3537,14 +3537,14 @@ export default {
               item.title = element.name;
               item.isrequire = element.isNecessary;
               this.buyerList.push(item);
-            } else if (Number(element.type) === 1) {
+            } else if (Number(element.type) === 2) {
               let item = {};
               item.value = [];
               item.kind = element.type;
               item.title = element.name;
               item.isrequire = element.isNecessary;
               this.sellerList.push(item);
-            } else if (Number(element.type) === 1) {
+            } else if (Number(element.type) === 3) {
               let item = {};
               item.value = [];
               item.kind = element.type;
@@ -3572,19 +3572,19 @@ export default {
               item.fileType = fileType;
               pathList.push(item);
             });
-            if (element.kind === "1") {
+            if (Number(element.kind) === 1) {
               this.buyerList.forEach(ele => {
                 if (element.title === ele.title) {
                   ele.value = element.value;
                 }
               });
-            } else if (element.kind === "2") {
+            } else if (Number(element.kind) === 2) {
               this.sellerList.forEach(ele => {
                 if (element.title === ele.title) {
                   ele.value = element.value;
                 }
               });
-            } else if (element.kind === "3") {
+            } else if (Number(element.kind) === 3) {
               this.otherList.forEach(ele => {
                 if (element.title === ele.title) {
                   ele.value = element.value;
@@ -3646,36 +3646,24 @@ export default {
     },
     //上传合同资料库
     uploading(msg) {
-      let uploadContData = this.sellerList.concat(
-        this.buyerList,
-        this.otherList
-      );
+      let uploadContData = this.sellerList.concat( this.buyerList, this.otherList );
       let isOk;
       let arr_ = [];
       for (let i = 0; i < uploadContData.length; i++) {
         isOk = false;
-        if (
-          uploadContData[i].isrequire &&
-          uploadContData[i].value.length === 0
-        ) {
+        if ( uploadContData[i].isrequire && uploadContData[i].value.length === 0 ) {
           this.$message({
             message: `${uploadContData[i].title}不能为空`,
             type: "warning"
           });
           break;
-        } else if (
-          uploadContData[i].isrequire &&
-          uploadContData[i].value.length > 0
-        ) {
+        } else if ( uploadContData[i].isrequire && uploadContData[i].value.length > 0 ) {
           // uploadContData[i].value.forEach(element => {
           // delete element.fileType;
           // });
           arr_.push(uploadContData[i]);
           isOk = true;
-        } else if (
-          !uploadContData[i].isrequire &&
-          uploadContData[i].value.length > 0
-        ) {
+        } else if ( !uploadContData[i].isrequire && uploadContData[i].value.length > 0 ) {
           // uploadContData[i].value.forEach(element => {
           //   delete element.fileType;
           // });
