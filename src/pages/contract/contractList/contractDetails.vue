@@ -616,19 +616,13 @@
         </el-tab-pane>
 
         <el-tab-pane label="合同主体" name="second" v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)" >
-          <div
-            class="contractSubject"
-            v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)"
-          >
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)">
             <p class="mainTitle">
               合同主体
               <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
             </p>
-            <ul
-              class="ulData"
-              style="margin-bottom:10px"
-            >
-              <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
+            <ul class="ulData" style="margin-bottom:10px" >
+              <li v-show="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10">
                 <file-up
                   class="uploadSubject"
                   @getUrl="uploadSubject"
@@ -669,7 +663,7 @@
                   </div>
                 </el-tooltip>
                 <i
-                  v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+                  v-if="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10"
                   class="iconfont icon-tubiao-6"
                   @click="ZTdelectData(index,item.path,'main')"
                   :class="{'deleteShow':isDelete===item.index+item.path}"
@@ -681,7 +675,7 @@
               round
               class="search_btn"
               @click="saveFile('main')"
-              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))"
+              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))&&contractDetail.recordType.value!=10"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
