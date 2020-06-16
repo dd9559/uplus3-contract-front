@@ -89,7 +89,7 @@
                             label="预计过户时间："
                             style="text-align:right;width:280px;"
                             class="form-label"
-                            v-if="userMsg.cityId!=52&&(contractForm.type===2||contractForm.type===3)">
+                            v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker 
                                 style="width:140px"
                                 v-model="contractForm.estTransferTime"
