@@ -1385,13 +1385,36 @@ export default {
                                                                         element.encryptionCode = element.encryptionCode.replace(/[&\|\\\*^%$#@\-]/g,"");
                                                                     }
                                                                     if ((element.cardType === 1 && this.isIdCardNo(element.encryptionCode)) ||(element.cardType ===2 &&element.encryptionCode.length <=30) || (element.cardType === 4 && element.encryptionCode.length <= 10)) {
-                                                                        isOk = true;
-                                                                        ownerRightRatio+=element.propertyRightRatio-0;
+                                                                        if(element.email){
+                                                                            let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+                                                                            if(reg.test(element.email)){
+                                                                                isOk = true;
+                                                                                ownerRightRatio += element.propertyRightRatio - 0;
+                                                                            }else{
+                                                                                this.$toast("房源信息-业主邮箱不正确");
+                                                                                break;
+                                                                            }
+                                                                        }else{
+                                                                            isOk = true;
+                                                                            ownerRightRatio+=element.propertyRightRatio-0;
+                                                                        }
+                                                                        
                                                                     } else if(element.cardType === 3 && element.encryptionCode.length <= 20){
                                                                         element.lepIdentity = element.lepIdentity?element.lepIdentity.replace(/[&\|\\\*^%$#@\-]/g,""):'';
                                                                         if(this.recordType===10&&element.companyName&&element.lepName&&element.lepIdentity&&this.isIdCardNo(element.lepIdentity)||this.recordType!=10){
-                                                                            isOk = true;
-                                                                            ownerRightRatio+=element.propertyRightRatio-0;
+                                                                            if(element.email){
+                                                                                let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+                                                                                if(reg.test(element.email)){
+                                                                                    isOk = true;
+                                                                                    ownerRightRatio += element.propertyRightRatio - 0;
+                                                                                }else{
+                                                                                    this.$toast("房源信息-业主邮箱不正确");
+                                                                                    break;
+                                                                                }
+                                                                            }else{
+                                                                                isOk = true;
+                                                                                ownerRightRatio+=element.propertyRightRatio-0;
+                                                                            }
                                                                         }else{
                                                                             this.$message(
                                                                                 {
@@ -1529,13 +1552,35 @@ export default {
                                                                                     }
                                                                                 }
                                                                                 if ((element.cardType===1&&this.isIdCardNo(element.encryptionCode))||(element.cardType===2&&element.encryptionCode.length<=30)||(element.cardType===4&&element.encryptionCode.length <=10)) {
-                                                                                    isOk_ = true;
-                                                                                    guestRightRatio += element.propertyRightRatio - 0;
+                                                                                    if(element.email){
+                                                                                        let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+                                                                                        if(reg.test(element.email)){
+                                                                                            isOk_ = true;
+                                                                                            guestRightRatio += element.propertyRightRatio - 0;
+                                                                                        }else{
+                                                                                            this.$toast("客源信息-客户邮箱不正确");
+                                                                                            break;
+                                                                                        }
+                                                                                    }else{
+                                                                                        isOk_ = true;
+                                                                                        guestRightRatio+=element.propertyRightRatio-0;
+                                                                                    }
                                                                                 } else if(element.cardType === 3 && element.encryptionCode.length <= 20){
                                                                                     element.lepIdentity = element.lepIdentity?element.lepIdentity.replace(/[&\|\\\*^%$#@\-]/g,""):'';
                                                                                     if(this.recordType===10&&element.companyName&&element.lepName&&element.lepIdentity&&this.isIdCardNo(element.lepIdentity)||this.recordType!=10){
-                                                                                        isOk_ = true;
-                                                                                        guestRightRatio += element.propertyRightRatio - 0;
+                                                                                        if(element.email){
+                                                                                            let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+                                                                                            if(reg.test(element.email)){
+                                                                                                isOk_ = true;
+                                                                                                guestRightRatio += element.propertyRightRatio - 0;
+                                                                                            }else{
+                                                                                                this.$toast("客源信息-客户邮箱不正确");
+                                                                                                break;
+                                                                                            }
+                                                                                        }else{
+                                                                                            isOk_ = true;
+                                                                                            guestRightRatio+=element.propertyRightRatio-0;
+                                                                                        }
                                                                                     }else{
                                                                                         this.$message(
                                                                                             {
@@ -2862,6 +2907,7 @@ export default {
                                 identifyCode: this.contractForm.contPersons[i].identifyCode,
                                 encryptionCode: this.contractForm.contPersons[i].encryptionCode,
                                 cardType: this.contractForm.contPersons[i].cardType,
+                                email: this.contractForm.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email,
                                 lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
                                 companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
                                 lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,
@@ -2884,6 +2930,7 @@ export default {
                                 identifyCode: this.contractForm.contPersons[i].identifyCode,
                                 encryptionCode: this.contractForm.contPersons[i].encryptionCode,
                                 cardType: this.contractForm.contPersons[i].cardType,
+                                email: this.contractForm.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email,
                                 lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
                                 companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
                                 lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,

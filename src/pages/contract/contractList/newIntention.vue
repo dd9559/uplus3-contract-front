@@ -940,6 +940,7 @@ export default {
               this.contractForm.contPersons[0].identifyCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[0].encryptionCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[0].type = res.data.contPersons[i].personType.value;
+              this.contractForm.contPersons[0].email=res.data.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email;
               this.contractForm.contPersons[0].lepName=res.data.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName;
               this.contractForm.contPersons[0].companyName=res.data.contPersons[i].companyName==='-'?'':res.data.contPersons[i].companyName;
               this.contractForm.contPersons[0].lepIdentity=res.data.contPersons[i].lepIdentity==='-'?'':res.data.contPersons[i].lepIdentity;
@@ -951,6 +952,7 @@ export default {
               this.contractForm.contPersons[1].identifyCode = res.data.contPersons[i].identifyCode,
               this.contractForm.contPersons[1].encryptionCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[1].type = res.data.contPersons[i].personType.value;
+              this.contractForm.contPersons[1].email=res.data.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email;
               this.contractForm.contPersons[1].lepName=res.data.contPersons[i].lepName==='-'?'':res.data.contPersons[i].lepName;
               this.contractForm.contPersons[1].companyName=res.data.contPersons[i].companyName==='-'?'':res.data.contPersons[i].companyName;
               this.contractForm.contPersons[1].lepIdentity= res.data.contPersons[i].lepIdentity==='-'?'':res.data.contPersons[i].lepIdentity;
@@ -1001,10 +1003,30 @@ export default {
           }
           if(this.contractForm.contPersons[0].name.indexOf("先生")!=-1||this.contractForm.contPersons[0].name.indexOf("女士")!=-1||this.contractForm.contPersons[1].name.indexOf("先生")!=-1||this.contractForm.contPersons[1].name.indexOf("女士")!=-1){
             this.$message({
+              type: "warning",
+              message: "业主或客户姓名不正确"
+            });
+            return false
+          }
+          if(this.contractForm.contPersons[0].email){
+            let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+            if(!reg.test(this.contractForm.contPersons[0].email)){
+              this.$message({
                 type: "warning",
-                message: "业主或客户姓名不正确"
+                message: "业主邮箱格式错误"
               });
               return false
+            }
+          }
+          if(this.contractForm.contPersons[1].email){
+            let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+            if(!reg.test(this.contractForm.contPersons[1].email)){
+              this.$message({
+                type: "warning",
+                message: "客户邮箱格式错误"
+              });
+              return false
+            }
           }
           let mobileNum0 = JSON.parse(JSON.stringify(this.contractForm.contPersons[0])).mobile.replace('-','')
           let mobileNum1 = JSON.parse(JSON.stringify(this.contractForm.contPersons[1])).mobile.replace('-','')
