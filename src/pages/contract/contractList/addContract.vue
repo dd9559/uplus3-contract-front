@@ -89,7 +89,7 @@
                             label="预计过户时间："
                             style="text-align:right;width:280px;"
                             class="form-label"
-                            v-if="userMsg.cityId===52&&(contractForm.type===2||contractForm.type===3)">
+                            v-if="userMsg.cityId!=52&&(contractForm.type===2||contractForm.type===3)">
                             <el-date-picker 
                                 style="width:140px"
                                 v-model="contractForm.estTransferTime"
@@ -2764,11 +2764,8 @@ export default {
                     this.contractForm = res.data;
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
-                    this.recordType=this.contractForm.recordType.value;
-                    // if(this.contractForm.estTransferTime){
-                    //     this.contractForm.estTransferTime=TOOL.dateFormat(this.contractForm.estTransferTime);
-                    // }
-                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime)):this.$set(this.contractForm,'estTransferTime','')
+                    this.recordType=this.contractForm.recordType.value
+                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
                     this.countTotal();
                     this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
                     if (this.contVersion === 1) {
