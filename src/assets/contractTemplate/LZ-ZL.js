@@ -242,7 +242,7 @@ for(let readonlyItem in msg){
     dom.innerHTML = msg['timeUnit']==="月"?"1":msg['timeUnit']==="季度"?"2":msg['timeUnit']==="半年"?"3":"4"
     dom.classList.remove('input-before')
   }
-  let readonlyArr = ['code','ownerName','ownerNames','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
+  let readonlyArr = ['code','ownerName','ownerID','guestID','ownerNames','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
