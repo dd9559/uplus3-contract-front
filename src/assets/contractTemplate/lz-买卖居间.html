@@ -230,7 +230,6 @@
     }
     .cover-style .code {
       text-align: right;
-      padding-right: 180px;
     }
     .cover-style .title{
       text-align: center;
@@ -245,8 +244,10 @@
       padding-left: 180px;
       line-height: 1.8;
     }
-    .cover-style li input {
-      width: 300px;
+    .cover-style li span {
+      display: inline-block;
+      width: 245px;
+      border-bottom: 1px solid #000;
     }
     .sign-note ul li {
       line-height: 2;
@@ -298,8 +299,8 @@
       <p class="code">合同编号：<span systemparam="code" tag="input-auto"></span></p>
       <p class="title">房屋买卖（居间）合同</p>
       <ul>
-        <li>甲方：<input type="text" readonly="readonly"></li>
-        <li>乙方：<input type="text" readonly="readonly"></li>
+        <li>甲方：<span systemparam="ownerName"></span></li>
+        <li>乙方：<span systemparam="guestName"></span></li>
         <li>丙方：兰州宏辉房产经纪有限公司</li>
       </ul>
     </div>
@@ -349,7 +350,7 @@
       </ul>
       <ul>
         <li style="position:relative;"><span>居间方（丙方）：</span><span tag="input-auto" extendParam="val13" systemParam="companyNames" company="true"></span><img class="SignatureLocation" style="position:absolute;left:130px;top:-50px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /></li>
-        <li><span>营业执照号码：</span><span tag="input-auto" systemParam="companyNames" extendParam="val14"></span></li>
+        <li><span>营业执照号码：</span><span tag="input-auto" systemParam="guestStoreRegisterCode" extendParam="val14"></span></li>
       </ul>
       <p class="bold">注：本合同既是甲乙双方的房屋买卖合同又是丙方与甲乙各方的居间合同。</p>
     </div>
@@ -363,7 +364,7 @@
       <div class="lh-18">6、是否有共同所有权人：<span class="input-before" tag="input-auto" extendParam="val32"></span></div>
       <div class="lh-18">7、房屋使用现状（勾选）：<div class="info-checkbox" name="houseUse"><p type="check"></p>自住</div> <div class="info-checkbox" name="houseUse"><p type="check"></p>空房</div> <div class="info-checkbox" name="houseUse"><p type="check"></p>租赁</div> <div class="info-checkbox" name="houseUse"><p type="check"></p>借用</div> <div class="info-checkbox" name="houseUse"><p type="check"></p>其他</div><span class="input-before" tag="input-auto" extendParam="val34"></span></div>
 
-      <p id="two" class="navTitle bold">二、房屋产权现状为以下第(<input type="text" class="text-limit dropdown-item" list="1,2,3" style="width:30px" readonly="readonly" extendParam="val36" inputmethod="val36" />)种：</p>
+      <p class="bold"><span class="navTitle" id="two">二、房屋产权现状</span>(<input type="text" class="text-limit dropdown-item" list="1,2,3" style="width:30px" readonly="readonly" extendParam="val36" inputmethod="val36" />)为以下第种：</p>
       <div class="lh-18">1、房屋所有权经合法登记，无抵押或其他权利瑕疵，甲方对该房屋享有完整所有权，能完全支配及处分。</div>
       <div class="lh-18">2、该房屋设定抵押，抵押权人为<span class="input-before" tag="input-auto" extendParam="val38"></span>。</div>
       <div class="lh-18">甲方应于签署本合同之日起<span class="input-before" tag="input-auto" listen="number" extendParam="val40"></span>日内还清贷款，办理抵押注销登记手续。</div>
@@ -375,7 +376,7 @@
       <div class="lh-18">2、国家规定甲乙双方交易过户时所需支付之税、费，经双方一致同意由<span class="input-before" tag="input-auto" extendParam="val46"></span>承担（具体税费金额以税务部门出具的税费清单为准），配套设施的更名费由乙方承担。</div>
 
       <p id="four" class="navTitle bold">四、定金条款</p>
-      <div class="lh-18">1、乙方于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val48"/>日交付定金人民币<span class="input-before" tag="input-auto" listen="number" extendParam="val50" max="12"></span>元（大写<span tag="input-auto" extendParam="val50_add" systemparam="true"></span>圆整）予丙方。丙方于签订《房屋买卖（居间）合同》当时代乙方向甲方支付定金<span class="input-before" tag="input-auto" listen="number" extendParam="val52"></span>元，剩余定金<span class="input-before" tag="input-auto" listen="number" extendParam="val54"></span>元甲方委托丙方托管，待过户后冲抵房款。</div>
+      <div class="lh-18">1、乙方于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val48"/>交付定金人民币<span class="input-before" tag="input-auto" listen="number" extendParam="val50" max="12"></span>元（大写<span tag="input-auto" extendParam="val50_add" systemparam="true"></span>圆整）予丙方。丙方于签订《房屋买卖（居间）合同》当时代乙方向甲方支付定金<span class="input-before" tag="input-auto" listen="number" extendParam="val52"></span>元，剩余定金<span class="input-before" tag="input-auto" listen="number" extendParam="val54"></span>元甲方委托丙方托管，待过户后冲抵房款。</div>
       <div class="lh-18 bold">2、如定金交付后因乙方原因使本合同无法继续履行或解除，已付定金不再退还；因甲方原因使本合同无法继续履行或解除，甲方应按乙方交付的全额定金双倍返还乙方。</div>
       <div class="lh-18 bold">3、根据合同相对性原则，甲乙双方无权主张丙方承担定金责任，而应向甲方或乙方主张定金责任。</div>
       <div class="lh-18 bold">4、甲乙双方任何一方在未经双方协商一致或有效法律文书确认之前均无权向丙方主张转付或返还托管定金。</div>
@@ -423,7 +424,7 @@
 
       <p class="navTitle bold" id="eleven">十一、本合同未尽事宜，甲乙双方可另行协商，其补充合同经双方签字后作为本合同附件，与本合同具有同等法律效力。</p>
 
-      <p class="navTitle bold" id="twelve">十二、甲乙双方的有效文书送达地址以双方在地址联系单确认的地址为准，如有变更，须及时书面通知合同其他方，否则仍以地址电话联系单地址、电话为准，一经正常投递即视为送达。送达之日起超过<span type="text" class="text-limit input-before" tag="input-auto" extendParam="val80" listen="number"></span>天未回复，视为违约，违约方应当依照本合同第六条及第八条的约定向丙方和守约方支付费用并承担违约责任。</p>
+      <p class="bold"><span class="navTitle" id="twelve">十二、甲乙双方的有效文书送达地址以双方在地址联系单确认的地址为准，如有变更，须及时书面通知合同其他方，否则仍以地址电话联系单地址、电话为准，一经正常投递即视为送达。</span>送达之日起超过<span type="text" class="text-limit input-before" tag="input-auto" extendParam="val80" listen="number"></span>天未回复，视为违约，违约方应当依照本合同第六条及第八条的约定向丙方和守约方支付费用并承担违约责任。</p>
 
       <p class="navTitle bold" id="thirteen">十三、本合同一式三份，经三方签字后生效，三方各执一份，具有同等法律效力。</p>
 
@@ -464,33 +465,33 @@
       <div class="user_agreement">
         <div class="lh-18">鉴于乙方已经居间促成甲方与<span tag="input-auto" class="text-limit input-before" extendParam="val104"></span>达成房屋买卖交易并签订编号为(<span systemparam="code" tag="input-auto"></span>)的《房屋买卖（居间）合同》，现甲方委托乙方向相关部门申请贷款，为此双方依据相关法律法规，一致同意订立本合同。</div>
 
-        <p class="navTitle bold">一、甲方委托乙方：</p>
+        <p class="bold">一、甲方委托乙方：</p>
         <div class="lh-18"><div class="info-checkbox" name="wtloan"><p type="check"></p>办理向银行申请房屋按揭贷款。</div></div>
         <div class="lh-18"><div class="info-checkbox" name="wtloan"><p type="check"></p>办理向</div><span tag="input-auto" class="text-limit input-before" extendParam="val106"></span>公积金中心申请贷款。</div>
         <p>用于支付上述《房屋买卖（居间）合同》中约定的购房款。</p>
         <p>注:具体贷款金额以银行或公积金中心评估审批金额为准。</p>
 
-        <p class="navTitle bold">二、乙方职责：</p>
+        <p class="bold">二、乙方职责：</p>
         <p>1、充分发挥资源优势，认真负责快速为甲方所需款项办理贷款。</p>
         <p>2、及时通知甲方提供贷款所需资料。</p>
 
-        <p class="navTitle bold">三、甲方职责：</p>
+        <p class="bold">三、甲方职责：</p>
         <p>1、提供银行或公积金中心所需贷款的真实资料。</p>
         <p>2、积极配合按时到场办理相关手续（如房产抵押贷款的相关签字手续）。</p>
         <p>3、按时支付相应费用。</p>
 
-        <p class="navTitle bold">四、服务费用：</p>
+        <p class="bold">四、服务费用：</p>
         <div class="lh-18">1.按以下公式计算：服务费用=贷款总额×百分之<span tag="input-auto" class="text-limit input-before" extendParam="val108"></span>即人民币<span type="text" tag="input-auto" class="text-limit input-before" extendParam="val110" listen="number" max="12"></span>元（大写<span type="text" tag="input-auto" extendParam="val110_add" systemparam="true"></span>圆整）。</div>
         <div class="lh-18">2.甲方向乙方支付服务费的时间为： 甲方向银行或公积金中心提交贷款申请前，最迟于银行或公积金中心的相关贷款文书上签字前一日全额支付给乙方。</div>
         <div class="lh-18">3.甲方所申请的贷款经银行或公积金管理中心审批通过后，甲方不得以放弃贷款或其他任何理由要求乙方返还服务费用。</div>
         <div class="lh-18">4.若甲方所申请的贷款未能通过银行或公积金管理中心审批，则乙方全额退还甲方缴纳的服务费。</div>
 
-        <p class="navTitle bold">五、违约责任：</p>
+        <p class="bold">五、违约责任：</p>
         <div class="lh-18">1、在本合同生效后如甲方撤销委托则视作违约。甲方即须向乙方支付人民币<span type="text" tag="input-auto" class="text-limit input-before" extendParam="val112" listen="number" max="12"></span>元（大写<span type="text" tag="input-auto" extendParam="val112_add" systemparam="true"></span>圆整）作为违约赔偿。</div>
         <div class="lh-18">2、本合同签订后如因国家政策调整及甲方未能达到担保或银行贷款条件造成银行无法放贷的，乙方对此不承担违约责任。</div>
         <div class="lh-18">3、若甲方委托乙方办理公积金贷款，甲方承诺自公积金中心放款后一个工作日内将该笔款项全额转至指定账户<span tag="input-auto" class="text-limit input-before" listen="number" extendParam="val114"></span>，开户行<span tag="input-auto" class="text-limit input-before" extendParam="val116"></span>内 ，用于支付《房屋买卖（居间）合同》中的购房款，逾期一日自愿承担相当于该笔款项的<span tag="input-auto" class="text-limit input-before" listen="number" extendParam="val118"></span>%的违约金。</div>
 
-        <p class="navTitle bold">六、其它：</p>
+        <p class="bold">六、其它：</p>
         <div class="lh-18">1、本合同甲乙双方签字盖章后即生效，在贷款到账后自行终止;</div>
         <div class="lh-18">2、本合同一式二份，甲乙双方各执一份，具有同等法律效力;</div>
         <div class="lh-18">3、本合同未尽事宜甲乙双方可协商解决;</div>
@@ -751,12 +752,12 @@
   </div>
 </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mm_lz20200617.js"></script>
-<!-- <script>
+<script type="text/javascript" src="/js/bundle_mm_lz20200617.js"></script> -->
+<script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -792,5 +793,5 @@
       }
     }
   })();
-</script> -->
+</script>
 </html>
