@@ -199,6 +199,7 @@ export default {
       if (this.systemKey) {
         //如果是审核流程页面根据选择的体系请求树形数据
         url = "/api/access/systemtag/deps/tree";
+        addType != 1 && (url = '/api/access/systemtag/deps')
         param.systemTag = this.systemKey;
       }
       this.$ajax.get(url, param).then(res => {
