@@ -307,6 +307,7 @@
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
                                             <el-option v-for="item in dictionary['633']"
+                                                v-if="recordType===10&&item.key!=4||recordType!=10"
                                                 :key="item.key"
                                                 :label="item.value"
                                                 :value="item.key">
@@ -426,6 +427,7 @@
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                                             <el-option v-for="item in dictionary['633']"
+                                                v-if="recordType===10&&item.key!=4||recordType!=10"
                                                 :key="item.key"
                                                 :label="item.value"
                                                 :value="item.key">
@@ -1164,8 +1166,18 @@ export default {
             // console.log(value,index,type)
             if (type === "guest") {
                 this.guestList[index].encryptionCode = "";
+                if(value!=3){
+                    this.guestList[index].companyName=""
+                    this.guestList[index].lepName=""
+                    this.guestList[index].lepIdentity=""
+                }
             } else {
-                this.ownerList[index].encryptionCode = "";
+                this.ownerList[index].encryptionCode = ""
+                if(value!=3){
+                    this.ownerList[index].companyName=""
+                    this.ownerList[index].lepName=""
+                    this.ownerList[index].lepIdentity=""
+                }
             }
         },
         //身份证验证
@@ -2810,7 +2822,12 @@ export default {
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
-                    this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
+                    // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
+                    if(this.contractForm.estTransferTime){
+                        this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
+                    }else{
+                        this.$set(this.contractForm,'estTransferTime','')
+                    }
                     this.countTotal();
                     this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
                     if (this.contVersion === 1) {

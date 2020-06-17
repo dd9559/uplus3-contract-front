@@ -1265,29 +1265,15 @@
               >
                 <template slot-scope="scope">
                   <div v-if="scope.row.remarks">
-                    <el-popover
-                      trigger="hover"
-                      placement="top"
-                      v-if="power['sign-ht-xq-ly-vmemo'].state"
-                    >
+                    <el-popover trigger="hover" placement="top" v-if="power['sign-ht-xq-ly-vmemo'].state" >
                       <div style="width:300px">{{scope.row.remarks}}</div>
-                      <div
-                        slot="reference"
-                        class="name-wrapper"
-                      >{{scope.row.remarks}}</div>
+                      <div slot="reference" class="name-wrapper" >{{scope.row.remarks}}</div>
                     </el-popover>
-                    <div
-                      v-else
-                      class="noPower"
-                    >
+                    <div v-else class="noPower" >
                       <i class="iconfont icon-tubiao_shiyong-12"></i> 无权限浏览
                     </div>
                   </div>
-                  <p
-                    v-else
-                    class="iconfont icon-tubiao_shiyong-14 addRemarks"
-                    @click="showRemark(scope.row)"
-                  >添加备注</p>
+                  <p v-else class="iconfont icon-tubiao_shiyong-14 addRemarks" @click="showRemark(scope.row)" >添加备注</p>
                 </template>
               </el-table-column>
             </el-table>
@@ -1306,10 +1292,7 @@
         </el-tab-pane>
 
         <el-tab-pane label="审核记录" name="fifth">
-          <div
-            class="firstDetail"
-            :style="{ height: clientHei }"
-          >
+          <div class="firstDetail" :style="{ height: clientHei }" >
             <!-- 合同审核记录 -->
             <div
               class="receiptModule"
@@ -1363,10 +1346,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div
-              class="receiptModule"
-              v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1&&contType!='1'"
-            >
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1&&contType!='1'" >
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
@@ -1415,10 +1395,7 @@
               </div>
             </div>
             <!-- 合同签后审核记录 -->
-            <div
-              class="receiptModule"
-              v-if="power['sign-com-htdetail'].state"
-            >
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state" >
               <div class="moduleTitle">
                 <span>合同签后审核</span>
               </div>
@@ -1467,10 +1444,7 @@
               </div>
             </div>
             <!-- 委托合同签后审核记录 -->
-            <div
-              class="receiptModule"
-              v-if="power['sign-com-htdetail'].state&&contType!='1'"
-            >
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contType!='1'" >
               <div class="moduleTitle">
                 <span>委托合同签后审核</span>
               </div>
@@ -1866,10 +1840,7 @@
     </el-dialog>
     <!-- 打印成交报告 -->
     <!-- <vue-easy-print tableShow ref="easyPrint" v-show="false" style="width:900px" class="easyPrint"> -->
-    <LayerPrint
-      ref="easyPrint"
-      class="easyPrint_"
-    >
+    <LayerPrint ref="easyPrint" class="easyPrint_" >
       <div
         class="printContent"
         style="width:1000px;position:relative;z-index:200"
