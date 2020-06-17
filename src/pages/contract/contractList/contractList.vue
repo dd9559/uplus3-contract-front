@@ -844,7 +844,14 @@
       </span>
     </el-dialog>
     <!-- u+转成交弹框 -->
-    <el-dialog title="转成交" :visible.sync="uPlusIsShow" width="800px" class="uPluseDialog">
+    <el-dialog
+      title="转成交"
+      :visible.sync="uPlusIsShow"
+      width="800px"
+      class="uPluseDialog"
+      :close-on-click-modal="$tool.closeOnClickModal"
+      :close-on-press-escape="$tool.closeOnClickModal"
+    >
       <div>
         <ul class="uPlus-class">
           <li class="li" style="width:100%;">
@@ -1599,7 +1606,7 @@ export default {
               type: 2,
               operateType: 1,
               // isOffline: 1,
-              recordType:2,
+              recordType: 2,
               loanType: val.key
             }
           });
@@ -1610,7 +1617,7 @@ export default {
               contType: val.key,
               operateType: 1,
               // isOffline: 1
-              recordType:2,
+              recordType: 2
             }
           });
         }
