@@ -122,7 +122,7 @@
 
                 <el-form-item>
                   <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
-                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in dictionary['633']" :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                   </el-select>
                 </el-form-item>
 
@@ -159,7 +159,7 @@
 
                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
                   <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
-                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in dictionary['633']" :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                   </el-select>
                 </el-form-item>
 
@@ -227,7 +227,7 @@
 
                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
                   <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
-                    <el-option v-for="item in dictionary['633']" :key="item.key" :label="item.value" :value="item.key"></el-option>
+                    <el-option v-for="item in dictionary['633']" :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                   </el-select>
                 </el-form-item>
 
