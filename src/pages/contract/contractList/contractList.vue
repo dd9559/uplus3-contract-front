@@ -1146,8 +1146,10 @@ export default {
         (window.location.port ? ":" + window.location.port : "");
     }
     if (this.$route.query.turnDeal) {
-      this.uPlusIsShow = true;
-      this.getUplusHouseDetail(this.$route.query.houseId);
+      this.toVerify().then(res => {
+        this.uPlusIsShow = true;
+        this.getUplusHouseDetail(this.$route.query.houseId);
+      });
     }
     this.http = window.location.origin;
     this.getAdmin(); //获取当前登录人信息
@@ -1200,6 +1202,21 @@ export default {
     }
   },
   methods: {
+    toVerify() {
+      return new Promise((resolve, reject) => {
+        this.$ajax.post("/api/verify", this.code).then(res => {
+          resolve();
+        });
+      });
+      //   return new Promise((resolve, reject) => {
+      //       this.$ajax.post('/api/verify', this.code).then(res => {
+      //       res = res.data;
+      //       if (res.status === 200) {
+      //         resolve();
+      //       }}
+      //   });
+      // }
+    },
     moveIn(type) {
       if (type === "online") {
         this.showOnLine = true;
