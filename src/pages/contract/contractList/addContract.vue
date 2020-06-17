@@ -347,6 +347,7 @@
                                         type="text"
                                         :disabled="canInput"
                                         placeholder="企业名称"
+                                        maxlength="100"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
                                         @input="inputLegalP(item,'companyName')">
@@ -355,6 +356,7 @@
                                         type="text"
                                         :disabled="canInput"
                                         placeholder="法人名称"
+                                        maxlength="10"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
                                         @input="inputLegalP(item,'lepName')">
@@ -465,6 +467,7 @@
                                         type="text"
                                         :disabled="canInput"
                                         placeholder="企业名称"
+                                        maxlength="100"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
                                         @input="inputLegalP(item,'companyName')">
@@ -473,6 +476,7 @@
                                         type="text"
                                         :disabled="canInput"
                                         placeholder="法人名称"
+                                        maxlength="10"
                                         class="idCard_"
                                         :class="{'disabled':canInput}"
                                         @input="inputLegalP(item,'lepName')">
@@ -1076,7 +1080,7 @@ export default {
             this.clientHei = document.documentElement.clientHeight - 160 + "px";
         },
         addcommissionData() {
-            if (this.ownerList.length < 4) {
+            if (this.ownerList.length < 10) {
                 this.ownerList.push({
                     type: 1,
                     encryptionCode: "",
@@ -1095,7 +1099,7 @@ export default {
             }
         },
         addcommissionData1() {
-            if (this.guestList.length < 4) {
+            if (this.guestList.length < 10) {
                 this.guestList.push({
                     type: 2,
                     encryptionCode: "",
@@ -1322,6 +1326,11 @@ export default {
                 }
             }
         },
+        //邮箱验证
+        inputEmail(val){
+            console.log(val)
+            val.email=val.email.replace(/\s+/g,"")
+        },
         //验证合同信息
         isSave(value) {
             var rule_ = JSON.parse(JSON.stringify(rule));
@@ -1403,7 +1412,10 @@ export default {
                                                                                 isOk = true;
                                                                                 ownerRightRatio += element.propertyRightRatio - 0;
                                                                             }else{
-                                                                                this.$toast("房源信息-业主邮箱不正确");
+                                                                                this.$message({
+                                                                                    message:"房源信息-业主邮箱不正确",
+                                                                                    type:"warning"
+                                                                                });
                                                                                 break;
                                                                             }
                                                                         }else{
@@ -1420,7 +1432,10 @@ export default {
                                                                                     isOk = true;
                                                                                     ownerRightRatio += element.propertyRightRatio - 0;
                                                                                 }else{
-                                                                                    this.$toast("房源信息-业主邮箱不正确");
+                                                                                    this.$message({
+                                                                                        message:"房源信息-业主邮箱不正确",
+                                                                                        type:"warning"
+                                                                                    });
                                                                                     break;
                                                                                 }
                                                                             }else{
@@ -1570,7 +1585,10 @@ export default {
                                                                                             isOk_ = true;
                                                                                             guestRightRatio += element.propertyRightRatio - 0;
                                                                                         }else{
-                                                                                            this.$toast("客源信息-客户邮箱不正确");
+                                                                                            this.$message({
+                                                                                                message:"客源信息-客户邮箱不正确",
+                                                                                                type:"warning"
+                                                                                            });
                                                                                             break;
                                                                                         }
                                                                                     }else{
@@ -1586,7 +1604,10 @@ export default {
                                                                                                 isOk_ = true;
                                                                                                 guestRightRatio += element.propertyRightRatio - 0;
                                                                                             }else{
-                                                                                                this.$toast("客源信息-客户邮箱不正确");
+                                                                                                this.$message({
+                                                                                                    message:"客源信息-客户邮箱不正确",
+                                                                                                    type:"warning"
+                                                                                                });
                                                                                                 break;
                                                                                             }
                                                                                         }else{

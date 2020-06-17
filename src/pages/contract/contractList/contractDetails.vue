@@ -133,9 +133,21 @@
                         {{scope.row.email?scope.row.email:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column v-if="contractDetail.recordType.value===10" prop="companyName" label="企业名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType.value===10" prop="lepName" label="法人名称" ></el-table-column>
-                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" label="企业名称" >
+                      <template slot-scope="scope">
+                        {{scope.row.companyName?scope.row.companyName:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" label="法人名称" >
+                      <template slot-scope="scope">
+                        {{scope.row.lepName?scope.row.lepName:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" label="法人身份证号" >
+                      <template slot-scope="scope">
+                        {{scope.row.lepIdentity?scope.row.lepIdentity:'-'}}
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
               </div>
@@ -182,9 +194,21 @@
                         {{scope.row.email?scope.row.email:'-'}}
                       </template>
                     </el-table-column>
-                    <el-table-column v-if="contractDetail.recordType.value===10" prop="companyName" label="企业名称" ></el-table-column>
-                    <el-table-column v-if="contractDetail.recordType.value===10" prop="lepName" label="法人名称" ></el-table-column>
-                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" prop="lepIdentity" label="法人身份证号" ></el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" label="企业名称" >
+                      <template slot-scope="scope">
+                        {{scope.row.companyName?scope.row.companyName:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column v-if="contractDetail.recordType.value===10" label="法人名称" >
+                      <template slot-scope="scope">
+                        {{scope.row.lepName?scope.row.lepName:'-'}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" label="法人身份证号" >
+                      <template slot-scope="scope">
+                        {{scope.row.lepIdentity?scope.row.lepIdentity:'-'}}
+                      </template>
+                    </el-table-column>
                   </el-table>
                 </div>
               </div>

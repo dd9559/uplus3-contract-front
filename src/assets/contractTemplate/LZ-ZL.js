@@ -21,7 +21,7 @@ let sub = {
 let mainBtn=document.querySelector('#submit');
 if(mainBtn){
   mainBtn.addEventListener('click',function(e){
-    contractConfig.submit(e,sub,'templateError1')
+    contractConfig.submit(e,sub,'templateError')
   })
 }else{
   let btn=document.createElement('span')
@@ -30,7 +30,7 @@ if(mainBtn){
   btn.innerHTML='click'
   document.body.appendChild(btn)
   btn.addEventListener('click',function(e){
-    contractConfig.submit(e,sub,'templateError1')
+    contractConfig.submit(e,sub,'templateError')
   })
 }
 
