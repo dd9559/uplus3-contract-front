@@ -127,23 +127,23 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0,'identifyCode')" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10">
-                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
-                <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="100" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
+                <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3" :rules="{validator: nameInput, trigger: 'change'}">
+                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="100" @clear="clearIdentify(0,'companyName')" @input="cutInfo('companyName',0)"></el-input>
+                </el-form-item>
+
+                <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3" :rules="{validator: nameInput, trigger: 'change'}">
+                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="10" @clear="clearIdentify(0,'lepName')" @input="cutInfo('lepName',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="10" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
-                </el-form-item>
-
-                <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0,'lepIdentity')" @input="cutInfo('lepIdentity',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -164,23 +164,23 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard, trigger:'change'}">
-                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0)" @input="cutInfo('card',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0,'identifyCode')" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10">
-                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="100" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="100" @clear="clearIdentify(0,'companyName')" @input="cutInfo('companyName',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="10" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="10" @clear="clearIdentify(0,'lepName')" @input="cutInfo('lepName',0)"></el-input>
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
-                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0,'lepIdentity')" @input="cutInfo('lepIdentity',0)"></el-input>
                 </el-form-item>
 
               </el-form-item>
@@ -542,15 +542,23 @@ export default {
       this.contractForm.signDate=time_
     },
 
-    clearIdentify(type){
+    clearIdentify(type,name){
      this.$nextTick(() => {
-       this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{identifyCode:''}))
+       if(name==="all"){
+         this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{identifyCode:''}))
+         this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{companyName:''}))
+         this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{lepName:''}))
+         this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{lepIdentity:''}))
+       }else{
+         this.$set(this.contractForm.contPersons,type,Object.assign({},this.contractForm.contPersons[type],{name:''}))
+       }
+       
      })
     },
 
     changeCardType(val){
       this.$nextTick(() => {
-        this.clearIdentify(val)
+        this.clearIdentify(val,"all")
         this.$refs.contractForm.validateField('contPersons[' + val + '].identifyCode');
       })
     },
@@ -579,6 +587,7 @@ export default {
       else if(val == "name"||val=="lepName"||val=="companyName") {
         this.$nextTick(() => {
          this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
+        //  this.contractForm.contPersons[index].name = this.$tool.textInput(this.contractForm.contPersons[index].name)
         })
       }
       else if(val=="pCode"){
