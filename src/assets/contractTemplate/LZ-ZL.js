@@ -15,6 +15,8 @@ let sub = {
   'drapdown_val36': null,
   'val29': null,
   'val30': null,
+  'val34': null,
+  'val35': null,
 }
 
 
@@ -94,6 +96,18 @@ Dropdown.create({
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
+
+  if(readonlyItem === "signDate" && msg["signDate"]){
+    let time = new Date(Number(msg["signDate"]));
+    let y = time.getFullYear();
+    let M = time.getMonth() + 1;
+    let D = time.getDate();
+    let signDate = `${y}年${M}月${D}日`
+    let dom = document.querySelector(`*[systemparam=${readonlyItem}]`)
+    dom.innerHTML = signDate
+    dom.classList.remove('input-before')
+  }
+
   let readonlyArr = ['code','ownerName','ownerID','guestID','ownerNames','guestName','guestNames','propertyAddr','dealPrice','dealPriceUpper','square']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
