@@ -332,7 +332,7 @@
   <div>
     <p class="p-title">第三条：租金</p>
     <ul class="text-indent">
-      <li>租金交付方式为：租金按第<span systemParam="timeUnit" tag="input-auto"></span>种结算（1.每月交，2.每季交， 3.每半年交，4.每年交）。每月租金<span systemParam="dealPrice" tag="input-auto"></span>元整（大写：<span systemParam="dealPriceUpper" tag="input-auto"></span>圆），由乙方在前一租金结算期满的前10日内足额交付甲方，逾期则视为违约。
+      <li>租金交付方式为：租金按第<input type="text" class="text-limit dropdown-item" list="1,2,3,4" style="width:20px;padding-left: 10px;font-size: 16px;" readonly="readonly" extendParam="val36" inputmethod="val36" />种结算（1.每月交，2.每季交， 3.每半年交，4.每年交）。每月租金<span systemParam="dealPrice" tag="input-auto"></span>元整（大写：<span systemParam="dealPriceUpper" tag="input-auto"></span>圆），由乙方在前一租金结算期满的前10日内足额交付甲方，逾期则视为违约。
     </ul>
   </div>
   <div>
@@ -506,7 +506,7 @@
         var host_other="http://sign2.jjw.com:28879"
         var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_zl_lz20200617.js","datepicker.css"]
         for (let i = 0; i < addrList.length; i++) {
-          if(window.location.host==='localhost:8080'){
+          if(window.location.host==='localhost:8081'){
             if(addrList[i].indexOf('bundle')>-1){
               // addrList[i]=host_other+'/'+addrList[i]
               addrList[i]="./LZ-ZL.js"
