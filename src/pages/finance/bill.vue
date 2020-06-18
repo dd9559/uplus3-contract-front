@@ -930,7 +930,11 @@ export default {
         this.layer.show = true;
         this.layer.content = [].concat(row);
       } else if (type === 3) {
-        this.$refs.layerInvoice.show(row.id, true);
+        if(row.contId){
+         this.$refs.layerInvoice.show(row.id, true,1,row.contId);
+        }else{
+         this.$refs.layerInvoice.show(row.id, true,1,0);
+        }
         // this.$refs.layerInvoice.contId=row.contId
       } else if (type === 4) {
         this.$refs.layerInvoice.show(row.billId);

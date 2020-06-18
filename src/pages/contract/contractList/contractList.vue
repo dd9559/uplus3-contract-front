@@ -1145,7 +1145,7 @@ export default {
         window.location.hostname +
         (window.location.port ? ":" + window.location.port : "");
     }
-    if (this.$route.query.turnDeal) {
+    if (this.$route.query.houseId) {
       this.uPlusIsShow = true;
       this.getUplusHouseDetail(this.$route.query.houseId);
     }

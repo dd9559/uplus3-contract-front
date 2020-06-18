@@ -88,7 +88,7 @@
                     <span class="serialNumber">{{contractDetail.houseinfoCode}}</span>
                     <span
                       class="zhuanjie"
-                      v-if="contractDetail.isRetained===0"
+                      v-if="contractDetail.isRetained===1"
                     >留</span>
                   </p>
                   <p class="address">
@@ -159,7 +159,7 @@
                   <p>
                     <span class="tag">客源编号：</span>
                     <span class="serialNumber">{{contractDetail.guestinfoCode?contractDetail.guestinfoCode:"--"}}</span>
-                    <span class="zhuanjie" v-if="contractDetail.isRefer===0" >转介</span>
+                    <span class="zhuanjie" v-if="contractDetail.isRefer===1" >转介</span>
                   </p>
                   <!-- <p v-if="contractDetail.recordVersion===1"><span class="tag">成交经纪人：</span><span class="text">{{contractDetail.dealAgentStoreName?contractDetail.dealAgentStoreName:'-'}}-{{contractDetail.dealAgentName?contractDetail.dealAgentName:"-"}}</span></p> -->
                   <p v-if="contractDetail.recordVersion===1" style="position:relative;" >

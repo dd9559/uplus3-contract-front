@@ -52,16 +52,6 @@
                 @input="inputInfo_op"
                 v-if="form.inputInfo"
               />
-              <input
-                type="text"
-                size="small"
-                class="w140 el-input__inner person"
-                placeholder="请输入"
-                maxlength="20"
-                v-model.trim="form.payerName"
-                @input="inputInfo_op"
-                v-if="contId==0"
-              />
             </p>
             <p v-if="city_wh">
               <label>收款单位（加盖财务专用章）:</label>
@@ -264,7 +254,9 @@ export default {
       signatureList: [
         { name: "吉家", key: 1 },
         { name: "正念", key: 2 }
-      ]
+      ],
+      isInputCus: false,
+      contIdCopy: null
     };
   },
   methods: {
@@ -337,6 +329,17 @@ export default {
         }
       });
     },
+    getDropdownCopy: function(contId) {
+      let param = {
+        contId: contId
+      };
+      this.$ajax.get("/api/payInfo/selectValue", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.dropdown = res.data;
+        }
+      });
+    },
     getOption: function(tip) {
       if (tip === "sign") {
         !!this.city_wh &&
@@ -344,7 +347,9 @@ export default {
             signatureType: this.form.signatureType
           });
       } else {
-        this.form.inputInfo = false;
+        if (!this.isInputCus) {
+          this.form.inputInfo = false;
+        }
         this.dropdown.find(item => {
           if (item.value === tip) {
             this.form.payerName = item.custName;
@@ -559,6 +564,7 @@ export default {
             this.paperInfoData = Object.assign({}, res.data);
             let obj = JSON.parse(JSON.stringify(res.data));
             this.moneyTypes = [].concat(obj.list);
+            this.contIdCopy = res.data.contId;
             this.moneyTypes.forEach((item, index) => {
               let obj = Object.assign(
                 {
@@ -582,7 +588,9 @@ export default {
         });
     },
     // 打开
-    show(id, bool = false, stateBoll = 1) {
+    show(id, bool = false, stateBoll = 1, isCont) {
+      console.log("5555");
+      console.log(isCont);
       this.layerLoading = Loading.service({});
       this.paperType = bool;
       // this.paperShow = true;
@@ -593,8 +601,67 @@ export default {
       this.ID = id;
       //判断是开票或票据详情预览
       if (bool) {
-        this.paperList();
-        this.contId && this.getDropdown();
+        if (isCont) {
+          this.paperList();
+          this.contId && this.getDropdown();
+        } else if (isCont == 0) {
+          this.paperList();
+          this.form.inputInfo = true;
+          this.isInputCus = true;
+        } else if (isCont == undefined) {
+          this.$ajax
+            .get("/api/bills/tobe", { id: this.ID })
+            .then(res => {
+              res = res.data;
+              if (res.status === 200) {
+                this.$ajax
+                  .get("/api/payInfo/selectValue", {
+                    contId: res.data.contId
+                  })
+                  .then(res => {
+                    res = res.data;
+                    if (res.status === 200) {
+                      this.dropdown = res.data;
+                    }
+                  });
+                this.paperInfoData = Object.assign({}, res.data);
+                let obj = JSON.parse(JSON.stringify(res.data));
+                this.moneyTypes = [].concat(obj.list);
+                this.contIdCopy = res.data.contId;
+                this.moneyTypes.forEach((item, index) => {
+                  let obj = Object.assign(
+                    {
+                      check: true,
+                      addressHidden: false,
+                      project: ""
+                    },
+                    item
+                  );
+                  this.moneyTypes.splice(index, 1, obj);
+                });
+                this.layerLoading.close();
+                if (this.moneyTypes.length > 0) {
+                  this.paperShow = true;
+                }
+              }
+            })
+            .catch(err => {
+              this.$message.error(err);
+              this.layerLoading.close();
+            });
+          // this.paperList();
+          // if (this.contIdCopy) {
+          // let param = {
+          //   contId: this.contIdCopy
+          // };
+          //   this.$ajax.get("/api/payInfo/selectValue", param).then(res => {
+          //     res = res.data;
+          //     if (res.status === 200) {
+          //       this.dropdown = res.data;
+          //     }
+          //   });
+          // }
+        }
       } else {
         this.getPaperDetails(id);
       }
