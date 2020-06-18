@@ -685,7 +685,7 @@
             <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
                 class="btn"
-                v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1"
+                v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value!=2"
                 @click="goPreview(scope.row)"
               >预览</div>
               <div
