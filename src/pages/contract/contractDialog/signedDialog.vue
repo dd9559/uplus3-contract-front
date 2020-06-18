@@ -122,9 +122,13 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
+import checkPerson from '@/components/checkPerson';
 
 export default {
   mixins: [MIXINS],
+  components:{
+    checkPerson
+  },
   props: {
     dialogVisible: {
       type: Boolean,
