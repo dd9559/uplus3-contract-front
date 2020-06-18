@@ -37,10 +37,10 @@
                     <span class="tag">签约时间：</span>
                     <span class="text">{{contractDetail.signDate}}</span>
                   </p>
-                  <!-- <p>
+                  <p>
                     <span class="tag">预计过户时间：</span>
                     <span class="text">{{contractDetail.signDateLast}}</span>
-                  </p> -->
+                  </p>
                   <p>
                     <span class="tag">合同类型：</span>
                     <span class="text" v-if="contractDetail.contType.value===1" >租赁</span>
@@ -72,7 +72,7 @@
                     <span class="tag">佣金合计：</span>
                     <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
                   </p>
-                  <p v-if="contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
+                  <p v-if="showTransferTime&&contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)">
                     <span class="tag">预计过户时间：</span>
                     <span class="text">{{contractDetail.estTransferTime|formatDate}}</span>
                   </p>
@@ -1663,12 +1663,7 @@
     </div>
 
     <!-- 拨号弹出框 -->
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="460px"
-      :closeOnClickModal="$tool.closeOnClickModal"
-    >
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="460px" :closeOnClickModal="$tool.closeOnClickModal" >
       <div>
         <div class="icon">
           <i class="el-icon-success"></i>
