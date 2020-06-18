@@ -533,20 +533,23 @@ export default {
                         colspan: 1
                     };
                 } else {
-                    if (
-                        rowIndex === rows.index + 1 &&
-                        rows.id === row.contractEntrust.id
-                    ) {
-                        return {
-                            rowspan: 0,
-                            colspan: 0
-                        };
-                    } else {
-                        return {
-                            rowspan: 1,
-                            colspan: 1
-                        };
+                    if(row.contractEntrust){
+                         if (
+                             rowIndex === rows.index + 1 &&
+                             rows.id === row.contractEntrust.id
+                         ) {
+                             return {
+                                 rowspan: 0,
+                                 colspan: 0
+                             };
+                         } else {
+                             return {
+                                 rowspan: 1,
+                                 colspan: 1
+                             };
+                     }
                     }
+              
                 }
             } else {
                 return {
