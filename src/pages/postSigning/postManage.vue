@@ -956,7 +956,7 @@ import LayerScrollAuto from "@/components/LayerScrollAuto";
 
 // 合同
 const STATE = {
-  start: "已结束", //已结束
+  start: "已结案", //已结案
   end: 1, //后期所有步骤办理完
   err: 2 //解约合同
 };

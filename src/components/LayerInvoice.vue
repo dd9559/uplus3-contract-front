@@ -622,6 +622,10 @@ export default {
                     res = res.data;
                     if (res.status === 200) {
                       this.dropdown = res.data;
+                      if (!res.data.contId) {
+                        this.form.inputInfo = true;
+                        this.isInputCus = true;
+                      }
                     }
                   });
                 this.paperInfoData = Object.assign({}, res.data);
