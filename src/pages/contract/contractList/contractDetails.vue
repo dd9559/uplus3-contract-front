@@ -38,10 +38,6 @@
                     <span class="text">{{contractDetail.signDate}}</span>
                   </p>
                   <p>
-                    <span class="tag">预计过户时间：</span>
-                    <span class="text">{{contractDetail.signDateLast}}</span>
-                  </p>
-                  <p>
                     <span class="tag">合同类型：</span>
                     <span class="text" v-if="contractDetail.contType.value===1" >租赁</span>
                     <span class="text" v-if="contractDetail.contType.value===2&&!contractDetail.loanType" >买卖</span>
