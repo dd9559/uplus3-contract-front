@@ -593,7 +593,7 @@
               <el-button
                 round
                 class="search_btn"
-                v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1"
+                v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value!=2"
                 @click="goPreview"
               >预览</el-button>
               <el-button
@@ -636,7 +636,7 @@
               <el-button
                 round
                 class="search_btn"
-                v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value===1"
+                v-if="power['sign-ht-info-view'].state&&contractDetail.recordType.value!=2"
                 @click="goPreview"
               >预览</el-button>
             </div>
