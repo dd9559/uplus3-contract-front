@@ -97,8 +97,8 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  if(readonlyItem==="signDate"){
-    let time = new Date(msg["signDate"]);
+  if(readonlyItem === "signDate" && msg["signDate"]){
+    let time = new Date(Number(msg["signDate"]));
     let y = time.getFullYear();
     let M = time.getMonth() + 1;
     let D = time.getDate();
