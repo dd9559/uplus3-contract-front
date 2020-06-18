@@ -178,12 +178,14 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   singleCompany: "是的噶几开会说",
 //   dealPrice:1000,
 //   dealPriceUpper:'壹仟',
-//   square:160
+//   square:160,
+//   guestStoreRegisterCode: '213',
+//   signDate: 1592465819508
 // }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode']
+  let readonlyArr = ['code','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode','signDate']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
@@ -193,6 +195,13 @@ for (let readonlyItem in msg) {
           element.innerHTML=msg[readonlyItem]
           document.querySelector(`*[extendparam=val22]`).innerHTML=msg[readonlyItem]
           document.querySelector(`*[extendparam=val22]`).classList.remove('input-before')
+        }else if(readonlyItem==='signDate'&& msg["signDate"]){
+          let time = new Date(Number(msg["signDate"]));
+          let y = time.getFullYear();
+          let M = time.getMonth() + 1;
+          let D = time.getDate();
+          let signDate = `${y}年${M}月${D}日`
+          element.innerHTML = signDate
         }else {
           element.innerHTML=msg[readonlyItem]
         }
@@ -253,7 +262,27 @@ contractConfig.checkboxListener(function(){},function(obj,index){
       // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
       if(item===obj.currentTarget){
         if(!item.querySelector('p').getAttribute('checked')){
+          contractConfig.initForm(checkIO[i],1)
+        }else{
           contractConfig.initForm(checkIO[i],0)
+        }
+      }
+    })
+  }else if(attr==='rights'){
+    let checkIO={
+      5: ['val82'],
+    }
+    boxArray.forEach((item,i)=>{
+      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
+      if(item===obj.currentTarget){
+        if(item.querySelector('p').getAttribute('checked')){
+          if(i===5){
+            contractConfig.initForm(checkIO[5],0)
+          }else {
+            contractConfig.initForm(checkIO[5],1)
+          }
+        }else{
+          contractConfig.initForm(checkIO[5],1)
         }
       }
     })
