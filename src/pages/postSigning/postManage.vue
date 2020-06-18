@@ -205,9 +205,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <div class="in-block">
+        <div class="in-block" v-if="showTransferTime">
           <el-form-item prop="regionTime" class="mr">
-            <el-select v-model="propForm.regionTime" @change="regionTimeChangeFn" class="w110">
+            <el-select v-model="propForm.regionTime" @change="regionTimeChangeFn" class="w110" >
               <el-option
                 v-for="item in rules.regionTime"
                 :key="item.value"
@@ -331,7 +331,7 @@
         <el-table-column :formatter="nullFormatterData" label="接收日期" min-width="90">
           <template slot-scope="scope">{{dateFormat(scope.row.receiveTime)}}</template>
         </el-table-column>
-        <el-table-column :formatter="nullFormatterData" label="预计过户时间" min-width="100">
+        <el-table-column :formatter="nullFormatterData" label="预计过户时间" min-width="100"  v-if="showTransferTime">
           <template slot-scope="scope">{{dateFormat(scope.row.estTransferTime)}}</template>
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" label="实际过户时间" min-width="100">
