@@ -19,33 +19,34 @@
             <div class="msg">
               <div class="title">合同信息</div>
               <div class="content">
-                <!-- <div class="one_"> -->
+                <div class="isToCommission" v-if="contractDetail.isTransfeOfCommission">
                   <!-- <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
                   <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
                   <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
                   <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
                   <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span> -->
-                  <!-- <p>
-                    <span class="tag">应收金额（元）：</span>
-                    <span class="text">{{contractDetail.receivableCommission}} 元</span>
+                  <span>转佣</span>
+                  <p>
+                    <span>应收金额：</span>
+                    <span>{{contractDetail.receivableCommission}} 元</span>
                   </p>
                   <p>
-                    <span class="tag">已收金额（元）：</span>
-                    <span class="text">{{contractDetail.receivedCommission}} 元</span>
+                    <span>已收金额：</span>
+                    <span>{{contractDetail.receivedCommission}} 元</span>
                   </p>
                   <p>
-                    <span class="tag">未收金额（元）：</span>
-                    <span class="text">{{contractDetail.uncollectedCommission}} 元</span>
+                    <span>未收金额：</span>
+                    <span>{{contractDetail.uncollectedCommission}} 元</span>
                   </p>
                   <p>
-                    <span class="tag">已退金额（元）：</span>
-                    <span class="text">{{contractDetail.retiredCommission}} 元</span>
+                    <span>已退金额：</span>
+                    <span>{{contractDetail.retiredCommission}} 元</span>
                   </p>
                   <p>
-                    <span class="tag">转佣金额（元）：</span>
-                    <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
+                    <span>转佣金额：</span>
+                    <span>{{Number(contractDetail.receivedCommission) - Number(contractDetail.retiredCommission)}}</span>
                   </p>
-                </div> -->
+                </div>
 
                 <div class="one_">
                   <p style="position:relative;">
@@ -678,7 +679,7 @@
               <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
             </p>
             <ul class="ulData" style="margin-bottom:10px" >
-              <li v-show="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)">
+              <li v-show="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10">
                 <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_" >
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
@@ -693,7 +694,7 @@
                   </div>
                 </el-tooltip>
                 <i
-                  v-if="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
+                  v-if="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10"
                   class="iconfont icon-tubiao-6"
                   @click="ZTdelectData(index,item.path,'main')"
                   :class="{'deleteShow':isDelete===item.index+item.path}"
@@ -705,7 +706,7 @@
               round
               class="search_btn"
               @click="saveFile('main')"
-              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))"
+              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))&&contractDetail.recordType.value!=10"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
@@ -4172,6 +4173,19 @@ export default {
         }
         /deep/.el-textarea.is-disabled .el-textarea__inner {
           color: #606266;
+        }
+      }
+      .isToCommission{
+        margin-bottom: 10px;
+        color: red;
+        >span{
+          display: inline-block;
+          width: 100px;
+          text-align: center;
+        }
+        p{
+          display: inline-block;
+          width: 180px;
         }
       }
     }
