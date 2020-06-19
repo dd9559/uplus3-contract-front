@@ -486,7 +486,7 @@
             <div v-if="!scope.row.isCombine">
               <div class="btn" @click="runningWater(scope.row)">流水</div>
               <div class="btn" v-if="!scope.row.isTransaction" @click="gathering(scope.row)">收款</div>
-              <div class="btn" @click="payment(scope.row)">付款</div>
+              <div class="btn" v-if="!scope.row.isTransaction" @click="payment(scope.row)">付款</div>
             </div>
             <div class="btn" v-else-if="!scope.row.isTransaction" @click="gathering(scope.row)">收款</div>
             <span v-else>-</span>

@@ -19,6 +19,34 @@
             <div class="msg">
               <div class="title">合同信息</div>
               <div class="content">
+                <!-- <div class="one_"> -->
+                  <!-- <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
+                  <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
+                  <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
+                  <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
+                  <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span> -->
+                  <!-- <p>
+                    <span class="tag">应收金额（元）：</span>
+                    <span class="text">{{contractDetail.receivableCommission}} 元</span>
+                  </p>
+                  <p>
+                    <span class="tag">已收金额（元）：</span>
+                    <span class="text">{{contractDetail.receivedCommission}} 元</span>
+                  </p>
+                  <p>
+                    <span class="tag">未收金额（元）：</span>
+                    <span class="text">{{contractDetail.uncollectedCommission}} 元</span>
+                  </p>
+                  <p>
+                    <span class="tag">已退金额（元）：</span>
+                    <span class="text">{{contractDetail.retiredCommission}} 元</span>
+                  </p>
+                  <p>
+                    <span class="tag">转佣金额（元）：</span>
+                    <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
+                  </p>
+                </div> -->
+
                 <div class="one_">
                   <p style="position:relative;">
                     <span class="tag">合同编号：</span>
@@ -650,48 +678,22 @@
               <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
             </p>
             <ul class="ulData" style="margin-bottom:10px" >
-              <li v-show="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10">
-                <file-up
-                  class="uploadSubject"
-                  @getUrl="uploadSubject"
-                  :scane="uploadScane"
-                  id="zhuti_"
-                >
+              <li v-show="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)">
+                <file-up class="uploadSubject" @getUrl="uploadSubject" :scane="uploadScane" id="zhuti_" >
                   <i class="iconfont icon-shangchuan"></i>
                   <p>点击上传</p>
                 </file-up>
               </li>
-              <li
-                v-for="(item,index) in uploadList"
-                :key="item.index"
-                @mouseover="moveIn(item.index+item.path)"
-                @mouseout="moveOut(item.index+item.path)"
-              >
-                <el-tooltip
-                  class="item"
-                  effect="dark"
-                  :content="item.name"
-                  placement="bottom"
-                >
-                  <div
-                    class="namePath"
-                    @click="previewPhoto(uploadList,index)"
-                  >
-                    <img
-                      class="signImage"
-                      :src="item.path|getSignImage(mainDataFiles)"
-                      alt
-                      v-if="isPictureFile(item.fileType)"
-                    />
-                    <upload-cell
-                      :type="item.fileType"
-                      v-else
-                    ></upload-cell>
+              <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" >
+                <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom" >
+                  <div class="namePath" @click="previewPhoto(uploadList,index)" >
+                    <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt v-if="isPictureFile(item.fileType)" />
+                    <upload-cell :type="item.fileType" v-else ></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
                 <i
-                  v-if="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&contractDetail.recordType.value!=10"
+                  v-if="((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
                   class="iconfont icon-tubiao-6"
                   @click="ZTdelectData(index,item.path,'main')"
                   :class="{'deleteShow':isDelete===item.index+item.path}"
@@ -703,14 +705,11 @@
               round
               class="search_btn"
               @click="saveFile('main')"
-              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))&&contractDetail.recordType.value!=10"
+              v-if="power['sign-ht-xq-main-add'].state&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)&&(contractDetail.contState.value>1||(contractDetail.recordType.value===2&&contractDetail.contState.value!=0))"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
-          <div
-            class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
-          >
+          <div class="contractSubject" v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)" >
             <p class="mainTitle">委托合同主体</p>
             <ul
               class="ulData"
