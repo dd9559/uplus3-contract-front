@@ -650,7 +650,8 @@ export default {
         propertyRightAddr: "" //物业地址
       },
       isFukuanFangInput: false,
-      shoufuType: ""
+      shoufuType: "",
+      payCode: ""
     };
   },
   mounted() {
@@ -1041,6 +1042,7 @@ export default {
           this.moneyTypeName = res.data.moneyTypeName;
           this.dep.id = res.data.inObjStoreId;
           this.dep.name = res.data.inObjStore;
+          this.payCode = res.data.payCode;
           // this.getEmploye(res.data.deptId)
           if (res.data.filePath) {
             this.files = [].concat(JSON.parse(res.data.filePath));
@@ -1334,6 +1336,7 @@ export default {
             res = res.data;
             if (res.status === 200) {
               this.fullscreenLoading = false;
+              res.data.payCode = this.payCode;
               if (this.billStatus) {
                 this.$router.go(-1);
               } else {
@@ -1511,6 +1514,9 @@ export default {
                 }*/
       this.billStatus = false; //线上收款
       type !== 1 && (this.billStatus = true);
+      if (type == 2) {
+        this.getCompanyBanks(this.dep.id);
+      }
     },
     getCell: function(label) {
       this.moneyTypeActiveName = label.name;
