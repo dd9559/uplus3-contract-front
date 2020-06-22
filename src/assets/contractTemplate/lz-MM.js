@@ -49,7 +49,7 @@ let Obj={
     'val69':null,
     'val70':null,
     'time_val72':null,
-    'time_val74':null,
+    'val74':null,
     'val75':null,
     'val76':null,
     'val77':null,
