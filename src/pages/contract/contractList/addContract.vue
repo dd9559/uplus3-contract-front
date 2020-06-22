@@ -12,8 +12,9 @@
                     <p>
                         合同信息
                         <span v-if="isDeal||contractForm.dealById" class="toCommission">
-                            <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>
-                            <span class="toCommissionStyle" @click="toCommission">是否转佣</span>
+                            <span class="toCommissionStyle" @click="toCommission">
+                                <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
+                            </span>
                             <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
                             <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
                             <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
@@ -1335,7 +1336,8 @@ export default {
         isSave(value) {
             var rule_ = JSON.parse(JSON.stringify(rule));
             this.haveExamine = value;
-            if(this.userMsg.cityId!=52||(this.userMsg.cityId===52&&this.contractForm.type===1)) {
+            // if(this.userMsg.cityId!=52||(this.userMsg.cityId===52&&this.contractForm.type===1)) {
+            if(!this.showTransferTime||(this.showTransferTime&&this.contractForm.type===1)) {
                 // 非兰州无预计过户时间
                 delete rule_.estTransferTime
             }
@@ -3684,35 +3686,22 @@ export default {
 .toCommission {
     cursor: pointer;
     display: inline-block;
-    .attention {
-        color: #ccc !important;
-        font-weight: normal;
-    }
-    .attention_ {
-        color: @color-blue !important;
+    .toCommissionStyle{
+        color: black;
+        .attention {
+            color: #ccc !important;
+            font-weight: normal;
+        }
+        .attention_ {
+            color: @color-blue !important;
+        }
     }
     padding-left: 65px;
     font-weight: normal;
     color: red;
-    span {
+    >span {
         font-size: 14px !important;
-        &:nth-child(2) {
-            color: black;
-        }
-        &:nth-child(n + 2) {
-            padding-right: 30px;
-        }
+        padding-right: 30px;
     }
-    // .toCommissionStyle{
-
-    // &::before{
-    //   content: '';
-    //   display: inline-block;
-    //   width: 10px;
-    //   height: 10px;
-    //   border: 1px solid black;
-    //   border-radius: 3px;
-    // }
-    // }
 }
 </style>
