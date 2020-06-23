@@ -851,7 +851,7 @@
       class="uPluseDialog"
       :close-on-click-modal="$tool.closeOnClickModal"
       :close-on-press-escape="$tool.closeOnClickModal"
-    >
+      >
       <div>
         <ul class="uPlus-class">
           <li class="li" style="width:100%;">

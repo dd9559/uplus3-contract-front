@@ -489,7 +489,7 @@ export default {
       this.clientHei= document.documentElement.clientHeight -160 + 'px'
     },
     addcommissionData() {
-      if (this.t_ownerList.length < 4) {
+      if (this.t_ownerList.length < 10) {
         this.t_ownerList.push({
           type: 1,
           mobile: "",
@@ -505,7 +505,7 @@ export default {
       }
     },
     addcommissionData1() {
-      if (this.t_guestList.length < 4) {
+      if (this.t_guestList.length < 10) {
         this.t_guestList.push({
           type: 2,
           mobile: "",

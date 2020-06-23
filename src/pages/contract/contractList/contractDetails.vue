@@ -20,31 +20,26 @@
               <div class="title">合同信息</div>
               <div class="content">
                 <div class="isToCommission" v-if="contractDetail.isTransfeOfCommission">
-                  <!-- <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
-                  <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
-                  <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
-                  <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
-                  <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span> -->
                   <span>转佣</span>
                   <p>
                     <span>应收金额：</span>
-                    <span>{{contractDetail.receivableCommission}} 元</span>
+                    <span>{{ys}} 元</span>
                   </p>
                   <p>
                     <span>已收金额：</span>
-                    <span>{{contractDetail.receivedCommission}} 元</span>
+                    <span>{{ss}} 元</span>
                   </p>
                   <p>
                     <span>未收金额：</span>
-                    <span>{{contractDetail.uncollectedCommission}} 元</span>
+                    <span>{{ws}} 元</span>
                   </p>
                   <p>
                     <span>已退金额：</span>
-                    <span>{{contractDetail.retiredCommission}} 元</span>
+                    <span>{{yt}} 元</span>
                   </p>
                   <p>
                     <span>转佣金额：</span>
-                    <span>{{Number(contractDetail.receivedCommission) - Number(contractDetail.retiredCommission)}}</span>
+                    <span>{{zy}}</span>
                   </p>
                 </div>
 
@@ -115,9 +110,8 @@
                   </p>
                   <p>
                     <span class="tag">佣金合计：</span>
-                    <span
-                      class="text"
-                    >{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span>
+                    <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
+                    <span class="text">{{commissionTotal}} 元</span>
                   </p>
                   <p
                     v-if="showTransferTime&&contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)"
@@ -691,7 +685,7 @@
           label="合同主体"
           name="second"
           v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
-        >
+          >
           <div
             class="contractSubject"
             v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)"
@@ -975,7 +969,7 @@
           label="委托合同"
           v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state"
           name="agency"
-        >
+          >
           <agency-contract
             :defaultInfo="contractDetail"
             v-if="agencyShow&&isHaveDetail"
@@ -1456,7 +1450,7 @@
       :visible.sync="dialogVisible"
       width="460px"
       :closeOnClickModal="$tool.closeOnClickModal"
-    >
+      >
       <div>
         <div class="icon">
           <i class="el-icon-success"></i>
@@ -1474,7 +1468,7 @@
       :visible.sync="dialogInvalid"
       width="400px"
       :closeOnClickModal="$tool.closeOnClickModal"
-    >
+      >
       <div class="top">
         <p class="invalid">是否确认撤单！</p>
       </div>
@@ -1490,7 +1484,7 @@
       width="740px"
       :closeOnClickModal="$tool.closeOnClickModal"
       @close="closeRemarks"
-    >
+      >
       <div class="top">
         <p class="form-label" style="width:50px">备注</p>
         <div class="reason">
@@ -1574,7 +1568,7 @@
       width="460px"
       :closeOnClickModal="$tool.closeOnClickModal"
       :showClose="false"
-    >
+      >
       <span class="contDataTag">请上传资料库~</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSuccess=false">暂不完善</el-button>
@@ -2348,7 +2342,15 @@ export default {
       dialogDel: false,
       agencyShow: false, //委托合同组件显示
       isHaveDetail: false, //合同详情已返回
-      fullscreenLoading: false //合同主体上传loading
+      fullscreenLoading: false, //合同主体上传loading
+
+      commissionTotal:0,//总佣金
+
+      ys: 0, //应收金额
+      ss: 0, //实收
+      ws: 0, //未收金额
+      yt: 0, //已退金额
+      zy: 0, //转佣金额
     };
   },
   created() {
@@ -2982,6 +2984,12 @@ export default {
                 this.clientrData.push(this.contractDetail.contPersons[i]);
               }
             }
+            //转佣数据
+            if(this.contractDetail.dealById&&this.contractDetail.isTransfeOfCommission){//转成交的合同并且转佣
+              this.getZYInfo(this.contractDetail.id)
+            }else{
+              this.commissionTotal = Number(this.contractDetail.custCommission)+Number(this.contractDetail.ownerCommission)
+            }
           }
         })
         .catch(error => {
@@ -2990,6 +2998,23 @@ export default {
             type: "error"
           });
         });
+    },
+    // 转成交合同编辑时获取原意向/定金合同应收实收数据
+    getZYInfo(id){
+      let param = {
+        contId:id
+      }
+      this.$ajax.get("/api/contract/getZYInfo",param).then(res=>{
+        res=res.data
+        if(res.status===200){
+          this.ys = res.data.ys //应收金额
+          this.ss = res.data.ss //实收
+          this.ws = res.data.ws //未收金额
+          this.yt = res.data.yt //已退金额
+          this.zy = res.data.zy //转佣金额
+          this.commissionTotal = Number(this.contractDetail.custCommission)+Number(this.contractDetail.ownerCommission)+Number(res.data.zy)
+        }
+      })
     },
     //获取所在城市的交易类型
     getTransFlow() {
