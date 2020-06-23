@@ -15,11 +15,11 @@
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
                             </span>
-                            <span>应收金额（元）：{{contractForm.receivableCommission}}</span>
-                            <span>已收金额（元）：{{contractForm.receivedCommission}}</span>
-                            <span>未收金额（元）：{{contractForm.uncollectedCommission}}</span>
-                            <span>已退金额（元）：{{contractForm.retiredCommission}}</span>
-                            <span v-if="isToCommission">转佣金额（元）：{{toCommissionSum}}</span>
+                            <span>应收金额（元）：{{ys}}</span>
+                            <span>已收金额（元）：{{ss}}</span>
+                            <span>未收金额（元）：{{ws}}</span>
+                            <span>已退金额（元）：{{yt}}</span>
+                            <span v-if="isToCommission">转佣金额（元）：{{zy}}</span>
                         </span>
                     </p>
                     <div class="form-content">
@@ -950,8 +950,13 @@ export default {
             loanType: 0, //7 全款买卖 8 贷款买卖
             showRemark: false, //备注栏折叠展开
             basicsOptions: [], //基础版经纪人信息
+
             isToCommission: false, // 是否转佣
-            toCommissionSum:0,//转佣金额
+            ys: 0, //应收金额
+            ss: 0, //实收
+            ws: 0, //未收金额
+            yt: 0, //已退金额
+            zy: 0, //转佣金额
 
             houseId:0,//转成交房源id
         };
@@ -1027,21 +1032,33 @@ export default {
         },
         //计算总佣金
         countTotal() {
-            let owner = Number(
-                this.contractForm.ownerCommission ? this.contractForm.ownerCommission : 0
-            );
-            let cust = Number(
-                this.contractForm.custCommission ? this.contractForm.custCommission : 0
-            );
-            if (cust || owner) {
-                let total = cust + owner;
-                if(this.$route.query.isDeal||this.contractForm.dealById){//转成交合同
-                    total = cust + owner + Number(this.toCommissionSum)
-                }else{
-                    total = cust + owner;
-                }
-                this.commissionTotal = this.fomatFloat(total, 2);
+            let owner = Number( this.contractForm.ownerCommission ? this.contractForm.ownerCommission : 0 );
+            let cust = Number( this.contractForm.custCommission ? this.contractForm.custCommission : 0 );
+            let commission = Number( this.zy ? this.zy : 0 );
+            let total
+            if((this.$route.query.isDeal||this.contractForm.dealById)&&this.isToCommission){//转成交合同
+                total = cust + owner + Number(this.zy)
+            }else{
+                total = cust + owner;
             }
+            this.commissionTotal = this.fomatFloat(total, 2);
+        },
+        // 转成交合同编辑时获取原意向/定金合同应收实收数据
+        getZYInfo(id){
+            let param = {
+                contId:id
+            }
+            this.$ajax.get("/api/contract/getZYInfo",param).then(res=>{
+                res=res.data
+                if(res.status===200){
+                    this.ys = res.data.ys //应收金额
+                    this.ss = res.data.ss //实收
+                    this.ws = res.data.ws //未收金额
+                    this.yt = res.data.yt //已退金额
+                    this.zy = res.data.zy //转佣金额
+                    this.countTotal();
+                }
+            })
         },
         //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
         fomatFloat: function(num, n) {
@@ -2851,7 +2868,6 @@ export default {
                     }else{
                         this.$set(this.contractForm,'estTransferTime','')
                     }
-                    this.countTotal();
                     this.contVersion = res.data.recordVersion; //合同基本信息版式（1 基础版  2 复杂版）
                     if (this.contVersion === 1) {
                         //经纪人
@@ -2879,10 +2895,17 @@ export default {
                     this.isToCommission=this.contractForm.isTransfeOfCommission?true:false
                     let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
                     this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
-                    if(this.$route.query.isDeal||this.contractForm.dealById){
-                        this.toCommissionSum = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission)
+                    if(this.$route.query.isDeal){
+                        this.ys=this.contractForm.receivableCommission //应收金额
+                        this.ss=this.contractForm.receivedCommission //实收
+                        this.ws=this.contractForm.uncollectedCommission //未收金额
+                        this.yt=this.contractForm.retiredCommission //已退金额
+                        this.zy = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission) //转佣金额
+                        this.countTotal();
                     }
-
+                    if(this.contractForm.dealById&&this.type===2){//编辑转成交的合同
+                        this.getZYInfo(this.contractForm.id)
+                    }
                     //合同状态为已签约且未结算时只允许编辑房客源编号
                     if (this.contractForm.recordType.value === 1 && res.data.resultState.value === 1 && res.data.contState.value === 3 && !this.$route.query.isDeal) {
                         this.canInput = true;
@@ -3248,8 +3271,9 @@ export default {
             return false;
         },
         //是否转佣
-        toCommission() {
+        toCommission() {    
             this.isToCommission = !this.isToCommission;
+            this.countTotal()
         }
     },
     mounted() {
