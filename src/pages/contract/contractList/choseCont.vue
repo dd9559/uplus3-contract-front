@@ -1,51 +1,62 @@
 <template>
   <div>
-    <div class="layout">
-      <ul class="uPlus-class">
-        <li class="li" style="width:100%;">
-          <em class="cl-999">房源编号：</em>
-          {{uPlusHouseDetail&&uPlusHouseDetail.PropertyNo}}
-        </li>
-        <li class="li" style="width:100%;">
-          <em class="cl-999">建筑面积：</em>
-          {{uPlusHouseDetail&&uPlusHouseDetail.Square}}㎡
-        </li>
-        <li class="li" style="width:100%;">
-          <em class="cl-999">业主姓名：</em>
-          {{uPlusHouseDetail&&uPlusHouseDetail.OwnerInfoList[0].OwnerName}}
-        </li>
-        <li class="li" style="width:100%;">
-          <em class="cl-999">物业地址：</em>
-          {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
-        </li>
-      </ul>
-      <p style="margin-bottom:20px;">选择合同类型：</p>
-      <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px">
-        <el-option
-          v-for="item in uPlusDictionary71"
-          :key="item.key"
-          :label="item.value"
-          :value="item.key"
-        ></el-option>
-      </el-select>
-      <p style="margin-bottom:20px;overflow: hidden;margin-top:20px;">选择签约方式：</p>
-      <el-select
-        v-model="uPlusQianyueType"
-        placeholder="签约方式"
-        :clearable="true"
-        style="width:600px"
-      >
-        <el-option
-          v-for="item in dictionary['64']"
-          :key="item.key"
-          :label="item.value"
-          :value="item.key"
-        ></el-option>
-      </el-select>
-      <p class="dialog-footer">
-        <el-button round type="primary" @click="skipAddCont()" style="width:150px;">确 定</el-button>
-      </p>
-    </div>
+    <!-- u+转成交弹框 -->
+    <el-dialog
+      title="转成交"
+      :visible.sync="uPlusIsShow"
+      width="800px"
+      class="uPluseDialog"
+      :close-on-click-modal="$tool.closeOnClickModal"
+      :close-on-press-escape="$tool.closeOnClickModal"
+    >
+      <div>
+        <ul class="uPlus-class">
+          <li class="li" style="width:100%;">
+            <em class="cl-999">房源编号：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.PropertyNo}}
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">建筑面积：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.Square}}㎡
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">业主姓名：</em>
+            {{uPlusHouseDetail&&uPlusHouseDetail.OwnerInfoList[0].OwnerName}}
+          </li>
+          <li class="li" style="width:100%;">
+            <em class="cl-999">物业地址：</em>
+            {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
+          </li>
+        </ul>
+        <p style="margin-bottom:20px;margin-left:20px;">选择合同类型：</p>
+        <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px;margin-left:20px;">
+          <el-option
+            v-for="item in uPlusDictionary71"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          ></el-option>
+        </el-select>
+        <p style="margin-bottom:20px;overflow: hidden;margin-top:20px;margin-left:20px;">选择签约方式：</p>
+        <el-select
+          v-model="uPlusQianyueType"
+          placeholder="签约方式"
+          :clearable="true"
+          style="width:600px;margin-left:20px;"
+        >
+          <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          ></el-option>
+        </el-select>
+        <p class="dialog-footer">
+          <!-- <el-button round @click="uPlusIsShow = false">取 消</el-button> -->
+          <el-button round type="primary" @click="skipAddCont()" style="width:150px;">确 定</el-button>
+        </p>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,10 +75,12 @@ export default {
         "64": "" //签约方式  线上线下,无纸化
       },
       uPlusDictionary71: [],
-      uPlusHouseDetail: null
+      uPlusHouseDetail: null,
+      uPlusIsShow:false
     };
   },
   created() {
+    this.uPlusIsShow=true;
     this.getDictionary(); //字典
     this.getUplusHouseDetail(this.$route.query.houseId);
     this.$parent.loadingState = false;
@@ -172,10 +185,13 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "~@/assets/common.less";
-.layout {
-  margin: 50px 0 0 100px;
+.uPluseDialog {
+  padding: 50px;
+  // padding-bottom: 200px;
   .uPlus-class {
     width: 800px;
+    padding: 20px;
+
     overflow: hidden;
     li {
       width: 300px !important;
@@ -189,7 +205,28 @@ export default {
     }
   }
   .dialog-footer {
-    margin: 40px 0 0 235px;
+    text-align: center;
+    padding: 50px 0 50px 0;
   }
 }
+// .layout {
+//   margin: 50px 0 0 100px;
+//   .uPlus-class {
+//     width: 800px;
+//     overflow: hidden;
+//     li {
+//       width: 300px !important;
+//       height: 50px;
+//       float: left;
+//       // margin: 20px 0 0 100px;
+
+//       // &:first-of-type{
+//       //   margin-left: 0;
+//       // }
+//     }
+//   }
+//   .dialog-footer {
+//     margin: 40px 0 0 235px;
+//   }
+// }
 </style>

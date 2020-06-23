@@ -352,6 +352,9 @@ const MIXINS = {
         case '.jpeg':
           return true
           break;
+        case '.bmp':
+          return true
+            break;
           /*case '.avi':
               return true
               break;*/

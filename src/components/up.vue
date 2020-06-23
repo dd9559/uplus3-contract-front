@@ -12,6 +12,7 @@
   let result = null
   let publicPath = ''
   let loading = null
+  let timer=null
   export default {
     props: {
       id: {
@@ -54,6 +55,7 @@
         fileType: ['.png', '.jpg', '.jpeg', '.gif', '.bmp'],
         currentNum: 0,//执行上传的次数
         canvasBlobState:false,//图片转成透明背景色是否已经执行过
+        fileLeng:0,
       }
     },
     mounted() {
@@ -74,10 +76,11 @@
             prevent_duplicates: true //不允许选取重复文件
           },
           resize: {
-            quality: 60,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
+            quality: 80,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
           },
           init: {
             FilesAdded: function (up, files) {
+              this.fileLeng=up.files.length
               // 选择文件后执行
               if(up.files.length===0){
                 return
@@ -104,7 +107,6 @@
                       let imgData=null
                       canvas.width = width * mix
                       canvas.height = height * mix
-
                       img.drawImage(this, 0, 0, width * mix, height * mix)
                       imgData = img.getImageData(0, 0, width * mix, height * mix)
                       img.putImageData(that.sepiaFilter(imgData), 0, 0)
@@ -136,17 +138,24 @@
                         let mix = 1//默认图片缩放比例
                         let canvas=document.createElement('canvas')
                         let img=canvas.getContext('2d')
-
                         canvas.width = width * mix
                         canvas.height = height * mix
-
                         img.drawImage(this, 0, 0, width * mix, height * mix)
                         //压缩图片返回url
-                        canvas.toBlob(function (blob) {
-                          let picture_qz =new File([blob],`${item.name.split('.')[0]}.png`)
-                          that.uploader.removeFile(item)
-                          that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
-                        },'image/jpeg',0.1)
+                        if(item.type=='image/bmp'){
+                          canvas.toBlob(function (blob) {
+                            let picture_qz =new File([blob],`${item.name.split('.')[0]}.bmp`)
+                            that.uploader.removeFile(item)//这个触发了一次+开始触发的一次，每触发一次，就会调签名的那个接口吗？嗯 
+                            that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.bmp`)//这个触发了一次，这两个方法在什么时候调用，上传到oss之后，从uploader
+                          },'image/jpeg',0.5)
+                        }else{
+                         canvas.toBlob(function (blob) {
+                            let picture_qz =new File([blob],`${item.name.split('.')[0]}.png`)
+                            that.uploader.removeFile(item)
+                            that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
+                          },'image/jpeg',0.5)
+                        }
+                    
                       }
                     }
                     reader.readAsDataURL(item.getNative())
@@ -177,7 +186,12 @@
               if(that.canvas){
                 (this.files.length===1&&that.canvasBlobState)&&that.up()
               }else{
-                that.up()
+                if(timer)clearTimeout("timer")
+                timer=setTimeout(()=>{
+                 if(this.fileLeng===uploader.files.length){
+                  that.up()
+                 }
+                },1500)                       
               }
             },
             UploadProgress: function (up, file) {
@@ -350,12 +364,14 @@
               }
             }
           }
+          //这一串代码原来是放在，type外面的，后来我给包到type的判断去了
           this.getUrl(path, maxSize).then(res => {
-            result = JSON.parse(JSON.stringify(res));
-            setTimeout(()=>{
+            result = JSON.parse(JSON.stringify(res));//这是啥 没用到啊,这是签名后，java返的数据，请求oss资源的时候我是指result这个变量没用到
+            // setTimeout(()=>{
                set_upload_param(this.uploader, Object.assign({}, res), '');
-            },3000)  
+            // },3000)  
           })
+   
         }
       },
       getUrl: function (file, maxSize) {
