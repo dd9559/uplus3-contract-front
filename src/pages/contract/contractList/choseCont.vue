@@ -209,24 +209,4 @@ export default {
     padding: 50px 0 50px 0;
   }
 }
-// .layout {
-//   margin: 50px 0 0 100px;
-//   .uPlus-class {
-//     width: 800px;
-//     overflow: hidden;
-//     li {
-//       width: 300px !important;
-//       height: 50px;
-//       float: left;
-//       // margin: 20px 0 0 100px;
-
-//       // &:first-of-type{
-//       //   margin-left: 0;
-//       // }
-//     }
-//   }
-//   .dialog-footer {
-//     margin: 40px 0 0 235px;
-//   }
-// }
 </style>

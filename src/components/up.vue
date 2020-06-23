@@ -70,13 +70,12 @@
           // flash_swf_url: 'http://sign2.jjw.com:28879/js/Moxie.swf',
           // silverlight_xap_url: 'http://sign2.jjw.com:28879/js/Moxie.xap',
           // url: 'http://oss.aliyuncs.com',
-
           filters: {
             mime_types: that.rules.length > 0 ? [{extensions: that.rules.join(',')}] : [],
             prevent_duplicates: true //不允许选取重复文件
           },
           resize: {
-            quality: 80,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
+            quality: 60,//压缩后图片的质量，只对jpg格式的图片有效，默认为90。quality可以跟width和height一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小
           },
           init: {
             FilesAdded: function (up, files) {
@@ -147,15 +146,14 @@
                             let picture_qz =new File([blob],`${item.name.split('.')[0]}.bmp`)
                             that.uploader.removeFile(item)//这个触发了一次+开始触发的一次，每触发一次，就会调签名的那个接口吗？嗯 
                             that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.bmp`)//这个触发了一次，这两个方法在什么时候调用，上传到oss之后，从uploader
-                          },'image/jpeg',0.5)
+                          },'image/jpeg',0.2)
                         }else{
                          canvas.toBlob(function (blob) {
                             let picture_qz =new File([blob],`${item.name.split('.')[0]}.png`)
                             that.uploader.removeFile(item)
                             that.uploader.addFile(picture_qz, `${item.name.split('.')[0]}.png`)
-                          },'image/jpeg',0.5)
-                        }
-                    
+                          },'image/jpeg',0.2)
+                        }                   
                       }
                     }
                     reader.readAsDataURL(item.getNative())
@@ -186,7 +184,7 @@
               if(that.canvas){
                 (this.files.length===1&&that.canvasBlobState)&&that.up()
               }else{
-                if(timer)clearTimeout("timer")
+                if(timer)clearTimeout(timer)
                 timer=setTimeout(()=>{
                  if(this.fileLeng===uploader.files.length){
                   that.up()
