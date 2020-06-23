@@ -121,7 +121,7 @@
                 })
               }else{
                 up.files.forEach((item,index)=>{
-                  if(item.type!=='image/png'){
+                  if(item.type!=='image/png'&&item.type!=='image/bmp'){
                     return
                   }else if(item.size<=3*1024*1024){
                     return
@@ -351,8 +351,10 @@
             }
           }
           this.getUrl(path, maxSize).then(res => {
-            result = JSON.parse(JSON.stringify(res))
-            set_upload_param(this.uploader, Object.assign({}, res), '');
+            result = JSON.parse(JSON.stringify(res));
+            setTimeout(()=>{
+               set_upload_param(this.uploader, Object.assign({}, res), '');
+            },3000)  
           })
         }
       },
