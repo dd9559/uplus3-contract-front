@@ -2895,12 +2895,14 @@ export default {
                     this.isToCommission=this.contractForm.isTransfeOfCommission?true:false
                     let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
                     this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
-                    if(this.$route.query.isDeal){
+                    if(this.$route.query.isDeal){//转成交
                         this.ys=this.contractForm.receivableCommission //应收金额
                         this.ss=this.contractForm.receivedCommission //实收
                         this.ws=this.contractForm.uncollectedCommission //未收金额
                         this.yt=this.contractForm.retiredCommission //已退金额
                         this.zy = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission) //转佣金额
+                        this.countTotal();
+                    }else if(!this.$route.query.isDeal&&!this.contractForm.dealById){
                         this.countTotal();
                     }
                     if(this.contractForm.dealById&&this.type===2){//编辑转成交的合同

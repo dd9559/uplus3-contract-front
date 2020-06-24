@@ -382,7 +382,7 @@
                         :style="{ height: clientHei }">
                         <!-- 合同审核记录 -->
                         <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state&&detailData.recordType.value===1">
+                            v-if="power['sign-com-htdetail'].state&&detailData.recordType.value!=2">
                             <div class="moduleTitle">
                                 <span>合同审核</span>
                             </div>

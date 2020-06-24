@@ -681,11 +681,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane
-          label="合同主体"
-          name="second"
-          v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
-          >
+        <el-tab-pane label="合同主体" name="second" v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)">
           <div
             class="contractSubject"
             v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)"
@@ -1193,10 +1189,7 @@
         <el-tab-pane label="审核记录" name="fifth">
           <div class="firstDetail" :style="{ height: clientHei }">
             <!-- 合同审核记录 -->
-            <div
-              class="receiptModule"
-              v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1"
-            >
+            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value!=2" >
               <div class="moduleTitle">
                 <span>合同审核</span>
               </div>
@@ -1206,7 +1199,7 @@
                   border
                   style="width: 100%"
                   header-row-class-name="theader-bg"
-                >
+                  >
                   <el-table-column label="时间">
                     <template slot-scope="scope">{{scope.row.auditTime|formatTime}}</template>
                   </el-table-column>
@@ -1232,8 +1225,8 @@
             <!-- 委托合同审核记录 -->
             <div
               class="receiptModule"
-              v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value===1&&contType!='1'"
-            >
+              v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value!=2&&contType!='1'"
+              >
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
