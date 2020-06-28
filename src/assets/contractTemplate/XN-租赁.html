@@ -243,11 +243,37 @@
         min-width: 300px;
         line-height: 1.5;
     }
-
+    /* 封面样式 */
+    .cover-fm {
+      text-align: center;
+    }
+    .cover-fm div {
+      /* -webkit-writing-mode: vertical-rl;
+      writing-mode: vertical-rl; */
+      font-size: 80px;
+      margin-top: 20px;
+      /* margin: 0 auto;
+      letter-spacing:20px; */
+    }
+    .cover-fm .first {
+      margin-top: 200px;
+    }
+    .cover-fm p {
+      margin-top: 100px;
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
-<div class="zulin container">
+<!-- 封面 -->
+<div class="cover-fm" style="display: none;">
+  <div class="first">租</div>
+  <div>赁</div>
+  <div>合</div>
+  <div>同</div>
+  <p class="fontBold">合同编号：<span systemparam="code" tag="input-auto"></span></p>
+</div>
+<div class="zulin container page1">
   <p class="title">房屋租赁合同</p>
   <p class="hetong-no">合同编号：<input systemParam="code" extendParam="val1" class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:200px" /></p>
   <ul class="jiafang">

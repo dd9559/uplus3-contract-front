@@ -221,10 +221,6 @@
         background-size: contain;
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
       }
-      .page1 {
-        break-before: page;
-        page-break-before: always;
-      }
       span[tag='input-auto']{
         border-bottom: 1px solid gray;
         padding: 2px 10px;
@@ -281,6 +277,29 @@
       @page {
         size: 955px 1350px;
       }
+      .page1 {
+        break-before: page;
+        page-break-before: always;
+      }
+      /* 封面样式 */
+      .cover-fm {
+        text-align: center;
+      }
+      .cover-fm div {
+        /* -webkit-writing-mode: vertical-rl;
+        writing-mode: vertical-rl; */
+        font-size: 80px;
+        margin-top: 20px;
+        /* margin: 0 auto;
+        letter-spacing:20px; */
+      }
+      .cover-fm .first {
+        margin-top: 100px;
+      }
+      .cover-fm p {
+        margin-top: 100px;
+        font-size: 20px;
+      }
   </style>
 </head>
 <body>
@@ -293,7 +312,18 @@
               <span>取消</span>
           </p>
       </div>
-      <div class="page_one">
+      <!-- 封面 -->
+      <div class="cover-fm" style="display: none;">
+        <div class="first">二</div>
+        <div>手</div>
+        <div>房</div>
+        <div>买</div>
+        <div>卖</div>
+        <div>合</div>
+        <div>同</div>
+        <p class="fontBold">合同编号：<span systemparam="code" tag="input-auto"></span></p>
+      </div>
+      <div class="page_one page1">
         <div class="title fontBold"><p>二手房买卖合同</p></div>
         <div class="code fontBold"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
         <div class="cw_message">
