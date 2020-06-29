@@ -132,6 +132,20 @@
                                 :class="{'disabled':canInput}">
                             <i class="yuan">元</i>
                         </el-form-item>
+                        <!-- <el-form-item 
+                            label="佣金支付费："
+                            style="text-align:right;width:280px;">
+                            <input 
+                                type="text"
+                                :disabled="canInput"
+                                v-model="contractForm.ownerCommission"
+                                @input="cutNumber('ownerCommission')"
+                                @change="countTotal"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="hint iconfont icon-wenhao1" title="佣金成本支出"></i>
+                        </el-form-item> -->
                         <el-form-item 
                             label="总佣金："
                             style="text-align:right;width:280px;">
@@ -3465,6 +3479,14 @@ export default {
     right: 6px;
     font-size: 14px;
     color: #ccc;
+}
+.hint {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: -115px;
+    font-size: 18px;
+    color: @color-blue;
 }
 .contractMsg {
     border-bottom: 1px solid @border-ED;
