@@ -276,7 +276,7 @@
             @mouseover="moveIn('online')"
             @mouseout="moveOut('online')"
             v-if="power['sign-ht-info-add'].state"
-          >
+            >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
@@ -286,13 +286,13 @@
                   :key="item.key"
                   @click="addOnLine(item)"
                   style="position:relative;"
-                >
+                  >
                   {{item.value}}
                   <i
                     class="el-icon-caret-right"
                     v-if="item.key===2&&item.children"
                     style="position:absolute;top:10px;left:55px;"
-                  ></i>
+                    ></i>
                   <div class="childrenModule" v-if="item.key===2&&item.children">
                     <ul class="childrenList">
                       <li
@@ -312,7 +312,7 @@
             @mouseover="moveIn('offline')"
             @mouseout="moveOut('offline')"
             v-if="power['sign-ht-info-addoffline'].state"
-          >
+            >
             录入线下合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['65']">
@@ -322,7 +322,7 @@
                   :key="item.key"
                   @click="addOffLine(item)"
                   style="position:relative;"
-                >
+                  >
                   {{item.value}}
                   <i
                     class="el-icon-caret-right"
@@ -348,7 +348,7 @@
             @mouseover="moveIn('print')"
             @mouseout="moveOut('print')"
             v-if="power['sign-ht-info-print'].state"
-          >
+            >
             打印空白合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
@@ -398,7 +398,7 @@
         @row-dblclick="toDetail"
         border
         :max-height="tableNumberCom"
-      >
+        >
         <el-table-column label="合同信息" label-class-name="pdl" class-name="bgc" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -661,6 +661,19 @@
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
           </template>
         </el-table-column>
+        <el-table-column label="录入时间" min-width="90">
+          <template slot-scope="scope">
+            <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span> -->
+            <span>{{Number(scope.row.createTime)|timeFormat_}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="录入人" min-width="90">
+          <template slot-scope="scope">
+            <p>{{scope.row.recordDeptName}}</p>
+            <p>{{scope.row.recordName}}</p>
+          </template>
+        </el-table-column>
         <el-table-column label="可分配业绩 (元)" min-width="120">
           <template slot-scope="scope">
             <span
@@ -713,6 +726,16 @@
                 class="btn"
                 @click="toDeal(scope.row)"
               >转成交</div>
+              <!-- <div
+                v-if="power['sign-ht-info-fqqs'].state&&scope.row.recordType.value===10"
+                class="btn"
+                @click="toSign(scope.row)"
+              >发起签署</div> -->
+              <div
+                v-if="(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
+                class="btn"
+                @click="toSign(scope.row)"
+              >发起签署</div>
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
@@ -900,6 +923,17 @@
         </p>
       </div>
     </el-dialog>
+    <!-- 发起签署选择业主客户 -->
+    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <!-- 发起签署成功上传资料库弹窗 -->
+    <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
+      <div>合同已发起签署</div>
+      <div>请完成资料库的上传</div>
+      <div class="dataBaseBtn">
+        <el-button round type="primary" @click="toDataBase">上传资料库</el-button>
+      </div>
+      
+    </el-dialog>
   </div>
 </template>
 
@@ -910,6 +944,7 @@ import layerAudit from "../contractDialog/layerAudit";
 import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
 import lateProgress from "../contractDialog/lateProgress";
+import chosePerson from "../contractDialog/chosePerson";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from "@/components/PdfPrint";
@@ -927,7 +962,8 @@ export default {
     changeCancel,
     lateProgress,
     PdfPrint,
-    checkPerson
+    checkPerson,
+    chosePerson,
   },
   data() {
     return {
@@ -1120,7 +1156,15 @@ export default {
         "sign-ht-qhsh-toverify": {
           state: false,
           name: "签后提审"
-        }
+        },
+        'sign-ht-info-fqqs': {
+          state: false,
+          name: '发起签署'
+        },
+        "sign-ht-xq-data-add": {
+          state: false,
+          name: "编辑资料库"
+        },
       },
       showOnLine: false,
       showPrint: false,
@@ -1134,7 +1178,13 @@ export default {
       uPlusDictionary71: [],
       isDealType: "", //判断房源是租赁还是买卖类型，1租赁，2买卖
       uPlusContType: "",
-      uPlusQianyueType: ""
+      uPlusQianyueType: "",
+      //发起签署选择业主客户
+      chosePersonDialog:false,
+      signOwnerList:[],
+      signGuestList:[],
+      choseQuery:{},
+      dataBaseDialog:false
     };
   },
   created() {
@@ -2065,6 +2115,99 @@ export default {
           }
         });
       }
+    },
+    //发起签署
+    toSign(val){
+        this.choseQuery = {
+            id:val.id,
+            isHaveData:val.isHaveData,
+            storeId:val.guestStoreCode,
+            code:val.code,
+            contType:val.contType.value
+          }
+        let owner = []
+        let guest = []
+        val.contPersons.forEach(element => {
+            if(element.personType.value === 1){
+                owner.push(element)
+            }else{
+                guest.push(element)
+            }
+        });
+        if(owner.length>1||guest.length>1){//多个业主客户时选择一个发起签署
+            this.signOwnerList=[].concat(owner)
+            this.signGuestList=[].concat(guest)
+            this.chosePersonDialog=true
+        }else{
+            let param = {
+                contId:val.id,
+                type:1,//签章
+                isentrust:0,//非委托
+                storeId:val.guestStoreCode//门店id
+            }
+            param.owner=[
+                {name:owner[0].name,identityType:owner[0].cardType,identity:owner[0].encryptionCode,mobile:owner[0].mobile,email:owner[0].email}
+            ]
+            param.customer=[
+                {name:guest[0].name,identityType:guest[0].cardType,identity:guest[0].encryptionCode,mobile:guest[0].mobile,email:guest[0].email}
+            ]
+            this.$ajax.postJSON('/api/app/contract/sendCont',param).then(res=>{
+                res=res.data
+                if(res.status===200){
+                    if(!val.isHaveData){
+                      this.dataBaseDialog=true
+                    }else{
+                      this.$message({
+                        message:"操作成功",
+                        type:"success"
+                      })
+                    }
+                }
+            }).catch(error=>{
+                this.$message({
+                  message:error,
+                  type:"error"
+                })
+            })
+        }
+    },
+    closeChose(val){
+      this.chosePersonDialog=false
+      if(val&&this.choseQuery.isHaveData){
+        this.dataBaseDialog=true
+      }
+    },
+    toDataBase(){
+      if(this.power['sign-com-htdetail'].state){
+        if(this.power['sign-ht-xq-data'].state){
+					this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+					let path
+					if(this.Msg.type===4||this.Msg.type===5){
+						path="/detailIntention"
+					}else{
+						path="/contractDetails"
+					}
+          this.$router.replace({
+            path: path,
+            query: {
+              type: "dataBank",
+              id: this.choseQuery.id,//合同id
+              code: this.choseQuery.code,//合同编号
+              contType: this.choseQuery.contType//合同类型
+            }
+          });
+        }else{
+          this.$message({
+            message:'没有资料库权限,无法跳转到资料库'
+          });
+          this.$router.push('/contractList');
+        }
+      }else{
+        this.$message({
+          message:'没有合同详情权限,无法跳转到资料库'
+        });
+        this.$router.push('/contractList');
+      }
     }
   },
   computed: {
@@ -2514,6 +2657,22 @@ export default {
   .dialog-footer {
     text-align: center;
     padding: 50px 0 50px 0;
+  }
+}
+.dataBase{
+  /deep/.el-dialog__body{
+    div{
+      text-align: center;
+      &:first-child{
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    .dataBaseBtn{
+      padding: 20px 0;
+    }
   }
 }
 </style>
