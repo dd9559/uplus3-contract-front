@@ -112,43 +112,43 @@
         <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
                 <div class="row">
-                    <div class="aduit-input must mr-35">
+                    <div class="aduit-input must w50">
                         <label>交易类型:</label>
                         <el-select size="small" v-model="aduitForm.modularType" disabled>
                             <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-35 ml-28">
-                        <label class="mr-28">体系:</label>
+                    <div class="aduit-input must w50">
+                        <label>体系:</label>
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled" @change="changeSystemFn">
                             <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input mr-35 ml-28" v-if="aduitForm.modularType==0">
-                        <label class="mr-28">品牌:</label>
+                    <div class="aduit-input w50" v-if="aduitForm.modularType==0">
+                        <label>品牌:</label>
                         <el-select size="small" v-model="aduitForm.brandId" :clearable="true">
                             <el-option v-for="item in dictionary['735']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must" v-if="version==2&&aduitForm.modularType==0">
+                    <div class="aduit-input must w50" v-if="version==2&&aduitForm.modularType==0">
                         <label>合作方式:</label>
                         <el-select size="small" v-model="aduitForm.deptAttr" :disabled="editDisabled">
                             <el-option v-for="item in dictionary['73']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-35">
+                    <div class="aduit-input must w50">
                         <label>流程类型:</label>
                         <el-select size="small" v-model="aduitForm.type" @change="changeFlowTypeTwo" :disabled="editDisabled" @clear="clearCondition(2)" :clearable="true" filterable>
                             <el-option v-for="item in dictionary['573']" v-if="aduitForm.modularType==0?item.key!=4:item.key==1" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must mr-35">
+                    <div class="aduit-input must w50">
                         <label>分支条件:</label>
                         <el-select size="small" v-model="aduitForm.branchCondition" :disabled="editDisabled">
                             <el-option v-for="item in conditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
                     </div>
-                    <div class="aduit-input must">
+                    <div class="aduit-input must w50">
                         <label>流程名称:</label>
                         <el-input size="small" maxlength="15" v-model.trim="aduitForm.name" onkeyup="value=value.replace(/\s+/g,'')" clearable></el-input>
                     </div>
@@ -1049,16 +1049,15 @@
         > label {
             width: 70px;
             line-height: 32px;
-        }
-        .mr-28 {
-            margin-right: -28px;
+            text-align: right;
         }
         .mr-7 {
             margin-left: 6px;
         }
-        &:nth-child(-n+7) {
-            /deep/ .el-input {
-                width: 246px;
+        &.w50 {
+            width: 50%;
+            /deep/ .el-select, .el-input {
+                width: 68%;
             }
         }
         &:last-child {
@@ -1068,12 +1067,6 @@
         }
         &.pr-80 {
             padding-right: 80px;
-        }
-        &.mr-35 {
-            margin-right: 35px;
-        }
-        &.ml-28 {
-            margin-left: 28px;
         }
     }
     .must {
