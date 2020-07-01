@@ -41,6 +41,23 @@
                     <el-option v-for="item in homeConditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
+            <div  class="input-search" v-if="version==3">
+                <label class="mr-20">部门</label>
+                    <el-select
+                    v-model="searchForm.dep"
+                    multiple
+                    placeholder="全部"
+                    style="width:200px"
+                    :class="{'width300':searchForm.dep&&searchForm.dep.length>1}"
+                    >
+                        <el-option
+                        v-for="item in depList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                        ></el-option>
+                </el-select>
+            </div>
         </div>
         </ScreeningTop>
         <div class="aduit-list">
@@ -68,6 +85,8 @@
                         <template slot-scope="scope">
                             <span v-for="item in systemTagList" :key="item.key" v-if="item.key===scope.row.systemTag">{{item.value}}</span>
                         </template>
+                    </el-table-column>
+                    <el-table-column label="部门" prop="deptName" :formatter="nullFormatter">
                     </el-table-column>
                     <el-table-column label="品牌" prop="brandId" :formatter="nullFormatter">
                         <template slot-scope="scope">                  
@@ -123,6 +142,43 @@
                         <el-select size="small" v-model="aduitForm.systemTag" :disabled="editDisabled" @change="changeSystemFn">
                             <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
+                    </div>
+                    <div class="aduit-input must w50">
+                        <label>部门:</label>
+                        <el-tooltip class="item" effect="light" v-if="aduitTitle=='编辑'" :content="aduitForm.deptName" placement="top-start">
+                            <el-select
+                                v-model="aduitForm.dep"
+                                multiple
+                                class="dep dot"
+                                :disabled="editDisabled"
+                                placeholder="全部"
+                                >
+                                    <el-option
+                                    v-for="item in depList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                    >
+                                    </el-option>
+                            </el-select>
+                        </el-tooltip>
+                        <el-select
+                                v-model="aduitForm.dep"
+                                multiple
+                                v-else
+                                class="dep dot"
+                                :disabled="editDisabled"
+                                placeholder="全部"
+                                >
+
+                                    <el-option
+                                    v-for="item in depList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id"
+                                    >
+                                    </el-option>
+                            </el-select>
                     </div>
                     <div class="aduit-input w50" v-if="aduitForm.modularType==0">
                         <label>品牌:</label>
@@ -201,6 +257,12 @@
                                     :value="option.key"
                                     ></el-option>
                                 </el-select>
+                                <!-- 职务名称 -->
+                                <div v-if="item.type===5&&version==3">
+                                    <el-select size="small" placeholder="请选择" v-model="item.jobArr" filterable multiple @change="multiSelect(item.type,index)">
+                                        <el-option v-for="item in jobNameList" :key="item.typeId" :label="item.typeName" :value="item.typeId"></el-option>
+                                    </el-select>
+                                </div>
                                 <!-- 部门类型+职级 -->
                                 <div v-if="item.type===4&&version==3">
                                     <div class="person">
@@ -230,7 +292,7 @@
                                     :key="m"
                                     @click="defaultChoice(index,m,ele)"
                                     :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":""}}{{ele.temp?ele.type===4?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
+                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":ele.type===5?"职位名称-":""}}{{ele.temp?ele.type===4?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
                                         <i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
@@ -283,6 +345,8 @@
             depsTime: 1, //部门多选次数
             depTypeTime: 1, //3.0部门类型+职级多选次数
             rolesTime: 1, //角色多选次数
+            jobArr:[],
+            jobTime:1,
             employeList:[], //人员列表
             employeeTotal:0,
             employeePage:1,
@@ -304,11 +368,13 @@
                     branchCondition: "",
                     systemTag: "",
                     modularType: "",
-                    brandId: ""
+                    brandId: "",
+                    dep:'',
                 },
                 tableData: [],
                 aduitDialog: false,
                 aduitTitle: "",
+                jobNameList:[],
                 aduitForm: {
                     modularType: "",
                     deptAttr: "",
@@ -317,10 +383,14 @@
                     branchCondition: "",
                     flowDesc: "",
                     systemTag: "",
-                    brandId: ""
+                    brandId: "",
+                    dep:[],
                 },
+                depCopy:[],
                 isAudit: "",
                 nodeList: [],
+                depList:[],
+                depList2:[],
                 dictionary: {
                     '73':'', //合作方式
                     '573':'', //流程类型
@@ -372,10 +442,21 @@
             this.getSystemTagSelect()
             this.getAduitType()
             this.getBranchObj()
+            this.getDep()
             // 2.0环境且登录城市不是温州才请求角色数据
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
+            getDep(){
+                this.$ajax.get('/api/access/deps').then(res=>{
+                    res=res.data
+                    if(res.status==200){
+                        this.depList=res.data.filter(v=>v.level==1)
+                        this.depList2=JSON.parse(JSON.stringify(this.depList))
+                        console.log(this.depList);
+                    }
+                })
+            },
             clearFn(i) {
                 this.$set(this.nodeList,[i],JSON.parse(JSON.stringify(arr[1])))
             },
@@ -383,8 +464,10 @@
                 // 添加审核人 部门不能和其他类型组合
                 if(type===1) {
                     return k!==1?true:false
-                } else {
-                    return k===1&&type!==''?true:false
+                }else if (type===5){
+                    return k!==5?true:false
+                }else {
+                    return (k===1||k==5)&&type!==''?true:false
                 }
             },
             getBrandVal(val) {
@@ -426,12 +509,16 @@
                     let key = this.aduitForm.systemTag //选择的体系
                     if(type == 1) { //部门
                         this.getDeps(key)
+                    }else if(type == 5){
+                        let cityId=this.searchForm.cityId
+                        this.getJobName(cityId,key)
                     }
                 }
             },
             // 改变体系初始化节点数据
             changeSystemFn() {
                 this.nodeList = JSON.parse(JSON.stringify(arr))
+                console.log(222222);
             },
             getData(type="init") {
                 let param = {
@@ -446,11 +533,11 @@
                         path:'/approvalProcess',
                         url:'/auditflow/selectFlowList',
                         query:param,
-                        methods:"get"
+                        methods:"post"
                     }))
                 }
 
-                this.$ajax.get('/api/auditflow/selectFlowList',param).then(res => {
+                this.$ajax.postJSON('/api/auditflow/selectFlowList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
                         this.tableData = res.data.data
@@ -552,6 +639,8 @@
                 this.conditionList = []
             },
             operation(row) {
+                console.log(row,'row');
+                this.aduitForm.dep=[]
                 this.aduitDialog = true
                 this.aduitTitle = '编辑'
                 let {...c_row} = row
@@ -559,6 +648,10 @@
                 this.aduitForm.modularType = c_row.modularType
                 this.aduitForm.deptAttr = c_row.deptAttr ? c_row.deptAttr.value : ""
                 this.aduitForm.systemTag = c_row.systemTag ? c_row.systemTag : ""
+                this.aduitForm.deptName=c_row.deptName?c_row.deptName:''
+                if(c_row.deptId){
+                    this.aduitForm.dep.push(c_row.deptId)
+                }
                 this.aduitForm.brandId = c_row.brandId ? c_row.brandId : ""
                 this.aduitForm.name = c_row.name
                 this.aduitForm.type = c_row.type
@@ -585,6 +678,7 @@
                         depArr: JSON.parse(item[i].depArr),
                         depTypeArr: item[i].depTypeArr?JSON.parse(item[i].depTypeArr):[],
                         roleArr: JSON.parse(item[i].roleArr),
+                        jobArr: item[i].jobArr?JSON.parse(item[i].jobArr):[],
                         choice: JSON.parse(item[i].choice),
                         employeList:[],
                         employeeTotal:0,
@@ -597,14 +691,17 @@
                         depsTime: array[i].depArr.length + 1,
                         depTypeTime: array[i].depTypeArr.length + 1,
                         rolesTime: array[i].roleArr.length + 1,
+                        jobTime: array[i].jobArr.length + 1,
                         depType: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userId:'',
                         depTypeStr: array[i].choice.filter(e => e.type===4).length?array[i].choice.filter(e => e.type===4)[array[i].choice.filter(e => e.type===4).length-1].userName:'',
                         lastChoice: array[i].choice.filter(e => e.isDefault===1)[0],
                     })
                 }
                 this.nodeList = array
+                console.log(this.nodeList,'list');
                 this.tempNodeList = JSON.parse(JSON.stringify(array))
                 this.getDeps(this.aduitForm.systemTag)
+                this.getJobName(this.searchForm.cityId,this.aduitForm.systemTag)
             },
             setConditionList(val,type=1) {
                 for(let key in this.branchObj) {
@@ -663,6 +760,9 @@
                     s_arr = 'depTypeArr'
                     s_t = 'depTypeTime'
                     s_id = 'positionId'
+                } else if(choiceArr[m].type === 5) {
+                    s_arr = 'jobArr'
+                    s_t = 'jobTime'
                 }
                 for(var i = 0; i < this.nodeList[index][s_arr].length; i++) {
                     if(choiceArr[m][s_id] === this.nodeList[index][s_arr][i]) {
@@ -787,7 +887,26 @@
                     } else {
                         this.multiDel(index,type,'depTypeArr','depTypeTime')
                     }
-                }
+                } else if(type === 5) {
+                    // 职务名称
+                    if(this.nodeList[index].jobTime === this.nodeList[index].jobArr.length) {
+                        for(var i = 0; i < this.jobNameList.length; i++) {
+                            if(this.nodeList[index].jobArr[this.nodeList[index].jobTime-1] === this.jobNameList[i].typeId) {
+                                this.nodeList[index].choice.push({
+                                    type: 5,
+                                    userName: this.jobNameList[i].typeName,
+                                    userId: this.jobNameList[i].typeId,
+                                    isDefault: 0,
+                                    temp: ""
+                                })
+                                break
+                            }
+                        }
+                        ++this.nodeList[index].jobTime
+                    } else {
+                        this.multiDel(index,type,'jobArr','jobTime')
+                    }
+                } 
                 let ar = this.nodeList[index].choice.filter(item => item.isDefault===1)
                 if(ar.length===0) {
                     delete this.nodeList[index].lastChoice
@@ -847,6 +966,13 @@
                             return
                         }
                     }
+                    if(this.version == 3) {
+                        alert(this.aduitForm.dep.length)
+                        if(!this.aduitForm.dep.length&&this.aduitForm.modularType==0) {
+                            this.$message({message:"部门不能为空"})
+                            return
+                        }
+                    }
                     if(this.aduitForm.type!=="") {
                         if(this.aduitForm.branchCondition!=="") {
                             if(this.aduitForm.name) {
@@ -890,6 +1016,7 @@
                         if(item[i].name) {
                             if(item[i].type !== "") {
                                 if(item[i].choice.length>0) {
+                                    console.log(item[i].choice,'222');
                                     if(item[i].lastChoice) {
                                         isOk = true
                                     } else {
@@ -922,6 +1049,7 @@
                             delete item[i].employeePage
                             delete item[i].depType
                             delete item[i].depTypeStr
+                            delete item[i].jobTime
                             item[i].type = item[i].lastChoice.type
                             item[i].userName = item[i].lastChoice.userName
                             item[i].userId = item[i].lastChoice.userId
@@ -932,7 +1060,17 @@
                 let param = {
                     branch: item
                 }
-                param = Object.assign({},this.aduitForm,param)
+                let depArr=[]
+                this.aduitForm.dep.forEach((v,i)=>{
+                    this.depList.forEach((v2,i2)=>{
+                            if(v==v2.id){
+                                depArr.push({deptName:v2.name,deptId:v2.id})
+                            }
+                    })
+                })
+                param = Object.assign({},this.aduitForm,param,{deps:depArr})
+                console.log(param);
+
                 param.cityId = this.searchForm.cityId
 
                 if(isOk || this.isAudit === '0') {
@@ -946,7 +1084,18 @@
                     }
                 }
             },
+            getJobName(cityId,systemTag){
+                this.$ajax.postJSON('/api/auditflow/getTypeName',{cityId,systemTag}).then(res=>{
+                    res=res.data
+                    if(res.status==200){
+                        this.jobNameList=res.data
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                })
+            },
             aduitPost(param,msg) {
+                console.log(param);
                 this.$ajax.postJSON('/api/auditflow/operateFlow',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
@@ -998,6 +1147,11 @@
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
+.dot{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 .content {
     display: flex;
     flex-wrap: wrap;
@@ -1017,6 +1171,20 @@
             margin-left: 10px;
         }
     }
+}
+.dep{
+    /deep/  .el-tag--info{
+        width:80%;
+        display: inline-block;
+        .el-select__tags-text{
+            width:100%;
+            display: inline-block;
+            .dot
+        }
+    } 
+}
+.el-icon-close{
+    top:-5px!important
 }
 .aduit-list {
     padding: 5px 10px 0px;
@@ -1208,6 +1376,9 @@
             }
         }
     }
+}
+.width300{
+    width:300px!important
 }
 .cur-select {
     background-color: #F3F7FC!important;
