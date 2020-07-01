@@ -699,7 +699,7 @@
               </li>
               <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)" >
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom" >
-                  <div class="namePath" @click="previewPhoto(uploadList,index)" >
+                  <div class="namePath" @click="previewPhoto(uploadList,index,2)" >
                     <img class="signImage" :src="item.path|getSignImage(mainDataFiles)" alt v-if="isPictureFile(item.fileType)" />
                     <upload-cell :type="item.fileType" v-else ></upload-cell>
                     <p>{{item.name}}</p>
@@ -903,9 +903,7 @@
                   {{item.title}}
                 </p>
                 <ul class="ulData">
-                  <li
-                    v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
-                  >
+                  <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
                     <file-up
                       class="uploadSubject"
                       :scane="dataScane"
@@ -1585,7 +1583,7 @@
       :visible.sync="dialogDel"
       width="460px"
       :closeOnClickModal="$tool.closeOnClickModal"
-    >
+      >
       <span>确定删除本条数据吗？</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogDel = false">取 消</el-button>

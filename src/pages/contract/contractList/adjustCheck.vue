@@ -798,18 +798,32 @@
 
       //跳转合同详情页
       goContractDetail(value){
-        if(this.power['sign-com-htdetail'].state){
-          this.$router.push({
-            path:'/contractDetails',
-            query:{
-              id: value.contId,
-              code: value.contractCode,
-              contType: value.tradeType,
+        // 验证是否有合同详情查看权限
+        this.$ajax.get("/api/contract/isDetailAuth",{contId:value.contId}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(res.data){
+              this.$router.push({
+                path:'/contractDetails',
+                query:{
+                  id: value.contId,
+                  code: value.contractCode,
+                  contType: value.tradeType,
+                }
+              })
+            }else{
+              this.$message({
+                message:"没有合同详情查看权限",
+                type:"warning"
+              })
             }
-          })
-        }else{
-           this.noPower(this.power['sign-com-htdetail'].name);
-        }
+          }
+        }).catch(error=>{
+          this.$message({
+            message: error,
+            type: "error"
+          });
+        })
       },
 
       handleCurrentChange(e) {

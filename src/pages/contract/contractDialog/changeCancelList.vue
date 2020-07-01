@@ -23,7 +23,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="合同类型" min-width="60">
+      <el-table-column label="合同类型" min-width="80">
         <template slot-scope="scope">
           <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
           <span v-else>{{scope.row.contType.label}}</span>
@@ -60,16 +60,27 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="签约方式" prop="recordType.label" min-width="60">
+      <el-table-column label="签约方式" prop="recordType.label" min-width="80">
       </el-table-column>
 
-      <el-table-column label="可分配业绩 (元)" min-width="90">
+      <el-table-column min-width="130">
+        <template slot="header">
+          <span>可分配业绩 (元)</span>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="可分配业绩=业主佣金+客户佣金-佣金支付费-第三方合作费-权证费用"
+            placement="top"
+            >
+            <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
+          </el-tooltip>
+        </template>
         <template slot-scope="scope">
             <span>{{scope.row.distributableAchievement}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column :label="listType==='bg'?'变更审核状态':'解约审核状态'" min-width="80">
+      <el-table-column :label="listType==='bg'?'变更审核状态':'解约审核状态'" min-width="100">
         <template slot-scope="scope">
           <!-- {{scope.row.changeRecord.examineState===0?"审核中":scope.row.changeRecord.examineState===1?"已通过":"已驳回"}} -->
           <span v-if="scope.row.changeRecord.examineState===0" class="yellow">审核中</span>
@@ -223,28 +234,42 @@ export default{
     },
     //合同详情
     toDetail(value) {
-      if(this.power['sign-com-htdetail'].state){
-        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          this.$router.push({
-            path: "/contractDetails",
-            query: {
-              id: value.id,//合同id
-              code: value.code,//合同编号
-              contType: value.contType.value//合同类型
+      // 验证是否有合同详情查看权限
+      this.$ajax.get("/api/contract/isDetailAuth",{contId:value.id}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          if(res.data){
+            if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+              this.$router.push({
+                path: "/contractDetails",
+                query: {
+                  id: value.id,//合同id
+                  code: value.code,//合同编号
+                  contType: value.contType.value//合同类型
+                }
+              });
+            }else{
+              this.$router.push({
+                path: "/detailIntention",
+                query: {
+                  id: value.id,
+                  contType: value.contType.value
+                }
+              });
             }
-          });
-        }else{
-          this.$router.push({
-            path: "/detailIntention",
-            query: {
-              id: value.id,
-              contType: value.contType.value
-            }
-          });
+          }else{
+            this.$message({
+              message:"没有合同详情查看权限",
+              type:"warning"
+            })
+          }
         }
-      }else{
-        this.noPower('合同详情查看')
-      }
+      }).catch(error=>{
+        this.$message({
+          message: error,
+          type: "error"
+        });
+      })
     },
     //合同审核
     goCheck(item) {
