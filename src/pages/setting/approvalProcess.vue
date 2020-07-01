@@ -145,13 +145,13 @@
                     </div>
                     <div class="aduit-input must w50">
                         <label>部门:</label>
-                        <el-tooltip class="item" effect="light" v-if="aduitTitle=='编辑'" :content="aduitForm.deptName" placement="top-start">
+                        <el-tooltip class="item" effect="light" v-if="aduitTitle=='编辑'&&aduitForm.deptName!=''" :content="aduitForm.deptName" placement="top-start">
                             <el-select
                                 v-model="aduitForm.dep"
                                 multiple
                                 class="dep dot"
-                                :disabled="editDisabled"
-                                placeholder="全部"
+                                :disabled="editDisabled2"
+                                placeholder="请选择"
                                 >
                                     <el-option
                                     v-for="item in depList"
@@ -167,8 +167,8 @@
                                 multiple
                                 v-else
                                 class="dep dot"
-                                :disabled="editDisabled"
-                                placeholder="全部"
+                                :disabled="editDisabled2"
+                                placeholder="请选择"
                                 >
 
                                     <el-option
@@ -408,6 +408,7 @@
                 depsList: [],
                 roleList: [],
                 editDisabled: false,
+                editDisabled2:false,
                 currentFlowId: "",
                 tempAudit: "",
                 tempNodeList: [],
@@ -636,6 +637,7 @@
                 this.isAudit = ""
                 this.tempAudit = ""
                 this.editDisabled = false
+                 this.editDisabled2 = false
                 this.conditionList = []
             },
             operation(row) {
@@ -651,6 +653,9 @@
                 this.aduitForm.deptName=c_row.deptName?c_row.deptName:''
                 if(c_row.deptId){
                     this.aduitForm.dep.push(c_row.deptId)
+                    this.editDisabled2 = true
+                }else{
+                    this.editDisabled2 = false
                 }
                 this.aduitForm.brandId = c_row.brandId ? c_row.brandId : ""
                 this.aduitForm.name = c_row.name
