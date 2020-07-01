@@ -223,28 +223,42 @@ export default{
     },
     //合同详情
     toDetail(value) {
-      if(this.power['sign-com-htdetail'].state){
-        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          this.$router.push({
-            path: "/contractDetails",
-            query: {
-              id: value.id,//合同id
-              code: value.code,//合同编号
-              contType: value.contType.value//合同类型
+      // 验证是否有合同详情查看权限
+      this.$ajax.get("/api/contract/isDetailAuth",{contId:value.id}).then(res=>{
+        res=res.data
+        if(res.status===200){
+          if(res.data){
+            if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
+              this.$router.push({
+                path: "/contractDetails",
+                query: {
+                  id: value.id,//合同id
+                  code: value.code,//合同编号
+                  contType: value.contType.value//合同类型
+                }
+              });
+            }else{
+              this.$router.push({
+                path: "/detailIntention",
+                query: {
+                  id: value.id,
+                  contType: value.contType.value
+                }
+              });
             }
-          });
-        }else{
-          this.$router.push({
-            path: "/detailIntention",
-            query: {
-              id: value.id,
-              contType: value.contType.value
-            }
-          });
+          }else{
+            this.$message({
+              message:"没有合同详情查看权限",
+              type:"warning"
+            })
+          }
         }
-      }else{
-        this.noPower('合同详情查看')
-      }
+      }).catch(error=>{
+        this.$message({
+          message: error,
+          type: "error"
+        });
+      })
     },
     //合同审核
     goCheck(item) {

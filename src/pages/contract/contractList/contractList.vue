@@ -1512,40 +1512,48 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      if (this.power["sign-com-htdetail"].state) {
-        if (value.contState.value != -1) {
-          if (
-            value.contType.value === 1 ||
-            value.contType.value === 2 ||
-            value.contType.value === 3
-          ) {
-            let newPage = this.$router.resolve({
-              path: "/contractDetails",
-              query: {
-                id: value.id, //合同id
-                contType: value.contType.value //合同类型
+      if (value.contState.value != -1) {
+        // 验证是否有合同详情查看权限
+        this.$ajax.get("/api/contract/isDetailAuth",{contId:value.id}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(res.data){
+              if (value.contType.value === 1 || value.contType.value === 2 || value.contType.value === 3) {
+                let newPage = this.$router.resolve({
+                  path: "/contractDetails",
+                  query: {
+                    id: value.id, //合同id
+                    contType: value.contType.value //合同类型
+                  }
+                });
+                window.open(newPage.href, "_blank");
+              } else {
+                let newPage = this.$router.resolve({
+                  path: "/detailIntention",
+                  query: {
+                    id: value.id,
+                    contType: value.contType.value
+                  }
+                });
+                window.open(newPage.href, "_blank");
               }
-            });
-            window.open(newPage.href, "_blank");
-          } else {
-            let newPage = this.$router.resolve({
-              path: "/detailIntention",
-              query: {
-                id: value.id,
-                contType: value.contType.value
-              }
-            });
-            window.open(newPage.href, "_blank");
+            }else{
+              this.$message({
+                message:"没有合同详情查看权限",
+                type:"warning"
+              })
+            }
           }
-        } else {
+        }).catch(error=>{
           this.$message({
-            message: "此合同已删除无法进行操作",
-            type: "warning"
+            message: error,
+            type: "error"
           });
-        }
+        })
+          
       } else {
         this.$message({
-          message: "没有合同详情查看权限",
+          message: "此合同已删除无法进行操作",
           type: "warning"
         });
       }
