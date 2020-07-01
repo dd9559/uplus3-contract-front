@@ -120,7 +120,18 @@
         </el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" min-width="80">
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="110">
+        <el-table-column min-width="130">
+          <template slot="header">
+            <span>可分配业绩 (元)</span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="可分配业绩=业主佣金+客户佣金-佣金支付费-第三方合作费-权证费用"
+              placement="top"
+              >
+              <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
+            </el-tooltip>
+          </template>
           <template slot-scope="scope">
             {{scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}
           </template>

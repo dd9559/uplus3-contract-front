@@ -132,20 +132,21 @@
                                 :class="{'disabled':canInput}">
                             <i class="yuan">元</i>
                         </el-form-item>
-                        <!-- <el-form-item 
+                        <el-form-item 
                             label="佣金支付费："
                             style="text-align:right;width:280px;">
                             <input 
                                 type="text"
                                 :disabled="canInput"
-                                v-model="contractForm.ownerCommission"
-                                @input="cutNumber('ownerCommission')"
+                                v-model="contractForm.commissionPayment"
+                                @input="cutNumber('commissionPayment')"
                                 @change="countTotal"
                                 placeholder="请输入内容"
                                 class="dealPrice"
                                 :class="{'disabled':canInput}">
                             <i class="hint iconfont icon-wenhao1" title="佣金成本支出"></i>
-                        </el-form-item> -->
+                            <i class="yuan">元</i>
+                        </el-form-item>
                         <el-form-item 
                             label="总佣金："
                             style="text-align:right;width:280px;">
@@ -3095,6 +3096,15 @@ export default {
                         {
                             val: this.contractForm.houseInfo.SquareUse,
                             max: 999999.99
+                        }
+                    );
+                });
+            } else if (val === "commissionPayment") {
+                this.$nextTick(() => {
+                    this.contractForm.commissionPayment = this.$tool.cutFloat(
+                        {
+                            val: this.contractForm.commissionPayment,
+                            max: 999999999.99
                         }
                     );
                 });
