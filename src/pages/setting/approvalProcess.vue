@@ -967,7 +967,6 @@
                         }
                     }
                     if(this.version == 3) {
-                        alert(this.aduitForm.dep.length)
                         if(!this.aduitForm.dep.length&&this.aduitForm.modularType==0) {
                             this.$message({message:"部门不能为空"})
                             return
@@ -1151,7 +1150,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    /deep/ .el-icon-close{
+        top:-5px!important;
+    }
 }
+
 .content {
     display: flex;
     flex-wrap: wrap;
@@ -1183,9 +1186,7 @@
         }
     } 
 }
-.el-icon-close{
-    top:-5px!important
-}
+
 .aduit-list {
     padding: 5px 10px 0px;
     > p {
