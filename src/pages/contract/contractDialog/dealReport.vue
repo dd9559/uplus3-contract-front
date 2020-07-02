@@ -119,9 +119,12 @@
                         </p>
                         <p style="margin:0 10px;">
                             <span class="mark">交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
+                            <!-- <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                            </el-select>
+                            </el-select> -->
+                            <span class="transFlow">{{report.transFlowName}}</span>
+                            <span class="mark">权证费用：</span>
+                            <span class="warrant">{{0}}</span>
                         </p>
                     </div>
                     <div class="input">
@@ -814,7 +817,15 @@ export default {
         }
     }
     .liucheng {
-        width: 253px!important;
+        width: 180px!important;
+    }
+    .transFlow{
+        display: inline-block;
+        width: 160px;
+    }
+    .warrant{
+        display: inline-block;
+        width: 100px;
     }
     .bank {
         width: 145px!important;

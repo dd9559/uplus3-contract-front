@@ -94,11 +94,12 @@
                         v-for="item in dictionary['507']"
                         :key="item.key"
                         v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"
-                      >/ {{item.value}}</i>
+                        >/ {{item.value}}</i>
                       <i>{{contractDetail.dealPrice|moneyFormat}}</i>
                     </span>
                   </p>
                 </div>
+
                 <div class="one_">
                   <p>
                     <span class="tag">客户佣金：</span>
@@ -113,11 +114,20 @@
                     <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
                     <span class="text">{{commissionTotal}} 元</span>
                   </p>
-                  <p
-                    v-if="showTransferTime&&contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)"
-                  >
+                  <p v-if="showTransferTime&&contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)" >
                     <span class="tag">预计过户时间：</span>
                     <span class="text">{{contractDetail.estTransferTime|formatDate}}</span>
+                  </p>
+                </div>
+
+                <div class="one_" v-if="contractDetail.contType.value!=1">
+                  <p>
+                    <span class="tag">交易流程：</span>
+                    <span class="text">{{contractDetail.transFlowName}}</span>
+                  </p>
+                  <p>
+                    <span class="tag">权证费用：</span>
+                    <span class="text">{{0}} 元</span>
                   </p>
                 </div>
               </div>

@@ -25,10 +25,10 @@
                     <div class="form-content">
                         <el-form-item 
                             label="签约时间："
-                            style="text-align:right;width:285px;"
+                            style="text-align:right;width:245px;"
                             class="form-label">
                             <el-date-picker 
-                                style="width:180px"
+                                style="width:140px"
                                 :disabled="type===2?true:false"
                                 v-model="contractForm.signDate"
                                 type="datetime"
@@ -73,10 +73,10 @@
                         <el-form-item 
                             label="纸质合同编号："
                             class="width-250 form-label"
-                            style="width:340px;"
+                            style="width:280px;"
                             v-if="recordType===2">
                             <input 
-                                style="width:200px;"
+                                style="width:140px;"
                                 type="text"
                                 :disabled="canInput"
                                 maxlength="30"
@@ -103,6 +103,31 @@
                                 default-time="12:00:00">
                             </el-date-picker>
                         </el-form-item>
+
+                        <el-form-item
+                            label="交易流程："
+                            class="form-label"
+                            style="width:280px;text-align:right"
+                            v-if="contractForm.type===2||contractForm.type===3">
+                            <el-select
+                                v-model="contractForm.transFlowCode"
+                                placeholder="请选择交易流程"
+                                :clearable="true"
+                                style="width:140px"
+                                :disabled="offLine">
+                                <el-option
+                                    v-for="item in transFlowList" :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item 
+                            label="权证费用："
+                            class="width-250"
+                            v-if="contractForm.type===2||contractForm.type===3">
+                            <span class="warrant">{{0}} 元</span>
+                        </el-form-item>
                         <br>
                         <el-form-item 
                             label="客户佣金："
@@ -120,7 +145,7 @@
                         </el-form-item>
                         <el-form-item 
                             label="业主佣金："
-                            style="text-align:right;width:285px;">
+                            style="text-align:right;width:245px;">
                             <input 
                                 type="text"
                                 :disabled="canInput"
@@ -130,6 +155,16 @@
                                 placeholder="请输入内容"
                                 class="dealPrice"
                                 :class="{'disabled':canInput}">
+                            <i class="yuan">元</i>
+                        </el-form-item>
+                        <el-form-item 
+                            label="总佣金："
+                            style="text-align:right;width:280px;">
+                            <input 
+                                placeholder="请输入内容"
+                                :value="commissionTotal"
+                                :disabled="true"
+                                class="dealPrice disabled">
                             <i class="yuan">元</i>
                         </el-form-item>
                         <el-form-item 
@@ -145,16 +180,6 @@
                                 class="dealPrice"
                                 :class="{'disabled':canInput}">
                             <i class="hint iconfont icon-wenhao1" title="佣金成本支出"></i>
-                            <i class="yuan">元</i>
-                        </el-form-item>
-                        <el-form-item 
-                            label="总佣金："
-                            style="text-align:right;width:280px;">
-                            <input 
-                                placeholder="请输入内容"
-                                :value="commissionTotal"
-                                :disabled="true"
-                                class="dealPrice disabled">
                             <i class="yuan">元</i>
                         </el-form-item>
                     </div>
@@ -783,6 +808,9 @@ const rule = {
     pCode: {
         name: "纸质合同编号"
     },
+    transFlowCode: {
+        name: "交易流程"
+    },
     houseinfoCode: {
         name: "房源"
     },
@@ -1375,6 +1403,9 @@ export default {
             }
             if (this.recordType != 2) {
                 delete rule_.pCode;
+            }
+            if(this.contractForm.type===1){//租赁无交易流程
+                delete rule_.transFlowCode
             }
             if (!this.contractForm.signDate) {
                 this.contractForm.signDate = "";
@@ -2321,9 +2352,7 @@ export default {
                     url = "/api/contract/addLocalContract";
                 }
 
-                this.$ajax
-                    .postJSON(url, param)
-                    .then(res => {
+                this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
@@ -3728,6 +3757,11 @@ export default {
 .width-250 {
     width: 245px;
     text-align: right;
+}
+.warrant{
+    display: inline-block;
+    width: 140px;
+    text-align: left;
 }
 .btn {
     padding-top: 10px;
