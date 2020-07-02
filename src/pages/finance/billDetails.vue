@@ -15,7 +15,7 @@
       </p>
     </div>
     <ul class="bill-details-content">
-      <template v-if="!checkBoxShow">
+      <template v-if="!checkBoxShow&&activeItem!='转款信息'">
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
@@ -226,7 +226,7 @@
           </div>
         </li>
       </template>
-      <li v-if="checkBoxShow" ref="checkBox">
+      <li v-if="checkBoxShow&&activeItem!='转款信息'" ref="checkBox">
         <h4 class="f14">审核信息</h4>
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -261,6 +261,21 @@
           :total="total">
         </el-pagination>-->
       </li>
+      <!-- 新增转款信息 -->
+      <li v-if="activeItem==='转款信息'">
+       <h4 class="f14">转款信息</h4>
+       <el-table border :data="transferInfo" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="时间">
+            <template slot-scope="scope">
+              <span>{{scope.row.timer|formatTime}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+          <el-table-column align="center" prop="job" label="职务"></el-table-column>
+          <el-table-column align="center" prop="kuanlei" label="转出合同/款类"></el-table-column>
+          <el-table-column align="center" prop="kuanlei" label="转入合同/款类"></el-table-column>
+        </el-table>
+       </li>
       <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
         <h4 class="f14">收款二维码</h4>
         <img :src="billMsg.RQcode" alt="">
@@ -368,6 +383,14 @@
                 btnPrint: false,//是否有打印权限
                 btnBill: false,//是否有开票权限
                 printType: 'client',//票据是否只显示客户联
+                transferInfo:[
+                  {
+                    timer:"2020-06-11 16:44:23",
+                    name:"sssssss",
+                    job:"员工",
+                    kuanlei:"Y000000000000000(款类)"
+                  }
+                ]
             }
         },
         created() {
@@ -379,6 +402,9 @@
             // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
             this.btnBill = this.$route.query.bill.toString() === 'true' ? true : false
             this.tabs.unshift(this.activeItem)
+            if(this.$route.query.detailType){
+               this.tabs.push("转款信息")
+            }
             this.getData()
             if (this.$route.query.type) {
                 this.receiptBill = parseInt(this.$route.query.type)

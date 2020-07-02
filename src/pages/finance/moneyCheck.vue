@@ -405,6 +405,8 @@
               @click="cellOpera(scope.row)"
               v-if="scope.row.auditButton||scope.row.grabDept"
             >审核</el-button>
+            <!-- 20200630新加反审核按钮 -->
+            <el-button type="text" @click="cellOpera(scope.row,'deAudit')">反审核</el-button>
             <!-- <el-button
               type="text"
               @click="cellOpera(scope.row,'del')"
@@ -412,7 +414,7 @@
                        scope.row.isDel===1&&
                        (scope.row.caozuo===1||scope.row.caozuo===2)&&
                        power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state"
-            >作废</el-button> -->
+            >作废</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -983,6 +985,18 @@ export default {
             contId: item.contId,
             code: item.contCode,
             isentrust: item.type === 8 ? 1 : 0
+          }
+        });
+      } else if (type === "deAudit") {
+        this.$router.push({
+          path: "receiptBill",
+          query: {
+            edit: 2,
+            id: item.id,
+            contId: item.contId,
+            code: item.contCode,
+            isentrust: item.type === 8 ? 1 : 0,
+            deAudit: true
           }
         });
       } else {
