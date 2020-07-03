@@ -149,7 +149,7 @@
                             <el-select
                                 v-model="aduitForm.dep"
                                 multiple
-                                class="dep dot"
+                                class="dep"
                                 :disabled="editDisabled2"
                                 placeholder="请选择"
                                 >
@@ -166,7 +166,7 @@
                                 v-model="aduitForm.dep"
                                 multiple
                                 v-else
-                                class="dep dot"
+                                class="dep"
                                 :disabled="editDisabled2"
                                 placeholder="请选择"
                                 >
@@ -1155,9 +1155,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    /deep/ .el-icon-close{
-        top:-5px!important;
-    }
 }
 
 .content {
@@ -1181,6 +1178,9 @@
     }
 }
 .dep{
+    /deep/ .el-icon-close{
+        top:-5px!important;
+    }
     /deep/  .el-tag--info{
         width:80%;
         display: inline-block;

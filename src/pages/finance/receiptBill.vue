@@ -722,7 +722,11 @@ export default {
       );
       arr.push({ name: "创建收款", path: this.$route.fullPath });
       if (this.getUser) {
-        this.getAcount(this.getUser && this.getUser.user.empId);
+        if (this.$route.query.contId != "0") {
+          this.getAcount(this.getUser && this.getUser.user.empId);
+        } else {
+          this.getCompanyBanks(this.dep.id);
+        }
       }
     }
 
@@ -742,7 +746,11 @@ export default {
       this.dep.id = user.depId;
       this.dep.name = user.depName;
       //设置收款账户
-      this.getCompanyBanks(user.depId);
+      if (this.$route.query.contId != "0") {
+        this.getAcount(this.getUser && this.getUser.user.empId);
+      } else {
+        this.getCompanyBanks(this.dep.id);
+      }
       this.form.inObj = user.name;
     } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
@@ -754,7 +762,11 @@ export default {
       this.dep.id = user.depId;
       this.dep.name = user.depName;
       //设置收款账户
-      this.getCompanyBanks(user.depId);
+      if (this.$route.query.contId != "0") {
+        this.getAcount(this.getUser && this.getUser.user.empId);
+      } else {
+        this.getCompanyBanks(this.dep.id);
+      }
       this.form.inObj = user.name;
       this.getDetails({ type: 1, payId: urlParam.id });
     } else {
@@ -1095,7 +1107,12 @@ export default {
           }
           // }
           this.form = Object.assign({}, this.form, obj);
-          this.getAcount(this.form.inObjId);
+          if (this.$route.query.contId != "0") {
+            this.getAcount(this.form.inObjId);
+          } else {
+            this.getCompanyBanks(this.dep.id);
+          }
+          this.activeAdmin = res.data.inAccount[0].accountId;
           // this.hideCardList()
           if (this.$route.query.collect && this.$route.query.contId == 0) {
             if (res.data.houseinfoJson) {
@@ -1283,6 +1300,7 @@ export default {
               param.outAccount = cardListStatus ? [] : [].concat(this.cardList);
               param.inAccount = [];
               this.payList.forEach(item => {
+                this.firstCreate.state = true;
                 if (
                   this.firstCreate.state ||
                   this.firstCreate.content.showAccount ||
@@ -1398,6 +1416,8 @@ export default {
           });
       } else {
         if (this.$route.query.collect) {
+          param.moneyType = this.form.moneyType;
+          param.moneyTypePid = this.form.moneyTypePid;
           this.$ajax
             .postJSON("/api/payInfo/saveProNoContract", param)
             .then(res => {
@@ -1542,7 +1562,11 @@ export default {
       this.billStatus = false; //线上收款
       type !== 1 && (this.billStatus = true);
       if (type == 2) {
-        this.getCompanyBanks(this.dep.id);
+        if (this.$route.query.contId != "0") {
+          this.getAcount(this.dep.id);
+        } else {
+          this.getCompanyBanks(this.dep.id);
+        }
       }
     },
     getCell: function(label) {
@@ -1575,8 +1599,8 @@ export default {
             obj.outObjId = tip.custId;
             obj.outObj = tip.custName;
             if (
-              (item == 1 && this.$route.query.code) ||
-              (item == 2 && this.$route.query.code)
+              (item == 1 && this.$route.query.collect != 1) ||
+              (item == 2 && this.$route.query.collect != 1)
             ) {
               this.inputPerson = false;
             } else {
