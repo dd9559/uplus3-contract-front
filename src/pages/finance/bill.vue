@@ -530,14 +530,22 @@
       <div class="transter-detail">
         <p class="title">合同信息</p>
         <p class="info">
-          <span>合同编号：Y0040200525001</span>&nbsp;&nbsp;&nbsp;
-          <span>款类：定金</span>&nbsp;&nbsp;&nbsp;
-          <span>金额：10000元 壹万元整</span>
+          <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
+          <span>款类：{{selectPayInfo&&selectPayInfo.contType}}</span>&nbsp;&nbsp;&nbsp;
+          <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; 壹万元整</span>
         </p>
-        <p>物业地址：物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址</p>
+        <p>物业地址：{{selectPayInfo&&selectPayInfo.propertyRightAddr?selectPayInfo.propertyRightAddr:"-"}}</p>
         <p class="title">转款操作</p>
-        <p>转入合同：S0040200608019</p>
-        <p>物业地址：物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址</p>
+        <p>
+          转入合同：
+          <span
+            v-if="!(selectPayInfo&&selectPayInfo.contCode==='-')"
+          >{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>
+          <span class="select" style="margin:0 0 10px 20px;" @click="chooseCont()" v-else>请选择合同</span>
+        </p>
+        <p
+          v-if="!(selectPayInfo&&selectPayInfo.contCode==='-')"
+        >物业地址：{{selectPayInfo&&selectPayInfo.propertyRightAddr?selectPayInfo.propertyRightAddr:"-"}}</p>
         <div class="kuanlei clearfix">
           <label>选择款类：</label>
           <ul>
@@ -551,10 +559,10 @@
                 ></el-option>
               </el-select>
               <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.amount"></el-input>
-              <span class="icon" @click.stop="addcommissionData">
+              <span class="icon" @click.stop="addcommissionData" v-if="index===0">
                 <i class="iconfont icon-tubiao_shiyong-14"></i>
               </span>
-              <span class="icon" @click.stop="delPeople(index)">
+              <span class="icon" @click.stop="delPeople(index)" v-if="!(index===0)">
                 <i class="iconfont icon-tubiao_shiyong-4"></i>
               </span>
             </li>
@@ -563,12 +571,103 @@
         <p style="color:#FF2711;">注：一旦转款成功，不同合同转款，实收金额相应增减；同一合同转款，实收金额不变</p>
         <p style="text-align:right;margin:50px 50px 0 0;">
           <el-button size="small" class="btn-info" round @click="transterShow=false">取消</el-button>
-          <el-button size="small" class="btn-info" round type="primary">保存</el-button>
+          <el-button size="small" class="btn-info" round type="primary" @click="transterSave()">保存</el-button>
         </p>
       </div>
+      <el-dialog
+        width="600px"
+        title="选择合同"
+        :visible.sync="chooseContShow"
+        append-to-body
+        :closeOnClickModal="$tool.closeOnClickModal"
+        height="300"
+        style="margin-top:-8vh;"
+      >
+        <div>
+          <p style="width:600px;height:40px;line-height:65px;">
+            <span style="float:left;" class="clearfix">关键字：</span>
+            <el-input
+              v-model="contKeyWord"
+              maxlength="100"
+              class="w200"
+              style="float:left;"
+              placeholder="请输入合同编号/物业地址"
+            ></el-input>
+            <el-button
+              size="small"
+              class="btn-info"
+              round
+              type="primary"
+              style="float:right;margin:20px 20px 0 0;"
+            >查询</el-button>
+          </p>
+          <div style="padding:0 0 50px 0;" class="about-cont">
+            <el-table
+              border
+              :data="contList"
+              style="width: 100%"
+              header-row-class-name="theader-bg"
+              key="other"
+              @row-click="selectItem"
+            >
+              <el-table-column width="40">
+                <template slot-scope="scope">
+                  <span class="outSide">
+                    <span class="inLine" :class="{'inLineBg':selectCode===scope.row.code}"></span>
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                min-width="120"
+                label="合同编号"
+                prop="code"
+                :formatter="nullFormatter"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                min-width="120"
+                label="物业地址"
+                prop="propertyAddr"
+                :formatter="nullFormatter"
+              ></el-table-column>
+            </el-table>
+            <el-pagination
+              class="pagination-info"
+              @current-change="handleCurrentChange2"
+              :current-page="currentPage2"
+              :page-size="pageSize2"
+              layout="total, prev, pager, next, jumper"
+              :total="total"
+            ></el-pagination>
+            <p style="text-align:right;margin:50px 50px 0 0;">
+              <el-button size="small" class="btn-info" round @click="chooseContShow=false">取消</el-button>
+              <el-button size="small" class="btn-info" round type="primary">保存</el-button>
+            </p>
+          </div>
+        </div>
+      </el-dialog>
+      <el-dialog
+        width="600px"
+        title="确认保存"
+        :visible.sync="sureSaveTransterShow"
+        append-to-body
+        :closeOnClickModal="$tool.closeOnClickModal"
+        style="margin-top:8vh;"
+      >
+        <div class="sure-transter-dialog">
+          <p>确认转款？</p>
+          <p>转款成功后，不同合同转款，原合同实收金额会减掉，转入合同</p>
+          <p>实收金额会增加；同一个合同转款，实收金额不变</p>
+          <p style="text-align:right;margin:50px 50px 0 0;">
+            <el-button size="small" class="btn-info" round @click="sureSaveTransterShow=false">取消</el-button>
+            <el-button size="small" class="btn-info" round type="primary" @click="transterSave()">保存</el-button>
+          </p>
+        </div>
+      </el-dialog>
     </el-dialog>
   </div>
-</template>
+</template> 
 
 <script>
 import { FILTER } from "@/assets/js/filter";
@@ -698,7 +797,16 @@ export default {
           kType: "",
           amount: ""
         }
-      ]
+      ],
+      chooseContShow: false, //控制选择合同弹框
+      contKeyWord: "",
+      contList: [], //合同数组
+      contTotal: "",
+      selectCode: "", //选择合同编号
+      currentPage2: 1,
+      pageSize2: 5,
+      sureSaveTransterShow: false,
+      selectPayInfo: null
     };
   },
   mounted() {
@@ -774,7 +882,8 @@ export default {
       this.$router.push({
         path: "receiptBill",
         query: {
-          collect: 1
+          collect: 1,
+          contId: "0"
         }
       });
     },
@@ -1077,6 +1186,7 @@ export default {
     btnTransfer(val) {
       console.log(val);
       this.transterShow = true;
+      this.selectPayInfo = val;
     },
     addcommissionData() {
       this.kuanleiVal.push({
@@ -1085,13 +1195,39 @@ export default {
       });
     },
     delPeople(index) {
-      if (this.kuanleiVal.length === 1) {
-        this.$message({
-          message: "最少留一条"
-        });
-        return;
-      }
       this.kuanleiVal.splice(index, 1);
+    },
+    chooseCont() {
+      this.chooseContShow = true;
+      this.getContractList();
+    },
+    getContractList() {
+      let param = {
+        pageNum: 1,
+        pageSize: 5
+      };
+      this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.contList = res.data.list;
+          this.contTotal = res.data.count;
+        }
+      });
+    },
+    //选择合同
+    selectItem(val) {
+      console.log(val);
+      if (this.selectCode === val.code) {
+        this.selectCode = "";
+      } else {
+        this.selectCode = val.code;
+      }
+    },
+    handleCurrentChange2(val) {
+      console.log(`当前页: ${val}`);
+    },
+    transterSave() {
+      this.sureSaveTransterShow = true;
     }
   },
   filters: {
@@ -1450,6 +1586,18 @@ export default {
   }
   > p {
     line-height: 40px;
+    .select {
+      display: inline-block;
+      text-align: center;
+      color: #fff;
+      width: 140px;
+      padding: 2px 0;
+      background: #478de3;
+      border-radius: 2px;
+      cursor: pointer;
+      height: 30px;
+      line-height: 30px;
+    }
   }
   .info {
     span {
@@ -1468,6 +1616,53 @@ export default {
       color: @color-FF5;
     }
   }
+}
+.outSide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //box-sizing: border-box;
+  //padding: 2px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  .inLine {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .inLineBg {
+    background: @color-blue;
+  }
+}
+/deep/ .pagination-info {
+  text-align: center;
+  margin-top: 30px;
+}
+.about-cont {
+  /deep/ .cell {
+    line-height: 15px;
+  }
+}
+.sure-transter-dialog {
+  p {
+    text-align: center;
+    &:first-of-type {
+      font-weight: bold;
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    &:nth-of-type(2) {
+      margin-top: 20px;
+    }
+    &:nth-of-type(2),
+    &:nth-of-type(3) {
+      color: #ff2711;
+    }
+  }
+  padding-bottom: 20px;
 }
 </style>
 
