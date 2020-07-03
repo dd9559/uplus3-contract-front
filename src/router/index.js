@@ -28,7 +28,7 @@ const postReceive = () => import('@/pages/postSigning/postReceive')
 //业绩模块
 const actualAchievement = () => import('@/pages/achievement/actualAchievement')
 const receivableAchievement = () => import('@/pages/achievement/receivableAchievement')
-const achForms = () => import('@/pages/achievement/achForms.vue')
+// const achForms = () => import('@/pages/achievement/achForms.vue')
 const achPage = () => import('@/pages/achievement/achPage')
 const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
@@ -261,14 +261,14 @@ export default new Router({
             list: ["二手房", "业绩", "结算业绩"]
           }
         },
-        {
-          path: "achForms",
-          component: achForms,
-          meta: {
-            root: true,
-            list: ["二手房", "业绩", "业绩报表"]
-          }
-        },
+        // {
+        //   path: "achForms",
+        //   component: achForms,
+        //   meta: {
+        //     root: true,
+        //     list: ["二手房", "业绩", "业绩报表"]
+        //   }
+        // },
         // 业绩板块 end
         {
           path: "Bill",

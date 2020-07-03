@@ -977,16 +977,30 @@ export default {
             });
         }
       } else if (type === "edit") {
-        this.$router.push({
-          path: "receiptBill",
-          query: {
-            edit: 2,
-            id: item.id,
-            contId: item.contId,
-            code: item.contCode,
-            isentrust: item.type === 8 ? 1 : 0
-          }
-        });
+        if (item.contId) {
+          this.$router.push({
+            path: "receiptBill",
+            query: {
+              edit: 2,
+              id: item.id,
+              contId: item.contId,
+              code: item.contCode,
+              isentrust: item.type === 8 ? 1 : 0
+            }
+          });
+        } else {
+          this.$router.push({
+            path: "receiptBill",
+            query: {
+              edit: 2,
+              id: item.id,
+              contId: item.contId,
+              code: item.contCode,
+              isentrust: item.type === 8 ? 1 : 0,
+              collect: 1
+            }
+          });
+        }
       } else if (type === "deAudit") {
         this.$router.push({
           path: "receiptBill",
