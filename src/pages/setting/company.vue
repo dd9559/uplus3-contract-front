@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" filterable remote :clearable="true" class="w180" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+          <el-select v-model="searchForm.storeId" multiple filterable remote :clearable="true"  style="width:200px" :class="{'width350':searchForm.storeId&&searchForm.storeId.length>1}" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -413,7 +413,7 @@
         // 搜索表单中的数据
         searchForm: {
           cityId: "",
-          storeId: "",
+          storeId: [],
           cooperationMode: "",
           bankCard: "",
           keyword: "",
@@ -620,8 +620,9 @@
             methods:"get"
           }))
         }
-
-        this.$ajax.get('/api/setting/company/list', param).then(res => {
+        param.storeIdStr=param.storeId
+        delete param.storeId
+        this.$ajax.postJSON('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
             this.tableData = res.data.list
@@ -1154,6 +1155,9 @@
     .el-input {
       width: 140px;
     }
+  }
+  .width350{
+    width: 350px!important;
   }
   .w180 {
     margin-right: 40px;

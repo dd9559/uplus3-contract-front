@@ -631,24 +631,31 @@
                 this.queryFn(1);
             },
             skipContDel(value) {
-                //进入合同详情
-                if (this.power["sign-com-htdetail"].state) {
-                    let param = {
-                        code: value.code
-                    };
-
+              this.$ajax.get("/api/contract/isDetailAuth",{contId:value.contId}).then(res=>{
+                res=res.data
+                if(res.status===200){
+                  if(res.data){
                     this.$router.push({
-                        path: "/contractDetails",
-                        query: {
-                            id: value.id,
-                            code: value.code,
-                            contType: value.contType.value
-                        }
-                    });
-
-                } else {
-                    this.noPower("合同详情查看");
+                      path:'/contractDetails',
+                      query: {
+                        id: value.id,
+                        code: value.code,
+                        contType: value.contType.value
+                      }
+                    })
+                  }else{
+                    this.$message({
+                      message:"没有合同详情查看权限",
+                      type:"warning"
+                    })
+                  }
                 }
+              }).catch(error=>{
+                this.$message({
+                  message: error,
+                  type: "error"
+                });
+            })
             },
         }
     };

@@ -1480,22 +1480,32 @@ export default {
     //点击合同编号进详情
     skipContDel(value) {
       //进入合同详情
-      if (this.power["sign-com-htdetail"].state) {
-        let param = {
-          code: value.code
-        };
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            id: value.id,
-            code: value.code,
-            contType: value.contType.value
+        this.$ajax.get("/api/contract/isDetailAuth",{contId:value.contId}).then(res=>{
+          res=res.data
+          if(res.status===200){
+            if(res.data){
+              this.$router.push({
+                path:'/contractDetails',
+                query: {
+                  id: value.id,
+                  code: value.code,
+                  contType: value.contType.value
+                }
+              })
+            }else{
+              this.$message({
+                message:"没有合同详情查看权限",
+                type:"warning"
+              })
+            }
           }
-        });
-      } else {
-        this.noPower("合同详情查看");
-      }
-    },
+        }).catch(error=>{
+          this.$message({
+            message: error,
+            type: "error"
+          });
+        })
+      },
     /**
      * 跳转房客源详情
      * @param code
