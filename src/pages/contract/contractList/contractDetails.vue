@@ -2928,9 +2928,7 @@ export default {
       let param = {
         id: this.id
       };
-      this.$ajax
-        .get("/api/contract/detail", param)
-        .then(res => {
+      this.$ajax.get("/api/contract/detail", param).then(res => {
           res = res.data;
           if (res.status === 200) {
             this.contractDetail = res.data;
