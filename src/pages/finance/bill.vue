@@ -432,6 +432,8 @@
               @click="btnOpera(scope.row,1)"
               v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state"
             >编辑</el-button>
+            <!-- 新增转款按钮 -->
+            <el-button type="text" @click="btnTransfer(scope.row)">转款</el-button>
             <template
               v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
             >
@@ -517,6 +519,53 @@
           v-loading.fullscreen.lock="getLoading"
         >确 定</el-button>
       </span>
+    </el-dialog>
+    <!-- 转款 -->
+    <el-dialog
+      title="转款信息填写"
+      :visible.sync="transterShow"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      width="800px"
+    >
+      <div class="transter-detail">
+        <p class="title">合同信息</p>
+        <p class="info">
+          <span>合同编号：Y0040200525001</span>&nbsp;&nbsp;&nbsp;
+          <span>款类：定金</span>&nbsp;&nbsp;&nbsp;
+          <span>金额：10000元 壹万元整</span>
+        </p>
+        <p>物业地址：物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址</p>
+        <p class="title">转款操作</p>
+        <p>转入合同：S0040200608019</p>
+        <p>物业地址：物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址物业地址</p>
+        <div class="kuanlei clearfix">
+          <label>选择款类：</label>
+          <ul>
+            <li v-for="(item,index) in kuanleiVal" :key="index">
+              <el-select :clearable="true" size="small" v-model="item.kType" placeholder="请选择">
+                <el-option
+                  v-for="item in dictionary['56']"
+                  :key="item.key"
+                  :label="item.value"
+                  :value="item.key"
+                ></el-option>
+              </el-select>
+              <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.amount"></el-input>
+              <span class="icon" @click.stop="addcommissionData">
+                <i class="iconfont icon-tubiao_shiyong-14"></i>
+              </span>
+              <span class="icon" @click.stop="delPeople(index)">
+                <i class="iconfont icon-tubiao_shiyong-4"></i>
+              </span>
+            </li>
+          </ul>
+        </div>
+        <p style="color:#FF2711;">注：一旦转款成功，不同合同转款，实收金额相应增减；同一合同转款，实收金额不变</p>
+        <p style="text-align:right;margin:50px 50px 0 0;">
+          <el-button size="small" class="btn-info" round @click="transterShow=false">取消</el-button>
+          <el-button size="small" class="btn-info" round type="primary">保存</el-button>
+        </p>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -642,7 +691,14 @@ export default {
           state: false,
           name: "编辑"
         }
-      }
+      },
+      transterShow: false,
+      kuanleiVal: [
+        {
+          kType: "",
+          amount: ""
+        }
+      ]
     };
   },
   mounted() {
@@ -892,7 +948,8 @@ export default {
           power: this.getUser.user.empId === row.auditBy,
           bill: this.power["sign-cw-bill-invoice"].state,
           contId: row.contId,
-          listName: 1
+          listName: 1,
+          detailType: true
         }
       });
       // }
@@ -930,10 +987,10 @@ export default {
         this.layer.show = true;
         this.layer.content = [].concat(row);
       } else if (type === 3) {
-        if(row.contId){
-         this.$refs.layerInvoice.show(row.id, true,1,row.contId);
-        }else{
-         this.$refs.layerInvoice.show(row.id, true,1,0);
+        if (row.contId) {
+          this.$refs.layerInvoice.show(row.id, true, 1, row.contId);
+        } else {
+          this.$refs.layerInvoice.show(row.id, true, 1, 0);
         }
         // this.$refs.layerInvoice.contId=row.contId
       } else if (type === 4) {
@@ -1015,6 +1072,26 @@ export default {
           this.drop_MoneyType = res.data;
         }
       });
+    },
+    // 转款操作
+    btnTransfer(val) {
+      console.log(val);
+      this.transterShow = true;
+    },
+    addcommissionData() {
+      this.kuanleiVal.push({
+        kType: "",
+        amount: ""
+      });
+    },
+    delPeople(index) {
+      if (this.kuanleiVal.length === 1) {
+        this.$message({
+          message: "最少留一条"
+        });
+        return;
+      }
+      this.kuanleiVal.splice(index, 1);
     }
   },
   filters: {
@@ -1346,6 +1423,50 @@ export default {
         right: 0;
         transform:translateY(-50%);
       }*/
+  }
+}
+
+// 转款弹框
+.transter-detail {
+  padding: 20px 20px 50px 20px;
+  .title {
+    font-weight: bold;
+  }
+  .kuanlei {
+    width: 100%;
+    label {
+      float: left;
+      margin-top: 5px;
+    }
+    ul {
+      li {
+        float: right;
+        margin: 10px 221px 0 0;
+        &:first-of-type {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+  > p {
+    line-height: 40px;
+  }
+  .info {
+    span {
+      width: 33.3333%;
+    }
+  }
+  .icon {
+    display: inline-block;
+    cursor: pointer;
+    .icon-tubiao_shiyong-14 {
+      font-size: 22px;
+      color: @color-blue;
+    }
+    .icon-tubiao_shiyong-4 {
+      font-size: 22px;
+      color: @color-FF5;
+    }
   }
 }
 </style>

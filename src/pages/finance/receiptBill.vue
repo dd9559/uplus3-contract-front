@@ -399,6 +399,20 @@
             </ul>
             <!--<p class="upload-text"><span>点击可上传图片附件或拖动图片到此处以上传附件</span>（买卖交易合同、收据、租赁合同、解约协议、定金协议、意向金协议）</p>-->
           </div>
+          <!-- 新增反审核时间 -->
+          <div class="input-group" v-if="$route.query.deAudit" style="margin:20px 0 20px 0;">
+            <label class="form-label f14">审核时间：</label>
+            <el-date-picker
+              class="w200"
+              size="small"
+              v-model="examineDate"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              type="datetime"
+              @change="checkDate"
+              placeholder="选择日期时间"
+              :picker-options="pickerOptions"
+            ></el-date-picker>
+          </div>
           <div class="input-group">
             <p>
               <label class="f14">备注信息</label>
@@ -651,7 +665,14 @@ export default {
       },
       isFukuanFangInput: false,
       shoufuType: "",
-      payCode: ""
+      payCode: "",
+      examineDate: "",
+      //日期选择器禁止选择未来时间
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      }
     };
   },
   mounted() {
@@ -687,7 +708,13 @@ export default {
         ],
         Number(urlParam.edit) === 1 ? "/bill" : "/moneyCheck?type=1"
       );
-      arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      if (urlParam.deAudit) {
+        arr.push({ name: "反审核", path: this.$route.fullPath });
+        //获取反审核时间
+        this.getNewData();
+      } else {
+        arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      }
     } else {
       arr = this.$tool.getRouter(
         ["二手房", "合同", "合同列表"],
@@ -1697,6 +1724,20 @@ export default {
             });
           });
       });
+    },
+    //获取当前日期
+    getNewData() {
+      let time = new Date();
+      let y = time.getFullYear();
+      let M = time.getMonth() + 1;
+      let D = time.getDate();
+      let h = time.getHours();
+      let m = time.getMinutes();
+      let s = time.getSeconds();
+      let time_ = `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+        h > 9 ? h : "0" + h
+      }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+      this.examineDate = time_;
     }
   },
   computed: {
