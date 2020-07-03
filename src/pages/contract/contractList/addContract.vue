@@ -541,18 +541,17 @@
                     <p @click="showRemarkTab"
                         class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10"
                             :class="{'attention_':showRemark}"></span></p>
-                    <div class="remarkType"
-                        v-show="showRemark">
-                        <el-form-item style="padding-left:20px;position:relative;">
+                    <div class="remarkType" v-show="showRemark">
+                        <el-form-item style="padding-left:20px;padding-bottom:30px;position:relative;">
                             <!-- @input="inputCode('remarks')" -->
                             <el-input type="textarea"
-                                :rows="6"
-                                maxlength="200"
+                                :rows="8"
+                                maxlength="500"
                                 resize='none'
                                 :disabled="canInput"
                                 v-model="contractForm.remarks"
                                 placeholder="请输入备注内容"></el-input>
-                            <span class="textLength">{{contractForm.remarks.length}}/200</span>
+                            <span class="textLength">{{contractForm.remarks.length}}/500</span>
                         </el-form-item>
                     </div>
                 </div>
@@ -3664,7 +3663,7 @@ export default {
     .remarkType {
         padding-left: 30px;
         /deep/.el-textarea__inner {
-            width: 600px;
+            width: 800px;
             min-height: 200px;
         }
         .textLength {
