@@ -256,8 +256,8 @@
             </div>
             <div class="form-cont mt30" v-if="contractForm.type == 4">
               <el-form-item label="意向备注：" class="disb textlengthbox">
-                <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 5}" :disabled="canInput"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=200></el-input>
-                <span class="textLength">{{contractForm.remarks.length}}/200</span>
+                <el-input type="textarea" resize='none' rows="8" :disabled="canInput"  placeholder="请输入内容" v-model="contractForm.remarks" class="textareawidth" maxlength=500></el-input>
+                <span class="textLength">{{contractForm.remarks.length}}/500</span>
               </el-form-item>
             </div>
           </div>
@@ -1559,6 +1559,7 @@ export default {
       }
       .mt30 {
         margin-top: 30px;
+        height: 180px;
       }
       .pb30 {
         padding-bottom: 30px;
@@ -1574,7 +1575,7 @@ export default {
   }
   .textLength {
     position: absolute;
-    bottom: 8px;
+    bottom: -45px;
     right: 20px;
     color: #6c7986;
   }
