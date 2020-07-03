@@ -504,24 +504,31 @@
             },
             // 跳转合同详情
             skipContDel(value) {
-                if (this.power['sign-com-htdetail'].state) {
-                    /*this.setPath(
-                      this.$tool.getRouter(["业绩", "结算业绩", "合同详情"], "receivableAchievement")
-                    );*/
+              this.$ajax.get("/api/contract/isDetailAuth",{contId:value.contId}).then(res=>{
+                res=res.data
+                if(res.status===200){
+                  if(res.data){
                     this.$router.push({
-                        path: "/contractDetails",
-                        query: {
-                            id: value.id,
-                            code: value.code,
-                            contType: value.contType.value
-                            // id: 415,
-                            // code: 'S0001190114009',
-                            // contType: 2
-                        }
-                    });
-                } else {
-                    this.noPower('合同详情查看')
+                      path:'/contractDetails',
+                      query: {
+                        id: value.id,
+                        code: value.code,
+                        contType: value.contType.value
+                      }
+                    })
+                  }else{
+                    this.$message({
+                      message:"没有合同详情查看权限",
+                      type:"warning"
+                    })
+                  }
                 }
+              }).catch(error=>{
+                this.$message({
+                  message: error,
+                  type: "error"
+                });
+            })
             },
             changeTimeType() {
                 this.propForm.dateMo = "";

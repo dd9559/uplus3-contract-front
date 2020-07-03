@@ -152,7 +152,7 @@ let TOOL = {
               name: '业绩报表',
               category: "1-3-4",
               can: true,//是否可见
-              path: 'storeReceive',
+              path: 'achForms',
               code: "sign-yj-report-query"
             }
           ]
