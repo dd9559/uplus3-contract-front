@@ -15,9 +15,9 @@ let Obj={
     val38:null,
     val40:null,
     val42:null,
-    val45:null,
+    /*val45:null,
     val46:null,
-    val48:null,
+    val48:null,*/
     drapdown_pay: {
       stateful: function (val) {
         let res = null;
@@ -36,7 +36,7 @@ let Obj={
       }
     },
     val90:null,
-    drapdown_handle: {
+    /*drapdown_handle: {
       stateful: function (val) {
         let res = null;
         switch (val.toLowerCase()) {
@@ -49,7 +49,7 @@ let Obj={
         }
         return res;
       }
-    },
+    },*/
     drapdown_deal: {
       stateful: function (val) {
         let res = null;
@@ -165,6 +165,16 @@ textLong.forEach(function (item) {
 
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+/*let msg={
+  companyBanks:{
+    bankAccountName: "何江",
+    bankBranchName: "—",
+    bankCard: "6230334001007090568",
+    id: 657,
+    storeId: 50235,
+    storeName: "小金鱼小队"
+  }
+}*/
 for(let readonlyItem in msg){
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
@@ -175,7 +185,7 @@ for(let readonlyItem in msg){
     arr.push(time.getDate())
   }
 
-  let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square']
+  let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
@@ -188,6 +198,15 @@ for(let readonlyItem in msg){
             }else{
                 element.innerHTML=value
             }
+        }else if(element.getAttribute("extendParam")==="val45"){
+          let value = msg["companyBanks"]
+          element.innerHTML=value&&value.bankAccountName
+        }else if(element.getAttribute("extendParam")==="val46"){
+          let value = msg["companyBanks"]
+          element.innerHTML=value&&(value.bankBranchName==='—'?'':value.bankBranchName)
+        }else if(element.getAttribute("extendParam")==="val48"){
+          let value = msg["companyBanks"]
+          element.innerHTML=value&&value.bankCard
         }else{
             element.innerHTML=msg[readonlyItem]
         }

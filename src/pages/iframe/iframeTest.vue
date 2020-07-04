@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import {MIXINS_MM} from "../contract/mixins/MM";
+import {MIXINS_MM} from "../contract/mixins/MM";
 import {MIXINS_JJ} from "../contract/mixins/JJ.js";
 import {MIXINS_ZL} from "../contract/mixins/ZL.js";
 import {MIXINS_DB} from "../contract/mixins/DB.js";
@@ -19,7 +19,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'wh新买卖_贷.html'
+        src:'wh新委托-jm.html'
       }
     },
     created(){

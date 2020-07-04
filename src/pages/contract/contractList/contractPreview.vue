@@ -422,7 +422,7 @@ export default {
     this.code = this.$route.query.code;
     this.isentrust = Number(this.$route.query.isentrust)
     if(!Number(this.$route.query.isentrust)){
-      this.getContDataType();//获取合同集料库类型
+      this.getContDataType();//获取合同资料库类型
     }
     
     this.getContImg();
@@ -1136,21 +1136,21 @@ export default {
           let dataType = JSON.parse(res.data);
           // console.log(dataType);
           dataType.forEach(element => {
-            if(element.type==='1'){
+            if(Number(element.type)===1){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.buyerList.push(item);
-            }else if(element.type==='2'){
+            }else if(Number(element.type)===2){
               let item={};
               item.value=[];
               item.kind=element.type;
               item.title=element.name;
               item.isrequire=element.isNecessary;
               this.sellerList.push(item);
-            }else if(element.type==='3'){
+            }else if(Number(element.type)===3){
               let item={};
               item.value=[];
               item.kind=element.type;
@@ -1180,19 +1180,19 @@ export default {
                 item.fileType=fileType
                 pathList.push(item)
               });
-              if(element.kind==="1"){
+              if(Number(element.kind)===1){
                 this.buyerList.forEach(ele => {
                   if(element.title===ele.title){
                     ele.value=element.value
                   }
                 });
-              }else if(element.kind==="2"){
+              }else if(Number(element.kind)===2){
                 this.sellerList.forEach(ele => {
                   if(element.title===ele.title){
                     ele.value=element.value
                   }
                 });
-              }else if(element.kind==="3"){
+              }else if(Number(element.kind)===3){
                 this.otherList.forEach(ele => {
                   if(element.title===ele.title){
                     ele.value=element.value

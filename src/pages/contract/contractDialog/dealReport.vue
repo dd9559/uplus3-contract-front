@@ -246,7 +246,13 @@ export default {
         id: Number,
         contType: String,
         saveBtnShow: Boolean,
-        reportFlowShow: Boolean
+        reportFlowShow: Boolean,
+        defaultInfo: {
+            type: Object,
+            default: function() {
+                return {}
+            }
+        }
     },
     data() {
         return {
@@ -360,41 +366,32 @@ export default {
             }
         },
         getContractDetail() {
-            this.$ajax.get('/api/contract/detail',{id:this.id}).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                    this.dealBasicInfo.signDate = res.data.signDate.substr(0, 16)
-                    this.dealBasicInfo.code = res.data.code
-                    this.dealBasicInfo.contType = res.data.contType.label
-                    this.dealBasicInfo.dealPrice = res.data.dealPrice
-                    this.dealBasicInfo.receivableCommission = res.data.receivableCommission
-                    this.dealBasicInfo.Square = res.data.houseInfo.Square
-                    this.dealBasicInfo.CompleteYear = res.data.houseInfo.CompleteYear
-                    this.dealBasicInfo.propertyRightAddr = res.data.propertyRightAddr
-                    this.dealBasicInfo.FloorAll = res.data.houseInfo.FloorAll
-                    this.report = res.data.dealReport ? JSON.parse(res.data.dealReport) : this.report
-                    this.recordVersion = res.data.recordVersion
-                    if(res.data.loanType) {
-                        this.report.buyerPaymentMethod = res.data.loanType == 7 ? 1: 2
-                    }
-                    this.loadType = res.data.loanType ? true : false
-                    if(!res.data.dealReport) {
-                        this.report.guestShopOwnerName = this.recordVersion === 1 ? res.data.dealAgentShopowner : res.data.guestInfo.ShopOwnerName
-                        this.report.guestStoreName = this.recordVersion === 1 ? res.data.dealAgentStoreName : res.data.guestInfo.GuestStoreName
-                        this.report.guestShopOwnerMobile = this.recordVersion === 1 ? res.data.dealAgentShopownerMobile :res.data.guestInfo.ShopOwnerMobile
-                        this.report.houseShopOwnerName = res.data.houseInfo.ShopOwnerName
-                        this.report.houseStoreName = res.data.houseInfo.HouseStoreName
-                        this.report.houseShopOwnerMobile = res.data.houseInfo.ShopOwnerMobile   
-                    }
-                    this.buyerArr = res.data.contPersons.filter(item => item.personType.value === 2)
-                    this.sellerArr = res.data.contPersons.filter(item => item.personType.value === 1)
-                }
-            }).catch(error => {
-                this.$message({
-                    message: error,
-                    type: "error"
-                })
-            })
+            let data = JSON.parse(JSON.stringify(this.defaultInfo))
+            this.dealBasicInfo.signDate = data.signDate.substr(0, 16)
+            this.dealBasicInfo.code = data.code
+            this.dealBasicInfo.contType = data.contType.label
+            this.dealBasicInfo.dealPrice = data.dealPrice
+            this.dealBasicInfo.receivableCommission = data.receivableCommission
+            this.dealBasicInfo.Square = data.houseInfo.Square
+            this.dealBasicInfo.CompleteYear = data.houseInfo.CompleteYear
+            this.dealBasicInfo.propertyRightAddr = data.propertyRightAddr
+            this.dealBasicInfo.FloorAll = data.houseInfo.FloorAll
+            this.report = data.dealReport ? JSON.parse(data.dealReport) : this.report
+            this.recordVersion = data.recordVersion
+            if(data.loanType) {
+                this.report.buyerPaymentMethod = data.loanType == 7 ? 1: 2
+            }
+            this.loadType = data.loanType ? true : false
+            if(!data.dealReport) {
+                this.report.guestShopOwnerName = this.recordVersion === 1 ? data.dealAgentShopowner : data.guestInfo.ShopOwnerName
+                this.report.guestStoreName = this.recordVersion === 1 ? data.dealAgentStoreName : data.guestInfo.GuestStoreName
+                this.report.guestShopOwnerMobile = this.recordVersion === 1 ? data.dealAgentShopownerMobile :data.guestInfo.ShopOwnerMobile
+                this.report.houseShopOwnerName = data.houseInfo.ShopOwnerName
+                this.report.houseStoreName = data.houseInfo.HouseStoreName
+                this.report.houseShopOwnerMobile = data.houseInfo.ShopOwnerMobile   
+            }
+            this.buyerArr = data.contPersons.filter(item => item.personType.value === 2)
+            this.sellerArr = data.contPersons.filter(item => item.personType.value === 1)
         },
         getFlowList() {
             this.$ajax.get('/api/contract/getTransFlowListByCity').then(res => {

@@ -157,7 +157,7 @@
         </div>
       </div>
     </div>
-    <div class="msg" v-if="getDetail.vouchers.length>0||getDetail.remarks">
+    <div class="msg" v-if="getDetail.vouchers&&getDetail.vouchers.length>0||getDetail.remarks">
       <div class="title">其他信息</div>
       <div class="content">
         <div class="other" v-if="getDetail.vouchers&&getDetail.vouchers.length>0">

@@ -300,6 +300,9 @@ export default {
 
 <style lang="less" scoped>
     @import "~@/assets/common.less";
+    .box {
+        overflow-y: auto;
+    }
     .msg {
         display: flex;
         padding: 20px 0 20px 0;

@@ -4,7 +4,7 @@
 //庞豪：http://192.168.1.181:8080
 //刘梦冰：http://192.168.1.183:8080
 //朱辉：http://192.168.1.58:8080
-//朱浩然：http://192.168.15.47:28081
+//朱浩然：http://192.168.15.18:28081
 
 const path = require('path')
 
@@ -16,7 +16,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api':{ //代理地址
-        target: 'http://192.168.1.224:28081', //需要代理的地址 'http://192.168.1.224:28083
+        // target: 'http://192.168.16.107:28081', //需要代理的地址 'http://192.168.1.224:28083  
+        // target: 'http://192.168.16.42:28081', //需要代理的地址 'http://192.168.1.224:28083
+        // target: 'http://192.168.16.107:28081', //需要代理的地址
+        // target: 'http://192.168.16.26:28081', //需要代理的地址 刘梦冰
+        // target: 'http://192.168.1.224:28081', //需要代理的地址
+        target: 'http://120.76.202.91:28085', //需要代理的地址
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {
@@ -26,7 +31,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '192.168.13.7', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
