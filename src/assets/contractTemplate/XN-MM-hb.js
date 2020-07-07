@@ -187,7 +187,7 @@ for(let readonlyItem in msg){   //得到readonly的值
     arr.push(time.getMonth()+1)
     arr.push(time.getDate())
   }
-
+ 
   let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
