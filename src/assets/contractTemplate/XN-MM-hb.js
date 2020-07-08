@@ -167,8 +167,8 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-/*let msg={
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg={
   companyBanks:{
     bankAccountName: "何江",
     bankBranchName: "—",
@@ -177,7 +177,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
     storeId: 50235,
     storeName: "小金鱼小队"
   }
-}*/
+}
 for(let readonlyItem in msg){   //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
