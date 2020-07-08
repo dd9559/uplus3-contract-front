@@ -47,7 +47,7 @@
 
                     <div class="ach-divide-list">
                         <el-table :data="houseArr"
-                            style="width:100%">
+                            style="width:100%" class="sushen">
                             <!-- 角色类型 不可输入-->
                             <el-table-column label="角色类型"
                                 width="125">
@@ -411,7 +411,7 @@
 
                     <div class="ach-divide-list">
                         <el-table :data="clientArr"
-                            style="width: 100%">
+                            style="width: 100%" class="sushen">
                             <el-table-column label="角色类型"
                                 width="125">
                                 <template slot-scope="scope">
@@ -753,7 +753,7 @@
                         <div class="ach-divide-list"
                             v-if="contType==2||contType==3">
                             <el-table :data="serviceAgents"
-                                style="width: 100%">
+                                style="width: 100%" class="sushen">
                                 <el-table-column label="角色类型"
                                     width="125">
                                     <template slot-scope="scope">
@@ -3078,5 +3078,13 @@ export default {
             font-size: 12px;
         }
     }
+}
+.sushen {
+  /deep/ .el-table__body-wrapper table tbody tr {
+    td:nth-child(3) {
+      // background-color: red;
+      border: solid 1px #dcdfe6;
+    }
+  }
 }
 </style>

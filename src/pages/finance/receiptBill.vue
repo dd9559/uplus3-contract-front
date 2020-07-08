@@ -1538,6 +1538,7 @@ export default {
       this.billStatus = false; //线上收款
       type !== 1 && (this.billStatus = true);
       if (type == 2) {
+        this.activeAdmin===0?this.activeAdmin="":"";
         // this.getCompanyBanks(this.dep.id);
         console.log(this.$route.query.contId);
         if (this.$route.query.contId != "0") {
