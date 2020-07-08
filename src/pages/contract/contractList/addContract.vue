@@ -2902,6 +2902,8 @@ export default {
                         this.yt=this.contractForm.retiredCommission //已退金额
                         this.zy = Number(this.contractForm.receivedCommission) - Number(this.contractForm.retiredCommission) //转佣金额
                         this.countTotal();
+                    }else if(!this.$route.query.isDeal&&!this.contractForm.dealById){
+                        this.countTotal();
                     }
                     if(this.contractForm.dealById&&this.type===2){//编辑转成交的合同
                         this.getZYInfo(this.contractForm.id)
