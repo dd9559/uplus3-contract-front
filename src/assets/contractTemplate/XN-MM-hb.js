@@ -88,8 +88,8 @@ let Obj={
     },
     val122:null,
     val125:null,
-    'time_val131': null,
-    'time_val132': null
+    val131: null,
+    val132: null
 
   }
 
