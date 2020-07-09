@@ -464,11 +464,12 @@
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
               <span>{{scope.row.dealPrice}}元</span>
-              <span
-                v-for="item in dictionary['507']"
-                :key="item.key"
-                v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"
-              >/ {{item.value}}</span>
+              <template v-for="item in dictionary['507']">
+                <span
+                  :key="item.key"
+                  v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"
+                >/ {{item.value}}</span>
+              </template>
             </div>
             <span v-else>-</span>
           </template>
@@ -737,16 +738,15 @@
                 class="btn"
                 @click="toDeal(scope.row)"
               >转成交</div>
-              <!-- <div
-                v-if="power['sign-ht-info-fqqs'].state&&scope.row.recordType.value===10"
-                class="btn"
-                @click="toSign(scope.row)"
-              >发起签署</div> -->
               <div
-                v-if="(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
                 class="btn"
                 @click="toSign(scope.row)"
               >发起签署</div>
+              <!-- <div
+                v-if="(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
+                class="btn"
+                @click="toSign(scope.row)"
+              >发起签署</div> -->
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
@@ -1013,7 +1013,7 @@ export default {
         "507": "", //租赁时间单位
         "11": "", //后期状态
         "64": "", //签约方式  线上线下
-        "72": "" //签后审核状态
+        "72": "", //签后审核状态
       },
       loading: false,
       //部门选择列表
@@ -2153,42 +2153,42 @@ export default {
                 guest.push(element)
             }
         });
-        if(owner.length>1||guest.length>1){//多个业主客户时选择一个发起签署
+        // if(owner.length>1||guest.length>1){//多个业主客户时选择一个发起签署
             this.signOwnerList=[].concat(owner)
             this.signGuestList=[].concat(guest)
             this.chosePersonDialog=true
-        }else{
-            let param = {
-                contId:val.id,
-                type:1,//签章
-                isentrust:0,//非委托
-                storeId:val.guestStoreCode//门店id
-            }
-            param.owner=[
-                {name:owner[0].name,identityType:owner[0].cardType,identity:owner[0].encryptionCode,mobile:owner[0].mobile,email:owner[0].email}
-            ]
-            param.customer=[
-                {name:guest[0].name,identityType:guest[0].cardType,identity:guest[0].encryptionCode,mobile:guest[0].mobile,email:guest[0].email}
-            ]
-            this.$ajax.postJSON('/api/app/contract/sendCont',param).then(res=>{
-                res=res.data
-                if(res.status===200){
-                    if(!val.isHaveData){
-                      this.dataBaseDialog=true
-                    }else{
-                      this.$message({
-                        message:"操作成功",
-                        type:"success"
-                      })
-                    }
-                }
-            }).catch(error=>{
-                this.$message({
-                  message:error,
-                  type:"error"
-                })
-            })
-        }
+        // }else{
+        //     let param = {
+        //         contId:val.id,
+        //         type:1,//签章
+        //         isentrust:0,//非委托
+        //         storeId:val.guestStoreCode//门店id
+        //     }
+        //     param.owner=[
+        //         {name:owner[0].name,identityType:owner[0].cardType,identity:owner[0].encryptionCode,mobile:owner[0].mobile,email:owner[0].email}
+        //     ]
+        //     param.customer=[
+        //         {name:guest[0].name,identityType:guest[0].cardType,identity:guest[0].encryptionCode,mobile:guest[0].mobile,email:guest[0].email}
+        //     ]
+        //     this.$ajax.postJSON('/api/app/contract/sendCont',param).then(res=>{
+        //         res=res.data
+        //         if(res.status===200){
+        //             if(!val.isHaveData){
+        //               this.dataBaseDialog=true
+        //             }else{
+        //               this.$message({
+        //                 message:"操作成功",
+        //                 type:"success"
+        //               })
+        //             }
+        //         }
+        //     }).catch(error=>{
+        //         this.$message({
+        //           message:error,
+        //           type:"error"
+        //         })
+        //     })
+        // }
     },
     closeChose(val){
       this.chosePersonDialog=false

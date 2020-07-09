@@ -112,6 +112,7 @@
                             <el-select
                                 v-model="contractForm.transFlowCode"
                                 placeholder="请选择交易流程"
+                                @change="choseFlow"
                                 :clearable="true"
                                 style="width:140px"
                                 :disabled="offLine">
@@ -126,7 +127,7 @@
                             label="权证费用："
                             class="width-250"
                             v-if="contractForm.type===2||contractForm.type===3">
-                            <span class="warrant">{{0}} 元</span>
+                            <span class="warrant">{{contractForm.flowQZfee?contractForm.flowQZfee:0}} 元</span>
                         </el-form-item>
                         <br>
                         <el-form-item 
@@ -347,12 +348,14 @@
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
-                                            <el-option v-for="item in dictionary['633']"
-                                                v-if="recordType===10&&item.key!=4||recordType!=10"
-                                                :key="item.key"
-                                                :label="item.value"
-                                                :value="item.key">
-                                            </el-option>
+                                            <template v-for="item in dictionary['633']">
+                                                <el-option
+                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    :key="item.key"
+                                                    :label="item.value"
+                                                    :value="item.key">
+                                                </el-option>
+                                            </template>
                                         </el-select>
                                         <input v-model="item.encryptionCode"
                                             type="text"
@@ -469,12 +472,14 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
-                                            <el-option v-for="item in dictionary['633']"
-                                                v-if="recordType===10&&item.key!=4||recordType!=10"
-                                                :key="item.key"
-                                                :label="item.value"
-                                                :value="item.key">
-                                            </el-option>
+                                            <template v-for="item in dictionary['633']">
+                                                <el-option
+                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    :key="item.key"
+                                                    :label="item.value"
+                                                    :value="item.key">
+                                                </el-option>
+                                            </template>
                                         </el-select>
                                         <input id="guestCard"
                                             v-model="item.encryptionCode"
@@ -1071,6 +1076,13 @@ export default {
                     }
                 }
             });
+        },
+        // 选择交易流程
+        choseFlow(val){
+            let item = this.transFlowList.find(item=>{
+                return item.id===val
+            })
+            this.$set(this.contractForm,'flowQZfee',item.warrantFee)
         },
         //计算总佣金
         countTotal() {
