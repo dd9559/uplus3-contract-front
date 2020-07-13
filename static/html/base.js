@@ -21,7 +21,6 @@ let contractConfig = {
     //初始化
     contractConfig.errorArr = [];
     sessionStorage.setItem(storage,JSON.stringify([]));
-
     for (let item in obj) {
       // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
       if (contractConfig.errorArr.length > 0) {
@@ -36,19 +35,7 @@ let contractConfig = {
           contractConfig.errorArr.push(item.split('_')[1]);
           break;
         } else {
-          if(obj[item]&&obj[item].state) {
-            // checkbox为多选且有子项要验证需配置属性state:true
-            for(let i = 0; i < doms.length; i++) {
-              if(doms[i].querySelector('p').getAttribute('checked')) {
-                if(contractConfig.errorArr.length) {
-                  break
-                }
-                obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](i),storage)
-              }
-            }
-          } else {
-            obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex),storage)
-          }
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex),storage)
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);

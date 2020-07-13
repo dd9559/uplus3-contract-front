@@ -406,11 +406,7 @@
               v-if="scope.row.auditButton||scope.row.grabDept"
             >审核</el-button>
             <!-- 20200630新加反审核按钮 -->
-            <el-button
-              type="text"
-              @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5"
-            >反审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row,'deAudit')">反审核</el-button>
             <!-- <el-button
               type="text"
               @click="cellOpera(scope.row,'del')"
@@ -1006,34 +1002,17 @@ export default {
           });
         }
       } else if (type === "deAudit") {
-        if (item.contId) {
-          let newPage = this.$router.resolve({
-            path: "/receiptBill",
-            query: {
-              edit: 2,
-              id: item.id,
-              contId: item.contId,
-              code: item.contCode,
-              isentrust: item.type === 8 ? 1 : 0,
-              deAudit: true
-            }
-          });
-          window.open(newPage.href, "_blank");
-        } else {
-          let newPage = this.$router.resolve({
-            path: "/receiptBill",
-            query: {
-              edit: 2,
-              id: item.id,
-              contId: item.contId,
-              code: item.contCode,
-              isentrust: item.type === 8 ? 1 : 0,
-              deAudit: true,
-              collect: 1
-            }
-          });
-          window.open(newPage.href, "_blank");
-        }
+        this.$router.push({
+          path: "receiptBill",
+          query: {
+            edit: 2,
+            id: item.id,
+            contId: item.contId,
+            code: item.contCode,
+            isentrust: item.type === 8 ? 1 : 0,
+            deAudit: true
+          }
+        });
       } else {
         this.layer.show = true;
         this.layer.content = [].concat(item);

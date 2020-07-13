@@ -850,7 +850,7 @@
               </div>
             </div>
             <div class="ach-divide-list" v-if="contType==2||contType==3">
-              <el-table :data="serviceAgents" style="width: 100%" class="sushen">
+              <el-table :data="serviceAgents" style="width: 100%">
                 <el-table-column label="角色类型" width="125">
                   <template slot-scope="scope">
                     <!-- filterable -->

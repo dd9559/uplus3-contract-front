@@ -1,85 +1,32 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 
 let Obj={
-    cn_arr:['val50','val60','val62','val64','val69','val70','val110','val112']
+    cn_arr:['val7','val14']
   }
 
   let sub = {
-    'val22':null,
-    'val24':null,
-    'val26':null,
-    'val28':null,
-    'val30':null,
-    'val32':null,
-    'checkbox_houseUse': {
+    'val1':null,
+    'checkbox_guaranty': null,
+    'checkbox_payway': null,
+    'checkbox_jiaju': null,
+    'val2':null,
+    'checkbox_recievetime': {
       stateful: function(index) {
-        return index===4 ? {'val34':null} : null
+        return index===0 ? {'val3':null} : index===1 ? {'val4':null} : null
       }
     },
-    'drapdown_val36': {
-      stateful: function (val) {
-        debugger
-        let res = null;
-        switch (val) {
-          case '1':
-            break;
-          case '2':
-            res = {'val38': null,'val40': null};
-            break;
-          case '3':
-            res = {'val42': null};
-            break;
-        }
-        return res;
-      }
-    },
-    'checkbox_houseStatus': null,
-    'val46':null,
-    'time_val48':null,
-    'val50':null,
-    'val52':null,
-    'val54':null,
-    'checkbox_payment': {
+    'val5':null,
+    'val6':null,
+    'checkbox_pp': null,
+    'checkbox_pp': null,
+    'checkbox_pp': null,
+    'checkbox_ff': null,
+    'checkbox_gg': {
       stateful: function(index) {
-        return index===0 ? {'time_val56':null} : {'time_val58':null,'val60':null,'time_val61':null,'checkbox_loan': null,'val62':null,}
+        return index===0 ? {'val0':null} : index===1 ? {'val11':null} : null
       }
     },
-    'val64':null,
-    'time_val66':null,
-    'val68':null,
-    'val69':null,
-    'val70':null,
-    'time_val72':null,
-    'time_val74':null,
-    'val75':null,
-    'val76':null,
-    'val77':null,
-    'val80':null,
-    'checkbox_negotiation':{
-      state:true,
-      stateful:function (index) {
-        return index===0?{
-          'checkbox_rights':{
-            state:true,
-            stateful:function(val) {
-              return val===5?{'val82':null}:null
-            }
-          }
-        }:index===1?{'checkbox_debt':null}:null
-      }
-    },
-    'val104':null,
-    'checkbox_wtloan':{
-      stateful:function(index) {
-        return index===0?null:{'val106':null}
-      }
-    },
-    'val108':null,
-    'val110':null,
-    'val112':null,
-    'val114':null,
-    'val116':null,
-    'val118':null,
+    
   }
 
   //给按钮添加点击事件
@@ -207,28 +154,30 @@ for (let readonlyItem in msg) {
 contractConfig.checkboxListener(function(){},function(obj,index){
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
-  if(attr==='houseUse'){
+  if(attr==='recievetime'){
     let checkIO={
-      4: ['val34'],
+      0: ['val3'],
+      1: ['val4'],
     }
     boxArray.forEach((item,i)=>{
       // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
       if(item===obj.currentTarget){
         if(item.querySelector('p').getAttribute('checked')){
-          if(i===4){
-            contractConfig.initForm(checkIO[4],0)
-          }else {
-            contractConfig.initForm(checkIO[4],1)
+          contractConfig.initForm(checkIO[i],0)
+          if(i===0){
+            contractConfig.initForm(checkIO[1],1)   //readonly
+          }else{
+            contractConfig.initForm(checkIO[0],1)
           }
         }else{
-          contractConfig.initForm(checkIO[4],1)
+          contractConfig.initForm(checkIO[0],1)
         }
       }
     })
-  }else if(attr==='payment'){
+  }else if(attr==='gg'){
     let checkIO={
-      0: ['val56'],
-      1: ['val58','val60','val61','checkbox_loan','val62'],
+      0: ['val11'],
+      1: ['val12'],
     }
     boxArray.forEach((item,i)=>{
       // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
@@ -242,19 +191,6 @@ contractConfig.checkboxListener(function(){},function(obj,index){
           }
         }else{
           contractConfig.initForm(checkIO[i],1)
-        }
-      }
-    })
-  }else if(attr==='negotiation'){
-    let checkIO={
-      0: ['checkbox_rights','val82'],
-      1: ['checkbox_debt'],
-    }
-    boxArray.forEach((item,i)=>{
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
-      if(item===obj.currentTarget){
-        if(!item.querySelector('p').getAttribute('checked')){
-          contractConfig.initForm(checkIO[i],0)
         }
       }
     })

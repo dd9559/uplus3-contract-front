@@ -127,7 +127,7 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item
+        <el-form-item
           label="业绩状态"
           prop="state">
           <el-select
@@ -139,8 +139,8 @@
               :label="item.value"
               :value="item.key"></el-option>
           </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item
+        </el-form-item>
+        <el-form-item
           label="申诉状态"
           prop="state">
           <el-select
@@ -152,7 +152,7 @@
               :label="item.value"
               :value="item.key"></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->

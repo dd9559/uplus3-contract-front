@@ -23,9 +23,7 @@
     <div class="paper-box-content">
       <slot></slot>
     </div>
-    <div class="btn" @click="show=!show">
-      <span style="position: absolute;left: -7px;top: -5px;font-size: 13px;">{{show?"关闭":"展开"}}</span>
-    </div>
+    <div class="btn" @click="show=!show"></div>
   </div>
 </template>
 
