@@ -19,7 +19,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable remote :clearable="true"  style="width:200px" :class="{'width350':searchForm.storeId&&searchForm.storeId.length>1}" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+          <el-select v-model="searchForm.storeId" multiple filterable class="pp" remote :clearable="true"  style="width:200px" :class="{'width350':searchForm.storeId&&searchForm.storeId.length>1}" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -1160,6 +1160,12 @@
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
+.pp{
+  /deep/ .el-select__tags{
+    height: 28px;
+    line-height: 28px;
+  }
+}
 .form-head {
   background-color: #fff;
   border-radius:2px;
