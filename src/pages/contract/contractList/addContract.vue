@@ -842,6 +842,7 @@ export default {
                 payType: 1,
                 dealPrice: "",
                 contPersons: [],
+                transFlowCode:"",
                 propertyRightAddr: "",
                 commissionPayment:0,
                 houseInfo: {
