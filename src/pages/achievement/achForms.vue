@@ -255,8 +255,8 @@
             getExcel(){
                 let param={
                     keyword:this.keyword,
-                    // startTime:this.searchTime.length!=0?this.searchTime[0]:'',
-                    // endTime:this.searchTime.length!=0?this.searchTime[1]:'',
+                    startTime:this.searchTime&&this.searchTime.length!=0?this.searchTime[0]:'',
+                    endTime:this.searchTime&&this.searchTime.length!=0?this.searchTime[1]:'',
                      depId:this.department,
                      empId:this.depUser,
                      tradeTypes:this.contType,
@@ -265,12 +265,6 @@
                      isJob:this.jobStatus.value,
                      pageNum:this.pageNum,
                      pageSize:this.pageSize
-                }
-                if(this.searchTime!=null){
-                    Object.assign(param,{
-                        startTime:this.searchTime.length!=0?this.searchTime[0]:'',
-                        endTime:this.searchTime.length!=0?this.searchTime[1]:'',
-                    })
                 }
                 this.excelCreate("/input/AchievementContractExcel", param);
             },
