@@ -843,6 +843,7 @@ export default {
                 dealPrice: "",
                 contPersons: [],
                 propertyRightAddr: "",
+                commissionPayment:0,
                 houseInfo: {
                     HouseStoreCode: "",
                     ShopOwnerMobile: "",
@@ -2917,6 +2918,7 @@ export default {
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
+                    this.$set(this.contractForm,'commissionPayment',this.contractForm.commissionPayment?this.contractForm.commissionPayment:0)
                     // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
                     if(this.contractForm.estTransferTime){
                         this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
