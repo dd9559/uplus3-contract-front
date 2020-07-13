@@ -1127,7 +1127,7 @@ export default {
       }
       
       var url = '/api/contract/addContract';
-      if(this.recordType===2){
+      if(this.recordType===2){//线下合同接口
         url = '/api/contract/addLocalContract'
       }
 
