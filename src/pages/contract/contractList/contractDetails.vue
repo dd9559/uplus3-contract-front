@@ -112,6 +112,11 @@
                     <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
                     <span class="text">{{commissionTotal}} 元</span>
                   </p>
+                  <p>
+                    <span class="tag">佣金支付费：</span>
+                    <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
+                    <span class="text">{{contractDetail.commissionPayment?contractDetail.commissionPayment:0}} 元</span>
+                  </p>
                   <p v-if="showTransferTime&&contractDetail.estTransferTime&&(contractDetail.contType.value===2||contractDetail.contType.value===3)" >
                     <span class="tag">预计过户时间：</span>
                     <span class="text">{{contractDetail.estTransferTime|formatDate}}</span>
@@ -153,9 +158,7 @@
                 <div class="one_">
                   <p style="width:1000px">
                     <span class="tag">产权地址：</span>
-                    <span
-                      class="text"
-                    >{{contractDetail.propertyRightAddr?contractDetail.propertyRightAddr:'-'}}</span>
+                    <span class="text">{{contractDetail.propertyRightAddr?contractDetail.propertyRightAddr:'-'}}</span>
                   </p>
                 </div>
                 <div class="one_">
@@ -208,14 +211,8 @@
                     <el-table-column v-if="contractDetail.recordType.value===10" label="法人名称">
                       <template slot-scope="scope">{{scope.row.lepName?scope.row.lepName:'-'}}</template>
                     </el-table-column>
-                    <el-table-column
-                      min-width="150"
-                      v-if="contractDetail.recordType.value===10"
-                      label="法人身份证号"
-                    >
-                      <template
-                        slot-scope="scope"
-                      >{{scope.row.lepIdentity?scope.row.lepIdentity:'-'}}</template>
+                    <el-table-column min-width="150" v-if="contractDetail.recordType.value===10" label="法人身份证号">
+                      <template slot-scope="scope">{{scope.row.lepIdentity?scope.row.lepIdentity:'-'}}</template>
                     </el-table-column>
                   </el-table>
                 </div>
