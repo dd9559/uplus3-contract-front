@@ -218,6 +218,7 @@
                      pageNum:this.pageNum,
                      pageSize:this.pageSize,
                 }
+                debugger
                 this.$ajax.get('/api/achievementSheet/getAchievementContractSumList',param).then(res=>{
                     res=res.data
                     if(res.status==200){
@@ -225,7 +226,6 @@
                         this.total=res.data.total
                     }
                 }).catch(err => {
-                    // debugger
                  this.$message.error(err);
                  });
             },
