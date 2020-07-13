@@ -967,6 +967,7 @@
                 this.$tool.clearForm(this.searchForm)
                 this.homeConditionList = []
                 this.pageNum = 1
+                this.searchForm.cityId = this.cityInfo.cityId
             },
             clearCondition(type=1) {
                 type === 1 ? this.homeConditionList = [] : this.conditionList = []
