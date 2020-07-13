@@ -12,12 +12,14 @@
                 class="btn-info"
                 :type="!billStatus?'primary':''"
                 @click="checkReceiptType(1)"
+                :disabled="$route.query.deAudit"
               >线上收款</el-button>
               <el-button
                 size="small"
                 class="btn-info"
                 :type="billStatus?'primary':''"
                 @click="checkReceiptType(2)"
+                :disabled="$route.query.deAudit"
               >线下收款</el-button>
               <!--<el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
                 <i class="iconfont icon-wenhao"></i>
