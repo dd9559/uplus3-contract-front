@@ -88,8 +88,8 @@ let Obj={
     },
     val122:null,
     val125:null,
-    'time_val131': null,
-    'time_val132': null
+    val131: null,
+    val132: null
 
   }
 
@@ -167,8 +167,8 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-/*let msg={
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg={
   companyBanks:{
     bankAccountName: "何江",
     bankBranchName: "—",
@@ -177,7 +177,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
     storeId: 50235,
     storeName: "小金鱼小队"
   }
-}*/
+}
 for(let readonlyItem in msg){   //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let arr= []
@@ -187,7 +187,7 @@ for(let readonlyItem in msg){   //得到readonly的值
     arr.push(time.getMonth()+1)
     arr.push(time.getDate())
   }
-
+ 
   let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {

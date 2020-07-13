@@ -174,10 +174,10 @@ export default {
     }else if(this.Msg.type===5){
       //定金
       this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=address`
-		}else if(this.Msg.isentrust){
-			//委托
-			this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=entrust`
-		}
+	}else if(this.Msg.isentrust){
+		//委托
+		this.src1=`${this.http}/api/contract/showHtml?id=${this.Msg.id}&type=entrust`
+	}
   },
   methods: {
     // 控制弹框body内容高度，超过显示滚动条

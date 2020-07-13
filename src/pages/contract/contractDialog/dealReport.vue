@@ -122,7 +122,7 @@
                             <!-- <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select> -->
-                            <span class="transFlow">{{report.transFlowName}}</span>
+                            <span class="transFlow">{{report.transFlowName?report.transFlowName:'-'}}</span>
                             <span class="mark">权证费用：</span>
                             <span class="warrant">{{0}}</span>
                         </p>
@@ -380,6 +380,10 @@ export default {
             this.dealBasicInfo.propertyRightAddr = data.propertyRightAddr
             this.dealBasicInfo.FloorAll = data.houseInfo.FloorAll
             this.report = data.dealReport ? JSON.parse(data.dealReport) : this.report
+            // 交易流程字段取合同详情的数据
+            this.report.transFlowCode=data.transFlowCode
+            this.report.transFlowName=data.transFlow
+            this.report.flowQZfee=data.flowQZfee
             this.recordVersion = data.recordVersion
             if(data.loanType) {
                 this.report.buyerPaymentMethod = data.loanType == 7 ? 1: 2
@@ -442,7 +446,7 @@ export default {
             ]
             let arr_deal = [
                 { val: this.report.buyerPaymentMethod, className: 'fukuan', msg: '付款方式', type: 2 },
-                { val: this.report.transFlowName, className: 'liucheng', msg: '交易流程', type: 2 },
+                // { val: this.report.transFlowName, className: 'liucheng', msg: '交易流程', type: 2 },
                 { val: this.report.isExtend, className: 'xichan', msg: '是否析产（继承）', type: 2 }
             ]
             let arr = []
@@ -583,11 +587,11 @@ export default {
                 removeRedBorder('quanshu')
             }
         },
-        'report.transFlowName'(newVal,oldVal) {
-            if(newVal) {
-                removeRedBorder('liucheng',2)
-            }
-        },
+        // 'report.transFlowName'(newVal,oldVal) {
+        //     if(newVal) {
+        //         removeRedBorder('liucheng',2)
+        //     }
+        // },
         'report.isExtend'(newVal,oldVal) {
             if(newVal==='0'||newVal==='1') {
                 removeRedBorder('xichan',2)

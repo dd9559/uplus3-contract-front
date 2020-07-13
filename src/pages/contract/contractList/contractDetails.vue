@@ -90,11 +90,9 @@
                     <span class="tag">{{contractDetail.contType.value===1?'租金：':'成交总价：'}}</span>
                     <span class="dealPrice">
                       {{contractDetail.dealPrice}} 元
-                      <i
-                        v-for="item in dictionary['507']"
-                        :key="item.key"
-                        v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1"
-                        >/ {{item.value}}</i>
+                      <template v-for="item in dictionary['507']">
+                        <i :key="item.key" v-if="item.key===contractDetail.timeUnit&&contractDetail.contType.value===1" >/ {{item.value}}</i>
+                      </template>
                       <i>{{contractDetail.dealPrice|moneyFormat}}</i>
                     </span>
                   </p>
@@ -123,11 +121,17 @@
                 <div class="one_" v-if="contractDetail.contType.value!=1">
                   <p>
                     <span class="tag">交易流程：</span>
-                    <span class="text">{{contractDetail.transFlowName}}</span>
+                    <span class="text">{{contractDetail.transFlow?contractDetail.transFlow:'-'}}</span>
+                    <!-- <template v-if="contractDetail.transFlowCode">
+                      <template v-for="item in transFlowList">
+                        <span class="text" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
+                      </template>
+                    </template>
+                    <span class="text" v-else>-</span> -->
                   </p>
                   <p>
                     <span class="tag">权证费用：</span>
-                    <span class="text">{{0}} 元</span>
+                    <span class="text">{{contractDetail.flowQZfee?contractDetail.flowQZfee:0}} 元</span>
                   </p>
                 </div>
               </div>
@@ -331,12 +335,11 @@
                   </p>
                   <p>
                     <span class="tag">类型：</span>
-                    <span
-                      class="text"
-                      v-for="item in dictionary['517']"
-                      :key="item.key"
-                      v-if="item.key===contractDetail.otherCooperationInfo.type"
-                    >{{item.value}}</span>
+                    <template v-if="contractDetail.otherCooperationInfo.type">
+                      <template v-for="item in dictionary['517']">
+                        <span class="text" :key="item.key" v-if="item.key===contractDetail.otherCooperationInfo.type" >{{item.value}}</span>
+                      </template>
+                    </template>
                     <span class="text" v-else>--</span>
                   </p>
                 </div>
@@ -793,164 +796,170 @@
           >
             <!-- <p style="margin-top:10px;color:red;">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</p> -->
             <div class="classify" v-if="sellerList.length>0">
-              <div
-                class="one_"
-                v-for="(item,index) in sellerList"
-                :key="index"
-                v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
-              >
-                <p class="title" v-if="index===0">业主</p>
-                <p class="title_">
-                  <i v-if="item.isrequire">*</i>
-                  {{item.title}}
-                </p>
-                <ul class="ulData">
-                  <li
-                    v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+              <template v-for="(item,index) in sellerList">
+                <div
+                  class="one_"
+                  :key="index"
+                  v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
                   >
-                    <file-up
-                      class="uploadSubject"
-                      :scane="dataScane"
-                      :id="'seller'+index"
-                      @getUrl="addSubject"
-                    >
-                      <i class="iconfont icon-shangchuan"></i>
-                      <p>点击上传</p>
-                    </file-up>
-                  </li>
-                  <li
-                    v-for="(item_,index_) in item.value"
-                    :key="item_.index"
-                    @mouseover="moveIn(item.title+item_.path)"
-                    @mouseout="moveOut(item.title+item_.path)"
-                  >
-                    <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <img
-                          class="signImage"
-                          :src="item_.path|getSignImage(contDataFiles)"
-                          alt
-                          v-if="isPictureFile(item_.fileType)"
-                        />
-                        <upload-cell :type="item_.fileType" v-else></upload-cell>
-                        <p>{{item_.name}}</p>
-                      </div>
-                    </el-tooltip>
-                    <i
-                      v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
-                      class="iconfont icon-tubiao-6"
-                      @click="delectData(index,index_,'seller')"
-                      :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
-                    ></i>
-                  </li>
-                </ul>
-              </div>
+                  <p class="title" v-if="index===0">业主</p>
+                  <p class="title_">
+                    <i v-if="item.isrequire">*</i>
+                    {{item.title}}
+                  </p>
+                  <ul class="ulData">
+                    <li
+                      v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+                      >
+                      <file-up
+                        class="uploadSubject"
+                        :scane="dataScane"
+                        :id="'seller'+index"
+                        @getUrl="addSubject"
+                        >
+                        <i class="iconfont icon-shangchuan"></i>
+                        <p>点击上传</p>
+                      </file-up>
+                    </li>
+                    <li
+                      v-for="(item_,index_) in item.value"
+                      :key="item_.index"
+                      @mouseover="moveIn(item.title+item_.path)"
+                      @mouseout="moveOut(item.title+item_.path)"
+                      >
+                      <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                        <div class="namePath" @click="previewPhoto(item.value,index_,3)">
+                          <img
+                            class="signImage"
+                            :src="item_.path|getSignImage(contDataFiles)"
+                            alt
+                            v-if="isPictureFile(item_.fileType)"
+                          />
+                          <upload-cell :type="item_.fileType" v-else></upload-cell>
+                          <p>{{item_.name}}</p>
+                        </div>
+                      </el-tooltip>
+                      <i
+                        v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+                        class="iconfont icon-tubiao-6"
+                        @click="delectData(index,index_,'seller')"
+                        :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
+                      ></i>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+              
             </div>
             <div class="classify" v-if="buyerList.length>0">
-              <div
-                class="one_"
-                v-for="(item,index) in buyerList"
-                :key="index"
-                v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
-              >
-                <p class="title" v-if="index===0">客户</p>
-                <p class="title_">
-                  <i v-if="item.isrequire">*</i>
-                  {{item.title}}
-                </p>
-                <ul class="ulData">
-                  <li
-                    v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+              <template v-for="(item,index) in buyerList">
+                <div
+                  class="one_"
+                  :key="index"
+                  v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
                   >
-                    <file-up
-                      class="uploadSubject"
-                      :scane="dataScane"
-                      :id="'buyer'+index"
-                      @getUrl="addSubject"
+                  <p class="title" v-if="index===0">客户</p>
+                  <p class="title_">
+                    <i v-if="item.isrequire">*</i>
+                    {{item.title}}
+                  </p>
+                  <ul class="ulData">
+                    <li
+                      v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
                     >
-                      <i class="iconfont icon-shangchuan"></i>
-                      <p>点击上传</p>
-                    </file-up>
-                  </li>
-                  <li
-                    v-for="(item_,index_) in item.value"
-                    :key="item_.index"
-                    @mouseover="moveIn(item.title+item_.path)"
-                    @mouseout="moveOut(item.title+item_.path)"
-                  >
-                    <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <img
-                          class="signImage"
-                          :src="item_.path|getSignImage(contDataFiles)"
-                          alt
-                          v-if="isPictureFile(item_.fileType)"
-                        />
-                        <upload-cell :type="item_.fileType" v-else></upload-cell>
-                        <p>{{item_.name}}</p>
-                      </div>
-                    </el-tooltip>
-                    <i
-                      v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
-                      class="iconfont icon-tubiao-6"
-                      @click="delectData(index,index_,'buyer')"
-                      :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
-                    ></i>
-                  </li>
-                </ul>
-              </div>
+                      <file-up
+                        class="uploadSubject"
+                        :scane="dataScane"
+                        :id="'buyer'+index"
+                        @getUrl="addSubject"
+                      >
+                        <i class="iconfont icon-shangchuan"></i>
+                        <p>点击上传</p>
+                      </file-up>
+                    </li>
+                    <li
+                      v-for="(item_,index_) in item.value"
+                      :key="item_.index"
+                      @mouseover="moveIn(item.title+item_.path)"
+                      @mouseout="moveOut(item.title+item_.path)"
+                    >
+                      <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                        <div class="namePath" @click="previewPhoto(item.value,index_,3)">
+                          <img
+                            class="signImage"
+                            :src="item_.path|getSignImage(contDataFiles)"
+                            alt
+                            v-if="isPictureFile(item_.fileType)"
+                          />
+                          <upload-cell :type="item_.fileType" v-else></upload-cell>
+                          <p>{{item_.name}}</p>
+                        </div>
+                      </el-tooltip>
+                      <i
+                        v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+                        class="iconfont icon-tubiao-6"
+                        @click="delectData(index,index_,'buyer')"
+                        :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
+                      ></i>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+              
             </div>
             <div class="classify" v-if="otherList.length>0">
-              <div
-                class="one_"
-                v-for="(item,index) in otherList"
-                :key="index"
-                v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
-              >
-                <p class="title" v-if="index===0">其他</p>
-                <p class="title_">
-                  <i v-if="item.isrequire">*</i>
-                  {{item.title}}
-                </p>
-                <ul class="ulData">
-                  <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
-                    <file-up
-                      class="uploadSubject"
-                      :scane="dataScane"
-                      :id="'other'+index"
-                      @getUrl="addSubject"
-                    >
-                      <i class="iconfont icon-shangchuan"></i>
-                      <p>点击上传</p>
-                    </file-up>
-                  </li>
-                  <li
-                    v-for="(item_,index_) in item.value"
-                    :key="item_.index"
-                    @mouseover="moveIn(item.title+item_.path)"
-                    @mouseout="moveOut(item.title+item_.path)"
+              <template v-for="(item,index) in otherList">
+                <div
+                  class="one_"
+                  :key="index"
+                  v-if="item.value.length>0||((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
                   >
-                    <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
-                      <div class="namePath" @click="previewPhoto(item.value,index_,3)">
-                        <img
-                          class="signImage"
-                          :src="item_.path|getSignImage(contDataFiles)"
-                          alt
-                          v-if="isPictureFile(item_.fileType)"
-                        />
-                        <upload-cell :type="item_.fileType" v-else></upload-cell>
-                        <p>{{item_.name}}</p>
-                      </div>
-                    </el-tooltip>
-                    <i
-                      v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
-                      class="iconfont icon-tubiao-6"
-                      @click="delectData(index,index_,'other')"
-                      :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
-                    ></i>
-                  </li>
-                </ul>
-              </div>
+                  <p class="title" v-if="index===0">其他</p>
+                  <p class="title_">
+                    <i v-if="item.isrequire">*</i>
+                    {{item.title}}
+                  </p>
+                  <ul class="ulData">
+                    <li v-show="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState">
+                      <file-up
+                        class="uploadSubject"
+                        :scane="dataScane"
+                        :id="'other'+index"
+                        @getUrl="addSubject"
+                      >
+                        <i class="iconfont icon-shangchuan"></i>
+                        <p>点击上传</p>
+                      </file-up>
+                    </li>
+                    <li
+                      v-for="(item_,index_) in item.value"
+                      :key="item_.index"
+                      @mouseover="moveIn(item.title+item_.path)"
+                      @mouseout="moveOut(item.title+item_.path)"
+                    >
+                      <el-tooltip class="item" effect="dark" :content="item_.name" placement="bottom">
+                        <div class="namePath" @click="previewPhoto(item.value,index_,3)">
+                          <img
+                            class="signImage"
+                            :src="item_.path|getSignImage(contDataFiles)"
+                            alt
+                            v-if="isPictureFile(item_.fileType)"
+                          />
+                          <upload-cell :type="item_.fileType" v-else></upload-cell>
+                          <p>{{item_.name}}</p>
+                        </div>
+                      </el-tooltip>
+                      <i
+                        v-if="(contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState"
+                        class="iconfont icon-tubiao-6"
+                        @click="delectData(index,index_,'other')"
+                        :class="{'deleteShow':power['sign-ht-xq-data'].state&&isDelete===item.title+item_.path}"
+                      ></i>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+              
             </div>
             <div class="classifyFoot" v-if="contractDetail.laterStageState.value===4">
               <p class="objection">拒绝理由: {{contractDetail.refuseReasons}}</p>
@@ -1787,7 +1796,7 @@
               </p>
               <p style="width:210px;">
                 <span>交易流程：</span>
-                <span>{{contractDetail.report.transFlowName}}</span>
+                <span>{{contractDetail.transFlow}}</span>
               </p>
             </div>
             <div class="two-item">
@@ -2377,7 +2386,7 @@ export default {
       this.name = "agency";
       this.agencyShow = true;
     }
-    // this.getTransFlow();//交易类型
+    this.getTransFlow();//交易类型
     this.getContractDetail(); //合同详情
     this.getDictionary(); //字典
     this.getContDataType(); //获取合同集料库类型
