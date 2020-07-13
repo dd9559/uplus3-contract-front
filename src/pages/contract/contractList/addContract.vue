@@ -842,6 +842,7 @@ export default {
                 payType: 1,
                 dealPrice: "",
                 contPersons: [],
+                transFlowCode:"",
                 propertyRightAddr: "",
                 commissionPayment:0,
                 houseInfo: {
@@ -2919,6 +2920,7 @@ export default {
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
                     this.$set(this.contractForm,'commissionPayment',this.contractForm.commissionPayment?this.contractForm.commissionPayment:0)
+                    this.$set(this.contractForm,'transFlowCode',this.contractForm.transFlowCode?this.contractForm.transFlowCode:'')
                     // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
                     if(this.contractForm.estTransferTime){
                         this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
