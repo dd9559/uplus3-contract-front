@@ -7,6 +7,7 @@
           <el-table :data="listData" style="width: 100%" border :max-height="tableHeight">
             <el-table-column label="序号" type="index" :formatter="nullFormatter" width="100"></el-table-column>
             <el-table-column label="名称" prop="name" :formatter="nullFormatter"></el-table-column>
+            <el-table-column label="权证费用（元）" prop="warrantFee" :formatter="nullFormatter"></el-table-column>
             <el-table-column label="交易步骤数" prop="stepsNum" :formatter="nullFormatter"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -23,6 +24,11 @@
             <el-form-item label="名称:" class="add-form-item">
               <el-input v-model.trim="addForm.name" :maxlength="inputMax" onkeyup="value=value.replace(/\s+/g,'')"></el-input>
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
+            </el-form-item>
+            <el-form-item label="权证费用:" class="add-form-item">
+              <el-input v-model="addForm.warrantFee" @input.native="filterWarrantFee">
+
+              </el-input><span style="margin-left:10px">元</span>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -97,7 +103,8 @@
         //交易流程列表
         listData: [], 
         addForm: {
-          name: ""
+          name: "",
+          warrantFee:''
         },
         processId: 0,
         processTitle: "",
@@ -154,6 +161,7 @@
         this.dialogProcessVisible = true
         this.processTitle = title
         this.addForm.name = ""
+        this.addForm.warrantFee = ""
       },
       // 点击 交易流程管理 编辑 删除
       rowOperation(row, type) {
@@ -162,6 +170,7 @@
           this.processTitle = "编辑交易流程"
           this.processId = row.id
           this.addForm.name = row.name
+          this.addForm.warrantFee = row.warrantFee
         } else if(type === 'init') {
           this.dialogManageVisible = true
           this.flowName = row.name
@@ -212,7 +221,10 @@
       submitForm() {
         if(this.addForm.name === "") {
           this.$message("流程名称不能为空")
-        } else {
+        } else if(this.addForm.warrantFee===''){
+          this.$message("权证费用不能为空")
+        }
+        else {
           if(this.processTitle === "添加交易流程") {
             let param = {
               cityId: this.cityId
@@ -261,6 +273,9 @@
             this.stepsData = [...arr]
           }
         })
+      },
+      filterWarrantFee(){
+        this.$set(this.addForm,'warrantFee',this.$tool.cutFloat({val:this.addForm.warrantFee,max:99999999.99,num:2}))
       },
       Operation(index,type) {
         if(type === "up") {
@@ -496,6 +511,11 @@
           right: 10px;
           top: 0;
           color: #D6D6D6;
+        }
+      }
+      .add-form-item:nth-child(2){
+        .el-input {
+          width: 100px;
         }
       }
     }

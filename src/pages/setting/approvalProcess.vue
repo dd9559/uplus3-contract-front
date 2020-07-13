@@ -145,32 +145,14 @@
                     </div>
                     <div class="aduit-input must w50">
                         <label>部门:</label>
-                        <el-tooltip class="item" effect="light" v-if="aduitTitle=='编辑'&&aduitForm.deptName!=''" :content="aduitForm.deptName" placement="top-start">
-                            <el-select
-                                v-model="aduitForm.dep"
-                                multiple
-                                class="dep"
-                                :disabled="editDisabled2"
-                                placeholder="请选择"
-                                >
-                                    <el-option
-                                    v-for="item in depList"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                    >
-                                    </el-option>
-                            </el-select>
-                        </el-tooltip>
                         <el-select
                                 v-model="aduitForm.dep"
                                 multiple
-                                v-else
+                                collapse-tags
+                                size="small"
                                 class="dep"
-                                :disabled="editDisabled2"
                                 placeholder="请选择"
                                 >
-
                                     <el-option
                                     v-for="item in depList"
                                     :key="item.id"
@@ -260,7 +242,7 @@
                                 <!-- 职务名称 -->
                                 <div v-if="item.type===5&&version==3">
                                     <el-select size="small" placeholder="请选择" v-model="item.jobArr" filterable multiple @change="multiSelect(item.type,index)">
-                                        <el-option v-for="item in jobNameList" :key="item.typeId" :label="item.typeName" :value="item.typeId"></el-option>
+                                        <el-option v-for="item in jobNameList" :key="item.Value" :label="item.Text" :value="item.Value"></el-option>
                                     </el-select>
                                 </div>
                                 <!-- 部门类型+职级 -->
@@ -896,11 +878,11 @@
                     // 职务名称
                     if(this.nodeList[index].jobTime === this.nodeList[index].jobArr.length) {
                         for(var i = 0; i < this.jobNameList.length; i++) {
-                            if(this.nodeList[index].jobArr[this.nodeList[index].jobTime-1] === this.jobNameList[i].typeId) {
+                            if(this.nodeList[index].jobArr[this.nodeList[index].jobTime-1] === this.jobNameList[i].Value) {
                                 this.nodeList[index].choice.push({
                                     type: 5,
-                                    userName: this.jobNameList[i].typeName,
-                                    userId: this.jobNameList[i].typeId,
+                                    userName: this.jobNameList[i].Text,
+                                    userId: this.jobNameList[i].Value,
                                     isDefault: 0,
                                     temp: ""
                                 })
@@ -1089,8 +1071,9 @@
                 }
             },
             getJobName(cityId,systemTag){
-                this.$ajax.postJSON('/api/auditflow/getTypeName',{cityId,systemTag}).then(res=>{
+                this.$ajax.get('/api/employee/getPositionRank',{cityId,systemTag}).then(res=>{
                     res=res.data
+                    debugger
                     if(res.status==200){
                         this.jobNameList=res.data
                     }
@@ -1177,21 +1160,6 @@
         }
     }
 }
-.dep{
-    /deep/ .el-icon-close{
-        top:-5px!important;
-    }
-    /deep/  .el-tag--info{
-        width:80%;
-        display: inline-block;
-        .el-select__tags-text{
-            width:100%;
-            display: inline-block;
-            .dot
-        }
-    } 
-}
-
 .aduit-list {
     padding: 5px 10px 0px;
     > p {
