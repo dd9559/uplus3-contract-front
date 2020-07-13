@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <link rel="stylesheet" href="/datepicker.css"/>
+  <title>买卖斡旋金协议</title>
+  <style>
+      body{
+        font-family: SimHei;
+      }
+      p{
+        margin: 0px;
+        padding: 0px;
+        line-height: 1.8;
+      }
+      input{
+        border: 0;
+        outline: none;
+        border-bottom: 1px solid gray;
+        height: 16px;
+        padding-left: 10px;
+        box-sizing: border-box;
+        font-family: SimHei;
+      }
+      input:disabled{
+        background-color: #fff;
+      }
+      input[type="checkbox"]{
+        border:0px;
+      }
+      /*去掉谷歌，火狐下的type="number"中的右边箭头*/
+      input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+         -webkit-appearance: none !important;
+      }
+      input[type="number"]{-moz-appearance:textfield;}
+      ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .BODERRED{
+        border-color: red !important;
+      }
+      .modal{
+        position: relative;
+      }
+      .modal:before{
+        content: '';
+        z-index: 50;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+      }
+      .cw_content{
+        position: relative;
+        font-size: 16px;
+        width: 840px;
+        box-sizing: border-box;
+        padding:0 40px;
+        margin: 0 auto;
+      }
+      .fontBold{
+        font-weight: bold;
+      }
+      .cw_content .title{
+        font-size: 20px;
+        text-align: center;
+      }
+      .code{
+        padding-left: 500px;
+        box-sizing: border-box;
+        margin: 10px 0;
+      }
+      .cw_message>ul:nth-child(-n+5){
+        margin-bottom: 5px;
+      }
+      .cw_message{
+        padding-left: 32px;
+        box-sizing: border-box;
+      }
+      .cw_message>ul>li{
+        display: inline-block;
+        width: 48%;
+        min-width: 210px;
+        line-height: 1.8;
+      }
+      .mf{
+        border: solid 1px #000;
+        padding: 30px 20px;
+      }
+      .cw_agreement{
+        line-height: 1.8;
+        text-indent: 32px;
+      }
+      .nav{
+        position: absolute;
+        right: 0;
+        top: 0;
+        visibility: hidden;
+      }
+      .nav ul a{
+        text-decoration: none;
+        color: #000;
+      }
+
+      /* 胡劲草样式 */
+      .contanier {
+        width: 840px;
+        margin: 0 auto;
+        padding: 0px 40px;
+        box-sizing: border-box;
+      }
+      .paragraph[name='text-indent'] p{
+        text-indent: 32px;
+      }
+      .p-indent{
+        text-indent: 0 !important;
+      }
+      .contanier .color-red p{
+        color: red;
+      }
+      .red{
+        color:red;
+      }
+      .contanier .ulbox ul li,.htbox{
+        font-weight: bold;
+      }
+      .htbox{
+        margin-top: 20px;
+        clear: both;
+      }
+      .contanier .ulbox{
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .contanier .ulbox li.fl{
+        float: left;
+      }
+      .contanier .ulbox li{
+        float: left;
+        width: 50%;
+        margin-bottom: 10px;
+      }
+      .contanier .ulbox li input{
+        max-width: initial;
+        width: inherit;
+      }
+      .tablestyle{
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+      }
+      .tablestyle tr td {
+        height: 25px;
+      }
+      .tablestyle .item>td:first-child {
+        width: 45px;
+      }
+      .tablestyle .is-can span:first-child {
+        margin-right: 30px;
+      }
+      .tablestyle .w-100 td:first-child {
+        width: 100px;
+      }
+      .tablestyle .w-100 td:last-child {
+        width: 200px;
+      }
+      .textleft{
+        text-align: left;
+      }
+      .textcenter{
+        text-align: center;
+      }
+      .textright{
+        text-align: right;
+      }
+      .mt60{
+        margin-top: 60px;
+        margin-bottom: 10px;
+      }
+      .bold{
+        font-weight: bold;
+      }
+      .lingH18{
+        line-height:1.8;
+      }
+      .padL25{
+        padding-left:25px;
+      }
+      .info-checkbox{
+        display: inline;
+        cursor: pointer;
+        text-indent: 0px;
+        line-height: 1;
+      }
+      .info-checkbox>p[type="check"]{
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border: 1px solid gray;
+        position: relative;
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+        margin: 0;
+      }
+      .info-checkbox>p[type="check"][checked='true']:before{
+        content:'';
+        position: absolute;
+        left: 0;
+        display: inline-block;
+        width: 100%;
+        height: 10px;
+        background-size: contain;
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVQ4T72TsUvDQBjF33cYUhfFP0GIVO7S1cXJxU3sIqiLuHSyOIg4Cro4OBW3jJ10EhcRdHcw2901f0BWh04OmvskpZVYqjYEvPl9v3v3vneEiocqzuP/AY1GY9k5F2VZ1kyS5LWUAynlihDigZnnmblprb2bGhCG4TqAWwCzzNwyxkR5fgNAEARzvu8fGWPOAXyMB6uU2iaiLoAZ51zbWns10gwAUsotIcQNM9/XarXNOI7fRwIp5QERdYiInHOn1tqz4gVfTwjDsAOgzcxP/X5/I03TN6XUBRGdDAcutdbH4+6KGQil1CMRrQF4BtADsJ8PMHNkjGlN6sy3EIdZvBDRUkHc1Vrv5Zw/AbmgXq8vep4XA1gAcK213gXgfmrsxDUqpVaJ6FBrvQMg+63uU/eglIMyH6yyg0+YpmgRBNEBzgAAAABJRU5ErkJggg==");
+      }
+      .info-checkbox>p[type="check"][checked='false']:after{
+        content:'';
+        position: absolute;
+        display: inline-block;
+        width: 100%;
+        height: 10px;
+        background-size: contain;
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
+      }
+      .page1 {
+        break-before: page;
+        page-break-before: always;
+      }
+      span[tag='input-auto']{
+        border-bottom: 1px solid gray;
+        padding: 2px 10px;
+        word-break: break-all;
+        word-wrap: break-word;
+      }
+      span[tag='input-auto'].input-before:before{
+        content:'请输入';
+        text-align: center;
+        color: #a1a1a1;
+      }
+      span[tag='input-auto'].input-before.input-select:before{
+        content:'请选择';
+        text-align: center;
+        color: #a1a1a1;
+      }
+      .alert-viwer{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        padding: 10px;
+        border-radius: 4px;
+        background: #fff;
+        z-index: 999;
+        box-shadow: 0 1px 3px rgba(0,0,0,.3);
+      }
+      .alert-viwer>textarea{
+        background: #fff;
+        border: 1px solid #dcdfe6;
+      }
+      .alert-viwer>p{
+        text-align: right;
+        margin: 6px 0 0;
+        padding: 0;
+        line-height: normal;
+      }
+      .alert-viwer>p>span{
+        display: inline-block;
+        background: #409eff;
+        padding: 6px 12px;
+        color: #FFFFFF;
+        border-radius: 4px;
+      }
+      .alert-viwer>p>span:last-of-type{
+        background: #fff;
+        color: #606266;
+        border: 1px solid #dcdfe6;
+      }
+      .txt-size{
+        font-size: 14px;
+        font-weight: normal;
+      }
+      .sign{
+        text-indent: 0px;
+        margin: 30px 10px;
+        font-weight: bold;
+      }
+      .sign li{
+        display: inline-block;
+        width: 45%;
+        text-align: left;
+        line-height: 2.0;
+      }
+      .signDate{
+        margin-top: 80px;
+        text-align: right;
+      }
+      .signDate span{
+        width: 50px;
+        display: inline-block;
+        border-bottom: solid 1px black;
+      }
+      .ulbox {
+      overflow: hidden;
+      margin-top: 50px;
+    }
+
+    .ulbox li {
+      float: left;
+      width: 50%;
+      margin-bottom: 10px;
+    }
+
+    .ulbox li span {
+      /* display: inline-block; */
+      border-bottom: 1px solid gray;
+    }
+    .xx{
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .xx p{
+      float: right;
+    }
+    .underLine {
+      width: 120px;
+      padding: 10px 2px;
+      display: inline-block;
+      border-bottom: 1px solid gray;
+    }
+    .footer{
+      font-weight: 700;
+      margin-top: 40px;
+    }
+      @page {
+        size: 955px 1350px;
+      }
+  </style>
+</head>
+<body>
+    <span id="submit" style="position: absolute;top: -1000px;z-index: 0;">click</span>
+    <div class="cw_content container">
+      <div class="alert-viwer" style="display: none;">
+          <textarea id="inputArea" cols="30" rows="4"></textarea>
+          <p class="control-btn">
+              <span>保存</span>
+              <span>取消</span>
+          </p>
+      </div>
+      <div class="page_one">
+        <div class="title fontBold"><p>买卖斡旋金协议</p></div>
+        <div class="code fontBold"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
+        <div class="cw_message">
+            <ul>
+                <li>委托人（买方）： <span class="text-limit "  systemparam="guestName" tag="input-auto"></span></li>
+                <li>身份证号 <span class="text-limit" systemparam="guestID" tag="input-auto"></span></li>
+                <li>居间人：兰州宏辉房产经纪有限公司</li>
+            </ul>
+        </div>
+        <div class="cw_agreement">
+            <p id="one" class="navTitle">一、委托事项：</p>
+            <div>居间人兹为委托人提供居间服务，房屋座落于甘肃省兰州市<span systemparam="propertyAddr" tag="input-auto"></span>室，证载建筑面积
+            <span tag="input-auto" listen="number" class="input-before" extendparam="val1"></span>平方米，
+            居间人现已提供该房屋资料予委托人详阅并实地查看了上述房屋，委托人已知晓并认可该房屋的建筑年代、结构、属性、装修情况、水电暖等所有房屋相关信息。在此基础之上，因委托人承购条件与卖方出售条件尚有差距，委托人愿意向居间人支付（小写）¥
+            <span
+               max="12" systemparam="dealPrice" tag="input-auto" ></span>元整(大写：<span tag="input-auto" systemparam="dealPriceUpper" ></span>)斡旋金，由居间人代为斡旋，斡旋金在签订本《买卖斡旋金协议》时同时支付。
+            </div>
+            <p class="son_title">二、委托人的承购条件：</p>
+            <p>1.委托人对该房产认购金额为人民币（小写）¥<span   max="12" systemparam="subscriptionPrice" tag="input-auto"></span>元整(大写：<span tag="input-auto" systemParam="subscriptionPriceUpper" class="input-readonly"></span>圆整)</p>
+            <p>委托人确认上述价格为：</p>
+            <div>
+              <div class="info-checkbox" name="guaranty"><p type="check"></p><span>含买卖双方过户税、费的价格 。</span></div><br/>
+            </div>
+            <div>
+              <div class="info-checkbox" name="guaranty"><p type="check"></p><span>不含房屋过户税费，买卖双方依照国家法律法规承担各自应该缴纳的税、费。</span></div>
+            </div>
+            <p>2.付款方式为：</p>
+            <div>
+              <div class="info-checkbox" name="payway"><p type="check"></p><span>一次性付款</span></div>
+              <div class="info-checkbox" name="payway"><p type="check"></p><span>首付加商业银行按揭付款 </span></div>
+              <div class="info-checkbox" name="payway"><p type="check"></p><span>首付加公积金贷款方式付款</span></div>
+            </div>
+            <div>3.交房情况：
+              <div class="info-checkbox" name="jiaju"><p type="check"></p><span>不带家具家电 </span></div>
+              <div class="info-checkbox" name="jiaju"><p type="check"></p><span>带家具家电（见备注或清单）。 </span></div>
+            </div>
+            <p>4.过户时间：于<input type="text" class="text-limit calendar-item" style="width:130px"  extendParam="val2"/>前到房屋登记机关办理交易过户手续。</p>
+            <div>
+              5.接受房屋时间
+              <div class="info-checkbox" name="recievetime"><p type="check"></p><span>向卖方支付全款 </span></div><span tag="input-auto" listen="number" max="12" class="text-limit input-before" readonly="readonly"  extendParam="val3"></span>日内
+              <div class="info-checkbox" name="recievetime"><p type="check"></p><span>其他  </span></div><span tag="input-auto" class="text-limit input-before" extendParam="val4"></span>
+            </div>
+            <p>三、斡旋期限：</p>
+            <div>自即日起至<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val5"/>止。</div>
+            <p>四、协议双方的权利义务</p>
+            <p>1、本协议经卖方填写出售条件且出售条件与委托人承购条件完全一致并签字后斡旋即告成功，斡旋金即转为定金，委托人同意居间人将定金支付给卖方。</p>
+            <p>2、委托人在斡旋期间内不得撤回斡旋，否则因此所造成的损失均由委托人自行承担。</p>
+            <p>3、斡旋成功后，居间人应在24小时内或电话或短信或书面通知委托人。如因委托人的原因在斡旋成功后7日内无法告知委托人或通知后拒不签署《房屋买卖（居间）合同》或《房地产买卖契约》，则委托人所交纳的斡旋金因已经依照本协议第四条约定转为定金，并作为定金支付给了卖方不予退还，本斡旋金协议自斡旋成功后第7日起自动终止。</p>
+            <p>4、斡旋成功后，买卖双方买卖关系已确定，居间人的中介服务已完成，委托人应向居间人支付中介服务费，具体标准为本协议约定的认购金额的1%.</p>
+            <p>5、斡旋成功后，如因委托人的原因在斡旋成功后7日内无法告知委托人或通知后拒不签署《房屋买卖（居间）合同》致本协议解除，则委托人除向居间人支付中介服务费外，无权向卖方及居间人主张返还定金。</p>
+            <p>五、注意事项：</p>
+            <p>在斡旋期间，委托人如变换联系方式的，应先行通知居间人，否则因居间人无法通知委托人造成的一切损失均由委托人自行承担（包括但不限于本协议第四条第4、第5约定的内容）。</p>
+            <p>六、因斡旋期限届满斡旋不成功的，委托人在签订本协议时支付的斡旋金，居间人将无息返还于委托人且经委托人签收无误后，双方之间的委托关系终止，委托人不得再对居间人有任何请求或主张。同时委托人承诺斡旋金退还给委托人后，委托人不以自己及近亲属名义与该房屋所有权人私下成交或通过其他中介成交上述房屋，否则愿意向宏辉房产承担委托价3%的违约金。</p>
+            <p>七、本协议上述内容委托人均已详阅并知晓协议中约定的权利义务和相关责任。</p>
+            <p>八、本协议自双方签字或盖章后生效。</p>
+            <p>九、本协议一式二份，双方各执一份。</p>
+
+            <div class="ulbox">
+              <ul>
+                <li style="position: relative;">委托人（买方）：<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" /> </li>
+                <li style="position: relative;">居间人：兰州宏辉房产经纪有限公司 <img style="position:absolute;left:110px;top:-40px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /> </li>
+              </ul>
+              <ul>
+                <li>详细地址：<span tag="input-auto" class="text-limit input-before" extendParam="val6"></li>
+                <li style="position: relative;">签约店长签字：<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" /> </li>
+              </ul>
+              <ul>
+                <li>联系电话：<span systemparam="guestTel" tag="input-auto"></span>
+                </li>
+                <li>签署时间：<span systemparam="signDate" tag="input-auto"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="mf">
+              <p>卖方承诺出售条件:</p>
+              <div>
+                1.该房产出售价格为人民币（小写）¥<span class="input-before" listen="number" max="12" extendParam="val7" tag="input-auto" ></span>元整(大写：<span tag="input-auto" extendparam="val7_add" systemParam="true" class="input-readonly"></span>圆整)。此价格包括卖方自买入该房产后至本次山精色声出售的格为人用包结组不限于物业维好基金 有级电破初摄费，天然气初稳费神》。
+                <p>卖方确认上述价格为: </p> 
+                <div>
+                <div class="info-checkbox" name="pp"><p type="check"></p><span>含买卖双方过户税、费的价格 。</span></div><br/>
+                </div>
+                <div>
+                  <div class="info-checkbox" name="pp"><p type="check"></p><span>不含房屋过户税费，买卖双方依照国家法律法规承担各自应该缴纳的税、费。</span></div>
+               </div>
+              </div>
+              <p>2.付款方式为：</p>
+              <div>
+                <div class="info-checkbox" name="cc"><p type="check"></p><span>一次性付款</span></div>
+                <div class="info-checkbox" name="cc"><p type="check"></p><span>首付加商业银行按揭付款 </span></div>
+                <div class="info-checkbox" name="cc"><p type="check"></p><span>首付加公积金贷款方式付款</span></div>
+              </div>
+              <div>3.交房情况：
+                <div class="info-checkbox" name="dd"><p type="check"></p><span>不带家具家电 </span></div>
+                <div class="info-checkbox" name="dd"><p type="check"></p><span>带家具家电（见备注或清单）。 </span></div>
+              </div>
+            <p>4.过户时间：于<input type="text" class="text-limit calendar-item" style="width:130px" readonly="readonly" extendParam="val8"/>前到房屋登记机关办理交易过户手续。</p>
+            <div>
+              <div class="info-checkbox" name="ff"><p type="check"></p><span>向卖方支付全款 </span></div><span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val9"></span>日内
+              <div class="info-checkbox" name="ff"><p type="check"></p><span>其他  </span></div><span tag="input-auto" class="text-limit input-before" extendParam="val10"></span>
+            </div>
+            <div>
+              5.交房时间
+              <div class="info-checkbox" name="gg"><p type="check"></p><span>卖方除预留尾款外全款拿到手 </span></div><span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val11"></span>日内
+              <div class="info-checkbox" name="gg"><p type="check"></p><span>其他  </span></div><span tag="input-auto" class="text-limit input-before" extendParam="val12"></span>
+            </div>
+            <div>
+              卖方需在斡旋成功且收取定金后<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val13"></span>日内与委托人及居间方签订 《房屋买卖(居间)合同》，若因卖方原因导致《房屋买卖(居间)合同》无法签订的，卖方需双倍返还委托人已经支付定金，包括同意居间方托管的定金部分，并向居间方支付违约金
+              （小写）¥<span class="input-before" listen="number" max="12" extendParam="val14" tag="input-auto" ></span>元整(大写：<span tag="input-auto" extendparam="val14_add" systemParam="true" class="input-readonly"></span>圆整)
+            </div>
+            <div class="xx">
+              <p>时间： <span class="underLine"></span></p>
+              <p style="position: relative;">卖方（签名）：<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" /> </p>
+            </div>
+            </div>
+            <div class="footer">
+              <p>郑重提醒：请您在支付斡旋金后，及时索取带有宏辉标识的专用收据</p>
+              <p>温馨提示：</p>
+              <p>本公司退款之日为每周一至周五，如遇斡旋到期，您委托斡旋未成功，我们将于您填写《斡旋</p>
+              <p>金退款申请》并留下您本人的银行账户后的上述日期将斡旋金全额打入您的指定账户  </p>
+              <p>宏辉服务热线：400 809 3139</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser.min.js"></script>
+<script type="text/javascript" src="/datepicker.js"></script>
+<script type="text/javascript" src="/dropdown.js"></script>
+<script type="text/javascript" src="/js/bundle_wt_whu20191120.js"></script> -->
+<script>
+  (function () {
+    var scriptList = document.getElementsByTagName("script")
+    console.log(scriptList)
+    if(!scriptList[0].src){
+      var host='https://sign2.jjw.com'
+      var host_other="http://sign2.jjw.com:28879"
+      var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_wt_whu20191118.js","datepicker.css"]
+      for (let i = 0; i < addrList.length; i++) {
+        if(window.location.host==='192.168.13.8:8080'){
+          if(addrList[i].indexOf('bundle')>-1){
+            // addrList[i]=host_other+'/'+addrList[i]
+            addrList[i]='./lz-wt.js'
+          }else{
+            addrList[i]=host_other+'/'+addrList[i]
+          }
+        }else{
+          addrList[i]='/'+addrList[i]
+        }
+        if(addrList[i].indexOf('.css')>-1){
+          var hm = document.createElement("link");
+          hm.rel="stylesheet"
+          hm.href = addrList[i];
+          /*var s = document.getElementsByTagName("link")[0];
+          s.parentNode.insertBefore(hm,s);*/
+          document.head.appendChild(hm);
+        }else{
+          var hm = document.createElement("script");
+          addrList[i].includes('lz-wt')&&(hm.type = 'module');
+          hm.src = addrList[i];
+          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+          s.parentNode.insertBefore(hm,s);
+        }
+      }
+    }
+  })();
+</script>
+</html>
