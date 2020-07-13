@@ -886,6 +886,7 @@ export default {
           // this.contractForm.signDate = res.data.signDate.substr(0, 10);
           this.contractForm.subscriptionTerm = res.data.subscriptionTerm.substr(0,10);
           this.contractForm.type = res.data.contType.value;
+          this.recordType=this.contractForm.recordType.value
           //合同状态为已签约且未结算时只允许编辑房客源编号
           if(this.contractForm.recordType.value===1&&res.data.resultState.value===1&&res.data.contState.value===3){
             this.canInput=true
