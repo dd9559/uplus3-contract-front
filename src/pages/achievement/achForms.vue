@@ -104,7 +104,7 @@
                         {{scope.row.signDate | formatTime}}
                     </template>
                 </el-table-column>
-                <el-table-column label="物业地址"  prop="propertyDddr" width="200"></el-table-column>
+                <el-table-column label="物业地址"  prop="propertyAddr" width="200"></el-table-column>
                 <el-table-column label="签约单数" prop="amount"></el-table-column>
                 <el-table-column label="分成人" prop="assignor" ></el-table-column>
                 <el-table-column label="在职状态" prop="jobStatus.label"  ></el-table-column>
