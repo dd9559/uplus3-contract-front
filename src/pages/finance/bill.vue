@@ -1337,7 +1337,7 @@ export default {
       }
       if (allMoney > this.selectPayInfo.amount) {
         this.$message({
-          message: "转款金额错误"
+          message: "转款金额合计不能超过已收款金额"
         });
         // this.sureSaveTransterShow = false;
         return;
