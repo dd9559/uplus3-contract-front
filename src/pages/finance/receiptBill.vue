@@ -412,7 +412,6 @@
               type="datetime"
               @change="checkDate"
               placeholder="选择日期时间"
-              :picker-options="pickerOptions"
             ></el-date-picker>
           </div>
           <div class="input-group">
@@ -795,13 +794,13 @@ export default {
   },
   methods: {
     checkDate: function(val) {
-      let date = new Date(val);
-      if (date.getTime() > Date.now()) {
-        this.form.createTime = "";
-        this.$message({
-          message: "不能选择未来时间"
-        });
-      }
+      // let date = new Date(val);
+      // if (date.getTime() > Date.now()) {
+      //   this.form.createTime = "";
+      //   this.$message({
+      //     message: "不能选择未来时间"
+      //   });
+      // }
     },
    checkDate1: function(val) {
       let date = new Date(val);
@@ -1678,10 +1677,10 @@ export default {
             }
           } else {
             obj.inObj = tip.name;
-            if (this.firstCreate.state) {
+            // if (this.firstCreate.state) {
               this.activeAdmin = "";
               this.getAcount(this.form.inObjId);
-            }
+            // }
           }
           return;
         }
