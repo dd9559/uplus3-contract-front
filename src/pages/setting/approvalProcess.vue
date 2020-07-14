@@ -10,7 +10,6 @@
                     <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
-            <div></div>
             <div class="input-search" v-if="version==2">
                 <label class="w-70">合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
