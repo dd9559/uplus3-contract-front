@@ -10,6 +10,7 @@
                     <el-option v-for="item in dictionary['711']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
+            <div></div>
             <div class="input-search" v-if="version==2">
                 <label class="w-70">合作方式</label>
                 <el-select size="small" v-model="searchForm.deptAttr" :clearable="true">
@@ -518,8 +519,8 @@
                         query:param,
                         methods:"post"
                     }))
-                }
-
+                } 
+                param.dep.length===0?param.dep='':param.dep;
                 this.$ajax.postJSON('/api/auditflow/selectFlowList',param).then(res => {
                     res = res.data
                     if(res.status === 200) {
