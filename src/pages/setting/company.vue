@@ -19,7 +19,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable class="pp" remote :clearable="true"  style="width:200px" :class="{'width350':searchForm.storeId&&searchForm.storeId.length>1}" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags  remote :clearable="true"  style="width:200px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -128,7 +128,7 @@
               </el-form-item>
                 <!-- <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input> -->
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod2" v-loadmore="moreStore2" @visible-change="showView2">
+                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @focus="isNull" @change="storeSelect" :disabled="storeNoChange"  v-loadmore="moreStore2" @visible-change="showView2">
                   <el-option  v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -463,7 +463,6 @@
         homeStorePage:1,
         homeStoreTotal:0,
         homeStoreName:[],
-        cc:[],
         // 添加公司信息的门店
         storePage:1,
         storeTotal:0,
@@ -585,6 +584,9 @@
         }else {
           this.getStoreList(1,++this.homeStorePage,this.temKey)
         }
+      },
+      isNull(){
+        if(![1,2].includes(this.companyForm.cooperationMode)) this.$message('请先选择合作方式')
       },
       moreStore2:function () {
         if(this.storeList.length>=this.storeTotal){
@@ -710,6 +712,7 @@
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
+        this.storeList=[]
         this.delIds = []
         done()
       },
@@ -1162,12 +1165,6 @@
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
-.pp{
-  /deep/ .el-select__tags{
-    height: 28px;
-    line-height: 28px;
-  }
-}
 .form-head {
   background-color: #fff;
   border-radius:2px;

@@ -41,12 +41,13 @@
                     <el-option v-for="item in homeConditionList" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
             </div>
-            <div  class="input-search" v-if="version==3">
+            <div  class="input-search dep" v-if="version==3">
                 <label class="mr-20">部门</label>
                     <el-select
                     v-model="searchForm.dep"
                     multiple
                     placeholder="全部"
+                    collapse-tags
                     style="width:200px"
                     :class="{'width300':searchForm.dep&&searchForm.dep.length>1}"
                     >
@@ -1073,7 +1074,6 @@
             getJobName(cityId,systemTag){
                 this.$ajax.get('/api/employee/getPositionRank',{cityId,systemTag}).then(res=>{
                     res=res.data
-                    debugger
                     if(res.status==200){
                         this.jobNameList=res.data
                     }
@@ -1138,6 +1138,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+.dep{
+    /deep/ .el-input__inner{
+        height: 32px;
+    }
 }
 
 .content {
