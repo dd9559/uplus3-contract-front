@@ -118,6 +118,7 @@ import {mapMutations} from 'vuex'
       i{
         font-size: 12px;
       }
+      color: #6C7986;
       width: 97px;
       height: 17px;
       border-radius: 10px;
