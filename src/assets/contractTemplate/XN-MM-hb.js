@@ -167,32 +167,32 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg={
-  companyBanks:{
-    bankAccountName: "何江",
-    bankBranchName: "—",
-    bankCard: "6230334001007090568",
-    id: 657,
-    storeId: 50235,
-    storeName: "小金鱼小队"
-  }
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+//  let msg={
+//   ownerCommission:'32332',
+//   signDate:1594780320000,
+
+//   companyBanks:[{
+//     bankAccountName: "何江",
+//     bankBranchName: "—",
+//     bankCard: "6230334001007090568",
+//     id: 657,
+//     storeId: 50235,
+//     storeName: "小金鱼小队"
+//   }]
+// }
 for(let readonlyItem in msg){   //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  let arr= []
-  if(readonlyItem==='signDate'){
-    let time = new Date(msg.signDate)
-    arr.push(time.getFullYear())
-    arr.push(time.getMonth()+1)
-    arr.push(time.getDate())
-  }
- 
-  let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPriceUpper','square','companyBanks']
+  let readonlyArr = ['ownerName','ownerID','signDate','ownerNames','ownerIDs','guestStoreName','custCommissionUpper','custCommission','ownerCommission','ownerCommissionUpper','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
-         element.setAttribute('value', arr[index])
+        let time = new Date(Number(msg["signDate"]));
+        let y = time.getFullYear();
+        let M = time.getMonth() + 1;
+        let D = time.getDate();
+        let signDate = `${y}年${M}月${D}日`
+        element.innerHTML = signDate
       }else if(readonlyArr.includes(readonlyItem)){
         if(element.getAttribute("extendParam")==="val25"){
             let value = msg["propertyAddr"]
@@ -202,14 +202,26 @@ for(let readonlyItem in msg){   //得到readonly的值
                 element.innerHTML=value
             }
         }else if(element.getAttribute("extendParam")==="val45"){
-          let value = msg["companyBanks"]
-          element.innerHTML=value&&value.bankAccountName
+          if( msg["companyBanks"]&&msg["companyBanks"].length>0){
+            let value = msg["companyBanks"][0]
+            element.innerHTML=value&&(value.bankAccountName==='—'?'':value.bankAccountName) 
+          }else{
+            element.innerHTML=''
+          }
         }else if(element.getAttribute("extendParam")==="val46"){
-          let value = msg["companyBanks"]
-          element.innerHTML=value&&(value.bankBranchName==='—'?'':value.bankBranchName)
+          if( msg["companyBanks"]&&msg["companyBanks"].length>0){
+            let value = msg["companyBanks"][0]
+            element.innerHTML=value&&(value.bankBranchName==='—'?'':value.bankBranchName)
+          }else {
+            element.innerHTML=''
+          }
         }else if(element.getAttribute("extendParam")==="val48"){
-          let value = msg["companyBanks"]
-          element.innerHTML=value&&value.bankCard
+          if( msg["companyBanks"]&&msg["companyBanks"].length>0){
+            let value = msg["companyBanks"][0]
+            element.innerHTML=value&&(value.bankCard==='—'?'':value.bankCard)
+          }else {
+            element.innerHTML=''
+          }
         }else{
             element.innerHTML=msg[readonlyItem]
         }

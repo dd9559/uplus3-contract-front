@@ -632,7 +632,7 @@
           }))
         }
       
-          param.storeId.length===0?param.storeId='':param.storeId;
+        param.storeId.length===0?param.storeId='':param.storeId;
         this.$ajax.postJSON('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
