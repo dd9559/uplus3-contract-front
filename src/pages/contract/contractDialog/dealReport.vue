@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr?dealBasicInfo.propertyRightAddr:'-'}}</span></span>
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddrmi?dealBasicInfo.propertyRightAddrmi:'-'}}</span></span>
                     </div>
                 </div>
                 <div class="item">
@@ -267,7 +267,7 @@ export default {
                 dealPrice: "",
                 receivableCommission: "",
                 Square: "",
-                propertyRightAddr: "",
+                propertyRightAddrmi: "",
                 FloorAll: "",
                 CompleteYear: ""
             },
@@ -377,7 +377,7 @@ export default {
             this.dealBasicInfo.receivableCommission = data.receivableCommission
             this.dealBasicInfo.Square = data.houseInfo.Square
             this.dealBasicInfo.CompleteYear = data.houseInfo.CompleteYear
-            this.dealBasicInfo.propertyRightAddr = data.propertyRightAddr
+            this.dealBasicInfo.propertyRightAddrmi = data.propertyRightAddrmi
             this.dealBasicInfo.FloorAll = data.houseInfo.FloorAll
             this.report = data.dealReport ? JSON.parse(data.dealReport) : this.report
             // 交易流程字段取合同详情的数据
