@@ -409,8 +409,13 @@
             <el-button
               type="text"
               @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
             >反审核</el-button>
+            <!-- <el-button
+              type="text"
+              @click="cellOpera(scope.row,'deAudit')"
+              v-if="scope.row.payStatus.value==5"
+            >反审核</el-button> -->
             <!-- <el-button
               type="text"
               @click="cellOpera(scope.row,'del')"
@@ -1029,7 +1034,7 @@ export default {
               code: item.contCode,
               isentrust: item.type === 8 ? 1 : 0,
               deAudit: true,
-              collect: 1
+              collect: 3
             }
           });
           window.open(newPage.href, "_blank");

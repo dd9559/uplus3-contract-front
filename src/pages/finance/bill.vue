@@ -444,6 +444,11 @@
               v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state"
             >编辑</el-button>
             <!-- 新增转款按钮 -->
+            <!-- <el-button
+              type="text"
+              @click="btnTransfer(scope.row)"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
+            >转款</el-button>-->
             <el-button
               type="text"
               @click="btnTransfer(scope.row)"
@@ -547,7 +552,7 @@
           <p class="title">合同信息</p>
           <p class="info">
             <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
-            <span>款类：{{selectPayInfo&&selectPayInfo.contType}}</span>&nbsp;&nbsp;&nbsp;
+            <span>款类：{{selectPayInfo&&selectPayInfo.moneyType}}</span>&nbsp;&nbsp;&nbsp;
             <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>
           </p>
           <p>物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
@@ -577,7 +582,13 @@
                   :chooseIndex="index"
                   v-if="transterShow"
                 ></moneyTypePop>
-                <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.outMoney"></el-input>
+                <el-input
+                  size="small"
+                  class="w200"
+                  placeholder="请输入金额"
+                  v-model="item.outMoney"
+                  @input="cutNum(index)"
+                ></el-input>
                 <span class="icon" @click.stop="addcommissionData" v-if="index===0">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -918,7 +929,7 @@ export default {
       this.$router.push({
         path: "receiptBill",
         query: {
-          collect: 1,
+          collect: 5,
           contId: "0"
         }
       });
@@ -1303,6 +1314,13 @@ export default {
       this.getContractList(val, this.contKeyWord);
     },
     transterSave() {
+      let hash = {};
+      // 判断是否有重复款类
+      let flagArr = this.kuanleiVal.reduce((pre, cur) => {
+        hash[cur.outType] ? "" : (hash[cur.outType] = true && pre.push(cur));
+        return pre;
+      }, []);
+      
       let allMoney = null,
         nullType = 1;
       this.kuanleiVal.map(item => {
@@ -1340,6 +1358,12 @@ export default {
           message: "转款金额合计不能超过已收款金额"
         });
         // this.sureSaveTransterShow = false;
+        return;
+      }
+      if (flagArr.length != this.kuanleiVal.length) {
+        this.$message({
+          message: "不能选择重复款类"
+        });
         return;
       }
       this.sureSaveTransterShow = true;
@@ -1426,6 +1450,12 @@ export default {
     getCell: function(label, index) {
       this.kuanleiVal[index].outType = label.key;
       this.kuanleiVal[index].outTypeId = label.pId;
+    },
+    cutNum: function(index) {
+      this.kuanleiVal[index].outMoney = this.$tool.cutFloat({
+        val: this.kuanleiVal[index].outMoney,
+        max: 999999999.99
+      });
     }
   },
   filters: {
