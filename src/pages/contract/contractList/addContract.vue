@@ -2972,7 +2972,7 @@ export default {
                         this.canInput = true;
                     }
                     //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
-                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3) {
+                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3 && !this.$route.query.isDeal) {
                         this.offLine = true;
                     }
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;

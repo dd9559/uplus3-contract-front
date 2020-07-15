@@ -158,7 +158,7 @@
                 <div class="one_">
                   <p style="width:1000px">
                     <span class="tag">产权地址：</span>
-                    <span class="text">{{contractDetail.propertyRightAddr?contractDetail.propertyRightAddr:'-'}}</span>
+                    <span class="text">{{contractDetail.propertyRightAddrmi?contractDetail.propertyRightAddrmi:'-'}}</span>
                   </p>
                 </div>
                 <div class="one_">
@@ -1686,7 +1686,7 @@
             <li>
               <p>
                 <span>产权地址：</span>
-                <span>{{contractDetail.recordVersion==2?contractDetail.propertyRightAddr:'--'}}</span>
+                <span>{{contractDetail.recordVersion==2?contractDetail.propertyRightAddrmi:'--'}}</span>
               </p>
             </li>
             <li>

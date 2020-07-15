@@ -26,7 +26,7 @@
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
             <el-form-item label="权证费用:" class="add-form-item">
-              <el-input v-model="addForm.warrantFee" @input.native="filterWarrantFee">
+              <el-input v-model="addForm.warrantFee" @keyup.native="filterWarrantFee">
 
               </el-input><span style="margin-left:10px">元</span>
             </el-form-item>
@@ -275,7 +275,7 @@
         })
       },
       filterWarrantFee(){
-        this.$set(this.addForm,'warrantFee',this.$tool.cutFloat({val:this.addForm.warrantFee,max:99999999.99,num:2}))
+        this.addForm.warrantFee=this.$tool.cutFloat({val:this.addForm.warrantFee,max:99999999.99,num:2})
       },
       Operation(index,type) {
         if(type === "up") {
