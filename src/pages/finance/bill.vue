@@ -452,7 +452,7 @@
             <el-button
               type="text"
               @click="btnTransfer(scope.row)"
-              v-if="scope.row.payStatus.value==5"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
             >转款</el-button>
             <template
               v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
