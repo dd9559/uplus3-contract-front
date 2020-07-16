@@ -4,7 +4,7 @@ import {
 } from "./base.js"
 
 let Obj = {
-  cn_arr: ['val50', 'val60', 'val62', 'val64', 'val69', 'val70', 'val110', 'val112', 'val122', 'val20201']
+  cn_arr: ['val50', 'val60', 'val62', 'val64', 'val69', 'val70', 'val110', 'val112', 'val122','val20201']
 }
 
 let sub = {
