@@ -108,7 +108,7 @@
           ></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select
+          <!-- <el-select
             style="width:100px"
             :clearable="true"
             v-loadmore="moreEmploye"
@@ -117,12 +117,25 @@
             v-model="contractForm.dealAgentId"
             @change="handleEmpNodeClick"
             placeholder="请选择"
+          >-->
+          <el-select
+            :clearable="true"
+            filterable
+            remote
+            :remote-method="test"
+            v-loadmore="moreEmploye"
+            @visible-change="empHandle"
+            class="margin-left"
+            size="small"
+            v-model="contractForm.dealAgentId"
+            placeholder="请选择"
+            @change="empHandleAdd"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId"
+              :value="item.empId+'-'+item.depName+'-'+item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -276,7 +289,7 @@
             @mouseover="moveIn('online')"
             @mouseout="moveOut('online')"
             v-if="power['sign-ht-info-add'].state"
-            >
+          >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
@@ -286,13 +299,13 @@
                   :key="item.key"
                   @click="addOnLine(item)"
                   style="position:relative;"
-                  >
+                >
                   {{item.value}}
                   <i
                     class="el-icon-caret-right"
                     v-if="item.key===2&&item.children"
                     style="position:absolute;top:10px;left:55px;"
-                    ></i>
+                  ></i>
                   <div class="childrenModule" v-if="item.key===2&&item.children">
                     <ul class="childrenList">
                       <li
@@ -312,7 +325,7 @@
             @mouseover="moveIn('offline')"
             @mouseout="moveOut('offline')"
             v-if="power['sign-ht-info-addoffline'].state"
-            >
+          >
             录入线下合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['65']">
@@ -322,7 +335,7 @@
                   :key="item.key"
                   @click="addOffLine(item)"
                   style="position:relative;"
-                  >
+                >
                   {{item.value}}
                   <i
                     class="el-icon-caret-right"
@@ -348,7 +361,7 @@
             @mouseover="moveIn('print')"
             @mouseout="moveOut('print')"
             v-if="power['sign-ht-info-print'].state"
-            >
+          >
             打印空白合同
             <i class="el-icon-arrow-down el-icon--right"></i>
             <div class="holderPlace" v-if="dictionary['71']">
@@ -398,7 +411,7 @@
         @row-dblclick="toDetail"
         border
         :max-height="tableNumberCom"
-        >
+      >
         <el-table-column label="合同信息" label-class-name="pdl" class-name="bgc" min-width="250" fixed>
           <template slot-scope="scope">
             <div class="contract_msg">
@@ -665,7 +678,7 @@
         <el-table-column label="录入时间" min-width="90">
           <template slot-scope="scope">
             <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
-            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span> -->
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>-->
             <span>{{Number(scope.row.createTime)|timeFormat_}}</span>
           </template>
         </el-table-column>
@@ -683,7 +696,7 @@
               effect="dark"
               content="可分配业绩=业主佣金+客户佣金-佣金支付费-第三方合作费-权证费用"
               placement="top"
-              >
+            >
               <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
             </el-tooltip>
           </template>
@@ -738,15 +751,15 @@
                 class="btn"
                 @click="toDeal(scope.row)"
               >转成交</div>
-              <div
+              <!-- <div
                 class="btn"
                 @click="toSign(scope.row)"
-              >发起签署</div>
-              <!-- <div
+              >发起签署</div>-->
+              <div
                 v-if="(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
                 class="btn"
                 @click="toSign(scope.row)"
-              >发起签署</div> -->
+              >发起签署</div>
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
@@ -885,7 +898,7 @@
       class="uPluseDialog"
       :close-on-click-modal="$tool.closeOnClickModal"
       :close-on-press-escape="$tool.closeOnClickModal"
-      >
+    >
       <div>
         <ul class="uPlus-class">
           <li class="li" style="width:100%;">
@@ -943,7 +956,6 @@
       <div class="dataBaseBtn">
         <el-button round type="primary" @click="toDataBase">上传资料库</el-button>
       </div>
-      
     </el-dialog>
   </div>
 </template>
@@ -974,7 +986,7 @@ export default {
     lateProgress,
     PdfPrint,
     checkPerson,
-    chosePerson,
+    chosePerson
   },
   data() {
     return {
@@ -1013,7 +1025,7 @@ export default {
         "507": "", //租赁时间单位
         "11": "", //后期状态
         "64": "", //签约方式  线上线下
-        "72": "", //签后审核状态
+        "72": "" //签后审核状态
       },
       loading: false,
       //部门选择列表
@@ -1168,14 +1180,14 @@ export default {
           state: false,
           name: "签后提审"
         },
-        'sign-ht-info-fqqs': {
+        "sign-ht-info-fqqs": {
           state: false,
-          name: '发起签署'
+          name: "发起签署"
         },
         "sign-ht-xq-data-add": {
           state: false,
           name: "编辑资料库"
-        },
+        }
       },
       showOnLine: false,
       showPrint: false,
@@ -1191,11 +1203,11 @@ export default {
       uPlusContType: "",
       uPlusQianyueType: "",
       //发起签署选择业主客户
-      chosePersonDialog:false,
-      signOwnerList:[],
-      signGuestList:[],
-      choseQuery:{},
-      dataBaseDialog:false
+      chosePersonDialog: false,
+      signOwnerList: [],
+      signGuestList: [],
+      choseQuery: {},
+      dataBaseDialog: false
     };
   },
   created() {
@@ -1384,6 +1396,9 @@ export default {
           })
         );
       }
+      if (type === "search") {
+        param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -1525,43 +1540,49 @@ export default {
     toDetail(value) {
       if (value.contState.value != -1) {
         // 验证是否有合同详情查看权限
-        this.$ajax.get("/api/contract/isDetailAuth",{contId:value.id}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            if(res.data){
-              if (value.contType.value === 1 || value.contType.value === 2 || value.contType.value === 3) {
-                let newPage = this.$router.resolve({
-                  path: "/contractDetails",
-                  query: {
-                    id: value.id, //合同id
-                    contType: value.contType.value //合同类型
-                  }
-                });
-                window.open(newPage.href, "_blank");
+        this.$ajax
+          .get("/api/contract/isDetailAuth", { contId: value.id })
+          .then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              if (res.data) {
+                if (
+                  value.contType.value === 1 ||
+                  value.contType.value === 2 ||
+                  value.contType.value === 3
+                ) {
+                  let newPage = this.$router.resolve({
+                    path: "/contractDetails",
+                    query: {
+                      id: value.id, //合同id
+                      contType: value.contType.value //合同类型
+                    }
+                  });
+                  window.open(newPage.href, "_blank");
+                } else {
+                  let newPage = this.$router.resolve({
+                    path: "/detailIntention",
+                    query: {
+                      id: value.id,
+                      contType: value.contType.value
+                    }
+                  });
+                  window.open(newPage.href, "_blank");
+                }
               } else {
-                let newPage = this.$router.resolve({
-                  path: "/detailIntention",
-                  query: {
-                    id: value.id,
-                    contType: value.contType.value
-                  }
+                this.$message({
+                  message: "没有合同详情查看权限",
+                  type: "warning"
                 });
-                window.open(newPage.href, "_blank");
               }
-            }else{
-              this.$message({
-                message:"没有合同详情查看权限",
-                type:"warning"
-              })
             }
-          }
-        }).catch(error=>{
-          this.$message({
-            message: error,
-            type: "error"
+          })
+          .catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
+            });
           });
-        })
-          
       } else {
         this.$message({
           message: "此合同已删除无法进行操作",
@@ -1769,6 +1790,11 @@ export default {
       // this.EmployeList=[]
       this.contractForm.dealAgentId = "";
       this.clearSelect();
+
+      // this.searchForm.deptId = "";
+      // this.searchForm.depName = "";
+      // this.searchForm.empId = "";
+      // this.clearSelect();
     },
     depHandleClick(data) {
       // this.getEmploye(data.depId)
@@ -1781,6 +1807,27 @@ export default {
     searchDep: function(payload) {
       /*this.DepList=payload.list
       this.contractForm.depName=payload.depName*/
+    },
+    test: function(val) {
+      this.getEmployeByText(val);
+    },
+    empHandle: function(val) {
+      console.log(this.contractForm.dealAgentId);
+      if (
+        val &&
+        this.EmployeInit !== this.employeTotal &&
+        this.contractForm.dealAgentId
+      ) {
+        this.getEmployeByText();
+      }
+    },
+    empHandleAdd(val) {
+      let depVal = val.split("-");
+      // this.searchForm.empId=depVal[0]
+      this.contractForm.dealAgentStoreId = depVal[2];
+      this.contractForm.depName = depVal[1];
+      this.EmployeList = [];
+      this.getEmploye(this.contractForm.dealAgentStoreId);
     },
     //提审
     goSave(item, type) {
@@ -2157,42 +2204,47 @@ export default {
         this.signGuestList=[].concat(guest)
         this.chosePersonDialog=true
     },
-    closeChose(val){
-      this.chosePersonDialog=false
-      if(val&&this.choseQuery.isHaveData){
-        this.dataBaseDialog=true
+    closeChose(val) {
+      this.chosePersonDialog = false;
+      if (val && this.choseQuery.isHaveData) {
+        this.dataBaseDialog = true;
       }
     },
-    toDataBase(){
-      if(this.power['sign-com-htdetail'].state){
-        if(this.power['sign-ht-xq-data'].state){
-					this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
-					let path
-					if(this.Msg.type===4||this.Msg.type===5){
-						path="/detailIntention"
-					}else{
-						path="/contractDetails"
-					}
+    toDataBase() {
+      if (this.power["sign-com-htdetail"].state) {
+        if (this.power["sign-ht-xq-data"].state) {
+          this.setPath(
+            this.$tool.getRouter(
+              ["合同", "合同列表", "合同详情"],
+              "contractList"
+            )
+          );
+          let path;
+          if (this.Msg.type === 4 || this.Msg.type === 5) {
+            path = "/detailIntention";
+          } else {
+            path = "/contractDetails";
+          }
           this.$router.replace({
             path: path,
             query: {
               type: "dataBank",
-              id: this.choseQuery.id,//合同id
-              code: this.choseQuery.code,//合同编号
-              contType: this.choseQuery.contType//合同类型
+              id: this.choseQuery.id, //合同id
+              code: this.choseQuery.code, //合同编号
+              contType: this.choseQuery.contType //合同类型
             }
           });
-        }else{
+        } else {
           this.$message({
-            message:'没有资料库权限,无法跳转到资料库'
+            message: "没有资料库权限,无法跳转到资料库"
           });
-          this.$router.push('/contractList');
+          this.$router.push("/contractList");
         }
-      }else{
+      } else {
         this.$message({
-          message:'没有合同详情权限,无法跳转到资料库'
+          message: "没有合同详情权限,无法跳转到资料库"
         });
-        this.$router.push('/contractList');
+        this.$router.push("/contractList");
       }
     }
   },
@@ -2645,18 +2697,18 @@ export default {
     padding: 50px 0 50px 0;
   }
 }
-.dataBase{
-  /deep/.el-dialog__body{
-    div{
+.dataBase {
+  /deep/.el-dialog__body {
+    div {
       text-align: center;
-      &:first-child{
+      &:first-child {
         margin-top: 20px;
         font-size: 16px;
         font-weight: bold;
         color: #333;
       }
     }
-    .dataBaseBtn{
+    .dataBaseBtn {
       padding: 20px 0;
     }
   }

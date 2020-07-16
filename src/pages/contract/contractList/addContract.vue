@@ -842,7 +842,9 @@ export default {
                 payType: 1,
                 dealPrice: "",
                 contPersons: [],
+                transFlowCode:"",
                 propertyRightAddr: "",
+                commissionPayment:0,
                 houseInfo: {
                     HouseStoreCode: "",
                     ShopOwnerMobile: "",
@@ -2917,6 +2919,8 @@ export default {
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
+                    this.$set(this.contractForm,'commissionPayment',this.contractForm.commissionPayment?this.contractForm.commissionPayment:0)
+                    this.$set(this.contractForm,'transFlowCode',this.contractForm.transFlowCode?this.contractForm.transFlowCode:'')
                     // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
                     if(this.contractForm.estTransferTime){
                         this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
@@ -2968,7 +2972,7 @@ export default {
                         this.canInput = true;
                     }
                     //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
-                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3) {
+                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3 && !this.$route.query.isDeal) {
                         this.offLine = true;
                     }
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;

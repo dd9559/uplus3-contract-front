@@ -23,7 +23,10 @@
     <div class="paper-box-content">
       <slot></slot>
     </div>
-    <div class="btn" @click="show=!show"></div>
+    <div class="btn" @click="show=!show">
+      <i class="iconfont icon-zhankai"></i>
+      <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"关闭":"展开"}}</span>
+    </div>
   </div>
 </template>
 
@@ -112,15 +115,23 @@ import {mapMutations} from 'vuex'
 
     }
     .btn {
-      width: 56px;
+      i{
+        font-size: 12px;
+      }
+      color: #6C7986;
+      width: 97px;
       height: 17px;
+      border-radius: 10px;
       position: absolute;
       bottom: -17px;
       left: 50%;
       margin-left: -28px;
       z-index: 9;
-      background: url(.././assets/img/icon-dowm.png) no-repeat center center;
+      font-size: 10px;
+      text-align: center;
+      // background: url(.././assets/img/icon-dowm.png) no-repeat center right;
       background-size: 56px auto;
+      background-color: white;
       cursor: pointer;
     }
   }

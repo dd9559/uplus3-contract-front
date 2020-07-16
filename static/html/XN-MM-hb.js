@@ -170,8 +170,6 @@ textLong.forEach(function (item) {
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //  let msg={
 //   ownerCommission:'32332',
-//   signDate:1594780320000,
-
 //   companyBanks:[{
 //     bankAccountName: "何江",
 //     bankBranchName: "—",
@@ -183,16 +181,19 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // }
 for(let readonlyItem in msg){   //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  let readonlyArr = ['ownerName','ownerID','signDate','ownerNames','ownerIDs','guestStoreName','custCommissionUpper','custCommission','ownerCommission','ownerCommissionUpper','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square','companyBanks']
+  let arr= []
+  if(readonlyItem==='signDate'){
+    let time = new Date(msg.signDate)
+    arr.push(time.getFullYear())
+    arr.push(time.getMonth()+1)
+    arr.push(time.getDate())
+  }
+ 
+  let readonlyArr = ['ownerName','ownerID','ownerNames','ownerIDs','guestStoreName','custCommissionUpper','custCommission','ownerCommission','ownerCommissionUpper','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
-        let time = new Date(Number(msg["signDate"]));
-        let y = time.getFullYear();
-        let M = time.getMonth() + 1;
-        let D = time.getDate();
-        let signDate = `${y}年${M}月${D}日`
-        element.innerHTML = signDate
+         element.setAttribute('value', arr[index])
       }else if(readonlyArr.includes(readonlyItem)){
         if(element.getAttribute("extendParam")==="val25"){
             let value = msg["propertyAddr"]

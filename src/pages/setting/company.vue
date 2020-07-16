@@ -18,13 +18,8 @@
           value-format="yyyy-MM-dd">
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="城市">
-          <el-select v-model="searchForm.cityId" filterable @change="getStoreList" :clearable="true" class="w140">
-            <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-          </el-select>
-        </el-form-item> -->
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable remote :clearable="true"  style="width:200px" :class="{'width350':searchForm.storeId&&searchForm.storeId.length>1}" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags  remote :clearable="true"  style="width:200px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -126,16 +121,16 @@
                 </el-select> -->
                 <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
               </el-form-item>
-              <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.storeId" filterable remote clearable @change="storeSelect" :disabled="storeNoChange" :remote-method="remoteMethod2" v-loadmore="moreStore2" @visible-change="showView2" @clear="clearStore">
-                  <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              <el-form-item label="合作方式: ">
+                <el-select v-model="companyForm.cooperationMode" :disabled="storeNoChange" size="mini" @change="cooModeChange">
+                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="合作方式: ">
-                <!-- <el-select v-model="companyForm.cooperationMode" size="mini" @change="cooModeChange">
-                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select> -->
-                <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input>
+                <!-- <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input> -->
+              <el-form-item label="门店选择: ">
+                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @focus="isNull" @change="storeSelect" :disabled="storeNoChange"  v-loadmore="moreStore2" @visible-change="showView2">
+                  <el-option  v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                </el-select>
               </el-form-item>
             </div>
             <div class="item item-display">
@@ -375,8 +370,8 @@
   let obj1 = {
     cityId: "",
     cityName: "",
-    storeId: "",
-    storeName: "",
+    storeId: [],
+    storeName: [],
     cooperationMode: "",
     franchiseRatio: "",
     name: "",
@@ -467,13 +462,14 @@
         // 筛选条件的门店
         homeStorePage:1,
         homeStoreTotal:0,
-        homeStoreName:'',
+        homeStoreName:[],
         // 添加公司信息的门店
         storePage:1,
         storeTotal:0,
         temKey: "", //门店搜索值
         preConFile: [], //合同章缩略图
-        preFinFile: [] //财务章缩略图
+        preFinFile: [], //财务章缩略图
+        pd:'',
       }
     },
     mounted() {
@@ -486,11 +482,14 @@
         this.searchForm = session.query
         this.searchTime = this.searchForm.startTime?[this.searchForm.startTime,this.searchForm.endTime]:[]
         if(session.query.storeId){
-          this.homeStoreList.unshift({
-            id:session.query.storeId,
-            name:session.query.homeStoreName
+          this.homeStoreList.forEach((v,i)=>{
+            this.homeStoreList.unshift({
+              id:session.query.homeStoreName[i].id,
+              name:session.query.homeStoreName[i].name
+            })
           })
         }
+        console.log(this.homeStoreList);
         delete this.searchForm.homeStoreName
         delete this.searchForm.startTime
         delete this.searchForm.endTime
@@ -526,29 +525,37 @@
       clearStore(type) {
         this.storeList = []
         this.storePage = 1
-        this.getStoreList(2)
+        this.getStoreList2(2,this.storePage,'',this.companyForm.cooperationMode)
         if(!type){
           this.clearFn()
         }
       },
       // 门店下拉框出现/隐藏时触发
       showView1(bol) {
-        if(!bol&&this.searchForm.storeId){
-          this.homeStoreList.find(item=>{
-            if(this.searchForm.storeId===item.id){
-              this.homeStoreName=item.name
-            }
-          })
-        }
-        if(!bol&&this.temKey){
-          this.homeStoreList = []
-          this.homeStorePage = 1
-          this.getStoreList(1)
-        }
+        // if(!bol&&this.searchForm.storeId){
+        //   this.homeStoreList.forEach((v,i)=>{
+        //     for(let i=0;i<this.searchForm.storeId.length;i++){
+        //       if(v.id==this.searchForm.storeId[i]){
+        //         this.homeStoreName.push({id:v.id,name:v.name})
+        //       }
+        //     }
+        //   })
+        //   console.log(this.homeStoreName,'name');
+        //   // this.homeStoreList.find(item=>{
+        //   //   if(this.searchForm.storeId===item.id){
+        //   //     this.homeStoreName=item.name
+        //   //   }
+        //   // })
+        // }
+        // if(!bol&&this.temKey){
+        //   this.homeStoreList = []
+        //   this.homeStorePage = 1
+        //   this.getStoreList(1)
+        // }
       },
       showView2(bol) {
         if(!bol&&this.temKey){
-          if(this.companyForm.storeId){
+          if(this.companyForm.storeId.length==0){
             return
           }
           this.clearStore()
@@ -566,7 +573,8 @@
         setTimeout(() => {
           this.storeList = []
           this.storePage = 1
-          this.getStoreList(2,this.storePage,query)
+          // this.getStoreList(2,this.storePage,query)
+          this.getStoreList2(2,this.storePage,query,this.companyForm.cooperationMode)
         },200)
       },
       //门店滚动加载更多
@@ -577,11 +585,14 @@
           this.getStoreList(1,++this.homeStorePage,this.temKey)
         }
       },
+      isNull(){
+        if(![1,2].includes(this.companyForm.cooperationMode)) this.$message('请先选择合作方式')
+      },
       moreStore2:function () {
         if(this.storeList.length>=this.storeTotal){
           return
         }else {
-          this.getStoreList(2,++this.storePage,this.temKey)
+          this.getStoreList2(2,++this.storePage,this.temKey,this.companyForm.cooperationMode)
         }
       },
       // 获取银行列表
@@ -617,11 +628,11 @@
             path:'/company',
             url:'/setting/company/list',
             query:Object.assign({},param,{homeStoreName:this.homeStoreName}),
-            methods:"get"
+            methods:"postJSON"
           }))
         }
-        param.storeIdStr=param.storeId
-        delete param.storeId
+      
+        param.storeId.length===0?param.storeId='':param.storeId;
         this.$ajax.postJSON('/api/setting/company/list', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -632,33 +643,37 @@
             this.$message({message:error})
         })
       },
-      // 获取门店
+      // 获取列表门店
       getStoreList(val,page=1,keyword='') {
         this.temKey = keyword
-        this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword}).then(res => {
-          res = res.data
-          if(res.status === 200) {
-            if(val === 2) {
-              // 添加公司信息的门店列表
-              this.storeList = this.storeList.concat(res.data.list)
-              this.storeTotal = res.data.total
-            } else {
-              // 筛选条件的门店列表
-              let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-              if(session){
-                res.data.list.some((item,index)=>{
-                  if(session.query.storeId===item.id){
-                    res.data.list.splice(index,1)
-                  }
-                })
+        if(val==1){
+          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword,cooperationMode:''}).then(res => {
+            res = res.data
+            if(res.status === 200) {
+                this.homeStoreList = this.homeStoreList.concat(res.data.list)
+                this.homeStoreTotal = res.data.total
               }
-              this.homeStoreList = this.homeStoreList.concat(res.data.list)
-              this.homeStoreTotal = res.data.total
-            }
+                
+              }).catch(error => {
+            this.$message({message:error})
+          })
           }
-        }).catch(error => {
-          this.$message({message:error})
-        })
+      },
+      // 新增门店
+      getStoreList2(val,page=1,keyword='',cooperationMode='') {
+        this.temKey = keyword
+        if(val==2){
+          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword,cooperationMode:cooperationMode}).then(res => {
+            res = res.data
+            if(res.status === 200) {
+                this.storeList = this.storeList.concat(res.data.list)
+                this.storeTotal = res.data.total
+              }
+                
+              }).catch(error => {
+            this.$message({message:error})
+          })
+          }
       },
       // 门店选择
       storeSelect(val) {
@@ -667,41 +682,51 @@
           return
         }
         let obj
-        this.storeList.find(item => {
-          if(val === item.id) {
+        this.storeList.find((item,i) => {
+          if(val[val.length-1] === item.id) {
             obj = item
           }
-        })
-        // 每个门店有个check字段,旧版本check值有1 2 3,新版本只有1和2; 值为1 可录入; 值为2 已录入过; 值为3 四级门店不能录入公司信息
-        if(obj.check === 1) {
-          this.companyForm.storeName = obj.name
-          this.companyForm.level = obj.level ? obj.level : ''
-          if(obj.cooperationMode) {
-            this.companyForm.cooperationMode = obj.cooperationMode.label
-          }
+        }) 
+        if(obj.check==2){
           this.fourthStoreNoEdit = false
-          this.clearFn('init')
-        } else if(obj.check === 2) {
-          this.noticeShow = true
-          setTimeout(() => {
-            this.noticeShow = false
-          }, 2000)
-          this.companyForm.storeId = ""
-          this.fourthStoreNoEdit = false
-          this.clearStore()
-        } else {
-          this.$message({message:"四级门店不能录入公司信息",type:"warning"})
-          this.companyForm.storeId = ""
+          val.pop()
+          this.companyForm.storeId=val
+          this.$message({message:"门店信息已经录入，请选择其他门店",type:"warning"})
+          return
+        }else if(obj.check==3){
           this.fourthStoreNoEdit = true
-          this.clearStore()
+          val.pop()
+          this.companyForm.storeId=val
+          this.$message({message:"四级门店不能录入公司信息",type:"warning"})
+          return
         }
+        val.forEach(v=>{
+            this.storeList.forEach((v2,i2)=>{
+              if(v==v2.id) {
+                this.companyForm.storeName.push(v2.name)
+                }
+            })
+        })
       },
       //关闭模态窗
       handleClose(done) {
         this.creditCodeShow = false
         this.icRegisterShow = false
+        this.storeList=[]
         this.delIds = []
         done()
+      },
+      // 选合作方式
+      cooModeChange(val,page=1){
+        this.companyForm.storeId=[]
+        this.$ajax.get('/api/setting/company/queryAllStore',{cooperationMode:this.companyForm.cooperationMode,pageNum: page,type:2}).then(res=>{
+          res=res.data
+          if(res.status==200){
+              this.storeList = res.data.list
+              this.storeTotal = res.data.total
+          }
+
+        })
       },
       addCompany() {
         this.AddEditVisible = true
@@ -711,7 +736,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = this.cityInfo.cityName
-        this.clearStore('init')
+        // this.clearStore('init')
         this.preConFile = []
         this.preFinFile = []
       },
@@ -936,6 +961,7 @@
               let tmp = param.storeId
               param.storeId = param.storeName
               param.storeName = tmp
+              param.storeId=this.pd
               this.$ajax.put('/api/setting/company/update',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
@@ -977,12 +1003,13 @@
           }
         })
         let currentRow = JSON.parse(JSON.stringify(row))
+        this.pd=currentRow.storeId
         let newForm = {
           id: currentRow.id,
           cityId: currentRow.cityId,
           cityName: currentRow.cityName,
-          storeId: type === 'init' ? currentRow.storeId : currentRow.storeName,
-          storeName: type === 'init' ? currentRow.storeName : currentRow.storeId,
+          storeId: type === 'init' ? currentRow.storeId : [currentRow.storeName],
+          storeName: type === 'init' ? currentRow.storeName : currentRow.storeName,
           cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
           lepName: currentRow.lepName,
@@ -996,7 +1023,7 @@
           franchiseRatio: ""
         }
         this.companyForm = newForm
-        this.getStoreRadio(type)
+        this.getStoreRadio(type,currentRow.storeId)
         //获取电子章文件名和签名展示缩略图
         this.contractName = currentRow.contractSign.split('?')[1]
         this.financialName = currentRow.financialSign.split('?')[1]
@@ -1010,9 +1037,9 @@
         })
       },
       // 获取平台费比例值
-      getStoreRadio(type) {
+      getStoreRadio(type,storeId) {
         this.$ajax.get('/api/setting/company/updateShowFee',
-          {storeId:type==='init'?this.companyForm.storeId:this.companyForm.storeName}
+          {storeId:type==='init'?storeId:storeId}
         ).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -1046,7 +1073,7 @@
       },
       // 筛选条件重置
       resetFormFn() {
-        this.searchForm.storeId = ""
+        this.searchForm.storeId = []
         this.searchForm.cooperationMode = ""
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
@@ -1232,7 +1259,7 @@
             /deep/ .el-input {
               width: 200px;
               .el-input__inner {
-                height: 32px!important;
+                height: 28px!important;
               }
             }
           }

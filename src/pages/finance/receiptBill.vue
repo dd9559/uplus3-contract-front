@@ -12,12 +12,14 @@
                 class="btn-info"
                 :type="!billStatus?'primary':''"
                 @click="checkReceiptType(1)"
+                :disabled="Boolean($route.query.deAudit)"
               >线上收款</el-button>
               <el-button
                 size="small"
                 class="btn-info"
                 :type="billStatus?'primary':''"
                 @click="checkReceiptType(2)"
+                :disabled="Boolean($route.query.deAudit)"
               >线下收款</el-button>
               <!--<el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
                 <i class="iconfont icon-wenhao"></i>
@@ -405,12 +407,11 @@
             <el-date-picker
               class="w200"
               size="small"
+              value-format="yyyy-MM-dd HH:mm:ss"
               v-model="examineDate"
-              value-format="yyyy-MM-dd HH:mm:ss"
               type="datetime"
               @change="checkDate"
               placeholder="选择日期时间"
-              :picker-options="pickerOptions"
             ></el-date-picker>
           </div>
           <div class="input-group">
@@ -439,7 +440,13 @@
       </section>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" @click="goCancel">取消</el-button>
+      <el-button
+        class="btn-info"
+        round
+        size="small"
+        @click="goCancel"
+        v-if="!$route.query.deAudit"
+      >取消</el-button>
       <el-button
         class="btn-info"
         round
@@ -447,7 +454,17 @@
         type="primary"
         @click="goResult"
         v-loading.fullscreen.lock="fullscreenLoading"
+        v-if="!$route.query.deAudit"
       >{{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button
+        class="btn-info"
+        round
+        size="small"
+        type="primary"
+        @click="goResult"
+        v-loading.fullscreen.lock="fullscreenLoading"
+        v-if="$route.query.deAudit"
+      >保存</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
     <checkPerson
@@ -478,7 +495,6 @@ import { MIXINS } from "@/assets/js/mixins";
 import moneyTypePop from "@/components/moneyTypePop";
 import checkPerson from "@/components/checkPerson";
 import houseGuest from "@/pages/contract/contractDialog/houseGuest";
-
 const rule = {
   moneyType: {
     name: "款类",
@@ -710,8 +726,6 @@ export default {
       );
       if (urlParam.deAudit) {
         arr.push({ name: "反审核", path: this.$route.fullPath });
-        //获取反审核时间
-        this.getNewData();
       } else {
         arr.push({ name: "编辑收款", path: this.$route.fullPath });
       }
@@ -729,7 +743,6 @@ export default {
         }
       }
     }
-
     this.setPath(arr);
 
     // 设置收款人
@@ -738,7 +751,11 @@ export default {
     this.dep.name = user.depName;
     if (user.depId && urlParam.collect && urlParam.contId != 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
-      arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      if (urlParam.deAudit) {
+        arr.push({ name: "反审核", path: this.$route.fullPath });
+      } else {
+        arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      }
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -754,7 +771,15 @@ export default {
       this.form.inObj = user.name;
     } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
-      arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      if (urlParam.deAudit) {
+        arr.push({ name: "反审核", path: this.$route.fullPath });
+      } else {
+        if (urlParam.collect == 5) {
+          arr.push({ name: "创建收款", path: this.$route.fullPath });
+        } else {
+          arr.push({ name: "编辑收款", path: this.$route.fullPath });
+        }
+      }
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -780,14 +805,23 @@ export default {
   },
   methods: {
     checkDate: function(val) {
-      // debugger
+      // let date = new Date(val);
+      // if (date.getTime() > Date.now()) {
+      //   this.form.createTime = "";
+      //   this.$message({
+      //     message: "不能选择未来时间"
+      //   });
+      // }
+    },
+    checkDate1: function(val) {
       let date = new Date(val);
       if (date.getTime() > Date.now()) {
-        this.form.createTime = "";
+        this.examineDate = "";
         this.$message({
           message: "不能选择未来时间"
         });
       }
+      // this.examineDate =val;
     },
     //判断用户该合同是否已经选择过收款方式
     getFirstTime_receipt: function(id) {
@@ -1082,6 +1116,11 @@ export default {
           this.dep.id = res.data.inObjStoreId;
           this.dep.name = res.data.inObjStore;
           this.payCode = res.data.payCode;
+          if (res.data.antiAuditTime) {
+            this.examineDate = this.$tool.timeFormat(res.data.antiAuditTime);
+          } else {
+            this.getNewData();
+          }
           // this.getEmploye(res.data.deptId)
           if (res.data.filePath) {
             this.files = [].concat(JSON.parse(res.data.filePath));
@@ -1232,6 +1271,10 @@ export default {
         this.addAountOther.propertyRightAddr = this.addressLabel.label;
         param = Object.assign(param, this.addAountOther);
       }
+      if (this.$route.query.deAudit && !this.examineDate) {
+        this.$message("请选择反审核时间");
+        return;
+      }
       if (param.createTime === null) {
         param.createTime = "";
       }
@@ -1299,6 +1342,11 @@ export default {
               param.filePath = [].concat(this.files);
               param.outAccount = cardListStatus ? [] : [].concat(this.cardList);
               param.inAccount = [];
+              if (this.$route.query.deAudit) {
+                console.log(this.examineDate);
+                param.antiAuditTime = this.examineDate;
+                // param.antiAuditTime = this.form.createTime;
+              }
               this.payList.forEach(item => {
                 this.firstCreate.state = true;
                 if (
@@ -1375,45 +1423,76 @@ export default {
     getResult: function(param, type = "add") {
       this.fullscreenLoading = true;
       if (type === "edit") {
-        this.$ajax
-          .put("/api/payInfo/updateProceedsInfo", param)
-          .then(res => {
-            res = res.data;
-            if (res.status === 200) {
+        // 反审核新加接口
+        if (this.$route.query.deAudit) {
+          this.$ajax
+            .postJSON("/api/payInfo/rePayInfoAudit", param)
+            .then(res => {
+              res = res.data;
+              if (res.status === 200) {
+                this.fullscreenLoading = false;
+                this.$message({ message: "操作成功", type: "success" });
+              }
+            })
+            .catch(error => {
               this.fullscreenLoading = false;
-              res.data.payCode = this.payCode;
-              if (this.billStatus) {
-                this.$router.go(-1);
+              // if (error.message === "下一节点审批人不存在") {
+              //   this.$router.replace({
+              //     path: "receiptResult",
+              //     query: {
+              //       type:2,
+              //       content: JSON.stringify(error.data),
+              //       errorCode: "dialog"
+              //     }
+              //   });
+              // } else {
+              this.$message({
+                message: error
+              });
+              // }
+            });
+        } else {
+          // 编辑接口
+          this.$ajax
+            .put("/api/payInfo/updateProceedsInfo", param)
+            .then(res => {
+              res = res.data;
+              if (res.status === 200) {
+                this.fullscreenLoading = false;
+                res.data.payCode = this.payCode;
+                if (this.billStatus) {
+                  this.$router.go(-1);
+                } else {
+                  //编辑成为线上收款时跳转至结果页显示二维码
+                  this.$router.replace({
+                    path: "receiptResult",
+                    query: {
+                      type: 1,
+                      content: JSON.stringify(res.data)
+                    }
+                  });
+                }
+              }
+            })
+            .catch(error => {
+              this.fullscreenLoading = false;
+              if (error.message === "下一节点审批人不存在") {
+                this.checkPerson.code = error.data.payCode;
+                this.checkPerson.state = true;
+                this.checkPerson.flowType = 1;
+                this.checkPerson.label = true;
+                this.checkPerson.type = 1;
               } else {
-                //编辑成为线上收款时跳转至结果页显示二维码
-                this.$router.replace({
-                  path: "receiptResult",
-                  query: {
-                    type: 1,
-                    content: JSON.stringify(res.data)
-                  }
+                this.$message({
+                  message: error,
+                  type: "error"
                 });
               }
-            }
-          })
-          .catch(error => {
-            this.fullscreenLoading = false;
-            if (error.message === "下一节点审批人不存在") {
-              this.checkPerson.code = error.data.payCode;
-              this.checkPerson.state = true;
-              this.checkPerson.flowType = 1;
-              this.checkPerson.label = true;
-              this.checkPerson.type = 1;
-            } else {
-              this.$message({
-                message: error,
-                type: "error"
-              });
-            }
-            // this.$message({
-            //     message: error
-            // })
-          });
+              // this.$message({
+              //     message: error
+              // })
+            });
+        }
       } else {
         if (this.$route.query.collect) {
           param.moneyType = this.form.moneyType;
@@ -1562,6 +1641,7 @@ export default {
       this.billStatus = false; //线上收款
       type !== 1 && (this.billStatus = true);
       if (type == 2) {
+        this.activeAdmin === 0 ? (this.activeAdmin = "") : "";
         if (this.$route.query.contId != "0") {
           this.getAcount(this.dep.id);
         } else {
@@ -1599,8 +1679,8 @@ export default {
             obj.outObjId = tip.custId;
             obj.outObj = tip.custName;
             if (
-              (item == 1 && this.$route.query.collect != 1) ||
-              (item == 2 && this.$route.query.collect != 1)
+              ((item == 1 && this.$route.query.collect != 1)&&(item == 1 && this.$route.query.collect != 5)) ||
+              ((item == 2 && this.$route.query.collect != 1)&&(item == 2 && this.$route.query.collect != 5))
             ) {
               this.inputPerson = false;
             } else {
@@ -1608,10 +1688,10 @@ export default {
             }
           } else {
             obj.inObj = tip.name;
-            if (this.firstCreate.state) {
-              this.activeAdmin = "";
-              this.getAcount(this.form.inObjId);
-            }
+            // if (this.firstCreate.state) {
+            this.activeAdmin = "";
+            this.getAcount(this.form.inObjId);
+            // }
           }
           return;
         }
