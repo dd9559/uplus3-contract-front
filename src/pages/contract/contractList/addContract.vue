@@ -107,7 +107,7 @@
                         <el-form-item
                             label="交易流程："
                             class="form-label"
-                            style="width:280px;text-align:right"
+                            style="width:245px;text-align:right"
                             v-if="contractForm.type===2||contractForm.type===3">
                             <el-select
                                 v-model="contractForm.transFlowCode"

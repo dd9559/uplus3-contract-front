@@ -214,14 +214,14 @@
             <el-table-column align="center" prop="amount" label="金额（元）"></el-table-column>
           </el-table>
         </li>
-        <li v-if="activeItem==='收款信息'">
+        <!-- <li v-if="activeItem==='收款信息'">
           <div class="warning-text">
             <p>温馨提示：</p>
             <p>1.操作说明：pos开机状态下，请按快捷键F1，其次按数字键1，最后按功能键后，用红外线对准下图二维码进行收款。</p>
             <p>2.请勿手动在pos上输入金额！</p>
             <p>3.pos机上提示收款成功后，有1-2分钟的延迟才能开票，请耐心等待。</p>
           </div>
-        </li>
+        </li> -->
         <li>
           <h4 class="f14">其他信息</h4>
           <div class="input-group">

@@ -12,14 +12,14 @@
                 class="btn-info"
                 :type="!billStatus?'primary':''"
                 @click="checkReceiptType(1)"
-                :disabled="$route.query.deAudit"
+                :disabled="Boolean($route.query.deAudit)"
               >线上收款</el-button>
               <el-button
                 size="small"
                 class="btn-info"
                 :type="billStatus?'primary':''"
                 @click="checkReceiptType(2)"
-                :disabled="$route.query.deAudit"
+                :disabled="Boolean($route.query.deAudit)"
               >线下收款</el-button>
               <!--<el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
                 <i class="iconfont icon-wenhao"></i>
@@ -404,7 +404,7 @@
           <!-- 新增反审核时间 -->
           <div class="input-group" v-if="$route.query.deAudit" style="margin:20px 0 20px 0;">
             <label class="form-label f14">审核时间：</label>
-             <el-date-picker
+            <el-date-picker
               class="w200"
               size="small"
               value-format="yyyy-MM-dd HH:mm:ss"
@@ -743,7 +743,6 @@ export default {
         }
       }
     }
-
     this.setPath(arr);
 
     // 设置收款人
@@ -752,7 +751,11 @@ export default {
     this.dep.name = user.depName;
     if (user.depId && urlParam.collect && urlParam.contId != 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
-      arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      if (urlParam.deAudit) {
+        arr.push({ name: "反审核", path: this.$route.fullPath });
+      } else {
+        arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      }
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -768,7 +771,15 @@ export default {
       this.form.inObj = user.name;
     } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
-      arr.push({ name: "编辑收款", path: this.$route.fullPath });
+      if (urlParam.deAudit) {
+        arr.push({ name: "反审核", path: this.$route.fullPath });
+      } else {
+        if (urlParam.collect == 5) {
+          arr.push({ name: "创建收款", path: this.$route.fullPath });
+        } else {
+          arr.push({ name: "编辑收款", path: this.$route.fullPath });
+        }
+      }
       this.setPath(arr);
       this.handleNodeClick(user);
       this.form.inObjId = user.empId;
@@ -802,7 +813,7 @@ export default {
       //   });
       // }
     },
-   checkDate1: function(val) {
+    checkDate1: function(val) {
       let date = new Date(val);
       if (date.getTime() > Date.now()) {
         this.examineDate = "";
@@ -1105,7 +1116,7 @@ export default {
           this.dep.id = res.data.inObjStoreId;
           this.dep.name = res.data.inObjStore;
           this.payCode = res.data.payCode;
-          if (res.data.antiAuditTime) {       
+          if (res.data.antiAuditTime) {
             this.examineDate = this.$tool.timeFormat(res.data.antiAuditTime);
           } else {
             this.getNewData();
@@ -1668,8 +1679,8 @@ export default {
             obj.outObjId = tip.custId;
             obj.outObj = tip.custName;
             if (
-              (item == 1 && this.$route.query.collect != 1) ||
-              (item == 2 && this.$route.query.collect != 1)
+              ((item == 1 && this.$route.query.collect != 1)&&(item == 1 && this.$route.query.collect != 5)) ||
+              ((item == 2 && this.$route.query.collect != 1)&&(item == 2 && this.$route.query.collect != 5))
             ) {
               this.inputPerson = false;
             } else {
@@ -1678,8 +1689,8 @@ export default {
           } else {
             obj.inObj = tip.name;
             // if (this.firstCreate.state) {
-              this.activeAdmin = "";
-              this.getAcount(this.form.inObjId);
+            this.activeAdmin = "";
+            this.getAcount(this.form.inObjId);
             // }
           }
           return;
