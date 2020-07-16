@@ -18,7 +18,7 @@
             </p>
             <p>
               <label>物业地址:</label>
-              <span>{{paperInfoData.address}}</span>
+              <span>{{paperInfoData.address?paperInfoData.address:"-"}}</span>
             </p>
           </li>
           <li class="tips-second">
