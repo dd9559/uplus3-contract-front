@@ -935,7 +935,7 @@
       </div>
     </el-dialog>
     <!-- 发起签署选择业主客户 -->
-    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
     <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
       <div>合同已发起签署</div>
@@ -2153,42 +2153,9 @@ export default {
                 guest.push(element)
             }
         });
-        // if(owner.length>1||guest.length>1){//多个业主客户时选择一个发起签署
-            this.signOwnerList=[].concat(owner)
-            this.signGuestList=[].concat(guest)
-            this.chosePersonDialog=true
-        // }else{
-        //     let param = {
-        //         contId:val.id,
-        //         type:1,//签章
-        //         isentrust:0,//非委托
-        //         storeId:val.guestStoreCode//门店id
-        //     }
-        //     param.owner=[
-        //         {name:owner[0].name,identityType:owner[0].cardType,identity:owner[0].encryptionCode,mobile:owner[0].mobile,email:owner[0].email}
-        //     ]
-        //     param.customer=[
-        //         {name:guest[0].name,identityType:guest[0].cardType,identity:guest[0].encryptionCode,mobile:guest[0].mobile,email:guest[0].email}
-        //     ]
-        //     this.$ajax.postJSON('/api/app/contract/sendCont',param).then(res=>{
-        //         res=res.data
-        //         if(res.status===200){
-        //             if(!val.isHaveData){
-        //               this.dataBaseDialog=true
-        //             }else{
-        //               this.$message({
-        //                 message:"操作成功",
-        //                 type:"success"
-        //               })
-        //             }
-        //         }
-        //     }).catch(error=>{
-        //         this.$message({
-        //           message:error,
-        //           type:"error"
-        //         })
-        //     })
-        // }
+        this.signOwnerList=[].concat(owner)
+        this.signGuestList=[].concat(guest)
+        this.chosePersonDialog=true
     },
     closeChose(val){
       this.chosePersonDialog=false
