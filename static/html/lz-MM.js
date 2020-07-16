@@ -89,6 +89,24 @@ let sub = {
       } : null
     }
   },
+  'val104': null,
+  'checkbox_wtloan': {
+    stateful: function (index) {
+      return index === 0 ? null : {
+        'val106': null
+      }
+    }
+  },
+  'val108': null,
+  'val110': null,
+  'val112': null,
+  'val114': null,
+  'val116': null,
+  'val118': null,
+  'val122': null,
+  'val123': null,
+  'val124': null,
+  'checkbox_manType': null,
   'checkbox_zhengjianType': {
     state: true,
     stateful: function (index) {
@@ -113,27 +131,10 @@ let sub = {
       return res;
     }
   },
-  'val104': null,
-  'checkbox_wtloan': {
-    stateful: function (index) {
-      return index === 0 ? null : {
-        'val106': null
-      }
-    }
-  },
-  'val108': null,
-  'val110': null,
-  'val112': null,
-  'val114': null,
-  'val116': null,
-  'val118': null,
-  'val122': null,
-  'val123': null,
-  'val124': null,
+  'checkbox_wupin': null,
   'val125': null,
   'val20201': null,
-  'checkbox_manType': null,
-  'checkbox_wupin': null,
+
 }
 
 //给按钮添加点击事件

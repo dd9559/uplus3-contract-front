@@ -436,12 +436,13 @@
                        scope.row.billStatus&&
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
-                       scope.row.payStatusValue!==11"
+                       scope.row.payStatusValue!==11&&
+                       scope.row.isDel==3"
             >开票</el-button>
             <el-button
               type="text"
               @click="btnOpera(scope.row,1)"
-              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state"
+              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDel!=3"
             >编辑</el-button>
             <!-- 新增转款按钮 -->
             <!-- <el-button
@@ -452,7 +453,7 @@
             <el-button
               type="text"
               @click="btnTransfer(scope.row)"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDel!=3"
             >转款</el-button>
             <template
               v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
@@ -1320,7 +1321,7 @@ export default {
         hash[cur.outType] ? "" : (hash[cur.outType] = true && pre.push(cur));
         return pre;
       }, []);
-      
+
       let allMoney = null,
         nullType = 1;
       this.kuanleiVal.map(item => {
