@@ -752,10 +752,6 @@
                 @click="toDeal(scope.row)"
               >转成交</div>
               <div
-                class="btn"
-                @click="toSign(scope.row)"
-              >发起签署</div>
-              <div
                 v-if="(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
                 class="btn"
                 @click="toSign(scope.row)"
