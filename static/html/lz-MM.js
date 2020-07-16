@@ -4,7 +4,7 @@ import {
 } from "./base.js"
 
 let Obj = {
-  cn_arr: ['val50', 'val60', 'val62', 'val64', 'val69', 'val70', 'val110', 'val112', 'val122','val20201']
+  cn_arr: ['val50', 'val60', 'val62', 'val64', 'val69', 'val70', 'val110', 'val112', 'val122', 'val20201']
 }
 
 let sub = {
@@ -126,7 +126,14 @@ let sub = {
   'val112': null,
   'val114': null,
   'val116': null,
-  'val118': null
+  'val118': null,
+  'val122': null,
+  'val123': null,
+  'val124': null,
+  'val125': null,
+  'val20201': null,
+  'checkbox_manType': null,
+  'checkbox_wupin': null,
 }
 
 //给按钮添加点击事件
