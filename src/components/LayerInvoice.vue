@@ -18,7 +18,7 @@
             </p>
             <p>
               <label>物业地址:</label>
-              <span>{{paperInfoData.address}}</span>
+              <span>{{paperInfoData.address?paperInfoData.address:"-"}}</span>
             </p>
           </li>
           <li class="tips-second">
@@ -414,10 +414,10 @@ export default {
         this.$message.error("请选择或输入交款单位");
         return false;
       }
-      if (!this.form.signatureType && this.city_wh) {
-        this.$message.error("请选择收款单位（加盖财务专用章）");
-        return false;
-      }
+      // if (!this.form.signatureType && this.city_wh) {
+      //   this.$message.error("请选择收款单位（加盖财务专用章）");
+      //   return false;
+      // }
       if (!this.moneyTypes[this.activeType].project) {
         this.$message.error("请选择开票项目");
         return false;
@@ -725,7 +725,8 @@ export default {
   },
   computed: {
     city_wh: function() {
-      return this.getUser.user.cityId === 1;
+      // return this.getUser.user.cityId === 1;
+        return false;
     },
     getPro: function() {
       let types = [
