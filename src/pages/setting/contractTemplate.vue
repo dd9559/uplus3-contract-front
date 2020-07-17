@@ -47,6 +47,9 @@
                 <el-table-column label="合同名称"
                     prop="name"
                     :formatter="nullFormatter"></el-table-column>
+                <el-table-column label="无纸化签署角色"
+                    prop="signerTypeTemplate"
+                    :formatter="nullFormatter"></el-table-column>    
                 <el-table-column label="合同版本号"
                     prop="version"
                     :formatter="nullFormatter"></el-table-column>
@@ -456,7 +459,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$message({message:error})
                 });
         },
         rowOperation: function(row, type, showType) {

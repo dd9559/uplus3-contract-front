@@ -27,7 +27,7 @@
         </el-form-item>
 
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-left:20px;">
+        <el-form-item label="部门" style="margin-right:0px;">
           <select-tree
             :data="DepList"
             :init="propForm.department"

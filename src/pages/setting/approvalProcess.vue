@@ -150,6 +150,7 @@
                                 v-model="aduitForm.dep"
                                 multiple
                                 collapse-tags
+                                filterable
                                 size="small"
                                 class="dep"
                                 placeholder="请选择"
