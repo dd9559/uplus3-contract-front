@@ -124,7 +124,7 @@
                             </el-select> -->
                             <span class="transFlow">{{report.transFlowName?report.transFlowName:'-'}}</span>
                             <span class="mark">权证费用：</span>
-                            <span class="warrant">{{0}}</span>
+                            <span class="warrant">{{report.flowQZfee?report.flowQZfee:0}}元</span>
                         </p>
                     </div>
                     <div class="input">
@@ -826,6 +826,9 @@ export default {
     .transFlow{
         display: inline-block;
         width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .warrant{
         display: inline-block;

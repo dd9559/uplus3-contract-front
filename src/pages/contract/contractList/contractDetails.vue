@@ -124,15 +124,17 @@
                 </div>
 
                 <div class="one_" v-if="contractDetail.contType.value!=1">
-                  <p>
+                  <p style="position:relative;">
                     <span class="tag">交易流程：</span>
-                    <span class="text">{{contractDetail.transFlow?contractDetail.transFlow:'-'}}</span>
-                    <!-- <template v-if="contractDetail.transFlowCode">
-                      <template v-for="item in transFlowList">
-                        <span class="text" :key="item.id" v-if="item.id===contractDetail.transFlowCode">{{item.name}}</span>
-                      </template>
-                    </template>
-                    <span class="text" v-else>-</span> -->
+                    <!-- <span class="text">{{contractDetail.transFlow?contractDetail.transFlow:'-'}}</span> -->
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :content="contractDetail.transFlow"
+                      placement="top"
+                      >
+                      <div class="contractDetailCode" style="color:#233241;font-weight:100;">{{contractDetail.transFlow?contractDetail.transFlow:'-'}}</div>
+                    </el-tooltip>
                   </p>
                   <p>
                     <span class="tag">权证费用：</span>
