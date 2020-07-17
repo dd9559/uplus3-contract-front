@@ -120,10 +120,6 @@
                     <span class="form-label">法人身份证号：</span>
                     <input type="text" class="inputStyle" placeholder="法人身份证号" maxlength="18" v-model="item.lepIdentity">
                   </li>
-                  <li>
-                    <span class="form-label">邮箱：</span>
-                    <input v-model="item.email" type="text" class="inputStyle" placeholder="邮箱">
-                  </li>
                 </ul>
                 <span class="delBtn" @click="del(index,item.id)">删除</span>
               </div>
@@ -468,7 +464,7 @@ export default{
           roleName:"",
           cardType:"",
           encryptionCode:"",
-          email: "",
+          email: "-",
           companyName:"",
           lepName:"",
           lepIdentity:"",
