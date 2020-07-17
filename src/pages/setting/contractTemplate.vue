@@ -459,7 +459,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    this.$message({message:error})
                 });
         },
         rowOperation: function(row, type, showType) {
