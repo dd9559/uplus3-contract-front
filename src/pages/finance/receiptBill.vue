@@ -795,7 +795,7 @@ export default {
       this.form.inObj = user.name;
       this.getDetails({ type: 1, payId: urlParam.id });
     } else {
-      this.addInit(urlParam.contId);
+      // this.addInit(urlParam.contId); //20200717zs注释
       // this.getPayAccount(urlParam.id);
       this.dep.id = user.depId;
       this.dep.name = user.depName;

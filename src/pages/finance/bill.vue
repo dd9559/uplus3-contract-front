@@ -456,7 +456,7 @@
               v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3"
             >转款</el-button>
             <template
-              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDeal===1"
+              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
             >
               <!-- <el-button type="text"
                                 @click="btnOpera(scope.row,2)"
@@ -464,7 +464,7 @@
               </el-button>-->
             </template>
             <div
-              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2"
+              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal!=3"
             >
               <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
             </div>
@@ -1432,7 +1432,7 @@ export default {
       this.$set(
         this.transterInfoPerson,
         "inId",
-        this.selectCodeAll.propertyAddr
+        this.selectCodeAll.id
       );
       this.chooseContShow = false;
       console.log(this.selectCodeAll);
