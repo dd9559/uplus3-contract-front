@@ -63,7 +63,7 @@
                     <input type="text" class="inputStyle" placeholder="姓名" v-model="item.name" maxlength="10" @input="inputOnly(index,'name')">
                     <i :class="item.showSelectName?'el-icon-arrow-up':'el-icon-arrow-down'" @click="showSelect(item,index)"></i>
                     <ul class="selectList" v-if="item.showSelectName && selectNameList && selectNameList.length > 0">
-                        <li v-for="(item,childIndex) in selectNameList" :class="item.name===item?'selected':''" @click="selectName(item,index)" :key="childIndex">{{item.name}}</li>
+                        <li v-for="(childItem,childIndex) in selectNameList" :class="item.name===childItem.name?'selected':''" @click="selectName(childItem,index)" :key="childIndex">{{childItem.name}}</li>
                     </ul>
                   </li>
                   <li>
@@ -214,11 +214,11 @@ export default{
         this.brokerList[index].roleName = ''
         let param = {
             contCode: this.contCode,
-            signerType: Number(val.roleName),
+            signerType: Number(val.key),
         }
         this.$ajax.get("/api/app/contract/checkSignPosition", param).then(res => {
             res = res.data;
-            if (res) {
+            if (res.data) {
                 this.brokerList[index].roleName = val.key
             } else {
                 this.$message('本合同不支持该角色签署')
@@ -517,7 +517,7 @@ export default{
       let localBrokerList = this.brokerList.filter(item => {
           return this.choseBrokerId.includes(item.id)
       })
-      localBrokerList = localBrokerList.concat(JSON.parse(localStorage.getItem("brokerList")))
+      localBrokerList = localBrokerList.concat(JSON.parse(localStorage.getItem("brokerList")) || [])
       if (localBrokerList.length > 5) {
           localBrokerList.splice(5,localBrokerList.length-1)
       }
