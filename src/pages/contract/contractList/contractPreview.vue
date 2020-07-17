@@ -928,7 +928,7 @@ export default {
           if(res.data.isRisk){
             this.textarea=res.data.remarksExamine;
           }
-            //1 武汉  2 合肥  11 襄阳
+            //isWuHanMM 1（买卖居间）表示双份合同  0 表示单份合同
           if(res.data.isWuHanMM===1&&(res.data.contType.value===2)){
             this.isShowType=true;
             //买卖
