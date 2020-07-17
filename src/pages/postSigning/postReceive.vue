@@ -64,12 +64,12 @@
                 <el-form-item
                     label="产权地址区域"
                     prop="areaName">
-                        <el-select v-model="propForm.areaName" class="w134" :clearable="true">
-                        <el-option v-for="(item,i) in rules.areaName"
+                        <el-input v-model="propForm.areaName" class="w134" :clearable="true">
+                        <!-- <el-option v-for="(item,i) in rules.areaName"
                         :key="'areaName'+i"
                         :label="item"
-                        :value="item"></el-option>
-                    </el-select>
+                        :value="item"></el-option> -->
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="签约方式">
                     <el-select v-model="propForm.recordType" class="w120" :clearable="true">
