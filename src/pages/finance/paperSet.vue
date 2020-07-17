@@ -197,10 +197,10 @@
         </el-table-column>
         <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
-            <span v-if="scope.row.address.length===0">--</span>
+            <span v-if="scope.row.address&&scope.row.address.length===0">--</span>
             <template v-else>
-              <p>{{scope.row.address.split(' ')[0]}}</p>
-              <p>{{scope.row.address.split(' ')[1]}}</p>
+              <p>{{scope.row.address&&scope.row.address.split(' ')[0]}}</p>
+              <p>{{scope.row.address&&scope.row.address.split(' ')[1]}}</p>
             </template>
           </template>
         </el-table-column>
