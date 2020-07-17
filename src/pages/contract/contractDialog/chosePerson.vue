@@ -71,14 +71,14 @@
                     <el-select 
                       size="small"
                       v-model="item.roleName"
-                      placeholder="角色"
-                      @change="selectRole(item,index)">
+                      placeholder="角色">
                       <template v-for="item in dictionary['781']">
                         <el-option
                             v-if="item.key>2"
                             :key="item.key"
                             :label="item.value"
-                            :value="item.key">
+                            :value="item.key"
+                            @click.native="selectRole(item,index)">
                         </el-option>
                       </template>
                     </el-select>
@@ -215,15 +215,16 @@ export default{
   },
   methods:{
     selectRole(val,index) {
-        let that = this
+        this.brokerList[index].roleName = ''
         let param = {
             contCode: this.contCode,
             signerType: Number(val.roleName),
         }
         this.$ajax.get("/api/app/contract/checkSignPosition", param).then(res => {
             res = res.data;
-            if (!res) {
-                that.brokerList[index].roleName = ''
+            if (res) {
+                this.brokerList[index].roleName = val.key
+            } else {
                 this.$message('本合同不支持该角色签署')
             }
         }).catch(error => {
@@ -408,7 +409,7 @@ export default{
     chose(type,val){
       if(type==="owner"){
         let index = this.choseOwnerM.indexOf(val.mobile)
-        if(index>-1){
+        if(index>-1 && this.ownerList.length !== 1){
           this.choseOwnerM.splice(index,1)
           this.choseOwner.splice(index,1)
         }else{
@@ -417,7 +418,7 @@ export default{
         }
       }else if(type==="guest"){
         let index = this.choseGuest.indexOf(val.mobile)
-        if(index>-1){
+        if(index>-1 && this.guestList.length !== 1){
           this.choseGuestM.splice(index,1)
           this.choseGuest.splice(index,1)
         }else{
