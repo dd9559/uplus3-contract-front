@@ -85,7 +85,7 @@
                   </li>
                   <li>
                     <span class="form-label">电话：</span>
-                    <input type="text" maxlength="11" placeholder="电话" class="inputStyle" @input="verifyMobile_(item.mobile)" v-model="item.mobile">
+                    <input type="number" maxlength="11" placeholder="电话" class="inputStyle" @input="verifyMobile_(item.mobile)" v-model="item.mobile">
                   </li>
                   <li>
                     <span class="form-label">证件类型：</span>
@@ -106,19 +106,19 @@
                   </li>
                   <li>
                     <span class="form-label">证件号：</span>
-                    <input type="text" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" class="inputStyle" @input="verifyIdcard(item)" placeholder="证件号" v-model="item.encryptionCode">
+                    <input :type="number" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" class="inputStyle" @input="verifyIdcard(item)" placeholder="证件号" v-model="item.encryptionCode">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">企业名称：</span>
-                    <input type="text" class="inputStyle" placeholder="企业名称" maxlength="100" v-model="item.companyName">
+                    <input type="text" class="inputStyle" placeholder="企业名称（选填）" maxlength="100" @input="inputOnly(index,'companyName')" v-model="item.companyName">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">法人名称：</span>
-                    <input type="text" class="inputStyle" placeholder="法人名称" maxlength="10" v-model="item.lepName">
+                    <input type="text" class="inputStyle" placeholder="法人名称（选填）" maxlength="10" @input="inputOnly(index,'lepName')" v-model="item.lepName">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">法人身份证号：</span>
-                    <input type="text" class="inputStyle" placeholder="法人身份证号" maxlength="18" v-model="item.lepIdentity">
+                    <input type="number" class="inputStyle" placeholder="法人身份证号（选填）" maxlength="18" v-model="item.lepIdentity">
                   </li>
                 </ul>
                 <span class="delBtn" @click="del(index,item.id)">删除</span>
@@ -387,10 +387,8 @@ export default{
         this.brokerList[index].showSelectName = false
     },
     inputOnly(index, type) {
-        if (type === "name") {
-            this.brokerList[index].name = this.$tool.textInput(
-            this.brokerList[index].name
-            );
+        if (type === "name"||type === "companyName"||type === "lepName") {
+            this.brokerList[index][type] = this.$tool.textInput(this.brokerList[index][type],3);
         } else if (type === "guest") {
             this.guestList[index].name = this.$tool.textInput(
                 this.guestList[index].name
@@ -506,7 +504,6 @@ export default{
         const element = this.choseBroker[i];
         console.log(this.choseBroker,6768687);
         for(let prop in element){
-            
           if(!element[prop]){
             state=true
             this.$message('居间签署人信息未填写完整')

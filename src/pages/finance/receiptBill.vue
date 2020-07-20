@@ -769,7 +769,7 @@ export default {
         this.getCompanyBanks(this.dep.id);
       }
       this.form.inObj = user.name;
-    } else if (user.depId && urlParam.collect && urlParam.contId == 0) {
+    } else if (user.depId && urlParam.collect && !(urlParam.contId != 0)) {
       arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/bill");
       if (urlParam.deAudit) {
         arr.push({ name: "反审核", path: this.$route.fullPath });
@@ -787,15 +787,17 @@ export default {
       this.dep.id = user.depId;
       this.dep.name = user.depName;
       //设置收款账户
-      if (this.$route.query.contId != "0") {
-        this.getAcount(this.getUser && this.getUser.user.empId);
-      } else {
-        this.getCompanyBanks(this.dep.id);
-      }
+      // if (this.$route.query.contId != "0") {
+      this.getAcount(this.getUser && this.getUser.user.empId);
+      // } else {
+      //   this.getCompanyBanks(this.dep.id);
+      // }
       this.form.inObj = user.name;
-      this.getDetails({ type: 1, payId: urlParam.id });
+      setTimeout(() => {
+        this.getDetails({ type: 1, payId: urlParam.id });
+      }, 10);
     } else {
-      this.addInit(urlParam.contId);
+      // this.addInit(urlParam.contId); //20200717zs注释
       // this.getPayAccount(urlParam.id);
       this.dep.id = user.depId;
       this.dep.name = user.depName;
@@ -1679,8 +1681,14 @@ export default {
             obj.outObjId = tip.custId;
             obj.outObj = tip.custName;
             if (
-              ((item == 1 && this.$route.query.collect != 1)&&(item == 1 && this.$route.query.collect != 5)) ||
-              ((item == 2 && this.$route.query.collect != 1)&&(item == 2 && this.$route.query.collect != 5))
+              (item == 1 &&
+                this.$route.query.collect != 1 &&
+                item == 1 &&
+                this.$route.query.collect != 5) ||
+              (item == 2 &&
+                this.$route.query.collect != 1 &&
+                item == 2 &&
+                this.$route.query.collect != 5)
             ) {
               this.inputPerson = false;
             } else {
