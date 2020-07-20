@@ -409,7 +409,7 @@
             <el-button
               type="text"
               @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
             >反审核</el-button>
             <!-- <el-button
               type="text"
@@ -645,6 +645,10 @@ export default {
         "sign-cw-rev-update": {
           state: false,
           name: "编辑"
+        },
+        "sign-cw-rev-fsh": {
+          state: false,
+          name: "反审核"
         }
       }
     };

@@ -21,7 +21,7 @@ module.exports = {
         // target: 'http://192.168.16.107:28081', //需要代理的地址
         // target: 'http://192.168.16.26:28081', //需要代理的地址 刘梦冰
         // target: 'http://192.168.16.247:28081', //需要代理的地址
-        target: 'http://120.76.202.91:28085', //需要代理的地址
+        target: 'http://120.76.202.91:28085', //需要代理的地址s
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {
