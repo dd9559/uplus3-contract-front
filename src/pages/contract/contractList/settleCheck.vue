@@ -858,7 +858,7 @@
     }
   };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 @import "~@/assets/common.less";
 .width300{
   width: 325px !important;

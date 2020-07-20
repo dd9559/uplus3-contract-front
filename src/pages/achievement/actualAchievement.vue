@@ -1522,7 +1522,7 @@ export default {
     skipContDel(value) {
       //进入合同详情
       this.$ajax
-        .get("/api/contract/isDetailAuth", { contId: value.contId })
+        .get("/api/contract/isDetailAuth", { contId: value.id })
         .then(res => {
           res = res.data;
           if (res.status === 200) {

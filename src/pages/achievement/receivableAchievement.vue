@@ -504,7 +504,7 @@
             },
             // 跳转合同详情
             skipContDel(value) {
-              this.$ajax.get("/api/contract/isDetailAuth",{contId:value.contId}).then(res=>{
+              this.$ajax.get("/api/contract/isDetailAuth",{contId:value.id}).then(res=>{
                 res=res.data
                 if(res.status===200){
                   if(res.data){
