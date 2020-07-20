@@ -20,7 +20,7 @@
               <div>
                 <span class="name" :title="item.name.length>5?item.name:''">姓名：{{item.name}}</span>
                 <span class="mobile">电话：{{item.mobile}}</span>
-                <span class="relation">关系：{{item.relation}}</span>
+                <span class="relation">关系：{{item.relation == ''? '-':item.relation}}</span>
                 <span class="cardType">证件类型：{{item.cardType===1?'身份证号':item.cardType===2?'护照':item.cardType===3?'营业执照':'军官证'}}</span>
                 <span class="cardId">证件号码：{{item.encryptionCode}}</span>
               </div>
@@ -38,7 +38,7 @@
               <div>
                 <span class="name" :title="item.name.length>5?item.name:''">姓名：{{item.name}}</span>
                 <span class="mobile">电话：{{item.mobile}}</span>
-                <span class="relation">关系：{{item.relation}}</span>
+                <span class="relation">关系：{{item.relation == ''? '-':item.relation}}</span>
                 <span class="cardType">证件类型：{{item.cardType===1?'身份证号':item.cardType===2?'护照':item.cardType===3?'营业执照':'军官证'}}</span>
                 <span class="cardId">证件号码：{{item.encryptionCode}}</span>
               </div>
@@ -60,7 +60,7 @@
                 <ul>
                   <li class="nameStyle">
                     <span class="form-label">姓名：</span>
-                    <input type="text" class="inputStyle" placeholder="姓名" v-model="item.name" maxlength="10" @input="inputOnly(index,'name')">
+                    <input type="text" class="inputStyle" placeholder="请输入" v-model="item.name" maxlength="10" @input="inputOnly(index,'name')">
                     <i :class="item.showSelectName?'el-icon-arrow-up':'el-icon-arrow-down'" @click="showSelect(item,index)"></i>
                     <ul class="selectList" v-if="item.showSelectName && selectNameList && selectNameList.length > 0">
                         <li v-for="(childItem,childIndex) in selectNameList" :class="item.name===childItem.name?'selected':''" @click="selectName(childItem,index)" :key="childIndex">{{childItem.name}}</li>
@@ -71,7 +71,7 @@
                     <el-select 
                       size="small"
                       v-model="item.roleName"
-                      placeholder="角色">
+                      placeholder="请选择">
                       <template v-for="item in dictionary['781']">
                         <el-option
                             v-if="item.key>2"
@@ -85,14 +85,14 @@
                   </li>
                   <li>
                     <span class="form-label">电话：</span>
-                    <input type="number" maxlength="11" placeholder="电话" class="inputStyle" @input="verifyMobile_(item.mobile)" v-model="item.mobile">
+                    <input type="text" maxlength="11" placeholder="请输入" class="inputStyle" @input="verifyMobile_(item.mobile)" v-model="item.mobile">
                   </li>
                   <li>
                     <span class="form-label">证件类型：</span>
                     <el-select 
                       size="small"
                       v-model="item.cardType"
-                      placeholder="证件类型"
+                      placeholder="请选择"
                       @change="changeCadrType($event,index)">
                       <template v-for="item in dictionary['633']">
                         <el-option
@@ -106,19 +106,19 @@
                   </li>
                   <li>
                     <span class="form-label">证件号：</span>
-                    <input :type="number" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" class="inputStyle" @input="verifyIdcard(item)" placeholder="证件号" v-model="item.encryptionCode">
+                    <input type="text" :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10" class="inputStyle" @input="verifyIdcard(item,2)" placeholder="请输入" v-model="item.encryptionCode">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">企业名称：</span>
-                    <input type="text" class="inputStyle" placeholder="企业名称（选填）" maxlength="100" @input="inputOnly(index,'companyName')" v-model="item.companyName">
+                    <input type="text" class="inputStyle" placeholder="请输入" maxlength="100" v-model="item.companyName">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">法人名称：</span>
-                    <input type="text" class="inputStyle" placeholder="法人名称（选填）" maxlength="10" @input="inputOnly(index,'lepName')" v-model="item.lepName">
+                    <input type="text" class="inputStyle" placeholder="请输入" maxlength="10" @input="inputOnly(index,'lepName')" v-model="item.lepName">
                   </li>
                   <li v-if="item.cardType===3">
                     <span class="form-label">法人身份证号：</span>
-                    <input type="number" class="inputStyle" placeholder="法人身份证号（选填）" maxlength="18" v-model="item.lepIdentity">
+                    <input type="text" class="inputStyle" placeholder="请输入" @input="verifyIdcard(item)" maxlength="18" v-model="item.lepIdentity">
                   </li>
                 </ul>
                 <span class="delBtn" @click="del(index,item.id)">删除</span>
@@ -203,7 +203,7 @@ export default{
         //数据字典
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
-      },
+      }
     }
   },
   created(){
@@ -211,7 +211,7 @@ export default{
   },
   methods:{
     selectRole(val,index) {
-        this.brokerList[index].roleName = ''
+        this.brokerList[index].roleName = val.key
         let param = {
             contCode: this.contCode,
             signerType: Number(val.key),
@@ -219,7 +219,22 @@ export default{
         this.$ajax.get("/api/app/contract/checkSignPosition", param).then(res => {
             res = res.data;
             if (res.data) {
-                this.brokerList[index].roleName = val.key
+                let isSelectFlag = false
+                isSelectFlag = this.brokerList.some(signItem => {
+                  return signItem.role === val.key
+                })
+                if (!isSelectFlag) {
+                  isSelectFlag = JSON.parse(localStorage.getItem("brokerList")).some(signItem => {
+                    return signItem.role === val.key && signItem.time === val.time
+                  })
+                }
+                if (isSelectFlag) {
+                    that.brokerList[index].roleName = '';
+                    this.$toast('已选择过该角色，请重新选择');
+                } else {
+                  brokerList[index].roleName= val.key;
+                }
+                // this.brokerList[index].roleName = val.key
             } else {
                 this.$message('本合同不支持该角色签署')
             }
@@ -343,26 +358,27 @@ export default{
     verifyIdcard(value, type = 1) {
         // let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
         // let reg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/
-        if (type === 2) {
-            if (value.length === 18) {
-                if (!this.isIdCardNo(value)) {
-                    this.$message({
-                        message: "身份证格式不正确",
-                        type: "warning"
-                    });
-                }
-            }
-        } else {
-            if (value.encryptionCode.length === 18) {
-                if (
-                    !this.isIdCardNo(value.encryptionCode) &&
-                    value.cardType === 1
-                ) {
-                    this.$message({
-                        message: "身份证格式不正确",
-                        type: "warning"
-                    });
-                }
+        if (type == 2) {
+              if (value.encryptionCode.length === 18) {
+                  if (
+                      !this.isIdCardNo(value.encryptionCode) &&
+                      value.cardType === 1
+                  ) {
+                      this.$message({
+                          message: "身份证格式不正确",
+                          type: "warning"
+                      });
+                  }
+              }
+        } else if (value.lepIdentity.length === 18) {
+            if (
+                !this.isIdCardNo(value.lepIdentity) &&
+                value.cardType === 3
+            ) {
+                this.$message({
+                    message: "法人身份证格式不正确",
+                    type: "warning"
+                });
             }
         }
     },
@@ -411,7 +427,7 @@ export default{
           this.choseOwner.push(val)
         }
       }else if(type==="guest"){
-        let index = this.choseGuest.indexOf(val.mobile)
+        let index = this.choseGuestM.indexOf(val.mobile)
         if(index>-1 && this.guestList.length !== 1){
           this.choseGuestM.splice(index,1)
           this.choseGuest.splice(index,1)
@@ -423,15 +439,23 @@ export default{
         let index = this.choseBrokerId.indexOf(val.id)
         if(index>-1){
           this.choseBrokerId.splice(index,1)
-          // this.choseBroker.splice(index,1)
+          this.choseBroker.splice(index,1)
         }else{
-          for(let prop in val){
-            if((prop !== 'companyName' && prop !== 'lepName' && prop !== 'lepIdentity' && prop !== 'showSelectName') && !val[prop]){
-              return this.$message('居间签署人信息未填写完整')
+          if (val.cardType === 3) {
+            for(let prop in val){
+              if(prop !== 'showSelectName' && !val[prop]){
+                return this.$message('居间签署人信息未填写完整')
+              }
+            }
+          } else {
+            for(let prop in val){
+              if((prop !== 'companyName' && prop !== 'lepName' && prop !== 'lepIdentity' && prop !== 'showSelectName') && !val[prop]){
+                return this.$message('居间签署人信息未填写完整')
+              }
             }
           }
           this.choseBrokerId.push(val.id)
-          // this.choseBroker.push(val)
+          this.choseBroker.push(val)
         }
         // let index = this.choseBroker.indexOf(val.mobile)
         // if(index>-1){
@@ -498,18 +522,29 @@ export default{
     //验证居间签署人信息是否填写完整
     verify(){
       let state = false
-      console.log(this.choseBroker,6768687);
       circulation:
       for (let i = 0; i < this.choseBroker.length; i++) {
         const element = this.choseBroker[i];
-        console.log(this.choseBroker,6768687);
-        for(let prop in element){
-          if(!element[prop]){
-            state=true
-            this.$message('居间签署人信息未填写完整')
-            break circulation
+        if (element.cardType === 3) {
+          for(let prop in element){
+            if(prop !== 'showSelectName' && !element[prop]){
+              return this.$message('居间签署人信息未填写完整')
+            }
+          }
+        } else {
+          for(let prop in element){
+            if((prop !== 'companyName' && prop !== 'lepName' && prop !== 'lepIdentity' && prop !== 'showSelectName') && !element[prop]){
+              return this.$message('居间签署人信息未填写完整')
+            }
           }
         }
+        // for(let prop in element){
+        //   if((prop !== 'companyName' && prop !== 'lepName' && prop !== 'lepIdentity' && prop !== 'showSelectName')&&!element[prop]){
+        //     state=true
+        //     this.$message('居间签署人信息未填写完整')
+        //     break circulation
+        //   }
+        // }
       }
       let localBrokerList = this.brokerList.filter(item => {
           return this.choseBrokerId.includes(item.id)
