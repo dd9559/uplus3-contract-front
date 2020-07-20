@@ -943,11 +943,11 @@ export default {
         padding: 0;
         background-color: #eef2fb;
 
-        .cell {
+        // .cell {
           // background-color: pink;
           // height: 55px;
           // line-height: 55px;
-        }
+        // }
       }
     }
 

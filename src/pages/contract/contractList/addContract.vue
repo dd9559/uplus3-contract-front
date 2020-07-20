@@ -2922,6 +2922,8 @@ export default {
                     this.$set(this.contractForm,'commissionPayment',this.contractForm.commissionPayment?this.contractForm.commissionPayment:0)
                     this.$set(this.contractForm,'transFlowCode',this.contractForm.transFlowCode?this.contractForm.transFlowCode:'')
                     // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
+                    // 交易流程处理
+                    if(!this.contractForm.transFlow) this.contractForm.transFlowCode=''
                     if(this.contractForm.estTransferTime){
                         this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
                     }else{
