@@ -211,34 +211,36 @@ export default{
   },
   methods:{
     selectRole(val,index) {
-        this.brokerList[index].roleName = val.key
+        this.brokerList[index].roleName = ''
         let param = {
             contCode: this.contCode,
             signerType: Number(val.key),
         }
+        // debugger
         this.$ajax.get("/api/app/contract/checkSignPosition", param).then(res => {
             res = res.data;
             if (res.data) {
                 let isSelectFlag = false
                 isSelectFlag = this.brokerList.some(signItem => {
-                  return signItem.role === val.key
+                  return signItem.roleName === val.key
                 })
                 if (!isSelectFlag) {
                   isSelectFlag = JSON.parse(localStorage.getItem("brokerList")).some(signItem => {
-                    return signItem.role === val.key && signItem.time === val.time
+                    return signItem.roleName === val.key && signItem.contCode === this.contCode
                   })
                 }
                 if (isSelectFlag) {
-                    that.brokerList[index].roleName = '';
-                    this.$toast('已选择过该角色，请重新选择');
+                    this.brokerList[index].roleName = '';
+                    this.$message('已选择过该角色，请重新选择');
                 } else {
-                  brokerList[index].roleName= val.key;
+                  this.brokerList[index].roleName= val.key;
                 }
                 // this.brokerList[index].roleName = val.key
             } else {
                 this.$message('本合同不支持该角色签署')
             }
         }).catch(error => {
+            // console.log(error,898989);
             this.$message(error)
         });
     },
@@ -399,7 +401,8 @@ export default{
         this.selectNameList = localStorage.getItem("brokerList") && JSON.parse(localStorage.getItem("brokerList"));
     },
     selectName(item,index) {
-        this.$set(this.brokerList,index,JSON.parse(JSON.stringify(Object.assign({},item,{id:Date.parse(new Date())}))))
+        this.$set(this.brokerList,index,JSON.parse(JSON.stringify(Object.assign({},item,{id:Date.parse(new Date()),contCode: this.contCode,}))))
+        this.brokerList[index].roleName = ''
         this.brokerList[index].showSelectName = false
     },
     inputOnly(index, type) {
@@ -481,6 +484,7 @@ export default{
       if(this.brokerList.length<5){
         let item = {
           id:Date.parse(new Date()),
+          contCode: this.contCode,
           name:"",
           mobile:"",
           roleName:"",
@@ -604,15 +608,17 @@ export default{
               customer.push(item)
           });
           if(this.verify()) return
+          this.$emit("closeChose",{type: 'choseLoading'})
           param.owner=owner
           param.customer=customer
           param.sign = sign;
           this.$ajax.postJSON('/api/app/contract/sendCont',param).then(res=>{
               res=res.data
               if(res.status===200){
-                  this.$emit("closeChose",true)
+                  this.$emit("closeChose",{type: 'closeChose'})
               }
           }).catch(error=>{
+              this.$emit("closeChose",{type: 'closeChose'})
               this.$message({
                 message:error,
                 type:"error"
