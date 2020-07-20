@@ -5,7 +5,7 @@
         <div class="content">
           <el-form-item label="关键字">
             <el-tooltip class="item" effect="dark" content="合同编号/纸质合同编号/物业地址" placement="top">
-              <el-input v-model="keyword" size="small" placeholder="请输入"></el-input>
+              <el-input v-model="keyword" size="small"  clearable placeholder="请输入"></el-input>
             </el-tooltip>
           </el-form-item>
           <el-form-item label="签约日期">
@@ -52,7 +52,7 @@
             <el-select v-model="contType" multiple clearable placeholder="请选择">
               <el-option
                 v-for="item in dictionary['10']"
-                v-if="[1,2,3,6].includes(item.key)"
+                v-if="[1,2,3].includes(item.key)"
                 :key="item.value"
                 :label="item.value"
                 :value="item.key"
