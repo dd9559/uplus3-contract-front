@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container" ref="tableComView">
+  <div class="view-container" ref="tableComView" v-loading="choseLoading">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" v-if="dictionary['9']">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
@@ -1203,7 +1203,8 @@ export default {
       signOwnerList: [],
       signGuestList: [],
       choseQuery: {},
-      dataBaseDialog: false
+      dataBaseDialog: false,
+      choseLoading: false
     };
   },
   created() {
@@ -2202,9 +2203,15 @@ export default {
         this.chosePersonDialog=true
     },
     closeChose(val) {
-      this.chosePersonDialog = false;
-      if (val && this.choseQuery.isHaveData) {
-        this.dataBaseDialog = true;
+      if (val.type == 'choseLoading') {
+        this.choseLoading = true
+      } else {
+        this.chosePersonDialog = false;
+        // this.dataBaseDialog = true;
+        this.choseLoading = false
+        if (val && this.choseQuery.isHaveData) {
+          this.dataBaseDialog = true;
+        }
       }
     },
     toDataBase() {
@@ -2387,6 +2394,10 @@ export default {
 // /deep/.el-table tbody tr:hover>td {
 //     background-color:#ffffff!important
 // }
+/deep/.el-loading-mask {
+  z-index: 9999999;
+  background-color: rgb(128, 128, 128);
+}
 /deep/.el-table__body {
   .el-table__row {
     &.hover-row {

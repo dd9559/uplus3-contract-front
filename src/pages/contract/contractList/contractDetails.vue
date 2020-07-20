@@ -404,7 +404,7 @@
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
                       <template slot-scope="scope">
-                        {{(employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }}
+                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
                         <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                       </template>
                     </el-table-column>
@@ -484,7 +484,7 @@
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
                       <template slot-scope="scope">
-                        {{(employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }}
+                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
                         <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                       </template>
                     </el-table-column>
@@ -3729,6 +3729,17 @@ export default {
     //委托合同签后审核
     getWTsignedMsg() {
       this.getAuditList("WT12");
+    },
+    //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
+    fomatFloat: function(num, decimal) {
+      num = num.toString();
+      var index = num.indexOf(".");
+      if (index !== -1) {
+        num = num.substring(0, decimal + index + 1);
+      } else {
+        num = num.substring(0);
+      }
+      return parseFloat(num).toFixed(decimal);
     }
   },
   mounted() {
