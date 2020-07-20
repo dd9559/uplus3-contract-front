@@ -2198,6 +2198,7 @@ export default {
         });
         this.signOwnerList=[].concat(owner)
         this.signGuestList=[].concat(guest)
+        this.contCode = val.code;
         this.chosePersonDialog=true
     },
     closeChose(val) {

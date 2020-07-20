@@ -394,22 +394,22 @@
             <el-button
               type="text"
               @click="cellOpera(scope.row,'edit')"
-              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state"
+              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
             >编辑</el-button>
             <div
               style="color:red"
-              v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId"
+              v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId&&scope.row.isDeal!=3"
             >{{scope.row.auditByName}}正在审核</div>
             <el-button
               type="text"
               @click="cellOpera(scope.row)"
-              v-if="scope.row.auditButton||scope.row.grabDept"
+              v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3"
             >审核</el-button>
             <!-- 20200630新加反审核按钮 -->
             <el-button
               type="text"
               @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
+              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
             >反审核</el-button>
             <!-- <el-button
               type="text"
@@ -645,6 +645,10 @@ export default {
         "sign-cw-rev-update": {
           state: false,
           name: "编辑"
+        },
+        "sign-cw-rev-fsh": {
+          state: false,
+          name: "反审核"
         }
       }
     };
