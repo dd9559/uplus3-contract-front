@@ -432,8 +432,12 @@
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
-            getDep(){
-                this.$ajax.get('/api/access/deps').then(res=>{
+            getDep(txID){
+                let param={
+                    systemTag:txID
+                }
+                // this.$ajax.get('/api/access/deps').then(res=>{
+                this.$ajax.get('/api/access/systemtag/deps',param).then(res=>{
                     res=res.data
                     if(res.status==200){
                         this.depList=res.data.filter(v=>v.level==1)
@@ -501,8 +505,10 @@
                 }
             },
             // 改变体系初始化节点数据
-            changeSystemFn() {
+            changeSystemFn(val) {
+                this.getDep(val);
                 this.nodeList = JSON.parse(JSON.stringify(arr))
+                console.log(val);
                 console.log(222222);
             },
             getData(type="init") {
