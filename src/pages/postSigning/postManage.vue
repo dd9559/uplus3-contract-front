@@ -185,14 +185,14 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="产权地址区域" prop="areaName">
+        <el-form-item label="产权地址名称" prop="areaName">
           <el-input v-model="propForm.areaName" class="w134" :clearable="true" placeholder="请输入">
             <!-- <el-option
               v-for="(item,i) in rules.areaName"
               :key="'areaName'+i"
               :label="item"
               :value="item"
-            ></el-option> -->
+            ></el-option>-->
           </el-input>
         </el-form-item>
         <el-form-item label="签约方式">
@@ -207,7 +207,7 @@
         </el-form-item>
         <div class="in-block" v-if="showTransferTime">
           <el-form-item prop="regionTime" class="mr">
-            <el-select v-model="propForm.regionTime" @change="regionTimeChangeFn" class="w110" >
+            <el-select v-model="propForm.regionTime" @change="regionTimeChangeFn" class="w110">
               <el-option
                 v-for="item in rules.regionTime"
                 :key="item.value"
@@ -315,12 +315,12 @@
           label="产权地址"
           min-width="120"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           :formatter="nullFormatterData"
           prop="propertyRightRegion"
           label="产权地址区域"
           min-width="120"
-        ></el-table-column>
+        ></el-table-column>-->
         <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="60"></el-table-column>
         <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="60"></el-table-column>
         <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="120">
@@ -331,7 +331,12 @@
         <el-table-column :formatter="nullFormatterData" label="接收日期" min-width="90">
           <template slot-scope="scope">{{dateFormat(scope.row.receiveTime)}}</template>
         </el-table-column>
-        <el-table-column :formatter="nullFormatterData" label="预计过户时间" min-width="100"  v-if="showTransferTime">
+        <el-table-column
+          :formatter="nullFormatterData"
+          label="预计过户时间"
+          min-width="100"
+          v-if="showTransferTime"
+        >
           <template slot-scope="scope">{{dateFormat(scope.row.estTransferTime)}}</template>
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" label="实际过户时间" min-width="100">
@@ -1397,19 +1402,27 @@ export default {
     // 合同编号
     contractFn(value) {
       // debugger
-      if (!this.power["sign-com-htdetail"].state) {
-        this.noPower(this.power["sign-com-htdetail"].name);
-        return false;
-      }
-      this.setPath(this.getPath.concat({ name: "合同详情" }));
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          id: value.id, //合同id
-          code: value.code, //合同编号
-          contType: value.tradeType.value //合同类型
-        }
-      });
+      // if (!this.power["sign-com-htdetail"].state) {
+      //   this.noPower(this.power["sign-com-htdetail"].name);
+      //   return false;
+      // }
+      // this.setPath(this.getPath.concat({ name: "合同详情" }));
+      // this.$router.push({
+      //   path: "/contractDetails",
+      //   query: {
+      //     id: value.id, //合同id
+      //     code: value.code, //合同编号
+      //     contType: value.tradeType.value //合同类型
+      //   }
+      // });
+      let param = {
+        contType: value.tradeType.value,
+        contId: value.id,
+        contCode: value.code,
+        operaType: "cont",
+        power: this.power["sign-com-htdetail"]
+      };
+      this.msgOpera(param);
     },
     // 办理
     transactionFn(data, bool = 0) {
@@ -2502,7 +2515,7 @@ export default {
       this.getTradingSteps();
       // 枚举数据查询
       this.getDictionary();
-      // 产权地址区域
+      // 产权地址名称
       this.getAreaList();
       let res = this.getDataList;
       if (res && res.route === this.$route.path) {
