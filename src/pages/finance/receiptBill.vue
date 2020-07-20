@@ -797,7 +797,7 @@ export default {
         this.getDetails({ type: 1, payId: urlParam.id });
       }, 10);
     } else {
-      // this.addInit(urlParam.contId); //20200717zs注释
+      this.addInit(urlParam.contId); //20200717zs注释
       // this.getPayAccount(urlParam.id);
       this.dep.id = user.depId;
       this.dep.name = user.depName;
@@ -851,26 +851,24 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.firstCreate.content = Object.assign({}, res.data);
-            if (!res.data.showAccount) {
-              this.firstCreate.state = false;
+            // if (!res.data.showAccount) {
+            //   this.firstCreate.state = false;
 
-              if (
-                !this.firstCreate.content.showAccount &&
-                !this.firstCreate.content.changeAccount
-              ) {
-                // this.activeAdmin = res.data.account[0].accountId;
-              }
-              this.getEmploye(res.data.storeId);
-            } else {
-              // console.log(this.getUser)
-              this.firstCreate.state = true;
-
-              this.dep.id = this.getUser.user.depId;
-              this.dep.name = this.getUser.user.depName;
-              this.getEmploye(this.getUser.user.depId);
-              this.form.inObjId = this.getUser.user.empId;
-              this.form.inObj = this.getUser.user.name;
-            }
+            //   if (
+            //     !this.firstCreate.content.showAccount &&
+            //     !this.firstCreate.content.changeAccount
+            //   ) {
+            //     // this.activeAdmin = res.data.account[0].accountId;
+            //   }
+            //   this.getEmploye(res.data.storeId);
+            // } else {
+              // this.firstCreate.state = true;
+              // this.dep.id = this.getUser.user.depId;
+              // this.dep.name = this.getUser.user.depName;
+              // this.getEmploye(this.getUser.user.depId);
+              // this.form.inObjId = this.getUser.user.empId;
+              // this.form.inObj = this.getUser.user.name;
+            // }
           }
         });
     },

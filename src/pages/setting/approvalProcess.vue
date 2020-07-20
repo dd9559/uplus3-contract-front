@@ -156,7 +156,7 @@
                                 placeholder="请选择"
                                 >
                                     <el-option
-                                    v-for="item in depList"
+                                    v-for="item in depList2"
                                     :key="item.id"
                                     :label="item.name"
                                     :value="item.id"
@@ -375,6 +375,7 @@
                 nodeList: [],
                 depList:[],
                 depList2:[],
+                // depList2:[],
                 dictionary: {
                     '73':'', //合作方式
                     '573':'', //流程类型
@@ -432,16 +433,12 @@
             if(this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
         },
         methods: {
-            getDep(txID){
-                let param={
-                    systemTag:txID
-                }
-                // this.$ajax.get('/api/access/deps').then(res=>{
-                this.$ajax.get('/api/access/systemtag/deps',param).then(res=>{
+            getDep(){
+                this.$ajax.get('/api/access/deps').then(res=>{
                     res=res.data
                     if(res.status==200){
                         this.depList=res.data.filter(v=>v.level==1)
-                        this.depList2=JSON.parse(JSON.stringify(this.depList))
+                        // this.depList2=JSON.parse(JSON.stringify(this.depList))
                         console.log(this.depList);
                     }
                 })
@@ -506,9 +503,14 @@
             },
             // 改变体系初始化节点数据
             changeSystemFn(val) {
-                this.getDep(val);
                 this.nodeList = JSON.parse(JSON.stringify(arr))
-                console.log(val);
+                this.aduitForm.dep=[]
+                this.$ajax.get('/api/organize/systemtag/deps', {systemTag:val}).then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.depList2 = res.data
+                    }
+                })
                 console.log(222222);
             },
             getData(type="init") {
@@ -565,7 +567,7 @@
                 this.$ajax.get('/api/organize/systemtag/deps', {systemTag:key}).then(res => {
                     res = res.data
                     if(res.status === 200) {
-                        this.depsList = res.data
+                        this.depList = res.data
                     }
                 })
             },
@@ -695,7 +697,13 @@
                 this.nodeList = array
                 console.log(this.nodeList,'list');
                 this.tempNodeList = JSON.parse(JSON.stringify(array))
-                this.getDeps(this.aduitForm.systemTag)
+                // this.getDeps(this.aduitForm.systemTag)
+                this.$ajax.get('/api/organize/systemtag/deps', {systemTag:this.aduitForm.systemTag}).then(res => {
+                    res = res.data
+                    if(res.status === 200) {
+                        this.depList2 = res.data
+                    }
+                })
                 this.getJobName(this.searchForm.cityId,this.aduitForm.systemTag)
             },
             setConditionList(val,type=1) {
@@ -1056,7 +1064,7 @@
                 }
                 let depArr=[]
                 this.aduitForm.dep.forEach((v,i)=>{
-                    this.depList.forEach((v2,i2)=>{
+                    this.depList2.forEach((v2,i2)=>{
                             if(v==v2.id){
                                 depArr.push({deptName:v2.name,deptId:v2.id})
                             }
