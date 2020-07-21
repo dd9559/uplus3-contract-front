@@ -149,6 +149,7 @@
                         <el-select
                                 v-model="aduitForm.dep"
                                 multiple
+                                :multiple-limit="aduitTitle=='添加'?0:1"
                                 collapse-tags
                                 filterable
                                 size="small"
