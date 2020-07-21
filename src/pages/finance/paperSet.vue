@@ -706,10 +706,10 @@
       // 编号操作
       cellOpera(type, row) {
         if (type === 'contract') {
-          if (!this.power['sign-com-htdetail'].state) {
-            this.noPower(this.power['sign-com-htdetail'].name);
-            return false
-          }
+          // if (!this.power['sign-com-htdetail'].state) {
+          //   this.noPower(this.power['sign-com-htdetail'].name);
+          //   return false
+          // }
           /*this.setPath(this.getPath.concat({name: '合同详情'}));
           this.$router.push({
             path: "/contractDetails",
