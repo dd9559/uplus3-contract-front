@@ -430,13 +430,13 @@
             <el-button
               type="text"
               @click="btnOpera(scope.row,3)"
-              v-if="power['sign-cw-bill-invoice'].state&&
+              v-if="(power['sign-cw-bill-invoice'].state&&
                        (scope.row.type===1||scope.row.type===8)&&
                        scope.row.isDel===1&&
                        scope.row.billStatus&&
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
-                       scope.row.payStatusValue!==11&&
+                       scope.row.payStatusValue!==11)||
                        scope.row.isDeal==3"
             >开票</el-button>
             <el-button
