@@ -231,19 +231,28 @@ const MIXINS = {
           contId: contId
         }).then(res => {
           res = res.data
+          debugger
           if (res.status === 200) {
-            this.setPath(this.getPath.concat({
-              name: '合同详情'
-            }))
-            this.$router.push({
-              path: contType === this.$tool.contType['4'] || contType === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
-              query: {
-                contType: contType,
-                id: contId,
-                code: contCode,
-                pageName: '合同详情'
-              }
-            })
+            if (res.data) {
+              this.setPath(this.getPath.concat({
+                name: '合同详情'
+              }))
+              this.$router.push({
+                path: contType === this.$tool.contType['4'] || contType === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
+                query: {
+                  contType: contType,
+                  id: contId,
+                  code: contCode,
+                  pageName: '合同详情'
+                }
+              })
+            } else {
+              this.$message({
+                message: "没有合同详情查看权限",
+                type: "warning"
+              });
+            }
+
           }
         }).catch(error => {
           this.$message({
