@@ -2229,7 +2229,7 @@ export default {
                   )
                 );
                 let path;
-                if (this.power["sign-ht-xq-data"].state) {
+                if (this.power["sign-ht-xq-data-add"].state) {
                   if (this.choseQuery.contType === 4 || this.choseQuery.contType === 5) {
                     path = "/detailIntention";
                   } else {
@@ -2272,41 +2272,41 @@ export default {
 
 
 
-      if (this.power["sign-com-htdetail"].state) {
-        if (this.power["sign-ht-xq-data"].state) {
-          this.setPath(
-            this.$tool.getRouter(
-              ["合同", "合同列表", "合同详情"],
-              "contractList"
-            )
-          );
-          let path;
-          if (this.Msg.type === 4 || this.Msg.type === 5) {
-            path = "/detailIntention";
-          } else {
-            path = "/contractDetails";
-          }
-          this.$router.replace({
-            path: path,
-            query: {
-              type: "dataBank",
-              id: this.choseQuery.id, //合同id
-              code: this.choseQuery.code, //合同编号
-              contType: this.choseQuery.contType //合同类型
-            }
-          });
-        } else {
-          this.$message({
-            message: "没有资料库权限,无法跳转到资料库"
-          });
-          this.$router.push("/contractList");
-        }
-      } else {
-        this.$message({
-          message: "没有合同详情权限,无法跳转到资料库"
-        });
-        this.$router.push("/contractList");
-      }
+      // if (this.power["sign-com-htdetail"].state) {
+      //   if (this.power["sign-ht-xq-data"].state) {
+      //     this.setPath(
+      //       this.$tool.getRouter(
+      //         ["合同", "合同列表", "合同详情"],
+      //         "contractList"
+      //       )
+      //     );
+      //     let path;
+      //     if (this.Msg.type === 4 || this.Msg.type === 5) {
+      //       path = "/detailIntention";
+      //     } else {
+      //       path = "/contractDetails";
+      //     }
+      //     this.$router.replace({
+      //       path: path,
+      //       query: {
+      //         type: "dataBank",
+      //         id: this.choseQuery.id, //合同id
+      //         code: this.choseQuery.code, //合同编号
+      //         contType: this.choseQuery.contType //合同类型
+      //       }
+      //     });
+      //   } else {
+      //     this.$message({
+      //       message: "没有资料库权限,无法跳转到资料库"
+      //     });
+      //     this.$router.push("/contractList");
+      //   }
+      // } else {
+      //   this.$message({
+      //     message: "没有合同详情权限,无法跳转到资料库"
+      //   });
+      //   this.$router.push("/contractList");
+      // }
     }
   },
   computed: {
