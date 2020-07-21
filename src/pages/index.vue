@@ -33,7 +33,6 @@ export default {
   created() {
     console.log(this.$route.path);
     console.log(this.$route.query);
-    debugger;
     this.Index = this.getPath;
     this.$parent.loadingState = false;
   },
