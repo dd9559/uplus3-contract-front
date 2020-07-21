@@ -622,7 +622,7 @@ export default{
                   this.$emit("closeChose",{type: 'closeChose'})
               }
           }).catch(error=>{
-              this.$emit("closeChose",{type: 'closeChose'})
+              this.$emit("closeChose",false)
               this.$message({
                 message:error,
                 type:"error"
@@ -645,12 +645,14 @@ export default{
     },
     getOwnerList(){
       if (this.ownerList.length == 1) {
+        console.log('-000000-090-9-09-09-09-0');
         this.chose('owner',this.ownerList[0])
       }
       return this.ownerList;
     },
     getGuestList(){
       if (this.guestList.length == 1) {
+        console.log('-000000-090-9-09-09-09-0');
         this.chose('guest',this.guestList[0])
       }
       return this.guestList;
