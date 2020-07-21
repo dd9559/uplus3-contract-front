@@ -697,7 +697,7 @@
           <div
             class="contractSubject"
             v-if="power['sign-ht-xq-main-add'].state&&(contractDetail.contState.value>1||contractDetail.contState.value!=0&&contractDetail.recordType.value===2)"
-          >
+            >
             <p class="mainTitle">
               合同主体
               <!-- <span class="redTitle">点击【确认上传】前，请完善合同主体和资料库，【确认上传】后，不再支持上传或删除。</span> -->
@@ -1205,7 +1205,7 @@
         <el-tab-pane label="审核记录" name="fifth">
           <div class="firstDetail" :style="{ height: clientHei }">
             <!-- 合同审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value!=2" >
+            <div class="receiptModule" v-if="contractDetail.recordType.value!=2" >
               <div class="moduleTitle">
                 <span>合同审核</span>
               </div>
@@ -1239,10 +1239,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div
-              class="receiptModule"
-              v-if="power['sign-com-htdetail'].state&&contractDetail.recordType.value!=2&&contType!='1'"
-              >
+            <div class="receiptModule" v-if="contractDetail.recordType.value!=2&&contType!='1'" >
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
@@ -1276,7 +1273,7 @@
               </div>
             </div>
             <!-- 合同签后审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule">
               <div class="moduleTitle">
                 <span>合同签后审核</span>
               </div>
@@ -1310,7 +1307,7 @@
               </div>
             </div>
             <!-- 委托合同签后审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state&&contType!='1'">
+            <div class="receiptModule" v-if="contType!='1'">
               <div class="moduleTitle">
                 <span>委托合同签后审核</span>
               </div>
@@ -1344,7 +1341,7 @@
               </div>
             </div>
             <!-- 合同变更审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule">
               <div class="moduleTitle">
                 <span>合同变更审核</span>
               </div>
@@ -1378,7 +1375,7 @@
               </div>
             </div>
             <!-- 合同解约审核记录 -->
-            <div class="receiptModule" v-if="power['sign-com-htdetail'].state">
+            <div class="receiptModule">
               <div class="moduleTitle">
                 <span>合同解约审核</span>
               </div>
@@ -2471,10 +2468,7 @@ export default {
       if (tab.name === "first") {
         this.getAchievement(); //业绩分成
       } else if (tab.name === "second") {
-        if (
-          this.contractDetail.contState.value < 2 &&
-          this.contractDetail.recordType.value === 1
-        ) {
+        if (this.contractDetail.contState.value < 2 && this.contractDetail.recordType.value != 2) {
           this.$message({
             message: "合同未签章,不允许上传合同主体",
             type: "warning"

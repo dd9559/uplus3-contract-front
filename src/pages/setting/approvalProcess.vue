@@ -129,7 +129,7 @@
             </el-pagination>
         </div>
         <!-- 添加 编辑 弹窗 -->
-        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" :closeOnClickModal="$tool.closeOnClickModal">
+        <el-dialog :title="aduitTitle" :visible.sync="aduitDialog" width="740px" @close="closeLog" :closeOnClickModal="$tool.closeOnClickModal">
             <div class="aduit-content">
                 <div class="row">
                     <div class="aduit-input must w50">
@@ -149,6 +149,7 @@
                         <el-select
                                 v-model="aduitForm.dep"
                                 multiple
+                                :multiple-limit="aduitTitle=='添加'?0:1"
                                 collapse-tags
                                 filterable
                                 size="small"
@@ -276,7 +277,7 @@
                                     :key="m"
                                     @click="defaultChoice(index,m,ele)"
                                     :class="{'cur-select':ele.isDefault===1}">
-                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":ele.type===5?"职位名称-":""}}{{ele.temp?ele.type===4?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
+                                    {{ele.type===0?"人员-":ele.type===1?"部门-":ele.type===2?"角色-":ele.type===5?"职务名称-":""}}{{ele.temp?ele.type===4?ele.temp+'-'+ele.positionName:ele.temp+'-'+ele.userName:ele.userName}}
                                         <i class="el-icon-close" @click.stop="delChoice(index,item.choice,m)"></i>
                                     </span>
                                 </div>
@@ -375,7 +376,6 @@
                 nodeList: [],
                 depList:[],
                 depList2:[],
-                // depList2:[],
                 dictionary: {
                     '73':'', //合作方式
                     '573':'', //流程类型
@@ -438,7 +438,6 @@
                     res=res.data
                     if(res.status==200){
                         this.depList=res.data.filter(v=>v.level==1)
-                        // this.depList2=JSON.parse(JSON.stringify(this.depList))
                         console.log(this.depList);
                     }
                 })
@@ -494,7 +493,13 @@
                     let type = this.nodeList[i].type //当前节点选择的审批人类型
                     let key = this.aduitForm.systemTag //选择的体系
                     if(type == 1) { //部门
-                        this.getDeps(key)
+                        // this.getDeps(key)
+                        this.$ajax.get('/api/access/systemtag/deps',{systemTag:key}).then(res=>{
+                            res=res.data
+                            if(res.status==200){
+                                this.depsList=res.data
+                            }
+                        })
                     }else if(type == 5){
                         let cityId=this.searchForm.cityId
                         this.getJobName(cityId,key)
@@ -704,6 +709,13 @@
                         this.depList2 = res.data
                     }
                 })
+                this.$ajax.get('/api/access/systemtag/deps',{systemTag:this.aduitForm.systemTag}).then(res=>{
+                    res=res.data
+                    if(res.status==200){
+                        this.depsList=res.data
+                    }
+                })
+                
                 this.getJobName(this.searchForm.cityId,this.aduitForm.systemTag)
             },
             setConditionList(val,type=1) {
@@ -713,6 +725,9 @@
                         break
                     }
                 }
+            },
+            closeLog(){
+                this.depList2=[]
             },
             changeFlowTypeOne(val) {
                 this.searchForm.branchCondition = ""
