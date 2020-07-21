@@ -723,12 +723,11 @@ export default {
               }
             })
             .catch(error => {
-              debugger;
-              // this.$emit("closeChose",false)
-              // this.$message({
-              //   message:error,
-              //   type:"error"
-              // })
+              this.$emit("closeChose",false)
+              this.$message({
+                message:error,
+                type:"error"
+              })
             });
         } else {
           this.$message({
