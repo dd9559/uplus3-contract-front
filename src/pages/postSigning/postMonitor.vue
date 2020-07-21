@@ -112,14 +112,14 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="产权地址区域" prop="areaName">
+        <el-form-item label="产权地址名称" prop="areaName">
           <el-input v-model="propForm.areaName" class="w134" :clearable="true" placeholder="请输入">
             <!-- <el-option
               v-for="(item,i) in rules.areaName"
               :key="'areaName'+i"
               :label="item"
               :value="item"
-            ></el-option> -->
+            ></el-option>-->
           </el-input>
         </el-form-item>
         <el-form-item label="签约方式">
@@ -214,12 +214,12 @@
           label="产权地址"
           min-width="120"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           :formatter="nullFormatterData"
           prop="propertyRightRegion"
           label="产权地址区域"
           min-width="120"
-        ></el-table-column>
+        ></el-table-column>-->
         <el-table-column :formatter="nullFormatterData" prop="owner" label="业主" min-width="60"></el-table-column>
         <el-table-column :formatter="nullFormatterData" prop="customer" label="客户" min-width="60"></el-table-column>
         <el-table-column :formatter="nullFormatterData" label="成交经纪人" min-width="120">
@@ -492,19 +492,27 @@ export default {
     },
     // 合同编号弹层
     contractFn(value) {
-      if (!this.power["sign-com-htdetail"].state) {
-        this.noPower(this.power["sign-com-htdetail"].name);
-        return false;
-      }
-      this.setPath(this.getPath.concat({ name: "合同详情" }));
-      this.$router.push({
-        path: "/contractDetails",
-        query: {
-          id: value.id, //合同id
-          code: value.code, //合同编号
-          contType: value.tradeType.value //合同类型
-        }
-      });
+      // if (!this.power["sign-com-htdetail"].state) {
+      //   this.noPower(this.power["sign-com-htdetail"].name);
+      //   return false;
+      // }
+      // this.setPath(this.getPath.concat({ name: "合同详情" }));
+      // this.$router.push({
+      //   path: "/contractDetails",
+      //   query: {
+      //     id: value.id, //合同id
+      //     code: value.code, //合同编号
+      //     contType: value.tradeType.value //合同类型
+      //   }
+      // });
+      let param = {
+        contType: value.tradeType.value,
+        contId: value.id,
+        contCode: value.code,
+        operaType: "cont",
+        power: this.power["sign-com-htdetail"]
+      };
+      this.msgOpera(param);
     },
     // 交易步骤
     tradingStepsFn(row, event) {
@@ -692,7 +700,7 @@ export default {
       this.remoteMethod();
       // 枚举数据查询
       this.getDictionary();
-      // 产权地址区域
+      // 产权地址名称
       this.getAreaList();
       let res = this.getDataList;
       if (res && res.route === this.$route.path) {
