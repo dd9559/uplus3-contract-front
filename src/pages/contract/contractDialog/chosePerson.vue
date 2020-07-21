@@ -401,8 +401,12 @@ export default{
         this.selectNameList = localStorage.getItem("brokerList") && JSON.parse(localStorage.getItem("brokerList"));
     },
     selectName(item,index) {
-        this.$set(this.brokerList,index,JSON.parse(JSON.stringify(Object.assign({},item,{id:Date.parse(new Date()),contCode: this.contCode,}))))
-        this.brokerList[index].roleName = ''
+        if(item.contCode === this.contCode) {
+            this.$set(this.brokerList,index,JSON.parse(JSON.stringify(Object.assign({},item,{id:Date.parse(new Date()),contCode: this.contCode,}))))
+        } else {
+            this.$set(this.brokerList,index,JSON.parse(JSON.stringify(Object.assign({},item,{id:Date.parse(new Date()),contCode: this.contCode,}))))
+            this.brokerList[index].roleName = ''
+        }
         this.brokerList[index].showSelectName = false
     },
     inputOnly(index, type) {
