@@ -2213,9 +2213,12 @@ export default {
         // this.dataBaseDialog = true;
         this.choseLoading = false
         console.log(!!val,898989);
-        if (val && !this.choseQuery.isHaveData) {
+        if (val) {
           this.dataBaseDialog = true;
         }
+        // if (val && !this.choseQuery.isHaveData) {
+        //   this.dataBaseDialog = true;
+        // }
       }
     },
     toDataBase() {
