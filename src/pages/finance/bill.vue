@@ -1394,9 +1394,8 @@ export default {
         outType: this.selectPayInfo.moneyTypeId, //转出的款类key
         outTypeId: this.selectPayInfo.moneyTypePid, //转出的款类id
         outMoney: this.selectPayInfo.amount, //转出时款类金额
-        inId: this.transterInfoPerson.inId ? this.transterInfoPerson.inId : "", //转入的合同ID
-        inId: this.selectPayInfo.contId
-          ? this.selectPayInfo.contId
+        inId: this.transterInfoPerson.inId
+          ? this.transterInfoPerson.inId
           : this.transterInfoPerson.inContractId, //转入的合同ID
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
@@ -1446,7 +1445,6 @@ export default {
         this.selectCodeAll.propertyAddr
       );
       this.$set(this.transterInfoPerson, "inId", this.selectCodeAll.id);
-      debugger
       this.chooseContShow = false;
       console.log(this.selectCodeAll);
       console.log(this.selectCodeAll.code);
