@@ -712,7 +712,7 @@ export default {
     let arr = [];
     if (urlParam.edit) {
       // this.inObjPerson = false
-      if (!urlParam.collect) {
+      if (!urlParam.collect||urlParam.deAudit) {
         this.getDetails({ type: 1, payId: urlParam.id });
       }
 
