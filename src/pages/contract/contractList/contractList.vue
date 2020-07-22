@@ -944,7 +944,7 @@
       </div>
     </el-dialog>
     <!-- 发起签署选择业主客户 -->
-    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :localChoseList="localChoseList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
     <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
       <div>合同已发起签署</div>
@@ -1180,7 +1180,7 @@ export default {
           state: false,
           name: "发起签署"
         },
-        "sign-ht-xq-data-add": {
+        "sign-ht-xq-data": {
           state: false,
           name: "编辑资料库"
         }
@@ -1204,7 +1204,8 @@ export default {
       signGuestList: [],
       choseQuery: {},
       dataBaseDialog: false,
-      choseLoading: false
+      choseLoading: false,
+      localChoseList: []
     };
   },
   created() {
@@ -2199,9 +2200,11 @@ export default {
         });
         this.signOwnerList=[].concat(owner)
         this.signGuestList=[].concat(guest)
+        this.localChoseList = JSON.parse(localStorage.getItem('brokerList'))
         this.contCode = val.code;
         this.chosePersonDialog=true
     },
+    
     closeChose(val) {
       if (val.type == 'choseLoading') {
         this.choseLoading = true
@@ -2222,20 +2225,20 @@ export default {
             res = res.data;
             if (res.status === 200) {
               if (res.data) {
-                this.setPath(
+                console.log(this.power["sign-ht-xq-data"].state,88787878);
+                if (this.power["sign-ht-xq-data"].state) {
+                  this.setPath(
                   this.$tool.getRouter(
-                    ["合同", "合同列表", "合同详情"],
-                    "contractList"
-                  )
-                );
-                let path;
-                if (this.power["sign-ht-xq-data-add"].state) {
+                      ["合同", "合同列表", "合同详情"],
+                      "contractList"
+                    )
+                  );
+                  let path;
                   if (this.choseQuery.contType === 4 || this.choseQuery.contType === 5) {
                     path = "/detailIntention";
                   } else {
                     path = "/contractDetails";
                   }
-                  path = "/detailIntention";
                   this.$router.replace({
                     path: path,
                     query: {
@@ -2266,12 +2269,6 @@ export default {
               type: "error"
             });
           });
-
-
-
-
-
-
       // if (this.power["sign-com-htdetail"].state) {
       //   if (this.power["sign-ht-xq-data"].state) {
       //     this.setPath(
