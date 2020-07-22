@@ -283,7 +283,9 @@ export default {
         }
       });
       if (!isSelectFlag && localStorage.getItem("brokerList")) {
-        let arr = JSON.parse(localStorage.getItem("brokerList"))
+        let arr = JSON.parse(localStorage.getItem("brokerList")).filter(item => {
+            return item !== null
+        })
         for(let i = 0; i< arr.length;i++) {
           if ((
             arr[i].roleName === val.key &&
@@ -294,7 +296,6 @@ export default {
           }
         }
       }
-      console.log(121);
       if (isSelectFlag) {
         this.brokerList[index].roleName = "";
         this.$message("已选择过该角色，请重新选择");
@@ -313,7 +314,10 @@ export default {
           if (res.data) {
             let isSelectFlag = false;
             isSelectFlag = this.brokerList.some(signItem => {
-              return signItem.roleName === val.key;
+              if (parent.id !== signItem.id) {
+                return signItem.roleName === val.key;
+              }
+              // return signItem.roleName === val.key;
             });
             if (isSelectFlag) {
               this.brokerList[index].roleName = "";
@@ -692,12 +696,12 @@ export default {
           };
           let owner = [],
             customer = [],
-            sign = [];
+            signer = [];
           let localBrokerList = this.brokerList.filter(item => {
             return this.choseBrokerId.includes(item.id);
           });
-          let item = {}
           localBrokerList.forEach(element => {
+            let item = {}
             if (element.cardType == 3) {
               item = {
                 name: element.name,
@@ -705,6 +709,7 @@ export default {
                 identity: element.encryptionCode,
                 mobile: element.mobile,
                 email: element.email,
+                companyName: element.companyName,
                 lepName:element.lepName,
                 lepIdentity:element.lepIdentity,
                 signerType: element.roleName
@@ -719,7 +724,7 @@ export default {
                 signerType: element.roleName
               };
             }
-            sign.push(item);
+            signer.push(item);
           });
           this.choseOwner.forEach(element => {
             let item = {}
@@ -775,7 +780,7 @@ export default {
           this.$emit("closeChose", { type: "choseLoading" });
           param.owner = owner;
           param.customer = customer;
-          param.sign = sign;
+          param.signer = signer;
           this.$ajax
             .postJSON("/api/app/contract/sendCont", param)
             .then(res => {
@@ -810,6 +815,7 @@ export default {
           if (includeRoleList.includes(item.roleName)) {
             return false
           } else {
+            // this.chose('broker',item)
             includeRoleList.push(item.roleName)
             return item.contCode === this.contCode
           }
