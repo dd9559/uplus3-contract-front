@@ -1370,6 +1370,13 @@ export default {
         // this.sureSaveTransterShow = false;
         return;
       }
+      if (allMoney === 0) {
+        this.$message({
+          message: "转款金额不能为0"
+        });
+        // this.sureSaveTransterShow = false;
+        return;
+      }
       if (flagArr.length != this.kuanleiVal.length) {
         this.$message({
           message: "不能选择重复款类"
