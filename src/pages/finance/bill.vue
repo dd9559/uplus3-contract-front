@@ -445,11 +445,20 @@
               v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
             >编辑</el-button>
             <!-- 新增转款按钮 -->
-            <el-button
-              type="text"
-              @click="btnTransfer(scope.row)"
-              v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-            >转款</el-button>
+            <template v-if="scope.row.contId!=0">
+              <el-button
+                type="text"
+                @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
+              >转款</el-button>
+            </template>
+            <template v-else>
+              <el-button
+                type="text"
+                @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
+              >转款</el-button>
+            </template>
             <template
               v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&power['sign-cw-bill-zk'].state"
             >
@@ -667,6 +676,7 @@
                 :page-size="pageSize2"
                 layout="total, prev, pager, next, jumper"
                 :total="contTotal"
+                style="margin-top:30px;"
               ></el-pagination>
 
               <p style="text-align:right;margin:50px 50px 0 0;">
@@ -1870,10 +1880,10 @@ export default {
     background: @color-blue;
   }
 }
-/deep/ .pagination-info {
-  text-align: center;
-  margin-top: 30px;
-}
+// /deep/ .pagination-info {
+//   text-align: center;
+//   margin-top: 30px;
+// }
 .about-cont {
   /deep/ .cell {
     line-height: 15px;
