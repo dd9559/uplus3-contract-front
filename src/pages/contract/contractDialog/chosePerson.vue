@@ -75,7 +75,7 @@
                     maxlength="10"
                     @input="inputOnly(index,'name')"
                   />
-                  <i
+                  <!-- <i
                     :class="item.showSelectName?'el-icon-arrow-up':'el-icon-arrow-down'"
                     @click="showSelect(item,index)"
                   ></i>
@@ -85,22 +85,22 @@
                   >
                     <li
                       v-for="(childItem,childIndex) in selectNameList"
-                      :class="item.name===childItem.name?'selected':''"
+                      :class="item.name===childItem.name && item.mobile===childItem.mobile?'selected':''"
                       @click="selectName(childItem,index)"
                       :key="childIndex"
                     >{{childItem.name}}</li>
-                  </ul>
+                  </ul> -->
                 </li>
                 <li>
                   <span class="form-label">角色：</span>
                   <el-select size="small" v-model="item.roleName" placeholder="请选择">
-                    <template v-for="item in dictionary['781']">
+                    <template v-for="childItem in dictionary['781']">
                       <el-option
-                        v-if="item.key>2"
-                        :key="item.key"
-                        :label="item.value"
-                        :value="item.key"
-                        @click.native="selectRole(item,index)"
+                        v-if="childItem.key>2"
+                        :key="childItem.key"
+                        :label="childItem.value"
+                        :value="childItem.key"
+                        @click.native="selectRole(childItem,index,item)"
                       ></el-option>
                     </template>
                   </el-select>
@@ -239,6 +239,12 @@ export default {
       default() {
         return "";
       }
+    },
+    localChoseList: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   data() {
@@ -268,7 +274,32 @@ export default {
     this.getDictionary(); //字典
   },
   methods: {
-    selectRole(val, index) {
+    selectRole(val,index,parent) {
+      let isSelectFlag = false;
+      isSelectFlag = this.brokerList.some((signItem,index) => {
+        if (parent.id !== signItem.id) {
+          console.log(signItem.roleName,val.key,"brokerList");
+          return signItem.roleName === val.key;
+        }
+      });
+      if (!isSelectFlag && localStorage.getItem("brokerList")) {
+        let arr = JSON.parse(localStorage.getItem("brokerList"))
+        for(let i = 0; i< arr.length;i++) {
+          if ((
+            arr[i].roleName === val.key &&
+            arr[i].contCode === this.contCode
+          )) {
+            this.brokerList[index].roleName = val.key;
+            return
+          }
+        }
+      }
+      console.log(121);
+      if (isSelectFlag) {
+        this.brokerList[index].roleName = "";
+        this.$message("已选择过该角色，请重新选择");
+        return
+      }
       this.brokerList[index].roleName = "";
       let param = {
         contCode: this.contCode,
@@ -284,29 +315,17 @@ export default {
             isSelectFlag = this.brokerList.some(signItem => {
               return signItem.roleName === val.key;
             });
-            if (!isSelectFlag && localStorage.getItem("brokerList")) {
-              isSelectFlag = JSON.parse(
-                localStorage.getItem("brokerList")
-              ).some(signItem => {
-                return (
-                  signItem.roleName === val.key &&
-                  signItem.contCode === this.contCode
-                );
-              });
-            }
             if (isSelectFlag) {
               this.brokerList[index].roleName = "";
               this.$message("已选择过该角色，请重新选择");
             } else {
               this.brokerList[index].roleName = val.key;
             }
-            // this.brokerList[index].roleName = val.key
           } else {
             this.$message("本合同不支持该角色签署");
           }
         })
         .catch(error => {
-          // console.log(error,898989);
           this.$message(error);
         });
     },
@@ -578,6 +597,7 @@ export default {
       if (this.brokerList.length < 5) {
         let item = {
           id: Date.parse(new Date()),
+          time: Date.parse(new Date()),
           contCode: this.contCode,
           name: "",
           mobile: "",
@@ -676,37 +696,79 @@ export default {
           let localBrokerList = this.brokerList.filter(item => {
             return this.choseBrokerId.includes(item.id);
           });
+          let item = {}
           localBrokerList.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: element.roleName
-            };
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: element.roleName
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: element.roleName
+              };
+            }
             sign.push(item);
           });
           this.choseOwner.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 0
-            };
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 0,
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 0,
+              };
+            }
             owner.push(item);
           });
           this.choseGuest.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 1
-            };
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 1
+              };
+            }else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 1
+              };
+            }
             customer.push(item);
           });
           if (this.verify()) return;
@@ -740,21 +802,40 @@ export default {
       }
     }
   },
+  watch: {
+    localChoseList(val) {
+      let includeRoleList = []
+      if (val&&val.length > 0) {
+        this.brokerList = val.filter(item => {
+          if (includeRoleList.includes(item.roleName)) {
+            return false
+          } else {
+            includeRoleList.push(item.roleName)
+            return item.contCode === this.contCode
+          }
+        })
+      }
+    }
+  },
   computed: {
     getDialogVisible() {
       return this.dialogVisible;
     },
     getOwnerList() {
       if (this.ownerList.length == 1) {
-        console.log("-000000-090-9-09-09-09-0");
         this.chose("owner", this.ownerList[0]);
+      } else {
+        this.choseOwnerM = []
+        this.choseOwner = []
       }
       return this.ownerList;
     },
     getGuestList() {
       if (this.guestList.length == 1) {
-        console.log("-000000-090-9-09-09-09-0");
         this.chose("guest", this.guestList[0]);
+      } else {
+        this.choseGuestM = []
+        this.choseGuest = []
       }
       return this.guestList;
     },
