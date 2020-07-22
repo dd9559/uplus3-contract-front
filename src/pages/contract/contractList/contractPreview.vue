@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="header">
       <div class="title">
-        <p><span>合同预览</span>合同需签章打印且双方签字后生效</p>
+        <p><span>合同预览</span>合同需签章打印且双方签字后生效{{detailPower}}</p>
       </div>
       <div class="type" v-if="isShowType">
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>
@@ -14,10 +14,8 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(examineState<0||examineState===2)" @click="toEdit">编辑</el-button> -->
-        <!-- <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&(contState!=3||contState===3&&resultState===1&&contChangeState!=2)" @click="toEdit">编辑</el-button> -->
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign" @mouseover="showList" @mouseout="closeList">
+       <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign&&detailPower" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
@@ -28,31 +26,29 @@
             </ul>
           </div>
         </div>
-        <!-- <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState!=3&&contState!=0" @click="dialogInvalid = true">撤单</el-button> -->
-        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2" @click="dialogInvalid = true">撤单</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1" @click="goChangeCancel(1)">变更</el-button>
-        <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0&&resultState===1"  @click="goChangeCancel(2)">解约</el-button>
-        <!-- <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)" @click="signature(3)"  v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button> -->
+        <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2&&detailPower" @click="dialogInvalid = true">撤单</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1&&detailPower" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1&&detailPower" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0&&resultState===1&&detailPower"  @click="goChangeCancel(2)">解约</el-button>
         <el-popover
-          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)"
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)&&detailPower"
           placement="top-start"
           width="140"
           trigger="hover">
           <img class="signImg" :src="signImg" alt="">
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
-        <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2&&detailPower" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
 
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId&&detailPower">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
-        <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state">资料库</el-button>
+        <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state&&detailPower">资料库</el-button>
       </div>
       <!-- 委托合同按钮组 -->
       <div class="btn" v-else-if="isentrust">
-        <el-button type="primary" round v-if="power['sign-ht-xq-entrust-edit'].state&&contState!=3" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1" @mouseover="showList" @mouseout="closeList">
+        <el-button type="primary" round v-if="power['sign-ht-xq-entrust-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1&&detailPower" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">签章选择</span>
           <div class="signList">
             <ul>
@@ -64,16 +60,16 @@
           </div>
         </div>
         <el-popover
-          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&storeId"
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&storeId&&detailPower"
           placement="top-start"
           width="140"
           trigger="hover">
           <img class="signImg" :src="signImg" alt="">
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-xq-entrust-edit'].state&&examineState<0&&isCanAudit===1" @click="isSubmitAudit=true">提交审核</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId&&detailPower">审核</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-entrust-edit'].state&&examineState<0&&isCanAudit===1&&detailPower" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
       <div class="btn" v-else>
@@ -81,7 +77,7 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&detailPower" @click="toEdit">编辑</el-button>
       </div>
     </div>
 
@@ -155,7 +151,6 @@
       </span>
     </el-dialog>
     <!-- 打印 -->
-    <!-- <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl"></PdfPrint> -->
     <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
     <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- 设置/转交审核人 -->
@@ -410,7 +405,8 @@ export default {
       dialogEntrust:false,//委托合同审核弹窗
       entrustReason:"",//委托合同审核备注
       signingState:'',//签后审核状态
-      dialogContType:1//变更解约弹窗是否是意向定金合同
+      dialogContType:1,//变更解约弹窗是否是意向定金合同
+      detailPower:false
     }; 
   },
   created() {
@@ -426,6 +422,7 @@ export default {
     }
     
     this.getContImg();
+    this.getContDetailPower()//是否有合同详情权限
     this.getAdmin();//获取当前登录人信息
     let arr=this.$tool.getRouter(['二手房','合同','合同列表'],"contractList");
     arr.push({name:'合同预览',path:this.$route.fullPath});
@@ -1368,6 +1365,20 @@ export default {
       }
 
     },
+    getContDetailPower(){
+      // 验证是否有合同详情查看权限
+      this.$ajax.get("/api/contract/isDetailAuth", { contId: this.id }).then(res => {
+        res = res.data;
+        if (res.status === 200) {
+          this.detailPower = res.data
+        }
+      }).catch(error=>{
+        this.$message({
+          message: error,
+          type: "error"
+        })
+      })
+    }
   },
   mounted(){
     window.onresize = this.clientHeight;
