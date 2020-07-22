@@ -437,7 +437,7 @@
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
                        scope.row.payStatusValue!==11)||
-                       scope.row.isDeal==3"
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
             >开票</el-button>
             <el-button
               type="text"
@@ -468,7 +468,7 @@
               </el-button>-->
             </template>
             <div
-              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal!=3"
+              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal===3"
             >
               <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
             </div>
