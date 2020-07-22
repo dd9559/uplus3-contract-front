@@ -410,7 +410,7 @@
               <el-button
                 type="text"
                 @click="cellOpera(scope.row,'deAudit')"
-                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&power['sign-cw-rev-fsh'].state"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
               >反审核</el-button>
             </template>
             <template v-else>

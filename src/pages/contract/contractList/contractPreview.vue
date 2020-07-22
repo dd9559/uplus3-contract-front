@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="header">
       <div class="title">
-        <p><span>合同预览</span>合同需签章打印且双方签字后生效{{detailPower}}</p>
+        <p><span>合同预览</span>合同需签章打印且双方签字后生效</p>
       </div>
       <div class="type" v-if="isShowType">
         <div :class="{'active':isActive===1}" @click="changeType(1)">居间合同</div>

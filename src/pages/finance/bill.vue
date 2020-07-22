@@ -1397,7 +1397,7 @@ export default {
         inId: this.transterInfoPerson.inId ? this.transterInfoPerson.inId : "", //转入的合同ID
         inId: this.selectPayInfo.contId
           ? this.selectPayInfo.contId
-          : this.transterInfoPerson.inId, //转入的合同ID
+          : this.transterInfoPerson.inContractId, //转入的合同ID
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
           : "" //转入的合同编号
@@ -1446,6 +1446,7 @@ export default {
         this.selectCodeAll.propertyAddr
       );
       this.$set(this.transterInfoPerson, "inId", this.selectCodeAll.id);
+      debugger
       this.chooseContShow = false;
       console.log(this.selectCodeAll);
       console.log(this.selectCodeAll.code);
