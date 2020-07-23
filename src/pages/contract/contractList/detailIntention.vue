@@ -183,7 +183,7 @@
                     <div class="contractSubject"
                         v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
                         <ul class="ulData">
-                            <li v-show="(detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState">
+                            <li v-show="((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&$route.query.contType!=4">
                                 <file-up class="uploadSubject"
                                     @getUrl="uploadSubject"
                                     id="zhuti_"
@@ -221,7 +221,7 @@
                             round
                             class="search_btn"
                             @click="saveFile('main')"
-                            v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))">确认上传</el-button>
+                            v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))&&$route.query.contType!=4">确认上传</el-button>
                     </div>
                 </el-tab-pane>
 
