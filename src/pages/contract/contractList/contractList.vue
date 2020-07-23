@@ -2200,9 +2200,9 @@ export default {
         });
         this.signOwnerList=[].concat(owner)
         this.signGuestList=[].concat(guest)
-        this.localChoseList = JSON.parse(localStorage.getItem('brokerList')).filter(item => {
+        this.localChoseList = (localStorage.getItem('brokerList') && JSON.parse(localStorage.getItem('brokerList')).filter(item => {
             return item !== null
-        })
+        }))
         this.contCode = val.code;
         this.chosePersonDialog=true
     },

@@ -112,7 +112,7 @@
                     maxlength="11"
                     placeholder="请输入"
                     class="inputStyle"
-                    @input="verifyMobile_(item.mobile)"
+                    @input="verifyMobile_(item,index)"
                     v-model="item.mobile"
                   />
                 </li>
@@ -140,7 +140,7 @@
                     type="text"
                     :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
                     class="inputStyle"
-                    @input="verifyIdcard(item,2)"
+                    @input="verifyIdcard(item,2,index)"
                     placeholder="请输入"
                     v-model="item.encryptionCode"
                   />
@@ -172,7 +172,7 @@
                     type="text"
                     class="inputStyle"
                     placeholder="请输入"
-                    @input="verifyIdcard(item)"
+                    @input="verifyIdcard(item,1,index)"
                     maxlength="18"
                     v-model="item.lepIdentity"
                   />
@@ -267,7 +267,8 @@ export default {
         //数据字典
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
-      }
+      },
+      checkSignInfo: []
     };
   },
   created() {
@@ -443,7 +444,7 @@ export default {
       return false;
     },
     //身份证验证
-    verifyIdcard(value, type = 1) {
+    verifyIdcard(value, type,index) {
       // let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
       // let reg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/
       if (type == 2) {
@@ -453,7 +454,29 @@ export default {
               message: "身份证格式不正确",
               type: "warning"
             });
+            this.$set(this.brokerList[index],'checkEncryptionCode',{
+              flag: true,
+              key: 'encryptionCode',
+              type: 'warning',
+              msg: '身份证格式不正确'
+            })
+          } else {
+            if (this.brokerList[index].checkEncryptionCode) {
+              this.$set(this.brokerList[index],'checkEncryptionCode',{
+                flag: false,
+                key: 'encryptionCode',
+                type: 'warning',
+                msg: '身份证格式不正确'
+              })
+            }
           }
+        } else {
+          this.$set(this.brokerList[index],'checkEncryptionCode',{
+            flag: true,
+            key: 'encryptionCode',
+            type: 'warning',
+            msg: '身份证格式不正确'
+          })
         }
       } else if (value.lepIdentity.length === 18) {
         if (!this.isIdCardNo(value.lepIdentity) && value.cardType === 3) {
@@ -461,10 +484,33 @@ export default {
             message: "法人身份证格式不正确",
             type: "warning"
           });
+          this.$set(this.brokerList[index],'checkLepIdentity',{
+            flag: true,
+            key: 'lepIdentity',
+            type: 'warning',
+            msg: '法人身份证格式不正确'
+          })
+        }else {
+          if (this.brokerList[index].checkMobile) {
+            this.$set(this.brokerList[index],'checkLepIdentity',{
+              flag: false,
+              key: 'lepIdentity',
+              type: 'warning',
+              msg: '法人身份证格式不正确'
+            })
+          }
         }
+      } else {
+        this.$set(this.brokerList[index],'checkLepIdentity',{
+          flag: true,
+          key: 'lepIdentity',
+          type: 'warning',
+          msg: '法人身份证格式不正确'
+        })
       }
     },
-    verifyMobile_(value) {
+    verifyMobile_(item,index) {
+      let value = item.mobile
       if (value.length >= 11) {
         let reg = /^1[0-9]{10}$/;
         let reg_ = /^0\d{2,3}\-?\d{7,8}$/;
@@ -473,7 +519,29 @@ export default {
             message: "电话号码格式不正确",
             type: "warning"
           });
+          this.$set(this.brokerList[index],'checkMobile',{
+            flag: true,
+            key: 'mobile',
+            type: 'warning',
+            msg: '电话号码格式不正确'
+          })
+        } else {
+          if (item.checkMobile) {
+            this.$set(this.brokerList[index],'checkMobile',{
+              flag: false,
+              key: 'mobile',
+              type: 'warning',
+              msg: '电话号码格式不正确'
+            })
+          }
         }
+      } else {
+        this.$set(this.brokerList[index],'checkMobile',{
+          flag: true,
+          key: 'mobile',
+          type: 'warning',
+          msg: '电话号码格式不正确'
+        })
       }
     },
     showSelect(item, index) {
@@ -645,6 +713,24 @@ export default {
       let state = false;
       circulation: for (let i = 0; i < this.choseBroker.length; i++) {
         const element = this.choseBroker[i];
+        if (element.checkMobile && element.checkMobile.flag) {
+          return this.$message({
+            message: element.checkMobile.msg,
+            type: element.checkMobile.type
+          });
+        }
+        if (element.cardType === 1 && element.checkEncryptionCode && element.checkEncryptionCode.flag) {
+          return this.$message({
+            message: element.checkEncryptionCode.msg,
+            type: element.checkEncryptionCode.type
+          });
+        }
+        if (element.cardType === 3 && element.checkLepIdentity && element.checkLepIdentity.flag) {
+          return this.$message({
+            message: element.checkLepIdentity.msg,
+            type: element.checkLepIdentity.type
+          });
+        }
         if (element.cardType === 3) {
           for (let prop in element) {
             if (prop !== "showSelectName" && !element[prop]) {
@@ -809,14 +895,17 @@ export default {
   },
   watch: {
     localChoseList(val) {
+      this.choseBrokerId = []
+      this.choseBroker = []
       let includeRoleList = []
       if (val&&val.length > 0) {
         this.brokerList = val.filter(item => {
-          if (includeRoleList.includes(item.roleName)) {
+          if (includeRoleList.includes(item.id)) {
             return false
           } else {
-            // this.chose('broker',item)
-            includeRoleList.push(item.roleName)
+            this.choseBrokerId.push(item.id);
+            this.choseBroker.push(item);
+            includeRoleList.push(item.id)
             return item.contCode === this.contCode
           }
         })
