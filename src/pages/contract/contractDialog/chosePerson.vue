@@ -210,6 +210,7 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 export default {
+  name: 'chosePerson',
   mixins: [MIXINS],
   props: {
     dialogVisible: {
@@ -917,21 +918,24 @@ export default {
       return this.dialogVisible;
     },
     getOwnerList() {
+      this.choseOwnerM = []
+      this.choseOwner = []
       if (this.ownerList.length == 1) {
-        this.chose("owner", this.ownerList[0]);
-      } else {
-        this.choseOwnerM = []
-        this.choseOwner = []
+        this.choseOwnerM.push(this.ownerList[0].mobile);
+        this.choseOwner.push(this.ownerList[0]);
       }
+      console.log('choseOwner',this.choseOwner);
       return this.ownerList;
     },
     getGuestList() {
+      this.choseGuestM = []
+      this.choseGuest = []
       if (this.guestList.length == 1) {
-        this.chose("guest", this.guestList[0]);
-      } else {
-        this.choseGuestM = []
-        this.choseGuest = []
+        this.choseGuestM.push(this.guestList[0].mobile);
+        this.choseGuest.push(this.guestList[0]);
+        // this.chose("guest", this.guestList[0]);
       }
+      console.log('choseGuest',this.choseGuest);
       return this.guestList;
     },
     getChoseQuery() {
