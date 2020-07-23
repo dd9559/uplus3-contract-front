@@ -430,14 +430,14 @@
             <el-button
               type="text"
               @click="btnOpera(scope.row,3)"
-              v-if="power['sign-cw-bill-invoice'].state&&
+              v-if="(power['sign-cw-bill-invoice'].state&&
                        (scope.row.type===1||scope.row.type===8)&&
                        scope.row.isDel===1&&
                        scope.row.billStatus&&
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
-                       scope.row.payStatusValue!==11&&
-                       scope.row.isDeal==3"
+                       scope.row.payStatusValue!==11)||
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
             >开票</el-button>
             <el-button
               type="text"
@@ -445,16 +445,20 @@
               v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
             >编辑</el-button>
             <!-- 新增转款按钮 -->
-            <!-- <el-button
-              type="text"
-              @click="btnTransfer(scope.row)"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3"
-            >转款</el-button>-->
-            <el-button
-              type="text"
-              @click="btnTransfer(scope.row)"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-            >转款</el-button>
+            <template v-if="scope.row.contId!=0">
+              <el-button
+                type="text"
+                @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
+              >转款</el-button>
+            </template>
+            <template v-else>
+              <el-button
+                type="text"
+                @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
+              >转款</el-button>
+            </template>
             <template
               v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1&&power['sign-cw-bill-zk'].state"
             >
@@ -464,7 +468,7 @@
               </el-button>-->
             </template>
             <div
-              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal!=3"
+              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal===3"
             >
               <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
             </div>
@@ -672,6 +676,7 @@
                 :page-size="pageSize2"
                 layout="total, prev, pager, next, jumper"
                 :total="contTotal"
+                style="margin-top:30px;"
               ></el-pagination>
 
               <p style="text-align:right;margin:50px 50px 0 0;">
@@ -1365,6 +1370,13 @@ export default {
         // this.sureSaveTransterShow = false;
         return;
       }
+      if (allMoney === 0) {
+        this.$message({
+          message: "转款金额不能为0"
+        });
+        // this.sureSaveTransterShow = false;
+        return;
+      }
       if (flagArr.length != this.kuanleiVal.length) {
         this.$message({
           message: "不能选择重复款类"
@@ -1382,10 +1394,9 @@ export default {
         outType: this.selectPayInfo.moneyTypeId, //转出的款类key
         outTypeId: this.selectPayInfo.moneyTypePid, //转出的款类id
         outMoney: this.selectPayInfo.amount, //转出时款类金额
-        inId: this.transterInfoPerson.inId ? this.transterInfoPerson.inId : "", //转入的合同ID
-        inId: this.selectPayInfo.contId
-          ? this.selectPayInfo.contId
-          : this.transterInfoPerson.inId, //转入的合同ID
+        inId: this.transterInfoPerson.inId
+          ? this.transterInfoPerson.inId
+          : this.transterInfoPerson.inContractId, //转入的合同ID
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
           : "" //转入的合同编号
@@ -1875,10 +1886,10 @@ export default {
     background: @color-blue;
   }
 }
-/deep/ .pagination-info {
-  text-align: center;
-  margin-top: 30px;
-}
+// /deep/ .pagination-info {
+//   text-align: center;
+//   margin-top: 30px;
+// }
 .about-cont {
   /deep/ .cell {
     line-height: 15px;

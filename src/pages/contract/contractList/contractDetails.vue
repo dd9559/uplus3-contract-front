@@ -977,11 +977,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane
-          label="委托合同"
-          v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state"
-          name="agency"
-          >
+        <el-tab-pane label="委托合同" v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state" name="agency">
           <agency-contract
             :defaultInfo="contractDetail"
             v-if="agencyShow&&isHaveDetail"

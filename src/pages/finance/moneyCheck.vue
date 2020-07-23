@@ -406,16 +406,20 @@
               v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3"
             >审核</el-button>
             <!-- 20200630新加反审核按钮 -->
-            <el-button
-              type="text"
-              @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5&&scope.row.settleStatus!=3&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
-            >反审核</el-button>
-            <!-- <el-button
-              type="text"
-              @click="cellOpera(scope.row,'deAudit')"
-              v-if="scope.row.payStatus.value==5"
-            >反审核</el-button>-->
+            <template v-if="scope.row.contId!=0">
+              <el-button
+                type="text"
+                @click="cellOpera(scope.row,'deAudit')"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
+              >反审核</el-button>
+            </template>
+            <template v-else>
+              <el-button
+                type="text"
+                @click="cellOpera(scope.row,'deAudit')"
+                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
+              >反审核</el-button>
+            </template>
             <!-- <el-button
               type="text"
               @click="cellOpera(scope.row,'del')"

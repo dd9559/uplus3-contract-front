@@ -712,7 +712,7 @@ export default {
     let arr = [];
     if (urlParam.edit) {
       // this.inObjPerson = false
-      if (!urlParam.collect) {
+      if (!urlParam.collect || urlParam.deAudit) {
         this.getDetails({ type: 1, payId: urlParam.id });
       }
 
@@ -862,12 +862,12 @@ export default {
             //   }
             //   this.getEmploye(res.data.storeId);
             // } else {
-              // this.firstCreate.state = true;
-              // this.dep.id = this.getUser.user.depId;
-              // this.dep.name = this.getUser.user.depName;
-              // this.getEmploye(this.getUser.user.depId);
-              // this.form.inObjId = this.getUser.user.empId;
-              // this.form.inObj = this.getUser.user.name;
+            // this.firstCreate.state = true;
+            // this.dep.id = this.getUser.user.depId;
+            // this.dep.name = this.getUser.user.depName;
+            // this.getEmploye(this.getUser.user.depId);
+            // this.form.inObjId = this.getUser.user.empId;
+            // this.form.inObj = this.getUser.user.name;
             // }
           }
         });
@@ -1432,6 +1432,9 @@ export default {
               if (res.status === 200) {
                 this.fullscreenLoading = false;
                 this.$message({ message: "操作成功", type: "success" });
+                if (this.$route.query.contId!=0) {
+                  this.addInit(this.$route.query.contId);
+                }
               }
             })
             .catch(error => {

@@ -944,7 +944,7 @@
       </div>
     </el-dialog>
     <!-- 发起签署选择业主客户 -->
-    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :localChoseList="localChoseList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
     <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
       <div>合同已发起签署</div>
@@ -1180,7 +1180,7 @@ export default {
           state: false,
           name: "发起签署"
         },
-        "sign-ht-xq-data-add": {
+        "sign-ht-xq-data": {
           state: false,
           name: "编辑资料库"
         }
@@ -1204,7 +1204,8 @@ export default {
       signGuestList: [],
       choseQuery: {},
       dataBaseDialog: false,
-      choseLoading: false
+      choseLoading: false,
+      localChoseList: []
     };
   },
   created() {
@@ -2199,9 +2200,13 @@ export default {
         });
         this.signOwnerList=[].concat(owner)
         this.signGuestList=[].concat(guest)
+        this.localChoseList = (localStorage.getItem('brokerList') && JSON.parse(localStorage.getItem('brokerList')).filter(item => {
+            return item !== null
+        }))
         this.contCode = val.code;
         this.chosePersonDialog=true
     },
+    
     closeChose(val) {
       if (val.type == 'choseLoading') {
         this.choseLoading = true
@@ -2209,47 +2214,101 @@ export default {
         this.chosePersonDialog = false;
         // this.dataBaseDialog = true;
         this.choseLoading = false
-        if (val && this.choseQuery.isHaveData) {
+        console.log(!!val,898989);
+        if (val) {
           this.dataBaseDialog = true;
         }
+        // if (val && !this.choseQuery.isHaveData) {
+        //   this.dataBaseDialog = true;
+        // }
       }
     },
     toDataBase() {
-      if (this.power["sign-com-htdetail"].state) {
-        if (this.power["sign-ht-xq-data"].state) {
-          this.setPath(
-            this.$tool.getRouter(
-              ["合同", "合同列表", "合同详情"],
-              "contractList"
-            )
-          );
-          let path;
-          if (this.Msg.type === 4 || this.Msg.type === 5) {
-            path = "/detailIntention";
-          } else {
-            path = "/contractDetails";
-          }
-          this.$router.replace({
-            path: path,
-            query: {
-              type: "dataBank",
-              id: this.choseQuery.id, //合同id
-              code: this.choseQuery.code, //合同编号
-              contType: this.choseQuery.contType //合同类型
+      this.$ajax
+          .get("/api/contract/isDetailAuth", { contId: this.choseQuery.id })
+          .then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              if (res.data) {
+                console.log(this.power["sign-ht-xq-data"].state,88787878);
+                if (this.power["sign-ht-xq-data"].state) {
+                  this.setPath(
+                  this.$tool.getRouter(
+                      ["合同", "合同列表", "合同详情"],
+                      "contractList"
+                    )
+                  );
+                  let path;
+                  if (this.choseQuery.contType === 4 || this.choseQuery.contType === 5) {
+                    path = "/detailIntention";
+                  } else {
+                    path = "/contractDetails";
+                  }
+                  this.$router.replace({
+                    path: path,
+                    query: {
+                      type: "dataBank",
+                      id: this.choseQuery.id, //合同id
+                      code: this.choseQuery.code, //合同编号
+                      contType: this.choseQuery.contType //合同类型
+                    }
+                  });
+                }else {
+                  this.$message({
+                    message: "没有资料库权限,无法跳转到资料库"
+                  });
+                  this.$router.push("/contractList");
+                }
+              } else {
+                this.$message({
+                  message: "没有合同详情权限,无法跳转到资料库",
+                  type: "warning"
+                });
+                this.$router.push("/contractList");
+              }
             }
+          })
+          .catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
+            });
           });
-        } else {
-          this.$message({
-            message: "没有资料库权限,无法跳转到资料库"
-          });
-          this.$router.push("/contractList");
-        }
-      } else {
-        this.$message({
-          message: "没有合同详情权限,无法跳转到资料库"
-        });
-        this.$router.push("/contractList");
-      }
+      // if (this.power["sign-com-htdetail"].state) {
+      //   if (this.power["sign-ht-xq-data"].state) {
+      //     this.setPath(
+      //       this.$tool.getRouter(
+      //         ["合同", "合同列表", "合同详情"],
+      //         "contractList"
+      //       )
+      //     );
+      //     let path;
+      //     if (this.Msg.type === 4 || this.Msg.type === 5) {
+      //       path = "/detailIntention";
+      //     } else {
+      //       path = "/contractDetails";
+      //     }
+      //     this.$router.replace({
+      //       path: path,
+      //       query: {
+      //         type: "dataBank",
+      //         id: this.choseQuery.id, //合同id
+      //         code: this.choseQuery.code, //合同编号
+      //         contType: this.choseQuery.contType //合同类型
+      //       }
+      //     });
+      //   } else {
+      //     this.$message({
+      //       message: "没有资料库权限,无法跳转到资料库"
+      //     });
+      //     this.$router.push("/contractList");
+      //   }
+      // } else {
+      //   this.$message({
+      //     message: "没有合同详情权限,无法跳转到资料库"
+      //   });
+      //   this.$router.push("/contractList");
+      // }
     }
   },
   computed: {
@@ -2395,8 +2454,13 @@ export default {
 //     background-color:#ffffff!important
 // }
 /deep/.el-loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 9999999;
-  background-color: rgb(128, 128, 128);
+  background-color: rgba(0,0,0,0.5);
 }
 /deep/.el-table__body {
   .el-table__row {
