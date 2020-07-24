@@ -69,18 +69,18 @@
                                     </div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
                                     <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="ownerInfo[0].identifyCode">{{ownerInfo[0].identifyCode | nullData}}</span></div>
-                                    <div v-if="detailData.recordType&&detailData.recordType===10"><span>邮箱：</span>{{detailData.email}}</div> 
+                                    <div v-if="detailData.recordType&&detailData.recordType.value===10"><span>邮箱：</span>{{ownerInfo[0].email}}</div> 
                                 </li>
-                                <li v-if="detailData.recordType&&detailData.recordType===10">
+                                <li v-if="detailData.recordType&&detailData.recordType.value===10">
                                     <div class="div1" style="position:relative">
                                         <span>企业名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{ownerInfo[0].companyName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative">
+                                    <div class="div1" style="position:relative;width:200px;">
                                         <span>法人名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{ownerInfo[0].lepName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative">
+                                    <div class="div1" style="position:relative;width:300px;">
                                         <span>法人身份证号：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
                                     </div>
@@ -102,20 +102,20 @@
                                     </div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
                                     <div class="div2"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="custInfo[0].identifyCode">{{custInfo[0].identifyCode | nullData}}</span></div>
-									<div v-if="detailData.recordType&&detailData.recordType===10"><span>邮箱：</span>{{detailData.email}}</div>
+									<div v-if="detailData.recordType&&detailData.recordType.value===10"><span>邮箱：</span>{{custInfo[0].email}}</div>
                                 </li>
-                                <li v-if="detailData.recordType&&detailData.recordType===10">
+                                <li v-if="detailData.recordType&&detailData.recordType.value===10">
                                     <div class="div1" style="position:relative">
                                         <span>企业名称：</span>
-                                        <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{ownerInfo[0].companyName | nullData}}</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{custInfo[0].companyName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative">
+                                    <div class="div1" style="position:relative;width:200px;">
                                         <span>法人名称：</span>
-                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{ownerInfo[0].lepName | nullData}}</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{custInfo[0].lepName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative">
+                                    <div class="div1" style="position:relative;width:300px;">
                                         <span>法人身份证号：</span>
-                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
+                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{custInfo[0].lepIdentity | nullData}}</span>
                                     </div>
                                 </li>
                             </ul>
@@ -183,7 +183,7 @@
                     <div class="contractSubject"
                         v-if="power['sign-ht-xq-main-add'].state&&(detailData.contState.value>1||detailData.contState.value!=0&&detailData.recordType.value===2)">
                         <ul class="ulData">
-                            <li v-show="((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&$route.query.contType!=4">
+                            <li v-show="((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&detailData.recordType.value!=10">
                                 <file-up class="uploadSubject"
                                     @getUrl="uploadSubject"
                                     id="zhuti_"
@@ -221,7 +221,7 @@
                             round
                             class="search_btn"
                             @click="saveFile('main')"
-                            v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))&&$route.query.contType!=4">确认上传</el-button>
+                            v-if="power['sign-ht-xq-main-add'].state&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)&&(detailData.contState.value>1||(detailData.recordType.value===2&&detailData.contState.value!=0))&&detailData.recordType.value!=10">确认上传</el-button>
                     </div>
                 </el-tab-pane>
 
@@ -1280,11 +1280,11 @@ export default {
                         if (contperson.length > 0) {
                             for (let i = 0; i < contperson.length; i++) {
                                 if (contperson[i].personType.value == 1) {
-                                    this.ownerInfo.unshift(contperson[i]);
+                                    this.ownerInfo.unshift(contperson[0]);
                                 } else if (
                                     contperson[i].personType.value == 2
                                 ) {
-                                    this.custInfo.unshift(contperson[i]);
+                                    this.custInfo.unshift(contperson[1]);
                                 }
                             }
                         }

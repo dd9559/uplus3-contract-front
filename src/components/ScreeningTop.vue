@@ -25,7 +25,7 @@
     </div>
     <div class="btn" @click="show=!show">
       <i class="iconfont icon-zhankai"></i>
-      <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"关闭":"展开"}}</span>
+      <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"收起":"展开"}}</span>
     </div>
   </div>
 </template>
