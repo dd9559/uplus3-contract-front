@@ -379,7 +379,7 @@ export default {
       this.pageNum = 1;
       this.keyword = "";
       (this.searchTime = ""), (this.depUser = ""), (this.department = "");
-      (this.contType = ""),
+      (this.contType = []),
         (this.contStatus = ""),
         (this.signType = ""),
         (this.jobStatus = ""),
