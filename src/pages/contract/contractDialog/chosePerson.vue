@@ -75,7 +75,7 @@
                     maxlength="10"
                     @input="inputOnly(index,'name')"
                   />
-                  <i
+                  <!-- <i
                     :class="item.showSelectName?'el-icon-arrow-up':'el-icon-arrow-down'"
                     @click="showSelect(item,index)"
                   ></i>
@@ -85,22 +85,22 @@
                   >
                     <li
                       v-for="(childItem,childIndex) in selectNameList"
-                      :class="item.name===childItem.name?'selected':''"
+                      :class="item.name===childItem.name && item.mobile===childItem.mobile?'selected':''"
                       @click="selectName(childItem,index)"
                       :key="childIndex"
                     >{{childItem.name}}</li>
-                  </ul>
+                  </ul> -->
                 </li>
                 <li>
                   <span class="form-label">角色：</span>
                   <el-select size="small" v-model="item.roleName" placeholder="请选择">
-                    <template v-for="item in dictionary['781']">
+                    <template v-for="childItem in dictionary['781']">
                       <el-option
-                        v-if="item.key>2"
-                        :key="item.key"
-                        :label="item.value"
-                        :value="item.key"
-                        @click.native="selectRole(item,index)"
+                        v-if="childItem.key>2"
+                        :key="childItem.key"
+                        :label="childItem.value"
+                        :value="childItem.key"
+                        @click.native="selectRole(childItem,index,item)"
                       ></el-option>
                     </template>
                   </el-select>
@@ -112,7 +112,7 @@
                     maxlength="11"
                     placeholder="请输入"
                     class="inputStyle"
-                    @input="verifyMobile_(item.mobile)"
+                    @input="verifyMobile_(item,index)"
                     v-model="item.mobile"
                   />
                 </li>
@@ -140,7 +140,7 @@
                     type="text"
                     :maxlength="item.cardType===1?18:item.cardType===2?30:item.cardType===3?20:10"
                     class="inputStyle"
-                    @input="verifyIdcard(item,2)"
+                    @input="verifyIdcard(item,2,index)"
                     placeholder="请输入"
                     v-model="item.encryptionCode"
                   />
@@ -172,7 +172,7 @@
                     type="text"
                     class="inputStyle"
                     placeholder="请输入"
-                    @input="verifyIdcard(item)"
+                    @input="verifyIdcard(item,1,index)"
                     maxlength="18"
                     v-model="item.lepIdentity"
                   />
@@ -210,6 +210,7 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 export default {
+  name: 'chosePerson',
   mixins: [MIXINS],
   props: {
     dialogVisible: {
@@ -239,6 +240,12 @@ export default {
       default() {
         return "";
       }
+    },
+    localChoseList: {
+      type: Array,
+      default() {
+        return []
+      }
     }
   },
   data() {
@@ -261,20 +268,50 @@ export default {
         //数据字典
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
-      }
+      },
+      checkSignInfo: [],
+      ownerMobileList: [], //业主手机号
+      guestMobileList: [], //客户手机号
+      brokerMobileList: [], //签署人手机号
     };
   },
   created() {
     this.getDictionary(); //字典
   },
   methods: {
-    selectRole(val, index) {
+    // 选择角色
+    selectRole(val,index,parent) {
+      let isSelectFlag = false;
+      isSelectFlag = this.brokerList.some((signItem,index) => {
+        if (parent.id !== signItem.id) {
+          console.log(signItem.roleName,val.key,"brokerList");
+          return signItem.roleName === val.key;
+        }
+      });
+      if (!isSelectFlag && localStorage.getItem("brokerList")) {
+        let arr = JSON.parse(localStorage.getItem("brokerList")).filter(item => {
+            return item !== null
+        })
+        for(let i = 0; i< arr.length;i++) {
+          if ((
+            arr[i].roleName === val.key &&
+            arr[i].contCode === this.contCode
+          )) {
+            this.brokerList[index].roleName = val.key;
+            return
+          }
+        }
+      }
+      if (isSelectFlag) {
+        this.brokerList[index].roleName = "";
+        this.$message("已选择过该角色，请重新选择");
+        return
+      }
       this.brokerList[index].roleName = "";
       let param = {
         contCode: this.contCode,
         signerType: Number(val.key)
       };
-      // debugger
       this.$ajax
         .get("/api/app/contract/checkSignPosition", param)
         .then(res => {
@@ -282,31 +319,22 @@ export default {
           if (res.data) {
             let isSelectFlag = false;
             isSelectFlag = this.brokerList.some(signItem => {
-              return signItem.roleName === val.key;
+              if (parent.id !== signItem.id) {
+                return signItem.roleName === val.key;
+              }
+              // return signItem.roleName === val.key;
             });
-            if (!isSelectFlag && localStorage.getItem("brokerList")) {
-              isSelectFlag = JSON.parse(
-                localStorage.getItem("brokerList")
-              ).some(signItem => {
-                return (
-                  signItem.roleName === val.key &&
-                  signItem.contCode === this.contCode
-                );
-              });
-            }
             if (isSelectFlag) {
               this.brokerList[index].roleName = "";
               this.$message("已选择过该角色，请重新选择");
             } else {
               this.brokerList[index].roleName = val.key;
             }
-            // this.brokerList[index].roleName = val.key
           } else {
             this.$message("本合同不支持该角色签署");
           }
         })
         .catch(error => {
-          // console.log(error,898989);
           this.$message(error);
         });
     },
@@ -420,7 +448,7 @@ export default {
       return false;
     },
     //身份证验证
-    verifyIdcard(value, type = 1) {
+    verifyIdcard(value, type,index) {
       // let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
       // let reg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/
       if (type == 2) {
@@ -430,7 +458,29 @@ export default {
               message: "身份证格式不正确",
               type: "warning"
             });
+            this.$set(this.brokerList[index],'checkEncryptionCode',{
+              flag: true,
+              key: 'encryptionCode',
+              type: 'warning',
+              msg: '身份证格式不正确'
+            })
+          } else {
+            if (this.brokerList[index].checkEncryptionCode) {
+              this.$set(this.brokerList[index],'checkEncryptionCode',{
+                flag: false,
+                key: 'encryptionCode',
+                type: 'warning',
+                msg: '身份证格式不正确'
+              })
+            }
           }
+        } else {
+          this.$set(this.brokerList[index],'checkEncryptionCode',{
+            flag: true,
+            key: 'encryptionCode',
+            type: 'warning',
+            msg: '身份证格式不正确'
+          })
         }
       } else if (value.lepIdentity.length === 18) {
         if (!this.isIdCardNo(value.lepIdentity) && value.cardType === 3) {
@@ -438,10 +488,33 @@ export default {
             message: "法人身份证格式不正确",
             type: "warning"
           });
+          this.$set(this.brokerList[index],'checkLepIdentity',{
+            flag: true,
+            key: 'lepIdentity',
+            type: 'warning',
+            msg: '法人身份证格式不正确'
+          })
+        }else {
+          if (this.brokerList[index].checkMobile) {
+            this.$set(this.brokerList[index],'checkLepIdentity',{
+              flag: false,
+              key: 'lepIdentity',
+              type: 'warning',
+              msg: '法人身份证格式不正确'
+            })
+          }
         }
+      } else {
+        this.$set(this.brokerList[index],'checkLepIdentity',{
+          flag: true,
+          key: 'lepIdentity',
+          type: 'warning',
+          msg: '法人身份证格式不正确'
+        })
       }
     },
-    verifyMobile_(value) {
+    verifyMobile_(item,index) {
+      let value = item.mobile
       if (value.length >= 11) {
         let reg = /^1[0-9]{10}$/;
         let reg_ = /^0\d{2,3}\-?\d{7,8}$/;
@@ -450,46 +523,98 @@ export default {
             message: "电话号码格式不正确",
             type: "warning"
           });
+          this.$set(this.brokerList[index],'checkMobile',{
+            flag: true,
+            key: 'mobile',
+            type: 'warning',
+            msg: '电话号码格式不正确'
+          })
+        } else {
+          let checkBrokerMobole = (this.brokerMobileList && this.brokerMobileList.map((item,i) => {
+            if (item.index !== index) {
+              return item.mobile
+            } else {
+              return -1
+            }
+          }))
+          if (this.ownerMobileList.includes(value) || this.guestMobileList.includes(value) || checkBrokerMobole.includes(value)) {
+            // this.$message({
+            //   message: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同",
+            //   type: "warning"
+            // });
+            this.$set(this.brokerList[index],'checkMobile',{
+              flag: true,
+              key: 'mobile',
+              type: 'warning',
+              msg: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同"
+            })
+          } else {
+            if (item.checkMobile) {
+              this.$set(this.brokerList[index],'checkMobile',{
+                flag: false
+              })
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              this.brokerMobileList.push({mobile:value,index:index})
+            } else {
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList.push({mobile:value,index:index})
+            }
+          }
         }
-      }
-    },
-    showSelect(item, index) {
-      item.showSelectName = !item.showSelectName;
-      this.selectNameList =
-        localStorage.getItem("brokerList") &&
-        JSON.parse(localStorage.getItem("brokerList"));
-    },
-    selectName(item, index) {
-      if (item.contCode === this.contCode) {
-        this.$set(
-          this.brokerList,
-          index,
-          JSON.parse(
-            JSON.stringify(
-              Object.assign({}, item, {
-                id: Date.parse(new Date()),
-                contCode: this.contCode
-              })
-            )
-          )
-        );
       } else {
-        this.$set(
-          this.brokerList,
-          index,
-          JSON.parse(
-            JSON.stringify(
-              Object.assign({}, item, {
-                id: Date.parse(new Date()),
-                contCode: this.contCode
-              })
-            )
-          )
-        );
-        this.brokerList[index].roleName = "";
+        this.$set(this.brokerList[index],'checkMobile',{
+          flag: true,
+          key: 'mobile',
+          type: 'warning',
+          msg: '电话号码格式不正确'
+        })
       }
-      this.brokerList[index].showSelectName = false;
     },
+    // 打开根据名字选择缓存下拉框
+    // showSelect(item, index) {
+    //   item.showSelectName = !item.showSelectName;
+    //   this.selectNameList =
+    //     localStorage.getItem("brokerList") &&
+    //     JSON.parse(localStorage.getItem("brokerList"));
+    // },
+    // 根据名字选择缓存
+    // selectName(item, index) {
+    //   if (item.contCode === this.contCode) {
+    //     this.$set(
+    //       this.brokerList,
+    //       index,
+    //       JSON.parse(
+    //         JSON.stringify(
+    //           Object.assign({}, item, {
+    //             id: Date.parse(new Date()),
+    //             contCode: this.contCode
+    //           })
+    //         )
+    //       )
+    //     );
+    //   } else {
+    //     this.$set(
+    //       this.brokerList,
+    //       index,
+    //       JSON.parse(
+    //         JSON.stringify(
+    //           Object.assign({}, item, {
+    //             id: Date.parse(new Date()),
+    //             contCode: this.contCode
+    //           })
+    //         )
+    //       )
+    //     );
+    //     this.brokerList[index].roleName = "";
+    //   }
+    //   this.brokerList[index].showSelectName = false;
+    // },
     inputOnly(index, type) {
       if (type === "name" || type === "companyName" || type === "lepName") {
         this.brokerList[index][type] = this.$tool.textInput(
@@ -513,7 +638,8 @@ export default {
         if (index > -1 && this.ownerList.length !== 1) {
           this.choseOwnerM.splice(index, 1);
           this.choseOwner.splice(index, 1);
-        } else {
+        } else if (this.ownerList.length !== 1){
+          console.log(this.ownerList.length,this.ownerList);
           this.choseOwnerM.push(val.mobile);
           this.choseOwner.push(val);
         }
@@ -522,7 +648,7 @@ export default {
         if (index > -1 && this.guestList.length !== 1) {
           this.choseGuestM.splice(index, 1);
           this.choseGuest.splice(index, 1);
-        } else {
+        } else if (this.guestList.length !== 1) {
           this.choseGuestM.push(val.mobile);
           this.choseGuest.push(val);
         }
@@ -532,6 +658,7 @@ export default {
           this.choseBrokerId.splice(index, 1);
           this.choseBroker.splice(index, 1);
         } else {
+          // 选择时判断是否填写完整
           if (val.cardType === 3) {
             for (let prop in val) {
               if (prop !== "showSelectName" && !val[prop]) {
@@ -578,6 +705,7 @@ export default {
       if (this.brokerList.length < 5) {
         let item = {
           id: Date.parse(new Date()),
+          time: Date.parse(new Date()),
           contCode: this.contCode,
           name: "",
           mobile: "",
@@ -612,8 +740,13 @@ export default {
       if (i > -1) {
         this.choseBrokerId.splice(i, 1);
         this.choseBroker.splice(i, 1);
+        this.brokerList.splice(this.delIndex, 1);
+        let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+        oldLocal = oldLocal.filter((item,index) => {
+          return item.id !== this.delId
+        })
+        localStorage.setItem("brokerList", JSON.stringify(oldLocal));
       }
-      this.brokerList.splice(this.delIndex, 1);
       this.dialogDel = false;
     },
     //验证居间签署人信息是否填写完整
@@ -621,6 +754,24 @@ export default {
       let state = false;
       circulation: for (let i = 0; i < this.choseBroker.length; i++) {
         const element = this.choseBroker[i];
+        if (element.checkMobile && element.checkMobile.flag) {
+          return this.$message({
+            message: element.checkMobile.msg,
+            type: element.checkMobile.type
+          });
+        }
+        if (element.cardType === 1 && element.checkEncryptionCode && element.checkEncryptionCode.flag) {
+          return this.$message({
+            message: element.checkEncryptionCode.msg,
+            type: element.checkEncryptionCode.type
+          });
+        }
+        if (element.cardType === 3 && element.checkLepIdentity && element.checkLepIdentity.flag) {
+          return this.$message({
+            message: element.checkLepIdentity.msg,
+            type: element.checkLepIdentity.type
+          });
+        }
         if (element.cardType === 3) {
           for (let prop in element) {
             if (prop !== "showSelectName" && !element[prop]) {
@@ -651,9 +802,11 @@ export default {
       let localBrokerList = this.brokerList.filter(item => {
         return this.choseBrokerId.includes(item.id);
       });
-      localBrokerList = localBrokerList.concat(
-        JSON.parse(localStorage.getItem("brokerList")) || []
-      );
+      let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+      oldLocal = oldLocal.filter((item,index) => {
+        return !this.choseBrokerId.includes(item.id)
+      })
+      localBrokerList = localBrokerList.concat(oldLocal);
       if (localBrokerList.length > 5) {
         localBrokerList.splice(5, localBrokerList.length - 1);
       }
@@ -663,6 +816,22 @@ export default {
     //确认/取消
     submit(type) {
       if (type === "confirm") {
+        // let checkBrokerMobole = []
+        // this.brokerMobileList.map(item => {
+        //   if (item.index !== -1) {
+        //     checkBrokerMobole.push(item.mobile)
+        //   }
+        // })
+        // console.log(checkBrokerMobole,888888);
+        // for(let i = 0; i< checkBrokerMobole.length;i++) {
+        //   if (checkBrokerMobole[i] === checkBrokerMobole[i+1]) {
+        //     this.$message({
+        //       message: "手机号不能与已添加签署人手机号相同",
+        //       type: "warning"
+        //     });
+        //     return
+        //   }
+        // }
         if (this.choseOwner.length > 0 && this.choseGuest.length > 0) {
           let param = {
             contId: this.getChoseQuery.id,
@@ -672,48 +841,91 @@ export default {
           };
           let owner = [],
             customer = [],
-            sign = [];
+            signer = [];
           let localBrokerList = this.brokerList.filter(item => {
             return this.choseBrokerId.includes(item.id);
           });
           localBrokerList.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: element.roleName
-            };
-            sign.push(item);
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                companyName: element.companyName,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: element.roleName
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: element.roleName
+              };
+            }
+            signer.push(item);
           });
           this.choseOwner.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 0
-            };
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 0,
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 0,
+              };
+            }
             owner.push(item);
           });
           this.choseGuest.forEach(element => {
-            let item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 1
-            };
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 1
+              };
+            }else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 1
+              };
+            }
             customer.push(item);
           });
           if (this.verify()) return;
           this.$emit("closeChose", { type: "choseLoading" });
           param.owner = owner;
           param.customer = customer;
-          param.sign = sign;
+          param.signer = signer.length>0?signer:null;
           this.$ajax
             .postJSON("/api/app/contract/sendCont", param)
             .then(res => {
@@ -740,22 +952,67 @@ export default {
       }
     }
   },
+  watch: {
+    localChoseList(val) {
+      this.choseBrokerId = []
+      this.choseBroker = []
+      let includeRoleList = []
+      if (val&&val.length > 0) {
+        this.brokerList = val.filter(item => {
+          if (includeRoleList.includes(item.id)) {
+            return false
+          } else {
+            if (item.contCode === this.contCode) {
+              this.choseBrokerId.push(item.id);
+              this.choseBroker.push(item);
+              includeRoleList.push(item.id)
+              this.brokerMobileList.push({mobile:item.mobile,index:-1})
+              return true
+            }
+          }
+        })
+      }
+    },
+    ownerList(val) {
+      this.choseOwnerM = []
+      this.choseOwner = []
+      if (this.ownerList.length == 1) {
+        this.choseOwnerM.push(this.ownerList[0].mobile);
+        this.choseOwner.push(this.ownerList[0]);
+      }
+      this.ownerMobileList = val.map(item => {
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
+      })
+    },
+    guestList(val) {
+      this.choseGuestM = []
+      this.choseGuest = []
+      if (this.guestList.length == 1) {
+        this.choseGuestM.push(this.guestList[0].mobile);
+        this.choseGuest.push(this.guestList[0]);
+        // this.chose("guest", this.guestList[0]);
+      }
+      this.guestMobileList = val.map(item => {
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
+      })
+    },
+  },
   computed: {
     getDialogVisible() {
       return this.dialogVisible;
     },
     getOwnerList() {
-      if (this.ownerList.length == 1) {
-        console.log("-000000-090-9-09-09-09-0");
-        this.chose("owner", this.ownerList[0]);
-      }
       return this.ownerList;
     },
     getGuestList() {
-      if (this.guestList.length == 1) {
-        console.log("-000000-090-9-09-09-09-0");
-        this.chose("guest", this.guestList[0]);
-      }
       return this.guestList;
     },
     getChoseQuery() {

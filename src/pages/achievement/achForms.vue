@@ -49,7 +49,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="合同类型">
-            <el-select v-model="contType" multiple clearable placeholder="请选择">
+            <el-select v-model="contType" style="width:200px" multiple clearable placeholder="请选择">
               <el-option
                 v-for="item in dictionary['10']"
                 v-if="[1,2,3].includes(item.key)"
@@ -379,7 +379,7 @@ export default {
       this.pageNum = 1;
       this.keyword = "";
       (this.searchTime = ""), (this.depUser = ""), (this.department = "");
-      (this.contType = ""),
+      (this.contType = []),
         (this.contStatus = ""),
         (this.signType = ""),
         (this.jobStatus = ""),

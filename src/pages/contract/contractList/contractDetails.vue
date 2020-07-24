@@ -2438,11 +2438,11 @@ export default {
       this.saveBtnShow = !this.saveBtnShow;
       this.editBtnShow = !this.editBtnShow;
       let state = this.contractDetail.laterStageState.value;
-      if (state == 1 || state == 2 || state == 4) {
-        this.reportFlowShow = false;
-      } else {
+      // if (state == 1 || state == 2 || state == 4) {
+      //   this.reportFlowShow = false;
+      // } else {
         this.reportFlowShow = true;
-      }
+      // }
     },
     BtnShowFn() {
       this.saveBtnShow = false;
@@ -2464,7 +2464,7 @@ export default {
       if (tab.name === "first") {
         this.getAchievement(); //业绩分成
       } else if (tab.name === "second") {
-        if (this.contractDetail.contState.value < 2 && this.contractDetail.recordType.value != 2) {
+        if ((this.contractDetail.contState.value < 2 && this.contractDetail.recordType.value != 2)&&this.contractDetail.recordType.value != 10) {
           this.$message({
             message: "合同未签章,不允许上传合同主体",
             type: "warning"

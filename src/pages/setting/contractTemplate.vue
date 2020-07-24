@@ -479,6 +479,7 @@ export default {
             //预览
             else if (type === 2) {
                 this.uploadType = row.flag;
+                console.log(row.id,'id');
                 this.$router.push({
                     path: "/contraPreview",
                     query: {
