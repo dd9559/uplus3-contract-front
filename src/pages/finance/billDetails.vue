@@ -312,12 +312,12 @@
           </el-table-column>
           <el-table-column align="center" label="转出合同/款类">
             <template slot-scope="scope">
-              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+"-"+scope.row.outMoney+"元"}}</span>
+              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+"  "+scope.row.outMoney+"元"}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转入合同/款类">
             <template slot-scope="scope">
-              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+"-"+scope.row.inMoney+"元"}}</span>
+              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+"  "+scope.row.inMoney+"元"}}</span>
             </template>
           </el-table-column>
         </el-table>
