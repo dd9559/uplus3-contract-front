@@ -740,7 +740,7 @@ export default {
       if (i > -1) {
         this.choseBrokerId.splice(i, 1);
         this.choseBroker.splice(i, 1);
-        this.brokerList.splice(this.delIndex, 1);
+        this.brokerList.splice(this.index,1)
         let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
         oldLocal = oldLocal.filter((item,index) => {
           return item.id !== this.delId
