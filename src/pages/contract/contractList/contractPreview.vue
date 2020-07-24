@@ -41,7 +41,7 @@
         <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2&&detailPower" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
 
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId&&detailPower">审核</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state&&detailPower">资料库</el-button>
       </div>
@@ -68,7 +68,7 @@
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
         <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
-        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId&&detailPower">审核</el-button>
+        <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-entrust-edit'].state&&examineState<0&&isCanAudit===1&&detailPower" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
       </div>
