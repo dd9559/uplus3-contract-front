@@ -80,9 +80,9 @@
                                         <span>法人名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{ownerInfo[0].lepName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative;width:300px;">
+                                    <div class="div1" style="position:relative;width:330px;">
                                         <span>法人身份证号：</span>
-                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
+                                        <span :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
                                     </div>
                                 </li>
                             </ul>
@@ -113,9 +113,9 @@
                                         <span>法人名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].lepName">{{custInfo[0].lepName | nullData}}</span>
                                     </div>
-                                    <div class="div1" style="position:relative;width:300px;">
+                                    <div class="div1" style="position:relative;width:330px;">
                                         <span>法人身份证号：</span>
-                                        <span class="ellipsisStyle" :title="ownerInfo[0].lepIdentity">{{custInfo[0].lepIdentity | nullData}}</span>
+                                        <span :title="ownerInfo[0].lepIdentity">{{custInfo[0].lepIdentity | nullData}}</span>
                                     </div>
                                 </li>
                             </ul>

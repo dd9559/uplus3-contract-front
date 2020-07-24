@@ -437,7 +437,8 @@
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
                        scope.row.payStatusValue!==11)||
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)||
+                       (scope.row.isDeal==0&&scope.row.billStatus.value!=2)"
             >开票</el-button>
             <el-button
               type="text"

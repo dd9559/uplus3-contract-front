@@ -245,15 +245,15 @@
                   <el-input v-model="contractForm.contPersons[1].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
-                <el-form-item v-if="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].companyName'" :rules="{validator: nameExp, trigger:'change'}">
+                <el-form-item v-show="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].companyName'" :rules="{validator: lepNameExp, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[1].companyName" :disabled="canInput" clearable placeholder="企业名称" class="custwidth" :maxlength="100" @clear="clearIdentify(0)" @input="cutInfo('companyName',0)"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].lepName'" :rules="{validator: nameExp, trigger:'change'}">
+                <el-form-item v-show="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].lepName'" :rules="{validator: lepNameExp, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[1].lepName" :disabled="canInput" clearable placeholder="法人名称" class="custwidth" :maxlength="10" @clear="clearIdentify(0)" @input="cutInfo('lepName',0)"></el-input>
                 </el-form-item>
 
-                <el-form-item v-if="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].lepIdentity'" :rules="{validator: lepIdentity, trigger:'change'}">
+                <el-form-item v-show="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].lepIdentity'" :rules="{validator: lepIdentity, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[1].lepIdentity" :disabled="canInput" clearable placeholder="法人身份证号码" class="custwidth" :maxlength="18" @clear="clearIdentify(0)" @input="cutInfo('lepIdentity',0)"></el-input>
                 </el-form-item>
 
@@ -660,11 +660,16 @@ export default {
     },
 
     lepIdentity(rule, value, callback){
-      if (!value || value == '') {
+      if(this.recordType==10&&this.contractForm.contPersons[1].cardType==3){
+        if (!value || value == '') {
           return callback(new Error("请输入证件号"));
-      } else if (!this.isIdCardNo(value)) {
-        // debugger
-        callback(new Error("请输入正确格式的证件号"));
+        } else if (!this.isIdCardNo(value)) {
+          callback(new Error("请输入正确格式的证件号"));
+        }else{
+          callback()
+        }
+      }else{
+        callback()
       }
     },
 
@@ -719,6 +724,21 @@ export default {
       }else if (!namereg.test(value)) {
         callback(new Error("只能输入大小写字母和汉字"));
       } else {
+        callback();
+      }
+    },
+
+    lepNameExp(rule, value, callback) {
+      let namereg = /^[a-zA-Z\u4e00-\u9fa5]*$/;
+      if(this.recordType==10&&this.contractForm.contPersons[1].cardType==3){
+        if (!value || value == '') {
+          return callback(new Error("请输入姓名"));
+        }else if (!namereg.test(value)) {
+          callback(new Error("只能输入大小写字母和汉字"));
+        } else {
+          callback();
+        }
+      }else{
         callback();
       }
     },
