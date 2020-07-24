@@ -272,6 +272,7 @@ export default {
       checkSignInfo: [],
       ownerMobileList: [], //业主手机号
       guestMobileList: [], //客户手机号
+      brokerMobileList: [], //签署人手机号
     };
   },
   created() {
@@ -529,22 +530,40 @@ export default {
             msg: '电话号码格式不正确'
           })
         } else {
-          if (this.ownerMobileList.includes(value) || this.guestMobileList.includes(value)) {
-            this.$message({
-              message: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":"手机号不能与客户手机号相同",
-              type: "warning"
-            });
+          let checkBrokerMobole = (this.brokerMobileList && this.brokerMobileList.map((item,i) => {
+            if (item.index !== index) {
+              return item.mobile
+            } else {
+              return -1
+            }
+          }))
+          if (this.ownerMobileList.includes(value) || this.guestMobileList.includes(value) || checkBrokerMobole.includes(value)) {
+            // this.$message({
+            //   message: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同",
+            //   type: "warning"
+            // });
             this.$set(this.brokerList[index],'checkMobile',{
               flag: true,
               key: 'mobile',
               type: 'warning',
-              msg: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":"手机号不能与客户手机号相同"
+              msg: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同"
             })
           } else {
             if (item.checkMobile) {
               this.$set(this.brokerList[index],'checkMobile',{
                 flag: false
               })
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              this.brokerMobileList.push({mobile:value,index:index})
+            } else {
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList.push({mobile:value,index:index})
             }
           }
         }
@@ -721,8 +740,13 @@ export default {
       if (i > -1) {
         this.choseBrokerId.splice(i, 1);
         this.choseBroker.splice(i, 1);
+        this.brokerList.splice(this.delIndex, 1);
+        let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+        oldLocal = oldLocal.filter((item,index) => {
+          return item.id !== this.delId
+        })
+        localStorage.setItem("brokerList", JSON.stringify(oldLocal));
       }
-      this.brokerList.splice(this.delIndex, 1);
       this.dialogDel = false;
     },
     //验证居间签署人信息是否填写完整
@@ -792,6 +816,22 @@ export default {
     //确认/取消
     submit(type) {
       if (type === "confirm") {
+        // let checkBrokerMobole = []
+        // this.brokerMobileList.map(item => {
+        //   if (item.index !== -1) {
+        //     checkBrokerMobole.push(item.mobile)
+        //   }
+        // })
+        // console.log(checkBrokerMobole,888888);
+        // for(let i = 0; i< checkBrokerMobole.length;i++) {
+        //   if (checkBrokerMobole[i] === checkBrokerMobole[i+1]) {
+        //     this.$message({
+        //       message: "手机号不能与已添加签署人手机号相同",
+        //       type: "warning"
+        //     });
+        //     return
+        //   }
+        // }
         if (this.choseOwner.length > 0 && this.choseGuest.length > 0) {
           let param = {
             contId: this.getChoseQuery.id,
@@ -926,6 +966,7 @@ export default {
               this.choseBrokerId.push(item.id);
               this.choseBroker.push(item);
               includeRoleList.push(item.id)
+              this.brokerMobileList.push({mobile:item.mobile,index:-1})
               return true
             }
           }
@@ -940,7 +981,11 @@ export default {
         this.choseOwner.push(this.ownerList[0]);
       }
       this.ownerMobileList = val.map(item => {
-        return item.mobile
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
       })
     },
     guestList(val) {
@@ -952,7 +997,11 @@ export default {
         // this.chose("guest", this.guestList[0]);
       }
       this.guestMobileList = val.map(item => {
-        return item.mobile
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
       })
     },
   },
