@@ -2438,11 +2438,11 @@ export default {
       this.saveBtnShow = !this.saveBtnShow;
       this.editBtnShow = !this.editBtnShow;
       let state = this.contractDetail.laterStageState.value;
-      if (state == 1 || state == 2 || state == 4) {
-        this.reportFlowShow = false;
-      } else {
+      // if (state == 1 || state == 2 || state == 4) {
+      //   this.reportFlowShow = false;
+      // } else {
         this.reportFlowShow = true;
-      }
+      // }
     },
     BtnShowFn() {
       this.saveBtnShow = false;
