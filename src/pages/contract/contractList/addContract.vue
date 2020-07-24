@@ -11,7 +11,7 @@
                 <div class="contractMsg">
                     <p>
                         合同信息
-                        <span v-if="isDeal||contractForm.dealById" class="toCommission">
+                        <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
                             </span>
