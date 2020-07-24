@@ -376,6 +376,7 @@ export default {
       if(emptyInput1.length===0&&emptyInput2.length===0){
 				param.isCanAudit=1
 			}
+			// 保存合同模板的值
       this.$ajax.postJSON('/api/contract/updateHtml', param).then(res => {
 				res=res.data
 				if(res.status===200){
