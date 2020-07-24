@@ -210,6 +210,7 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 export default {
+  name: 'chosePerson',
   mixins: [MIXINS],
   props: {
     dialogVisible: {
@@ -268,13 +269,17 @@ export default {
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
       },
-      checkSignInfo: []
+      checkSignInfo: [],
+      ownerMobileList: [], //业主手机号
+      guestMobileList: [], //客户手机号
+      brokerMobileList: [], //签署人手机号
     };
   },
   created() {
     this.getDictionary(); //字典
   },
   methods: {
+    // 选择角色
     selectRole(val,index,parent) {
       let isSelectFlag = false;
       isSelectFlag = this.brokerList.some((signItem,index) => {
@@ -307,7 +312,6 @@ export default {
         contCode: this.contCode,
         signerType: Number(val.key)
       };
-      // debugger
       this.$ajax
         .get("/api/app/contract/checkSignPosition", param)
         .then(res => {
@@ -526,13 +530,41 @@ export default {
             msg: '电话号码格式不正确'
           })
         } else {
-          if (item.checkMobile) {
+          let checkBrokerMobole = (this.brokerMobileList && this.brokerMobileList.map((item,i) => {
+            if (item.index !== index) {
+              return item.mobile
+            } else {
+              return -1
+            }
+          }))
+          if (this.ownerMobileList.includes(value) || this.guestMobileList.includes(value) || checkBrokerMobole.includes(value)) {
+            // this.$message({
+            //   message: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同",
+            //   type: "warning"
+            // });
             this.$set(this.brokerList[index],'checkMobile',{
-              flag: false,
+              flag: true,
               key: 'mobile',
               type: 'warning',
-              msg: '电话号码格式不正确'
+              msg: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同"
             })
+          } else {
+            if (item.checkMobile) {
+              this.$set(this.brokerList[index],'checkMobile',{
+                flag: false
+              })
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              this.brokerMobileList.push({mobile:value,index:index})
+            } else {
+              this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
+                return item.index !== index
+              }))
+              // this.brokerMobileList.push(value)
+              this.brokerMobileList.push({mobile:value,index:index})
+            }
           }
         }
       } else {
@@ -544,43 +576,45 @@ export default {
         })
       }
     },
-    showSelect(item, index) {
-      item.showSelectName = !item.showSelectName;
-      this.selectNameList =
-        localStorage.getItem("brokerList") &&
-        JSON.parse(localStorage.getItem("brokerList"));
-    },
-    selectName(item, index) {
-      if (item.contCode === this.contCode) {
-        this.$set(
-          this.brokerList,
-          index,
-          JSON.parse(
-            JSON.stringify(
-              Object.assign({}, item, {
-                id: Date.parse(new Date()),
-                contCode: this.contCode
-              })
-            )
-          )
-        );
-      } else {
-        this.$set(
-          this.brokerList,
-          index,
-          JSON.parse(
-            JSON.stringify(
-              Object.assign({}, item, {
-                id: Date.parse(new Date()),
-                contCode: this.contCode
-              })
-            )
-          )
-        );
-        this.brokerList[index].roleName = "";
-      }
-      this.brokerList[index].showSelectName = false;
-    },
+    // 打开根据名字选择缓存下拉框
+    // showSelect(item, index) {
+    //   item.showSelectName = !item.showSelectName;
+    //   this.selectNameList =
+    //     localStorage.getItem("brokerList") &&
+    //     JSON.parse(localStorage.getItem("brokerList"));
+    // },
+    // 根据名字选择缓存
+    // selectName(item, index) {
+    //   if (item.contCode === this.contCode) {
+    //     this.$set(
+    //       this.brokerList,
+    //       index,
+    //       JSON.parse(
+    //         JSON.stringify(
+    //           Object.assign({}, item, {
+    //             id: Date.parse(new Date()),
+    //             contCode: this.contCode
+    //           })
+    //         )
+    //       )
+    //     );
+    //   } else {
+    //     this.$set(
+    //       this.brokerList,
+    //       index,
+    //       JSON.parse(
+    //         JSON.stringify(
+    //           Object.assign({}, item, {
+    //             id: Date.parse(new Date()),
+    //             contCode: this.contCode
+    //           })
+    //         )
+    //       )
+    //     );
+    //     this.brokerList[index].roleName = "";
+    //   }
+    //   this.brokerList[index].showSelectName = false;
+    // },
     inputOnly(index, type) {
       if (type === "name" || type === "companyName" || type === "lepName") {
         this.brokerList[index][type] = this.$tool.textInput(
@@ -604,7 +638,8 @@ export default {
         if (index > -1 && this.ownerList.length !== 1) {
           this.choseOwnerM.splice(index, 1);
           this.choseOwner.splice(index, 1);
-        } else {
+        } else if (this.ownerList.length !== 1){
+          console.log(this.ownerList.length,this.ownerList);
           this.choseOwnerM.push(val.mobile);
           this.choseOwner.push(val);
         }
@@ -613,7 +648,7 @@ export default {
         if (index > -1 && this.guestList.length !== 1) {
           this.choseGuestM.splice(index, 1);
           this.choseGuest.splice(index, 1);
-        } else {
+        } else if (this.guestList.length !== 1) {
           this.choseGuestM.push(val.mobile);
           this.choseGuest.push(val);
         }
@@ -623,6 +658,7 @@ export default {
           this.choseBrokerId.splice(index, 1);
           this.choseBroker.splice(index, 1);
         } else {
+          // 选择时判断是否填写完整
           if (val.cardType === 3) {
             for (let prop in val) {
               if (prop !== "showSelectName" && !val[prop]) {
@@ -704,8 +740,13 @@ export default {
       if (i > -1) {
         this.choseBrokerId.splice(i, 1);
         this.choseBroker.splice(i, 1);
+        this.brokerList.splice(this.delIndex, 1);
+        let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+        oldLocal = oldLocal.filter((item,index) => {
+          return item.id !== this.delId
+        })
+        localStorage.setItem("brokerList", JSON.stringify(oldLocal));
       }
-      this.brokerList.splice(this.delIndex, 1);
       this.dialogDel = false;
     },
     //验证居间签署人信息是否填写完整
@@ -761,9 +802,11 @@ export default {
       let localBrokerList = this.brokerList.filter(item => {
         return this.choseBrokerId.includes(item.id);
       });
-      localBrokerList = localBrokerList.concat(
-        JSON.parse(localStorage.getItem("brokerList")) || []
-      );
+      let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+      oldLocal = oldLocal.filter((item,index) => {
+        return !this.choseBrokerId.includes(item.id)
+      })
+      localBrokerList = localBrokerList.concat(oldLocal);
       if (localBrokerList.length > 5) {
         localBrokerList.splice(5, localBrokerList.length - 1);
       }
@@ -773,6 +816,22 @@ export default {
     //确认/取消
     submit(type) {
       if (type === "confirm") {
+        // let checkBrokerMobole = []
+        // this.brokerMobileList.map(item => {
+        //   if (item.index !== -1) {
+        //     checkBrokerMobole.push(item.mobile)
+        //   }
+        // })
+        // console.log(checkBrokerMobole,888888);
+        // for(let i = 0; i< checkBrokerMobole.length;i++) {
+        //   if (checkBrokerMobole[i] === checkBrokerMobole[i+1]) {
+        //     this.$message({
+        //       message: "手机号不能与已添加签署人手机号相同",
+        //       type: "warning"
+        //     });
+        //     return
+        //   }
+        // }
         if (this.choseOwner.length > 0 && this.choseGuest.length > 0) {
           let param = {
             contId: this.getChoseQuery.id,
@@ -903,35 +962,57 @@ export default {
           if (includeRoleList.includes(item.id)) {
             return false
           } else {
-            this.choseBrokerId.push(item.id);
-            this.choseBroker.push(item);
-            includeRoleList.push(item.id)
-            return item.contCode === this.contCode
+            if (item.contCode === this.contCode) {
+              this.choseBrokerId.push(item.id);
+              this.choseBroker.push(item);
+              includeRoleList.push(item.id)
+              this.brokerMobileList.push({mobile:item.mobile,index:-1})
+              return true
+            }
           }
         })
       }
-    }
+    },
+    ownerList(val) {
+      this.choseOwnerM = []
+      this.choseOwner = []
+      if (this.ownerList.length == 1) {
+        this.choseOwnerM.push(this.ownerList[0].mobile);
+        this.choseOwner.push(this.ownerList[0]);
+      }
+      this.ownerMobileList = val.map(item => {
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
+      })
+    },
+    guestList(val) {
+      this.choseGuestM = []
+      this.choseGuest = []
+      if (this.guestList.length == 1) {
+        this.choseGuestM.push(this.guestList[0].mobile);
+        this.choseGuest.push(this.guestList[0]);
+        // this.chose("guest", this.guestList[0]);
+      }
+      this.guestMobileList = val.map(item => {
+        if (item.mobile) {
+          return item.mobile
+        } else {
+          return null
+        }
+      })
+    },
   },
   computed: {
     getDialogVisible() {
       return this.dialogVisible;
     },
     getOwnerList() {
-      if (this.ownerList.length == 1) {
-        this.chose("owner", this.ownerList[0]);
-      } else {
-        this.choseOwnerM = []
-        this.choseOwner = []
-      }
       return this.ownerList;
     },
     getGuestList() {
-      if (this.guestList.length == 1) {
-        this.chose("guest", this.guestList[0]);
-      } else {
-        this.choseGuestM = []
-        this.choseGuest = []
-      }
       return this.guestList;
     },
     getChoseQuery() {

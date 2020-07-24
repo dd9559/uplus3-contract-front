@@ -119,10 +119,10 @@
                         </p>
                         <p style="margin:0 10px;">
                             <span class="mark">交易流程：</span>
-                            <!-- <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
+                            <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect" v-if="transFlowNameShow">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                            </el-select> -->
-                            <span class="transFlow">{{report.transFlowName?report.transFlowName:'-'}}</span>
+                            </el-select>
+                            <span class="transFlow" v-else>{{report.transFlowName?report.transFlowName:'-'}}</span>
                             <span class="mark">权证费用：</span>
                             <span class="warrant">{{report.flowQZfee?report.flowQZfee:0}}元</span>
                         </p>
@@ -335,7 +335,8 @@ export default {
             sellerArr: [],
             noStageBank: true,
             recordVersion: '', //合同页面版式
-            loadType: false //是否武汉全款贷款买卖
+            loadType: false, //是否武汉全款贷款买卖
+            transFlowNameShow:false
         }
     },
     created() {
@@ -383,6 +384,7 @@ export default {
             // 交易流程字段取合同详情的数据
             this.report.transFlowCode=data.transFlowCode
             this.report.transFlowName=data.transFlow
+            data.transFlow?this.transFlowNameShow=false:this.transFlowNameShow=true;
             this.report.flowQZfee=data.flowQZfee
             this.recordVersion = data.recordVersion
             if(data.loanType) {
@@ -417,6 +419,7 @@ export default {
             this.flowList.find(item => {
                 if(item.name === val) {
                     this.report.transFlowCode = item.id
+                    this.report.flowQZfee = item.warrantFee
                 }
             })
         },
