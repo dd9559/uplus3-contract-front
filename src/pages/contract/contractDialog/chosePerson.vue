@@ -925,7 +925,7 @@ export default {
           this.$emit("closeChose", { type: "choseLoading" });
           param.owner = owner;
           param.customer = customer;
-          param.signer = signer;
+          param.signer = signer.length>0?signer:null;
           this.$ajax
             .postJSON("/api/app/contract/sendCont", param)
             .then(res => {
