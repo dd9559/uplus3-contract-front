@@ -11,7 +11,8 @@
                 <div class="contractMsg">
                     <p>
                         合同信息
-                        <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission">
+                        <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
+                        <span v-if="isDeal||contractForm.dealById" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
                             </span>
@@ -3343,9 +3344,17 @@ export default {
             return false;
         },
         //是否转佣
-        toCommission() {    
-            this.isToCommission = !this.isToCommission;
-            this.countTotal()
+        toCommission() {
+            /* 第一次点击转成交按钮可以编辑是否转佣，其他情况不允许编辑 2020.07.24 黄鹤 */
+            if(this.isDeal&&this.ss!=0){
+                this.isToCommission = !this.isToCommission;
+                this.countTotal()
+            }else{
+                this.$message({
+                    message:this.ss==0?'实收金额为零，无法操作转佣':"转成交已成功，无法操作转佣",
+                    type:"warning"
+                })
+            } 
         }
     },
     mounted() {
