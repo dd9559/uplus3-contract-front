@@ -2370,6 +2370,7 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
       this.name = "third";
+      this.name = "third";
     } else if (this.$route.query.type === "contBody") {
       this.activeName = "second";
       this.name = "second";
@@ -3295,6 +3296,9 @@ export default {
               this.otherList.push(item);
             }
           });
+          if(this.$route.query.isHaveData){
+            this.getContData()
+          }
         }
       });
     },
