@@ -546,7 +546,7 @@ export default {
               flag: true,
               key: 'mobile',
               type: 'warning',
-              msg: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同"
+              msg: "业主,客户,居间方手机号不能相同"
             })
           } else {
             if (item.checkMobile) {
@@ -736,16 +736,19 @@ export default {
     },
     delPerson() {
       let that = this;
+      console.log(this.delIndex,this.choseBrokerId.indexOf(this.delId),this.choseBrokerId,this.delId,77777);
       let i = this.choseBrokerId.indexOf(this.delId);
       if (i > -1) {
         this.choseBrokerId.splice(i, 1);
         this.choseBroker.splice(i, 1);
-        this.brokerList.splice(this.index,1)
+        this.brokerList.splice(this.delIndex,1)
         let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
         oldLocal = oldLocal.filter((item,index) => {
           return item.id !== this.delId
         })
         localStorage.setItem("brokerList", JSON.stringify(oldLocal));
+      } else {
+        this.brokerList.splice(this.delIndex,1)
       }
       this.dialogDel = false;
     },
@@ -799,13 +802,22 @@ export default {
         //   }
         // }
       }
-      let localBrokerList = this.brokerList.filter(item => {
-        return this.choseBrokerId.includes(item.id);
+      let localBrokerList = []
+      this.brokerList.forEach(item => {
+        if (this.choseBrokerId.includes(item.id)) {
+          localBrokerList.push(item)
+        }
       });
-      let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
-      oldLocal = oldLocal.filter((item,index) => {
-        return !this.choseBrokerId.includes(item.id)
-      })
+      let oldLocal = []
+      if (localStorage.getItem("brokerList")) {
+        oldLocal = JSON.parse(localStorage.getItem("brokerList")).filter((item,index) => {
+          return item !== null && !this.choseBrokerId.includes(item.id)
+        })
+      }
+      // oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
+      // oldLocal = oldLocal.filter((item,index) => {
+      //   return !this.choseBrokerId.includes(item.id)
+      // })
       localBrokerList = localBrokerList.concat(oldLocal);
       if (localBrokerList.length > 5) {
         localBrokerList.splice(5, localBrokerList.length - 1);
@@ -842,9 +854,13 @@ export default {
           let owner = [],
             customer = [],
             signer = [];
-          let localBrokerList = this.brokerList.filter(item => {
-            return this.choseBrokerId.includes(item.id);
-          });
+          let localBrokerList = []
+          this.brokerList.length>0 && this.brokerList.forEach(item => {
+            if (this.choseBrokerId.includes(item.id)) {
+              localBrokerList.push(item)
+            }
+          })
+          console.log(localBrokerList,88888888);
           localBrokerList.forEach(element => {
             let item = {}
             if (element.cardType == 3) {
@@ -954,6 +970,7 @@ export default {
   },
   watch: {
     localChoseList(val) {
+      console.log(val,777777);
       this.choseBrokerId = []
       this.choseBroker = []
       let includeRoleList = []
