@@ -1202,10 +1202,6 @@
     }
   }
 }
-/deep/ .el-select__caret{
-    height: 0;
-    display: inline-block;
-}
 .headerDep{
   display: flex;
   font-size: 0;
