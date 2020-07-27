@@ -14,8 +14,8 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-       <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign&&detailPower" @mouseover="showList" @mouseout="closeList">
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign&&detailPower&&recordType!=10" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
             <ul>
@@ -31,16 +31,16 @@
         <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1&&detailPower" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0&&resultState===1&&detailPower"  @click="goChangeCancel(2)">解约</el-button>
         <el-popover
-          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)&&detailPower"
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)&&detailPower&&recordType!=10"
           placement="top-start"
           width="140"
           trigger="hover">
           <img class="signImg" :src="signImg" alt="">
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
-        <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2&&detailPower" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
+        <el-button round v-else-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&cityId===8&&contType==2&&detailPower&&recordType!=10" @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
 
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower&&recordType!=10" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
         <el-button round @click="showContData" v-if="power['sign-ht-xq-data'].state&&detailPower">资料库</el-button>
@@ -293,6 +293,7 @@ export default {
       resultState:"",
       //合同类型
       contType:'',
+      recordType:"",
       //变更解约
       contChangeState:'',
       laterStageState:'',
@@ -883,6 +884,7 @@ export default {
             this.resultState=res.data.resultState.value
             this.laterStageState=res.data.laterStageState.value
             this.contState=res.data.contState.value;
+            this.recordType=res.data.recordType.value;
             this.contChangeState=res.data.contChangeState.value
             this.isSign=res.data.isRisk
             this.isHaveData=res.data.isHaveData;
