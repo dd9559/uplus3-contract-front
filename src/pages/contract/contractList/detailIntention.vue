@@ -60,7 +60,7 @@
                                     <div class="div1"
                                         v-else><span>套内面积：</span>--</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-                                    <div><span>产权地址：</span>{{detailData.propertyRightAddr | nullData}}</div>
+                                    <div><span>产权地址：</span>{{detailData.propertyRightAddrmi | nullData}}</div>
                                 </li>
                                 <li>
                                     <div class="div1" style="position:relative">
