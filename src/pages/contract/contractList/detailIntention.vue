@@ -382,7 +382,7 @@
                         :style="{ height: clientHei }">
                         <!-- 合同审核记录 -->
                         <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state&&detailData.recordType.value!=2">
+                            v-if="detailData.recordType.value!=2">
                             <div class="moduleTitle">
                                 <span>合同审核</span>
                             </div>
@@ -426,8 +426,7 @@
                             </div>
                         </div>
                         <!-- 合同签后审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同签后审核</span>
                             </div>
@@ -471,8 +470,7 @@
                             </div>
                         </div>
                         <!-- 合同变更审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同变更审核</span>
                             </div>
@@ -516,8 +514,7 @@
                             </div>
                         </div>
                         <!-- 合同解约审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同解约审核</span>
                             </div>
@@ -941,6 +938,9 @@ export default {
                                 this.otherList.push(item);
                             }
                         });
+                        if(this.$route.query.isHaveData){
+                            this.getContData()
+                        }
                     }
                 })
                 .catch(error => {
@@ -948,6 +948,7 @@ export default {
                         message: error
                     });
                 });
+                
         },
 
         //获取资料库信息之后
