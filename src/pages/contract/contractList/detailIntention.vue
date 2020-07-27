@@ -60,7 +60,7 @@
                                     <div class="div1"
                                         v-else><span>套内面积：</span>--</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-                                    <div><span>产权地址：</span>{{detailData.propertyRightAddr | nullData}}</div>
+                                    <div><span>产权地址：</span>{{detailData.propertyRightAddrmi | nullData}}</div>
                                 </li>
                                 <li>
                                     <div class="div1" style="position:relative">
@@ -382,7 +382,7 @@
                         :style="{ height: clientHei }">
                         <!-- 合同审核记录 -->
                         <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state&&detailData.recordType.value!=2">
+                            v-if="detailData.recordType.value!=2">
                             <div class="moduleTitle">
                                 <span>合同审核</span>
                             </div>
@@ -426,8 +426,7 @@
                             </div>
                         </div>
                         <!-- 合同签后审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同签后审核</span>
                             </div>
@@ -471,8 +470,7 @@
                             </div>
                         </div>
                         <!-- 合同变更审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同变更审核</span>
                             </div>
@@ -516,8 +514,7 @@
                             </div>
                         </div>
                         <!-- 合同解约审核记录 -->
-                        <div class="receiptModule"
-                            v-if="power['sign-com-htdetail'].state">
+                        <div class="receiptModule">
                             <div class="moduleTitle">
                                 <span>合同解约审核</span>
                             </div>
@@ -570,7 +567,7 @@
                 round
                 class="search_btn"
                 @click="uploading('上传成功')"
-                v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button> <!-- 合同资料库上传 -->
+                v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState&&detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button> <!-- 合同资料库上传 -->
         </div>
         <!-- 图片放大 -->
         <preview :imgList="previewFiles"
@@ -941,6 +938,9 @@ export default {
                                 this.otherList.push(item);
                             }
                         });
+                        if(this.$route.query.isHaveData){
+                            this.getContData()
+                        }
                     }
                 })
                 .catch(error => {
@@ -948,6 +948,7 @@ export default {
                         message: error
                     });
                 });
+                
         },
 
         //获取资料库信息之后

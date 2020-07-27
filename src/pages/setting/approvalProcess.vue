@@ -26,7 +26,7 @@
         </div>
         <div class="input-search">
           <label class="mr-20">体系</label>
-          <el-select size="small" v-model="searchForm.systemTag" :clearable="true">
+          <el-select size="small" v-model="searchForm.systemTag" @change="sysTagChange" :clearable="true">
             <el-option
               v-for="item in systemTagSelect"
               :key="item.key"
@@ -92,6 +92,7 @@
           <el-select
             v-model="searchForm.dep"
             multiple
+            @change="depChange"
             placeholder="全部"
             collapse-tags
             remote
@@ -660,9 +661,27 @@ export default {
     if (this.searchForm.cityId != 16 && this.version == 2) this.getRoles();
   },
   methods: {
+    //如果体系为空，部门不能选择
+    depChange(){
+        if(this.searchForm.systemTag==""){
+            this.searchForm.dep=[]
+            this.$message('请先选择体系')
+        }
+    },
+    //搜索框体系变化时dep也随之变化
+    sysTagChange(val){
+       this.searchForm.dep=[]
+      this.$ajax.get("/api/organize/systemtag/deps",{systemTag:this.searchForm.systemTag}).then((res) => {
+        res = res.data;
+        if (res.status == 200) {
+        //   this.depList = res.data.filter((v) => v.level == 1);
+          this.depList = res.data;
+          console.log(this.depList);
+        }
+      });
+    },
     getDep() {
-      console.log(this.getUser.user.systemtag);
-      this.$ajax.get("/api/access/deps").then((res) => {
+      this.$ajax.get("/api/organize/systemtag/deps",{systemTag:this.searchForm.systemTag}).then((res) => {
         res = res.data;
         if (res.status == 200) {
         //   this.depList = res.data.filter((v) => v.level == 1);
@@ -673,10 +692,12 @@ export default {
     },
     // 远程搜索
     remoteMethod1(query) {
+      console.log(22);
       let param = {
         keyword: query,
+        systemTag:this.searchForm.systemTag
       };
-      this.$ajax.get("/api/access/deps", param).then((res) => {
+      this.$ajax.get("/api/organize/systemtag/deps", param).then((res) => {
         res = res.data;
         if (res.status == 200) {
         //   this.depList = res.data.filter((v) => v.level == 1);
@@ -792,7 +813,7 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.tableData = res.data.data;
-            this.total = res.data.total;
+            this.total = res.data.total
           }
         })
         .catch((error) => {
