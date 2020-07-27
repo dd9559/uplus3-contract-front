@@ -60,7 +60,7 @@
                                     <div class="div1"
                                         v-else><span>套内面积：</span>--</div>
                                     <div class="div2"><span>装修：</span>{{detailData.houseInfo.DecorateType | nullData}}</div>
-                                    <div><span>产权地址：</span>{{detailData.propertyRightAddr | nullData}}</div>
+                                    <div><span>产权地址：</span>{{detailData.propertyRightAddrmi | nullData}}</div>
                                 </li>
                                 <li>
                                     <div class="div1" style="position:relative">
@@ -567,7 +567,7 @@
                 round
                 class="search_btn"
                 @click="uploading('上传成功')"
-                v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button> <!-- 合同资料库上传 -->
+                v-if="power['sign-ht-xq-data'].state&&name==='third'&&((detailData.signingState&&detailData.signingState.value!==1&&detailData.signingState.value!==0)||!detailData.signingState)">{{detailData.laterStageState&&detailData.laterStageState.value===4?'提交审核':'确认上传'}}</el-button> <!-- 合同资料库上传 -->
         </div>
         <!-- 图片放大 -->
         <preview :imgList="previewFiles"

@@ -17,23 +17,25 @@ let Obj={
     },
     'val5':null,
     'val6':null,
+    'val7':null,
     'checkbox_pp': null,
-    'checkbox_pp': null,
-    'checkbox_pp': null,
-    'checkbox_ff': null,
+    'checkbox_cc': null,
+    'checkbox_dd': null,
+    'val8':null,
     'checkbox_gg': {
       stateful: function(index) {
-        return index===0 ? {'val0':null} : index===1 ? {'val11':null} : null
+        return index===0 ? {'val11':null} : index===1 ? {'val12':null} : null
       }
     },
-    
+    'val13':null,
+    'val14':null,
   }
 
   //给按钮添加点击事件
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,'templateError1')
+      contractConfig.submit(e,sub,'templateError')
     })
   }else{
     let btn=document.createElement('span')
@@ -42,7 +44,7 @@ let Obj={
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,'templateError1')
+      contractConfig.submit(e,sub,'templateError')
     })
   }
 
@@ -117,6 +119,8 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   ownerCardType: "营业执照",
 //   ownerCardTypes: "",
 //   ownerID: "123",
+//   signDate:'5345436456457568',
+//   subscriptionPrice:100,
 //   ownerIDs: "ee2353-344，ii397-4839",
 //   ownerName: "熊先",
 //   ownerNames: "胜多少，发士夫",
@@ -131,16 +135,19 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode']
+  let readonlyArr = ['code','ownerName', 'ownerID', 'guestTel','ownerNames','signDate','subscriptionPriceUpper','subscriptionPrice', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
         if(readonlyItem==='companyNames') {
           element.innerHTML=msg[readonlyItem][0]
-        }else if(readonlyItem==='propertyAddr'){
-          element.innerHTML=msg[readonlyItem]
-          document.querySelector(`*[extendparam=val22]`).innerHTML=msg[readonlyItem]
-          document.querySelector(`*[extendparam=val22]`).classList.remove('input-before')
+        }else if(readonlyItem==='signDate'){
+          let time = new Date(Number(msg["signDate"]));
+          let y = time.getFullYear();
+          let M = time.getMonth() + 1;
+          let D = time.getDate();
+          let signDate = `${y}年${M}月${D}日`
+          element.innerHTML = signDate
         }else {
           element.innerHTML=msg[readonlyItem]
         }
