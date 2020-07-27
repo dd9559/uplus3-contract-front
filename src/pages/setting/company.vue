@@ -1202,13 +1202,18 @@
     }
   }
 }
+/deep/ .el-select__caret{
+    height: 0;
+    display: inline-block;
+}
 .headerDep{
   display: flex;
+  font-size: 0;
   // line-height: 30px;
-  height: 30px;
+  // height: 30px;
   box-sizing: border-box;
   /deep/ .el-select__tags{
-    height: 30px;
+    // height: 30px;
     .el-select__input{
       height: 0;
     }

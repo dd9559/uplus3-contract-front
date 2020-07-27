@@ -94,7 +94,7 @@ import {mapMutations} from 'vuex'
         margin-bottom: 0;
       }
       .paper-box-content{
-        max-height: 34px;
+        max-height: 36px;
         overflow-y: hidden;
       }
     }
