@@ -225,7 +225,6 @@ export default {
       type: [],
       depUser: "",
       achList: [],
-      inTime: 1,
       power: {
         "sign-set-log-query": {
           state: false,
@@ -385,7 +384,6 @@ export default {
         (this.signType = ""),
         (this.jobStatus = ""),
         (this.departmentName = "");
-      this.inTime = 2;
       this.EmployeList = [];
     },
     // 查询

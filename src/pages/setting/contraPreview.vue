@@ -93,8 +93,6 @@ export default{
             showSed:false,
             timeout:0,
             touch:true,
-            contents:[],
-            content:[],
             qmnewsrcArr:[],
             signPositions:[],
             isActive:1,

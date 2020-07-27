@@ -69,7 +69,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="可分配业绩=业主佣金+客户佣金-佣金支付费-第三方合作费-权证费用"
+            content="可分配业绩=总佣金-佣金支付费-第三方合作费-权证费用"
             placement="top"
             >
             <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
