@@ -216,37 +216,83 @@ export default {
 		},
 		//创建成功提示
     toUpload(){//上传合同资料库
-      this.dialogSuccess=false;
-      if(this.power['sign-com-htdetail'].state){
-        if(this.power['sign-ht-xq-data'].state){
-					this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
-					let path
-					if(this.Msg.type===4||this.Msg.type===5){
-						path="/detailIntention"
+	  this.dialogSuccess=false;
+	  this.$ajax
+		.get("/api/contract/isDetailAuth", { contId: this.Msg.id })
+		.then(res => {
+			res = res.data;
+			if (res.status === 200) {
+				if (res.data) {
+					if(this.power['sign-ht-xq-data'].state){
+						this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+						let path
+						if(this.Msg.type===4||this.Msg.type===5){
+							path="/detailIntention"
+						}else{
+							path="/contractDetails"
+						}
+						this.$router.replace({
+							path: path,
+							query: {
+							type: "dataBank",
+							id: this.Msg.id,//合同id
+							code: this.Msg.code,//合同编号
+							contType: this.Msg.type//合同类型
+							}
+						});
 					}else{
-						path="/contractDetails"
+						this.$message({
+							message:'没有资料库权限,无法跳转到资料库',
+							type: "warning"
+						});
+						this.$router.push('/contractList');
 					}
-          this.$router.replace({
-            path: path,
-            query: {
-              type: "dataBank",
-              id: this.Msg.id,//合同id
-              code: this.Msg.code,//合同编号
-              contType: this.Msg.type//合同类型
-            }
-          });
-        }else{
-          this.$message({
-            message:'没有资料库权限,无法跳转到资料库'
-          });
-          this.$router.push('/contractList');
-        }
-      }else{
-        this.$message({
-          message:'没有合同详情权限,无法跳转到资料库'
-        });
-        this.$router.push('/contractList');
-      }
+				} else {
+					this.$message({
+						message: "没有合同详情权限,无法跳转到资料库",
+						type: "warning"
+					});
+					this.$router.push("/contractList");
+				}
+			}
+		})
+		.catch(error => {
+			this.$message({
+				message: error,
+				type: "error"
+			});
+		});
+
+    //   if(this.power['sign-com-htdetail'].state){
+    //     if(this.power['sign-ht-xq-data'].state){
+	// 		this.setPath(this.$tool.getRouter(['合同','合同列表','合同详情'],'contractList'));
+	// 		let path
+	// 		if(this.Msg.type===4||this.Msg.type===5){
+	// 			path="/detailIntention"
+	// 		}else{
+	// 			path="/contractDetails"
+	// 		}
+    //       this.$router.replace({
+    //         path: path,
+    //         query: {
+    //           type: "dataBank",
+    //           id: this.Msg.id,//合同id
+    //           code: this.Msg.code,//合同编号
+    //           contType: this.Msg.type//合同类型
+    //         }
+    //       });
+    //     }else{
+    //       this.$message({
+    //         message:'没有资料库权限,无法跳转到资料库'
+    //       });
+    //       this.$router.push('/contractList');
+    //     }
+    //   }else{
+    //     this.$message({
+    //       message:'没有合同详情权限,无法跳转到资料库'
+    //     });
+    //     this.$router.push('/contractList');
+    //   }
     },
 		toContract(){//回到合同列表
       this.dialogSuccess=false;
@@ -330,6 +376,7 @@ export default {
       if(emptyInput1.length===0&&emptyInput2.length===0){
 				param.isCanAudit=1
 			}
+			// 保存合同模板的值
       this.$ajax.postJSON('/api/contract/updateHtml', param).then(res => {
 				res=res.data
 				if(res.status===200){

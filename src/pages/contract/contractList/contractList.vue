@@ -2202,7 +2202,7 @@ export default {
         this.signGuestList=[].concat(guest)
         this.localChoseList = (localStorage.getItem('brokerList') && JSON.parse(localStorage.getItem('brokerList')).filter(item => {
             return item !== null
-        }))
+        })) || []
         this.contCode = val.code;
         this.chosePersonDialog=true
     },
@@ -2244,13 +2244,15 @@ export default {
                   } else {
                     path = "/contractDetails";
                   }
+                  console.log(this.choseQuery,888888);
                   this.$router.replace({
                     path: path,
                     query: {
                       type: "dataBank",
                       id: this.choseQuery.id, //合同id
                       code: this.choseQuery.code, //合同编号
-                      contType: this.choseQuery.contType //合同类型
+                      contType: this.choseQuery.contType, //合同类型
+                      isHaveData: this.choseQuery.isHaveData
                     }
                   });
                 }else {

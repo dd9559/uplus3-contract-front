@@ -148,7 +148,8 @@
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType.label"></el-table-column>
-        <el-table-column label="合同状态" prop="contState.label"></el-table-column>
+        <!-- <el-table-column label="合同状态" prop="contState.label"></el-table-column> -->
+        <el-table-column label="变更/解约" prop="contChangeState.label"></el-table-column>
         <el-table-column label="签约日期">
           <template slot-scope="scope">{{scope.row.signDate | formatTime}}</template>
         </el-table-column>
@@ -209,7 +210,7 @@ export default {
       contStatus: "",
       signType: "",
       jobStatus: "",
-      pageSize: 10,
+      pageSize: 50,
       empName: "",
       pageNum: 1,
       total: 0,

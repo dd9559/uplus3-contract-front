@@ -2370,6 +2370,7 @@ export default {
     if (this.$route.query.type === "dataBank") {
       this.activeName = "third";
       this.name = "third";
+      this.name = "third";
     } else if (this.$route.query.type === "contBody") {
       this.activeName = "second";
       this.name = "second";
@@ -2438,11 +2439,11 @@ export default {
       this.saveBtnShow = !this.saveBtnShow;
       this.editBtnShow = !this.editBtnShow;
       let state = this.contractDetail.laterStageState.value;
-      if (state == 1 || state == 2 || state == 4) {
-        this.reportFlowShow = false;
-      } else {
+      // if (state == 1 || state == 2 || state == 4) {
+      //   this.reportFlowShow = false;
+      // } else {
         this.reportFlowShow = true;
-      }
+      // }
     },
     BtnShowFn() {
       this.saveBtnShow = false;
@@ -3295,6 +3296,9 @@ export default {
               this.otherList.push(item);
             }
           });
+          if(this.$route.query.isHaveData){
+            this.getContData()
+          }
         }
       });
     },
