@@ -746,11 +746,11 @@
                 v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state"
                 @click="showDelete(scope.row)"
               >删除</div>
-              <div
+              <!-- <div
                 v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 && !scope.row.isDeal"
                 class="btn"
                 @click="toDeal(scope.row)"
-              >转成交</div>
+              >转成交</div> -->
               <div
                 v-if="power['sign-ht-info-fqqs'].state&&(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
                 class="btn"
