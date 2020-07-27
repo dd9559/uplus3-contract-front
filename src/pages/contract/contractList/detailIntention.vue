@@ -938,6 +938,9 @@ export default {
                                 this.otherList.push(item);
                             }
                         });
+                        if(this.$route.query.isHaveData){
+                            this.getContData()
+                        }
                     }
                 })
                 .catch(error => {
@@ -945,6 +948,7 @@ export default {
                         message: error
                     });
                 });
+                
         },
 
         //获取资料库信息之后
