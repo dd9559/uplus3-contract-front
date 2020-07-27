@@ -2078,8 +2078,8 @@ export default {
       this.$router.push({
         path: "/addContract",
         query: {
-          id: row.id,
-          operateType: 1,
+          id: row.id, 
+          operateType: 1,  //1新增 2编辑
           type: row.contType.value,
           recordType: row.recordType.value,
           isDeal: 1
