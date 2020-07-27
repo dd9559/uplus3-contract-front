@@ -172,6 +172,7 @@
               type="datetime"
               @change="checkDate"
               placeholder="选择日期时间"
+              :picker-options="pickerOptions"
             ></el-date-picker>
           </div>
           <div class="input-group col active-400">
@@ -1685,11 +1686,15 @@ export default {
               (item == 1 &&
                 this.$route.query.collect != 1 &&
                 item == 1 &&
-                this.$route.query.collect != 5) ||
+                this.$route.query.collect != 5&&
+                item == 1 &&
+                this.$route.query.collect != 3) ||
               (item == 2 &&
                 this.$route.query.collect != 1 &&
                 item == 2 &&
-                this.$route.query.collect != 5)
+                this.$route.query.collect != 5&&
+                item == 2 &&
+                this.$route.query.collect != 3)
             ) {
               this.inputPerson = false;
             } else {
