@@ -19,8 +19,10 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags  remote :clearable="true"  style="width:200px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
-            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags remote  @change="depChange"   :clearable="true" class="headerDep"  style="width:230px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id">
+              <!-- <span style="float: left">{{ item.name.slice(0,8) }}</span> -->
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="账户类型">
@@ -675,6 +677,13 @@
           })
           }
       },
+      depChange(val){
+        this.homeStoreList.forEach(v=>{
+          console.log(v);
+          // if()
+          
+        })
+      },
       // 门店选择
       storeSelect(val) {
         if(!val) {
@@ -1191,6 +1200,16 @@
     /deep/ .el-input {
       width: 180px;
     }
+  }
+}
+.headerDep{
+  /deep/.el-select__tags-text{
+    display: inline-block;
+    max-width: 100px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align:middle
   }
 }
 .company-list {
