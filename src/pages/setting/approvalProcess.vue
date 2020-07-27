@@ -665,7 +665,8 @@ export default {
       this.$ajax.get("/api/access/deps").then((res) => {
         res = res.data;
         if (res.status == 200) {
-          this.depList = res.data.filter((v) => v.level == 1);
+        //   this.depList = res.data.filter((v) => v.level == 1);
+          this.depList = res.data;
           console.log(this.depList);
         }
       });
@@ -678,7 +679,8 @@ export default {
       this.$ajax.get("/api/access/deps", param).then((res) => {
         res = res.data;
         if (res.status == 200) {
-          this.depList = res.data.filter((v) => v.level == 1);
+        //   this.depList = res.data.filter((v) => v.level == 1);
+          this.depList = res.data;
           console.log(this.depList);
         }
       });
