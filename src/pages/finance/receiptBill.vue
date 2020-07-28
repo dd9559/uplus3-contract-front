@@ -1677,6 +1677,7 @@ export default {
       console.log(type);
       let obj = {};
       let list = type === 1 ? this.dropdown : this.EmployeList;
+      let that=this;
       list.find(tip => {
         if (tip[type === 1 ? "value" : "empId"] === item) {
           if (type === 1) {
@@ -1684,27 +1685,27 @@ export default {
             obj.outObj = tip.custName;
             if (
               (item == 1 &&
-                this.$route.query.collect != 1 &&
+                that.$route.query.collect != 1 &&
                 item == 1 &&
-                this.$route.query.collect != 5&&
+                that.$route.query.collect != 5&&
                 item == 1 &&
-                this.$route.query.collect != 3) ||
+                that.$route.query.collect != 3) ||
               (item == 2 &&
-                this.$route.query.collect != 1 &&
+                that.$route.query.collect != 1 &&
                 item == 2 &&
-                this.$route.query.collect != 5&&
+                that.$route.query.collect != 5&&
                 item == 2 &&
-                this.$route.query.collect != 3)
+                that.$route.query.collect != 3)
             ) {
-              this.inputPerson = false;
+              that.inputPerson = false;
             } else {
-              this.inputPerson = true;
+              that.inputPerson = true;
             }
           } else {
             obj.inObj = tip.name;
             // if (this.firstCreate.state) {
-            this.activeAdmin = "";
-            this.getAcount(this.form.inObjId);
+            that.activeAdmin = "";
+            that.getAcount(this.form.inObjId);
             // }
           }
           return;
