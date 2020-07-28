@@ -1183,6 +1183,10 @@ export default {
         "sign-ht-xq-data": {
           state: false,
           name: "编辑资料库"
+        },
+        "sign-ht-info-zcj": {
+          state: false,
+          name: "转成交"
         }
       },
       showOnLine: false,

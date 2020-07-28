@@ -2279,7 +2279,11 @@ export default {
                 
                     param[paramType].dealById = this.id
                     param[paramType].dealByCode = this.contractForm.code
-                    param[paramType].isTransfeOfCommission = this.isToCommission
+                    param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
+                    param[paramType].zyComission = this.zy//转佣金额
+
+                    delete param[paramType].id;
+                    delete param[paramType].code;
                 }else{
                     delete param.dealById
                 }
@@ -2288,47 +2292,46 @@ export default {
                     url = "/api/contract/addLocalContract";
                 }
                 this.$ajax.postJSON(url, param).then(res => {
-                        res = res.data;
-                        if (res.status === 200) {
-                            this.fullscreenLoading = false;
-                            if (this.recordType === 2) {
-                                this.$message({
-                                    message: "创建成功",
-                                    type: "success"
-                                });
-                                this.$router.push({
-                                    path: "/contractDetails",
-                                    query: {
-                                        id: res.data.id,
-                                        contType: this.contractForm.type,
-                                        type: "contBody"
-                                    }
-                                });
-                            } else {
-                                let contractMsg = res.data;
-                                this.hidBtn = 1;
-                                sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
-                                if (contractMsg.singleCompany) {
-                                    this.singleCompany = true;
-                                    this.singleCompanyName = contractMsg.singleCompany;
-                                } else {
-                                    this.$router.push({
-                                        path: "/extendParams"
-                                    });
+                    res = res.data;
+                    if (res.status === 200) {
+                        this.fullscreenLoading = false;
+                        if (this.recordType === 2) {
+                            this.$message({
+                                message: "创建成功",
+                                type: "success"
+                            });
+                            this.$router.push({
+                                path: "/contractDetails",
+                                query: {
+                                    id: res.data.id,
+                                    contType: this.contractForm.type,
+                                    type: "contBody"
                                 }
+                            });
+                        } else {
+                            let contractMsg = res.data;
+                            this.hidBtn = 1;
+                            sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
+                            if (contractMsg.singleCompany) {
+                                this.singleCompany = true;
+                                this.singleCompanyName = contractMsg.singleCompany;
+                            } else {
+                                this.$router.push({
+                                    path: "/extendParams"
+                                });
                             }
                         }
-                    })
-                    .catch(error => {
-                        this.fullscreenLoading = false;
-                        if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
-                            this.canClick = true;
-                        }
-                        this.$message({
-                            message: error,
-                            type: "error"
-                        });
+                    }
+                }).catch(error => {
+                    this.fullscreenLoading = false;
+                    if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
+                        this.canClick = true;
+                    }
+                    this.$message({
+                        message: error,
+                        type: "error"
                     });
+                });
             } else{
                 //  if (this.type === 2) 
                 //编辑
