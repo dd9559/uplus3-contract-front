@@ -1281,4 +1281,7 @@
     }
   }
 }
+/deep/ .el-table th {
+  background: @bg-th;
+}
 </style>
