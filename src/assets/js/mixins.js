@@ -225,19 +225,40 @@ const MIXINS = {
       operaType,
       power
     }) {
-      if (operaType === 'cont' && power.state) {
-        // this.setPath(this.getPath.concat({name:'合同详情'}))
-        this.setPath(this.getPath.concat({
-          name: '合同详情'
-        }))
-        this.$router.push({
-          path: contType === this.$tool.contType['4'] || contType === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
-          query: {
-            contType: contType,
-            id: contId,
-            code: contCode,
-            pageName: '合同详情'
+      if (operaType === 'cont') {
+        // 验证是否有合同详情查看权限
+        this.$ajax.get("/api/contract/isDetailAuth", {
+          contId: contId
+        }).then(res => {
+          res = res.data
+          debugger
+          if (res.status === 200) {
+            if (res.data) {
+              this.setPath(this.getPath.concat({
+                name: '合同详情'
+              }))
+              this.$router.push({
+                path: contType === this.$tool.contType['4'] || contType === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
+                query: {
+                  contType: contType,
+                  id: contId,
+                  code: contCode,
+                  pageName: '合同详情'
+                }
+              })
+            } else {
+              this.$message({
+                message: "没有合同详情查看权限",
+                type: "warning"
+              });
+            }
+
           }
+        }).catch(error => {
+          this.$message({
+            message: error,
+            type: "error"
+          });
         })
       } else {
         this.noPower(`查看${power.name}`)
@@ -354,7 +375,7 @@ const MIXINS = {
           break;
         case '.bmp':
           return true
-            break;
+          break;
           /*case '.avi':
               return true
               break;*/

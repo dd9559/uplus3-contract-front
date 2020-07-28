@@ -18,7 +18,7 @@
             </p>
             <p>
               <label>物业地址:</label>
-              <span>{{paperInfoData.address}}</span>
+              <span>{{paperInfoData.address?paperInfoData.address:"-"}}</span>
             </p>
           </li>
           <li class="tips-second">
@@ -725,8 +725,8 @@ export default {
   },
   computed: {
     city_wh: function() {
-      return false;
       // return this.getUser.user.cityId === 1;
+        return false;
     },
     getPro: function() {
       let types = [

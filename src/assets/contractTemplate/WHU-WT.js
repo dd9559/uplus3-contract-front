@@ -129,7 +129,6 @@ let sub = {
       return res;
     }
   },
-  'val14': null,
   'time_val15': null,
   'val16': null,
   'val17': null,

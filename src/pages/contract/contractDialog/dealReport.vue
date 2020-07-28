@@ -59,7 +59,7 @@
                         <span>{{yearFormatFn(dealBasicInfo.CompleteYear)}}</span>
                     </div>
                     <div class="text-long">
-                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddr?dealBasicInfo.propertyRightAddr:'-'}}</span></span>
+                        <span class="mark">产权地址：<span>{{dealBasicInfo.propertyRightAddrmi?dealBasicInfo.propertyRightAddrmi:'-'}}</span></span>
                     </div>
                 </div>
                 <div class="item">
@@ -119,9 +119,12 @@
                         </p>
                         <p style="margin:0 10px;">
                             <span class="mark">交易流程：</span>
-                            <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect">
+                            <el-select size="small" v-model="report.transFlowName" :disabled="!saveBtnShow||reportFlowShow" class="liucheng" @change="transFlowSelect" v-if="transFlowNameShow">
                                 <el-option v-for="item in flowList" :key="item.id" :label="item.name" :value="item.name"></el-option>
                             </el-select>
+                            <span class="transFlow" v-else>{{report.transFlowName?report.transFlowName:'-'}}</span>
+                            <span class="mark">权证费用：</span>
+                            <span class="warrant">{{report.flowQZfee?report.flowQZfee:0}}元</span>
                         </p>
                     </div>
                     <div class="input">
@@ -264,7 +267,7 @@ export default {
                 dealPrice: "",
                 receivableCommission: "",
                 Square: "",
-                propertyRightAddr: "",
+                propertyRightAddrmi: "",
                 FloorAll: "",
                 CompleteYear: ""
             },
@@ -332,7 +335,8 @@ export default {
             sellerArr: [],
             noStageBank: true,
             recordVersion: '', //合同页面版式
-            loadType: false //是否武汉全款贷款买卖
+            loadType: false, //是否武汉全款贷款买卖
+            transFlowNameShow:false
         }
     },
     created() {
@@ -374,9 +378,14 @@ export default {
             this.dealBasicInfo.receivableCommission = data.receivableCommission
             this.dealBasicInfo.Square = data.houseInfo.Square
             this.dealBasicInfo.CompleteYear = data.houseInfo.CompleteYear
-            this.dealBasicInfo.propertyRightAddr = data.propertyRightAddr
+            this.dealBasicInfo.propertyRightAddrmi = data.propertyRightAddrmi
             this.dealBasicInfo.FloorAll = data.houseInfo.FloorAll
             this.report = data.dealReport ? JSON.parse(data.dealReport) : this.report
+            // 交易流程字段取合同详情的数据
+            this.report.transFlowCode=data.transFlowCode
+            this.report.transFlowName=data.transFlow
+            data.transFlow?this.transFlowNameShow=false:this.transFlowNameShow=true;
+            this.report.flowQZfee=data.flowQZfee
             this.recordVersion = data.recordVersion
             if(data.loanType) {
                 this.report.buyerPaymentMethod = data.loanType == 7 ? 1: 2
@@ -410,6 +419,7 @@ export default {
             this.flowList.find(item => {
                 if(item.name === val) {
                     this.report.transFlowCode = item.id
+                    this.report.flowQZfee = item.warrantFee
                 }
             })
         },
@@ -439,7 +449,7 @@ export default {
             ]
             let arr_deal = [
                 { val: this.report.buyerPaymentMethod, className: 'fukuan', msg: '付款方式', type: 2 },
-                { val: this.report.transFlowName, className: 'liucheng', msg: '交易流程', type: 2 },
+                // { val: this.report.transFlowName, className: 'liucheng', msg: '交易流程', type: 2 },
                 { val: this.report.isExtend, className: 'xichan', msg: '是否析产（继承）', type: 2 }
             ]
             let arr = []
@@ -580,11 +590,11 @@ export default {
                 removeRedBorder('quanshu')
             }
         },
-        'report.transFlowName'(newVal,oldVal) {
-            if(newVal) {
-                removeRedBorder('liucheng',2)
-            }
-        },
+        // 'report.transFlowName'(newVal,oldVal) {
+        //     if(newVal) {
+        //         removeRedBorder('liucheng',2)
+        //     }
+        // },
         'report.isExtend'(newVal,oldVal) {
             if(newVal==='0'||newVal==='1') {
                 removeRedBorder('xichan',2)
@@ -814,7 +824,18 @@ export default {
         }
     }
     .liucheng {
-        width: 253px!important;
+        width: 180px!important;
+    }
+    .transFlow{
+        display: inline-block;
+        width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .warrant{
+        display: inline-block;
+        width: 100px;
     }
     .bank {
         width: 145px!important;

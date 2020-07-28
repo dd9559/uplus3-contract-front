@@ -93,8 +93,6 @@ export default{
             showSed:false,
             timeout:0,
             touch:true,
-            contents:[],
-            content:[],
             qmnewsrcArr:[],
             signPositions:[],
             isActive:1,
@@ -129,7 +127,6 @@ export default{
             if(this.show==1){
                this.getImgAdd(this.count)
             }else if(this.show==2){
-                debugger
                 this.$ajax.get('/api/setting/contractTemplate/show',{enableTemplateId:this.enableTemplateId}).then((res)=>{
                     this.$nextTick(()=>{
                       this.loading=false

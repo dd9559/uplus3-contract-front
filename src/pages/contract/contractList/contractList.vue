@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container" ref="tableComView">
+  <div class="view-container" ref="tableComView" v-loading="choseLoading">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" v-if="dictionary['9']">
       <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
@@ -108,7 +108,7 @@
           ></select-tree>
         </el-form-item>
         <el-form-item>
-          <el-select
+          <!-- <el-select
             style="width:100px"
             :clearable="true"
             v-loadmore="moreEmploye"
@@ -117,12 +117,25 @@
             v-model="contractForm.dealAgentId"
             @change="handleEmpNodeClick"
             placeholder="请选择"
+          >-->
+          <el-select
+            :clearable="true"
+            filterable
+            remote
+            :remote-method="test"
+            v-loadmore="moreEmploye"
+            @visible-change="empHandle"
+            class="margin-left"
+            size="small"
+            v-model="contractForm.dealAgentId"
+            placeholder="请选择"
+            @change="empHandleAdd"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId"
+              :value="item.empId+'-'+item.depName+'-'+item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -464,11 +477,12 @@
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
               <span>{{scope.row.dealPrice}}元</span>
-              <span
-                v-for="item in dictionary['507']"
-                :key="item.key"
-                v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"
-              >/ {{item.value}}</span>
+              <template v-for="item in dictionary['507']">
+                <span
+                  :key="item.key"
+                  v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"
+                >/ {{item.value}}</span>
+              </template>
             </div>
             <span v-else>-</span>
           </template>
@@ -661,7 +675,31 @@
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="可分配业绩 (元)" min-width="120">
+        <el-table-column label="录入时间" min-width="90">
+          <template slot-scope="scope">
+            <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
+            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>-->
+            <span>{{Number(scope.row.createTime)|timeFormat_}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="录入人" min-width="90">
+          <template slot-scope="scope">
+            <p>{{scope.row.recordDeptName}}</p>
+            <p>{{scope.row.recordName}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="140">
+          <template slot="header">
+            <span>可分配业绩 (元)</span>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="可分配业绩=总佣金-佣金支付费-第三方合作费-权证费用"
+              placement="top"
+            >
+              <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
+            </el-tooltip>
+          </template>
           <template slot-scope="scope">
             <span
               v-if="scope.row.contType.value<4"
@@ -708,11 +746,16 @@
                 v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state"
                 @click="showDelete(scope.row)"
               >删除</div>
-              <div
+              <!-- <div
                 v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 && !scope.row.isDeal"
                 class="btn"
                 @click="toDeal(scope.row)"
-              >转成交</div>
+              >转成交</div> -->
+              <div
+                v-if="power['sign-ht-info-fqqs'].state&&(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
+                class="btn"
+                @click="toSign(scope.row)"
+              >发起签署</div>
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
@@ -851,7 +894,7 @@
       class="uPluseDialog"
       :close-on-click-modal="$tool.closeOnClickModal"
       :close-on-press-escape="$tool.closeOnClickModal"
-      >
+    >
       <div>
         <ul class="uPlus-class">
           <li class="li" style="width:100%;">
@@ -900,6 +943,16 @@
         </p>
       </div>
     </el-dialog>
+    <!-- 发起签署选择业主客户 -->
+    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :localChoseList="localChoseList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <!-- 发起签署成功上传资料库弹窗 -->
+    <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
+      <div>合同已发起签署</div>
+      <div>请完成资料库的上传</div>
+      <div class="dataBaseBtn">
+        <el-button round type="primary" @click="toDataBase">上传资料库</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -910,6 +963,7 @@ import layerAudit from "../contractDialog/layerAudit";
 import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
 import lateProgress from "../contractDialog/lateProgress";
+import chosePerson from "../contractDialog/chosePerson";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from "@/components/PdfPrint";
@@ -927,7 +981,8 @@ export default {
     changeCancel,
     lateProgress,
     PdfPrint,
-    checkPerson
+    checkPerson,
+    chosePerson
   },
   data() {
     return {
@@ -1120,6 +1175,14 @@ export default {
         "sign-ht-qhsh-toverify": {
           state: false,
           name: "签后提审"
+        },
+        "sign-ht-info-fqqs": {
+          state: false,
+          name: "发起签署"
+        },
+        "sign-ht-xq-data": {
+          state: false,
+          name: "编辑资料库"
         }
       },
       showOnLine: false,
@@ -1134,7 +1197,15 @@ export default {
       uPlusDictionary71: [],
       isDealType: "", //判断房源是租赁还是买卖类型，1租赁，2买卖
       uPlusContType: "",
-      uPlusQianyueType: ""
+      uPlusQianyueType: "",
+      //发起签署选择业主客户
+      chosePersonDialog: false,
+      signOwnerList: [],
+      signGuestList: [],
+      choseQuery: {},
+      dataBaseDialog: false,
+      choseLoading: false,
+      localChoseList: []
     };
   },
   created() {
@@ -1323,6 +1394,9 @@ export default {
           })
         );
       }
+      if (type === "search") {
+        param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
@@ -1462,40 +1536,54 @@ export default {
     },
     //合同详情页
     toDetail(value) {
-      if (this.power["sign-com-htdetail"].state) {
-        if (value.contState.value != -1) {
-          if (
-            value.contType.value === 1 ||
-            value.contType.value === 2 ||
-            value.contType.value === 3
-          ) {
-            let newPage = this.$router.resolve({
-              path: "/contractDetails",
-              query: {
-                id: value.id, //合同id
-                contType: value.contType.value //合同类型
+      if (value.contState.value != -1) {
+        // 验证是否有合同详情查看权限
+        this.$ajax
+          .get("/api/contract/isDetailAuth", { contId: value.id })
+          .then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              if (res.data) {
+                if (
+                  value.contType.value === 1 ||
+                  value.contType.value === 2 ||
+                  value.contType.value === 3
+                ) {
+                  let newPage = this.$router.resolve({
+                    path: "/contractDetails",
+                    query: {
+                      id: value.id, //合同id
+                      contType: value.contType.value //合同类型
+                    }
+                  });
+                  window.open(newPage.href, "_blank");
+                } else {
+                  let newPage = this.$router.resolve({
+                    path: "/detailIntention",
+                    query: {
+                      id: value.id,
+                      contType: value.contType.value
+                    }
+                  });
+                  window.open(newPage.href, "_blank");
+                }
+              } else {
+                this.$message({
+                  message: "没有合同详情查看权限",
+                  type: "warning"
+                });
               }
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
             });
-            window.open(newPage.href, "_blank");
-          } else {
-            let newPage = this.$router.resolve({
-              path: "/detailIntention",
-              query: {
-                id: value.id,
-                contType: value.contType.value
-              }
-            });
-            window.open(newPage.href, "_blank");
-          }
-        } else {
-          this.$message({
-            message: "此合同已删除无法进行操作",
-            type: "warning"
           });
-        }
       } else {
         this.$message({
-          message: "没有合同详情查看权限",
+          message: "此合同已删除无法进行操作",
           type: "warning"
         });
       }
@@ -1700,6 +1788,11 @@ export default {
       // this.EmployeList=[]
       this.contractForm.dealAgentId = "";
       this.clearSelect();
+
+      // this.searchForm.deptId = "";
+      // this.searchForm.depName = "";
+      // this.searchForm.empId = "";
+      // this.clearSelect();
     },
     depHandleClick(data) {
       // this.getEmploye(data.depId)
@@ -1712,6 +1805,27 @@ export default {
     searchDep: function(payload) {
       /*this.DepList=payload.list
       this.contractForm.depName=payload.depName*/
+    },
+    test: function(val) {
+      this.getEmployeByText(val);
+    },
+    empHandle: function(val) {
+      console.log(this.contractForm.dealAgentId);
+      if (
+        val &&
+        this.EmployeInit !== this.employeTotal &&
+        this.contractForm.dealAgentId
+      ) {
+        this.getEmployeByText();
+      }
+    },
+    empHandleAdd(val) {
+      let depVal = val.split("-");
+      // this.searchForm.empId=depVal[0]
+      this.contractForm.dealAgentStoreId = depVal[2];
+      this.contractForm.depName = depVal[1];
+      this.EmployeList = [];
+      this.getEmploye(this.contractForm.dealAgentStoreId);
     },
     //提审
     goSave(item, type) {
@@ -1964,8 +2078,8 @@ export default {
       this.$router.push({
         path: "/addContract",
         query: {
-          id: row.id,
-          operateType: 1,
+          id: row.id, 
+          operateType: 1,  //1新增 2编辑
           type: row.contType.value,
           recordType: row.recordType.value,
           isDeal: 1
@@ -2065,6 +2179,138 @@ export default {
           }
         });
       }
+    },
+    //发起签署
+    toSign(val){
+        this.choseQuery = {
+            id:val.id,
+            isHaveData:val.isHaveData,
+            storeId:val.guestStoreCode,
+            code:val.code,
+            contType:val.contType.value
+          }
+        let owner = []
+        let guest = []
+        val.contPersons.forEach(element => {
+            if(element.personType.value === 1){
+                owner.push(element)
+            }else{
+                guest.push(element)
+            }
+        });
+        this.signOwnerList=[].concat(owner)
+        this.signGuestList=[].concat(guest)
+        this.localChoseList = (localStorage.getItem('brokerList') && JSON.parse(localStorage.getItem('brokerList')).filter(item => {
+            return item !== null
+        })) || []
+        this.contCode = val.code;
+        this.chosePersonDialog=true
+    },
+    
+    closeChose(val) {
+      if (val.type == 'choseLoading') {
+        this.choseLoading = true
+      } else {
+        this.chosePersonDialog = false;
+        // this.dataBaseDialog = true;
+        this.choseLoading = false
+        console.log(!!val,898989);
+        if (val) {
+          this.dataBaseDialog = true;
+        }
+        // if (val && !this.choseQuery.isHaveData) {
+        //   this.dataBaseDialog = true;
+        // }
+      }
+    },
+    toDataBase() {
+      this.$ajax
+          .get("/api/contract/isDetailAuth", { contId: this.choseQuery.id })
+          .then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              if (res.data) {
+                console.log(this.power["sign-ht-xq-data"].state,88787878);
+                if (this.power["sign-ht-xq-data"].state) {
+                  this.setPath(
+                  this.$tool.getRouter(
+                      ["合同", "合同列表", "合同详情"],
+                      "contractList"
+                    )
+                  );
+                  let path;
+                  if (this.choseQuery.contType === 4 || this.choseQuery.contType === 5) {
+                    path = "/detailIntention";
+                  } else {
+                    path = "/contractDetails";
+                  }
+                  console.log(this.choseQuery,888888);
+                  this.$router.replace({
+                    path: path,
+                    query: {
+                      type: "dataBank",
+                      id: this.choseQuery.id, //合同id
+                      code: this.choseQuery.code, //合同编号
+                      contType: this.choseQuery.contType, //合同类型
+                      isHaveData: this.choseQuery.isHaveData
+                    }
+                  });
+                }else {
+                  this.$message({
+                    message: "没有资料库权限,无法跳转到资料库"
+                  });
+                  this.$router.push("/contractList");
+                }
+              } else {
+                this.$message({
+                  message: "没有合同详情权限,无法跳转到资料库",
+                  type: "warning"
+                });
+                this.$router.push("/contractList");
+              }
+            }
+          })
+          .catch(error => {
+            this.$message({
+              message: error,
+              type: "error"
+            });
+          });
+      // if (this.power["sign-com-htdetail"].state) {
+      //   if (this.power["sign-ht-xq-data"].state) {
+      //     this.setPath(
+      //       this.$tool.getRouter(
+      //         ["合同", "合同列表", "合同详情"],
+      //         "contractList"
+      //       )
+      //     );
+      //     let path;
+      //     if (this.Msg.type === 4 || this.Msg.type === 5) {
+      //       path = "/detailIntention";
+      //     } else {
+      //       path = "/contractDetails";
+      //     }
+      //     this.$router.replace({
+      //       path: path,
+      //       query: {
+      //         type: "dataBank",
+      //         id: this.choseQuery.id, //合同id
+      //         code: this.choseQuery.code, //合同编号
+      //         contType: this.choseQuery.contType //合同类型
+      //       }
+      //     });
+      //   } else {
+      //     this.$message({
+      //       message: "没有资料库权限,无法跳转到资料库"
+      //     });
+      //     this.$router.push("/contractList");
+      //   }
+      // } else {
+      //   this.$message({
+      //     message: "没有合同详情权限,无法跳转到资料库"
+      //   });
+      //   this.$router.push("/contractList");
+      // }
     }
   },
   computed: {
@@ -2209,6 +2455,15 @@ export default {
 // /deep/.el-table tbody tr:hover>td {
 //     background-color:#ffffff!important
 // }
+/deep/.el-loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999999;
+  background-color: rgba(0,0,0,0.5);
+}
 /deep/.el-table__body {
   .el-table__row {
     &.hover-row {
@@ -2514,6 +2769,22 @@ export default {
   .dialog-footer {
     text-align: center;
     padding: 50px 0 50px 0;
+  }
+}
+.dataBase {
+  /deep/.el-dialog__body {
+    div {
+      text-align: center;
+      &:first-child {
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    .dataBaseBtn {
+      padding: 20px 0;
+    }
   }
 }
 </style>

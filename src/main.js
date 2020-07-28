@@ -128,7 +128,6 @@ router.beforeEach((to, from, next) => {
         api.postJSON(`/api${sessionQuery.url}`, sessionQuery.query).then(res => {
           res = res.data
           if (res.status === 200) {
-            // debugger
             store.commit('setDataList', {
               route: sessionQuery.path,
               data: res.data

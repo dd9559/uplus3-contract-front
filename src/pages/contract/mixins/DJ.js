@@ -73,11 +73,11 @@ const MIXINS_DJ={
         }else {
           let classList = Array.from(iframe.document.querySelector(`*[extendparam=${item}]`).classList)
           if(classList.includes('dropdown-item')||classList.includes('calendar-item')){
-            debugger
+            // debugger
               obj[item]=iframe.document.querySelector(`input[extendparam=${item}]`).value
               iframe.document.querySelector(`input[extendparam=${item}]`).classList.remove('BODERRED')
           }else{
-            debugger
+            // debugger
               obj[item]=iframe.document.querySelector(`span[extendparam=${item}]`).innerHTML
               iframe.document.querySelector(`span[extendparam=${item}]`).classList.remove('BODERRED')
           }

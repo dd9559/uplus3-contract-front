@@ -127,7 +127,7 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
+        <!-- <el-form-item
           label="业绩状态"
           prop="state">
           <el-select
@@ -139,8 +139,8 @@
               :label="item.value"
               :value="item.key"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item
+        </el-form-item> -->
+        <!-- <el-form-item
           label="申诉状态"
           prop="state">
           <el-select
@@ -152,7 +152,7 @@
               :label="item.value"
               :value="item.key"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -197,10 +197,10 @@
         </el-table-column>
         <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
-            <span v-if="scope.row.address.length===0">--</span>
+            <span v-if="scope.row.address&&scope.row.address.length===0">--</span>
             <template v-else>
-              <p>{{scope.row.address.split(' ')[0]}}</p>
-              <p>{{scope.row.address.split(' ')[1]}}</p>
+              <p>{{scope.row.address&&scope.row.address.split(' ')[0]}}</p>
+              <p>{{scope.row.address&&scope.row.address.split(' ')[1]}}</p>
             </template>
           </template>
         </el-table-column>
@@ -706,10 +706,10 @@
       // 编号操作
       cellOpera(type, row) {
         if (type === 'contract') {
-          if (!this.power['sign-com-htdetail'].state) {
-            this.noPower(this.power['sign-com-htdetail'].name);
-            return false
-          }
+          // if (!this.power['sign-com-htdetail'].state) {
+          //   this.noPower(this.power['sign-com-htdetail'].name);
+          //   return false
+          // }
           /*this.setPath(this.getPath.concat({name: '合同详情'}));
           this.$router.push({
             path: "/contractDetails",

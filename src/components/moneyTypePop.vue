@@ -30,6 +30,10 @@
       init:{
         type:String,
         default:''
+      },
+      chooseIndex:{
+        type:Number,
+        default:0
       }
     },
     data(){
@@ -67,7 +71,7 @@
         let param = Object.assign({},data,{pId:pData.id,pName:pData.name})
         // this.$refs.btn.focus()
         this.inputVal=data.name
-        this.$emit('checkCell',param)
+        this.$emit('checkCell',param,this.chooseIndex)
         this.visible=false
       },
       opera:function (type) {

@@ -85,15 +85,16 @@
       }
       this.$nextTick(()=>{
         // this.initWidth=this.$refs.img.offsetWidth
+        let that=this
         document.onmousemove=function (event) {
-          if (this.dragging) {
+          if (that.dragging) {
             event = event || window.event;
-            let dragObj = this.$refs.drag
-            dragObj.style.left = parseInt(event.clientX - this.mousePos.x + this.dragPos.x) + "px";
-            dragObj.style.top = parseInt(event.clientY - this.mousePos.y + this.dragPos.y) + "px";
+            let dragObj = that.$refs.drag
+            dragObj.style.left = parseInt(event.clientX - that.mousePos.x + that.dragPos.x) + "px";
+            dragObj.style.top = parseInt(event.clientY - that.mousePos.y + that.dragPos.y) + "px";
             // console.log(dragObj.style.left,dragObj.style.top)
           }
-        }.bind(this)
+        }
       })
     },
     methods:{

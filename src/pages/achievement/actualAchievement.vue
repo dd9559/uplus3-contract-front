@@ -27,17 +27,18 @@
         </el-form-item>
 
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-left:20px;">
+        <el-form-item label="部门" style="margin-right:0px;">
           <select-tree
             :data="DepList"
             :init="propForm.department"
             @checkCell="depHandleClick"
             @clear="clearDep"
+            @search="searchDep"
           ></select-tree>
         </el-form-item>
 
         <el-form-item>
-          <el-select
+          <!-- <el-select
             :clearable="true"
             v-loadmore="moreEmploye"
             @change="handleEmpNodeClick"
@@ -45,12 +46,25 @@
             size="small"
             v-model="propForm.dealAgentId"
             placeholder="请选择"
+          >-->
+          <el-select
+            :clearable="true"
+            filterable
+            remote
+            :remote-method="test"
+            v-loadmore="moreEmploye"
+            @visible-change="empHandle"
+            class="margin-left"
+            size="small"
+            v-model="propForm.dealAgentId"
+            placeholder="请选择"
+            @change="empHandleAdd"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId"
+              :value="item.empId+'-'+item.depName+'-'+item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -1194,7 +1208,7 @@ export default {
     },
     clearDep: function() {
       this.propForm.department = "";
-      this.EmployeList = [];
+      // this.EmployeList = [];
       this.propForm.dealAgentId = "";
       this.propForm.dealAgentStoreId = "";
       this.clearSelect();
@@ -1205,12 +1219,39 @@ export default {
       this.propForm.dealAgentId = "";
       this.handleNodeClick(data);
     },
+    test: function(val) {
+      this.getEmployeByText(val);
+    },
+    searchDep: function(payload) {
+      /*this.DepList=payload.list
+      this.contractForm.depName=payload.depName*/
+    },
+    empHandle: function(val) {
+      console.log(this.propForm.dealAgentId);
+      if (
+        val &&
+        this.EmployeInit !== this.employeTotal &&
+        this.propForm.dealAgentId
+      ) {
+        this.getEmployeByText();
+      }
+    },
+    empHandleAdd(val) {
+      let depVal = val.split("-");
+      this.propForm.dealAgentStoreId = depVal[2];
+      this.propForm.department = depVal[1];
+      this.EmployeList = [];
+      this.getEmploye(this.propForm.dealAgentStoreId);
+    },
     getData(ajaxParam, typeshow, param) {
       if (typeshow != 1 && param == 2) {
         this.currentPage = 1;
       }
       this.loading = true;
       let _that = this;
+      if (ajaxParam.dealAgentId) {
+        ajaxParam.dealAgentId = ajaxParam.dealAgentId.split("-")[0];
+      }
       this.$ajax
         .get("/api/achievement/selectAchievementList", ajaxParam)
         .then(res => {
@@ -1480,21 +1521,34 @@ export default {
     //点击合同编号进详情
     skipContDel(value) {
       //进入合同详情
-      if (this.power["sign-com-htdetail"].state) {
-        let param = {
-          code: value.code
-        };
-        this.$router.push({
-          path: "/contractDetails",
-          query: {
-            id: value.id,
-            code: value.code,
-            contType: value.contType.value
+      this.$ajax
+        .get("/api/contract/isDetailAuth", { contId: value.id })
+        .then(res => {
+          res = res.data;
+          if (res.status === 200) {
+            if (res.data) {
+              this.$router.push({
+                path: "/contractDetails",
+                query: {
+                  id: value.id,
+                  code: value.code,
+                  contType: value.contType.value
+                }
+              });
+            } else {
+              this.$message({
+                message: "没有合同详情查看权限",
+                type: "warning"
+              });
+            }
           }
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: "error"
+          });
         });
-      } else {
-        this.noPower("合同详情查看");
-      }
     },
     /**
      * 跳转房客源详情

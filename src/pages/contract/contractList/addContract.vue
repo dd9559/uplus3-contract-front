@@ -11,6 +11,7 @@
                 <div class="contractMsg">
                     <p>
                         合同信息
+                        <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
                         <span v-if="isDeal||contractForm.dealById" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
@@ -25,10 +26,10 @@
                     <div class="form-content">
                         <el-form-item 
                             label="签约时间："
-                            style="text-align:right;width:285px;"
+                            style="text-align:right;width:245px;"
                             class="form-label">
                             <el-date-picker 
-                                style="width:180px"
+                                style="width:140px"
                                 :disabled="type===2?true:false"
                                 v-model="contractForm.signDate"
                                 type="datetime"
@@ -73,10 +74,10 @@
                         <el-form-item 
                             label="纸质合同编号："
                             class="width-250 form-label"
-                            style="width:340px;"
+                            style="width:280px;"
                             v-if="recordType===2">
                             <input 
-                                style="width:200px;"
+                                style="width:140px;"
                                 type="text"
                                 :disabled="canInput"
                                 maxlength="30"
@@ -103,6 +104,32 @@
                                 default-time="12:00:00">
                             </el-date-picker>
                         </el-form-item>
+
+                        <el-form-item
+                            label="交易流程："
+                            class="form-label"
+                            style="width:245px;text-align:right"
+                            v-if="contractForm.type===2||contractForm.type===3">
+                            <el-select
+                                v-model="contractForm.transFlowCode"
+                                placeholder="请选择交易流程"
+                                @change="choseFlow"
+                                :clearable="true"
+                                style="width:140px"
+                                :disabled="offLine">
+                                <el-option
+                                    v-for="item in transFlowList" :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item 
+                            label="权证费用："
+                            class="width-250"
+                            v-if="contractForm.type===2||contractForm.type===3">
+                            <span class="warrant">{{contractForm.flowQZfee?contractForm.flowQZfee:0}} 元</span>
+                        </el-form-item>
                         <br>
                         <el-form-item 
                             label="客户佣金："
@@ -120,7 +147,7 @@
                         </el-form-item>
                         <el-form-item 
                             label="业主佣金："
-                            style="text-align:right;width:285px;">
+                            style="text-align:right;width:245px;">
                             <input 
                                 type="text"
                                 :disabled="canInput"
@@ -140,6 +167,21 @@
                                 :value="commissionTotal"
                                 :disabled="true"
                                 class="dealPrice disabled">
+                            <i class="yuan">元</i>
+                        </el-form-item>
+                        <el-form-item 
+                            label="佣金支付费："
+                            style="text-align:right;width:280px;">
+                            <input 
+                                type="text"
+                                :disabled="canInput"
+                                v-model="contractForm.commissionPayment"
+                                @input="cutNumber('commissionPayment')"
+                                @change="countTotal"
+                                placeholder="请输入内容"
+                                class="dealPrice"
+                                :class="{'disabled':canInput}">
+                            <i class="hint iconfont icon-wenhao1" title="佣金成本支出"></i>
                             <i class="yuan">元</i>
                         </el-form-item>
                     </div>
@@ -307,12 +349,14 @@
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
-                                            <el-option v-for="item in dictionary['633']"
-                                                v-if="recordType===10&&item.key!=4||recordType!=10"
-                                                :key="item.key"
-                                                :label="item.value"
-                                                :value="item.key">
-                                            </el-option>
+                                            <template v-for="item in dictionary['633']">
+                                                <el-option
+                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    :key="item.key"
+                                                    :label="item.value"
+                                                    :value="item.key">
+                                                </el-option>
+                                            </template>
                                         </el-select>
                                         <input v-model="item.encryptionCode"
                                             type="text"
@@ -429,12 +473,14 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
-                                            <el-option v-for="item in dictionary['633']"
-                                                v-if="recordType===10&&item.key!=4||recordType!=10"
-                                                :key="item.key"
-                                                :label="item.value"
-                                                :value="item.key">
-                                            </el-option>
+                                            <template v-for="item in dictionary['633']">
+                                                <el-option
+                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    :key="item.key"
+                                                    :label="item.value"
+                                                    :value="item.key">
+                                                </el-option>
+                                            </template>
                                         </el-select>
                                         <input id="guestCard"
                                             v-model="item.encryptionCode"
@@ -501,18 +547,17 @@
                     <p @click="showRemarkTab"
                         class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10"
                             :class="{'attention_':showRemark}"></span></p>
-                    <div class="remarkType"
-                        v-show="showRemark">
-                        <el-form-item style="padding-left:20px;position:relative;">
+                    <div class="remarkType" v-show="showRemark">
+                        <el-form-item style="padding-left:20px;padding-bottom:30px;position:relative;">
                             <!-- @input="inputCode('remarks')" -->
                             <el-input type="textarea"
-                                :rows="6"
-                                maxlength="200"
+                                :rows="8"
+                                maxlength="500"
                                 resize='none'
                                 :disabled="canInput"
                                 v-model="contractForm.remarks"
                                 placeholder="请输入备注内容"></el-input>
-                            <span class="textLength">{{contractForm.remarks.length}}/200</span>
+                            <span class="textLength">{{contractForm.remarks.length}}/500</span>
                         </el-form-item>
                     </div>
                 </div>
@@ -768,6 +813,9 @@ const rule = {
     pCode: {
         name: "纸质合同编号"
     },
+    transFlowCode: {
+        name: "交易流程"
+    },
     houseinfoCode: {
         name: "房源"
     },
@@ -795,7 +843,9 @@ export default {
                 payType: 1,
                 dealPrice: "",
                 contPersons: [],
+                transFlowCode:"",
                 propertyRightAddr: "",
+                commissionPayment:0,
                 houseInfo: {
                     HouseStoreCode: "",
                     ShopOwnerMobile: "",
@@ -1029,6 +1079,13 @@ export default {
                     }
                 }
             });
+        },
+        // 选择交易流程
+        choseFlow(val){
+            let item = this.transFlowList.find(item=>{
+                return item.id===val
+            })
+            this.$set(this.contractForm,'flowQZfee',item.warrantFee)
         },
         //计算总佣金
         countTotal() {
@@ -1360,6 +1417,9 @@ export default {
             }
             if (this.recordType != 2) {
                 delete rule_.pCode;
+            }
+            if(this.contractForm.type===1){//租赁无交易流程
+                delete rule_.transFlowCode
             }
             if (!this.contractForm.signDate) {
                 this.contractForm.signDate = "";
@@ -2306,9 +2366,7 @@ export default {
                     url = "/api/contract/addLocalContract";
                 }
 
-                this.$ajax
-                    .postJSON(url, param)
-                    .then(res => {
+                this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
@@ -2862,7 +2920,11 @@ export default {
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
+                    this.$set(this.contractForm,'commissionPayment',this.contractForm.commissionPayment?this.contractForm.commissionPayment:0)
+                    this.$set(this.contractForm,'transFlowCode',this.contractForm.transFlowCode?this.contractForm.transFlowCode:'')
                     // this.contractForm.estTransferTime=this.contractForm.estTransferTime?TOOL.dateFormat(this.contractForm.estTransferTime):''
+                    // 交易流程处理
+                    if(!this.contractForm.transFlow) this.contractForm.transFlowCode=''
                     if(this.contractForm.estTransferTime){
                         this.$set(this.contractForm,'estTransferTime',TOOL.dateFormat(this.contractForm.estTransferTime))
                     }else{
@@ -2895,7 +2957,7 @@ export default {
                     this.isToCommission=this.contractForm.isTransfeOfCommission?true:false
                     let isDealTpe = this.contractForm.houseinfoCode && this.contractForm.houseinfoCode.search("Z") === 0 ? 1 : 2;
                     this.contractForm.type = this.$route.query.isDeal ? Number(isDealTpe) : res.data.contType.value;
-                    if(this.$route.query.isDeal){
+                    if(this.$route.query.isDeal){//转成交
                         this.ys=this.contractForm.receivableCommission //应收金额
                         this.ss=this.contractForm.receivedCommission //实收
                         this.ws=this.contractForm.uncollectedCommission //未收金额
@@ -2913,7 +2975,7 @@ export default {
                         this.canInput = true;
                     }
                     //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改
-                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3) {
+                    if (this.contractForm.recordType.value === 2 && this.contractForm.contState.value === 3 && !this.$route.query.isDeal) {
                         this.offLine = true;
                     }
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
@@ -3081,6 +3143,15 @@ export default {
                         {
                             val: this.contractForm.houseInfo.SquareUse,
                             max: 999999.99
+                        }
+                    );
+                });
+            } else if (val === "commissionPayment") {
+                this.$nextTick(() => {
+                    this.contractForm.commissionPayment = this.$tool.cutFloat(
+                        {
+                            val: this.contractForm.commissionPayment,
+                            max: 999999999.99
                         }
                     );
                 });
@@ -3273,9 +3344,17 @@ export default {
             return false;
         },
         //是否转佣
-        toCommission() {    
-            this.isToCommission = !this.isToCommission;
-            this.countTotal()
+        toCommission() {
+            /* 第一次点击转成交按钮可以编辑是否转佣，其他情况不允许编辑 2020.07.24 黄鹤 */
+            if(this.isDeal&&this.ss!=0){
+                this.isToCommission = !this.isToCommission;
+                this.countTotal()
+            }else{
+                this.$message({
+                    message:this.ss==0?'实收金额为零，无法操作转佣':"转成交已成功，无法操作转佣",
+                    type:"warning"
+                })
+            } 
         }
     },
     mounted() {
@@ -3466,6 +3545,14 @@ export default {
     font-size: 14px;
     color: #ccc;
 }
+.hint {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: -115px;
+    font-size: 18px;
+    color: @color-blue;
+}
 .contractMsg {
     border-bottom: 1px solid @border-ED;
     > p {
@@ -3603,7 +3690,7 @@ export default {
     .remarkType {
         padding-left: 30px;
         /deep/.el-textarea__inner {
-            width: 600px;
+            width: 800px;
             min-height: 200px;
         }
         .textLength {
@@ -3696,6 +3783,11 @@ export default {
 .width-250 {
     width: 245px;
     text-align: right;
+}
+.warrant{
+    display: inline-block;
+    width: 140px;
+    text-align: left;
 }
 .btn {
     padding-top: 10px;

@@ -17,7 +17,7 @@
               <el-option
                 v-for="(item,index) in deps"
                 :key="index"
-                :label="!item.positionName?`${item.name}`:item.positionId===0?item.name:`${item.name}+${item.positionName}`"
+                :label="item.typeId?item.typeName:!item.positionName?`${item.name}`:item.positionId===0?item.name:`${item.name}+${item.positionName}`"
                 :value="item.flag">
               </el-option>
             </el-select>
@@ -108,12 +108,14 @@
             bizCode:this.bizCode,
             flowType:this.flowType,
             userId:this.choseItem.empId,
+            typeId:this.choseItem.typeId
           }
           this.emps.forEach(item=>{
             if(item.empId===this.choseItem.empId){
               param.userName=item.name
             }
           })
+          console.log(param,'param');
           if(param.userId!==''){
             this.$ajax.post(this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
               res=res.data
@@ -164,12 +166,14 @@
       },
       //搜索人员
       searchEmp:function (val) {
+        console.log(val,'111');
         let param={
           keyword:!val?'':val,
           type:this.type===3?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
-          flowType:this.flowType
+          flowType:this.flowType,
+          typeId:this.choseItem.typeId
         }
         if(this.getUser.version===3){
           param.positionId=this.choseItem.grade//新加职级
@@ -211,32 +215,34 @@
         if(type==='dep'){
           // debugger
           this.choseItem.empId=''
+          this.choseItem.typeId=''
           this.emps = []
           if(this.depsFlag!==''&&this.getUser.version===3){
             this.deps.forEach(item=>{
               // debugger
               if(item.flag===this.depsFlag){
-                this.choseItem.depId=item.id
+                this.choseItem.depId=item.id,
+                this.choseItem.typeId=item.typeId?item.typeId:''
                 this.choseItem.grade=item.positionId
               }
             })
           }
-          this.choseItem.depId&&this.searchEmp()
+          this.choseItem.depId&&this.searchEmp()||this.choseItem.typeId&&this.searchEmp()
         }else {
           if(this.inputEmp){
             //去掉员工带出部门的交互
-            /*this.emps.find(item=>{
-              if(item.empId===this.choseItem.empId){
-                // this.deps=[].concat({name:item.depName,id:item.depId})
-                this.choseItem.depId=item.depId
-                if(this.getUser.version===3){
-                  this.choseItem.grade=item.positionId
-                  this.depsFlag=`${item.depId}${item.positionId}`
-                }
-                this.searchEmp()
-                this.inputEmp=false
-              }
-            })*/
+            // this.emps.find(item=>{
+            //   if(item.empId===this.choseItem.empId){
+            //     // this.deps=[].concat({name:item.depName,id:item.depId})
+            //     this.choseItem.depId=item.depId
+            //     if(this.getUser.version===3){
+            //       this.choseItem.grade=item.positionId
+            //       this.depsFlag=`${item.depId}${item.positionId}`
+            //     }
+            //     this.searchEmp()
+            //     this.inputEmp=false
+            //   }
+            // })
           }
         }
       }
