@@ -368,6 +368,8 @@ export default {
       }
     },
     getExcel:function () {
+      printParam.signDateEnd=printParam.signDateEnd.replace(/\//g,"-")
+      printParam.signDateSta=printParam.signDateSta.replace(/\//g,"-")
       this.excelCreate('/input/signingAuditExcel',printParam)
     },
     //获取合同列表
@@ -398,7 +400,7 @@ export default {
         }))
       }
       printParam=Object.assign({},param)
-
+    
       this.$ajax.get("/api/signingAudit/getlist", param).then(res => {
         res = res.data;
         if (res.status === 200) {
