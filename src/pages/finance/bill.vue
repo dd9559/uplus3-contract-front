@@ -706,6 +706,7 @@
                 round
                 type="primary"
                 @click="transterSaveFinal()"
+                v-dbClick
               >保存</el-button>
             </p>
           </div>
@@ -1261,11 +1262,11 @@ export default {
       ];
       this.transterShow = true;
       this.selectPayInfo = val;
-      this.getTransterInfo(val.payCode);
+      this.getTransterInfo(val.id);
     },
     getTransterInfo(id) {
       let param = {
-        payCode: id
+        payId: id
       };
       this.$ajax.get("/api/payInfo/inOutContractInfo", param).then(res => {
         res = res.data;
