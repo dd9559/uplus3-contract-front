@@ -970,8 +970,8 @@ export default {
           for (let i = 0; i < res.data.contPersons.length; i++) {
             if (res.data.contPersons[i].personType.value === 1) {
               this.contractForm.contPersons[0].name = res.data.contPersons[i].name;
-              this.contractForm.contPersons[0].encryptionMobile = res.data.contPersons[i].mobile;
-              this.contractForm.contPersons[0].mobile = res.data.contPersons[i].mobile;
+              this.contractForm.contPersons[0].encryptionMobile = res.data.contPersons[i].encryptionMobile;
+              this.contractForm.contPersons[0].mobile = res.data.contPersons[i].encryptionMobile;
               this.contractForm.contPersons[0].relation = res.data.contPersons[i].relation;
               this.contractForm.contPersons[0].identifyCode =  res.data.contPersons[i].identifyCode;
               this.contractForm.contPersons[0].encryptionCode =  res.data.contPersons[i].identifyCode;
@@ -982,8 +982,8 @@ export default {
               this.contractForm.contPersons[0].lepIdentity=res.data.contPersons[i].lepIdentity==='-'?'':res.data.contPersons[i].lepIdentity;
             } else if ( this.contractForm.contPersons[i].personType.value === 2 ) {
               this.contractForm.contPersons[1].name = res.data.contPersons[i].name;
-              this.contractForm.contPersons[1].encryptionMobile = res.data.contPersons[i].mobile;
-              this.contractForm.contPersons[1].mobile = res.data.contPersons[i].mobile;
+              this.contractForm.contPersons[1].encryptionMobile = res.data.contPersons[i].encryptionMobile;
+              this.contractForm.contPersons[1].mobile = res.data.contPersons[i].encryptionMobile;
               this.contractForm.contPersons[1].relation = res.data.contPersons[i].relation;
               this.contractForm.contPersons[1].identifyCode = res.data.contPersons[i].identifyCode,
               this.contractForm.contPersons[1].encryptionCode =  res.data.contPersons[i].identifyCode;
