@@ -12,7 +12,7 @@
                     <p>
                         合同信息
                         <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
-                        <span v-if="isDeal||contractForm.dealById" class="toCommission">
+                        <span v-if="(isDeal||contractForm.dealById)&&showZY" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
                             </span>
@@ -1009,6 +1009,7 @@ export default {
             zy: 0, //转佣金额
 
             houseId:0,//转成交房源id
+            showZY:true,
         };
     },
     computed: {
@@ -1108,12 +1109,17 @@ export default {
             this.$ajax.get("/api/contract/getZYInfo",param).then(res=>{
                 res=res.data
                 if(res.status===200){
-                    this.ys = res.data.ys //应收金额
-                    this.ss = res.data.ss //实收
-                    this.ws = res.data.ws //未收金额
-                    this.yt = res.data.yt //已退金额
-                    this.zy = res.data.zy //转佣金额
-                    this.countTotal();
+                    if(Object.keys(res.data).length>0){
+                        this.ys = res.data.ys //应收金额
+                        this.ss = res.data.ss //实收
+                        this.ws = res.data.ws //未收金额
+                        this.yt = res.data.yt //已退金额
+                        this.zy = res.data.zy //转佣金额
+                        this.countTotal();
+                    }else{
+                        //若返回空 则不现实转佣字段
+                        this.showZY=false
+                    }
                 }
             })
         },
