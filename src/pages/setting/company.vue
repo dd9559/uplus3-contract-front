@@ -565,7 +565,6 @@
       },
       // 远程搜索
       remoteMethod1(query) {
-        alert(1);
         setTimeout(() => {
           this.homeStoreList = []
           this.homeStorePage = 1

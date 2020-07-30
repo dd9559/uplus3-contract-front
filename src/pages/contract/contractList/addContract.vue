@@ -1117,11 +1117,11 @@ export default {
                         this.ws = res.data.ws //未收金额
                         this.yt = res.data.yt //已退金额
                         this.zy = res.data.zy //转佣金额
-                        this.countTotal();
                     }else{
                         //若返回空 则不现实转佣字段
                         this.showZY=false
                     }
+                    this.countTotal();
                 }
             })
         },
