@@ -9,7 +9,7 @@ let Obj = {
 
 let sub = {
   val60: "",
-  val61: "",
+  val69: "",
   val62: "",
   val40: ""
 }
@@ -86,8 +86,8 @@ for (let readonlyItem in msg) {
           element.innerHTML = msg[readonlyItem][0]
         } else if (readonlyItem === 'propertyAddr') {
           element.innerHTML = msg[readonlyItem]
-          document.querySelector(`*[extendparam=val22]`).innerHTML = msg[readonlyItem]
-          document.querySelector(`*[extendparam=val22]`).classList.remove('input-before')
+          // document.querySelector(`*[extendparam=val22]`).innerHTML = msg[readonlyItem]
+          // document.querySelector(`*[extendparam=val22]`).classList.remove('input-before')
         } else if (readonlyItem === 'lepName') {
           if (msg[readonlyItem]) {
             document.querySelector(`*[extendparam=val100]`).innerHTML = msg[readonlyItem]

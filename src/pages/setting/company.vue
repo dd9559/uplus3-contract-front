@@ -19,7 +19,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags remote  @change="depChange"   :clearable="true" class="headerDep"  style="width:230px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
+          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags remote  @change="depChange"  :clearable="true" class="headerDep"  style="width:230px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
             <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id">
               <!-- <span style="float: left">{{ item.name.slice(0,8) }}</span> -->
             </el-option>
@@ -130,7 +130,7 @@
               </el-form-item>
                 <!-- <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input> -->
               <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @focus="isNull" @change="storeSelect" :disabled="storeNoChange"  v-loadmore="moreStore2" @visible-change="showView2">
+                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @focus="isNull" @change="storeSelect" :disabled="storeNoChange"  v-loadmore="moreStore2" @visible-change="showView2" :remote-method="remoteMethod2">
                   <el-option  v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -565,6 +565,7 @@
       },
       // 远程搜索
       remoteMethod1(query) {
+        alert(1);
         setTimeout(() => {
           this.homeStoreList = []
           this.homeStorePage = 1
@@ -665,7 +666,7 @@
       getStoreList2(val,page=1,keyword='',cooperationMode='') {
         this.temKey = keyword
         if(val==2){
-          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword,cooperationMode:cooperationMode}).then(res => {
+          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,pageSize:1000,keyword: keyword,cooperationMode:cooperationMode}).then(res => {
             res = res.data
             if(res.status === 200) {
                 this.storeList = this.storeList.concat(res.data.list)

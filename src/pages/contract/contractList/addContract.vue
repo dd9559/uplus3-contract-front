@@ -1009,7 +1009,7 @@ export default {
             zy: 0, //转佣金额
 
             houseId:0,//转成交房源id
-            showZY:true,
+            showZY:false,
         };
     },
     computed: {
@@ -1065,6 +1065,7 @@ export default {
         this.getShopList(); //门店
         this.getAdmin(); //获取当前登录人信息
         if (this.$route.query.isDeal) {
+            this.showZY=true;
             this.id = this.$route.query.id;
             this.getContractDetail();
         }
@@ -1110,6 +1111,7 @@ export default {
                 res=res.data
                 if(res.status===200){
                     if(Object.keys(res.data).length>0){
+                        this.showZY=true;
                         this.ys = res.data.ys //应收金额
                         this.ss = res.data.ss //实收
                         this.ws = res.data.ws //未收金额
