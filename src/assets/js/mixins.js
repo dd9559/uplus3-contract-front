@@ -231,7 +231,6 @@ const MIXINS = {
           contId: contId
         }).then(res => {
           res = res.data
-          debugger
           if (res.status === 200) {
             if (res.data) {
               this.setPath(this.getPath.concat({
