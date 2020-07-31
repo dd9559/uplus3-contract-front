@@ -2287,6 +2287,15 @@ export default {
                     param[paramType].dealByCode = this.contractForm.code
                     param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
                     param[paramType].zyComission = this.zy//转佣金额
+                    param[paramType].ysComission = this.ys//应收金额
+                    param[paramType].ssComission = this.ss//实收金额
+                    param[paramType].wsComission = this.ws//未收金额
+                    param[paramType].ytComission = this.yt//已退金额
+
+                    this.contractForm.receivableCommission=0 //应收金额
+                    this.contractForm.receivedCommission=0 //实收
+                    this.contractForm.uncollectedCommission=0 //未收金额
+                    this.contractForm.retiredCommission=0 //已退金额
 
                     delete param[paramType].id;
                     delete param[paramType].code;
@@ -2338,43 +2347,31 @@ export default {
                         type: "error"
                     });
                 });
-            } else{
-                //  if (this.type === 2) 
+            } else{ 
                 //编辑
-                if (this.contractForm.type === 1) {
-                    delete param.leaseCont.contChangeState;
-                    delete param.leaseCont.contState;
-                    delete param.leaseCont.contType;
-                    delete param.leaseCont.laterStageState;
-                    delete param.leaseCont.toExamineState;
-                    delete param.leaseCont.previewImg;
-                    delete param.leaseCont.subscriptionTerm;
-                    delete param.leaseCont.updateTime;
-                    delete param.leaseCont.distributableAchievement;
-                    delete param.leaseCont.achievementState;
-                    delete param.leaseCont.recordType;
-                    delete param.leaseCont.resultState;
-                    param.leaseCont.isTransfeOfCommission = this.isToCommission
-                } else if ( this.contractForm.type === 2 || this.contractForm.type === 3 ) {
-                    delete param.saleCont.contChangeState;
-                    delete param.saleCont.contState;
-                    delete param.saleCont.contType;
-                    delete param.saleCont.laterStageState;
-                    delete param.saleCont.toExamineState;
-                    delete param.saleCont.previewImg;
-                    delete param.saleCont.subscriptionTerm;
-                    delete param.saleCont.updateTime;
-                    delete param.saleCont.distributableAchievement;
-                    delete param.saleCont.achievementState;
-                    delete param.saleCont.recordType;
-                    delete param.saleCont.resultState;
-                    param.saleCont.isTransfeOfCommission = this.isToCommission
-                }
+                let paramType = this.contractForm.type === 1?"leaseCont":"saleCont"
+                delete param[paramType].contChangeState;
+                delete param[paramType].contState;
+                delete param[paramType].contType;
+                delete param[paramType].laterStageState;
+                delete param[paramType].toExamineState;
+                delete param[paramType].previewImg;
+                delete param[paramType].subscriptionTerm;
+                delete param[paramType].updateTime;
+                delete param[paramType].distributableAchievement;
+                delete param[paramType].achievementState;
+                delete param[paramType].recordType;
+                delete param[paramType].resultState;
+                param[paramType].isTransfeOfCommission = this.isToCommission
+                param[paramType].zyComission = this.zy//转佣金额
+                param[paramType].ysComission = this.ys//应收金额
+                param[paramType].ssComission = this.ss//实收金额
+                param[paramType].wsComission = this.ws//未收金额
+                param[paramType].ytComission = this.yt//已退金额
                 var url = "/api/contract/updateContract";
                 if (this.recordType === 2) {
                     url = "/api/contract/addLocalContract";
                 }
-
                 this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
