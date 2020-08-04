@@ -236,12 +236,13 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   dealPriceUpper: '壹仟',
 //   square: 160,
 //   guestStoreRegisterCode: '213',
-//   signDate: 1592465819508
+//   signDate: 1592465819508,
+//   organizationCode:"8888888888"
 // }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code', 'ownerTel', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
+  let readonlyArr = ['code', 'ownerTel', 'organizationCode','guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
   if (onlyReadDom.length > 0) {
     onlyReadDom.forEach((element, index) => {
       if (readonlyArr.includes(readonlyItem)) {
