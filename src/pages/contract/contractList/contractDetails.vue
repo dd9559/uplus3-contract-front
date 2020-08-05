@@ -3708,7 +3708,10 @@ export default {
     },
     //合同附件列表
     getAttachment() {
-      this.$ajax.get("/api/attachment/getdelAttachment").then((res) => {
+      let param = {
+        systemtag: JSON.parse(sessionStorage.getItem("userMsg")).user.systemtag,
+      };
+      this.$ajax.get("/api/attachment/getdelAttachment", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.attachmentList = res.data;
@@ -3721,9 +3724,9 @@ export default {
       // if (type != ".docx" && type != ".doc") {
       //   this.fileSign([item.path], "download");
       // } else {
-        this.fjDialogShow = true;
-        this.fjSrc = item.path;
-        this.fjId = item.id;
+      this.fjDialogShow = true;
+      this.fjSrc = item.path;
+      this.fjId = item.id;
       // }
     },
     downloadFj(val) {
@@ -3732,6 +3735,7 @@ export default {
         this.fjDialogShow = false;
         this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
       } else {
+        this.$refs.fjDownloadSg.href = "javascript:;";
         if (type != ".docx" && type != ".doc") {
           this.$message({
             message: "签章下载只支持word格式",
