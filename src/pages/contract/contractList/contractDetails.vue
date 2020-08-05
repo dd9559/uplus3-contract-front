@@ -3709,7 +3709,7 @@ export default {
     //合同附件列表
     getAttachment() {
       let param = {
-        contId: this.$route.query.id,
+        contId: this.$route.query.id
       };
       this.$ajax.get("/api/attachment/getdelAttachment", param).then((res) => {
         res = res.data;
