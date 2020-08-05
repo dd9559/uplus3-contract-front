@@ -1377,6 +1377,7 @@ export default {
       this.nodeList.splice(index, 1);
     },
     isSave() {
+      debugger
       if (this.aduitForm.modularType !== "") {
         if (!this.aduitForm.systemTag) {
           this.$message({ message: "体系不能为空" });

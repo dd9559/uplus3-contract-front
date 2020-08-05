@@ -8,7 +8,7 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item label="签约日期">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
@@ -368,6 +368,8 @@ export default {
       }
     },
     getExcel:function () {
+      printParam.signDateEnd=printParam.signDateEnd.replace(/\//g,"-")
+      printParam.signDateSta=printParam.signDateSta.replace(/\//g,"-")
       this.excelCreate('/input/signingAuditExcel',printParam)
     },
     //获取合同列表

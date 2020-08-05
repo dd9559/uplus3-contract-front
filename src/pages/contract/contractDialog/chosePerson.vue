@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <el-dialog
-      title="选择签署客户/业主"
+      title="选择签署人"
       :visible="getDialogVisible"
       width="900px"
       @close="submit('close')"
@@ -273,6 +273,9 @@ export default {
       ownerMobileList: [], //业主手机号
       guestMobileList: [], //客户手机号
       brokerMobileList: [], //签署人手机号
+      isCheckOwnerSign: false,
+      isCheckGuestSign: false,
+      isOverCheckSign: true
     };
   },
   created() {
@@ -633,26 +636,78 @@ export default {
     },
     //选择
     chose(type, val) {
-      if (type === "owner") {
+      if (type === "owner" && this.isOverCheckSign) {
         let index = this.choseOwnerM.indexOf(val.mobile);
-        if (index > -1 && this.ownerList.length !== 1) {
+        if (index > -1) {
           this.choseOwnerM.splice(index, 1);
           this.choseOwner.splice(index, 1);
-        } else if (this.ownerList.length !== 1){
-          console.log(this.ownerList.length,this.ownerList);
-          this.choseOwnerM.push(val.mobile);
-          this.choseOwner.push(val);
+        } else {
+          this.isOverCheckSign = false
+          if (this.isCheckOwnerSign) {
+            this.isOverCheckSign = true
+            this.choseOwnerM.push(val.mobile);
+            this.choseOwner.push(val);
+          } else {
+            let param = {
+              contCode: this.contCode,
+              signerType: 0
+            };
+            this.$ajax
+            .get("/api/app/contract/checkSignPosition", param)
+            .then(res => {
+              res = res.data;
+              this.isOverCheckSign = true
+              if (res.data) {
+                this.isCheckOwnerSign = true
+                console.log(this.ownerList.length,this.ownerList);
+                this.choseOwnerM.push(val.mobile);
+                this.choseOwner.push(val);
+              } else {
+                this.$message("本合同不支持该角色签署");
+              }
+            })
+            .catch(error => {
+              this.isOverCheckSign = true
+              this.$message(error);
+            });
+          }
         }
-      } else if (type === "guest") {
+      } else if (type === "guest" && this.isOverCheckSign) {
         let index = this.choseGuestM.indexOf(val.mobile);
-        if (index > -1 && this.guestList.length !== 1) {
+        if (index > -1) {
           this.choseGuestM.splice(index, 1);
           this.choseGuest.splice(index, 1);
-        } else if (this.guestList.length !== 1) {
-          this.choseGuestM.push(val.mobile);
-          this.choseGuest.push(val);
+        } else {
+          this.isOverCheckSign = false
+          if (this.isCheckGuestSign) {
+            this.isOverCheckSign = true
+            this.choseGuestM.push(val.mobile);
+            this.choseGuest.push(val);
+          } else {
+            let param = {
+              contCode: this.contCode,
+              signerType: 1
+            };
+            this.$ajax
+            .get("/api/app/contract/checkSignPosition", param)
+            .then(res => {
+              res = res.data;
+              this.isOverCheckSign = true
+              if (res.data) {
+                this.isCheckGuestSign = true
+                this.choseGuestM.push(val.mobile);
+                this.choseGuest.push(val);
+              } else {
+                this.$message("本合同不支持该角色签署");
+              }
+            })
+            .catch(error => {
+              this.isOverCheckSign = true
+              this.$message(error);
+            });
+          }
         }
-      } else {
+      } else  if (type === "broker"){
         let index = this.choseBrokerId.indexOf(val.id);
         if (index > -1) {
           this.choseBrokerId.splice(index, 1);
@@ -844,122 +899,122 @@ export default {
         //     return
         //   }
         // }
-        if (this.choseOwner.length > 0 && this.choseGuest.length > 0) {
-          let param = {
-            contId: this.getChoseQuery.id,
-            type: 1, //签章
-            isentrust: 0, //非委托
-            storeId: this.getChoseQuery.storeId //门店id
-          };
-          let owner = [],
-            customer = [],
-            signer = [];
-          let localBrokerList = []
-          this.brokerList.length>0 && this.brokerList.forEach(item => {
-            if (this.choseBrokerId.includes(item.id)) {
-              localBrokerList.push(item)
-            }
+        if (this.choseOwner.length > 0 || this.choseGuest.length > 0) {
+        let param = {
+          contId: this.getChoseQuery.id,
+          type: 1, //签章
+          isentrust: 0, //非委托
+          storeId: this.getChoseQuery.storeId //门店id
+        };
+        let owner = [],
+          customer = [],
+          signer = [];
+        let localBrokerList = []
+        this.brokerList.length>0 && this.brokerList.forEach(item => {
+          if (this.choseBrokerId.includes(item.id)) {
+            localBrokerList.push(item)
+          }
+        })
+        console.log(localBrokerList,88888888);
+        localBrokerList.forEach(element => {
+          let item = {}
+          if (element.cardType == 3) {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              companyName: element.companyName,
+              lepName:element.lepName,
+              lepIdentity:element.lepIdentity,
+              signerType: element.roleName
+            };
+          } else {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              signerType: element.roleName
+            };
+          }
+          signer.push(item);
+        });
+        this.choseOwner.forEach(element => {
+          let item = {}
+          if (element.cardType == 3) {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              lepName:element.lepName,
+              lepIdentity:element.lepIdentity,
+              signerType: 0,
+            };
+          } else {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              signerType: 0,
+            };
+          }
+          owner.push(item);
+        });
+        this.choseGuest.forEach(element => {
+          let item = {}
+          if (element.cardType == 3) {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              lepName:element.lepName,
+              lepIdentity:element.lepIdentity,
+              signerType: 1
+            };
+          }else {
+            item = {
+              name: element.name,
+              identityType: element.cardType,
+              identity: element.encryptionCode,
+              mobile: element.mobile,
+              email: element.email,
+              signerType: 1
+            };
+          }
+          customer.push(item);
+        });
+        if (this.verify()) return;
+        this.$emit("closeChose", { type: "choseLoading" });
+        param.owner = owner.length>0?owner:null;
+        param.customer = customer.length>0?customer:null;
+        param.signer = signer.length>0?signer:null;
+        this.$ajax
+          .postJSON("/api/app/contract/sendCont", param)
+          .then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              this.$emit("closeChose", { type: "closeChose" });
+            } 
           })
-          console.log(localBrokerList,88888888);
-          localBrokerList.forEach(element => {
-            let item = {}
-            if (element.cardType == 3) {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                companyName: element.companyName,
-                lepName:element.lepName,
-                lepIdentity:element.lepIdentity,
-                signerType: element.roleName
-              };
-            } else {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                signerType: element.roleName
-              };
-            }
-            signer.push(item);
-          });
-          this.choseOwner.forEach(element => {
-            let item = {}
-            if (element.cardType == 3) {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                lepName:element.lepName,
-                lepIdentity:element.lepIdentity,
-                signerType: 0,
-              };
-            } else {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                signerType: 0,
-              };
-            }
-            owner.push(item);
-          });
-          this.choseGuest.forEach(element => {
-            let item = {}
-            if (element.cardType == 3) {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                lepName:element.lepName,
-                lepIdentity:element.lepIdentity,
-                signerType: 1
-              };
-            }else {
-              item = {
-                name: element.name,
-                identityType: element.cardType,
-                identity: element.encryptionCode,
-                mobile: element.mobile,
-                email: element.email,
-                signerType: 1
-              };
-            }
-            customer.push(item);
-          });
-          if (this.verify()) return;
-          this.$emit("closeChose", { type: "choseLoading" });
-          param.owner = owner;
-          param.customer = customer;
-          param.signer = signer.length>0?signer:null;
-          this.$ajax
-            .postJSON("/api/app/contract/sendCont", param)
-            .then(res => {
-              res = res.data;
-              if (res.status === 200) {
-                this.$emit("closeChose", { type: "closeChose" });
-              }
+          .catch(error => {
+            this.$emit("closeChose",false)
+            this.$message({
+              message:error,
+              type:"error"
             })
-            .catch(error => {
-              this.$emit("closeChose",false)
-              this.$message({
-                message:error,
-                type:"error"
-              })
-            });
+          });
         } else {
           this.$message({
-            message: this.choseOwner.length > 0 ? "请选择客户" : "请选择业主",
+            message: "请选择客户或业主",
             type: "warning"
           });
         }
@@ -993,9 +1048,10 @@ export default {
     ownerList(val) {
       this.choseOwnerM = []
       this.choseOwner = []
+      this.isCheckOwnerSign = false
       if (this.ownerList.length == 1) {
-        this.choseOwnerM.push(this.ownerList[0].mobile);
-        this.choseOwner.push(this.ownerList[0]);
+        // this.choseOwnerM.push(this.ownerList[0].mobile);
+        // this.choseOwner.push(this.ownerList[0]);
       }
       this.ownerMobileList = val.map(item => {
         if (item.mobile) {
@@ -1008,9 +1064,10 @@ export default {
     guestList(val) {
       this.choseGuestM = []
       this.choseGuest = []
+      this.isCheckGuestSign = false
       if (this.guestList.length == 1) {
-        this.choseGuestM.push(this.guestList[0].mobile);
-        this.choseGuest.push(this.guestList[0]);
+        // this.choseGuestM.push(this.guestList[0].mobile);
+        // this.choseGuest.push(this.guestList[0]);
         // this.chose("guest", this.guestList[0]);
       }
       this.guestMobileList = val.map(item => {

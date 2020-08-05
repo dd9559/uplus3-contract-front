@@ -10,7 +10,7 @@
         </el-form-item>
 
         <el-form-item label="签约时间">
-          <el-date-picker v-model="signData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy/MM/dd" style="width:330px">
+          <el-date-picker v-model="signData" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width:330px">
           </el-date-picker>
         </el-form-item>
 
@@ -214,6 +214,8 @@ export default {
       }else{
         param.contTypes=''
       }
+      param.signEnd=param.signEnd.replace(/\//g,"-")
+      param.signStart=param.signStart.replace(/\//g,"-")
       this.excelCreate("/input/cancelAuditExcel",param)
     },
     //翻页

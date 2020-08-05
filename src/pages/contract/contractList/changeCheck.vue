@@ -214,6 +214,8 @@ export default {
       }else{
         param.contTypes=''
       }
+      param.signEnd=param.signEnd.replace(/\//g,"-")
+      param.signStart=param.signStart.replace(/\//g,"-")
       this.excelCreate("/input/changeAuditExcel",param)
     },
     //翻页
