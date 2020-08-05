@@ -209,7 +209,7 @@
     <el-dialog
       :title="aduitTitle"
       :visible.sync="aduitDialog"
-      width="740px"
+      width="780px"
       @close="closeLog"
       :closeOnClickModal="$tool.closeOnClickModal"
     >
@@ -226,11 +226,13 @@
               ></el-option>
             </el-select>
           </div>
-          <div class="aduit-input must w50">
-            <label>体系:</label>
+          <div class="aduit-input must w50" >
+            <label style="width:70px;display:inline-block">体系:</label>
             <el-select
               size="small"
               v-model="aduitForm.systemTag"
+              style="width:180px"
+              clearable
               :disabled="editDisabled"
               @change="changeSystemFn"
             >
@@ -241,6 +243,7 @@
                 :value="item.key"
               ></el-option>
             </el-select>
+            <el-checkbox  style="margin-left:10px" :true-label="1" :false-label="0" @change="jumpFn" v-model="isCrossSystem">跨体系审核</el-checkbox>
           </div>
           <div class="aduit-input must w50">
             <label>部门:</label>
@@ -366,7 +369,7 @@
                 <!-- 人员 -->
                 <div v-if="item.type===0" class="person">
                   <select-tree
-                    :systemKey="String(aduitForm.systemTag)"
+                    :systemKey="isCrossSystem?'':String(aduitForm.systemTag)"
                     :init="item.depName"
                     @checkCell="depHandleClick($event,index)"
                     @clear="clearDep(index)"
@@ -584,6 +587,7 @@ export default {
         brandId: "",
         dep: "",
       },
+      isCrossSystem:0,
       tableData: [],
       aduitDialog: false,
       aduitTitle: "",
@@ -759,8 +763,10 @@ export default {
         if (type == 1) {
           //部门
           // this.getDeps(key)
+          let param={systemTag: key}
+          if(this.isCrossSystem) delete param.systemTag
           this.$ajax
-            .get("/api/access/systemtag/deps", { systemTag: key })
+            .get("/api/access/systemtag/deps", param)
             .then((res) => {
               res = res.data;
               if (res.status == 200) {
@@ -769,6 +775,7 @@ export default {
             });
         } else if (type == 5) {
           let cityId = this.searchForm.cityId;
+          if(this.isCrossSystem)  key=''
           this.getJobName(cityId, key);
         }
       }
@@ -777,8 +784,11 @@ export default {
     changeSystemFn(val) {
       this.nodeList = JSON.parse(JSON.stringify(arr));
       this.aduitForm.dep = [];
+      let param = {
+        systemTag: val
+      }
       this.$ajax
-        .get("/api/organize/systemtag/deps", { systemTag: val })
+        .get("/api/organize/systemtag/deps", param)
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
@@ -786,6 +796,18 @@ export default {
           }
         });
       console.log(222222);
+    },
+    jumpFn(val){
+      this.nodeList = [];
+      this.isAudit="-1"
+      // this.$ajax
+      //   .get("/api/organize/systemtag/deps", {systemTag: this.aduitForm.systemTag})
+      //   .then((res) => {
+      //     res = res.data;
+      //     if (res.status === 200) {
+      //       this.depList2 = res.data;
+      //     }
+      // });
     },
     getData(type = "init") {
       let param = {
@@ -1046,6 +1068,7 @@ export default {
     },
     closeLog() {
       this.depList2 = [];
+      this.isCrossSystem = 0
     },
     changeFlowTypeOne(val) {
       this.searchForm.branchCondition = "";
@@ -1473,7 +1496,7 @@ export default {
           }
         });
       });
-      param = Object.assign({}, this.aduitForm, param, { deps: depArr });
+      param = Object.assign({}, this.aduitForm, param, { deps: depArr , isCrossSystem:this.isCrossSystem});
       console.log(param);
 
       param.cityId = this.searchForm.cityId;
@@ -1647,6 +1670,9 @@ export default {
       content: "*";
       color: red;
       margin-right: 1px;
+    }
+    .el-checkbox::before{
+      content: ""!important;
     }
   }
   .aduit-node {
