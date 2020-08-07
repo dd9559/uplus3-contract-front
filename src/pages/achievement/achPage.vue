@@ -2076,7 +2076,8 @@ export default {
           this.loading1 = true;
           let param = {
             // type: type,
-            keyword: queryString
+            keyword: queryString,
+            contId: this.contractId2
           };
           this.$ajax.get("/api/organize/deps", param).then(res => {
             if (res.status === 200) {

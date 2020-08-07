@@ -747,7 +747,7 @@
                 @click="showDelete(scope.row)"
               >删除</div>
               <!-- <div
-                v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 && !scope.row.isDeal"
+                v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 &&scope.row.isDeal==0&&power['sign-ht-info-zcj'].state"
                 class="btn"
                 @click="toDeal(scope.row)"
               >转成交</div> -->
@@ -1183,6 +1183,10 @@ export default {
         "sign-ht-xq-data": {
           state: false,
           name: "编辑资料库"
+        },
+        "sign-ht-info-zcj": {
+          state: false,
+          name: "转成交"
         }
       },
       showOnLine: false,

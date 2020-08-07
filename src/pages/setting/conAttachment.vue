@@ -89,6 +89,7 @@
                     <i class="iconfont icon-tubiao-6" @click="deleteFn(i)"></i>
                 </li>
             </ul>
+            <p style="color:red;">注：上传附件之前，请在附件正文需要盖章的位置插入任意书签，以确保可以签章打印。</p>
         </div>
         <div class="btn">
             <el-button @click="addVisible=false" round>取 消</el-button>

@@ -706,6 +706,7 @@
                 round
                 type="primary"
                 @click="transterSaveFinal()"
+                v-dbClick
               >保存</el-button>
             </p>
           </div>
@@ -729,7 +730,7 @@ export default {
     LayerPaperInfo,
     LayerInvoice,
     scrollBar,
-    moneyTypePop,
+    moneyTypePop
   },
   data() {
     return {
@@ -754,7 +755,7 @@ export default {
         payObjType: "",
         cooperation: "",
         recordType: "",
-        payway: "", //收款方式
+        payway: "" //收款方式
       },
       tableTotal: {},
       list: [],
@@ -770,7 +771,7 @@ export default {
         "57": "",
         "53": "",
         "64": "",
-        "69": "",
+        "69": ""
       },
       drop_MoneyType: [],
       //分页
@@ -786,7 +787,7 @@ export default {
       //作废
       layer: {
         show: false,
-        content: [],
+        content: []
       },
       //权限配置
       power: {
@@ -796,19 +797,19 @@ export default {
                     },*/
         "sign-cw-debt-export": {
           state: false,
-          name: "导出",
+          name: "导出"
         },
         "sign-cw-bill-invoice": {
           state: false,
-          name: "开票",
+          name: "开票"
         },
         "sign-cw-debt-edit": {
           state: false,
-          name: "修改",
+          name: "修改"
         },
         "sign-cw-debt-void": {
           state: false,
-          name: "作废",
+          name: "作废"
         },
         /*'sign-cw-bill-print':{
                       state: false,
@@ -816,40 +817,40 @@ export default {
                     },*/
         "sign-cw-debt-rev": {
           state: false,
-          name: "收款详情",
+          name: "收款详情"
         },
         "sign-cw-debt-pay": {
           state: false,
-          name: "付款详情",
+          name: "付款详情"
         },
         "sign-com-htdetail": {
           state: false,
-          name: "合同详情",
+          name: "合同详情"
         },
         "sign-com-house": {
           state: false,
-          name: "房源详情",
+          name: "房源详情"
         },
         "sign-com-cust": {
           state: false,
-          name: "客源详情",
+          name: "客源详情"
         },
         "sign-cw-rev-update": {
           state: false,
-          name: "编辑",
+          name: "编辑"
         },
         "sign-cw-bill-zk": {
           state: false,
-          name: "转款",
-        },
+          name: "转款"
+        }
       },
       transterShow: false,
       kuanleiVal: [
         {
           outType: "",
           outTypeId: "",
-          outMoney: "",
-        },
+          outMoney: ""
+        }
       ],
       chooseContShow: false, //控制选择合同弹框
       contKeyWord: "",
@@ -862,7 +863,7 @@ export default {
       sureSaveTransterShow: false,
       selectPayInfo: null,
       moneyType: [],
-      transterInfoPerson: {},
+      transterInfoPerson: {}
     };
   },
   mounted() {
@@ -883,17 +884,17 @@ export default {
           contType:
             session.query.contTypes.length > 0
               ? session.query.contTypes.split(",")
-              : [],
+              : []
         });
         // this.$set(this.searchForm,'contType',session.query.contTypes.split(','))
         // this.$
-        this.searchForm.contType = this.searchForm.contType.map((item) => {
+        this.searchForm.contType = this.searchForm.contType.map(item => {
           return Number(item);
         });
         if (session.query.startTime) {
           this.searchForm.timeRange = [
             session.query.startTime,
-            session.query.endTime,
+            session.query.endTime
           ];
           delete this.searchForm.startTime;
           delete this.searchForm.endTime;
@@ -904,11 +905,11 @@ export default {
           this.dep = Object.assign({}, this.dep, {
             id: this.searchForm.deptId,
             empId: this.searchForm.empId,
-            empName: this.searchForm.empName,
+            empName: this.searchForm.empName
           });
           this.EmployeList.unshift({
             empId: this.searchForm.empId,
-            name: this.searchForm.empName,
+            name: this.searchForm.empName
           });
           this.getEmploye(this.searchForm.deptId);
         }
@@ -940,11 +941,11 @@ export default {
         path: "receiptBill",
         query: {
           collect: 5,
-          contId: "0",
-        },
+          contId: "0"
+        }
       });
     },
-    getExcel: function () {
+    getExcel: function() {
       this.getData("search");
 
       let param = JSON.parse(JSON.stringify(this.searchForm));
@@ -960,10 +961,10 @@ export default {
       delete param.timeRange;
       this.excelCreate("/input/payInfoExcel", param);
     },
-    test: function (val) {
+    test: function(val) {
       this.getEmployeByText(val);
     },
-    reset: function () {
+    reset: function() {
       this.$tool.clearForm(this.searchForm);
       this.EmployeList = [];
     },
@@ -974,14 +975,14 @@ export default {
       this.currentPage = val;
       this.getData("pagination");
     },
-    clearDep: function () {
+    clearDep: function() {
       this.searchForm.deptId = "";
       this.searchForm.depName = "";
       // this.EmployeList=[]
       this.searchForm.empId = "";
       this.clearSelect();
     },
-    searchDep: function (payload) {
+    searchDep: function(payload) {
       /*this.DepList=payload.list
                 this.searchForm.depName=payload.depName*/
       this.searchForm.empId = "";
@@ -995,7 +996,7 @@ export default {
 
       this.handleNodeClick(data);
     },
-    empHandle: function (val) {
+    empHandle: function(val) {
       console.log(this.searchForm.empId);
       if (
         val &&
@@ -1016,25 +1017,25 @@ export default {
     /**
      * 获取付款失败信息
      */
-    getErrorMsg: function (data) {
+    getErrorMsg: function(data) {
       this.$ajax
         .get("/api/payInfo/selectRetMsg", { payId: data.id })
-        .then((res) => {
+        .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.$message({
-              message: `付款失败：${res.data.msg}`,
+              message: `付款失败：${res.data.msg}`
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message({
             message: error,
-            type: "warning",
+            type: "warning"
           });
         });
     },
-    getData: function (type = "init") {
+    getData: function(type = "init") {
       if (type === "search") {
         this.currentPage = 1;
       }
@@ -1060,8 +1061,8 @@ export default {
             path: this.$route.fullPath,
             url: "/payInfo/selectPayInfoList",
             query: Object.assign({}, param, {
-              empName: this.dep.empName,
-            }),
+              empName: this.dep.empName
+            })
           })
         );
       }
@@ -1070,7 +1071,7 @@ export default {
       }
       this.$ajax
         .get("/api/payInfo/selectPayInfoList", param)
-        .then((res) => {
+        .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.list = res.data.page.list;
@@ -1084,7 +1085,7 @@ export default {
             );
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
@@ -1092,19 +1093,19 @@ export default {
      * 跳转详情页
      * @param row
      */
-    toDetails: function (row) {
+    toDetails: function(row) {
       if (
         !this.power["sign-cw-debt-rev"].state &&
         (row.type === 1 || row.type === 8)
       ) {
         this.$message({
-          message: "无收款详情查看权限",
+          message: "无收款详情查看权限"
         });
         return;
       }
       if (!this.power["sign-cw-debt-pay"].state && row.type === 2) {
         this.$message({
-          message: "无付款详情查看权限",
+          message: "无付款详情查看权限"
         });
         return;
       }
@@ -1113,7 +1114,7 @@ export default {
                 } else {*/
       this.setPath(
         this.getPath.concat({
-          name: row.type === 1 || row.type === 8 ? "收款详情" : "付款详情",
+          name: row.type === 1 || row.type === 8 ? "收款详情" : "付款详情"
         })
       );
       this.$router.push({
@@ -1125,12 +1126,12 @@ export default {
           bill: this.power["sign-cw-bill-invoice"].state,
           contId: row.contId,
           listName: 1,
-          detailType: true,
-        },
+          detailType: true
+        }
       });
       // }
     },
-    btnOpera: function (row, type) {
+    btnOpera: function(row, type) {
       this.activeRow = Object.assign({}, row);
       if (type === 1) {
         console.log("++++++");
@@ -1143,8 +1144,8 @@ export default {
               id: row.id,
               contId: row.contId,
               code: row.contCode,
-              isentrust: row.type === 8 ? 1 : 0,
-            },
+              isentrust: row.type === 8 ? 1 : 0
+            }
           });
         } else {
           this.$router.push({
@@ -1155,8 +1156,8 @@ export default {
               contId: row.contId,
               code: row.contCode,
               isentrust: row.type === 8 ? 1 : 0,
-              collect: 1,
-            },
+              collect: 1
+            }
           });
         }
       } else if (type === 2) {
@@ -1174,7 +1175,7 @@ export default {
       }
     },
     //作废
-    deleteBill: function () {
+    deleteBill: function() {
       let src =
         this.activeView === 1
           ? "/payInfo/updateProceedsIsDel"
@@ -1182,25 +1183,25 @@ export default {
       this.setLoading(true);
       this.$ajax
         .put(`/api${src}`, { payId: this.layer.content[0].id }, 2)
-        .then((res) => {
+        .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.setLoading(false);
             this.getData();
             this.layer.show = false;
             this.$message({
-              message: "作废成功",
+              message: "作废成功"
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.setLoading(false);
           this.$message({
-            message: error,
+            message: error
           });
         });
     },
-    emitPaperSetFn: function (payload) {
+    emitPaperSetFn: function(payload) {
       this.getData();
       // this.$refs.layerInvoice.propCloseFn()
     },
@@ -1208,7 +1209,7 @@ export default {
      * 合同信息操作
      * @param type
      */
-    toLink: function (row, type) {
+    toLink: function(row, type) {
       let param = {
         contType: row.contTypeId,
         contId: row.contId,
@@ -1221,7 +1222,7 @@ export default {
             ? this.power["sign-com-house"]
             : type === "customer"
             ? this.power["sign-com-cust"]
-            : "",
+            : ""
       };
       this.msgOpera(param);
     },
@@ -1241,8 +1242,8 @@ export default {
               }
             },*/
     // 获取收付款类
-    getMoneyTypes: function () {
-      this.$ajax.get("/api/payInfo/selectSmallMoneyType").then((res) => {
+    getMoneyTypes: function() {
+      this.$ajax.get("/api/payInfo/selectSmallMoneyType").then(res => {
         res = res.data;
         if (res.status === 200) {
           this.drop_MoneyType = res.data;
@@ -1256,18 +1257,18 @@ export default {
         {
           outType: "",
           outTypeId: "",
-          outMoney: "",
-        },
+          outMoney: ""
+        }
       ];
       this.transterShow = true;
       this.selectPayInfo = val;
-      this.getTransterInfo(val.payCode);
+      this.getTransterInfo(val.id);
     },
     getTransterInfo(id) {
       let param = {
-        payCode: id,
+        payId: id
       };
-      this.$ajax.get("/api/payInfo/inOutContractInfo", param).then((res) => {
+      this.$ajax.get("/api/payInfo/inOutContractInfo", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           if (res.data.inContractCode) {
@@ -1282,7 +1283,7 @@ export default {
       this.kuanleiVal.push({
         outType: "",
         outTypeId: "",
-        outMoney: "",
+        outMoney: ""
       });
     },
     delPeople(index) {
@@ -1296,9 +1297,9 @@ export default {
       let param = {
         pageNum: pageNum,
         pageSize: 5,
-        keyword: keyword,
+        keyword: keyword
       };
-      this.$ajax.postJSON("/api/contract/contractList", param).then((res) => {
+      this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.contList = res.data.list;
@@ -1333,7 +1334,7 @@ export default {
 
       let allMoney = null,
         nullType = 1;
-      this.kuanleiVal.map((item) => {
+      this.kuanleiVal.map(item => {
         console.log(item.outMoney);
         if (!item.outMoney) {
           nullType = 2;
@@ -1345,41 +1346,41 @@ export default {
       });
       if (!this.transterInfoPerson.inContractCode) {
         this.$message({
-          message: "请选择转入合同",
+          message: "请选择转入合同"
         });
         // this.sureSaveTransterShow = false;
         return;
       }
       if (nullType == 2) {
         this.$message({
-          message: "请输入转款金额",
+          message: "请输入转款金额"
         });
         // this.sureSaveTransterShow = false;
         return;
       } else if (nullType == 3) {
         this.$message({
-          message: "请选择款类",
+          message: "请选择款类"
         });
         // this.sureSaveTransterShow = false;
         return;
       }
       if (allMoney > this.selectPayInfo.amount) {
         this.$message({
-          message: "转款金额合计不能超过已收款金额",
+          message: "转款金额合计不能超过已收款金额"
         });
         // this.sureSaveTransterShow = false;
         return;
       }
       if (allMoney === 0) {
         this.$message({
-          message: "转款金额不能为0",
+          message: "转款金额不能为0"
         });
         // this.sureSaveTransterShow = false;
         return;
       }
       if (flagArr.length != this.kuanleiVal.length) {
         this.$message({
-          message: "不能选择重复款类",
+          message: "不能选择重复款类"
         });
         return;
       }
@@ -1399,26 +1400,26 @@ export default {
           : this.transterInfoPerson.inContractId, //转入的合同ID
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
-          : "", //转入的合同编号
+          : "" //转入的合同编号
       };
       this.$ajax
         .postJSON("/api/payInfo/inOutPayInfo", param)
-        .then((res) => {
+        .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.$message({
               message: "转款成功",
-              type: "success",
+              type: "success"
             });
             this.transterShow = false;
             this.sureSaveTransterShow = false;
             this.getData();
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$message({
             message: error,
-            type: "error",
+            type: "error"
           });
         });
     },
@@ -1430,7 +1431,7 @@ export default {
     sureCont() {
       if (!this.selectCode) {
         this.$message({
-          message: "请选择合同",
+          message: "请选择合同"
         });
         return;
       }
@@ -1452,33 +1453,33 @@ export default {
     },
     getMoneyType() {
       let param = {};
-      this.$ajax.get("/api/payInfo/selectMoneyType", param).then((res) => {
+      this.$ajax.get("/api/payInfo/selectMoneyType", param).then(res => {
         res = res.data;
         if (res.status === 200) {
           this.moneyType = this.moneyType.concat(res.data);
         }
       });
     },
-    getCell: function (label, index) {
+    getCell: function(label, index) {
       this.kuanleiVal[index].outType = label.key;
       this.kuanleiVal[index].outTypeId = label.pId;
     },
-    cutNum: function (index) {
+    cutNum: function(index) {
       this.kuanleiVal[index].outMoney = this.$tool.cutFloat({
         val: this.kuanleiVal[index].outMoney,
-        max: 999999999.99,
+        max: 999999999.99
       });
-    },
+    }
   },
   filters: {
-    zeroFormatter: function (val) {
+    zeroFormatter: function(val) {
       if (!val) {
         return 0;
       } else {
         return val;
       }
     },
-    billState: function (val) {
+    billState: function(val) {
       if (!val) {
         return "--";
       } else {
@@ -1491,14 +1492,14 @@ export default {
         }
       }
     },
-    moneyFormat: function (val) {
+    moneyFormat: function(val) {
       if (!val) {
         return "零";
       } else {
         return TOOL.toChineseNumber(val);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -12,7 +12,7 @@
                     <p>
                         合同信息
                         <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
-                        <span v-if="isDeal||contractForm.dealById" class="toCommission">
+                        <span v-if="(isDeal||contractForm.dealById)&&showZY" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
                             </span>
@@ -1009,6 +1009,7 @@ export default {
             zy: 0, //转佣金额
 
             houseId:0,//转成交房源id
+            showZY:false,
         };
     },
     computed: {
@@ -1064,6 +1065,7 @@ export default {
         this.getShopList(); //门店
         this.getAdmin(); //获取当前登录人信息
         if (this.$route.query.isDeal) {
+            this.showZY=true;
             this.id = this.$route.query.id;
             this.getContractDetail();
         }
@@ -1108,11 +1110,17 @@ export default {
             this.$ajax.get("/api/contract/getZYInfo",param).then(res=>{
                 res=res.data
                 if(res.status===200){
-                    this.ys = res.data.ys //应收金额
-                    this.ss = res.data.ss //实收
-                    this.ws = res.data.ws //未收金额
-                    this.yt = res.data.yt //已退金额
-                    this.zy = res.data.zy //转佣金额
+                    if(Object.keys(res.data).length>0){
+                        this.showZY=true;
+                        this.ys = res.data.ys //应收金额
+                        this.ss = res.data.ss //实收
+                        this.ws = res.data.ws //未收金额
+                        this.yt = res.data.yt //已退金额
+                        this.zy = res.data.zy //转佣金额
+                    }else{
+                        //若返回空 则不现实转佣字段
+                        this.showZY=false
+                    }
                     this.countTotal();
                 }
             })
@@ -2279,7 +2287,20 @@ export default {
                 
                     param[paramType].dealById = this.id
                     param[paramType].dealByCode = this.contractForm.code
-                    param[paramType].isTransfeOfCommission = this.isToCommission
+                    param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
+                    param[paramType].zyComission = this.zy//转佣金额
+                    param[paramType].ysComission = this.ys//应收金额
+                    param[paramType].ssComission = this.ss//实收金额
+                    param[paramType].wsComission = this.ws//未收金额
+                    param[paramType].ytComission = this.yt//已退金额
+
+                    this.contractForm.receivableCommission=0 //应收金额
+                    this.contractForm.receivedCommission=0 //实收
+                    this.contractForm.uncollectedCommission=0 //未收金额
+                    this.contractForm.retiredCommission=0 //已退金额
+
+                    delete param[paramType].id;
+                    delete param[paramType].code;
                 }else{
                     delete param.dealById
                 }
@@ -2288,84 +2309,71 @@ export default {
                     url = "/api/contract/addLocalContract";
                 }
                 this.$ajax.postJSON(url, param).then(res => {
-                        res = res.data;
-                        if (res.status === 200) {
-                            this.fullscreenLoading = false;
-                            if (this.recordType === 2) {
-                                this.$message({
-                                    message: "创建成功",
-                                    type: "success"
-                                });
-                                this.$router.push({
-                                    path: "/contractDetails",
-                                    query: {
-                                        id: res.data.id,
-                                        contType: this.contractForm.type,
-                                        type: "contBody"
-                                    }
-                                });
-                            } else {
-                                let contractMsg = res.data;
-                                this.hidBtn = 1;
-                                sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
-                                if (contractMsg.singleCompany) {
-                                    this.singleCompany = true;
-                                    this.singleCompanyName = contractMsg.singleCompany;
-                                } else {
-                                    this.$router.push({
-                                        path: "/extendParams"
-                                    });
+                    res = res.data;
+                    if (res.status === 200) {
+                        this.fullscreenLoading = false;
+                        if (this.recordType === 2) {
+                            this.$message({
+                                message: "创建成功",
+                                type: "success"
+                            });
+                            this.$router.push({
+                                path: "/contractDetails",
+                                query: {
+                                    id: res.data.id,
+                                    contType: this.contractForm.type,
+                                    type: "contBody"
                                 }
+                            });
+                        } else {
+                            let contractMsg = res.data;
+                            this.hidBtn = 1;
+                            sessionStorage.setItem("contractMsg",JSON.stringify(contractMsg));
+                            if (contractMsg.singleCompany) {
+                                this.singleCompany = true;
+                                this.singleCompanyName = contractMsg.singleCompany;
+                            } else {
+                                this.$router.push({
+                                    path: "/extendParams"
+                                });
                             }
                         }
-                    })
-                    .catch(error => {
-                        this.fullscreenLoading = false;
-                        if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
-                            this.canClick = true;
-                        }
-                        this.$message({
-                            message: error,
-                            type: "error"
-                        });
+                    }
+                }).catch(error => {
+                    this.fullscreenLoading = false;
+                    if (error !== "该合同房源已被其他合同录入，请重新选择房源！" && error !== "该合同下的房源客源不属于同一个体系，请重新选择！" && error !== "纸质合同编号规则不允许和系统生成规则一致，请重新输入！" && error !== "合同编号已存在，请重新输入！" && error !== "合同编号不符合规范！") {
+                        this.canClick = true;
+                    }
+                    this.$message({
+                        message: error,
+                        type: "error"
                     });
-            } else{
-                //  if (this.type === 2) 
+                });
+            } else{ 
                 //编辑
-                if (this.contractForm.type === 1) {
-                    delete param.leaseCont.contChangeState;
-                    delete param.leaseCont.contState;
-                    delete param.leaseCont.contType;
-                    delete param.leaseCont.laterStageState;
-                    delete param.leaseCont.toExamineState;
-                    delete param.leaseCont.previewImg;
-                    delete param.leaseCont.subscriptionTerm;
-                    delete param.leaseCont.updateTime;
-                    delete param.leaseCont.distributableAchievement;
-                    delete param.leaseCont.achievementState;
-                    delete param.leaseCont.recordType;
-                    delete param.leaseCont.resultState;
-                    param.leaseCont.isTransfeOfCommission = this.isToCommission
-                } else if ( this.contractForm.type === 2 || this.contractForm.type === 3 ) {
-                    delete param.saleCont.contChangeState;
-                    delete param.saleCont.contState;
-                    delete param.saleCont.contType;
-                    delete param.saleCont.laterStageState;
-                    delete param.saleCont.toExamineState;
-                    delete param.saleCont.previewImg;
-                    delete param.saleCont.subscriptionTerm;
-                    delete param.saleCont.updateTime;
-                    delete param.saleCont.distributableAchievement;
-                    delete param.saleCont.achievementState;
-                    delete param.saleCont.recordType;
-                    delete param.saleCont.resultState;
-                    param.saleCont.isTransfeOfCommission = this.isToCommission
-                }
+                let paramType = this.contractForm.type === 1?"leaseCont":"saleCont"
+                delete param[paramType].contChangeState;
+                delete param[paramType].contState;
+                delete param[paramType].contType;
+                delete param[paramType].laterStageState;
+                delete param[paramType].toExamineState;
+                delete param[paramType].previewImg;
+                delete param[paramType].subscriptionTerm;
+                delete param[paramType].updateTime;
+                delete param[paramType].distributableAchievement;
+                delete param[paramType].achievementState;
+                delete param[paramType].recordType;
+                delete param[paramType].resultState;
+                param[paramType].isTransfeOfCommission = this.isToCommission
+                param[paramType].zyComission = this.zy//转佣金额
+                param[paramType].ysComission = this.ys//应收金额
+                param[paramType].ssComission = this.ss//实收金额
+                param[paramType].wsComission = this.ws//未收金额
+                param[paramType].ytComission = this.yt//已退金额
                 var url = "/api/contract/updateContract";
                 if (this.recordType === 2) {
                     url = "/api/contract/addLocalContract";
                 }
-
                 this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {

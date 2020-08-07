@@ -499,55 +499,55 @@ import houseGuest from "@/pages/contract/contractDialog/houseGuest";
 const rule = {
   moneyType: {
     name: "款类",
-    type: "negativeNum"
+    type: "negativeNum",
   },
   outObjId: {
     name: "付款方",
-    type: "negativeNum"
+    type: "negativeNum",
   },
   outObj: {
-    name: "付款方"
+    name: "付款方",
   },
   inObjId: {
-    name: "收款人"
+    name: "收款人",
   },
   createTime: {
-    name: "收款时间"
+    name: "收款时间",
   },
   amount: {
     name: "收款金额",
-    type: "money"
+    type: "money",
   },
   admin: {
-    name: "收账账户"
-  }
+    name: "收账账户",
+  },
 };
 const cardRule = {
   bankName: {
-    name: "刷卡银行"
+    name: "刷卡银行",
   },
   userName: {
-    name: "户名"
+    name: "户名",
   },
   cardNumber: {
-    name: "账户"
+    name: "账户",
   },
   orderNo: {
-    name: "订单号"
-  }
+    name: "订单号",
+  },
 };
 const payRule = {
   payMethod: {
-    name: "支付方式"
+    name: "支付方式",
   },
   amount: {
     name: "金额",
-    type: "money"
+    type: "money",
   },
   fee: {
     name: "手续费",
-    type: "zeroNum"
-  }
+    type: "zeroNum",
+  },
 };
 
 export default {
@@ -555,7 +555,7 @@ export default {
   components: {
     moneyTypePop,
     checkPerson,
-    houseGuest
+    houseGuest,
   },
   data() {
     return {
@@ -565,12 +565,12 @@ export default {
         code: "",
         flowType: 0,
         label: false,
-        current: false
+        current: false,
       },
       contId: "",
       dep: {
         id: "",
-        name: ""
+        name: "",
       },
       inputPerson: false, //是否显示第三方输入框
       billStatus: true, //线上或线下,false=线上，true=线下
@@ -587,17 +587,17 @@ export default {
         moneyTypePid: "",
         amount: "",
         createTime: "",
-        selectId: 0 //房客源选择
+        selectId: 0, //房客源选择
       },
       types: [
         {
           id: 1,
-          name: "收入"
+          name: "收入",
         },
         {
           id: 2,
-          name: "代收代付"
-        }
+          name: "代收代付",
+        },
       ],
       activeType: 1,
       moneyType: [],
@@ -610,8 +610,8 @@ export default {
           payMethod: "",
           amount: "",
           activeAdmin: "",
-          fee: ""
-        }
+          fee: "",
+        },
       ],
       cardList: [
         {
@@ -620,12 +620,12 @@ export default {
           cardNumber: "",
           amount: "",
           orderNo: "",
-          fee: ""
-        }
+          fee: "",
+        },
       ],
       dictionary: {
         "534": [],
-        "644": []
+        "644": [],
       },
       activeAdmin: "",
       account: [],
@@ -638,7 +638,7 @@ export default {
       employePage: 1,
       collapseMsg: {
         total: 0,
-        row: []
+        row: [],
       },
       fullscreenLoading: false, //提交表单防抖
       showAmount: false, //款类是否为代收代付
@@ -646,12 +646,12 @@ export default {
       inObjPerson: true, //收款人是否可选
       firstCreate: {
         state: true,
-        content: {}
+        content: {},
       }, //合同是否第一次创建
       uploadScane: { path: "sk", id: "" }, //上传场景值
       hasChose_receiptType: {
         state: false,
-        version: 0
+        version: 0,
       }, //合同是否第一次选择过收款方式
       preloadFiles: [],
       // 房客源地址
@@ -659,26 +659,26 @@ export default {
         val: "请选择",
         name: "",
         label: "",
-        selectCode: 0
+        selectCode: 0,
       },
       addressList: [
         {
           name: "房源",
           type: "house",
-          id: 0
+          id: 0,
         },
         {
           name: "客源",
           type: "guest",
-          id: 1
-        }
+          id: 1,
+        },
       ],
       addressVal: "",
       isShowDialog: false,
       addAountOther: {
         houseInfo: "", //房源
         guestInfo: "", //客源
-        propertyRightAddr: "" //物业地址
+        propertyRightAddr: "", //物业地址
       },
       isFukuanFangInput: false,
       shoufuType: "",
@@ -688,8 +688,8 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
-        }
-      }
+        },
+      },
     };
   },
   mounted() {
@@ -721,7 +721,7 @@ export default {
         [
           "二手房",
           "财务",
-          Number(urlParam.edit) === 1 ? "收付款单" : "收款审核"
+          Number(urlParam.edit) === 1 ? "收付款单" : "收款审核",
         ],
         Number(urlParam.edit) === 1 ? "/bill" : "/moneyCheck?type=1"
       );
@@ -740,7 +740,7 @@ export default {
         if (this.$route.query.contId != "0") {
           this.getAcount(this.getUser && this.getUser.user.empId);
         } else {
-          this.getCompanyBanks(this.dep.id);
+          // this.getCompanyBanks(this.dep.id);
         }
       }
     }
@@ -794,9 +794,11 @@ export default {
       //   this.getCompanyBanks(this.dep.id);
       // }
       this.form.inObj = user.name;
-      setTimeout(() => {
-        this.getDetails({ type: 1, payId: urlParam.id });
-      }, 10);
+      if (urlParam.collect != 5) {
+        setTimeout(() => {
+          this.getDetails({ type: 1, payId: urlParam.id });
+        }, 10);
+      }
     } else {
       this.addInit(urlParam.contId); //20200717zs注释
       // this.getPayAccount(urlParam.id);
@@ -807,7 +809,7 @@ export default {
     }
   },
   methods: {
-    checkDate: function(val) {
+    checkDate: function (val) {
       // let date = new Date(val);
       // if (date.getTime() > Date.now()) {
       //   this.form.createTime = "";
@@ -816,21 +818,21 @@ export default {
       //   });
       // }
     },
-    checkDate1: function(val) {
+    checkDate1: function (val) {
       let date = new Date(val);
       if (date.getTime() > Date.now()) {
         this.examineDate = "";
         this.$message({
-          message: "不能选择未来时间"
+          message: "不能选择未来时间",
         });
       }
       // this.examineDate =val;
     },
     //判断用户该合同是否已经选择过收款方式
-    getFirstTime_receipt: function(id) {
+    getFirstTime_receipt: function (id) {
       this.$ajax
         .get("/api/payInfo/checkPayAccountType", { contId: id })
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             if (res.data) {
@@ -842,13 +844,13 @@ export default {
         });
     },
     //判断用户该合同是否第一次选择收款人部门
-    addInit: function(id) {
+    addInit: function (id) {
       this.$ajax
         .get("/api/payInfo/toInsert", {
           contId: id,
-          type: this.isentrust ? 8 : 1
+          type: this.isentrust ? 8 : 1,
         })
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.firstCreate.content = Object.assign({}, res.data);
@@ -876,9 +878,9 @@ export default {
     getPayAccount(id) {
       this.$ajax
         .get("/api/payInfo/getPayAccount", {
-          payId: id
+          payId: id,
         })
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             console.log("=====");
@@ -889,22 +891,22 @@ export default {
           }
         });
     },
-    clearData: function() {
+    clearData: function () {
       this.$tool.clearForm(this.form);
       this.cardList = [];
       this.files = [];
       this.imgList = [];
     },
-    cutNum: function(val, item) {
+    cutNum: function (val, item) {
       if (val === 1) {
         this.form.amount = this.$tool.cutFloat({
           val: this.form.amount,
-          max: 999999999.99
+          max: 999999999.99,
         });
       } else {
         val[item] = this.$tool.cutFloat({
           val: val[item],
-          max: 999999999.99
+          max: 999999999.99,
         });
         if (!this.getPayMethod(val.payMethod) && item === "amount") {
           if (
@@ -928,7 +930,7 @@ export default {
       }
     },
     //解决浮点数运算精度
-    multiply: function(arg1, arg2) {
+    multiply: function (arg1, arg2) {
       var m = 0,
         s1 = arg1.toString(),
         s2 = arg2.toString();
@@ -944,7 +946,7 @@ export default {
         2
       );
     },
-    inputOnly: function(type, index) {
+    inputOnly: function (type, index) {
       if (type === "userName") {
         this.cardList[index].userName = this.$tool.textInput(
           this.cardList[index].userName,
@@ -959,26 +961,26 @@ export default {
         this.form.outObj = this.$tool.textInput(this.form.outObj);
       }
     },
-    getPicture: function() {
+    getPicture: function () {
       let arr = [];
-      this.imgList.forEach(item => {
+      this.imgList.forEach((item) => {
         arr.push(item.path);
       });
       this.fileSign(arr);
     },
-    initDepList: function(val) {
+    initDepList: function (val) {
       if (!val) {
         this.remoteMethod();
       }
     },
-    searchDep: function(payload) {
+    searchDep: function (payload) {
       /*this.DepList=payload.list
                 this.dep.name=payload.depName*/
       this.form.inObjId = "";
       this.clearSelect("emp");
     },
     //收款人下拉选项操作
-    clearSelect: function(type = "dep") {
+    clearSelect: function (type = "dep") {
       if (type === "dep") {
         this.dep.name = "";
         this.EmployeList = [];
@@ -999,7 +1001,7 @@ export default {
                     this.EmployeList=[]*/
       }
       //初始收账账户数据
-      this.payList.forEach(item => {
+      this.payList.forEach((item) => {
         item.activeAdmin = "";
       });
       if (this.firstCreate.state) {
@@ -1019,9 +1021,9 @@ export default {
     },
     getCompanyBanks(depId) {
       let param = {
-        storeId: depId
+        storeId: depId,
       };
-      this.$ajax.get("/api/payInfo/getCompanyBanks", param).then(res => {
+      this.$ajax.get("/api/payInfo/getCompanyBanks", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           console.log("获取getCompanyBanks");
@@ -1031,11 +1033,11 @@ export default {
       });
     },
     //判断支付方式选择
-    getPayMethod: function(method) {
+    getPayMethod: function (method) {
       return [2, 3].includes(method);
     },
     //是否隐藏刷卡补充
-    hideCardList: function(val) {
+    hideCardList: function (val) {
       if (this.getPayMethod(val.payMethod)) {
         this.$set(val, "fee", "");
       } else {
@@ -1073,13 +1075,13 @@ export default {
                 }*/
     },
     //支付信息表单增减
-    payListOper: function(index) {
+    payListOper: function (index) {
       if (index === 0) {
         let cell = {
           payMethod: "",
           amount: "",
           activeAdmin: "",
-          fee: ""
+          fee: "",
         };
         this.payList = this.payList.concat(cell);
         this.cardOpera("add");
@@ -1091,8 +1093,8 @@ export default {
     /**
      * 修改款单，获取初始数据
      */
-    getDetails: function(param) {
-      this.$ajax.get("/api/payInfo/selectRevDetail", param).then(res => {
+    getDetails: function (param) {
+      this.$ajax.get("/api/payInfo/selectRevDetail", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           let obj = {
@@ -1107,7 +1109,7 @@ export default {
             moneyTypePid: res.data.moneyTypePid,
             amount: res.data.amount,
             id: res.data.id,
-            createTime: this.$tool.timeFormat(res.data.payStartTime)
+            createTime: this.$tool.timeFormat(res.data.payStartTime),
           };
           if (obj.outObjType === 3) {
             this.inputPerson = true;
@@ -1130,10 +1132,10 @@ export default {
           if (res.data.inAccountType === 4) {
             //线下时才赋值
             this.cardList = res.data.account; //刷卡补充
-            let arr = res.data.inAccount.map(item =>
+            let arr = res.data.inAccount.map((item) =>
               Object.assign({}, item, {
                 activeAdmin: item.cardNumber,
-                payMethod: item.payMethod.value
+                payMethod: item.payMethod.value,
               })
             );
             this.payList = [].concat(arr);
@@ -1184,12 +1186,12 @@ export default {
     /**
      * 获取所有款类
      */
-    getMoneyType: function() {
+    getMoneyType: function () {
       let param = {};
       if (this.$route.query.edit) {
         param.payId = this.$route.query.id;
       }
-      this.$ajax.get("/api/payInfo/selectMoneyType", param).then(res => {
+      this.$ajax.get("/api/payInfo/selectMoneyType", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.moneyType = this.moneyType.concat(res.data);
@@ -1214,7 +1216,7 @@ export default {
     /**
      * 获取上传文件
      */
-    getFiles: function(payload) {
+    getFiles: function (payload) {
       /*this.files = this.files.concat(this.$tool.getFilePath(payload.param))
                 this.imgList = this.$tool.cutFilePath(this.files)*/
 
@@ -1223,35 +1225,35 @@ export default {
       }
       this.imgList = this.$tool.cutFilePath(this.files);
       // this.preloadFiles=[].concat()
-      this.imgList.forEach(item => {
+      this.imgList.forEach((item) => {
         if (this.isPictureFile(item.type)) {
-          let hasImg = this.preloadFiles.find(imgData =>
+          let hasImg = this.preloadFiles.find((imgData) =>
             imgData.includes(item.path)
           );
           !hasImg &&
-            this.fileSign([].concat(item.path), "preload").then(res => {
+            this.fileSign([].concat(item.path), "preload").then((res) => {
               this.preloadFiles.push(res[0]);
             });
         }
       });
     },
-    delFile: function() {
+    delFile: function () {
       this.imgList.splice(this.activeLi, 1);
       this.files.splice(this.activeLi, 1);
     },
-    goCancel: function() {
+    goCancel: function () {
       this.$confirm("是否取消当前操作", { closeOnClickModal: false })
         .then(() => {
           this.$router.go(-1);
         })
         .catch(() => {});
     },
-    goResult: function() {
+    goResult: function () {
       console.log(`www${this.billStatus}`);
       let param = Object.assign({ admin: this.activeAdmin }, this.form);
       param.payAccountType = this.billStatus ? 4 : 3;
       //支付信息列表更新
-      let newPayList = this.payList.map(item => {
+      let newPayList = this.payList.map((item) => {
         return Object.assign({}, item);
       });
       let arr = [];
@@ -1284,20 +1286,20 @@ export default {
           Object.assign(param, {
             moneyType: -1,
             moneyTypePid: -1,
-            type: 1
+            type: 1,
           });
         } else {
           Object.assign(param, {
             moneyType: -1,
             moneyTypePid: -1,
-            type: 8
+            type: 8,
           });
         }
       }
       arr.push(this.$tool.checkForm(param, rule));
       //支付信息验证
       if (this.billStatus) {
-        let cardListStatus = newPayList.every(item => item.payMethod === 3);
+        let cardListStatus = newPayList.every((item) => item.payMethod === 3);
         newPayList.forEach((item, index) => {
           if (item.payMethod !== 2) {
             delete item.activeAdmin;
@@ -1320,11 +1322,11 @@ export default {
                         })
                     }*/
         Promise.all(arr)
-          .then(res => {
+          .then((res) => {
             let total = parseFloat(this.form.amount);
             if (total !== parseFloat(payTotal.toFixed(2))) {
               this.$message({
-                message: "收款金额=支付总金额"
+                message: "收款金额=支付总金额",
               });
             } else if (
               parseFloat(checkTotal.toFixed(2)) !==
@@ -1333,11 +1335,11 @@ export default {
               false
             ) {
               this.$message({
-                message: "刷卡资料补充输入总金额=POS刷卡金额+转账金额"
+                message: "刷卡资料补充输入总金额=POS刷卡金额+转账金额",
               });
             } else if (this.files.length === 0) {
               this.$message({
-                message: "收款凭证不能为空"
+                message: "收款凭证不能为空",
               });
             } else {
               param.filePath = [].concat(this.files);
@@ -1348,14 +1350,14 @@ export default {
                 param.antiAuditTime = this.examineDate;
                 // param.antiAuditTime = this.form.createTime;
               }
-              this.payList.forEach(item => {
+              this.payList.forEach((item) => {
                 this.firstCreate.state = true;
                 if (
                   this.firstCreate.state ||
                   this.firstCreate.content.showAccount ||
                   this.firstCreate.content.changeAccount
                 ) {
-                  this.account.find(card => {
+                  this.account.find((card) => {
                     if (card.id === this.activeAdmin) {
                       let obj = {
                         bankName: card.bankBranchName,
@@ -1363,13 +1365,13 @@ export default {
                         cardNumber: card.bankCard,
                         accountId: card.id,
                         storeId: card.storeId,
-                        storeName: card.storeName
+                        storeName: card.storeName,
                       };
                       param.inAccount.push(
                         Object.assign({}, obj, {
                           amount: item.amount,
                           payMethod: item.payMethod,
-                          fee: item.fee //新增手续费项
+                          fee: item.fee, //新增手续费项
                         })
                       );
                       return true;
@@ -1388,7 +1390,7 @@ export default {
                     Object.assign({}, obj, {
                       amount: item.amount,
                       payMethod: item.payMethod,
-                      fee: item.fee //新增手续费项
+                      fee: item.fee, //新增手续费项
                     })
                   );
                 }
@@ -1396,17 +1398,17 @@ export default {
               this.getResult(param, this.$route.query.edit ? "edit" : "");
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
               message:
                 error.title === "刷卡银行"
                   ? "银行卡号输入有误"
-                  : `${error.title}${error.msg}`
+                  : `${error.title}${error.msg}`,
             });
           });
       } else {
         Promise.all(arr)
-          .then(res => {
+          .then((res) => {
             //新加收款参数
             console.log("======");
             console.log(this.preloadFiles);
@@ -1414,31 +1416,31 @@ export default {
             console.log(param);
             this.getResult(param, this.$route.query.edit ? "edit" : "");
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
-              message: `${error.title}${error.msg}`
+              message: `${error.title}${error.msg}`,
             });
           });
       }
     },
-    getResult: function(param, type = "add") {
+    getResult: function (param, type = "add") {
       this.fullscreenLoading = true;
       if (type === "edit") {
         // 反审核新加接口
         if (this.$route.query.deAudit) {
           this.$ajax
             .postJSON("/api/payInfo/rePayInfoAudit", param)
-            .then(res => {
+            .then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.fullscreenLoading = false;
                 this.$message({ message: "操作成功", type: "success" });
-                if (this.$route.query.contId!=0) {
+                if (this.$route.query.contId != 0) {
                   this.addInit(this.$route.query.contId);
                 }
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.fullscreenLoading = false;
               // if (error.message === "下一节点审批人不存在") {
               //   this.$router.replace({
@@ -1451,7 +1453,7 @@ export default {
               //   });
               // } else {
               this.$message({
-                message: error
+                message: error,
               });
               // }
             });
@@ -1459,7 +1461,7 @@ export default {
           // 编辑接口
           this.$ajax
             .put("/api/payInfo/updateProceedsInfo", param)
-            .then(res => {
+            .then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.fullscreenLoading = false;
@@ -1472,13 +1474,13 @@ export default {
                     path: "receiptResult",
                     query: {
                       type: 1,
-                      content: JSON.stringify(res.data)
-                    }
+                      content: JSON.stringify(res.data),
+                    },
                   });
                 }
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.fullscreenLoading = false;
               if (error.message === "下一节点审批人不存在") {
                 this.checkPerson.code = error.data.payCode;
@@ -1489,7 +1491,7 @@ export default {
               } else {
                 this.$message({
                   message: error,
-                  type: "error"
+                  type: "error",
                 });
               }
               // this.$message({
@@ -1503,7 +1505,7 @@ export default {
           param.moneyTypePid = this.form.moneyTypePid;
           this.$ajax
             .postJSON("/api/payInfo/saveProNoContract", param)
-            .then(res => {
+            .then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.fullscreenLoading = false;
@@ -1511,12 +1513,12 @@ export default {
                   path: "receiptResult",
                   query: {
                     type: this.billStatus ? 2 : 1,
-                    content: JSON.stringify(res.data)
-                  }
+                    content: JSON.stringify(res.data),
+                  },
                 });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.fullscreenLoading = false;
               if (error.message === "下一节点审批人不存在") {
                 this.$router.replace({
@@ -1524,19 +1526,19 @@ export default {
                   query: {
                     type: this.billStatus ? 2 : 1,
                     content: JSON.stringify(error.data),
-                    errorCode: "dialog"
-                  }
+                    errorCode: "dialog",
+                  },
                 });
               } else {
                 this.$message({
-                  message: error
+                  message: error,
                 });
               }
             });
         } else {
           this.$ajax
             .postJSON("/api/payInfo/saveProceeds", param)
-            .then(res => {
+            .then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.fullscreenLoading = false;
@@ -1544,12 +1546,12 @@ export default {
                   path: "receiptResult",
                   query: {
                     type: this.billStatus ? 2 : 1,
-                    content: JSON.stringify(res.data)
-                  }
+                    content: JSON.stringify(res.data),
+                  },
                 });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.fullscreenLoading = false;
               if (error.message === "下一节点审批人不存在") {
                 this.$router.replace({
@@ -1557,12 +1559,12 @@ export default {
                   query: {
                     type: this.billStatus ? 2 : 1,
                     content: JSON.stringify(error.data),
-                    errorCode: "dialog"
-                  }
+                    errorCode: "dialog",
+                  },
                 });
               } else {
                 this.$message({
-                  message: error
+                  message: error,
                 });
               }
             });
@@ -1576,11 +1578,11 @@ export default {
     /**
      * 获取下拉框数据
      */
-    getDropdown: function() {
+    getDropdown: function () {
       let param = {
-        contId: this.form.contId
+        contId: this.form.contId,
       };
-      this.$ajax.get("/api/payInfo/selectValue", param).then(res => {
+      this.$ajax.get("/api/payInfo/selectValue", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.dropdown = res.data;
@@ -1590,8 +1592,8 @@ export default {
     /**
      * 获取收款人
      */
-    getReceiptman: function() {
-      this.$ajax.get("/api/organize/currentdep/employee").then(res => {
+    getReceiptman: function () {
+      this.$ajax.get("/api/organize/currentdep/employee").then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.receiptMan = res.data;
@@ -1601,21 +1603,23 @@ export default {
     /**
      * 获取收款账户
      */
-    getAcount: function(empId) {
+    getAcount: function (empId) {
       let param = {
         contId: this.form.contId,
         empId: empId,
-        payId: this.$route.query.id
+        payId: this.$route.query.id,
       };
-      this.$ajax.get("/api/payInfo/selectProceedsAccount", param).then(res => {
-        res = res.data;
-        if (res.status === 200) {
-          this.account = [].concat(res.data);
-        }
-      });
+      this.$ajax
+        .get("/api/payInfo/selectProceedsAccount", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            this.account = [].concat(res.data);
+          }
+        });
     },
     //选择收款类型操作
-    checkReceiptType: function(type) {
+    checkReceiptType: function (type) {
       /*if(type===1&&this.isentrust){
                     this.$message({
                         message:'交易服务费的收款方式只能选择线下收款'
@@ -1653,7 +1657,7 @@ export default {
         }
       }
     },
-    getCell: function(label) {
+    getCell: function (label) {
       this.moneyTypeActiveName = label.name;
       this.showAmount = label.pName === "代收代付" ? false : true;
       this.form.moneyType = label.key;
@@ -1661,7 +1665,7 @@ export default {
       // this.layer.content[0].moneyType=label.name
       // this.getAmount()
     },
-    clearMoneyType: function() {
+    clearMoneyType: function () {
       this.form.moneyType = "";
       this.form.moneyTypePid = "";
       this.moneyTypeName = "";
@@ -1671,14 +1675,14 @@ export default {
      * 获取下拉框选择对象
      * @param item
      */
-    getOption: function(item, type) {
+    getOption: function (item, type) {
       console.log("======");
       console.log(item);
       console.log(type);
       let obj = {};
       let list = type === 1 ? this.dropdown : this.EmployeList;
-      let that=this;
-      list.find(tip => {
+      let that = this;
+      list.find((tip) => {
         if (tip[type === 1 ? "value" : "empId"] === item) {
           if (type === 1) {
             obj.outObjId = tip.custId;
@@ -1687,13 +1691,13 @@ export default {
               (item == 1 &&
                 that.$route.query.collect != 1 &&
                 item == 1 &&
-                that.$route.query.collect != 5&&
+                that.$route.query.collect != 5 &&
                 item == 1 &&
                 that.$route.query.collect != 3) ||
               (item == 2 &&
                 that.$route.query.collect != 1 &&
                 item == 2 &&
-                that.$route.query.collect != 5&&
+                that.$route.query.collect != 5 &&
                 item == 2 &&
                 that.$route.query.collect != 3)
             ) {
@@ -1717,7 +1721,7 @@ export default {
     /**
      * 刷卡资料补充
      */
-    cardOpera: function(type, index) {
+    cardOpera: function (type, index) {
       if (type === "add") {
         let cell = {
           bankName: "",
@@ -1725,7 +1729,7 @@ export default {
           cardNumber: "",
           amount: "",
           orderNo: "",
-          fee: ""
+          fee: "",
         };
         this.cardList.push(cell);
       } else {
@@ -1735,24 +1739,26 @@ export default {
     /**
      * 根据卡号获取银行信息
      */
-    getBank: function(row, index) {
+    getBank: function (row, index) {
       row.cardNumber = this.$tool.numberInput(row.cardNumber);
       let param = {
-        cardNumber: row.cardNumber
+        cardNumber: row.cardNumber,
       };
       if (param.cardNumber.length > 20) {
         row.cardNumber = row.cardNumber.substr(0, 20);
         return;
       }
       if (param.cardNumber.length >= 12) {
-        this.$ajax.get("/api/system/selectBankNameByCard", param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.cardList[index].bankName = res.data.bankName
-              ? res.data.bankName
-              : "";
-          }
-        });
+        this.$ajax
+          .get("/api/system/selectBankNameByCard", param)
+          .then((res) => {
+            res = res.data;
+            if (res.status === 200) {
+              this.cardList[index].bankName = res.data.bankName
+                ? res.data.bankName
+                : "";
+            }
+          });
       }
     },
     // 获取房源客源
@@ -1766,12 +1772,12 @@ export default {
         ...this.addressLabel,
         name: "",
         label: "",
-        selectCode: 0
+        selectCode: 0,
       };
       this.addAountOther = {
         houseInfo: "",
         guestInfo: "",
-        propertyRightAddr: ""
+        propertyRightAddr: "",
       };
     },
     closeHouseGuest(value) {
@@ -1779,7 +1785,7 @@ export default {
       console.log(value);
       if (value) {
         if (value.dialogType == "house") {
-          this.getHousedetail(value.selectCode, 1).then(res => {
+          this.getHousedetail(value.selectCode, 1).then((res) => {
             this.addressLabel.selectCode = res.PropertyNo;
             if (value.dialogType == "guest") {
               this.addAountOther.guestInfo = res;
@@ -1788,7 +1794,7 @@ export default {
             }
           });
         } else {
-          this.getHousedetail(value.selectCode, 2).then(res => {
+          this.getHousedetail(value.selectCode, 2).then((res) => {
             this.addressLabel.selectCode = res.InquiryNo;
             if (value.dialogType == "guest") {
               this.addAountOther.guestInfo = res;
@@ -1807,18 +1813,18 @@ export default {
         if (type == 1) {
           url = "/api/resource/houses/one";
           param = {
-            houseId: id
+            houseId: id,
           };
         } else {
           url = "/api/resource/customers/one";
           param = {
-            customerId: id
+            customerId: id,
           };
         }
 
         this.$ajax
           .get(url, param)
-          .then(res => {
+          .then((res) => {
             res = res.data;
             if (res.status === 200) {
               let houseMsg = res.data;
@@ -1831,15 +1837,15 @@ export default {
                     houseMsg.BuildingName.replace(/\s/g, "") +
                     houseMsg.Unit.replace(/\s/g, "") +
                     houseMsg.RoomNo.replace(/\s/g, ""),
-                  name: houseMsg.PropertyNo
+                  name: houseMsg.PropertyNo,
                 };
               }
               resolve(res.data);
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
-              message: error
+              message: error,
             });
           });
       });
@@ -1857,16 +1863,16 @@ export default {
         h > 9 ? h : "0" + h
       }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
       this.examineDate = time_;
-    }
+    },
   },
   computed: {
-    getDir: function() {
+    getDir: function () {
       // debugger
       let arr = this.dictionary["534"].slice(1);
       let dir = [
         {
           label: "POS刷卡",
-          options: this.dictionary["644"].map(item => {
+          options: this.dictionary["644"].map((item) => {
             if (item.value === "微信") {
               return { key: 10, value: item.value };
             } else if (item.value === "支付宝") {
@@ -1874,12 +1880,12 @@ export default {
             } else {
               return { key: item.key + 7, value: item.value };
             }
-          })
+          }),
         },
         {
           label: "",
-          options: arr
-        }
+          options: arr,
+        },
       ];
 
       return dir;
@@ -1890,16 +1896,16 @@ export default {
     },
     addressValCom() {
       let n = {};
-      this.addressList.forEach(e => {
+      this.addressList.forEach((e) => {
         if (e.id === this.addressVal) {
           n = { ...e };
         }
       });
       return n;
-    }
+    },
   },
   watch: {
-    cardList: function(val) {
+    cardList: function (val) {
       if (val.length === 0) {
         this.cardList.push({
           bankName: "",
@@ -1907,13 +1913,13 @@ export default {
           cardNumber: "",
           amount: "",
           orderNo: "",
-          fee: ""
+          fee: "",
         });
       }
     },
-    getUser: function(val) {
+    getUser: function (val) {
       this.getAcount(val.user.empId);
-    }
+    },
   },
   filters: {
     /**
@@ -1926,12 +1932,12 @@ export default {
       if (list.length === 0) {
         return "";
       } else {
-        let imgDir = list.find(item => {
+        let imgDir = list.find((item) => {
           return item.includes(val.path);
         });
         let img = new Image();
         img.src = imgDir;
-        img.onload = function() {
+        img.onload = function () {
           let persent = parseFloat((img.width / img.height).toFixed(2));
           let imgWidth = 0;
           // console.log(persent)
@@ -1956,8 +1962,8 @@ export default {
         };
         return imgDir;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
