@@ -9,9 +9,9 @@
             :style="{ height: clientHei }">
                 <!-- 合同信息 -->
                 <div class="contractMsg">
-                    <p>
+                    <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
+                    <!-- <p>
                         合同信息
-                        <!-- <span v-if="(isDeal||contractForm.dealById)&&ss!=0" class="toCommission"> -->
                         <span v-if="(isDeal||contractForm.dealById)&&showZY" class="toCommission">
                             <span class="toCommissionStyle" @click="toCommission">
                                 <span class="attention iconfont icon-tubiao-10" :class="{'attention_':isToCommission}"></span>是否转佣
@@ -22,14 +22,14 @@
                             <span>已退金额（元）：{{yt}}</span>
                             <span v-if="isToCommission">转佣金额（元）：{{zy}}</span>
                         </span>
-                    </p>
+                    </p> -->
                     <div class="form-content">
                         <el-form-item 
                             label="签约时间："
-                            style="text-align:right;width:245px;"
+                            style="text-align:right;margin-left: 18px;"
                             class="form-label">
                             <el-date-picker 
-                                style="width:140px"
+                                style="width:160px"
                                 :disabled="type===2?true:false"
                                 v-model="contractForm.signDate"
                                 type="datetime"
@@ -2287,7 +2287,8 @@ export default {
                 
                     param[paramType].dealById = this.id
                     param[paramType].dealByCode = this.contractForm.code
-                    param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
+                    // param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
+                    param[paramType].isTransfeOfCommission = 1//是否转佣
                     param[paramType].zyComission = this.zy//转佣金额
                     param[paramType].ysComission = this.ys//应收金额
                     param[paramType].ssComission = this.ss//实收金额
