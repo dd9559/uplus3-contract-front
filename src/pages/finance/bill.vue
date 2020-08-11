@@ -360,7 +360,7 @@
             <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="收款人" min-width="120">
+        <el-table-column label="收/付款人" min-width="120">
           <template slot-scope="scope">
             <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
