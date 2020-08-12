@@ -115,6 +115,7 @@
             class="margin-left"
             size="small"
             v-model="contractForm.dealAgentId"
+            
             @change="handleEmpNodeClick"
             placeholder="请选择"
           >-->
@@ -746,6 +747,7 @@
                 v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state"
                 @click="showDelete(scope.row)"
               >删除</div>
+              <!-- &&power['sign-ht-info-zcj'].state -->
               <div
                 v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 &&scope.row.isDeal==0&&power['sign-ht-info-zcj'].state"
                 class="btn"

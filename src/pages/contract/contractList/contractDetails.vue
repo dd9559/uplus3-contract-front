@@ -19,7 +19,7 @@
             <div class="msg">
               <div class="title">合同信息</div>
               <div class="content">
-                <div class="isToCommission" v-if="contractDetail.isTransfeOfCommission">
+                <!-- <div class="isToCommission" v-if="contractDetail.isTransfeOfCommission">
                   <span>转佣</span>
                   <p>
                     <span>应收金额：</span>
@@ -41,7 +41,7 @@
                     <span>转佣金额：</span>
                     <span>{{zy}}</span>
                   </p>
-                </div>
+                </div> -->
 
                 <div class="one_">
                   <p style="position:relative;">
@@ -3086,17 +3086,17 @@ export default {
               }
             }
             //转佣数据
-            if (
-              this.contractDetail.dealById &&
-              this.contractDetail.isTransfeOfCommission
-            ) {
-              //转成交的合同并且转佣
-              this.getZYInfo(this.contractDetail.id);
-            } else {
+            // if (
+            //   this.contractDetail.dealById &&
+            //   this.contractDetail.isTransfeOfCommission
+            // ) {
+            //   //转成交的合同并且转佣
+            //   this.getZYInfo(this.contractDetail.id);
+            // } else {
               this.commissionTotal =
                 Number(this.contractDetail.custCommission) +
                 Number(this.contractDetail.ownerCommission);
-            }
+            // }
           }
         })
         .catch((error) => {
