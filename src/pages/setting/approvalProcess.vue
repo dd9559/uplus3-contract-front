@@ -937,11 +937,12 @@ export default {
           this.nodeList = []
         }
       } else {
-        if (val !== this.tempAudit) {
           this.nodeList = JSON.parse(JSON.stringify(arr))
-        } else {
-          this.nodeList = this.tempNodeList
-        }
+        // if (val !== this.tempAudit) {
+        //   this.nodeList = JSON.parse(JSON.stringify(arr))
+        // } else {
+        //   this.nodeList = this.tempNodeList
+        // }
       }
     },
     // 判断是否选择了体系
