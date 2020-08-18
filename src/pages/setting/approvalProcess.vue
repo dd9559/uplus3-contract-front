@@ -780,6 +780,7 @@ export default {
       }
     },
     getDepcopy() {
+      if(this.aduitForm.systemTag=='') return
       this.depList2 = []
       let param = {
         systemTag: this.aduitForm.systemTag,
@@ -936,11 +937,12 @@ export default {
           this.nodeList = []
         }
       } else {
-        if (val !== this.tempAudit) {
           this.nodeList = JSON.parse(JSON.stringify(arr))
-        } else {
-          this.nodeList = this.tempNodeList
-        }
+        // if (val !== this.tempAudit) {
+        //   this.nodeList = JSON.parse(JSON.stringify(arr))
+        // } else {
+        //   this.nodeList = this.tempNodeList
+        // }
       }
     },
     // 判断是否选择了体系

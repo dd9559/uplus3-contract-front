@@ -166,6 +166,8 @@ textLong.forEach(function (item) {
   })
 })
 
+contractConfig.checkboxListener()
+
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //  let msg={
