@@ -780,6 +780,7 @@ export default {
       }
     },
     getDepcopy() {
+      if(this.aduitForm.systemTag=='') return
       this.depList2 = []
       let param = {
         systemTag: this.aduitForm.systemTag,
