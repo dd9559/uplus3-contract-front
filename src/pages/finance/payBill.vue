@@ -39,7 +39,7 @@
         >
           <label class="form-label no-width f14">收款单：</label>
           <div class="address-slelect" @click="selectPayBillCode()">
-            <span>{{payBillInfo.payCode?payBillInfo.payCode:"请选择"}}</span>
+            <span  :class="[payBillInfo.payCode?'':'cl-gray']">{{payBillInfo.payCode?payBillInfo.payCode:"请选择"}}</span>
             <i class="el-icon-arrow-down"></i>
           </div>
         </div>
@@ -111,6 +111,7 @@
             <p class="no-wrap">
               <span>款类大类余额：{{amount.balance}}元</span>;
               <span v-if="showAmount">合同余额：{{amount.contractBalance}}元</span>
+              <span v-if="noContAmountShow">收款单余额：{{amount.contractBalance}}元</span>
             </p>
             <!--<p v-if="showAmount"><span>合同余额：{{amount.contractBalance}}元</span></p>-->
           </div>
@@ -608,6 +609,7 @@ export default {
       },
       payBillInfo: "",
       selectPayInfo: "",
+      noContAmountShow: false,
     };
   },
   created() {
@@ -629,10 +631,20 @@ export default {
     if (query.code) {
       this.uploadScane.id = query.code;
     }
-    let arr = this.$tool.getRouter(
-      ["二手房", "合同", "合同列表"],
-      "/contractList"
-    );
+    let arr = null;
+    if (this.$route.query.payBillNoCont) {
+      arr = this.$tool.getRouter(
+        ["二手房", "财务", "收付款单"],
+        "/contractList"
+      );
+      this.showAmount = false;
+      this.noContAmountShow = true;
+    } else {
+      arr = this.$tool.getRouter(
+        ["二手房", "合同", "合同列表"],
+        "/contractList"
+      );
+    }
     arr.push({ name: "创建付款", path: this.$route.fullPath });
     this.setPath(arr);
   },
@@ -851,8 +863,8 @@ export default {
           return;
         }
         param = {
-          moneyTypePid: this.form.moneyTypePid,
-          moneyType: this.form.moneyType,
+          moneyTypePid: this.form.moneyTypePid ? this.form.moneyTypePid : 18,
+          moneyType: this.form.moneyType ? this.form.moneyType : 82,
           skPayId: this.payBillInfo.id,
         };
       }
@@ -862,6 +874,9 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.amount = Object.assign(this.amount, res.data);
+            if (!this.form.moneyTypePid) {
+              this.amount.balance = 0;
+            }
           }
         });
     },
@@ -937,7 +952,7 @@ export default {
         }
       });
       // if (item === 3) {
-        this.inputPerson = true;
+      this.inputPerson = true;
       // } else {
       //   this.inputPerson = false;
       // }
@@ -1332,6 +1347,7 @@ export default {
     },
     sureBill() {
       this.payBillInfo = this.selectPayInfo;
+      this.getAmount();
       this.chooseBillShow = false;
     },
   },

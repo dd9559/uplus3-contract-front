@@ -1,102 +1,100 @@
 <template>
-	<div id="flowaccount">
-		<!-- <el-button type="text" @click="dialogTableVisible = true">流水明细弹出层</el-button> -->
-		<!-- 弹框明细 -->
-		<el-dialog title="流水明细" :visible="getDialogTableVisible" @close='close'>
-			<el-tabs v-model="activeName" @tab-click="handleClick">
-				<!-- 分类账 -->
-				<el-tab-pane label="分类账" name="first">
-					<el-table :data="gridData1" border :row-class-name="rowClass" height="450">
-						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column label="付款（元）">
-              <template slot-scope="scope">
-                {{scope.row.pay==="-0"?"0":scope.row.pay}}
-              </template>
+  <div id="flowaccount">
+    <!-- <el-button type="text" @click="dialogTableVisible = true">流水明细弹出层</el-button> -->
+    <!-- 弹框明细 -->
+    <el-dialog title="流水明细" :visible="getDialogTableVisible" @close="close">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <!-- 分类账 -->
+        <el-tab-pane label="分类账" name="first">
+          <el-table :data="gridData1" border :row-class-name="rowClass" height="450">
+            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
+            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+            <el-table-column label="付款（元）">
+              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
             </el-table-column>
-						<el-table-column prop="amount" label="金额（元）"></el-table-column>
-					</el-table>
-				</el-tab-pane>
-				<!-- 业主分类账 -->
-				<el-tab-pane label="业主分类账" name="second" v-if="flowType===1">
-					<el-table :data="gridData2" border :row-class-name="rowClass" height="450">
-						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column label="付款（元）">
-              <template slot-scope="scope">
-                {{scope.row.pay==="-0"?"0":scope.row.pay}}
-              </template>
+            <el-table-column prop="amount" label="金额（元）"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 业主分类账 -->
+        <el-tab-pane label="业主分类账" name="second" v-if="flowType===1">
+          <el-table :data="gridData2" border :row-class-name="rowClass" height="450">
+            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
+            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+            <el-table-column label="付款（元）">
+              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
             </el-table-column>
-						<el-table-column prop="amount" label="金额（元）"></el-table-column>
-					</el-table>
-				</el-tab-pane>
-				<!-- 客户分类账 -->
-				<el-tab-pane label="客户分类账" name="third">
-					<el-table :data="gridData2" border :row-class-name="rowClass" height="450">
-						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column label="付款（元）">
-              <template slot-scope="scope">
-                {{scope.row.pay==="-0"?"0":scope.row.pay}}
-              </template>
+            <el-table-column prop="amount" label="金额（元）"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 客户分类账 -->
+        <el-tab-pane label="客户分类账" name="third">
+          <el-table :data="gridData2" border :row-class-name="rowClass" height="450">
+            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
+            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+            <el-table-column label="付款（元）">
+              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
             </el-table-column>
-						<el-table-column prop="amount" label="金额（元）"></el-table-column>
-					</el-table>
-
-				</el-tab-pane>
-				<!-- 分类流水账 -->
-				<el-tab-pane label="分类流水账" name="fourth">
-					<el-table :data="gridData4" border :row-class-name="rowClass" height="450">
-						<el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-						<el-table-column prop="payCode" label="收付款编号"> </el-table-column>
-						<el-table-column prop="type" label="类型" width="50"></el-table-column>
-						<el-table-column label="业务日期" width="90">
-              <template slot-scope="scope">
-                {{scope.row.createTime|formatTime}}
-              </template>
+            <el-table-column prop="amount" label="金额（元）"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 分类流水账 -->
+        <el-tab-pane label="分类流水账" name="fourth">
+          <el-table :data="gridData4" border :row-class-name="rowClass" height="450">
+            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
+            <el-table-column prop="payCode" label="收付款编号"></el-table-column>
+            <el-table-column prop="type" label="类型" width="50"></el-table-column>
+            <el-table-column label="业务日期" width="90">
+              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
             </el-table-column>
-						<el-table-column prop="obj" label="业务对象" width="50"></el-table-column>
-						<el-table-column prop="receive" label="收款（元）"> </el-table-column>
-						<el-table-column label="付款（元）">
-              <template slot-scope="scope">
-                {{scope.row.pay==="-0"?"0":scope.row.pay}}
-              </template>
+            <el-table-column prop="obj" label="业务对象" width="50"></el-table-column>
+            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+            <el-table-column label="付款（元）">
+              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
             </el-table-column>
-						<el-table-column prop="amount" label="金额（元）"></el-table-column>
-						<el-table-column prop="checkStatus" label="审核状态" width="70"></el-table-column>
-					</el-table>
-				</el-tab-pane>
-				<!-- 流水账 -->
-				<el-tab-pane label="流水账" name="fifth">
-					<el-table :data="gridData5" border height="450">
-						<el-table-column prop="createByName" label="录入人"></el-table-column>
-						<el-table-column prop="deptName" label="录入门店"> </el-table-column>
-						<el-table-column label="录入日期" width="90">
-              <template slot-scope="scope">
-                {{scope.row.createTime|formatTime}}
-              </template>
+            <el-table-column prop="amount" label="金额（元）"></el-table-column>
+            <el-table-column prop="checkStatus" label="审核状态" width="70"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 流水账 -->
+        <el-tab-pane label="流水账" name="fifth">
+          <el-table :data="gridData5" border height="450">
+            <el-table-column prop="createByName" label="录入人"></el-table-column>
+            <el-table-column prop="deptName" label="录入门店"></el-table-column>
+            <el-table-column label="录入日期" width="90">
+              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
             </el-table-column>
-						<el-table-column prop="type" label="类型"></el-table-column>
-						<el-table-column prop="objType" label="业务对象"></el-table-column>
-						<el-table-column prop="moneyType" label="款类"></el-table-column>
-						<el-table-column prop="amount" label="金额（元）"> </el-table-column>
-						<el-table-column prop="billStatus" label="票据状态"></el-table-column>
-						<el-table-column prop="checkStatus" label="审核状态"></el-table-column>
-					</el-table>
-				</el-tab-pane>
-				<!-- 票据 -->
-				<el-tab-pane label="票据" name="sixth">
-					<el-table :data="gridData6" border height="450">
-						<el-table-column prop="moneyType" label="款类"></el-table-column>
-						<el-table-column label="开票时间" width="90">
-              <template slot-scope="scope">
-                {{scope.row.createTime|formatTime}}
-              </template>
+            <el-table-column prop="type" label="类型"></el-table-column>
+            <el-table-column prop="objType" label="业务对象"></el-table-column>
+            <el-table-column prop="moneyType" label="款类"></el-table-column>
+            <el-table-column prop="amount" label="金额（元）"></el-table-column>
+            <el-table-column prop="billStatus" label="票据状态"></el-table-column>
+            <el-table-column prop="checkStatus" label="审核状态"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 转款流水 -->
+        <el-tab-pane label="转款流水" name="seventh">
+          <el-table :data="gridData7" border height="450">
+            <el-table-column prop="createByName" label="录入人"></el-table-column>
+            <el-table-column label="录入日期" width="90">
+              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
             </el-table-column>
-						<el-table-column prop="amount" label="开票金额（元）"></el-table-column>
-						<el-table-column prop="code" label="票据号"></el-table-column>
-						<el-table-column prop="status" label="票据状态"></el-table-column>
-						<el-table-column prop="drawerName" label="开票人">
+            <el-table-column prop="objType" label="业务对象"></el-table-column>
+            <el-table-column prop="outTypeName" label="转出合同/款类"></el-table-column>
+            <el-table-column prop="thisTypeName" label="转入合同/款类"></el-table-column>
+            <el-table-column prop="billStatus" label="票据状态"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 票据 -->
+        <el-tab-pane label="票据" name="sixth">
+          <el-table :data="gridData6" border height="450">
+            <el-table-column prop="moneyType" label="款类"></el-table-column>
+            <el-table-column label="开票时间" width="90">
+              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+            </el-table-column>
+            <el-table-column prop="amount" label="开票金额（元）"></el-table-column>
+            <el-table-column prop="code" label="票据号"></el-table-column>
+            <el-table-column prop="status" label="票据状态"></el-table-column>
+            <el-table-column prop="drawerName" label="开票人">
               <template slot-scope="scope">
                 <span v-if="scope.row.drawerName==='--'&&scope.row.drawerDepName==='--'">
                   <p>--</p>
@@ -107,10 +105,10 @@
                 </span>
               </template>
             </el-table-column>
-					</el-table>
-				</el-tab-pane>
-				<!-- 应实对照 -->
-				<!-- <el-tab-pane label="应实对照" name="seventh">
+          </el-table>
+        </el-tab-pane>
+        <!-- 应实对照 -->
+        <!-- <el-tab-pane label="应实对照" name="seventh">
 					<el-table :data="gridData7" border>
 						<el-table-column prop="moneyClass" label="款类"></el-table-column>
 						<el-table-column prop="realReceive" label="实收"> </el-table-column>
@@ -120,9 +118,9 @@
 						<el-table-column prop="surPlus" label="结余"></el-table-column>
 						<el-table-column prop="receiveNote" label="备注"></el-table-column>
 					</el-table>
-				</el-tab-pane> -->
-				<!-- 佣金明细 -->
-				<!-- <el-tab-pane label="佣金明细" name="eighth">
+        </el-tab-pane>-->
+        <!-- 佣金明细 -->
+        <!-- <el-tab-pane label="佣金明细" name="eighth">
                 <el-table :data="gridData8" border>
                     <el-table-column prop="moneyClass" label="款类"></el-table-column>
                     <el-table-column prop="divideAmount" label="分佣金额（元）"> </el-table-column>
@@ -130,11 +128,10 @@
                     <el-table-column prop="divideName" label="被拆名称"></el-table-column>
                     <el-table-column prop="originalAmount" label="原始金额"></el-table-column>          
                 </el-table>
-            </el-tab-pane> -->
-			</el-tabs>
-
-		</el-dialog>
-	</div>
+        </el-tab-pane>-->
+      </el-tabs>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -142,21 +139,21 @@ export default {
   props: {
     dialogTableVisible: {
       type: Boolean,
-      default: false
+      default: false,
     },
     contCode: {
       type: String,
-      default: ''
+      default: "",
     },
     contId: {
       type: Number,
-      default: 0
+      default: 0,
     },
     //委托合同为8，其他类型为1
     flowType: {
       type: Number,
       default: 1,
-    }
+    },
   },
   data() {
     return {
@@ -166,7 +163,8 @@ export default {
       gridData2: [],
       gridData4: [],
       gridData5: [],
-      gridData6: []
+      gridData6: [],
+      gridData7: [],
     };
   },
   created() {
@@ -185,9 +183,9 @@ export default {
         let param = {
           contractCode: this.contCode,
           type: tab.name === "second" ? 2 : 1,
-          contractType:this.flowType
+          contractType: this.flowType,
         };
-        this.$ajax.get("/api/flows/account", param).then(res => {
+        this.$ajax.get("/api/flows/account", param).then((res) => {
           res = res.data;
           if (res.status === 200) {
             //console.log(res.data);
@@ -198,7 +196,7 @@ export default {
                 receive: res.data[i].totalRecieve,
                 pay: res.data[i].totalPay,
                 amount: res.data[i].totalAmount,
-                istotal: true
+                istotal: true,
               });
               for (let j = 0; j < res.data[i].details.length; j++) {
                 list.push(res.data[i].details[j]);
@@ -207,12 +205,13 @@ export default {
             this.gridData2 = list;
           }
         });
-      } else if (tab.name === "fourth") {//分类流水账
+      } else if (tab.name === "fourth") {
+        //分类流水账
         let param = {
           contractCode: this.contCode,
-          contractType:this.flowType
+          contractType: this.flowType,
         };
-        this.$ajax.get("/api/flows/waterAccount", param).then(res => {
+        this.$ajax.get("/api/flows/waterAccount", param).then((res) => {
           res = res.data;
           if (res.status === 200) {
             console.log(res.data);
@@ -223,7 +222,7 @@ export default {
                 receive: res.data[i].totalRecieve,
                 pay: res.data[i].totalPay,
                 amount: res.data[i].totalAmount,
-                istotal: true
+                istotal: true,
               });
               for (let j = 0; j < res.data[i].details.length; j++) {
                 list.push(res.data[i].details[j]);
@@ -232,39 +231,54 @@ export default {
             this.gridData4 = list;
           }
         });
-      }else if (tab.name === "fifth") {//流水账
+      } else if (tab.name === "fifth") {
+        //流水账
         let param = {
           contractCode: this.contCode,
-          contractType:this.flowType
-				};
-				this.$ajax.get("/api/flows/water", param).then(res => {
-					 res = res.data;
+          contractType: this.flowType,
+        };
+        this.$ajax.get("/api/flows/water", param).then((res) => {
+          res = res.data;
           if (res.status === 200) {
-						console.log(res.data)
-						this.gridData5=res.data
-					}
-				})
-			}else if(tab.name==='sixth'){//票据
-				let param = {
+            console.log(res.data);
+            this.gridData5 = res.data;
+          }
+        });
+      } else if (tab.name === "sixth") {
+        //票据
+        let param = {
           contractId: this.contId,
-          type: this.flowType
-				};
-				this.$ajax.get("/api/flows/bill", param).then(res => {
-					 res = res.data;
+          type: this.flowType,
+        };
+        this.$ajax.get("/api/flows/bill", param).then((res) => {
+          res = res.data;
           if (res.status === 200) {
-						console.log(res.data)
-						this.gridData6=res.data
-					}
-				})
-			}
+            console.log(res.data);
+            this.gridData6 = res.data;
+          }
+        });
+      } else if (tab.name === "seventh") {
+        //转款
+         let param = {
+          contractCode: this.contCode,
+          contractType: this.flowType,
+        };
+        this.$ajax.get("/api/flows/waterByZK", param).then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            console.log(res.data);
+            this.gridData7 = res.data;
+          }
+        });
+      }
     },
     //流水明细
     getFlowwater() {
       let param = {
         contractCode: this.contCode,
-        contractType:this.flowType
+        contractType: this.flowType,
       };
-      this.$ajax.get("/api/flows/account", param).then(res => {
+      this.$ajax.get("/api/flows/account", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           //console.log(res.data);
@@ -275,11 +289,11 @@ export default {
               receive: res.data[i].totalRecieve,
               pay: res.data[i].totalPay,
               amount: res.data[i].totalAmount,
-              istotal: true
+              istotal: true,
             });
             for (let j = 0; j < res.data[i].details.length; j++) {
               list.push(res.data[i].details[j]);
-            }      
+            }
           }
           this.gridData1 = list;
         }
@@ -289,19 +303,19 @@ export default {
       if (row.istotal) {
         return "title_";
       }
-    }
+    },
   },
   computed: {
-    getDialogTableVisible: function() {
+    getDialogTableVisible: function () {
       return this.dialogTableVisible;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="less" scoped>
 #flowaccount {
-  /deep/.el-dialog__wrapper{
+  /deep/.el-dialog__wrapper {
     overflow: hidden;
   }
   /deep/.el-dialog {
@@ -315,7 +329,7 @@ export default {
     .title_ {
       font-weight: bold;
       color: #233241;
-      background: #EDECF0;
+      background: #edecf0;
     }
   }
   /deep/.el-tabs__nav-wrap::after {
@@ -345,6 +359,5 @@ export default {
   /deep/.el-table th div {
     color: #6c7986;
   }
-  
 }
 </style>
