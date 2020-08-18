@@ -788,12 +788,12 @@ export default {
         isControl: true,
       }
       console.log(this.keyWords, 'this.keyWords')
-      let url = ''
-      if (this.keyWords) {
-        url = '/api/access/systemtag/deps'
-      } else {
-        url = '/api/access/systemtag/deps/tree'
-      }
+      // let url = ''
+      // if (this.keyWords) {
+      //   url = '/api/access/systemtag/deps'
+      // } else {
+       let  url = '/api/access/systemtag/deps/tree'
+      // }
       console.log(param, 'param')
       let that = this
       this.$ajax.get(url, param).then(res => {
@@ -805,11 +805,11 @@ export default {
               item.id = item.depId
             }
           })
-          if (that.keyWords) {
-            that.depList2 = that.depList2.concat(res.data.filter(v => v.field2.length === 3))
-          } else {
+          // if (that.keyWords) {
+          //   that.depList2 = that.depList2.concat(res.data.filter(v => v.field2.length === 3))
+          // } else {
             that.depList2 = res.data
-          }
+          // }
           // that.keyWords=''
         }
       })
