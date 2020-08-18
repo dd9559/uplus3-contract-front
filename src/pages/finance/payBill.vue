@@ -39,7 +39,9 @@
         >
           <label class="form-label no-width f14">收款单：</label>
           <div class="address-slelect" @click="selectPayBillCode()">
-            <span  :class="[payBillInfo.payCode?'':'cl-gray']">{{payBillInfo.payCode?payBillInfo.payCode:"请选择"}}</span>
+            <span
+              :class="[payBillInfo.payCode?'':'cl-gray']"
+            >{{payBillInfo.payCode?payBillInfo.payCode:"请选择"}}</span>
             <i class="el-icon-arrow-down"></i>
           </div>
         </div>
@@ -527,7 +529,7 @@ export default {
   },
   data() {
     return {
-      inputPerson: true, //是否显示第三方输入
+      inputPerson: false, //是否显示第三方输入
       form: {
         contId: "",
         remark: "",
@@ -639,6 +641,7 @@ export default {
       );
       this.showAmount = false;
       this.noContAmountShow = true;
+      this.inputPerson = true;
     } else {
       arr = this.$tool.getRouter(
         ["二手房", "合同", "合同列表"],
@@ -951,11 +954,13 @@ export default {
           return;
         }
       });
-      // if (item === 3) {
-      this.inputPerson = true;
-      // } else {
-      //   this.inputPerson = false;
-      // }
+      if (item === 3 && !this.$route.query.payBillNoCont) {
+        this.inputPerson = true;
+      } else if (this.$route.query.payBillNoCont) {
+        this.inputPerson = true;
+      } else {
+        this.inputPerson = false;
+      }
       this.form = Object.assign({}, this.form, obj);
     },
     showLayer: function () {
@@ -1250,8 +1255,9 @@ export default {
         pageNum: pageNum,
         pageSize: 5,
         // checkStatus: 5,
+        type:1,
         keyword: keyword,
-        // contTypes: 0,
+        contTypes: 0,
         // depName: depName,
         // deptId: deptId,
         // empId: empId,
