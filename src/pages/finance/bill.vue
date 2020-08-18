@@ -1254,31 +1254,59 @@ export default {
     // 转款操作
     btnTransfer(val) {
       console.log(val);
-      this.kuanleiVal = [
-        {
-          outType: "",
-          outTypeId: "",
-          outMoney: "",
-        },
-      ];
-      this.transterShow = true;
-      this.selectPayInfo = val;
-      this.getTransterInfo(val.id);
+      let param = {
+        payId: val.id,
+      };
+      this.$ajax
+        .get("/api/payInfo/validateInOut", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            if (res.data) {
+              this.kuanleiVal = [
+                {
+                  outType: "",
+                  outTypeId: "",
+                  outMoney: "",
+                },
+              ];
+              this.transterShow = true;
+              this.selectPayInfo = val;
+              this.getTransterInfo(val.id);
+            } else {
+              this.$message({
+                message: `${res.message}`,
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          this.$message({
+            message: `${error}`,
+          });
+        });
     },
     getTransterInfo(id) {
       let param = {
         payId: id,
       };
-      this.$ajax.get("/api/payInfo/inOutContractInfo", param).then((res) => {
-        res = res.data;
-        if (res.status === 200) {
-          if (res.data.inContractCode) {
-            this.transterInfoPerson = res.data;
-          } else {
-            this.transterInfoPerson = {};
+      this.$ajax
+        .get("/api/payInfo/inOutContractInfo", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            if (res.data.inContractCode) {
+              this.transterInfoPerson = res.data;
+            } else {
+              this.transterInfoPerson = {};
+            }
           }
-        }
-      });
+        })
+        .catch((error) => {
+          this.$message({
+            message: `${error}`,
+          });
+        });
     },
     addcommissionData() {
       this.kuanleiVal.push({
