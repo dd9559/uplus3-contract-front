@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +17,9 @@
         padding: 0px;
         line-height: 1.8;
       }
+      span.no-border[tag="input-auto"]{
+      border: 0;
+    }
       .agreements {
             margin-top: 10px;
             text-indent: 30px;
@@ -441,7 +445,7 @@
       </div>
       <div class="paragraph" name="text-indent">
         <p class="navTitle bold" id="seven">第七条 、税、费承担</p>
-        <p>一、按政府及有关规定，买卖双方需支付税费包括：(1)营业税；(2)土地增值税；(3)个人所得税；(4)甲方房地产交易服务费；(5)房产出图费；(6)土地出图费；(7)工本费；(8)土地出让70年费；(9)土地评估费；(10)契税；(11)抵押登记费；(12)乙方房地产交易服务费；(13)网签费；(14)因提前还贷甲方按揭银行征收的罚息、违约金及相关费用；（15）抵押评估费；（16）赎楼公证费；（17）赎楼担保费和短期利息；（18）律师费；（19）过户代办服务费；（20）按揭代办服务费；（21）其他（以实际发生的税、费单为准）。</p>
+        <p>一、按政府及有关规定，买卖双方需支付税费包括：(1)增值税、印花税、登记费；(2)土地增值税；(3)个人所得税；(4)甲方房地产代缴税、费及服务费；(5)房产出图费；(6)土地出图费；(7)工本费；(8)土地出让70年费；(9)土地评估费；(10)契税；(11)抵押登记费；(12)乙方房地产代缴税、费及服务费；(13)网签费；(14)因提前还贷甲方按揭银行征收的罚息、违约金及相关费用；（15）抵押评估费；（16）赎楼公证费；（17）赎楼担保费和短期利息；（18）律师费；（19）过户代办服务费；（20）按揭代办服务费；（21）其他（以实际发生的税、费单为准）。</p>
         <div class="lingH18" style="text-indent:32px">经双方协商一致，乙方自愿支付上述<span tag="input-auto" class="text-limit input-before" extendParam="val111"></span>项；甲方自愿支付上述<span tag="input-auto" class="text-limit input-before" extendParam="val112"></span>项。</div>
         <p>二、若该物业存在逾期未支付的供购房款的，则该款项由甲方自行承担。</p>
         <p>三、本合同履行过程中因法律、法规和政策原因所新增的税、费，按以下第<input type="text" class="text-limit dropdown-item" list="1,2,3,4" style="width:50px" readonly="readonly" extendParam="val115" inputmethod="solve"/>方式处理；</p>
@@ -479,7 +483,8 @@
         <p class="navTitle bold" id="eleven">第十一条、合同生效</p>
         <p>本合同一式四份，甲、乙方各执一份，其他两份交有关部门存档，具同等法律效力，相关责任和义务以本合同为准，至本合同履行完毕自动失效。</p>
         <p class="navTitle bold" id="twelve">第十二条、备注（如备注条款与本合同前述条款有冲突，以本备注条款为准）：</p>
-        <p style="text-decoration:underline;">1、如该合同由代理人代签，代理人已经获得<input type="text" value="" class="text-limit dropdown-item" list="甲,乙" style="width:30px" readonly="readonly" extendParam="val130" />方同意并授权代签该合同，由此产生的一切后果由代理人承担。</p>
+        <!-- <p style="text-decoration:underline;">1、如该合同由代理人代签，代理人已经获得<input type="text" value="" class="text-limit dropdown-item" list="甲,乙" style="width:30px" readonly="readonly" extendParam="val130" />方同意并授权代签该合同，由此产生的一切后果由代理人承担。</p> -->
+        <p style="text-decoration:underline;">1、如该合同由代理人代签，代理人已经获得受托方同意并授权代签该合同，由此产生的一切后果由代理人承担。</p>
       </div>
 
       <div class="ulbox" style="margin-top:30px">
@@ -523,142 +528,150 @@
             <tr class="is-can">
               <td rowspan="10">电器</td>
               <td>冰箱</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val201"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val202"></span></td>
+              <td><div class="info-checkbox" name="one"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="one"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can w-100">
               <td>彩电</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val203"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val204"></span></td>
+              <td><div class="info-checkbox" name="two"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="two"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>空调</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val205"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val206"></span></td>
+              <td><div class="info-checkbox" name="three"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="three"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>洗衣机</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val207"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val208"></span></td>
+              <td><div class="info-checkbox" name="four"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="four"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>热水器</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val209"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val210"></span></td>
+              <td><div class="info-checkbox" name="five"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="five"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>数字机顶盒</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val211"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val212"></span></td>
+              <td><div class="info-checkbox" name="six"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="six"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>燃气灶</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val213"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val214"></span></td>
+              <td><div class="info-checkbox" name="seven"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="seven"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>抽油烟机</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val215"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val216"></span></td>
+              <td><div class="info-checkbox" name="eight"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="eight"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr class="is-can">
               <td>消毒柜</td>
-              <td></td>
-              <td></td>
-              <td><span>1.能</span><span>2.不能</span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val217"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val218"></span></td>
+              <td><div class="info-checkbox" name="nine"><p type="check"></p><span>能</span></div> <div class="info-checkbox" name="nine"><p type="check"></p><span>不能</span></div></td>
             </tr>
             <tr>
               <td>其他</td>
-              <td colspan="3"></td>
+              <td colspan="3"><span class="text-limit input-before no-border" tag="input-auto" extendParam="val219"></span></td>
             </tr>
             <tr class="item">
               <td rowspan="7">家具</td>
               <td>床</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val220"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val221"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>衣柜</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val222"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val223"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>沙发</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val224"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val225"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>茶几</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val226"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val227"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>桌子</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val228"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val229"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>椅子</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val230"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val231"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>其他</td>
-              <td colspan="3"></td>
+              <td colspan="3"><span class="text-limit input-before no-border" tag="input-auto" extendParam="val232"></span></td>
             </tr>
             <tr class="item">
               <td rowspan="3">交付物品</td>
               <td>窗帘</td>
-              <td></td>
-              <td></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val233"></span></td>
+              <td><span class="text-limit input-before no-border" tag="input-auto" extendParam="val234"></span></td>
               <td></td>
             </tr>
             <tr>
               <td>钥匙</td>
               <td colspan="2">
-                防盗门:<input type="text" readonly style="width: 50px;" />把
-                房门:<input type="text" readonly style="width: 50px;" />把
+                防盗门:<span class="text-limit input-before no-border" tag="input-auto" extendParam="val235"></span>把
+                房门:<span class="text-limit input-before no-border" tag="input-auto" extendParam="val236"></span>把
               </td>
               <td></td>
             </tr>
             <tr>
               <td>遥控器</td>
               <td colspan="2">
-                电视遥控:<input type="text" readonly style="width: 50px;" />个
-                空调遥控:<input type="text" readonly style="width: 50px;" />个
+                电视遥控:<span class="text-limit input-before no-border" tag="input-auto" extendParam="val237"></span>个
+                空调遥控:<span class="text-limit input-before no-border" tag="input-auto" extendParam="val238"></span>个
               </td>
               <td></td>
             </tr>
             <tr>
               <td>备注</td>
               <td></td>
-              <td colspan="3"></td>
+              <td colspan="3"><span class="text-limit input-before no-border" tag="input-auto" extendParam="val239"></span></td>
             </tr>
           </table>
         </div>
-        <!-- <div style="margin-top: 30px;padding: 0 20px;">
+        <div style="margin-top: 30px;padding: 0 20px;">
             <p>
-              甲方(卖方): <input type="text" readonly="readonly" style="margin-right: 50px;">
-              乙方(买方): <input type="text" readonly="readonly">
+              <span style="position: relative;width:48%;display: inline-block">
+                甲方(卖方):
+                <img class="SignatureLocation" style="position:absolute;left:50px;top:-30px;"
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" />
+              </span>
+              <span style="position: relative;width:48%;display: inline-block">
+                乙方(买方):
+                <img class="SignatureLocation" style="position:absolute;left:50px;top:-30px;"
+                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" />
+              </span>
             </p>
             <p style="text-align: right;">
-              <input type="text" readonly="readonly" style="width: 50px;" />年<input type="text" readonly="readonly" style="width: 50px;" />月<input type="text" readonly="readonly" style="width: 50px;" />日
+              <span style="border-bottom: none;" class="text-limit" systemparam="signDate" tag="input-auto"></span>
             </p>
-        </div> -->
+        </div>
       </div>
 
 
@@ -721,7 +734,7 @@
       var host_other="http://sign2.jjw.com:28879"
       var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190402.js","datepicker.css"]
       for (let i = 0; i < addrList.length; i++) {
-        if(window.location.host==='192.168.13.8:8080'){
+        if(window.location.host==='192.168.13.7:8080'){
           if(addrList[i].indexOf('bundle')>-1){
             // addrList[i]=host_other+'/'+addrList[i]
             addrList[i]='./XN-MM-hb.js'
