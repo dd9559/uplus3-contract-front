@@ -50,6 +50,7 @@
           <p
             class="text-height"
             v-if="userMsg&&!inObjPerson.state"
+            style="width:250px;"
           >{{userMsg.depName}} - {{userMsg.name}}</p>
           <p class="text-height" v-else>{{inObjPerson.dep}} - {{inObjPerson.emp}}</p>
         </div>
@@ -398,7 +399,7 @@
             style="float:left;"
             size="small"
             class="w200"
-            placeholder="请输入合同编号/物业地址"
+            placeholder="请输入收款ID"
             :clearable="true"
           ></el-input>
 
@@ -423,13 +424,14 @@
             v-model="searchForm.empId"
             placeholder="请选择"
             @change="empHandleAdd"
+            @clear="clearDep"
             style="float:left;margin-left:10px;"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId+'-'+item.depName+'-'+item.depId"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"
             ></el-option>
           </el-select>
           <el-button
@@ -842,7 +844,8 @@ export default {
       this.form.moneyType = "";
       this.form.moneyTypePid = "";
       this.moneyTypeName = "";
-      this.$tool.clearForm(this.amount, true);
+      this.amount.balance = 0;
+      // this.$tool.clearForm(this.amount.balance, true);
     },
     getAmount: function () {
       let param = {
@@ -1324,12 +1327,12 @@ export default {
       }
     },
     empHandleAdd(val) {
-      let depVal = val.split("-");
+      let depVal = val.split("/");
       // this.searchForm.empId=depVal[0]
       this.searchForm.deptId = depVal[2];
       this.searchForm.depName = depVal[1];
       this.EmployeList = [];
-      this.getEmploye(this.searchForm.deptId);
+      // this.getEmploye(this.searchForm.deptId);
     },
     test: function (val) {
       this.getEmployeByText(val);
@@ -1769,5 +1772,11 @@ section.flex-row {
 /deep/ .pagination-info {
   text-align: right;
   margin: 30px 30px 0 0;
+}
+/deep/ .el-popper {
+  display: none !important;
+}
+/deep/ .tree-box {
+  outline: none !important;
 }
 </style>

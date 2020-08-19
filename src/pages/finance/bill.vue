@@ -108,12 +108,13 @@
             v-model="searchForm.empId"
             placeholder="请选择"
             @change="empHandleAdd"
+            @clear="clearDep"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId+'-'+item.depName+'-'+item.depId"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"
             ></el-option>
           </el-select>
         </div>
@@ -628,7 +629,7 @@
                 maxlength="100"
                 class="w200"
                 style="float:left;"
-                placeholder="请输入合同编号/物业地址"
+                placeholder="请输入收款ID"
               ></el-input>
               <el-button
                 size="small"
@@ -1008,7 +1009,7 @@ export default {
       }
     },
     empHandleAdd(val) {
-      let depVal = val.split("-");
+      let depVal = val.split("/");
       // this.searchForm.empId=depVal[0]
       this.searchForm.deptId = depVal[2];
       this.searchForm.depName = depVal[1];
