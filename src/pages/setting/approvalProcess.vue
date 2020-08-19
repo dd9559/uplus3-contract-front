@@ -281,15 +281,14 @@
               :placeholder="depName2.length===0?'请选择':depName2"
               multiple
               ref="dep"
+              v-if="showing"
               id="dep"
               collapse-tags
               :class="aduitTitle=='编辑'||depName2.length>0?'colorful':''"
               @change="selectChange"
               remote
               :remote-method="remoteMethod"
-              @focus="pp"
               filterable
-              reserve-keyword
             >
               <el-option style="height:auto;line-height:0;" :value="selectId">
                 <elTree2
@@ -703,12 +702,13 @@ export default {
         label: 'name',
       },
       defaultCheckedKeys: [], //默认选中数组
-      depName: '',
+      depName: 1,
       depName2: '',
       isShow: true,
       isAll: false,
       branchName: '',
       branchList: [],
+      showing:true
     }
   },
   mounted() {
@@ -737,7 +737,7 @@ export default {
   },
   methods: {
     selectChange(val) {
-      console.log(3)
+      this.depName=[]
     },
     setCheckedNodes(val, checked) {
       if (this.aduitTitle == '添加') {
@@ -763,7 +763,9 @@ export default {
       //   this.isAll = false
       // }
       this.keyWords = ''
+      this.$refs.dep.previousQuery = ''
       this.$refs.dep.query = ''
+      // debugger
       this.depName2 = depNameArr.join('，')
     },
     remoteMethod(key) {
@@ -813,6 +815,8 @@ export default {
           // that.keyWords=''
         }
       })
+      this.showing=false,
+      this.showing=true
     },
     selectAll(isChoose) {
       console.log(isChoose, 'isChoose')
@@ -1469,10 +1473,6 @@ export default {
         delete this.nodeList[index].lastChoice
       }
     },
-    pp() {
-      this.$refs.dep.query = ''
-    },
-
     // 验证职级下是否有人
     checkEmp(url, type, index, ar, t, id_, s) {
       let zhijiArr = []
