@@ -635,10 +635,7 @@ export default {
     }
     let arr = null;
     if (this.$route.query.payBillNoCont) {
-      arr = this.$tool.getRouter(
-        ["二手房", "财务", "收付款单"],
-        "/contractList"
-      );
+      arr = this.$tool.getRouter(["二手房", "财务", "收付款单"], "/Bill");
       this.showAmount = false;
       this.noContAmountShow = true;
       this.inputPerson = true;
@@ -1255,12 +1252,12 @@ export default {
         pageNum: pageNum,
         pageSize: 5,
         // checkStatus: 5,
-        type:1,
+        type: 1,
         keyword: keyword,
         contTypes: 0,
-        // depName: depName,
-        // deptId: deptId,
-        // empId: empId,
+        depName: depName,
+        deptId: deptId,
+        empId: empId,
       };
       this.$ajax
         .get("/api/payInfo/selectPayInfoList", param)
@@ -1340,7 +1337,8 @@ export default {
     toBillWord() {
       console.log(this.searchForm);
       console.log(this.payKeyWord);
-      this.searchForm.empId = this.searchForm.empId
+      let empIdFinal = null;
+      empIdFinal = this.searchForm.empId
         ? this.searchForm.empId.split("-")[0]
         : "";
       this.getPayList(
@@ -1348,7 +1346,7 @@ export default {
         this.payKeyWord,
         this.searchForm.depName,
         this.searchForm.deptId,
-        this.searchForm.empId
+        empIdFinal
       );
     },
     sureBill() {
