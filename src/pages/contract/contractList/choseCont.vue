@@ -4,7 +4,7 @@
     <el-dialog
       title="转成交"
       :visible.sync="uPlusIsShow"
-      width="800px"
+      width="664px"
       class="uPluseDialog"
       :close-on-click-modal="$tool.closeOnClickModal"
       :close-on-press-escape="$tool.closeOnClickModal"
@@ -205,8 +205,8 @@ export default {
     }
   }
   .dialog-footer {
-    text-align: center;
-    padding: 50px 0 50px 0;
+    text-align: right;
+    padding: 50px 20px 50px 0;
   }
 }
 </style>
