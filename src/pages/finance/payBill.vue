@@ -331,11 +331,11 @@
           <el-table-column align="center" label="合同编号" prop="code"></el-table-column>
           <el-table-column align="center" min-width="120" label="物业地址" prop="address"></el-table-column>
           <el-table-column align="center" min-width="120" label="收款方" prop="inObj"></el-table-column>
-          <el-table-column align="center" min-width="120" label="付款时间">
+          <!-- <el-table-column align="center" min-width="120" label="付款时间">
             <template slot-scope="scope">
               <span>-</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column align="center" min-width="120" label="发起人">
             <template slot-scope="scope">
               <span>{{userMsg.depName}} - {{userMsg.name}}</span>
