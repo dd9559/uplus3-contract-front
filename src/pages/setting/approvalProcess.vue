@@ -1161,6 +1161,7 @@ export default {
       } else {
         this.editDisabled2 = false
       }
+      this.isCrossSystem=c_row.isCrossSystem
       this.depName2 = c_row.deptName
       this.aduitForm.brandId = c_row.brandId ? c_row.brandId : ''
       this.aduitForm.name = c_row.name
