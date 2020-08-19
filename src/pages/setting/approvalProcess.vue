@@ -702,7 +702,7 @@ export default {
         label: 'name',
       },
       defaultCheckedKeys: [], //默认选中数组
-      depName: 1,
+      depName: [],
       depName2: '',
       isShow: true,
       isAll: false,
