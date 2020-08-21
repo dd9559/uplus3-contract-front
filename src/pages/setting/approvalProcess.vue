@@ -44,7 +44,7 @@
           <label class="mr-20">品牌</label>
           <el-select size="small" v-model="searchForm.brandId" :clearable="true">
             <el-option
-              v-for="item in dictionary['735']"
+              v-for="item in branchList2"
               :key="item.key"
               :label="item.value"
               :value="item.key"
@@ -421,7 +421,7 @@
                 <!-- 人员 -->
                 <div v-if="item.type===0" class="person">
                   <select-tree
-                    :systemKey="isCrossSystem?'':String(aduitForm.systemTag)"
+                    :systemKey="isCrossSystem?'-100':String(aduitForm.systemTag)"
                     :init="item.depName"
                     @checkCell="depHandleClick($event,index)"
                     @clear="clearDep(index)"
@@ -708,6 +708,7 @@ export default {
       isAll: false,
       branchName: '',
       branchList: [],
+      branchList2: [],
       showing:true
     }
   },
@@ -872,12 +873,23 @@ export default {
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
       this.searchForm.dep = []
+      this.searchForm.brandId=''
       this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           //   this.depList = res.data.filter((v) => v.level == 1);
           this.depList = res.data
           console.log(this.depList)
+        }
+      })
+       let param = {
+        systemTag: val,
+        cityId: this.cityInfo.cityId,
+      }
+      this.$ajax.get('/api/employee/getBrand', param).then(res => {
+        res = res.data
+        if (res.status === 200) {
+          this.branchList2 = res.data
         }
       })
     },
