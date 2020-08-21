@@ -328,14 +328,43 @@
           header-row-class-name="theader-bg"
           key="layer-table-first"
         >
-          <el-table-column align="center" label="合同编号" prop="code"></el-table-column>
-          <el-table-column align="center" min-width="120" label="物业地址" prop="address"></el-table-column>
-          <el-table-column align="center" min-width="120" label="收款方" prop="inObj"></el-table-column>
+          <el-table-column
+            align="center"
+            label="合同编号"
+            prop="code"
+            v-if="!$route.query.payBillNoCont"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            min-width="120"
+            label="物业地址"
+            prop="address"
+            v-if="!$route.query.payBillNoCont"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            min-width="120"
+            label="收款方"
+            prop="inObj"
+            v-if="!$route.query.payBillNoCont"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            min-width="120"
+            label="收款方"
+            v-if="$route.query.payBillNoCont"
+          >
+            <template slot-scope="scope">
+              <span>{{scope.row.inObj}}</span>
+              <span>-{{form.inObj}}</span>
+              <!-- <span>{{form.inObjType==1?"客户":form.inObjType==2?"业主"?form.inObjType==3?"其他"}}-{{form.inObj}}</span> -->
+            </template>
+          </el-table-column>
           <!-- <el-table-column align="center" min-width="120" label="付款时间">
             <template slot-scope="scope">
               <span>-</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>-->
           <el-table-column align="center" min-width="120" label="发起人">
             <template slot-scope="scope">
               <span>{{userMsg.depName}} - {{userMsg.name}}</span>
@@ -990,7 +1019,14 @@ export default {
           this.$tool.checkForm(this.list[0], rule_other),
         ];
       }
-
+      if (this.$route.query.payBillNoCont) {
+        if (!this.form.inObjType) {
+          this.$message({
+            message: "请选择收款方",
+          });
+          return;
+        }
+      }
       Promise.all(promiseArr)
         .then((res) => {
           if (this.showAmount) {
@@ -1020,7 +1056,10 @@ export default {
             });
           } else {
             this.layer.show = true;
-            if (this.form.inObjType === 3) {
+            if (this.form.inObjType === 3 && !this.$route.query.payBillNoCont) {
+              // debugger
+              console.log(this.layer.content[0].inObj);
+              console.log(this.form.inObj);
               let leng = this.layer.content[0].inObj.split("-").length;
               if (leng === 1) {
                 this.layer.content[0].inObj = `${this.layer.content[0].inObj}-${this.form.inObj}`;
@@ -1342,7 +1381,7 @@ export default {
       console.log(this.payKeyWord);
       let empIdFinal = null;
       empIdFinal = this.searchForm.empId
-        ? this.searchForm.empId.split("-")[0]
+        ? this.searchForm.empId.split("/")[0]
         : "";
       this.getPayList(
         1,

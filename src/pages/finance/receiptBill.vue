@@ -1331,7 +1331,7 @@ export default {
             let total = parseFloat(this.form.amount);
             if (total !== parseFloat(payTotal.toFixed(2))) {
               this.$message({
-                message: "收款金额=支付总金额",
+                message: "收款金额需等于支付总金额，请重新核对金额",
               });
             } else if (
               parseFloat(checkTotal.toFixed(2)) !==

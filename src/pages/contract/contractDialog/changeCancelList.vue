@@ -284,7 +284,7 @@ export default {
                   let newPage = this.$router.resolve({
                     path: "/contractDetails",
                     query: {
-                      id: value.id, //合同id
+                      id: value.contractId, //合同id
                       contType: value.contType.value, //合同类型
                     },
                   });
@@ -293,7 +293,7 @@ export default {
                   let newPage = this.$router.resolve({
                     path: "/detailIntention",
                     query: {
-                      id: value.id,
+                      id: value.contractId,
                       contType: value.contType.value,
                     },
                   });
