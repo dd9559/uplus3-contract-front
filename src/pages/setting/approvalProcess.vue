@@ -308,7 +308,7 @@
           </div>
           <div class="aduit-input w50" v-if="aduitForm.modularType==0">
             <label>品牌:</label>
-            <el-select size="small" v-model="aduitForm.brandId" :clearable="true">
+            <el-select size="small" filterable v-model="aduitForm.brandId" :clearable="true">
               <el-option
                 v-for="item in branchList"
                 :key="item.key"
