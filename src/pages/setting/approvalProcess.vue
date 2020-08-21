@@ -421,7 +421,7 @@
                 <!-- 人员 -->
                 <div v-if="item.type===0" class="person">
                   <select-tree
-                    :systemKey="isCrossSystem?'':String(aduitForm.systemTag)"
+                    :systemKey="isCrossSystem?'-100':String(aduitForm.systemTag)"
                     :init="item.depName"
                     @checkCell="depHandleClick($event,index)"
                     @clear="clearDep(index)"
