@@ -28,7 +28,7 @@
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号">
+            <el-table-column align="center" label="合同编号"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.contCode}}</span>
               </template>
@@ -38,7 +38,12 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="物业地址 ">
+            <el-table-column align="center" label="收款单" v-if="billMsg.payCodeSK">
+              <template slot-scope="scope">
+                <span>{{billMsg.payCodeSK}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="物业地址"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
