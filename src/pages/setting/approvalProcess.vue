@@ -1261,7 +1261,7 @@ export default {
         }
       })
 
-      this.getJobName(this.searchForm.cityId, this.aduitForm.systemTag)
+      this.getJobName(this.searchForm.cityId,this.isCrossSystem?"":this.aduitForm.systemTag)
     },
     setConditionList(val, type = 1) {
       for (let key in this.branchObj) {
