@@ -236,7 +236,7 @@
             <el-select
               size="small"
               v-model="aduitForm.systemTag"
-              style="width:180px"
+              :style="aduitForm.modularType===0?'width:180px':''"
               clearable
               :disabled="editDisabled"
               @change="changeSystemFn"
@@ -252,6 +252,7 @@
               style="margin-left:10px"
               :true-label="1"
               :false-label="0"
+              v-if="aduitForm.modularType===0"
               @change="jumpFn"
               v-model="isCrossSystem"
             >跨体系审核</el-checkbox>
