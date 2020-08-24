@@ -4,7 +4,7 @@
     <el-dialog
       title="转成交"
       :visible.sync="uPlusIsShow"
-      width="664px"
+      width="800px"
       class="uPluseDialog"
       :close-on-click-modal="$tool.closeOnClickModal"
       :close-on-press-escape="$tool.closeOnClickModal"

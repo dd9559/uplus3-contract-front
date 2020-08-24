@@ -360,6 +360,16 @@
               <!-- <span>{{form.inObjType==1?"客户":form.inObjType==2?"业主"?form.inObjType==3?"其他"}}-{{form.inObj}}</span> -->
             </template>
           </el-table-column>
+          <el-table-column
+            align="center"
+            min-width="120"
+            label="收付款单"
+            v-if="$route.query.payBillNoCont"
+          >
+            <template slot-scope="scope">
+              <span>{{payBillInfo.payCode}}</span>
+            </template>
+          </el-table-column>
           <!-- <el-table-column align="center" min-width="120" label="付款时间">
             <template slot-scope="scope">
               <span>-</span>
