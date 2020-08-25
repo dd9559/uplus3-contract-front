@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="/datepicker.css" />
-    <title>租赁</title>
+    <title>MY-租赁</title>
     <style>
         h1 {
             color: red;
@@ -353,16 +353,16 @@
 <body>
     <div class="zulin container">
         <p class="title">房屋租赁契约</p>
-        <p class="hetong-no">合同编号：<span systemParam="code" tag="input-auto"></span></p>
+        <!-- <p class="hetong-no">合同编号：<span systemParam="code" tag="input-auto"></span></p> -->
         <ul class="personMsg">
             <li><span>出租方：（以下简称甲方）：</span><span systemparam="ownerName" tag="input-auto"></span></li>
-            <li><span>证件号码: </span><span systemparam="ownerID" tag="input-auto"></span></li>
+            <li><span>身份证号: </span><span systemparam="ownerID" tag="input-auto"></span></li>
             <li><span>委托代理人： </span><span tag="input-auto" class="input-before" extendParam="val1"></span></li>
-            <li><span>证件号码: </span><span tag="input-auto" class="input-before" extendParam="val2"></span></li>
+            <li><span>身份证号: </span><span tag="input-auto" class="input-before" extendParam="val2"></span></li>
             <li><span>承租方：（以下简称乙方）：</span><span systemparam="guestName" tag="input-auto"></span></li>
-            <li><span>证件号码: </span><span systemparam="guestID" tag="input-auto"></span></li>
+            <li><span>身份证号: </span><span systemparam="guestID" tag="input-auto"></span></li>
             <li><span>委托代理人： </span><span tag="input-auto" class="input-before" extendParam="val3"></span></li>
-            <li><span>证件号码: </span><span tag="input-auto" class="input-before" extendParam="val4"></span></li>
+            <li><span>身份证号: </span><span tag="input-auto" class="input-before" extendParam="val4"></span></li>
         </ul>
         <div class="zulin-body">
             <div class="text-indent">
@@ -413,7 +413,7 @@
                         <p type="check"></p><span>防盗门</span>
                     </div>
                 </li>
-                <li>房屋用途：<span tag="input-auto" class="input-before" extendParam="val9"></span>装修及设施情况：<span
+                <li>租房用途：<span tag="input-auto" class="input-before" extendParam="val9"></span>装修及设施情况：<span
                         tag="input-auto" class="input-before" extendParam="val10"></span></li>
             </ul>
         </div>
@@ -606,7 +606,7 @@
                     <p>邮件送达地址：<span tag="input-auto" class="input-before" extendParam="val37"></span></p>
                 </li>
             </ul>
-            <div style="padding-top:20px">宏辉服务热线：400 809 3139 <p class="signDate"><span style="border-bottom: none;"
+            <div style="padding-top:20px">玛雅房屋服务热线：400 093 1698 <p class="signDate"><span style="border-bottom: none;"
                         systemparam="signDate" tag="input-auto"></span></div>
         </div>
         <div class="alert-viwer" style="display: none;">
@@ -619,12 +619,12 @@
     </div>
 
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_zl_lz20200617.js"></script>
-<!-- <script>
+<script type="text/javascript" src="/js/bundle_zl_lz20200617.js"></script> -->
+<script>
      (function () {
       var scriptList = document.getElementsByTagName("script")
       console.log(scriptList)
@@ -636,7 +636,7 @@
           if(window.location.host==='localhost:8081'){
             if(addrList[i].indexOf('bundle')>-1){
               // addrList[i]=host_other+'/'+addrList[i]
-              addrList[i]="./LZ-ZL.js"
+              addrList[i]="./MY-ZL.js"
             }else{
               addrList[i]=host_other+'/'+addrList[i]
             }
@@ -652,7 +652,7 @@
             document.head.appendChild(hm);
           }else{
             var hm = document.createElement("script");
-            addrList[i].includes('ZL')&&(hm.type = 'module');
+            addrList[i].includes('MY-ZL')&&(hm.type = 'module');
             hm.src = addrList[i];
             var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
             s.parentNode.insertBefore(hm,s);
@@ -660,6 +660,6 @@
         }
       }
     })();
-</script> -->
+</script>
 
 </html>
