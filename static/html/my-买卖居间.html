@@ -1270,7 +1270,7 @@
       var host_other = "http://sign2.jjw.com:28879"
       var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
       for (let i = 0; i < addrList.length; i++) {
-        if (window.location.host === '192.168.13.8:8080') {
+        if (window.location.host === 'localhost:8080') {
           if (addrList[i].indexOf('bundle') > -1) {
             // addrList[i]=host_other+'/'+addrList[i]
             addrList[i] = './my-MM.js'
