@@ -78,7 +78,7 @@
 
               <el-table-column label="分成金额（元）" width="110">
                 <template slot-scope="scope">
-                  {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }}
+                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -492,7 +492,7 @@
 
               <el-table-column label="分成金额（元）" width="110">
                 <template slot-scope="scope">
-                  {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }}
+                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -878,10 +878,8 @@
                 </el-table-column>
 
                 <el-table-column label="分成金额（元）" width="110">
-                  <template slot-scope="scope">
-                    {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }}
+                   <template slot-scope="scope">{{tradeFee * scope.row.ratio / 100 || 0}}</template>
                     <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
-                  </template>
                 </el-table-column>
 
                 <el-table-column label="经纪人">
@@ -2019,7 +2017,8 @@ export default {
           this.loading1 = true;
           let param = {
             // type: type,
-            keyword: queryString
+            keyword: queryString,
+            contId: this.contractId2
           };
           this.$ajax.get("/api/organize/deps", param).then(res => {
             if (res.status === 200) {
@@ -2580,6 +2579,16 @@ export default {
     }
   },
   filters: {
+    fixedFilter(val){
+      val=val.toString()
+      if(val.indexOf('.')!=-1){
+        console.log( val.substr(0,val.indexOf('.')));
+         return val.substr(0,val.indexOf('.')+1)+val.substr(val.indexOf('.')+1,2)
+      }else {
+        return val
+      }
+      return val.indexOf('.')
+    },
     getSignImage(val, list) {
       if (list.length === 0) {
         return "";

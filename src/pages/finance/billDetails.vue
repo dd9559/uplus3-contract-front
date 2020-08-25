@@ -28,7 +28,7 @@
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号">
+            <el-table-column align="center" label="合同编号"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.contCode}}</span>
               </template>
@@ -38,7 +38,12 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="物业地址 ">
+            <el-table-column align="center" label="收款单" v-if="billMsg.payCodeSK">
+              <template slot-scope="scope">
+                <span>{{billMsg.payCodeSK}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="物业地址"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
@@ -221,7 +226,7 @@
             <p>2.请勿手动在pos上输入金额！</p>
             <p>3.pos机上提示收款成功后，有1-2分钟的延迟才能开票，请耐心等待。</p>
           </div>
-        </li> -->
+        </li>-->
         <li>
           <h4 class="f14">其他信息</h4>
           <div class="input-group">
@@ -312,12 +317,12 @@
           </el-table-column>
           <el-table-column align="center" label="转出合同/款类">
             <template slot-scope="scope">
-              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+"  "+scope.row.outMoney+"元"}}</span>
+              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+" "+scope.row.outMoney+"元"}}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="转入合同/款类">
             <template slot-scope="scope">
-              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+"  "+scope.row.inMoney+"元"}}</span>
+              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+" "+scope.row.inMoney+"元"}}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -418,7 +423,7 @@ export default {
   mixins: [FILTER, MIXINS],
   components: {
     LayerInvoice,
-    checkPerson
+    checkPerson,
   },
   data() {
     return {
@@ -426,7 +431,7 @@ export default {
         state: false,
         type: 3,
         code: "",
-        flowType: 0
+        flowType: 0,
       },
       tabs: ["审核信息"],
       activeItem: "",
@@ -437,7 +442,7 @@ export default {
       checkList: [], //审核信息
       layer: {
         show: false,
-        reasion: ""
+        reasion: "",
       },
       invalidMax: 200,
       files: [],
@@ -455,7 +460,7 @@ export default {
       btnPrint: false, //是否有打印权限
       btnBill: false, //是否有开票权限
       printType: "client", //票据是否只显示客户联
-      transferInfo: []
+      transferInfo: [],
     };
   },
   created() {
@@ -468,7 +473,7 @@ export default {
     // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
     this.btnBill = this.$route.query.bill.toString() === "true" ? true : false;
     this.tabs.unshift(this.activeItem);
-    if (this.$route.query.detailType) {
+    if (this.$route.query.detailType && this.$route.query.tab != "付款信息") {
       this.tabs.push("转款信息");
     }
     this.getData();
@@ -478,7 +483,7 @@ export default {
     let _listName = {
       1: { name: "收付款单", url: "/Bill" },
       2: { name: "收款审核", url: "/moneyCheck?type=1" },
-      3: { name: "付款审核", url: "/moneyCheck?type=2" }
+      3: { name: "付款审核", url: "/moneyCheck?type=2" },
     };
     let arr = this.$tool.getRouter(
       ["二手房", "财务", _listName[Number(this.$route.query.listName)].name],
@@ -486,26 +491,26 @@ export default {
     );
     arr.push({
       name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
-      path: this.$route.fullPath
+      path: this.$route.fullPath,
     });
     this.setPath(arr);
     this.getInOutPayInfoDetail();
   },
   methods: {
-    previewImg: function() {
+    previewImg: function () {
       let arr = [];
-      this.files.forEach(item => {
+      this.files.forEach((item) => {
         arr.push(item.path);
       });
       this.fileSign(arr);
     },
     //监听点击票据打印
-    emitPaperSetFn: function() {
+    emitPaperSetFn: function () {
       this.getData();
       // this.$refs.layerInvoice.propCloseFn()
     },
     //开票
-    getPaper: function(type) {
+    getPaper: function (type) {
       this.printType = "client";
       if (type === "details") {
         this.printType = "all";
@@ -516,31 +521,31 @@ export default {
         this.$refs.layerInvoice.show(this.billId, true);
       }
     },
-    personChose: function() {
+    personChose: function () {
       this.checkPerson.state = false;
       this.$message({
-        message: "下一个节点审核人设置成功"
+        message: "下一个节点审核人设置成功",
       });
       this.getCheckData();
     },
     //审核按钮是否操作抢单
-    quickCheck: function() {
+    quickCheck: function () {
       if (this.billMsg.grabDept && false) {
         //抢单，判断当前登录人部门是否包含在设置的部门中，是则调用抢单接口
         this.$ajax
           .get("/api/machine/getAuditAuth", {
             bizCode: this.billMsg.payCode,
-            flowType: this.activeItem === "付款信息" ? 0 : 1
+            flowType: this.activeItem === "付款信息" ? 0 : 1,
           })
-          .then(res => {
+          .then((res) => {
             res = res.data;
             if (res.status === 200) {
               this.showDialog();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
-              message: `抢单失败`
+              message: `抢单失败`,
             });
           });
       } else {
@@ -548,16 +553,16 @@ export default {
       }
     },
     // 判断审核弹窗显示内容
-    showDialog: function() {
+    showDialog: function () {
       this.layer.show = true;
       if (this.activeItem === "付款信息") {
         let param = {
           payId: this.billMsg.id,
           moneyType: this.billMsg.moneyType,
           moneyTypePid: this.billMsg.moneyTypePid,
-          contId: this.billMsg.contId
+          contId: this.billMsg.contId,
         };
-        this.$ajax.get("/api/payInfo/auditOption", param).then(res => {
+        this.$ajax.get("/api/payInfo/auditOption", param).then((res) => {
           res = res.data;
           if (res.status === 200) {
             // this.radioMask = res.data.num === 2 ? true : false
@@ -571,16 +576,16 @@ export default {
       this.currentPage = val;
       this.getData();
     },
-    getData: function() {
+    getData: function () {
       let param = {
         payId: this.billId,
-        type: this.activeItem === "收款信息" ? 1 : 2
+        type: this.activeItem === "收款信息" ? 1 : 2,
       };
       let src =
         param.type === 1
           ? "/payInfo/selectRevDetail"
           : "/payInfo/selectPayDetail";
-      this.$ajax.get(`/api${src}`, param).then(res => {
+      this.$ajax.get(`/api${src}`, param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.billMsg = Object.assign({}, res.data);
@@ -593,7 +598,7 @@ export default {
                 preloadList.push(item.path);
               }
             });
-            this.fileSign(preloadList, "preload").then(res => {
+            this.fileSign(preloadList, "preload").then((res) => {
               this.preloadFiles = res;
             });
           }
@@ -606,7 +611,7 @@ export default {
           ) {
             this.files = [].concat({
               path: res.data.billPath,
-              name: "pos小票"
+              name: "pos小票",
             });
           }
           this.checkPerson.code = res.data.payCode;
@@ -617,29 +622,31 @@ export default {
     /**
      * 获取审核信息
      */
-    getCheckData: function() {
+    getCheckData: function () {
       let param = {
         /*pageSize:this.pageSize,
                     pageNum:this.currentPage,*/
         flowType: this.billMsg.audit.flowType,
-        bizCode: this.billMsg.audit.bizCode
+        bizCode: this.billMsg.audit.bizCode,
       };
-      this.$ajax.get("/api/machine/getAuditListToFinance", param).then(res => {
-        // debugger
-        res = res.data;
-        if (res.status === 200) {
-          this.checkList = res.data.data;
-          this.total = res.data.total;
-        }
-      });
+      this.$ajax
+        .get("/api/machine/getAuditListToFinance", param)
+        .then((res) => {
+          // debugger
+          res = res.data;
+          if (res.status === 200) {
+            this.checkList = res.data.data;
+            this.total = res.data.total;
+          }
+        });
     },
     /**
      * 审核
      */
-    checkBill: function(type) {
+    checkBill: function (type) {
       if (this.radioMask && !this.payRadio && type === 1) {
         this.$message({
-          message: "请选择支付方式"
+          message: "请选择支付方式",
         });
         return;
       }
@@ -649,15 +656,15 @@ export default {
         // flowId: this.billMsg.audit.flowId,
         // sort: this.billMsg.audit.nodeSort,
         flowType: this.activeItem === "付款信息" ? 0 : 1,
-        modularType: 0
+        modularType: 0,
       };
       param.ApprovalForm = {
         result: type,
-        remark: this.layer.reasion
+        remark: this.layer.reasion,
       };
       if (type === 2 && this.layer.reasion.length === 0) {
         this.$message({
-          message: "请输入拒绝原因"
+          message: "请输入拒绝原因",
         });
         return;
       } else {
@@ -665,7 +672,7 @@ export default {
       }
       this.$ajax
         .postJSON("/api/machine/audit", param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.fullscreenLoading = false;
@@ -674,57 +681,63 @@ export default {
               this.secondCheck();
             } else {
               this.$message({
-                message: res.message
+                message: res.message,
               });
               this.layer.show = false;
             }
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.fullscreenLoading = false;
           if (error.message === "下一节点审批人不存在") {
             this.checkPerson.state = true;
           } else {
             this.$message({
-              message: error
+              message: error,
             });
           }
         });
     },
-    secondCheck: function() {
+    secondCheck: function () {
       let param = {
         payId: this.billId,
-        payMethod: parseInt(this.payRadio)
+        payMethod: parseInt(this.payRadio),
       };
-      this.$ajax.put("/api/payInfo/auditPass", param, 2).then(res => {
+      this.$ajax.put("/api/payInfo/auditPass", param, 2).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.$message({
-            message: res.message
+            message: res.message,
           });
           this.payRadio = 0;
           this.layer.show = false;
         }
       });
     },
-    clearLayer: function() {
+    clearLayer: function () {
       this.layer.reasion = "";
       this.layer.show = false;
     },
-    choseTab: function(item) {
+    choseTab: function (item) {
+      // debugger
+      this.getCheckData();
       this.activeItem = item;
       if (item !== "审核信息") {
         this.checkBoxShow = false;
         return;
       }
+      if (item === "转款信息") {
+        this.getInOutPayInfoDetail();
+      }
       this.checkBoxShow = true;
+
       /*target = this.$refs.checkBox.offsetTop
                 scrollHeight = document.querySelector('.view').parentNode.clientHeight
                 console.log(`target:${target}`)
                 console.log(`容器：${scrollHeight}`)
                 this.scrollTop()*/
     },
-    scrollTop: function() {
+    scrollTop: function () {
       let scrollTop = document.querySelector(".view").parentNode.scrollTop;
       document.querySelector(".view").parentNode.scrollTop = scrollTop + 30;
       console.log(scrollTop);
@@ -737,7 +750,7 @@ export default {
       }
     },
     //合并单元格
-    collapseRow: function({ rowIndex, columnIndex }) {
+    collapseRow: function ({ rowIndex, columnIndex }) {
       if (this.billMsg.inAccount && (columnIndex < 2 || columnIndex > 3)) {
         if (rowIndex === 0) {
           return [this.billMsg && this.billMsg.inAccount.length, 1];
@@ -750,31 +763,31 @@ export default {
     },
     getInOutPayInfoDetail() {
       let param = {
-        id: this.$route.query.id
+        id: this.$route.query.id,
       };
-      this.$ajax.get("/api/payInfo/inOutPayInfoDetail", param).then(res => {
+      this.$ajax.get("/api/payInfo/inOutPayInfoDetail", param).then((res) => {
         // debugger
         res = res.data;
         if (res.status === 200) {
           this.transferInfo = res.data;
         }
       });
-    }
+    },
   },
   computed: {
     invalidNumber() {
       return this.layer.reasion.length;
-    }
+    },
   },
   filters: {
-    nullFormatter: function(val, type = 1) {
+    nullFormatter: function (val, type = 1) {
       if (!val) {
         return type === 1 ? "无" : "--";
       } else {
         return val;
       }
     },
-    nullFilter: function(val) {
+    nullFilter: function (val) {
       if (!val) {
         return val === 0 ? 0 : "-";
       } else {
@@ -791,12 +804,12 @@ export default {
       if (list.length === 0) {
         return "";
       } else {
-        let imgDir = list.find(item => {
+        let imgDir = list.find((item) => {
           return item.includes(val.path);
         });
         let img = new Image();
         img.src = imgDir;
-        img.onload = function() {
+        img.onload = function () {
           let persent = parseFloat((img.width / img.height).toFixed(2));
           let imgWidth = 0;
           // console.log(persent)
@@ -821,8 +834,8 @@ export default {
         };
         return imgDir;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

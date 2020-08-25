@@ -115,6 +115,7 @@
             class="margin-left"
             size="small"
             v-model="contractForm.dealAgentId"
+            
             @change="handleEmpNodeClick"
             placeholder="请选择"
           >-->
@@ -130,12 +131,13 @@
             v-model="contractForm.dealAgentId"
             placeholder="请选择"
             @change="empHandleAdd"
+            @clear="clearDep"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId+'-'+item.depName+'-'+item.depId"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -746,8 +748,9 @@
                 v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state"
                 @click="showDelete(scope.row)"
               >删除</div>
+              <!-- &&power['sign-ht-info-zcj'].state -->
               <div
-                v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 && !scope.row.isDeal"
+                v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 &&scope.row.isDeal==0&&power['sign-ht-info-zcj'].state"
                 class="btn"
                 @click="toDeal(scope.row)"
               >转成交</div>
@@ -944,7 +947,15 @@
       </div>
     </el-dialog>
     <!-- 发起签署选择业主客户 -->
-    <chosePerson :dialogVisible="chosePersonDialog" :ownerList="signOwnerList" :localChoseList="localChoseList" :contCode="contCode" :guestList="signGuestList" :choseQuery="choseQuery" @closeChose="closeChose"></chosePerson>
+    <chosePerson
+      :dialogVisible="chosePersonDialog"
+      :ownerList="signOwnerList"
+      :localChoseList="localChoseList"
+      :contCode="contCode"
+      :guestList="signGuestList"
+      :choseQuery="choseQuery"
+      @closeChose="closeChose"
+    ></chosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
     <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
       <div>合同已发起签署</div>
@@ -982,13 +993,13 @@ export default {
     lateProgress,
     PdfPrint,
     checkPerson,
-    chosePerson
+    chosePerson,
   },
   data() {
     return {
       tableBox: null,
       contractForm: {
-        dealAgentId: ""
+        dealAgentId: "",
       },
       keyword: "",
       signDate: [],
@@ -1021,7 +1032,7 @@ export default {
         "507": "", //租赁时间单位
         "11": "", //后期状态
         "64": "", //签约方式  线上线下
-        "72": "" //签后审核状态
+        "72": "", //签后审核状态
       },
       loading: false,
       //部门选择列表
@@ -1035,11 +1046,11 @@ export default {
       settleId: "",
       layerSettle: {
         contarctType: {
-          label: ""
+          label: "",
         },
         laterStageStatus: {
-          lable: ""
-        }
+          lable: "",
+        },
       },
       //流水用合同编号
       contCode: "",
@@ -1064,27 +1075,27 @@ export default {
       achStatuArr: [
         {
           key: -1,
-          value: "待提审"
+          value: "待提审",
         },
         {
           key: 0,
-          value: "审核中"
+          value: "审核中",
         },
         {
           key: 1,
-          value: "已通过"
+          value: "已通过",
         },
         {
           key: 2,
-          value: "已驳回"
-        }
+          value: "已驳回",
+        },
       ],
       checkPerson: {
         state: false,
         type: 1,
         code: "",
         flowType: 3,
-        label: false
+        label: false,
       },
       printData: "", //打印次数详情
       isHavePrint: false,
@@ -1094,100 +1105,100 @@ export default {
       power: {
         "sign-com-bill": {
           state: false,
-          name: "流水"
+          name: "流水",
         },
         "sign-ht-info-collect": {
           state: false,
-          name: "收款"
+          name: "收款",
         },
         "sign-ht-info-pay": {
           state: false,
-          name: "付款"
+          name: "付款",
         },
         "sign-ht-info-print": {
           state: false,
-          name: "打印空白合同"
+          name: "打印空白合同",
         },
         "sign-ht-info-add": {
           state: false,
-          name: "创建正式合同"
+          name: "创建正式合同",
         },
         "sign-ht-info-addoffline": {
           state: false,
-          name: "创建线下合同"
+          name: "创建线下合同",
         },
         "sign-ht-info-view": {
           state: false,
-          name: "预览"
+          name: "预览",
         },
         "sign-ht-view-toverify": {
           state: false,
-          name: "提审"
+          name: "提审",
         },
         "sign-ht-xq-entrust-edit": {
           state: false,
-          name: "委托合同"
+          name: "委托合同",
         },
         "sign-ht-xq-main-add": {
           state: false,
-          name: "上传"
+          name: "上传",
         },
         "sign-ht-info-adjust": {
           state: false,
-          name: "调佣"
+          name: "调佣",
         },
         "sign-ht-info-end": {
           state: false,
-          name: "结算状态"
+          name: "结算状态",
         },
         "sign-ht-info-rec": {
           state: false,
-          name: "收佣状态"
+          name: "收佣状态",
         },
         "sign-com-hqstep": {
           state: false,
-          name: "后期进度"
+          name: "后期进度",
         },
         "sign-com-htdetail": {
           state: false,
-          name: "合同详情"
+          name: "合同详情",
         },
         "sign-com-house": {
           state: false,
-          name: "房源详情"
+          name: "房源详情",
         },
         "sign-com-cust": {
           state: false,
-          name: "客源详情"
+          name: "客源详情",
         },
         "sign-ht-info-export": {
           state: false,
-          name: "导出"
+          name: "导出",
         },
         "sign-ht-info-del": {
           state: false,
-          name: "合同删除"
+          name: "合同删除",
         },
         "sign-ht-info-recovery": {
           state: false,
-          name: "合同恢复"
+          name: "合同恢复",
         },
         "sign-ht-qhsh-toverify": {
           state: false,
-          name: "签后提审"
+          name: "签后提审",
         },
         "sign-ht-info-fqqs": {
           state: false,
-          name: "发起签署"
+          name: "发起签署",
         },
         "sign-ht-xq-data": {
           state: false,
-          name: "编辑资料库"
+          name: "编辑资料库",
         },
         "sign-ht-info-zcj": {
           state: false,
-          name: "转成交"
-        }
+          name: "转成交",
+        },
       },
       showOnLine: false,
       showPrint: false,
@@ -1209,7 +1220,7 @@ export default {
       choseQuery: {},
       dataBaseDialog: false,
       choseLoading: false,
-      localChoseList: []
+      localChoseList: [],
     };
   },
   created() {
@@ -1239,12 +1250,14 @@ export default {
         contTypes:
           session.query.contTypes.length > 0
             ? session.query.contTypes.split(",")
-            : ""
+            : "",
       });
       if (this.contractForm.contTypes) {
-        this.contractForm.contTypes = this.contractForm.contTypes.map(item => {
-          return Number(item);
-        });
+        this.contractForm.contTypes = this.contractForm.contTypes.map(
+          (item) => {
+            return Number(item);
+          }
+        );
       }
       // this.contractForm.dealAgentStoreId=''
       // this.contractForm.dealAgentId=''
@@ -1262,11 +1275,11 @@ export default {
         this.dep = Object.assign({}, this.dep, {
           id: this.contractForm.dealAgentStoreId,
           empId: this.contractForm.dealAgentId,
-          empName: this.contractForm.empName
+          empName: this.contractForm.empName,
         });
         this.EmployeList.unshift({
           empId: this.contractForm.dealAgentId,
-          name: this.contractForm.empName
+          name: this.contractForm.empName,
         });
         this.getEmploye(this.contractForm.dealAgentStoreId);
       }
@@ -1295,7 +1308,7 @@ export default {
     },
     //获取合同基本信息版式（1 基础版  2 复杂版）
     getVersion() {
-      this.$ajax.get("/api/cont/version/getVersion").then(res => {
+      this.$ajax.get("/api/cont/version/getVersion").then((res) => {
         res = res.data;
         if (res.status === 200) {
           if (res.data) {
@@ -1317,11 +1330,11 @@ export default {
         if (row.contractEntrust && row.contractEntrust.id && !row.isCombine) {
           rows = {
             index: rowIndex,
-            id: row.contractEntrust.id
+            id: row.contractEntrust.id,
           };
           return {
             rowspan: 2,
-            colspan: 1
+            colspan: 1,
           };
         } else {
           if (
@@ -1331,19 +1344,19 @@ export default {
           ) {
             return {
               rowspan: 0,
-              colspan: 0
+              colspan: 0,
             };
           } else {
             return {
               rowspan: 1,
-              colspan: 1
+              colspan: 1,
             };
           }
         }
       } else {
         return {
           rowspan: 1,
-          colspan: 1
+          colspan: 1,
         };
       }
     },
@@ -1353,9 +1366,9 @@ export default {
     //用途
     getHousePurpose() {
       let param = {
-        type: "HousePurpose"
+        type: "HousePurpose",
       };
-      this.$ajax.get("/api/dictionary/uplus", param).then(res => {
+      this.$ajax.get("/api/dictionary/uplus", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.housePurpose = res.data;
@@ -1367,7 +1380,7 @@ export default {
       let param = {
         pageNum: this.currentPage,
         pageSize: this.pageSize,
-        keyword: this.keyword
+        keyword: this.keyword,
       };
       param = Object.assign({}, param, this.contractForm);
       if (this.signDate) {
@@ -1392,16 +1405,16 @@ export default {
             path: "/contractList",
             url: "/contract/contractList",
             query: Object.assign({}, param, {
-              empName: this.dep.empName
+              empName: this.dep.empName,
             }),
-            methods: "postJSON"
+            methods: "postJSON",
           })
         );
       }
       if (type === "search") {
         param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
       }
-      this.$ajax.postJSON("/api/contract/contractList", param).then(res => {
+      this.$ajax.postJSON("/api/contract/contractList", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.tableData = res.data.list;
@@ -1427,14 +1440,14 @@ export default {
         this.$nextTick(() => {
           this.contractForm.beginRatio = this.$tool.cutFloat({
             val: this.contractForm.beginRatio,
-            max: 100
+            max: 100,
           });
         });
       } else if (type === "end") {
         this.$nextTick(() => {
           this.contractForm.endRatio = this.$tool.cutFloat({
             val: this.contractForm.endRatio,
-            max: 100
+            max: 100,
           });
         });
       }
@@ -1454,13 +1467,13 @@ export default {
         } else {
           this.$message({
             message: "此合同已删除无法进行操作",
-            type: "warning"
+            type: "warning",
           });
         }
       } else {
         this.$message({
           message: "没有流水查看权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1479,19 +1492,19 @@ export default {
             query: {
               contId: item.id,
               code: item.code,
-              isentrust: item.isCombine ? 1 : 0
-            }
+              isentrust: item.isCombine ? 1 : 0,
+            },
           });
         } else {
           this.$message({
             message: "此合同已删除无法进行操作",
-            type: "warning"
+            type: "warning",
           });
         }
       } else {
         this.$message({
           message: "没有收款权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1504,31 +1517,31 @@ export default {
             query: {
               contId: item.id,
               code: item.code,
-              address: item.propertyAddr
-            }
+              address: item.propertyAddr,
+            },
           });
         } else {
           this.$message({
             message: "此合同已删除无法进行操作",
-            type: "warning"
+            type: "warning",
           });
         }
       } else {
         this.$message({
           message: "没有付款权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
     //打印次数详情
     selectPrintInfo(item) {
       let param = {
-        contId: item.id
+        contId: item.id,
       };
       if (item.isCombine) {
         param.isentrust = 1;
       }
-      this.$ajax.get("/api/contract/selectPrintInfo", param).then(res => {
+      this.$ajax.get("/api/contract/selectPrintInfo", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           if (res.data.length > 0) {
@@ -1544,7 +1557,7 @@ export default {
         // 验证是否有合同详情查看权限
         this.$ajax
           .get("/api/contract/isDetailAuth", { contId: value.id })
-          .then(res => {
+          .then((res) => {
             res = res.data;
             if (res.status === 200) {
               if (res.data) {
@@ -1557,8 +1570,8 @@ export default {
                     path: "/contractDetails",
                     query: {
                       id: value.id, //合同id
-                      contType: value.contType.value //合同类型
-                    }
+                      contType: value.contType.value, //合同类型
+                    },
                   });
                   window.open(newPage.href, "_blank");
                 } else {
@@ -1566,29 +1579,29 @@ export default {
                     path: "/detailIntention",
                     query: {
                       id: value.id,
-                      contType: value.contType.value
-                    }
+                      contType: value.contType.value,
+                    },
                   });
                   window.open(newPage.href, "_blank");
                 }
               } else {
                 this.$message({
                   message: "没有合同详情查看权限",
-                  type: "warning"
+                  type: "warning",
                 });
               }
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
               message: error,
-              type: "error"
+              type: "error",
             });
           });
       } else {
         this.$message({
           message: "此合同已删除无法进行操作",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1602,13 +1615,13 @@ export default {
             type: "dataBank",
             id: value.id,
             code: value.code,
-            contType: value.contType.value
-          }
+            contType: value.contType.value,
+          },
         });
       } else {
         this.$message({
           message: "没有合同详情权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1622,11 +1635,11 @@ export default {
         this.showOnLine = false;
         let param = {
           recordType: 1,
-          type: val.key
+          type: val.key,
         };
         this.$ajax
           .get("/api/contract/checkContTemplate", param)
-          .then(res => {
+          .then((res) => {
             res = res.data;
             if (res.status === 200) {
               localStorage.removeItem("backMsg");
@@ -1637,8 +1650,8 @@ export default {
                     type: val.key,
                     operateType: 1,
                     // isOffline: 0
-                    recordType: 1
-                  }
+                    recordType: 1,
+                  },
                 });
               } else if (val.key === 7 || val.key === 8) {
                 this.$router.push({
@@ -1648,8 +1661,8 @@ export default {
                     operateType: 1,
                     // isOffline: 0,
                     recordType: 1,
-                    loanType: val.key
-                  }
+                    loanType: val.key,
+                  },
                 });
               } else if (val.key === 4 || val.key === 5) {
                 this.$router.push({
@@ -1658,21 +1671,21 @@ export default {
                     contType: val.key,
                     operateType: 1,
                     // isOffline: 0
-                    recordType: 1
-                  }
+                    recordType: 1,
+                  },
                 });
               }
             } else {
               this.$message({
                 message: "该类型合同模板未上传,请上传后再创建",
-                type: "warning"
+                type: "warning",
               });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
               message: error,
-              type: "error"
+              type: "error",
             });
           });
       }
@@ -1688,8 +1701,8 @@ export default {
               type: val.key,
               operateType: 1,
               // isOffline: 1
-              recordType: 2
-            }
+              recordType: 2,
+            },
           });
         } else if (val.key === 7 || val.key === 8) {
           this.$router.push({
@@ -1699,8 +1712,8 @@ export default {
               operateType: 1,
               // isOffline: 1,
               recordType: 2,
-              loanType: val.key
-            }
+              loanType: val.key,
+            },
           });
         } else if (val.key === 4 || val.key === 5) {
           this.$router.push({
@@ -1709,8 +1722,8 @@ export default {
               contType: val.key,
               operateType: 1,
               // isOffline: 1
-              recordType: 2
-            }
+              recordType: 2,
+            },
           });
         }
       }
@@ -1722,28 +1735,28 @@ export default {
         query: {
           id: item.id,
           code: item.code,
-          isentrust: item.isCombine ? 1 : 0
-        }
+          isentrust: item.isCombine ? 1 : 0,
+        },
       });
     },
     //调佣弹窗
     toLayerAudit(item) {
       let param = {
-        contractCode: item.code
+        contractCode: item.code,
       };
       this.$ajax
         .get("/api/commission/detail", param)
-        .then(res => {
+        .then((res) => {
           let data = res.data;
           if (res.data.status === 200) {
             this.layerAudit = data.data;
             this.tiaoyong = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message({
             message: error,
-            type: "error"
+            type: "error",
           });
         });
     },
@@ -1761,7 +1774,7 @@ export default {
     },
     //字典查询
     getDictionaries() {
-      this.$ajas.get("/api/dictionary/batchQuery", param).then(res => {});
+      this.$ajas.get("/api/dictionary/batchQuery", param).then((res) => {});
     },
     //变更解约弹窗
     goChangeCancel(item) {
@@ -1781,12 +1794,12 @@ export default {
       }
     },
     //获取当前部门
-    initDepList: function(val) {
+    initDepList: function (val) {
       if (!val) {
         this.remoteMethod();
       }
     },
-    clearDep: function() {
+    clearDep: function () {
       this.contractForm.dealAgentStoreId = "";
       this.contractForm.depName = "";
       // this.EmployeList=[]
@@ -1806,14 +1819,14 @@ export default {
 
       this.handleNodeClick(data);
     },
-    searchDep: function(payload) {
+    searchDep: function (payload) {
       /*this.DepList=payload.list
       this.contractForm.depName=payload.depName*/
     },
-    test: function(val) {
+    test: function (val) {
       this.getEmployeByText(val);
     },
-    empHandle: function(val) {
+    empHandle: function (val) {
       console.log(this.contractForm.dealAgentId);
       if (
         val &&
@@ -1824,7 +1837,7 @@ export default {
       }
     },
     empHandleAdd(val) {
-      let depVal = val.split("-");
+      let depVal = val.split("/");
       // this.searchForm.empId=depVal[0]
       this.contractForm.dealAgentStoreId = depVal[2];
       this.contractForm.depName = depVal[1];
@@ -1842,26 +1855,26 @@ export default {
         cityId: this.submitAuditData.cityCode,
         flowType: this.submitAuditData.isCombine ? 11 : 3,
         bizCode: this.submitAuditData.code,
-        modularType: 0 //合同类型
+        modularType: 0, //合同类型
       };
       this.$ajax
         .get("/api/machine/submitAduit", param)
-        .then(res => {
+        .then((res) => {
           this.isSubmitAudit = false;
           res = res.data;
           if (res.status === 200) {
             this.$message({
               message: "提审成功",
-              type: "success"
+              type: "success",
             });
             this.getContractList();
           } else {
             this.$message({
-              message: res.message
+              message: res.message,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.isSubmitAudit = false;
           if (error.message === "下一节点审批人不存在") {
             this.checkPerson.code = this.submitAuditData.code;
@@ -1872,7 +1885,7 @@ export default {
           } else {
             this.$message({
               message: error,
-              type: "error"
+              type: "error",
             });
           }
         });
@@ -1886,11 +1899,11 @@ export default {
       if (this.power["sign-ht-info-end"].state) {
         if (item.contChangeState.value !== 2) {
           let param = {
-            id: item.id
+            id: item.id,
           };
           this.$ajax
             .get("/api/settlement/getSettlById", param)
-            .then(res => {
+            .then((res) => {
               // console.log(res);
               let data = res.data;
               if (res.data.status === 200) {
@@ -1899,22 +1912,22 @@ export default {
                 this.layerSettle = data.data;
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.$message({
                 message: error,
-                type: "warning"
+                type: "warning",
               });
             });
         } else {
           this.$message({
             message: "合同已解约，无法发起结算",
-            type: "warning"
+            type: "warning",
           });
         }
       } else {
         this.$message({
           message: "没有结算权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1930,13 +1943,13 @@ export default {
         let value = {
           id: item.id,
           transFlowName: item.stepInstanceName,
-          statusReceiveAmount: item.resultState
+          statusReceiveAmount: item.resultState,
         };
         this.$refs.lateProgress.show(value);
       } else {
         this.$message({
           message: "没有后期流程查看权限",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -1949,11 +1962,11 @@ export default {
       if (val.key != 2 || (val.key === 2 && !val.children)) {
         this.showPrint = false;
         let param = {
-          type: val.key
+          type: val.key,
         };
         this.$ajax
           .get("/api/setting/contractTemplate/checkBlankPdf", param)
-          .then(res => {
+          .then((res) => {
             res = res.data;
             if (res.status === 200) {
               let dayRandomTime = new Date().getTime();
@@ -1961,10 +1974,10 @@ export default {
               this.haveUrl = true;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             this.$message({
               message: error,
-              type: "error"
+              type: "error",
             });
           });
       }
@@ -1974,7 +1987,7 @@ export default {
       let param = {
         // pageNum: this.currentPage,
         // pageSize: this.pageSize,
-        keyword: this.keyword
+        keyword: this.keyword,
       };
       param = Object.assign({}, param, this.contractForm);
       if (this.signDate) {
@@ -2004,25 +2017,25 @@ export default {
     deleteCont(val, type) {
       let param = {
         type: type,
-        id: val.id
+        id: val.id,
       };
       this.$ajax
         .put("/api/contract/delete", param, 2)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.$message({
               message: type === 1 ? "恢复成功" : "删除成功",
-              type: "success"
+              type: "success",
             });
             this.deleteDialog = false;
             this.getContractList();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message({
             message: error,
-            type: "error"
+            type: "error",
           });
         });
     },
@@ -2046,22 +2059,22 @@ export default {
         contId: this.signAuditItem.id,
         contType: this.signAuditItem.isCombine
           ? this.signAuditItem.isCombine
-          : false
+          : false,
       };
       this.$ajax
         .post("/api/signingAudit/addsignin", param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.isSubmitAudit = false;
             this.$message({
               message: "提审成功",
-              type: "success"
+              type: "success",
             });
             this.getContractList();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.isSubmitAudit = false;
           if (error.message === "下一节点审批人不存在") {
             this.checkPerson.code = error.data.bizCode;
@@ -2072,7 +2085,7 @@ export default {
             this.getContractList();
             this.$message({
               message: error,
-              type: "error"
+              type: "error",
             });
           }
         });
@@ -2082,22 +2095,22 @@ export default {
       this.$router.push({
         path: "/addContract",
         query: {
-          id: row.id, 
-          operateType: 1,  //1新增 2编辑
+          id: row.id,
+          operateType: 1, //1新增 2编辑
           type: row.contType.value,
           recordType: row.recordType.value,
-          isDeal: 1
-        }
+          isDeal: 1,
+        },
       });
     },
     //获取U+房源详情
     getUplusHouseDetail(id) {
       let param = {
-        houseId: id
+        houseId: id,
       };
       this.$ajax
         .get("/api/resource/houses/one", param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             console.log("获取房源详情");
@@ -2134,9 +2147,9 @@ export default {
             console.log(this.uPlusDictionary71);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message({
-            message: error
+            message: error,
           });
         });
     },
@@ -2145,14 +2158,14 @@ export default {
       if (this.uPlusContType == "") {
         this.$message({
           message: "请选择合同类型",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       if (this.uPlusQianyueType == "") {
         this.$message({
           message: "请选择签约方式",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -2168,8 +2181,8 @@ export default {
             operateType: 1,
             recordType: this.uPlusQianyueType,
             houseId: this.$route.query.houseId,
-            turnDeal: 1
-          }
+            turnDeal: 1,
+          },
         });
       } else if (this.uPlusContType === 4 || this.uPlusContType === 5) {
         this.$router.push({
@@ -2179,46 +2192,49 @@ export default {
             operateType: 1,
             recordType: this.uPlusQianyueType,
             houseId: this.$route.query.houseId,
-            turnDeal: 1
-          }
+            turnDeal: 1,
+          },
         });
       }
     },
     //发起签署
-    toSign(val){
-        this.choseQuery = {
-            id:val.id,
-            isHaveData:val.isHaveData,
-            storeId:val.guestStoreCode,
-            code:val.code,
-            contType:val.contType.value
-          }
-        let owner = []
-        let guest = []
-        val.contPersons.forEach(element => {
-            if(element.personType.value === 1){
-                owner.push(element)
-            }else{
-                guest.push(element)
-            }
-        });
-        this.signOwnerList=[].concat(owner)
-        this.signGuestList=[].concat(guest)
-        this.localChoseList = (localStorage.getItem('brokerList') && JSON.parse(localStorage.getItem('brokerList')).filter(item => {
-            return item !== null
-        })) || []
-        this.contCode = val.code;
-        this.chosePersonDialog=true
+    toSign(val) {
+      this.choseQuery = {
+        id: val.id,
+        isHaveData: val.isHaveData,
+        storeId: val.guestStoreCode,
+        code: val.code,
+        contType: val.contType.value,
+      };
+      let owner = [];
+      let guest = [];
+      val.contPersons.forEach((element) => {
+        if (element.personType.value === 1) {
+          owner.push(element);
+        } else {
+          guest.push(element);
+        }
+      });
+      this.signOwnerList = [].concat(owner);
+      this.signGuestList = [].concat(guest);
+      this.localChoseList =
+        (localStorage.getItem("brokerList") &&
+          JSON.parse(localStorage.getItem("brokerList")).filter((item) => {
+            return item !== null;
+          })) ||
+        [];
+      this.contCode = val.code;
+      this.chosePersonDialog = true;
     },
-    
+
     closeChose(val) {
-      if (val.type == 'choseLoading') {
-        this.choseLoading = true
+      if (val.type == "choseLoading") {
+        this.choseLoading = true;
       } else {
         this.chosePersonDialog = false;
         // this.dataBaseDialog = true;
-        this.choseLoading = false
-        console.log(!!val,898989);
+        this.choseLoading = false;
+        console.log(!!val, 898989);
         if (val) {
           this.dataBaseDialog = true;
         }
@@ -2229,57 +2245,60 @@ export default {
     },
     toDataBase() {
       this.$ajax
-          .get("/api/contract/isDetailAuth", { contId: this.choseQuery.id })
-          .then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              if (res.data) {
-                console.log(this.power["sign-ht-xq-data"].state,88787878);
-                if (this.power["sign-ht-xq-data"].state) {
-                  this.setPath(
+        .get("/api/contract/isDetailAuth", { contId: this.choseQuery.id })
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            if (res.data) {
+              console.log(this.power["sign-ht-xq-data"].state, 88787878);
+              if (this.power["sign-ht-xq-data"].state) {
+                this.setPath(
                   this.$tool.getRouter(
-                      ["合同", "合同列表", "合同详情"],
-                      "contractList"
-                    )
-                  );
-                  let path;
-                  if (this.choseQuery.contType === 4 || this.choseQuery.contType === 5) {
-                    path = "/detailIntention";
-                  } else {
-                    path = "/contractDetails";
-                  }
-                  console.log(this.choseQuery,888888);
-                  this.$router.replace({
-                    path: path,
-                    query: {
-                      type: "dataBank",
-                      id: this.choseQuery.id, //合同id
-                      code: this.choseQuery.code, //合同编号
-                      contType: this.choseQuery.contType, //合同类型
-                      isHaveData: this.choseQuery.isHaveData
-                    }
-                  });
-                }else {
-                  this.$message({
-                    message: "没有资料库权限,无法跳转到资料库"
-                  });
-                  this.$router.push("/contractList");
+                    ["合同", "合同列表", "合同详情"],
+                    "contractList"
+                  )
+                );
+                let path;
+                if (
+                  this.choseQuery.contType === 4 ||
+                  this.choseQuery.contType === 5
+                ) {
+                  path = "/detailIntention";
+                } else {
+                  path = "/contractDetails";
                 }
+                console.log(this.choseQuery, 888888);
+                this.$router.replace({
+                  path: path,
+                  query: {
+                    type: "dataBank",
+                    id: this.choseQuery.id, //合同id
+                    code: this.choseQuery.code, //合同编号
+                    contType: this.choseQuery.contType, //合同类型
+                    isHaveData: this.choseQuery.isHaveData,
+                  },
+                });
               } else {
                 this.$message({
-                  message: "没有合同详情权限,无法跳转到资料库",
-                  type: "warning"
+                  message: "没有资料库权限,无法跳转到资料库",
                 });
                 this.$router.push("/contractList");
               }
+            } else {
+              this.$message({
+                message: "没有合同详情权限,无法跳转到资料库",
+                type: "warning",
+              });
+              this.$router.push("/contractList");
             }
-          })
-          .catch(error => {
-            this.$message({
-              message: error,
-              type: "error"
-            });
+          }
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
           });
+        });
       // if (this.power["sign-com-htdetail"].state) {
       //   if (this.power["sign-ht-xq-data"].state) {
       //     this.setPath(
@@ -2315,7 +2334,7 @@ export default {
       //   });
       //   this.$router.push("/contractList");
       // }
-    }
+    },
   },
   computed: {
     combineList() {
@@ -2406,10 +2425,10 @@ export default {
       });
       console.log(arr);
       return arr;
-    }
+    },
   },
   filters: {
-    timeFormat_: function(val) {
+    timeFormat_: function (val) {
       if (!val) {
         return "--";
       } else {
@@ -2426,7 +2445,7 @@ export default {
         return time_.substr(0, 16);
       }
     },
-    timeFormat_hm: function(val) {
+    timeFormat_hm: function (val) {
       if (!val) {
         return "--";
       } else {
@@ -2442,8 +2461,8 @@ export default {
         }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
         return time_.substr(0, 16);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped lang="less">
@@ -2466,7 +2485,7 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 9999999;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 /deep/.el-table__body {
   .el-table__row {

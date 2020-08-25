@@ -11,22 +11,22 @@
     >
       <div>
         <ul class="uPlus-class">
-          <li class="li" style="width:100%;">
+          <li class="li" style="width:30%;">
             <em class="cl-999">房源编号：</em>
             {{uPlusHouseDetail&&uPlusHouseDetail.PropertyNo}}
           </li>
-          <li class="li" style="width:100%;">
+          <li class="li" style="width:30%;">
             <em class="cl-999">建筑面积：</em>
             {{uPlusHouseDetail&&uPlusHouseDetail.Square}}㎡
           </li>
-          <li class="li" style="width:100%;">
+          <li class="li" style="width:30%;">
             <em class="cl-999">业主姓名：</em>
             {{uPlusHouseDetail&&uPlusHouseDetail.OwnerInfoList[0].OwnerName}}
           </li>
-          <li class="li" style="width:100%;">
+          <!-- <li class="li" style="width:100%;">
             <em class="cl-999">物业地址：</em>
             {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
-          </li>
+          </li> -->
         </ul>
         <p style="margin-bottom:20px;margin-left:20px;">选择合同类型：</p>
         <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px;margin-left:20px;">
@@ -194,7 +194,7 @@ export default {
 
     overflow: hidden;
     li {
-      width: 300px !important;
+      // width: 300px !important;
       height: 50px;
       float: left;
       // margin: 20px 0 0 100px;
@@ -205,8 +205,8 @@ export default {
     }
   }
   .dialog-footer {
-    text-align: center;
-    padding: 50px 0 50px 0;
+    text-align: right;
+    padding: 50px 20px 50px 0;
   }
 }
 </style>

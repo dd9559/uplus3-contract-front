@@ -354,12 +354,11 @@
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
         <el-table-column
           :label="activeView===1?'收款时间':'付款时间'"
-          prop="createTime"
           :formatter="nullFormatter"
           min-width="90"
         >
           <template slot-scope="scope">
-            <span>{{scope.row.payStartTime|formatTime}}</span>
+            <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
         <el-table-column
