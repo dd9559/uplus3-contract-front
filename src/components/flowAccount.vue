@@ -74,7 +74,11 @@
         <!-- 转款流水 -->
         <el-tab-pane label="转款流水" name="seventh">
           <el-table :data="gridData7" border height="450">
-            <el-table-column prop="createByName" label="录入人"></el-table-column>
+            <el-table-column label="录入人">
+              <template slot-scope="scope">
+                {{scope.row.deptName+"-"+scope.row.createByName}}
+              </template>
+            </el-table-column>
             <el-table-column label="录入日期" width="90">
               <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
             </el-table-column>
