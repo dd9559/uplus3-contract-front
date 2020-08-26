@@ -1517,7 +1517,7 @@ export default {
             query: {
               contId: item.id,
               code: item.code,
-              address: item.propertyAddr,
+              // address: item.propertyAddr,
             },
           });
         } else {
