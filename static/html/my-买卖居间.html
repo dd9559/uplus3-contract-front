@@ -1273,7 +1273,7 @@
         if (window.location.host === 'localhost:8080') {
           if (addrList[i].indexOf('bundle') > -1) {
             // addrList[i]=host_other+'/'+addrList[i]
-            addrList[i] = './my-MM.js'
+            addrList[i] = './MY-MM.js'
           } else {
             addrList[i] = host_other + '/' + addrList[i]
           }
@@ -1289,7 +1289,7 @@
           document.head.appendChild(hm);
         } else {
           var hm = document.createElement("script");
-          addrList[i].includes('my-MM') && (hm.type = 'module');
+          addrList[i].includes('MY-MM') && (hm.type = 'module');
           hm.src = addrList[i];
           var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
           s.parentNode.insertBefore(hm, s);
