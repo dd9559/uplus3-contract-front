@@ -661,6 +661,7 @@ export default {
       ? parseInt(this.$route.query.contId)
       : "";
     this.layer.content[0] = Object.assign(this.layer.content[0], query);
+    this.layer.content[0].address = localStorage.getItem("contPropertyAddr");
     this.getDropdown();
     this.getMoneyType();
     this.getAdmin();

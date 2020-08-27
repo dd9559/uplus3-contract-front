@@ -1517,9 +1517,10 @@ export default {
             query: {
               contId: item.id,
               code: item.code,
-              address: item.propertyAddr,
+              // address: item.propertyAddr,
             },
           });
+          localStorage.setItem("contPropertyAddr",item.propertyAddr);
         } else {
           this.$message({
             message: "此合同已删除无法进行操作",
