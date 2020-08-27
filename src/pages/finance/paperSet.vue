@@ -191,10 +191,10 @@
         </el-table-column>
         <el-table-column prop="recordType.label" label="签约方式" min-width="80" :formatter="nullFormatter">
         </el-table-column>
-        <el-table-column prop="result.label" label="业绩状态" min-width="80" :formatter="nullFormatter">
+        <!-- <el-table-column prop="result.label" label="业绩状态" min-width="80" :formatter="nullFormatter">
         </el-table-column>
         <el-table-column prop="appealStatus.label" label="申诉状态" min-width="80" :formatter="nullFormatter">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
             <span v-if="scope.row.address&&scope.row.address.length===0">--</span>

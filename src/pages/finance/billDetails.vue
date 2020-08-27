@@ -28,7 +28,7 @@
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号">
+            <el-table-column align="center" label="合同编号"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.contCode}}</span>
               </template>
@@ -38,7 +38,12 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="物业地址 ">
+            <el-table-column align="center" label="收款单" v-if="billMsg.payCodeSK">
+              <template slot-scope="scope">
+                <span>{{billMsg.payCodeSK}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="物业地址"  v-if="!billMsg.payCodeSK">
               <template slot-scope="scope">
                 <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
@@ -468,7 +473,7 @@ export default {
     // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
     this.btnBill = this.$route.query.bill.toString() === "true" ? true : false;
     this.tabs.unshift(this.activeItem);
-    if (this.$route.query.detailType) {
+    if (this.$route.query.detailType && this.$route.query.tab != "付款信息") {
       this.tabs.push("转款信息");
     }
     this.getData();
@@ -714,6 +719,8 @@ export default {
       this.layer.show = false;
     },
     choseTab: function (item) {
+      // debugger
+      this.getCheckData();
       this.activeItem = item;
       if (item !== "审核信息") {
         this.checkBoxShow = false;
@@ -723,6 +730,7 @@ export default {
         this.getInOutPayInfoDetail();
       }
       this.checkBoxShow = true;
+
       /*target = this.$refs.checkBox.offsetTop
                 scrollHeight = document.querySelector('.view').parentNode.clientHeight
                 console.log(`target:${target}`)

@@ -339,6 +339,7 @@
       :dialogVisible="checkDialog"
       v-if="checkDialog"
       :id="id"
+      :recordType="recordType"
       :signedId="signedId"
       :isWT="isWT"
       @closeDialog="closeDialog"
@@ -409,6 +410,7 @@ export default {
           name: "导出",
         },
       },
+      recordType: null, // 签约方式
     };
   },
   created() {
@@ -668,6 +670,7 @@ export default {
     },
     //审核弹窗
     toCheck(val) {
+      this.recordType = val.recordType
       this.id = val.cid; //合同id
       this.signedId = val.id; //签后ID
       if (!val.contTypes) {

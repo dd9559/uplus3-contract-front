@@ -29,7 +29,7 @@
                             style="text-align:right;margin-left: 18px;"
                             class="form-label">
                             <el-date-picker 
-                                style="width:160px"
+                                style="width:166px"
                                 :disabled="type===2?true:false"
                                 v-model="contractForm.signDate"
                                 type="datetime"

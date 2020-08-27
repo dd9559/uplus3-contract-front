@@ -402,7 +402,7 @@
             class="bold">特别提示：请勿向居间方员工个人支付任何费用。</span></li>
         <li>6. 合同中"口”等需要选择的内容，请务必做岀明确的勾选，以划"√"方式选定您选择的事项；对于不选择的条款，应当划"／"，以示不选择。</li>
       </ul>
-      <p class="bold">如您有意见或建议，请您拨打宏辉服务热线：400 809 3139</p>
+      <p class="bold">如您有意见或建议，请您拨打玛雅房屋服务热线：400 093 1698</p>
     </div>
     <!-- 合同模板主体 -->
     <div class="page1">
@@ -414,30 +414,30 @@
       <div class="user_box">
         <ul>
           <li><span>卖方（甲方）：</span><span systemparam="ownerName" tag="input-auto"></span></li>
-          <li><span>证件号码：</span><span systemparam="ownerID" tag="input-auto"></span></li>
+          <li><span>身份证（营业执照）号码：</span><span systemparam="ownerID" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>甲方共有人：</span><span systemparam="ownerNames" tag="input-auto"></span></li>
-          <li><span>证件号码：</span><span systemparam="ownerIDs" tag="input-auto"></span></li>
+          <li><span>身份证号码：</span><span systemparam="ownerIDs" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>代表人/代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val5"></span>
           </li>
-          <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before"
+          <li><span>身份证号码：</span><span tag="input-auto" max="30" class="text-limit input-before"
               extendParam="val6"></span></li>
         </ul>
         <ul>
           <li><span>买方（乙方）：</span><span systemparam="guestName" tag="input-auto"></span></li>
-          <li><span>证件号码：</span><span systemparam="guestID" tag="input-auto"></span></li>
+          <li><span>身份证（营业执照）号码：</span><span systemparam="guestID" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>乙方共有人：</span><span systemparam="guestNames" tag="input-auto"></span></li>
-          <li><span>证件号码：</span><span systemparam="guestIDs" tag="input-auto"></span></li>
+          <li><span>身份证号码：</span><span systemparam="guestIDs" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>代表人/代理人：</span><span tag="input-auto" class="text-limit input-before" extendParam="val11"></span>
           </li>
-          <li><span>证件号码：</span><span tag="input-auto" max="30" class="text-limit input-before"
+          <li><span>身份证号码：</span><span tag="input-auto" max="30" class="text-limit input-before"
               extendParam="val12"></span></li>
         </ul>
         <ul>
@@ -1256,12 +1256,12 @@
       </div> -->
     </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mm_lz20200617.js"></script>
-<!-- <script>
+<script type="text/javascript" src="/js/bundle_mm_my20200617.js"></script> -->
+<script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -1270,10 +1270,10 @@
       var host_other = "http://sign2.jjw.com:28879"
       var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
       for (let i = 0; i < addrList.length; i++) {
-        if (window.location.host === '192.168.13.7:8080') {
+        if (window.location.host === 'localhost:8080') {
           if (addrList[i].indexOf('bundle') > -1) {
             // addrList[i]=host_other+'/'+addrList[i]
-            addrList[i] = './lz-MM.js'
+            addrList[i] = './my-MM.js'
           } else {
             addrList[i] = host_other + '/' + addrList[i]
           }
@@ -1289,7 +1289,7 @@
           document.head.appendChild(hm);
         } else {
           var hm = document.createElement("script");
-          addrList[i].includes('lz-MM') && (hm.type = 'module');
+          addrList[i].includes('my-MM') && (hm.type = 'module');
           hm.src = addrList[i];
           var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
           s.parentNode.insertBefore(hm, s);
@@ -1297,6 +1297,6 @@
       }
     }
   })();
-</script> -->
+</script>
 
 </html>

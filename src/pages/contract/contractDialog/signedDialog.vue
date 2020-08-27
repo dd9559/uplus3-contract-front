@@ -86,8 +86,8 @@
     <el-dialog title="确认驳回" class="rejectDialog" :visible.sync="rejectDialog" width="460px" :closeOnClickModal="$tool.closeOnClickModal">
       <div class="checkList">
         <el-checkbox-group v-model="checkList">
-          <el-checkbox label="合同主体"></el-checkbox>
-          <el-checkbox label="资料库"></el-checkbox>
+          <el-checkbox label="合同主体" :disabled="recordType.value === 10"></el-checkbox>
+          <el-checkbox label="资料库" :disabled="recordType.value === 10"></el-checkbox>
         </el-checkbox-group>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -145,6 +145,10 @@ export default {
     isWT:{
       type:Number,
       default:0
+    },
+    recordType:{
+      type: Object,
+      default: null
     }
   },
   data(){
@@ -328,7 +332,8 @@ export default {
             }
             this.subCheck(param)
           }else{//主合同选择是合同主体驳回还是资料库驳回
-            this.checkList=["合同主体", "资料库"]
+            this.checkList = this.recordType.value === 10? ["资料库"]:["合同主体", "资料库"]
+            // this.checkList=["合同主体", "资料库"]
             this.rejectDialog=true
           }
         }else{

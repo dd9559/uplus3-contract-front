@@ -59,12 +59,13 @@
             v-model="propForm.dealAgentId"
             placeholder="请选择"
             @change="empHandleAdd"
+            @clear="clearDep"
           >
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId+'-'+item.depName+'-'+item.depId"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -1237,7 +1238,7 @@ export default {
       }
     },
     empHandleAdd(val) {
-      let depVal = val.split("-");
+      let depVal = val.split("/");
       this.propForm.dealAgentStoreId = depVal[2];
       this.propForm.department = depVal[1];
       this.EmployeList = [];

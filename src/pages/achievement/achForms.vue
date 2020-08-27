@@ -5,7 +5,7 @@
         <div class="content">
           <el-form-item label="关键字">
             <el-tooltip class="item" effect="dark" content="合同编号/纸质合同编号/物业地址" placement="top">
-              <el-input v-model="keyword" size="small"  clearable placeholder="请输入"></el-input>
+              <el-input v-model="keyword" size="small" clearable placeholder="请输入"></el-input>
             </el-tooltip>
           </el-form-item>
           <el-form-item label="签约日期">
@@ -44,7 +44,8 @@
                 v-for="item in EmployeList"
                 :key="item.empId"
                 :label="item.name"
-                :value="item.empId+'-'+item.depName+'-'+item.depId"
+                :value="item.empId+'/'+item.depName+'/'+item.depId"
+                @clear="clearDep"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -219,7 +220,7 @@ export default {
         "9": "", //合同状态
         "64": "", //签约方式  线上线下
         "20": "", //在职状态
-        "6": ""
+        "6": "",
       },
       users: [],
       type: [],
@@ -228,9 +229,9 @@ export default {
       power: {
         "sign-set-log-query": {
           state: false,
-          name: "查询"
-        }
-      }
+          name: "查询",
+        },
+      },
     };
   },
   created() {
@@ -264,26 +265,26 @@ export default {
             : "",
         depId: this.department,
         empId: this.depUser,
-        tradeTypes: this.contType.length==0?'':this.contType.join(','),
+        tradeTypes: this.contType.length == 0 ? "" : this.contType.join(","),
         status: this.contStatus,
         recordType: this.signType,
         isJob: this.jobStatus.value,
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       };
-      if(param.empId){
-          param.empId=param.empId.split("-")[0];
+      if (param.empId) {
+        param.empId = param.empId.split("-")[0];
       }
       this.$ajax
         .get("/api/achievementSheet/getAchievementContractSumList", param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status == 200) {
             this.achList = res.data.list;
             this.total = res.data.total;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           // debugger
           this.$message.error(err);
         });
@@ -298,18 +299,18 @@ export default {
         recordType: this.signType,
         isJob: this.jobStatus.value,
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       };
       this.$ajax
         .get("/api/achievementSheet/getAchievementContractSumList", param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status == 200) {
             this.achList = res.data.list;
             this.total = res.data.total;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           // debugger
           this.$message.error(err);
         });
@@ -332,11 +333,11 @@ export default {
         recordType: this.signType,
         isJob: this.jobStatus.value,
         pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
       };
       this.excelCreate("/input/AchievementContractExcel", param);
     },
-    searchDep: function(payload) {
+    searchDep: function (payload) {
       /*this.DepList=payload.list
                 this.departmentName=payload.depName*/
     },
@@ -346,23 +347,23 @@ export default {
       this.departmentName = data.name;
       this.handleNodeClick(data);
     },
-    clearDep: function() {
+    clearDep: function () {
       this.depUser = "";
       this.department = "";
       this.departmentName = "";
       // this.EmployeList=[]
     },
-    test: function(val) {
+    test: function (val) {
       this.getEmployeByText(val);
     },
-    empHandle: function(val) {
+    empHandle: function (val) {
       console.log(this.depUser);
       if (val && this.EmployeInit !== this.employeTotal && this.depUser) {
         this.getEmployeByText();
       }
     },
     empHandleAdd(val) {
-      let depVal = val.split("-");
+      let depVal = val.split("/");
       this.department = depVal[2];
       this.departmentName = depVal[1];
       this.EmployeList = [];
@@ -390,10 +391,10 @@ export default {
     queryFn() {
       this.pageNum = 1;
       this.getAchList();
-    }
+    },
   },
   components: {
-    ScreeningTop
+    ScreeningTop,
   },
   computed: {
     version() {
@@ -401,8 +402,8 @@ export default {
     },
     userInfo() {
       return this.getUser.user;
-    }
-  }
+    },
+  },
 };
 </script>
 

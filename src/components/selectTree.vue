@@ -176,7 +176,6 @@ export default {
     },
 
     getList: function(keyword = "", type = "init", addType = 1) {
-      // debugger
       let url = "";
       if (addType == 1) {
         url = "/api/access/deps/tree";
@@ -199,8 +198,11 @@ export default {
       if (this.systemKey) {
         //如果是审核流程页面根据选择的体系请求树形数据
         url = "/api/access/systemtag/deps/tree";
-        addType != 1 && (url = '/api/access/systemtag/deps')
-        param.systemTag = this.systemKey;
+        // addType != 1 && (url = '/api/access/systemtag/deps')
+        // addType == 1 &&this.systemKey!='-100' && (url = '/api/access/systemtag/deps/tree')
+        if(this.systemKey!='-100'){
+          param.systemTag = this.systemKey;
+        }
       }
       this.$ajax.get(url, param).then(res => {
         res = res.data;

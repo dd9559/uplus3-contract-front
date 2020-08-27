@@ -806,6 +806,8 @@ export default {
       this.dep.name = user.depName;
       this.form.inObjId = user.empId;
       this.form.inObj = user.name;
+      this.EmployeList = [];
+      this.getEmploye(user.depId);
     }
   },
   methods: {
@@ -997,6 +999,8 @@ export default {
                     }*/
       } else {
         this.form.inObj = "";
+        this.EmployeList = [];
+        this.getEmploye(this.dep.id, 1, false);
         /*this.employePage=1
                     this.EmployeList=[]*/
       }
@@ -1124,7 +1128,8 @@ export default {
           } else {
             this.getNewData();
           }
-          // this.getEmploye(res.data.deptId)
+          // this.EmployeList = [];
+          // this.getEmploye(res.data.deptId);
           if (res.data.filePath) {
             this.files = [].concat(JSON.parse(res.data.filePath));
             this.getFiles();
@@ -1326,7 +1331,7 @@ export default {
             let total = parseFloat(this.form.amount);
             if (total !== parseFloat(payTotal.toFixed(2))) {
               this.$message({
-                message: "收款金额=支付总金额",
+                message: "收款金额需等于支付总金额，请重新核对金额",
               });
             } else if (
               parseFloat(checkTotal.toFixed(2)) !==
