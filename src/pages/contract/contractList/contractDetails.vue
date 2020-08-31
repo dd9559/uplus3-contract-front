@@ -1598,7 +1598,7 @@
           class="down-link down-link1"
           @click="downloadFj(1)"
           ref="fjDownloadLine"
-        >直接下载</a>
+        >直接打印</a>
         <a
           href="javascript:;"
           class="down-link down-link2"
@@ -2138,7 +2138,8 @@
       </div>
     </LayerPrint>
     <!-- </vue-easy-print> -->
-    <PdfPrint :url="downloadWordUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
   </div>
 </template>
 
@@ -2453,7 +2454,8 @@ export default {
       fjSrc: "",
       fjId: "",
       downloadStoreId: "",
-      haveUrl:false
+      haveUrl: false,
+      pdfUrl: "",
     };
   },
   created() {
@@ -3735,10 +3737,20 @@ export default {
     },
     downloadFj(val) {
       let type = this.$tool.get_suffix(this.fjSrc);
+      if (type != ".docx" && type != ".doc") {
+        this.$message({
+          message: "只支持word格式打印",
+          type: "warning",
+        });
+        return;
+      }
       if (val == 1) {
-        this.fjDialogShow = false;
-        this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
+        // this.fjDialogShow = false;
+        this.pdfUrl = this.downloadWordUrlNo;
+        this.haveUrl = true;
+        // this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
       } else {
+        this.pdfUrl = this.downloadWordUrl;
         this.haveUrl = true;
         // this.$refs.fjDownloadSg.href = "javascript:;";
         // if (type != ".docx" && type != ".doc") {
@@ -4673,5 +4685,15 @@ export default {
   margin-right: 80px;
   background-color: #409eff;
   color: #fff;
+}
+.printMaskLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  // display: none;
+  z-index: 8888;
 }
 </style>
