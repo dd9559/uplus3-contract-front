@@ -41,7 +41,7 @@
                     <span>转佣金额：</span>
                     <span>{{zy}}</span>
                   </p>
-                </div> -->
+                </div>-->
 
                 <div class="one_">
                   <p style="position:relative;">
@@ -1604,7 +1604,7 @@
           class="down-link down-link2"
           @click="downloadFj(2)"
           ref="fjDownloadSg"
-        >签章下载</a>
+        >签章打印</a>
         <!-- </el-button> -->
       </p>
     </el-dialog>
@@ -2138,6 +2138,7 @@
       </div>
     </LayerPrint>
     <!-- </vue-easy-print> -->
+    <PdfPrint :url="downloadWordUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
   </div>
 </template>
 
@@ -2154,6 +2155,7 @@ import dealReport from "../contractDialog/dealReport";
 import billDialog from "@/components/billDialog";
 import agencyContract from "../contractDialog/agencyContract";
 import axios from "axios";
+import PdfPrint from "@/components/PdfPrint";
 let loading = null;
 const marriage = [
   { id: 1, type: "已婚" },
@@ -2175,6 +2177,7 @@ export default {
     dealReport,
     billDialog,
     agencyContract,
+    PdfPrint,
   },
   data() {
     return {
@@ -2450,6 +2453,7 @@ export default {
       fjSrc: "",
       fjId: "",
       downloadStoreId: "",
+      haveUrl:false
     };
   },
   created() {
@@ -3093,9 +3097,9 @@ export default {
             //   //转成交的合同并且转佣
             //   this.getZYInfo(this.contractDetail.id);
             // } else {
-              this.commissionTotal =
-                Number(this.contractDetail.custCommission) +
-                Number(this.contractDetail.ownerCommission);
+            this.commissionTotal =
+              Number(this.contractDetail.custCommission) +
+              Number(this.contractDetail.ownerCommission);
             // }
           }
         })
@@ -3709,7 +3713,7 @@ export default {
     //合同附件列表
     getAttachment() {
       let param = {
-        contId: this.$route.query.id
+        contId: this.$route.query.id,
       };
       this.$ajax.get("/api/attachment/getdelAttachment", param).then((res) => {
         res = res.data;
@@ -3735,17 +3739,22 @@ export default {
         this.fjDialogShow = false;
         this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
       } else {
-        this.$refs.fjDownloadSg.href = "javascript:;";
-        if (type != ".docx" && type != ".doc") {
-          this.$message({
-            message: "签章下载只支持word格式",
-            type: "warning",
-          });
-        } else {
-          this.fjDialogShow = false;
-          this.$refs.fjDownloadSg.href = this.downloadWordUrl;
-        }
+        this.haveUrl = true;
+        // this.$refs.fjDownloadSg.href = "javascript:;";
+        // if (type != ".docx" && type != ".doc") {
+        //   this.$message({
+        //     message: "签章下载只支持word格式",
+        //     type: "warning",
+        //   });
+        // } else {
+        //   this.fjDialogShow = false;
+        //   this.$refs.fjDownloadSg.href = this.downloadWordUrl;
+        // }
       }
+    },
+    closePrint() {
+      this.pdfUrl = "";
+      this.haveUrl = false;
     },
     //获取应收列表
     getSupposedList() {

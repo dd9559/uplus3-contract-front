@@ -73,7 +73,7 @@
             <p class="item-title"><i>*</i>附件：</p>
             <ul class="ulData">
                 <li>
-                    <file-up class="upload-box" @getUrl="addSubject">
+                    <file-up class="upload-box" @getUrl="addSubject" :rules="['doc','docx']">
                         <i class="iconfont icon-shangchuan"></i>
                         <p>点击上传</p>
                     </file-up>
