@@ -21,7 +21,6 @@ let contractConfig = {
     //初始化
     contractConfig.errorArr = [];
     sessionStorage.setItem(storage,JSON.stringify([]));
-
     for (let item in obj) {
       // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
       if (contractConfig.errorArr.length > 0) {
@@ -52,6 +51,7 @@ let contractConfig = {
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
+        // debugger
         dropdown.classList.remove('BODERRED');
         let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
         if (dropdownVal.length === 0) {
