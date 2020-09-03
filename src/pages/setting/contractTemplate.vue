@@ -18,8 +18,7 @@
                 class="selectCity">
                 <el-select v-model="tixiid"
                     placeholder="请选择"
-                    value-key='label'
-                    @change='selSys'>
+                    value-key='label'>
                     <el-option v-for="(item) in tixi"
                         :key="item.key"
                         :label="item.value"
@@ -288,7 +287,7 @@ export default {
                     this.tixiid = res.data.data[0].key;
                 }
             });
-        this.getList();
+        // this.getList();
     },
     methods: {
         rowClick() {
@@ -312,9 +311,9 @@ export default {
                 this.mbanAddress = obj[0].param[obj[0].param.length - 1];
             }
         },
-        selSys() {
-            this.getList();
-        },
+        // selSys() {
+        //     this.getList();
+        // },
         popMsg(msg, callback) {
             this.$confirm(msg, "提示", {
                 confirmButtonText: "确定",

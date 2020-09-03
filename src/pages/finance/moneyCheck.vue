@@ -226,6 +226,17 @@
             ></el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>有/无合同：</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['792']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div
@@ -533,7 +544,7 @@ import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [FILTER, MIXINS, UPLOAD],
   components: {
-    checkPerson
+    checkPerson,
   },
   data() {
     return {
@@ -545,7 +556,7 @@ export default {
         code: "",
         flowType: 0,
         label: false,
-        current: false
+        current: false,
       },
       searchForm: {
         contType: [],
@@ -562,7 +573,8 @@ export default {
         timeRange: "",
         payObjType: "",
         cooperation: "",
-        recordType: ""
+        recordType: "",
+        hasCont: "", //有/无合同
       },
       list: [],
       dictionary: {
@@ -579,7 +591,8 @@ export default {
         "61": "",
         "62": "",
         "53": "",
-        "64": ""
+        "64": "",
+        "792": "",
       },
       drop_MoneyType: [],
       //分页
@@ -589,71 +602,71 @@ export default {
       //作废
       layer: {
         show: false,
-        content: []
+        content: [],
       },
       //权限配置
       power: {
         "sign-cw-rev-query": {
           state: false,
-          name: "查询"
+          name: "查询",
         },
         "sign-cw-rev-export": {
           state: false,
-          name: "导出"
+          name: "导出",
         },
         "sign-cw-rev-void": {
           state: false,
-          name: "作废"
+          name: "作废",
         },
         "sign-cw-pay-query": {
           state: false,
-          name: "查询"
+          name: "查询",
         },
         "sign-cw-pay-export": {
           state: false,
-          name: "导出"
+          name: "导出",
         },
         "sign-cw-pay-void": {
           state: false,
-          name: "作废"
+          name: "作废",
         },
         "sign-cw-debt-invoice": {
           state: false,
-          name: "开票"
+          name: "开票",
         },
         "sign-cw-bill-print": {
           state: false,
-          name: "打印"
+          name: "打印",
         },
         "sign-cw-debt-pay": {
           state: false,
-          name: "付款详情"
+          name: "付款详情",
         },
         "sign-cw-debt-rev": {
           state: false,
-          name: "收款详情"
+          name: "收款详情",
         },
         "sign-com-htdetail": {
           state: false,
-          name: "合同详情"
+          name: "合同详情",
         },
         "sign-com-house": {
           state: false,
-          name: "房源详情"
+          name: "房源详情",
         },
         "sign-com-cust": {
           state: false,
-          name: "客源详情"
+          name: "客源详情",
         },
         "sign-cw-rev-update": {
           state: false,
-          name: "编辑"
+          name: "编辑",
         },
         "sign-cw-rev-fsh": {
           state: false,
-          name: "反审核"
-        }
-      }
+          name: "反审核",
+        },
+      },
     };
   },
   created() {
@@ -681,16 +694,16 @@ export default {
         contType:
           session.query.contTypes.length > 0
             ? session.query.contTypes.split(",")
-            : []
+            : [],
       });
 
-      this.searchForm.contType = this.searchForm.contType.map(item => {
+      this.searchForm.contType = this.searchForm.contType.map((item) => {
         return Number(item);
       });
       if (session.query.startTime) {
         this.searchForm.timeRange = [
           session.query.startTime,
-          session.query.endTime
+          session.query.endTime,
         ];
         delete this.searchForm.startTime;
         delete this.searchForm.endTime;
@@ -699,11 +712,11 @@ export default {
         this.dep = Object.assign({}, this.dep, {
           id: this.searchForm.deptId,
           empId: this.searchForm.empId,
-          empName: this.searchForm.empName
+          empName: this.searchForm.empName,
         });
         this.EmployeList.unshift({
           empId: this.searchForm.empId,
-          name: this.searchForm.empName
+          name: this.searchForm.empName,
         });
         this.getEmploye(this.searchForm.deptId);
       }
@@ -741,16 +754,16 @@ export default {
         contType:
           session.query.contTypes.length > 0
             ? session.query.contTypes.split(",")
-            : []
+            : [],
       });
 
-      this.searchForm.contType = this.searchForm.contType.map(item => {
+      this.searchForm.contType = this.searchForm.contType.map((item) => {
         return Number(item);
       });
       if (session.query.startTime) {
         this.searchForm.timeRange = [
           session.query.startTime,
-          session.query.endTime
+          session.query.endTime,
         ];
         delete this.searchForm.startTime;
         delete this.searchForm.endTime;
@@ -759,11 +772,11 @@ export default {
         this.dep = Object.assign({}, this.dep, {
           id: this.searchForm.deptId,
           empId: this.searchForm.empId,
-          empName: this.searchForm.empName
+          empName: this.searchForm.empName,
         });
         this.EmployeList.unshift({
           empId: this.searchForm.empId,
-          name: this.searchForm.empName
+          name: this.searchForm.empName,
         });
         this.getEmploye(this.searchForm.deptId);
       }
@@ -780,7 +793,7 @@ export default {
             })*/
   },
   methods: {
-    getExcel: function() {
+    getExcel: function () {
       this.getData("search");
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (
@@ -801,7 +814,7 @@ export default {
       );
     },
     // 选择审核人
-    choseCheckPerson: function(row, type) {
+    choseCheckPerson: function (row, type) {
       this.checkPerson.flowType = this.activeView === 1 ? 1 : 0;
       this.checkPerson.code = row.payCode;
       this.checkPerson.state = true;
@@ -815,35 +828,35 @@ export default {
     /**
      * 获取付款失败信息
      */
-    getErrorMsg: function(data) {
+    getErrorMsg: function (data) {
       this.$ajax
         .get("/api/payInfo/selectRetMsg", { payId: data.id })
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.$message({
-              message: `付款失败：${res.data.msg}`
+              message: `付款失败：${res.data.msg}`,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$message({
             message: error,
-            type: "warning"
+            type: "warning",
           });
         });
     },
     /**
      * 列表横行滚动
      */
-    scroll: function() {
+    scroll: function () {
       // debugger
       let box = this.$refs.dataList.$refs.bodyWrapper;
       console.log(box.clientWidth, box.scrollWidth);
       box.scrollTo(box.scrollLeft + 30, 0);
       console.log(box.scrollLeft);
     },
-    reset: function() {
+    reset: function () {
       this.$tool.clearForm(this.searchForm);
       this.EmployeList = [];
     },
@@ -854,19 +867,19 @@ export default {
       this.currentPage = val;
       this.getData("pagination");
     },
-    initDepList: function(val) {
+    initDepList: function (val) {
       if (!val) {
         this.remoteMethod();
       }
     },
-    clearDep: function() {
+    clearDep: function () {
       this.searchForm.deptId = "";
       this.searchForm.depName = "";
       // this.EmployeList=[]
       this.searchForm.empId = "";
       this.clearSelect();
     },
-    searchDep: function(payload) {
+    searchDep: function (payload) {
       /*this.DepList=payload.list
                 this.searchForm.depName=payload.depName*/
       this.searchForm.empId = "";
@@ -878,7 +891,7 @@ export default {
       this.searchForm.empId = "";
       this.handleNodeClick(data);
     },
-    getData: function(type = "init") {
+    getData: function (type = "init") {
       if (type === "search") {
         this.currentPage = 1;
       }
@@ -906,7 +919,7 @@ export default {
               this.activeView === 1
                 ? "/payInfo/proceedsAuditList"
                 : "/payInfo/payMentAuditList",
-            query: Object.assign({}, param, { empName: this.dep.empName })
+            query: Object.assign({}, param, { empName: this.dep.empName }),
           })
         );
       }
@@ -917,18 +930,18 @@ export default {
           : "/payInfo/payMentAuditList";
       this.$ajax
         .get(`/api${url}`, param)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.list = res.data.page.list;
             this.total = res.data.page.total;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    toDetails: function(item) {
+    toDetails: function (item) {
       let powerMsg = this.power[
         this.activeView === 1 ? "sign-cw-debt-rev" : "sign-cw-debt-pay"
       ].state;
@@ -937,12 +950,12 @@ export default {
         this.$message({
           message: `${
             that.activeView === 1 ? "无收款详情查看权限" : "无付款详情查看权限"
-          }`
+          }`,
         });
         return;
       }
       let param = {
-        path: "billDetails"
+        path: "billDetails",
       };
       if (this.activeView === 1) {
         param.query = {
@@ -952,7 +965,7 @@ export default {
           power: this.getUser.user.empId === item.auditBy,
           print: this.power["sign-cw-bill-print"].state,
           bill: this.power["sign-cw-debt-invoice"].state,
-          listName: 2
+          listName: 2,
         };
         // this.setPath(this.getPath.concat({name: '收款详情'}))
       } else {
@@ -962,14 +975,14 @@ export default {
           power: this.getUser.user.empId === item.auditBy,
           print: this.power["sign-cw-bill-print"].state,
           bill: this.power["sign-cw-debt-invoice"].state,
-          listName: 3
+          listName: 3,
         };
         // this.setPath(this.getPath.concat({name: '付款详情'}))
       }
       this.$router.push(param);
     },
     //操作
-    cellOpera: function(item, type = "check") {
+    cellOpera: function (item, type = "check") {
       if (type === "check") {
         //抢单，判断当前登录人部门是否包含在设置的部门中，是则调用抢单接口
         if (this.getUser.user.empId === item.auditBy) {
@@ -978,17 +991,17 @@ export default {
           this.$ajax
             .get("/api/machine/getAuditAuth", {
               bizCode: item.payCode,
-              flowType: item.type === 1 || item.type === 8 ? 1 : 0
+              flowType: item.type === 1 || item.type === 8 ? 1 : 0,
             })
-            .then(res => {
+            .then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.toDetails(item);
               }
             })
-            .catch(error => {
+            .catch((error) => {
               this.$message({
-                message: `抢单失败`
+                message: `抢单失败`,
               });
             });
         }
@@ -1001,8 +1014,8 @@ export default {
               id: item.id,
               contId: item.contId,
               code: item.contCode,
-              isentrust: item.type === 8 ? 1 : 0
-            }
+              isentrust: item.type === 8 ? 1 : 0,
+            },
           });
         } else {
           this.$router.push({
@@ -1013,8 +1026,8 @@ export default {
               contId: item.contId,
               code: item.contCode,
               isentrust: item.type === 8 ? 1 : 0,
-              collect: 1
-            }
+              collect: 1,
+            },
           });
         }
       } else if (type === "deAudit") {
@@ -1027,8 +1040,8 @@ export default {
               contId: item.contId,
               code: item.contCode,
               isentrust: item.type === 8 ? 1 : 0,
-              deAudit: true
-            }
+              deAudit: true,
+            },
           });
           window.open(newPage.href, "_blank");
         } else {
@@ -1041,8 +1054,8 @@ export default {
               code: item.contCode,
               isentrust: item.type === 8 ? 1 : 0,
               deAudit: true,
-              collect: 3
-            }
+              collect: 3,
+            },
           });
           window.open(newPage.href, "_blank");
         }
@@ -1055,7 +1068,7 @@ export default {
      * 合同信息操作
      * @param type
      */
-    toLink: function(row, type) {
+    toLink: function (row, type) {
       let param = {
         contType: row.contTypeId,
         contId: row.contId,
@@ -1068,7 +1081,7 @@ export default {
             ? this.power["sign-com-house"]
             : type === "customer"
             ? this.power["sign-com-cust"]
-            : ""
+            : "",
       };
       this.msgOpera(param);
     },
@@ -1086,7 +1099,7 @@ export default {
               }
             },*/
     //作废
-    deleteBill: function() {
+    deleteBill: function () {
       let src =
         this.activeView === 1
           ? "/payInfo/updateProceedsIsDel"
@@ -1094,50 +1107,50 @@ export default {
       this.setLoading(true);
       this.$ajax
         .put(`/api${src}`, { payId: this.layer.content[0].id }, 2)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
             this.setLoading(false);
             this.getData();
             this.layer.show = false;
             this.$message({
-              message: "作废成功"
+              message: "作废成功",
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.setLoading(false);
           this.$message({
-            message: error
+            message: error,
           });
         });
     },
     // 获取收付款类
-    getMoneyTypes: function() {
-      this.$ajax.get("/api/payInfo/selectSmallMoneyType").then(res => {
+    getMoneyTypes: function () {
+      this.$ajax.get("/api/payInfo/selectSmallMoneyType").then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.drop_MoneyType = res.data;
         }
       });
     },
-    personChose: function() {
+    personChose: function () {
       this.checkPerson.state = false;
       /*this.$message({
                   message:`成功${this.checkPerson.type==='set'?'设置审核人':'转交审核人'}`
                 })*/
       this.getData();
-    }
+    },
   },
   computed: {
-    getView: function() {
+    getView: function () {
       if (this.activeView === 1) {
         return "收款ID";
       } else {
         return "付款ID";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
