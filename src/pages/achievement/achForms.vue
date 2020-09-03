@@ -273,7 +273,7 @@ export default {
         pageSize: this.pageSize,
       };
       if (param.empId) {
-        param.empId = param.empId.split("-")[0];
+        param.empId = param.empId.split("/")[0];
       }
       this.$ajax
         .get("/api/achievementSheet/getAchievementContractSumList", param)
