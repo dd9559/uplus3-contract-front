@@ -1,11 +1,7 @@
 import {contractConfig,toChineseNumber} from "./base.js"
 
 let Obj={
-    part3:['val52','val55','val55_add','val56','val58','val60','val60_add','val62','val62_add','val63','val65','val65_add','val66','val68','val68_add','val70'],
-    part5:['val93','val94'],
-    part6:['val102','val105','val105_add','val108','val108_add','val110'],
-    part7:['val116','val117','val118','val120'],
-    cn_arr:['val10','val14']
+    cn_arr:['val5','val10','val14']
   }
 
   let sub = {
@@ -40,7 +36,7 @@ let Obj={
   let mainBtn=document.querySelector('#submit');
   if(mainBtn){
     mainBtn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,'templateError1')
+      contractConfig.submit(e,sub,'templateError')
     })
   }else{
     let btn=document.createElement('span')
@@ -49,7 +45,7 @@ let Obj={
     btn.innerHTML='click'
     document.body.appendChild(btn)
     btn.addEventListener('click',function(e){
-      contractConfig.submit(e,sub,'templateError1')
+      contractConfig.submit(e,sub,'templateError')
     })
   }
 
@@ -168,7 +164,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // }
 for(let readonlyItem in msg){   //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
-  let readonlyArr = ['ownerName','ownerID','signDate','companyNames','ownerNames','ownerIDs','guestStoreName','custCommissionUpper','custCommission','ownerCommission','ownerCommissionUpper','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square','companyBanks']
+  let readonlyArr = ['ownerName','guestCardType','ownerID','signDate','companyNames','ownerNames','ownerIDs','guestStoreName','custCommissionUpper','custCommission','ownerCommission','ownerCommissionUpper','guestName','guestID','guestNames','guestIDs','propertyAddr','dealPrice','dealPriceUpper','square','companyBanks']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyItem==='signDate'){
