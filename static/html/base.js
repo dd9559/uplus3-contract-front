@@ -1,3 +1,5 @@
+
+
 let contractConfig = {
   /**
    * 校验配置对象
@@ -21,7 +23,6 @@ let contractConfig = {
     //初始化
     contractConfig.errorArr = [];
     sessionStorage.setItem(storage,JSON.stringify([]));
-
     for (let item in obj) {
       // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
       if (contractConfig.errorArr.length > 0) {
@@ -52,6 +53,7 @@ let contractConfig = {
         }
       } else if (item.includes('drapdown')) {
         let dropdown = document.querySelector(`*[inputmethod=${item.split('_')[1]}]`);
+        // debugger
         dropdown.classList.remove('BODERRED');
         let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
         if (dropdownVal.length === 0) {
@@ -78,6 +80,9 @@ let contractConfig = {
         contractConfig.submit(e, obj[item]['stateful'](),storage);
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
+        if(obj[item]==-1){
+          continue
+        }
         input.classList.remove('BODERRED');
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
@@ -388,3 +393,5 @@ export {
   contractConfig,
   toChineseNumber
 }
+
+

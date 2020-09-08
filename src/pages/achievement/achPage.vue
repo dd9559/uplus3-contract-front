@@ -1947,7 +1947,7 @@ export default {
 
     // 改变经纪人
     changeAssignors(val, index, type) {
-      debugger;
+      // debugger;
       if (val) {
         let param = {
           id: val
@@ -2409,13 +2409,18 @@ export default {
     },
     // 弹框通过操作
     passAch() {
-      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-        this.$message.error("房源至少保留一人");
-        return false;
-      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      // 2020年8月31日10:35:16 新增房源可一个不要
+      if (this.houseArr.length != 0 && this.clientArr.length == 0) {
         this.$message.error("客源至少保留一人");
         return false;
       }
+      // if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+      //   this.$message.error("房源至少保留一人");
+      //   return false;
+      // } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      //   this.$message.error("客源至少保留一人");
+      //   return false;
+      // }
       var arr1 = this.unique(this.houseArr);
       if (arr1.length < this.houseArr.length) {
         this.$message.error("房源方有重复角色存在，请核实");
@@ -2498,7 +2503,7 @@ export default {
             flag = false;
           }
         } else {
-          // 新版本 总监 副总 非必填
+          // 新版本 总监 副总 非必填 2020年8月31日10:35:16 新增店长非必填
           if (
             (this.isProd == 0 && this.cityId == 40) ||
             (this.isProd == 1 && this.cityId == 16)
@@ -2518,8 +2523,9 @@ export default {
               resultArr2[i].ratio === "" ||
               resultArr2[i].assignor === "" ||
               resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === ""
+              resultArr2[i].level3 === ""
+              // resultArr2[i].level3 === "" ||
+              // resultArr2[i].shopkeeper === ""
             ) {
               flag = false;
             }
@@ -2595,13 +2601,18 @@ export default {
         this.$message.error("请填写驳回信息！");
         return false;
       }
-      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-        this.$message.error("房源至少保留一人");
-        return false;
-      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      // 2020年8月31日10:35:16 新增房源可一个不要
+      if (this.houseArr.length != 0 && this.clientArr.length == 0) {
         this.$message.error("客源至少保留一人");
         return false;
       }
+      // if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+      //   this.$message.error("房源至少保留一人");
+      //   return false;
+      // } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      //   this.$message.error("客源至少保留一人");
+      //   return false;
+      // }
       var arr1 = this.unique(this.houseArr);
       if (arr1.length < this.houseArr.length) {
         this.$message.error("房源方有重复角色存在，请核实");
@@ -2683,7 +2694,7 @@ export default {
             flag = false;
           }
         } else {
-          // 新版本 总监 副总 非必填
+          // 新版本 总监 副总 非必填 2020年8月31日10:35:16 新增店长非必填
           if (
             (this.isProd == 0 && this.cityId == 40) ||
             (this.isProd == 1 && this.cityId == 16)
@@ -2703,8 +2714,9 @@ export default {
               resultArr2[i].ratio === "" ||
               resultArr2[i].assignor === "" ||
               resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === ""
+              resultArr2[i].level3 === ""
+              // resultArr2[i].level3 === "" ||
+              // resultArr2[i].shopkeeper === ""
             ) {
               flag = false;
             }
@@ -2763,13 +2775,18 @@ export default {
     },
     // 反审核，编辑的保存
     keepAch(type, status, editStr) {
-      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-        this.$message.error("房源至少保留一人");
-        return false;
-      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      // 2020年8月31日10:35:16 新增房源可一个不要
+      if (this.houseArr.length != 0 && this.clientArr.length == 0) {
         this.$message.error("客源至少保留一人");
         return false;
       }
+      // if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+      //   this.$message.error("房源至少保留一人");
+      //   return false;
+      // } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      //   this.$message.error("客源至少保留一人");
+      //   return false;
+      // }
       var arr1 = this.unique(this.houseArr);
       if (arr1.length < this.houseArr.length) {
         this.$message.error("房源方有重复角色存在，请核实");
@@ -2853,7 +2870,7 @@ export default {
             flag = false;
           }
         } else {
-          // 新版本 总监 副总 非必填
+          // 新版本 总监 副总 非必填 2020年8月31日10:35:16 新增店长非必填
           if (
             (this.isProd == 0 && this.cityId == 40) ||
             (this.isProd == 1 && this.cityId == 16)
@@ -2873,8 +2890,9 @@ export default {
               resultArr2[i].ratio === "" ||
               resultArr2[i].assignor === "" ||
               resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === ""
+              resultArr2[i].level3 === ""
+              // resultArr2[i].level3 === "" ||
+              // resultArr2[i].shopkeeper === ""
             ) {
               flag = false;
             }
@@ -2981,13 +2999,18 @@ export default {
     },
     // 业绩分成的保存
     keepAchDivide(type) {
-      if (this.houseArr.length == 0 && this.clientArr.length != 0) {
-        this.$message.error("房源至少保留一人");
-        return false;
-      } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      // 2020年8月31日10:35:16 新增房源可一个不要
+      if (this.houseArr.length != 0 && this.clientArr.length == 0) {
         this.$message.error("客源至少保留一人");
         return false;
       }
+      // if (this.houseArr.length == 0 && this.clientArr.length != 0) {
+      //   this.$message.error("房源至少保留一人");
+      //   return false;
+      // } else if (this.houseArr.length != 0 && this.clientArr.length == 0) {
+      //   this.$message.error("客源至少保留一人");
+      //   return false;
+      // }
       var arr1 = this.unique(this.houseArr);
       if (arr1.length < this.houseArr.length) {
         this.$message.error("房源方有重复角色存在，请核实");
@@ -3069,7 +3092,7 @@ export default {
             flag = false;
           }
         } else {
-          // 新版本 总监 副总 非必填
+          // 新版本 总监 副总 非必填 2020年8月31日10:35:16 新增店长非必填
           if (
             (this.isProd == 0 && this.cityId == 40) ||
             (this.isProd == 1 && this.cityId == 16)
@@ -3089,8 +3112,9 @@ export default {
               resultArr2[i].ratio === "" ||
               resultArr2[i].assignor === "" ||
               resultArr2[i].isJob === "" ||
-              resultArr2[i].level3 === "" ||
-              resultArr2[i].shopkeeper === ""
+              resultArr2[i].level3 === ""
+              // resultArr2[i].level3 === "" ||
+              // resultArr2[i].shopkeeper === ""
             ) {
               flag = false;
             }

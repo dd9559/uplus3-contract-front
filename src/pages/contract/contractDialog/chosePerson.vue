@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <el-dialog
-      title="选择签署人"
+      :title="closeTitle"
       :visible="getDialogVisible"
       width="900px"
       @close="submit('close')"
@@ -213,6 +213,10 @@ export default {
   name: 'chosePerson',
   mixins: [MIXINS],
   props: {
+    closeTitle: {
+      type: String,
+      default: '发起签署'
+    },
     dialogVisible: {
       type: Boolean,
       default: false
@@ -269,6 +273,8 @@ export default {
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
       },
+      checkPersonData: null,
+      checkPersonList: [],
       checkSignInfo: [],
       ownerMobileList: [], //业主手机号
       guestMobileList: [], //客户手机号
@@ -282,6 +288,20 @@ export default {
     this.getDictionary(); //字典
   },
   methods: {
+    // 获取合同模板的所有角色签章位置存在情况
+    getSignPosition() {
+      this.$ajax
+      .get("/api/app/contract/GetSignPosition", {contCode:this.contCode})
+      .then(res => {
+        res = res.data
+        if (res.status === 200) {
+          this.checkPersonData = res.data
+        }
+      })
+      .catch(error => {
+        this.$message(error);
+      });
+    },
     // 选择角色
     selectRole(val,index,parent) {
       let isSelectFlag = false;
@@ -311,35 +331,52 @@ export default {
         return
       }
       this.brokerList[index].roleName = "";
-      let param = {
-        contCode: this.contCode,
-        signerType: Number(val.key)
-      };
-      this.$ajax
-        .get("/api/app/contract/checkSignPosition", param)
-        .then(res => {
-          res = res.data;
-          if (res.data) {
-            let isSelectFlag = false;
-            isSelectFlag = this.brokerList.some(signItem => {
-              if (parent.id !== signItem.id) {
-                return signItem.roleName === val.key;
-              }
-              // return signItem.roleName === val.key;
-            });
-            if (isSelectFlag) {
-              this.brokerList[index].roleName = "";
-              this.$message("已选择过该角色，请重新选择");
-            } else {
-              this.brokerList[index].roleName = val.key;
-            }
-          } else {
-            this.$message("本合同不支持该角色签署");
+      // let param = {
+      //   contCode: this.contCode,
+      //   signerType: Number(val.key)
+      // };
+      if (this.checkPersonList.includes(val.key)) {
+        let isSelectFlag = false;
+        isSelectFlag = this.brokerList.some(signItem => {
+          if (parent.id !== signItem.id) {
+            return signItem.roleName === val.key;
           }
-        })
-        .catch(error => {
-          this.$message(error);
+          // return signItem.roleName === val.key;
         });
+        if (isSelectFlag) {
+          this.brokerList[index].roleName = "";
+          this.$message("已选择过该角色，请重新选择");
+        } else {
+          this.brokerList[index].roleName = val.key;
+        }
+      } else {
+        this.$message("本合同不支持该角色签署");
+      }
+      // this.$ajax
+      //   .get("/api/app/contract/checkSignPosition", param)
+      //   .then(res => {
+      //     res = res.data;
+      //     if (res.data) {
+      //       let isSelectFlag = false;
+      //       isSelectFlag = this.brokerList.some(signItem => {
+      //         if (parent.id !== signItem.id) {
+      //           return signItem.roleName === val.key;
+      //         }
+      //         // return signItem.roleName === val.key;
+      //       });
+      //       if (isSelectFlag) {
+      //         this.brokerList[index].roleName = "";
+      //         this.$message("已选择过该角色，请重新选择");
+      //       } else {
+      //         this.brokerList[index].roleName = val.key;
+      //       }
+      //     } else {
+      //       this.$message("本合同不支持该角色签署");
+      //     }
+      //   })
+      //   .catch(error => {
+      //     this.$message(error);
+      //   });
     },
     //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
     isIdCardNo(num) {
@@ -636,78 +673,52 @@ export default {
     },
     //选择
     chose(type, val) {
-      if (type === "owner" && this.isOverCheckSign) {
+      console.log(val,88888);
+      if (type === "owner" && this.checkPersonList.includes(0)) {
         let index = this.choseOwnerM.indexOf(val.mobile);
         if (index > -1) {
           this.choseOwnerM.splice(index, 1);
           this.choseOwner.splice(index, 1);
         } else {
-          this.isOverCheckSign = false
-          if (this.isCheckOwnerSign) {
-            this.isOverCheckSign = true
             this.choseOwnerM.push(val.mobile);
             this.choseOwner.push(val);
-          } else {
-            let param = {
-              contCode: this.contCode,
-              signerType: 0
-            };
-            this.$ajax
-            .get("/api/app/contract/checkSignPosition", param)
-            .then(res => {
-              res = res.data;
-              this.isOverCheckSign = true
-              if (res.data) {
-                this.isCheckOwnerSign = true
-                console.log(this.ownerList.length,this.ownerList);
-                this.choseOwnerM.push(val.mobile);
-                this.choseOwner.push(val);
-              } else {
-                this.$message("本合同不支持该角色签署");
-              }
-            })
-            .catch(error => {
-              this.isOverCheckSign = true
-              this.$message(error);
-            });
-          }
         }
-      } else if (type === "guest" && this.isOverCheckSign) {
+      } else if (type === "guest" &&  this.checkPersonList.includes(1)) {
         let index = this.choseGuestM.indexOf(val.mobile);
         if (index > -1) {
           this.choseGuestM.splice(index, 1);
           this.choseGuest.splice(index, 1);
         } else {
-          this.isOverCheckSign = false
-          if (this.isCheckGuestSign) {
-            this.isOverCheckSign = true
+          // this.isOverCheckSign = false
+          // if (this.isCheckGuestSign) {
+          //   this.isOverCheckSign = true 
             this.choseGuestM.push(val.mobile);
             this.choseGuest.push(val);
-          } else {
-            let param = {
-              contCode: this.contCode,
-              signerType: 1
-            };
-            this.$ajax
-            .get("/api/app/contract/checkSignPosition", param)
-            .then(res => {
-              res = res.data;
-              this.isOverCheckSign = true
-              if (res.data) {
-                this.isCheckGuestSign = true
-                this.choseGuestM.push(val.mobile);
-                this.choseGuest.push(val);
-              } else {
-                this.$message("本合同不支持该角色签署");
-              }
-            })
-            .catch(error => {
-              this.isOverCheckSign = true
-              this.$message(error);
-            });
-          }
+          // } else {
+          //   let param = {
+          //     contCode: this.contCode,
+          //     signerType: 1
+          //   };
+          //   this.$ajax
+          //   .get("/api/app/contract/checkSignPosition", param)
+          //   .then(res => {
+          //     res = res.data;
+          //     this.isOverCheckSign = true
+          //     if (res.data) {
+          //       this.isCheckGuestSign = true
+          //       this.choseGuestM.push(val.mobile);
+          //       this.choseGuest.push(val);
+          //     } else {
+          //       this.$message("本合同不支持该角色签署");
+          //     }
+          //   })
+          //   .catch(error => {
+          //     this.isOverCheckSign = true
+          //     this.$message(error);
+          //   });
+          // }
         }
-      } else  if (type === "broker"){
+      } else  if (type === "broker" && this.checkPersonList.includes(val.roleName)){
         let index = this.choseBrokerId.indexOf(val.id);
         if (index > -1) {
           this.choseBrokerId.splice(index, 1);
@@ -744,6 +755,8 @@ export default {
         //   this.choseBrokerM.push(val.mobile)
         //   this.choseBroker.push(val)
         // }
+      } else {
+        this.$message("本合同不支持该角色签署");
       }
     },
     //证件类型切换
@@ -899,133 +912,173 @@ export default {
         //     return
         //   }
         // }
-        if (this.choseOwner.length > 0 || this.choseGuest.length > 0) {
-        let param = {
-          contId: this.getChoseQuery.id,
-          type: 1, //签章
-          isentrust: 0, //非委托
-          storeId: this.getChoseQuery.storeId //门店id
-        };
-        let owner = [],
-          customer = [],
-          signer = [];
-        let localBrokerList = []
-        this.brokerList.length>0 && this.brokerList.forEach(item => {
-          if (this.choseBrokerId.includes(item.id)) {
-            localBrokerList.push(item)
-          }
-        })
-        console.log(localBrokerList,88888888);
-        localBrokerList.forEach(element => {
-          let item = {}
-          if (element.cardType == 3) {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              companyName: element.companyName,
-              lepName:element.lepName,
-              lepIdentity:element.lepIdentity,
-              signerType: element.roleName
-            };
-          } else {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: element.roleName
-            };
-          }
-          signer.push(item);
-        });
-        this.choseOwner.forEach(element => {
-          let item = {}
-          if (element.cardType == 3) {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              lepName:element.lepName,
-              lepIdentity:element.lepIdentity,
-              signerType: 0,
-            };
-          } else {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 0,
-            };
-          }
-          owner.push(item);
-        });
-        this.choseGuest.forEach(element => {
-          let item = {}
-          if (element.cardType == 3) {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              lepName:element.lepName,
-              lepIdentity:element.lepIdentity,
-              signerType: 1
-            };
-          }else {
-            item = {
-              name: element.name,
-              identityType: element.cardType,
-              identity: element.encryptionCode,
-              mobile: element.mobile,
-              email: element.email,
-              signerType: 1
-            };
-          }
-          customer.push(item);
-        });
-        if (this.verify()) return;
-        this.$emit("closeChose", { type: "choseLoading" });
-        param.owner = owner.length>0?owner:null;
-        param.customer = customer.length>0?customer:null;
-        param.signer = signer.length>0?signer:null;
-        this.$ajax
-          .postJSON("/api/app/contract/sendCont", param)
-          .then(res => {
-            res = res.data;
-            if (res.status === 200) {
-              this.$emit("closeChose", { type: "closeChose" });
-            } 
+        // if (this.choseOwner.length > 0 || this.choseGuest.length > 0) {
+          let selectRoleList = []
+          let param = {
+            contId: this.getChoseQuery.id,
+            type: 1, //签章
+            isentrust: 0, //非委托
+            storeId: this.getChoseQuery.storeId //门店id
+          };
+          let owner = [],
+            customer = [],
+            signer = [];
+          let localBrokerList = []
+          this.brokerList.length>0 && this.brokerList.forEach(item => {
+            if (this.choseBrokerId.includes(item.id)) {
+              localBrokerList.push(item)
+            }
           })
-          .catch(error => {
-            this.$emit("closeChose",false)
-            this.$message({
-              message:error,
-              type:"error"
+          console.log(localBrokerList,88888888);
+          localBrokerList.forEach(element => {
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                companyName: element.companyName,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: element.roleName
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: element.roleName
+              };
+            }
+            signer.push(item);
+            !selectRoleList.includes(element.roleName) && selectRoleList.push(element.roleName)
+          });
+          this.choseOwner.forEach(element => {
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 0,
+              };
+            } else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 0,
+              };
+            }
+            owner.push(item);
+            !selectRoleList.includes(0) && selectRoleList.push(0)
+          });
+          this.choseGuest.forEach(element => {
+            let item = {}
+            if (element.cardType == 3) {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                lepName:element.lepName,
+                lepIdentity:element.lepIdentity,
+                signerType: 1
+              };
+            }else {
+              item = {
+                name: element.name,
+                identityType: element.cardType,
+                identity: element.encryptionCode,
+                mobile: element.mobile,
+                email: element.email,
+                signerType: 1
+              };
+            }
+            customer.push(item);
+            !selectRoleList.includes(1) && selectRoleList.push(1)
+          });
+          console.log(selectRoleList,6565464565);
+          if (this.verify()) return;
+          for (let index = 0; index < this.checkPersonList.length; index++) {
+            const item = this.checkPersonList[index];
+            if (!selectRoleList.includes(item)) {
+              let msg = ''
+              switch (item) {
+                case 0:
+                  msg = '业主'
+                  break;
+                case 1:
+                  msg = '客户'
+                  break;
+                case 3:
+                  msg = '大区总监'
+                  break;
+                case 4:
+                  msg = '区域总监'
+                  break;
+                case 5:
+                  msg = '店长'
+                  break;
+                case 6:
+                  msg = '成交经济人'
+                  break;
+                default:
+                  break;
+              }
+              return this.$message(`本合同缺失签署角色${msg}，请重新添加`);
+            }
+          }
+          this.$emit("closeChose", { type: "choseLoading" });
+          param.owner = owner.length>0?owner:null;
+          param.customer = customer.length>0?customer:null;
+          param.signer = signer.length>0?signer:null;
+          this.$ajax
+            .postJSON("/api/app/contract/sendCont", param)
+            .then(res => {
+              res = res.data;
+              if (res.status === 200) {
+                this.$emit("closeChose", { type: "closeChose" });
+              } 
             })
-          });
-        } else {
-          this.$message({
-            message: "请选择客户或业主",
-            type: "warning"
-          });
-        }
+            .catch(error => {
+              this.$emit("closeChose",false)
+              this.$message({
+                message:error,
+                type:"error"
+              })
+            });
+        // } else {
+        //   this.$message({
+        //     message: "请选择客户或业主",
+        //     type: "warning"
+        //   });
+        // }
       } else {
         this.$emit("closeChose", false);
       }
     }
   },
   watch: {
+    checkPersonData(val) {
+      for (const key in val) {
+        if (val.hasOwnProperty(key)) {
+          val[key] && this.checkPersonList.push(Number(key))
+        }
+      }
+    },
     localChoseList(val) {
-      console.log(val,777777);
       this.choseBrokerId = []
       this.choseBroker = []
       let includeRoleList = []
@@ -1081,6 +1134,9 @@ export default {
   },
   computed: {
     getDialogVisible() {
+      if (this.dialogVisible) {
+        this.getSignPosition()
+      }
       return this.dialogVisible;
     },
     getOwnerList() {

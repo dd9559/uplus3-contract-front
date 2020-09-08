@@ -19,7 +19,9 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'MY-买卖居间.html'
+        // src:'WH-买卖.html'
+        // src:'WHJM-租赁.html'
+        src:'WHJM-居间.html'
       }
     },
     created(){
