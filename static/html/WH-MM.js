@@ -4,137 +4,282 @@ import {
 } from "./base.js"
 
 let Obj = {
-  cn_arr: ['val50', 'val60', 'val62', 'val64', 'val69', 'val70', 'val110', 'val112', 'val122', 'val20201','val20202']
+  cn_arr: ['val23','val32','val31','val34','val37','val39','val41','val43','val44','val49','val52']
 }
 
 let sub = {
-  'val22': null,
-  'val24': null,
-  'val26': null,
-  'val28': null,
-  'val30': null,
-  'val32': null,
-  'checkbox_houseUse': {                                                                         
+  'val1': null,
+  'val2': null,
+  'val7': null,
+  'val8': null,
+  'checkbox_one':null,
+  'val100':null,
+  'checkbox_two':{
+    state: true,
     stateful: function (index) {
-      return index === 4 ? {
-        'val34': null
+      return index === 6 ? {
+        'val13':null
+      }: null
+    }
+  },
+  'checkbox_three':{
+    state: true,
+    stateful: function (index) {
+      return index === 3 ? {
+        'val14':null
+      }: null
+    }
+  },
+  'checkbox_four':null,
+  'checkbox_five': {
+    state: true,
+    stateful: function (index) {
+      return index === 0 ? {
+          'val15':null,'val100':null,'val16':null,'val17':null,
+      } : index === 1 ? {
+        'val18': null,
+        'val19': null,
+        'val20': null,
+        'checkbox_six': null,
+        'val21': null
       } : null
     }
   },
-  'drapdown_val36': {
+  'checkbox_seven': {
+    state: true,
+    stateful: function (index) {
+      return index === 1 ? {
+        'val22': null,
+        'val23': null,
+        'val24': null,
+        'drapdown_val25': {
+          state: true,
+          stateful: function (val) {
+            let res = null;
+            switch (val) {
+              case '1':
+                break;
+              case '2':
+                res = {
+                  'checkbox_eight': null,
+                  'val26': null
+                };
+                break;
+              case '3':
+                res = {
+                  'checkbox_nine': null,
+                  'checkbox_ten': null,
+                  'checkbox_eleven': null,
+                };
+                break;
+            }
+            return res;
+          }
+        },
+      } : null
+    }
+  },
+  'checkbox_twelve': {                                                                         
+    stateful: function (index) {
+      return index === 1 ? {
+        'val27': null,
+        'drapdown_val28': {
+          state: true,
+          stateful: function (val) {
+            let res = null;
+            switch (val) {
+              case '1':
+                res = {
+                  'checkbox_threeteen': {
+                    state: true,
+                    stateful: function (val) {
+                      return val === 2 ? {
+                        'val29': null
+                      } : null
+                    }
+                  },
+                  'checkbox_fourteen': {
+                    state: true,
+                    stateful: function (val) {
+                      return val === 2 ? {
+                        'val30': null
+                      } : null
+                    }
+                  },
+                  'checkbox_fiveteen':null
+                }
+                break;
+              case '2':
+                break;
+            }
+            return res;
+          }
+        }
+      } : null
+    }
+  },
+  // 'drapdown_val28': {
+  //   stateful: function (val) {
+  //     let res = null;
+  //     switch (val) {
+  //       case '1':
+  //         res = {
+  //           'checkbox_threeteen': {
+  //             state: true,
+  //             stateful: function (val) {
+  //               return val === 2 ? {
+  //                 'val29': null
+  //               } : null
+  //             }
+  //           },
+  //           'checkbox_fourteen': {
+  //             state: true,
+  //             stateful: function (val) {
+  //               return val === 2 ? {
+  //                 'val30': null
+  //               } : null
+  //             }
+  //           },
+  //           'checkbox_fiveteen':null
+  //         }
+  //         break;
+  //       case '2':
+  //         break;
+  //     }
+  //     return res;
+  //   }
+  // },
+  'val31':null,
+  'checkbox_sixteen': {                                                                         
+    stateful: function (index) {
+      return index === 1 ? {
+        'val32': null
+      } : null
+    }
+  },
+  'checkbox_seventeen': {                                                                         
+    stateful: function (index) {
+      return index === 1 ? {
+        'checkbox_eightteen':null,
+        'val101': null,
+        'val33': null,
+        'val34': null,
+        'val35': null,
+        'checkbox_nineteen':null,
+      } : null
+    }
+  },
+  'checkbox_twenty': null,
+  'val36':null,
+  'checkbox_twenty-one': null,
+  'val37':null,
+  'val38':null,
+  'val39':null,
+  'checkbox_twenty-two': null,
+  'val40':null,
+  'val41':null,
+  'checkbox_twenty-three': null,
+  'val42':null,
+  'val43':null,
+  'checkbox_twenty-four': null,
+  'checkbox_twenty-five': null,
+  'val44':null,
+  'checkbox_twenty-six': {                                                                         
+    stateful: function (index) {
+      return index === 0 ? {
+        'val45': null,
+      } :index === 1?{
+        'val46': null,
+      } :index === 2?{
+        'val47': null,
+      }:null
+    }
+  },
+  'val48':null,
+  'checkbox_twenty-seven': {                                                                         
+    stateful: function (index) {
+      return index === 1 ? {
+        'val49': null,
+        'val50': null,
+        'checkbox_twenty-eight':null
+      }:null
+    }
+  },
+  'checkbox_twenty-nine': {                                                                         
+    stateful: function (index) {
+      return index === 0 ? {
+        'val51': null,
+      }:null
+    }
+  },
+    'checkbox_thirty': {                                                                         
+    stateful: function (index) {
+      return index === 1 ? {
+        'val52': null,
+        'val53': null,
+        'checkbox_thirty-two':null
+      }:null
+    }
+  },
+  'checkbox_thirty-three':null,
+  'checkbox_thirty-four':null,
+  'val54':null,
+    'checkbox_thirty-five': {                                                                         
+    stateful: function (index) {
+      return  index===0?{
+        'val55': null,
+      }:index === 1 ? {
+        'val56': null,
+        'val57': null,
+      } :index === 2?{
+        'val58': null,
+      } :index === 3?{
+        'val59': null,
+        'val60': null,
+      } :index === 4?{
+        'val61': null,
+      }: null
+    }
+  },
+  'val62':null,
+  'checkbox_thirty-six':null,
+  'checkbox_thirty-seven':null,
+  'checkbox_thirty-eight':null,
+  'checkbox_thirty-nine':null,
+  'drapdown_val63':null,
+  'drapdown_val64': {
     stateful: function (val) {
       let res = null;
       switch (val) {
         case '1':
+          res = {
+            'val65': null,
+          };
           break;
         case '2':
           res = {
-            'val38': null,
-            'val40': null
+            'val66': null,
           };
           break;
         case '3':
           res = {
-            'val42': null
+            'val67': null
           };
           break;
       }
       return res;
     }
   },
-  'checkbox_houseStatus': null,
-  'val46': null,
-  'time_val48': null,
-  'val50': null,
-  'val52': null,
-  'val54': null,
-  'checkbox_payment': {
+  'drapdown_val68':null,
+  'checkbox_forty': null,
+  'drapdown_val70':null,
+    'checkbox_forty-two': {                                                                         
     stateful: function (index) {
       return index === 0 ? {
-        'time_val56': null
-      } : {
-        'time_val58': null,
-        'val60': null,
-        'time_val61': null,
-        'checkbox_loan': null,
-        'val62': null,
-      }
+        'val71': null,
+      }:null
     }
   },
-  'val64': null,
-  'time_val66': null,
-  'val68': null,
-  'val69': null,
-  'val70': null,
-  'time_val72': null,
-  'val74': null,
-  'val75': null,
-  'val76': null,
-  'val77': null,
-  'val80': null,
-  'checkbox_negotiation': {
-    state: true,
-    stateful: function (index) {
-      return index === 0 ? {
-        'checkbox_rights': {
-          state: true,
-          stateful: function (val) {
-            return val === 5 ? {
-              'val82': null
-            } : null
-          }
-        }
-      } : index === 1 ? {
-        'checkbox_debt': null
-      } : null          
-    }
-  },
-  // 'val104': null,
-  // 'checkbox_wtloan': {
-  //   stateful: function (index) {
-  //     return index === 0 ? null : {
-  //       'val106': null
-  //     }
-  //   }
-  // },
-  // 'val108': null,
-  // 'val110': null,            
-  // 'val112': null,
-  // 'val114': null,
-  // 'val116': null,
-  // 'val118': null,
-  // 'val122': null,
-  // 'val123': null,
-  // 'val124': null,
-  // 'checkbox_manType': null,
-  // 'checkbox_zhengjianType': {
-  //   state: true,
-  //   stateful: function (index) {
-  //     let res = {};
-  //     switch (index) {
-  //       case 0:
-  //         res = {
-  //           'val2011': null
-  //         };
-  //         break;
-  //       case 1:
-  //         res = {
-  //           'val2022': null
-  //         };
-  //         break;
-  //       case 2:
-  //         res = {
-  //           'val2033': null
-  //         };
-  //         break;
-  //     }
-  //     return res;
-  //   }
-  // },
-  // 'checkbox_wupin': null,
-  // 'val125': null,
-  // 'val20201': null,
-
 }
 
 //给按钮添加点击事件
@@ -170,18 +315,36 @@ Dropdown.create({
   classN: 'dropdown-item',
   callBack: function (bindElem, dateObj) {
     if (bindElem.tagName.toLowerCase() === 'input') {
+      // debugger
       bindElem.value = dateObj.value
       bindElem.setAttribute('value', bindElem.value)
       let obj = {
-        'val36': {
-          1: ['val38', 'val40', 'val42'],
-          2: ['val42'],
-          3: ['val38', 'val40'],
-          'init': ['val38', 'val40', 'val42']
+        'val25': {
+          2: ['checkbox_nine','checkbox_ten','checkbox_eleven'],
+          3: ['checkbox_eight', 'val26'],
+          'init': ['checkbox_eight', 'val26', 'checkbox_nine','checkbox_ten','checkbox_eleven']
         },
+        'val28': {
+          2: ['checkbox_threeteen','val29','checkbox_fourteen','val30','checkbox_fiveteen'],
+          'init': ['checkbox_threeteen','val29','checkbox_fourteen','val30','checkbox_fiveteen']
+        },
+        'val64':{
+          1:['val66','val67'],
+          2:['val65','val67'],
+          3:['val65','val66'],
+          'init': ['val65','val66','val67']
+        }
       }
       let attr = bindElem.getAttribute('extendParam')
-      if (obj[attr]) {
+      if (obj[attr] && attr == 'val25') {
+        contractConfig.initForm(obj[attr]['init'], 0)
+        contractConfig.initForm(obj[attr][Number(dateObj.value)], 1)
+      }
+      if (obj[attr] && attr == 'val28') {
+        contractConfig.initForm(obj[attr]['init'], 0)
+        contractConfig.initForm(obj[attr][Number(dateObj.value)], 1)
+      }
+      if (obj[attr] && attr == 'val64') {
         contractConfig.initForm(obj[attr]['init'], 0)
         contractConfig.initForm(obj[attr][Number(dateObj.value)], 1)
       }
@@ -208,37 +371,37 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-//   let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "ee2353-344，ii397-4839",
-  guestName: "然迪生",
-  guestNames: "胜负少，发士夫",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "ee2353-344，ii397-4839",
-  ownerName: "熊先",
-  ownerNames: "胜多少，发士夫",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "是的噶几开会说",
-  dealPrice: 1000,
-  dealPriceUpper: '壹仟',
-  square: 160,
-  guestStoreRegisterCode: '213',
-  signDate: 1592465819508,
-  organizationCode: "8888888888"
-}
+  let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "ee2353-344，ii397-4839",
+//   guestName: "然迪生",
+//   guestNames: "胜负少，发士夫",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "ee2353-344，ii397-4839",
+//   ownerName: "熊先",
+//   ownerNames: "胜多少，发士夫",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "是的噶几开会说",
+//   dealPrice: 1000,
+//   dealPriceUpper: '壹仟',
+//   square: 160,
+//   guestStoreRegisterCode: '213',
+//   signDate: 1592465819508,
+//   organizationCode: "8888888888"
+// }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
@@ -268,31 +431,48 @@ for (let readonlyItem in msg) {
 contractConfig.checkboxListener(function () {}, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
-  if (attr === 'houseUse') {
+  if (attr === 'two') {
     let checkIO = {
-      4: ['val34'],
+      6: ['val13'],
     }
     boxArray.forEach((item, i) => {
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
-          if (i === 4) {
-            contractConfig.initForm(checkIO[4], 0)
-          } else {
-            contractConfig.initForm(checkIO[4], 1)
+          if (i === 6) {
+            contractConfig.initForm(checkIO[6], 0)
+          }else{
+            contractConfig.initForm(checkIO[6], 1)
           }
         } else {
-          contractConfig.initForm(checkIO[4], 1)
+          contractConfig.initForm(checkIO[6], 1)
         }
       }
     })
-  } else if (attr === 'payment') {
+  }
+  if (attr === 'three') {
     let checkIO = {
-      0: ['val56'],
-      1: ['val58', 'val60', 'val61', 'checkbox_loan', 'val62'],
+      3: ['val14'],
     }
     boxArray.forEach((item, i) => {
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 3) {
+            contractConfig.initForm(checkIO[3], 0)
+          }else{
+            contractConfig.initForm(checkIO[3], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[3], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'five') {
+    let checkIO = {
+      0: ['val15','val100','val16','val17'],
+      1: ['val18','val19','val20','checkbox_six','val21'],
+    }
+    boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
           contractConfig.initForm(checkIO[i], 0)
@@ -301,57 +481,204 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
           } else {
             contractConfig.initForm(checkIO[0], 1)
           }
-        } else {
+        }else{
           contractConfig.initForm(checkIO[i], 1)
         }
       }
     })
-  } else if (attr === 'negotiation') {
+  } 
+  if (attr === 'seven') {
     let checkIO = {
-      0: ['checkbox_rights', 'val82'],
-      1: ['checkbox_debt'],
+      1: ['val22','val23','val24','val25','checkbox_eight','val26','checkbox_nine','checkbox_ten','checkbox_eleven'],
     }
     boxArray.forEach((item, i) => {
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
-      if (item === obj.currentTarget) {
-        if (!item.querySelector('p').getAttribute('checked')) {
-          contractConfig.initForm(checkIO[i], 1)
-        } else {
-          contractConfig.initForm(checkIO[i], 0)
-        }
-      }
-    })
-  } else if (attr === 'zhengjianType') {
-    let checkIO = {
-      0: ['val2011'],
-      1: ['val2022'],
-      2: ['val2033'],
-    }
-    boxArray.forEach((item, i) => {
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
-      if (item === obj.currentTarget) {
-        if (!item.querySelector('p').getAttribute('checked')) {
-          contractConfig.initForm(checkIO[i], 1)
-        } else {
-          contractConfig.initForm(checkIO[i], 0)
-        }
-      }
-    })
-  } else if (attr === 'rights') {
-    let checkIO = {
-      5: ['val82'],
-    }
-    boxArray.forEach((item, i) => {
-      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
-          if (i === 5) {
-            contractConfig.initForm(checkIO[5], 0)
-          } else {
-            contractConfig.initForm(checkIO[5], 1)
+          if (i === 0) {
+            contractConfig.initForm(checkIO[1], 1)
+          }else{
+            contractConfig.initForm(checkIO[1], 0)
+          }
+        }else{
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'twelve') {
+    let checkIO = {
+      1: ['val27','val28','checkbox_threeteen','val29','checkbox_fourteen','checkbox_fiveteen'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          }else{
+            contractConfig.initForm(checkIO[1], 1)
           }
         } else {
-          contractConfig.initForm(checkIO[5], 1)
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'sixteen') {
+    let checkIO = {
+      1: ['val32'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          }else{
+            contractConfig.initForm(checkIO[1], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'seventeen') {
+    let checkIO = {
+      1: ['checkbox_eightteen','val101','val33','val34','val35'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          }else{
+            contractConfig.initForm(checkIO[1], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'twenty-six') {
+    let checkIO = {
+      0: ['val45'],
+      1: ['val46'],
+      2: ['val47'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          contractConfig.initForm(checkIO[i], 0)
+          if (i === 0) {
+            contractConfig.initForm(checkIO[1].concat(checkIO[2]), 1)
+          }else if(i === 1){
+            contractConfig.initForm(checkIO[0].concat(checkIO[2]), 1)
+          }else {
+            contractConfig.initForm(checkIO[0].concat(checkIO[1]), 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[i], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'twenty-seven') {
+    let checkIO = {
+      1: ['val49','val50','checkbox_twenty-eight'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          }else{
+            contractConfig.initForm(checkIO[1], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'twenty-nine') {
+    let checkIO = {
+      0: ['val51'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 0) {
+            contractConfig.initForm(checkIO[0], 0)
+          }else{
+            contractConfig.initForm(checkIO[0], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[0], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'thirty') {
+    let checkIO = {
+      1: ['val52','val53','checkbox_thirty-two'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          }else{
+            contractConfig.initForm(checkIO[1], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[1], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'thirty-five') {
+    let checkIO = {
+      0: ['val55'],
+      1: ['val56','val57'],
+      2: ['val58'],
+      3: ['val59','val60'],
+      4: ['val61'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          contractConfig.initForm(checkIO[i], 0)
+          if (i === 0) {
+            contractConfig.initForm(checkIO[1].concat(checkIO[2].concat(checkIO[3]).concat(checkIO[4])), 1)
+          }else if(i === 1){
+            contractConfig.initForm(checkIO[0].concat(checkIO[2].concat(checkIO[3]).concat(checkIO[4])), 1)
+          }else if (i === 2) {
+            contractConfig.initForm(checkIO[0].concat(checkIO[1]).concat(checkIO[3].concat(checkIO[4])), 1)
+          }else if(i===3){
+            contractConfig.initForm(checkIO[0].concat(checkIO[1]).concat(checkIO[2]).concat(checkIO[4]), 1)
+          }else{
+            contractConfig.initForm(checkIO[0].concat(checkIO[1]).concat(checkIO[2]).concat(checkIO[3]), 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[i], 1)
+        }
+      }
+    })
+  }
+  if (attr === 'forty-two') {
+    let checkIO = {
+      0: ['val71'],
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 0) {
+            contractConfig.initForm(checkIO[0], 0)
+          }else{
+            contractConfig.initForm(checkIO[0], 1)
+          }
+        } else {
+          contractConfig.initForm(checkIO[0], 1)
         }
       }
     })

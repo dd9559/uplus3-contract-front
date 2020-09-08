@@ -360,7 +360,7 @@
               <span>取消</span>
           </p>
       </div>
-      <div class="page_one page1">
+      <div class="page_one">
         <div class="title fontBold"><p>购房意向书</p></div>
         <div class="code fontBold"><span>合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px"/></span></div>
         <div class="cw_message">
@@ -450,7 +450,7 @@
           <div class="title fontBold"><p>房屋出售人承诺函</p></div>
           <p>出售方已准确理解且同意上述条款并签署书面承诺如下：</p>
           <p>
-            1. 出售方愿意将坐落于<span systemparam="propertyAddr" tag="input-auto"></span>的房产按照上述约定条件出售给购买方<span systemparam="guestName" tag="input-auto"></span>（身份证码:<span systemparam="guestCardType" tag="input-auto"></span>），并将两证（或购房合同、权属证明等权利凭证）保管于受托人处。
+            1. 出售方愿意将坐落于<span systemparam="propertyAddr" tag="input-auto"></span>的房产按照上述约定条件出售给购买方<span systemparam="guestName" tag="input-auto"></span>（身份证码:<span systemparam="guestID" tag="input-auto"></span>），并将两证（或购房合同、权属证明等权利凭证）保管于受托人处。
           </p>
           <p>
             2. 出售方同意于签订本承诺函后的<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val13"></span>天内至受托人处与购买方签订《存量房买卖合同》。如有反悔不出售该房屋或不按上述约定条件出售给买方或不按约定签订《存量房买卖合同》等行为，致使无法完成签订房屋买卖合同之情形，则视为出售方违约，除双倍返还购买方已交付的购房定金（若有）外，还应向受托方支付违约罚金，该违约罚金的金额等于购买方已交付的意向金（定金）计（小写<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val14"></span>元整（大写）<span tag="input-auto" systemParam="true" extendParam="val14_add"></span>。
@@ -471,12 +471,12 @@
       </div>
     </div>
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_WH_YX_JM20200828-hb.js"></script> -->
-<script>
+<script type="text/javascript" src="/js/bundle_WH_YX_JM20200828.js"></script>
+<!-- <script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -512,5 +512,5 @@
       }
     }
   })();
-</script>
+</script> -->
 </html>
