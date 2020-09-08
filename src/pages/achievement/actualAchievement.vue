@@ -1251,7 +1251,7 @@ export default {
       this.loading = true;
       let _that = this;
       if (ajaxParam.dealAgentId) {
-        ajaxParam.dealAgentId = ajaxParam.dealAgentId.split("-")[0];
+        ajaxParam.dealAgentId = ajaxParam.dealAgentId.split("/")[0];
       }
       this.$ajax
         .get("/api/achievement/selectAchievementList", ajaxParam)

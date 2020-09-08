@@ -257,6 +257,17 @@
             ></el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>有/无合同：</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
+            <el-option
+              v-for="item in dictionary['792']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" ref="box">
@@ -758,6 +769,7 @@ export default {
         cooperation: "",
         recordType: "",
         payway: "", //收款方式
+        hasCont:""  //有/无合同
       },
       tableTotal: {},
       list: [],
@@ -774,6 +786,7 @@ export default {
         "53": "",
         "64": "",
         "69": "",
+        "792": "",
       },
       drop_MoneyType: [],
       //分页

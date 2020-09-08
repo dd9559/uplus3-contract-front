@@ -127,6 +127,19 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="有/无合同："
+          prop="state">
+          <el-select
+            v-model="propForm.hasCont"
+            class="w180">
+            <el-option
+              v-for="item in dictionary['792']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"></el-option>
+          </el-select>
+        </el-form-item>
         <!-- <el-form-item
           label="业绩状态"
           prop="state">
@@ -408,6 +421,7 @@
           payway: '',
           achievementExamineState:'',
           appealStatus:'',
+          hasCont:''
         },
         // 筛选下拉
         rules: {
@@ -432,6 +446,7 @@
           '69': '',
           '63': '',
           '54': '',
+          '792': '',
         },
         dictionaryData: [],
         // 作废弹层输入框

@@ -8,49 +8,41 @@ let Obj = {
 }
 
 let sub = {
-  // 'val1': null,
-  // 'val2': null,
-  // 'val7': null,
-  // 'val8': null,
-  // 'checkbox_one':null,
-  // 'val102':null,
-  // 'checkbox_two':{
-  //   state: true,
-  //   stateful: function (index) {
-  //     return index === 6 ? {
-  //       'val13':null
-  //     }: null
-  //   }
-  // },
-  // 'checkbox_three':{
-  //   state: true,
-  //   stateful: function (index) {
-  //     return index === 3 ? {
-  //       'val14':null
-  //     }: null
-  //   }
-  // },
-  // 'checkbox_four':null,
+  'val1': null,
+  'val2': null,
+  'val7': null,
+  'val8': null,
+  'checkbox_one':null,
+  'val100':null,
+  'checkbox_two':{
+    state: true,
+    stateful: function (index) {
+      return index === 6 ? {
+        'val13':null
+      }: null
+    }
+  },
+  'checkbox_three':{
+    state: true,
+    stateful: function (index) {
+      return index === 3 ? {
+        'val14':null
+      }: null
+    }
+  },
+  'checkbox_four':null,
   'checkbox_five': {
     state: true,
     stateful: function (index) {
-      let _18=document.querySelector(`span[extendParam=val18`)
-      let _19=document.querySelector(`span[extendParam=val19`)
-      let obj = {}
-      if(_18.innerHTML!=''){
-        obj = {'val18':null}
-      }else if (_19.innerHTML!=''){
-        obj = {'val19':null}
-      } else {
-        obj = {'val18':null,'val19':null}
-      }
-        return index === 0 ? {
-          'val15':null,'val17':null,
-      } : index === 1 ? Object.assign(obj,{
+      return index === 0 ? {
+          'val15':null,'val100':null,'val16':null,'val17':null,
+      } : index === 1 ? {
+        'val18': null,
+        'val19': null,
         'val20': null,
         'checkbox_six': null,
         'val21': null
-      }): null
+      } : null
     }
   },
   'checkbox_seven': {
@@ -126,6 +118,37 @@ let sub = {
       } : null
     }
   },
+  // 'drapdown_val28': {
+  //   stateful: function (val) {
+  //     let res = null;
+  //     switch (val) {
+  //       case '1':
+  //         res = {
+  //           'checkbox_threeteen': {
+  //             state: true,
+  //             stateful: function (val) {
+  //               return val === 2 ? {
+  //                 'val29': null
+  //               } : null
+  //             }
+  //           },
+  //           'checkbox_fourteen': {
+  //             state: true,
+  //             stateful: function (val) {
+  //               return val === 2 ? {
+  //                 'val30': null
+  //               } : null
+  //             }
+  //           },
+  //           'checkbox_fiveteen':null
+  //         }
+  //         break;
+  //       case '2':
+  //         break;
+  //     }
+  //     return res;
+  //   }
+  // },
   'val31':null,
   'checkbox_sixteen': {                                                                         
     stateful: function (index) {
@@ -357,7 +380,7 @@ textLong.forEach(function (item) {
 //   guestID: "132",
 //   guestIDs: "ee2353-344，ii397-4839",
 //   guestName: "然迪生",
-//   guestNames: "",
+//   guestNames: "胜负少，发士夫",
 //   guestTel: "13011111111",
 //   guestTels: "",
 //   id: 3354,
@@ -367,7 +390,7 @@ textLong.forEach(function (item) {
 //   ownerID: "123",
 //   ownerIDs: "ee2353-344，ii397-4839",
 //   ownerName: "熊先",
-//   ownerNames: "",
+//   ownerNames: "胜多少，发士夫",
 //   ownerTel: "18888888888",
 //   ownerTels: "",
 //   propertyAddr: "a市b区c",
@@ -382,7 +405,7 @@ textLong.forEach(function (item) {
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code', 'ownerTel','ownerCardType', 'organizationCode','guestCardTypes','guestIDs', 'ownerTels','ownerCardTypes','guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName','guestCardType', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
+  let readonlyArr = ['code', 'ownerTel', 'organizationCode', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
   if (onlyReadDom.length > 0) {
     onlyReadDom.forEach((element, index) => {
       if (readonlyArr.includes(readonlyItem)) {
@@ -395,20 +418,7 @@ for (let readonlyItem in msg) {
           let D = time.getDate();
           let signDate = `${y}年${M}月${D}日`
           element.innerHTML = signDate
-        }else if(readonlyItem==='ownerNames'){
-          if(msg[readonlyItem]!=''){
-            element.innerHTML = msg[readonlyItem]
-          }else{
-            delete sub['val2']
-          }
-        }else if(readonlyItem==='guestNames'){
-          if(msg[readonlyItem]!=''){
-            element.innerHTML = msg[readonlyItem]
-          }else{
-            delete sub['val8']
-          }
-        }
-         else {
+        } else {
           element.innerHTML = msg[readonlyItem]
         }
         element.classList.remove('input-before')
@@ -460,7 +470,7 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
   if (attr === 'five') {
     let checkIO = {
       0: ['val15','val100','val16','val17'],
-      1: ['val20','checkbox_six','val21'],
+      1: ['val18','val19','val20','checkbox_six','val21'],
     }
     boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
@@ -677,39 +687,6 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
 
 //输入自适应
 contractConfig.inputListener(function (ev, tip) {
-  if(tip.target.getAttribute('extendParam')=='val18'){
-    document.querySelector(`span[extendParam=val19]`).innerHTML=''
-    document.querySelector(`span[extendParam=val19]`).classList.add('input-before')
-    sub.checkbox_five={
-      state: true,
-      stateful: function (index) {
-        return index === 0 ? {
-            'val15':null,'val100':null,'val16':null,'val17':null,
-        } : index === 1 ? {
-          'val18':null,
-          'val20': null,
-          'checkbox_six': null,
-          'val21': null
-        } : null
-      }
-    }
-  }else if(tip.target.getAttribute('extendParam')=='val19'){
-    document.querySelector(`span[extendParam=val18]`).innerHTML=''
-    document.querySelector(`span[extendParam=val18]`).classList.add('input-before')
-    sub.checkbox_five={
-      state: true,
-      stateful: function (index) {
-        return index === 0 ? {
-            'val15':null,'val100':null,'val16':null,'val17':null,
-        } : index === 1 ? {
-          'val19':null,
-          'val20': null,
-          'checkbox_six': null,
-          'val21': null
-        } : null
-      }
-    }
-  }
   let max = tip.target.getAttribute('max')
   let textArea = document.getElementById('inputArea')
   if (max) { //监听max属性，判断文本框是有有输入长度限制

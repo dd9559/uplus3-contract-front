@@ -83,8 +83,9 @@
               <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
             </el-table-column>
             <el-table-column prop="objType" label="业务对象"></el-table-column>
-            <el-table-column prop="outTypeName" label="转出合同/款类"></el-table-column>
-            <el-table-column prop="thisTypeName" label="转入合同/款类"></el-table-column>
+            <el-table-column prop="outTypeName" label="转出合同/款类金额"></el-table-column>
+             <el-table-column prop="originOutTypeName" label="转出合同/款类余额"></el-table-column>
+            <el-table-column prop="thisTypeName" label="转入合同/款类金额"></el-table-column>
             <el-table-column prop="billStatus" label="票据状态"></el-table-column>
           </el-table>
         </el-tab-pane>

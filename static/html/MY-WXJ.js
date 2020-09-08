@@ -17,18 +17,18 @@ let Obj={
     },
     'val5':null,
     'val6':null,
-    'val7':null,
-    'checkbox_pp': null,
-    'checkbox_cc': null,
-    'checkbox_dd': null,
-    'val8':null,
-    'checkbox_gg': {
-      stateful: function(index) {
-        return index===0 ? {'val11':null} : index===1 ? {'val12':null} : null
-      }
-    },
-    'val13':null,
-    'val14':null,
+    // 'val7':null,
+    // 'checkbox_pp': null,
+    // 'checkbox_cc': null,
+    // 'checkbox_dd': null,
+    // 'val8':null,
+    // 'checkbox_gg': {
+    //   stateful: function(index) {
+    //     return index===0 ? {'val11':null} : index===1 ? {'val12':null} : null
+    //   }
+    // },
+    // 'val13':null,
+    // 'val14':null,
   }
 
   //给按钮添加点击事件

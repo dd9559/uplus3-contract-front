@@ -41,7 +41,7 @@
                     <span>转佣金额：</span>
                     <span>{{zy}}</span>
                   </p>
-                </div> -->
+                </div>-->
 
                 <div class="one_">
                   <p style="position:relative;">
@@ -1598,13 +1598,13 @@
           class="down-link down-link1"
           @click="downloadFj(1)"
           ref="fjDownloadLine"
-        >直接下载</a>
+        >直接打印</a>
         <a
           href="javascript:;"
           class="down-link down-link2"
           @click="downloadFj(2)"
           ref="fjDownloadSg"
-        >签章下载</a>
+        >签章打印</a>
         <!-- </el-button> -->
       </p>
     </el-dialog>
@@ -2138,6 +2138,8 @@
       </div>
     </LayerPrint>
     <!-- </vue-easy-print> -->
+
+    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
   </div>
 </template>
 
@@ -2154,6 +2156,7 @@ import dealReport from "../contractDialog/dealReport";
 import billDialog from "@/components/billDialog";
 import agencyContract from "../contractDialog/agencyContract";
 import axios from "axios";
+import PdfPrint from "@/components/PdfPrint";
 let loading = null;
 const marriage = [
   { id: 1, type: "已婚" },
@@ -2175,6 +2178,7 @@ export default {
     dealReport,
     billDialog,
     agencyContract,
+    PdfPrint,
   },
   data() {
     return {
@@ -2450,6 +2454,8 @@ export default {
       fjSrc: "",
       fjId: "",
       downloadStoreId: "",
+      haveUrl: false,
+      pdfUrl: "",
     };
   },
   created() {
@@ -3093,9 +3099,9 @@ export default {
             //   //转成交的合同并且转佣
             //   this.getZYInfo(this.contractDetail.id);
             // } else {
-              this.commissionTotal =
-                Number(this.contractDetail.custCommission) +
-                Number(this.contractDetail.ownerCommission);
+            this.commissionTotal =
+              Number(this.contractDetail.custCommission) +
+              Number(this.contractDetail.ownerCommission);
             // }
           }
         })
@@ -3709,7 +3715,7 @@ export default {
     //合同附件列表
     getAttachment() {
       let param = {
-        contId: this.$route.query.id
+        contId: this.$route.query.id,
       };
       this.$ajax.get("/api/attachment/getdelAttachment", param).then((res) => {
         res = res.data;
@@ -3731,21 +3737,36 @@ export default {
     },
     downloadFj(val) {
       let type = this.$tool.get_suffix(this.fjSrc);
-      if (val == 1) {
-        this.fjDialogShow = false;
-        this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
-      } else {
-        this.$refs.fjDownloadSg.href = "javascript:;";
-        if (type != ".docx" && type != ".doc") {
-          this.$message({
-            message: "签章下载只支持word格式",
-            type: "warning",
-          });
-        } else {
-          this.fjDialogShow = false;
-          this.$refs.fjDownloadSg.href = this.downloadWordUrl;
-        }
+      if (type != ".docx" && type != ".doc") {
+        this.$message({
+          message: "只支持word格式打印",
+          type: "warning",
+        });
+        return;
       }
+      if (val == 1) {
+        // this.fjDialogShow = false;
+        this.pdfUrl = this.downloadWordUrlNo;
+        this.haveUrl = true;
+        // this.$refs.fjDownloadLine.href = this.downloadWordUrlNo;
+      } else {
+        this.pdfUrl = this.downloadWordUrl;
+        this.haveUrl = true;
+        // this.$refs.fjDownloadSg.href = "javascript:;";
+        // if (type != ".docx" && type != ".doc") {
+        //   this.$message({
+        //     message: "签章下载只支持word格式",
+        //     type: "warning",
+        //   });
+        // } else {
+        //   this.fjDialogShow = false;
+        //   this.$refs.fjDownloadSg.href = this.downloadWordUrl;
+        // }
+      }
+    },
+    closePrint() {
+      this.pdfUrl = "";
+      this.haveUrl = false;
     },
     //获取应收列表
     getSupposedList() {
@@ -4664,5 +4685,15 @@ export default {
   margin-right: 80px;
   background-color: #409eff;
   color: #fff;
+}
+.printMaskLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  // display: none;
+  z-index: 8888;
 }
 </style>
