@@ -16,21 +16,23 @@
           :max-height="tableNumberCom"
           header-row-class-name="theader-bg"
         >
-          <el-table-column label="角色" prop="signerTypeName"></el-table-column>
-          <el-table-column label="姓名" prop="recordName"></el-table-column>
-          <el-table-column label="状态" prop="recordName">
-            <template slot-scope="scope">{{scope.row.signerResult.label}}</template>
+          <el-table-column label="角色" prop="signerTypeName">
+          </el-table-column>
+          <el-table-column label="姓名" prop="recordName">
+          </el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="scope">{{scope.row.signerResult&&scope.row.signerResult.label}}</template>
           </el-table-column>
           <el-table-column label="签署时间" prop="createTime">
-            <template slot-scope="scope">{{scope.row.createTime|formatTime(false)}}</template>
+            <template slot-scope="scope">{{scope.row.createTime&&scope.row.createTime|formatTime(false)}}</template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
               <el-button
                 type="text"
                 size="medium"
-              ><span @click="reissueNote(scope.row)" v-show="scope.row.show">{{scope.row.signerResult.value === 2&&scope.row.ssqSignUrl? '补发签署短信': '-'}}</span>
-              <span v-show="!scope.row.show">{{scope.row.count}}s</span></el-button>
+              ><span @click="reissueNote(scope.row)" v-show="scope.row.show">{{scope.row.signerResult&&scope.row.signerResult.value === 2&&scope.row.ssqSignUrl? '补发签署短信': '-'}}</span>
+              <span v-show="!scope.row.show">{{scope.row.count&&scope.row.count}}s</span></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -130,6 +132,7 @@ export default {
     };
   },
   created() {
+    this.tableData = []
     this.getDictionary(); //字典
   },
   methods: {

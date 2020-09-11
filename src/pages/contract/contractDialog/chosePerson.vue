@@ -290,6 +290,7 @@ export default {
   methods: {
     // 获取合同模板的所有角色签章位置存在情况
     getSignPosition() {
+      this.checkPersonList = []
       this.$ajax
       .get("/api/app/contract/GetSignPosition", {contCode:this.contCode})
       .then(res => {
@@ -1087,7 +1088,7 @@ export default {
           if (includeRoleList.includes(item.id)) {
             return false
           } else {
-            if (item.contCode === this.contCode) {
+            if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
               this.choseBrokerId.push(item.id);
               this.choseBroker.push(item);
               includeRoleList.push(item.id)
