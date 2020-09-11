@@ -157,6 +157,7 @@ export default {
         });
     },
     reissueNote(val) {
+      if (!val.signerResult || val.signerResult.value !== 2 || !val.ssqSignUrl)return
       let params = {
         mobilePhone: val.mobilePhone,
         cityId: val.cityId,
