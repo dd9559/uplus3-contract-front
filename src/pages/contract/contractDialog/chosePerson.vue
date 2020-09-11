@@ -1033,7 +1033,7 @@ export default {
                   msg = '店长'
                   break;
                 case 6:
-                  msg = '成交经济人'
+                  msg = '成交经纪人'
                   break;
                 default:
                   break;

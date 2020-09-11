@@ -18,13 +18,13 @@
         >
           <el-table-column label="角色" prop="signerTypeName">
           </el-table-column>
-          <el-table-column label="姓名" prop="recordName">
+          <el-table-column label="姓名" prop="signerName">
           </el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">{{scope.row.signerResult&&scope.row.signerResult.label}}</template>
           </el-table-column>
-          <el-table-column label="签署时间" prop="createTime">
-            <template slot-scope="scope">{{scope.row.createTime&&scope.row.createTime|formatTime(false)}}</template>
+          <el-table-column label="签署时间" prop="signerResultTime">
+            <template slot-scope="scope">{{scope.row.signerResultTime?(scope.row.signerResultTime|formatTime(false)):'-'}}</template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -221,6 +221,9 @@ export default {
 .reissue_chose_person {
     .table-content {
         padding: 20px 6px;
+        .el-button {
+          padding: 0 20px;
+        }
     }
     .footer {
         p {
