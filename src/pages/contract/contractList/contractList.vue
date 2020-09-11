@@ -2233,6 +2233,7 @@ export default {
         storeId: val.guestStoreCode,
         code: val.code,
         contType: val.contType.value,
+        contTypeLabel: val.contType.label,
       };
       let owner = [];
       let guest = [];

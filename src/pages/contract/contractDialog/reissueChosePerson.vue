@@ -23,8 +23,11 @@
           <el-table-column label="状态">
             <template slot-scope="scope">{{scope.row.signerResult&&scope.row.signerResult.label}}</template>
           </el-table-column>
-          <el-table-column label="签署时间" prop="signerResultTime">
-            <template slot-scope="scope">{{scope.row.signerResultTime?(scope.row.signerResultTime|formatTime(false)):'-'}}</template>
+          <el-table-column label="签署时间">
+            <template slot-scope="scope">
+              <span v-if="scope.row.signerResultTime">{{scope.row.signerResultTime && scope.row.signerResultTime|formatTime(false)}}</span>
+              <span v-else>-</span>
+            </template>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
@@ -158,7 +161,7 @@ export default {
         mobilePhone: val.mobilePhone,
         cityId: val.cityId,
         ssqSignUrl: val.ssqSignUrl,
-        contType: this.choseQuery.contType,
+        contType: this.choseQuery.contTypeLabel,
         id: val.id,
       };
       this.$ajax
