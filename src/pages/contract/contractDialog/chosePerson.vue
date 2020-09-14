@@ -1078,6 +1078,24 @@ export default {
           val[key] && this.checkPersonList.push(Number(key))
         }
       }
+      this.choseBrokerId = []
+      this.choseBroker = []
+      let includeRoleList = []
+      if (this.localChoseList&&this.localChoseList.length > 0) {
+        this.brokerList = this.localChoseList.filter(item => {
+          if (includeRoleList.includes(item.id)) {
+            return false
+          } else {
+            if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
+              this.choseBrokerId.push(item.id);
+              this.choseBroker.push(item);
+              includeRoleList.push(item.id)
+              this.brokerMobileList.push({mobile:item.mobile,index:-1})
+              return true
+            }
+          }
+        })
+      }
     },
     localChoseList(val) {
       this.choseBrokerId = []
