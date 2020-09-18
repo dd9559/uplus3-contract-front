@@ -115,7 +115,7 @@
             class="margin-left"
             size="small"
             v-model="contractForm.dealAgentId"
-            
+
             @change="handleEmpNodeClick"
             placeholder="请选择"
           >-->
@@ -758,7 +758,7 @@
                 v-if="power['sign-ht-info-fqqs'].state&&(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
                 class="btn"
                 @click="toSign(scope.row)"
-              >发起签署</div>
+              >{{scope.row.ssqId?'签署中':'发起签署'}}</div>
             </template>
             <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
               <div
@@ -949,6 +949,7 @@
     <!-- 发起签署选择业主客户 -->
     <chosePerson
       :dialogVisible="chosePersonDialog"
+      :closeTitle="closeTitle"
       :ownerList="signOwnerList"
       :localChoseList="localChoseList"
       :contCode="contCode"
@@ -956,6 +957,14 @@
       :choseQuery="choseQuery"
       @closeChose="closeChose"
     ></chosePerson>
+    <!-- 补发签署信息 -->
+    <reissueChosePerson
+    :dialogVisible="reissueDialog"
+    :choseQuery="choseQuery"
+    :ssqId='ssqId'
+    @closeChose="closeChose"
+    >
+    </reissueChosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
     <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
       <div>合同已发起签署</div>
@@ -975,6 +984,7 @@ import layerSettle from "../contractDialog/layerSettle";
 import changeCancel from "../contractDialog/changeCancel";
 import lateProgress from "../contractDialog/lateProgress";
 import chosePerson from "../contractDialog/chosePerson";
+import reissueChosePerson from "../contractDialog/reissueChosePerson";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from "@/components/PdfPrint";
@@ -994,6 +1004,7 @@ export default {
     PdfPrint,
     checkPerson,
     chosePerson,
+    reissueChosePerson,
   },
   data() {
     return {
@@ -1215,11 +1226,14 @@ export default {
       uPlusQianyueType: "",
       //发起签署选择业主客户
       chosePersonDialog: false,
+      reissueDialog: false,
+      ssqId: '',
       signOwnerList: [],
       signGuestList: [],
       choseQuery: {},
       dataBaseDialog: false,
       choseLoading: false,
+      closeTitle:'发起签署',
       localChoseList: [],
     };
   },
@@ -1382,7 +1396,7 @@ export default {
         pageSize: this.pageSize,
         keyword: this.keyword,
       };
-      param = Object.assign({}, param, this.contractForm);
+      param = type !== "ChosePersonEditor"?Object.assign({}, param, this.contractForm):param;
       if (this.signDate) {
         if (this.signDate.length > 0) {
           param.beginDate = this.signDate[0];
@@ -1414,11 +1428,24 @@ export default {
       if (type === "search") {
         param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
       }
+      if (type === "ChosePersonEditor") {
+        param.keyword = this.contCode;
+      }
       this.$ajax.postJSON("/api/contract/contractList", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
-          this.tableData = res.data.list;
-          this.total = res.data.count;
+          if (type === "ChosePersonEditor") {
+            let index = this.tableData.findIndex(item => {
+              return item.code === this.contCode
+            })
+            if (index !== -1) {
+              this.$set(this.tableData,index,res.data.list[0])
+            }
+            console.log(index,777777777777777);
+          } else {
+            this.tableData = res.data.list;
+            this.total = res.data.count;
+          }
         }
       });
     },
@@ -2206,6 +2233,7 @@ export default {
         storeId: val.guestStoreCode,
         code: val.code,
         contType: val.contType.value,
+        contTypeLabel: val.contType.label,
       };
       let owner = [];
       let guest = [];
@@ -2225,17 +2253,33 @@ export default {
           })) ||
         [];
       this.contCode = val.code;
-      this.chosePersonDialog = true;
+      this.ssqId = val.ssqId;
+      if (val.ssqId) {
+        this.reissueDialog = true
+      } else {
+        this.closeTitle = '发起签署'
+        this.chosePersonDialog = true;
+      }
     },
 
     closeChose(val) {
       if (val.type == "choseLoading") {
         this.choseLoading = true;
+      } else if (val.type === 'reissueChosePerson') {
+        this.reissueDialog = val.status
+      } else if (val.type === 'openChosePersonDialog') {
+        this.chosePersonDialog = true;
+        this.closeTitle = '重新发起签署'
+      } else if (val.type === 'closeChose'){
+        this.chosePersonDialog = false;
+        this.choseLoading = false;
+        this.getContractList('ChosePersonEditor')
+        if (val) {
+          this.dataBaseDialog = true;
+        }
       } else {
         this.chosePersonDialog = false;
-        // this.dataBaseDialog = true;
         this.choseLoading = false;
-        console.log(!!val, 898989);
         if (val) {
           this.dataBaseDialog = true;
         }

@@ -3,7 +3,8 @@
     <router-view :key="$route.fullPath" v-if="['/login','/ledger','/error','/choseCont'].includes($route.path)"></router-view>
     <div class="main" v-else>
       <div class="nav">
-        <img :src="getImg('logo.png')" alt />
+        <img :src="getImg('honghui.png')" alt  v-if="showTransferTime"/>
+        <img :src="getImg('logo.png')" alt  v-else/>
         <ul class="navbar" v-if="getUser&&getUser.user">
           <li>{{getUser.user.cityName}}</li>
           <li>
@@ -92,9 +93,10 @@
 
 <script>
 import { mapMutations, mapGetters } from "vuex";
-
+import { MIXINS } from "@/assets/js/mixins";
 export default {
   name: "App",
+   mixins: [MIXINS],
   data() {
     return {
       activeIndex: "",

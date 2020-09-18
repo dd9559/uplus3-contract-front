@@ -226,7 +226,7 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="input-group">
+        <!-- <div class="input-group">
           <label>有/无合同：</label>
           <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
             <el-option
@@ -236,7 +236,7 @@
               :value="item.key"
             ></el-option>
           </el-select>
-        </div>
+        </div> -->
       </div>
     </ScreeningTop>
     <div
