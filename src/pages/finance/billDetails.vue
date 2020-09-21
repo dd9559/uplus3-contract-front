@@ -3,7 +3,7 @@
     <!--<iframe id='test' :src="test" frameborder="0"></iframe>
     <span @click="toPrint">test</span>-->
     <div class="bill-details-tab">
-      <ul>
+      <!-- <ul>
         <li
           v-for="(item,index) in tabs"
           :key="index"
@@ -11,7 +11,7 @@
           :class="[activeItem===item?'active':'']"
           @click="choseTab(item)"
         >{{item}}</li>
-      </ul>
+      </ul>-->
       <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
         <el-button
           class="btn-info"
@@ -28,7 +28,7 @@
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号"  v-if="!billMsg.payCodeSK">
+            <el-table-column align="center" label="合同编号">
               <template slot-scope="scope">
                 <span>{{billMsg.contCode}}</span>
               </template>
@@ -38,12 +38,16 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="收款单" v-if="billMsg.payCodeSK">
+            <el-table-column
+              align="center"
+              label="收款单"
+              v-if="billMsg.contCode=='-'&&activeItem==='付款信息'"
+            >
               <template slot-scope="scope">
                 <span>{{billMsg.payCodeSK}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="物业地址"  v-if="!billMsg.payCodeSK">
+            <el-table-column align="center" label="物业地址">
               <template slot-scope="scope">
                 <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
@@ -260,7 +264,48 @@
           </div>
         </li>
       </template>
-      <li v-if="checkBoxShow&&activeItem!='转款信息'" ref="checkBox">
+      <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
+        <h4 class="f14">收款二维码</h4>
+        <img :src="billMsg.RQcode" alt />
+      </li>
+      <!-- 新增转款信息 -->
+      <li v-if="$route.query.tab==='收款信息'">
+        <h4 class="f14">转款信息</h4>
+        <el-table border :data="transferInfo" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="时间">
+            <template slot-scope="scope">
+              <span>{{scope.row.time|formatTime}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="name" label="姓名">
+            <template slot-scope="scope">
+              <span>{{scope.row.depName+"-"+scope.row.empName}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="职务">
+            <template slot-scope="scope">
+              <span>{{scope.row.positionName}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="转出合同/款类金额">
+            <template slot-scope="scope">
+              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+" "+scope.row.outMoney+"元"}}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column align="center" label="转出合同/款类余额">
+            <template slot-scope="scope">
+              <span>{{scope.row.outCode+"-"+scope.row.outTypeName +" "+scope.row.outMoneyBalance+"元"}}</span>
+            </template>
+          </el-table-column>-->
+          <el-table-column align="center" label="转入合同/款类金额">
+            <template slot-scope="scope">
+              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+" "+scope.row.inMoney+"元"}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </li>
+      <!-- 审核信息 -->
+      <li ref="checkBox">
         <h4 class="f14">审核信息</h4>
         <el-table border :data="checkList" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -295,41 +340,6 @@
           layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>-->
-      </li>
-      <!-- 新增转款信息 -->
-      <li v-if="activeItem==='转款信息'">
-        <h4 class="f14">转款信息</h4>
-        <el-table border :data="transferInfo" header-row-class-name="theader-bg">
-          <el-table-column align="center" label="时间">
-            <template slot-scope="scope">
-              <span>{{scope.row.time|formatTime}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" prop="name" label="姓名">
-            <template slot-scope="scope">
-              <span>{{scope.row.depName+"-"+scope.row.empName}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="职务">
-            <template slot-scope="scope">
-              <span>{{scope.row.positionName}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="转出合同/款类">
-            <template slot-scope="scope">
-              <span>{{scope.row.outCode+"-"+scope.row.outTypeName+" "+scope.row.outMoney+"元"}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="转入合同/款类">
-            <template slot-scope="scope">
-              <span>{{scope.row.inCode+"-"+scope.row.inTypeName+" "+scope.row.inMoney+"元"}}</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </li>
-      <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
-        <h4 class="f14">收款二维码</h4>
-        <img :src="billMsg.RQcode" alt />
       </li>
     </ul>
     <el-dialog
@@ -1016,12 +1026,15 @@ export default {
     }
   }
 
-  /*> p {
-      position: absolute;
-      top: 50%;
-      right: 20px;
-      transform: translateY(-50%);
-    }*/
+  > p {
+    // position: absolute;
+    // top: 50%;
+    // right: 20px;
+    // transform: translateY(-50%);
+    width: 100%!important;
+    text-align: right!important;
+    margin: 5px 0 5px!important;
+  }
 }
 
 .bill-details-content {
