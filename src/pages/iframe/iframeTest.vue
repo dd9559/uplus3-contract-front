@@ -19,8 +19,8 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'WH-买卖.html'
-        // src:'MY-斡旋金.html'
+        // src:'WHU2-买卖.html'
+        src:'WHU2-装饰.html'
         // src:'lz-买卖居间.html'
         // src:'lz委托.html'
       }

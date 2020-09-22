@@ -46,6 +46,7 @@ const receiptResult = () => import('@/pages/finance/receiptResult')
 const receiptCheck = () => import('@/pages/finance/receiptCheck')
 const receiptBill_simple = () => import('@/pages/finance/receiptBill_simple')
 const receiptBillDetails = () => import('@/pages/finance/receiptBillDetails')
+const transferAudit = () => import('@/pages/finance/transferAudit')
 
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
@@ -195,6 +196,15 @@ export default new Router({
           meta: {
             root: true,
             list: ["二手房", "财务", "打款记录"]
+          }
+        },
+        //转款审核
+        {
+          path: "transferAudit",
+          component: transferAudit,
+          meta: {
+            root: true,
+            list: ["二手房", "财务", "转款审核"]
           }
         },
         {

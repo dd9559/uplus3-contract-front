@@ -119,6 +119,13 @@ let TOOL = {
               can: true,//是否可见
               path: "debitRecord",
               code: "sign-ht-dk-query"
+            },
+            {
+              name: "转款审核",
+              category: "1-2-8",
+              can: true,//是否可见
+              path: "transferAudit",
+              code: "sign-ht-dk-query"  //后期修改
             }
           ]
         },
@@ -468,7 +475,7 @@ let TOOL = {
    * @param type     该列所有单元格是否合并为一个
    * @returns {*}
    */
-  collapseRow: function ({rowIndex, rowTotal, collapse, type}) {
+  collapseRow: function ({ rowIndex, rowTotal, collapse, type }) {
     // collapse=collapseMsg
     // debugger
     if (type === "all") {
@@ -586,7 +593,7 @@ let TOOL = {
           title: rule[item].name,
           msg: ""
         };
-        if(type==="[object Null]"){
+        if (type === "[object Null]") {
           res.msg = "不能为空";
           reject(res);
           return;
@@ -765,12 +772,10 @@ let TOOL = {
       let m = time.getMinutes();
       let s = time.getSeconds();
       if (second) {
-        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
-          h > 9 ? h : "0" + h
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${h > 9 ? h : "0" + h
           }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
       } else {
-        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
-          h > 9 ? h : "0" + h
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${h > 9 ? h : "0" + h
           }:${m > 9 ? m : "0" + m}`;
       }
     }
@@ -876,7 +881,7 @@ let TOOL = {
     return result;
   },
   //保留小数位
-  cutFloat: function ({val, max, num = 2}) {
+  cutFloat: function ({ val, max, num = 2 }) {
     val = val
       .toString()
       .replace(/[^\d.]/g, "")
@@ -929,7 +934,7 @@ let TOOL = {
   //生成面包屑导航数组
   getRouter: function (arr, root) {
     return arr.map(item => {
-      return {name: item, path: root};
+      return { name: item, path: root };
     });
   }
 };

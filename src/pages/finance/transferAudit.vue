@@ -61,213 +61,6 @@
             ></el-date-picker>
           </div>
         </div>
-        <div class="input-group">
-          <label>部门:</label>
-          <div>
-            <select-tree
-              :data="DepList"
-              :init="searchForm.depName"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-              @search="searchDep"
-            ></select-tree>
-          </div>
-          <!--<el-select
-            class="w200"
-            :clearable="true"
-            ref="tree"
-            size="small"
-            :loading="Loading"
-            :remote-method="remoteMethod"
-            @visible-change="initDepList"
-            @clear="clearDep"
-            v-model="searchForm.depName"
-            placeholder="请选择">
-            <el-option class="drop-tree" value="">
-              <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
-            </el-option>
-          </el-select>-->
-          <!-- <el-select
-            :clearable="true"
-            class="margin-left"
-            size="small"
-            v-loadmore="moreEmploye"
-            v-model="searchForm.empId"
-            @change="handleEmpNodeClick"
-            placeholder="请选择"
-          >-->
-          <el-select
-            :clearable="true"
-            filterable
-            remote
-            :remote-method="test"
-            v-loadmore="moreEmploye"
-            @visible-change="empHandle"
-            class="margin-left"
-            size="small"
-            v-model="searchForm.empId"
-            placeholder="请选择"
-            @change="empHandleAdd"
-            @clear="clearDep"
-          >
-            <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
-              :label="item.name"
-              :value="item.empId+'/'+item.depName+'/'+item.depId"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>票据状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.billStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['56']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收款账户:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.proAccount"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['32']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.checkStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['23']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付款类:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.moneyType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in drop_MoneyType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payMethod"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['24']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收付对象:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payObjType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['57']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>合作方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.cooperation"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['53']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>签约方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.recordType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['64']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>收款方式:</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.payway" placeholder="请选择">
-            <el-option
-              v-for="item in dictionary['69']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="input-group">
-          <label>有/无合同：</label>
-          <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
-            <el-option
-              v-for="item in dictionary['792']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
-          </el-select>
-        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" ref="box">
@@ -276,30 +69,8 @@
           <h4 class="f14">
             <i class="iconfont icon-tubiao-11"></i>数据列表
           </h4>
-          <ul>
-            <li>
-              收款
-              <span>{{tableTotal.ProceedsCount|zeroFormatter}}</span>笔，总额
-              <span>{{tableTotal.ProceedsSum|zeroFormatter}}</span>元；
-            </li>
-            <li>
-              付款
-              <span>{{tableTotal.payMentCount|zeroFormatter}}</span>笔，总额
-              <span>{{tableTotal.payMentSum|zeroFormatter}}</span>元；
-            </li>
-            <li>
-              账户余额：
-              <span>{{tableTotal.balance|zeroFormatter}}</span>元；
-            </li>
-            <li>
-              刷卡手续费总计：
-              <span>{{tableTotal.sumFees|zeroFormatter}}</span>元；
-            </li>
-          </ul>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
-          <el-button class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
           <el-button
             class="btn-info"
             round
@@ -345,7 +116,6 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column min-width="160" label="票据编号" prop="billCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="160" label="物业地址">
           <template slot-scope="scope">
             <span v-if="scope.row.address.length===0">--</span>
@@ -363,59 +133,58 @@
           :formatter="nullFormatter"
         ></el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column min-width="100" label="收付方式">
+        <el-table-column min-width="80" label="转款人">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+            <span>{{scope.row.depName+"-"+scope.row.createByName}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="60" label="对象">
+        <el-table-column min-width="120" label="当前审核人">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <p v-if="!scope.row.auditStore&&!scope.row.auditName">-</p>
+            <template v-else>
+              <span>{{scope.row.auditStore}}</span>
+              <p>{{scope.row.auditName}}</p>
+            </template>
+            <p
+              class="btn-text-info"
+              type="text"
+              v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
+              @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)"
+            >{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="收/付款人" min-width="120">
+        <el-table-column min-width="120" label="下一步审核人">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
-            <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
+            <p v-if="!scope.row.nextAuditStore&&!scope.row.nextAuditName">-</p>
+            <template v-else>
+              <span>{{scope.row.nextAuditStore}}</span>
+
+              <p>{{scope.row.nextAuditName}}</p>
+            </template>
+            <p
+              class="btn-text-info color-red"
+              type="text"
+              v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
+              @click="choseCheckPerson(scope.row,3)"
+            >设置审核人</p>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="收款方式" prop="payway" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="金额（元）">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.amount}}</p>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="线上手续费（元）" prop="xsFee" :formatter="nullFormatter">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payway&&scope.row.payway.value!==4">{{scope.row.xsFee}}</span>
-            <span v-else>--</span>
-          </template>
-        </el-table-column>
-        <el-table-column min-width="80" label="线下手续费（元）">
-          <template slot-scope="scope">
-            <template v-if="scope.row.payway&&scope.row.payway.value===4">
-              <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.fee}}</p>
-            </template>
-            <span v-else>--</span>
-          </template>
-        </el-table-column>
-        <!--        <el-table-column min-width="60" label="刷卡手续费" prop="systemFee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column label="创建时间" prop="createTime" :formatter="nullFormatter" min-width="90">
+        <el-table-column label="转款时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="到账时间"
-          prop="toAccountTime"
-          :formatter="nullFormatter"
-          min-width="90"
-        >
+        <el-table-column label="审核时间" prop="createTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="收付状态" prop="payStatus">
+        <el-table-column min-width="80" label="审核状态">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
             <span
@@ -423,11 +192,6 @@
               v-else
               @click="getErrorMsg(scope.row)"
             >{{scope.row.payStatus|getLabel}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column min-width="90" label="结算信息">
-          <template slot-scope="scope">
-            <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="票据状态">
@@ -440,47 +204,7 @@
           class-name="null-formatter operation-btns"
         >
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="btnOpera(scope.row,3)"
-              v-if="(power['sign-cw-bill-invoice'].state&&
-                       (scope.row.type===1||scope.row.type===8)&&
-                       scope.row.isDel===1&&
-                       scope.row.billStatus&&
-                       (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
-                       scope.row.payStatusValue!==4&&
-                       scope.row.payStatusValue!==11)||
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
-            >开票</el-button>
             <el-button type="text" @click="btnOpera(scope.row,1)">编辑</el-button>
-            <!-- 新增转款按钮 &&power['sign-cw-bill-zk'].state-->
-            <template v-if="scope.row.contId!=0">
-              <el-button
-                type="text"
-                @click="btnTransfer(scope.row)"
-                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-              >转款</el-button>
-            </template>
-            <template v-else>
-              <el-button
-                type="text"
-                @click="btnTransfer(scope.row)"
-                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-              >转款</el-button>
-            </template>
-            <template
-              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
-            >
-              <!-- <el-button type="text"
-                                @click="btnOpera(scope.row,2)"
-                                v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
-              </el-button>-->
-            </template>
-            <div
-              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal===3"
-            >
-              <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
-            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -495,89 +219,24 @@
         :total="total"
       ></el-pagination>
     </div>
-    <!-- 票据编号弹层 -->
-    <layer-invoice ref="layerInvoice" :contId="activeRow.contId" @emitPaperSet="emitPaperSetFn"></layer-invoice>
-    <!--作废-->
-    <el-dialog
-      title="作废"
-      :visible.sync="layer.show"
-      :closeOnClickModal="$tool.closeOnClickModal"
-      width="740px"
-    >
-      <div class="delete-dialog" v-if="layer.content.length>0">
-        <p>是否作废该{{(layer.content[0].type===1||layer.content[0].type===8)?'收款单':'付款单'}}</p>
-        <el-table
-          border
-          :data="layer.content"
-          style="width: 100%"
-          header-row-class-name="theader-bg"
-          key="other"
-        >
-          <el-table-column
-            align="center"
-            min-width="120"
-            label="收付编号"
-            prop="payCode"
-            :formatter="nullFormatter"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            :label="(layer.content[0].type===1||layer.content[0].type===8)?'收款金额':'付款金额'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
-            <template slot-scope="scope">
-              <span>{{scope.row.amount}}元</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            align="center"
-            :label="(layer.content[0].type===1||layer.content[0].type===8)?'付款方':'收款方'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
-            <template slot-scope="scope">
-              <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType.label:scope.row.inObjType.label}}{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
-        <el-button
-          size="small"
-          class="btn-info"
-          round
-          type="primary"
-          @click="deleteBill"
-          v-loading.fullscreen.lock="getLoading"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
     <!-- 转款 -->
     <div v-show="transterShow">
       <el-dialog
-        :title="zkTitle"
+        title="编辑转款"
         :visible.sync="transterShow"
         :closeOnClickModal="$tool.closeOnClickModal"
         width="800px"
       >
         <div class="transter-detail">
           <p class="title">合同信息</p>
-          <p class="info" v-if="!zkEdit">
+          <p class="info">
             <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
-            <span>款类：{{selectPayInfo&&selectPayInfo.moneyType}}</span>&nbsp;&nbsp;&nbsp;
-            <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>
-          </p>
-          <p class="info" v-else>
-            <span>合同编号：{{transterInfoPerson&&transterInfoPerson.outContractCode?transterInfoPerson.outContractCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
             <span>款类：{{transterInfoPerson&&transterInfoPerson.outPayType}}</span>&nbsp;&nbsp;&nbsp;
             <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp; {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
+            <!-- <span>款类：{{selectPayInfo&&selectPayInfo.moneyType}}</span>&nbsp;&nbsp;&nbsp;
+            <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>-->
           </p>
-          <p v-if="!zkEdit">物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
-          <p
-            v-else
-          >物业地址：{{transterInfoPerson&&transterInfoPerson.outPropertyAddr?transterInfoPerson.outPropertyAddr:"-"}}</p>
+          <p>物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
           <p class="title">转款操作</p>
           <p>
             转入合同：
@@ -594,32 +253,7 @@
           <p>物业地址：{{transterInfoPerson&&transterInfoPerson.propertyAddr?transterInfoPerson.propertyAddr :"-"}}</p>
           <div class="kuanlei clearfix">
             <label>选择款类：</label>
-            <ul v-if="!zkEdit">
-              <li v-for="(item,index) in kuanleiVal" :key="index">
-                <moneyTypePop
-                  style="display: inline-block;"
-                  ref="moneyType"
-                  :data="moneyType"
-                  @checkCell="getCell"
-                  :chooseIndex="index"
-                  v-if="transterShow"
-                ></moneyTypePop>
-                <el-input
-                  size="small"
-                  class="w200"
-                  placeholder="请输入金额"
-                  v-model="item.outMoney"
-                  @input="cutNum(index)"
-                ></el-input>
-                <span class="icon" @click.stop="addcommissionData" v-if="index===0">
-                  <i class="iconfont icon-tubiao_shiyong-14"></i>
-                </span>
-                <span class="icon" @click.stop="delPeople(index)" v-if="!(index===0)">
-                  <i class="iconfont icon-tubiao_shiyong-4"></i>
-                </span>
-              </li>
-            </ul>
-            <ul v-if="zkEdit">
+            <ul>
               <li v-for="(item,index) in kuanleiVal" :key="index">
                 <moneyTypePop
                   style="display: inline-block;"
@@ -643,22 +277,7 @@
           <p style="color:#FF2711;">注：一旦转款成功，不同合同转款，实收金额相应增减；同一合同转款，实收金额不变</p>
           <p style="text-align:right;margin:50px 50px 0 0;">
             <el-button size="small" class="btn-info" round @click="transterShow=false">取消</el-button>
-            <el-button
-              size="small"
-              class="btn-info"
-              round
-              type="primary"
-              @click="transterSave()"
-              v-if="!zkEdit"
-            >保存</el-button>
-            <el-button
-              size="small"
-              class="btn-info"
-              round
-              type="primary"
-              @click="transterSave()"
-              v-else
-            >提交审核</el-button>
+            <el-button size="small" class="btn-info" round type="primary" @click="transterSave()">保存</el-button>
           </p>
         </div>
         <el-dialog
@@ -771,16 +390,12 @@
 <script>
 import { FILTER } from "@/assets/js/filter";
 import { MIXINS } from "@/assets/js/mixins";
-import LayerPaperInfo from "@/components/LayerPaperInfo";
-import LayerInvoice from "@/components/LayerInvoice";
 import scrollBar from "@/components/scrollBar";
 import moneyTypePop from "@/components/moneyTypePop";
 import { TOOL } from "@/assets/js/common";
 export default {
   mixins: [MIXINS, FILTER],
   components: {
-    LayerPaperInfo,
-    LayerInvoice,
     scrollBar,
     moneyTypePop,
   },
@@ -794,38 +409,13 @@ export default {
       searchForm: {
         contType: [],
         timeType: "",
-        depName: "",
-        deptId: "",
-        empId: "",
-        billStatus: "",
-        proAccount: "",
-        checkStatus: "",
-        moneyType: "",
-        payMethod: "",
         keyword: "",
         timeRange: [],
-        payObjType: "",
-        cooperation: "",
-        recordType: "",
-        payway: "", //收款方式
-        hasCont: "", //有/无合同
       },
       tableTotal: {},
       list: [],
       dictionary: {
         10: "",
-        56: "",
-        32: "",
-        23: "",
-        24: "",
-        25: "",
-        507: "",
-        542: "",
-        57: "",
-        53: "",
-        64: "",
-        69: "",
-        792: "",
       },
       drop_MoneyType: [],
       //分页
@@ -845,10 +435,6 @@ export default {
       },
       //权限配置
       power: {
-        /*'sign-cw-debt-query': {
-                      state: false,
-                      name: '查询'
-                    },*/
         "sign-cw-debt-export": {
           state: false,
           name: "导出",
@@ -918,8 +504,6 @@ export default {
       selectPayInfo: null,
       moneyType: [],
       transterInfoPerson: {},
-      zkTitle: "转款信息填写",
-      zkEdit: false,
     };
   },
   mounted() {
@@ -978,32 +562,10 @@ export default {
       this.getMoneyType();
       // this.remoteMethod()
     });
-    // this.getAdmin()
   },
-  /*watch:{
-          getCollapse:function (val) {
-            this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
-            if(!val){
-              this.scrollLeft=this.$refs.table.$el.offsetLeft+161
-            }else {
-              this.scrollLeft=this.$refs.table.$el.offsetLeft+65
-            }
-          }
-        },*/
   methods: {
-    // 收款
-    getCollectMoney() {
-      this.$router.push({
-        path: "receiptBill",
-        query: {
-          collect: 5,
-          contId: "0",
-        },
-      });
-    },
     getExcel: function () {
       this.getData("search");
-
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (
         typeof param.timeRange === "object" &&
@@ -1031,66 +593,6 @@ export default {
       this.currentPage = val;
       this.getData("pagination");
     },
-    clearDep: function () {
-      this.searchForm.deptId = "";
-      this.searchForm.depName = "";
-      // this.EmployeList=[]
-      this.searchForm.empId = "";
-      this.clearSelect();
-    },
-    searchDep: function (payload) {
-      /*this.DepList=payload.list
-                this.searchForm.depName=payload.depName*/
-      this.searchForm.empId = "";
-      this.clearSelect("emp");
-    },
-    depHandleClick(data) {
-      // this.getEmploye(data.depId)
-      this.searchForm.deptId = data.depId;
-      this.searchForm.depName = data.name;
-      this.searchForm.empId = "";
-
-      this.handleNodeClick(data);
-    },
-    empHandle: function (val) {
-      console.log(this.searchForm.empId);
-      if (
-        val &&
-        this.EmployeInit !== this.employeTotal &&
-        this.searchForm.deptId
-      ) {
-        this.getEmployeByText();
-      }
-    },
-    empHandleAdd(val) {
-      let depVal = val.split("/");
-      // this.searchForm.empId=depVal[0]
-      this.searchForm.deptId = depVal[2];
-      this.searchForm.depName = depVal[1];
-      this.EmployeList = [];
-      this.getEmploye(this.searchForm.deptId);
-    },
-    /**
-     * 获取付款失败信息
-     */
-    getErrorMsg: function (data) {
-      this.$ajax
-        .get("/api/payInfo/selectRetMsg", { payId: data.id })
-        .then((res) => {
-          res = res.data;
-          if (res.status === 200) {
-            this.$message({
-              message: `付款失败：${res.data.msg}`,
-            });
-          }
-        })
-        .catch((error) => {
-          this.$message({
-            message: error,
-            type: "warning",
-          });
-        });
-    },
     getData: function (type = "init") {
       if (type === "search") {
         this.currentPage = 1;
@@ -1115,18 +617,15 @@ export default {
           "sessionQuery",
           JSON.stringify({
             path: this.$route.fullPath,
-            url: "/payInfo/selectPayInfoList",
+            url: "/payInfo/zkAuditList",
             query: Object.assign({}, param, {
               empName: this.dep.empName,
             }),
           })
         );
       }
-      if (type === "search") {
-        param.empId = this.searchForm.empId.split("-")[0];
-      }
       this.$ajax
-        .get("/api/payInfo/selectPayInfoList", param)
+        .get("/api/payInfo/zkAuditList", param)
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
@@ -1187,93 +686,41 @@ export default {
       });
       // }
     },
-    btnOpera: function (row, type) {
-      this.activeRow = Object.assign({}, row);
-      if (type === 1) {
-        if (row.isZK === "true") {
-          this.transterShow = true;
-          this.zkEdit = true;
-          this.zkTitle = "编辑转款";
-          this.selectPayInfo = row;
-          this.kuanleiVal = [
-            {
-              outType: row.moneyTypeId,
-              outTypeId: row.moneyTypePid,
-              name: row.moneyType,
-              outMoney: row.amount,
-            },
-          ];
-          this.getTransterInfo(row.id);
-        } else {
-          if (row.contId) {
-            this.$router.push({
-              path: "receiptBill",
-              query: {
-                edit: 1,
-                id: row.id,
-                contId: row.contId,
-                code: row.contCode,
-                isentrust: row.type === 8 ? 1 : 0,
-              },
-            });
-          } else {
-            this.$router.push({
-              path: "receiptBill",
-              query: {
-                edit: 1,
-                id: row.id,
-                contId: row.contId,
-                code: row.contCode,
-                isentrust: row.type === 8 ? 1 : 0,
-                collect: 1,
-              },
-            });
-          }
-        }
-      } else if (type === 2) {
-        this.layer.show = true;
-        this.layer.content = [].concat(row);
-      } else if (type === 3) {
-        if (row.contId) {
-          this.$refs.layerInvoice.show(row.id, true, 1, row.contId);
-        } else {
-          this.$refs.layerInvoice.show(row.id, true, 1, 0);
-        }
-        // this.$refs.layerInvoice.contId=row.contId
-      } else if (type === 4) {
-        this.$refs.layerInvoice.show(row.billId);
-      }
-    },
-    //作废
-    deleteBill: function () {
-      let src =
-        this.activeView === 1
-          ? "/payInfo/updateProceedsIsDel"
-          : "/payInfo/updatePaymentIsDel";
-      this.setLoading(true);
-      this.$ajax
-        .put(`/api${src}`, { payId: this.layer.content[0].id }, 2)
-        .then((res) => {
-          res = res.data;
-          if (res.status === 200) {
-            this.setLoading(false);
-            this.getData();
-            this.layer.show = false;
-            this.$message({
-              message: "作废成功",
-            });
-          }
-        })
-        .catch((error) => {
-          this.setLoading(false);
-          this.$message({
-            message: error,
-          });
-        });
-    },
-    emitPaperSetFn: function (payload) {
-      this.getData();
-      // this.$refs.layerInvoice.propCloseFn()
+    btnOpera: function (val) {
+      this.transterShow = true;
+      // console.log(val);
+      // let param = {
+      //   payId: val.id,
+      // };
+      // this.$ajax
+      //   .get("/api/payInfo/validateInOut", param)
+      //   .then((res) => {
+      //     res = res.data;
+      //     if (res.status === 200) {
+      //       if (res.data) {
+      this.kuanleiVal = [
+        {
+          outType: val.moneyTypeId,
+          outTypeId: val.moneyTypePid,
+          name: val.moneyType,
+          outMoney: val.amount,
+        },
+      ];
+      //       this.transterShow = true;
+      //       this.selectPayInfo = val;
+      //       this.getTransterInfo(val.id);
+      //     } else {
+      //       this.$message({
+      //         message: `${res.message}`,
+      //       });
+      //     }
+      //   }
+      // })
+      // .catch((error) => {
+      //   this.$message({
+      //     message: `${error}`,
+      //   });
+      // });
     },
     /**
      * 合同信息操作
@@ -1296,21 +743,6 @@ export default {
       };
       this.msgOpera(param);
     },
-    /*msgOpera: function (row, type) {
-              if (type === 'cont'&&this.power['sign-cw-debt-contract'].state) {
-                // this.setPath(this.getPath.concat({name:'合同详情'}))
-                this.setPath(this.$tool.getRouter(['合同', '合同列表', '合同详情'], 'contractList'))
-                this.$router.push({
-                  path: row.contTypeId === this.$tool.contType['4'] || row.contTypeId === this.$tool.contType['5'] ? 'detailIntention' : 'contractDetails',
-                  query: {
-                    contType: row.contTypeId,
-                    id: row.contId,
-                    code: row.contCode,
-                    pageName: '合同详情'
-                  }
-                })
-              }
-            },*/
     // 获取收付款类
     getMoneyTypes: function () {
       this.$ajax.get("/api/payInfo/selectSmallMoneyType").then((res) => {
@@ -1323,8 +755,6 @@ export default {
     // 转款操作
     btnTransfer(val) {
       console.log(val);
-      this.zkTitle = "转款信息填写";
-      this.zkEdit = false;
       let param = {
         payId: val.id,
       };
@@ -1358,17 +788,10 @@ export default {
         });
     },
     getTransterInfo(id) {
-      let param;
-      if (this.zkEdit) {
-        param = {
-          payId: id,
-          isEdit: true,
-        };
-      } else {
-        param = {
-          payId: id,
-        };
-      }
+      let param = {
+        payId: id,
+        isEdit: true,
+      };
       this.$ajax
         .get("/api/payInfo/inOutContractInfo", param)
         .then((res) => {
@@ -1472,22 +895,13 @@ export default {
         // this.sureSaveTransterShow = false;
         return;
       }
-      if (this.zkEdit) {
-        if (allMoney > this.transterInfoPerson.amount) {
-          this.$message({
-            message: "转款金额合计不能超过已收款金额",
-          });
-          return;
-        }
-      } else {
-        if (allMoney > this.selectPayInfo.amount) {
-          this.$message({
-            message: "转款金额合计不能超过已收款金额",
-          });
-          return;
-        }
+      if (allMoney > this.selectPayInfo.amount) {
+        this.$message({
+          message: "转款金额合计不能超过已收款金额",
+        });
+        // this.sureSaveTransterShow = false;
+        return;
       }
-
       if (allMoney === 0) {
         this.$message({
           message: "转款金额不能为0",
@@ -1504,6 +918,7 @@ export default {
       this.sureSaveTransterShow = true;
     },
     transterSaveFinal() {
+      console.log();
       let param = {
         InOutFormList: JSON.parse(JSON.stringify(this.kuanleiVal)),
         outId: this.selectPayInfo.contId, //转出的合同ID
