@@ -328,12 +328,12 @@ export default {
             : "",
         depId: this.department,
         empId: this.depUser,
-        tradeTypes: this.contType,
+        tradeTypes: this.contType.join(","),
         status: this.contStatus,
         recordType: this.signType,
         isJob: this.jobStatus.value,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize,
+        // pageNum: this.pageNum,
+        // pageSize: this.pageSize,
       };
       this.excelCreate("/input/AchievementContractExcel", param);
     },
