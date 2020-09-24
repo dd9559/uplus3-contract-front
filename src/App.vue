@@ -4,6 +4,7 @@
     <div class="main" v-else>
       <div class="nav">
         <img :src="getImg('honghui.png')" alt  v-if="showTransferTime"/>
+        <img :src="getImg('ming-rui.png')" alt  v-else-if="isMingRui"/>
         <img :src="getImg('logo.png')" alt  v-else/>
         <ul class="navbar" v-if="getUser&&getUser.user">
           <li>{{getUser.user.cityName}}</li>

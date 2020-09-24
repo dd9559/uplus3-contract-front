@@ -460,6 +460,10 @@ const MIXINS = {
     showTransferTime() {
       //测试环境52，正式环境19(测试城市)，25（兰州）
       return this.getUser && this.getUser.isProd == 0 ? ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 52)) : (((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 25)) || ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 19)))
+    },
+    // 武汉明瑞
+    isMingRui() {
+      return this.getUser && this.getUser.isProd == 0 ? ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 40) && (this.getUser && this.getUser.user.brand === 1)) : (((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 1) && this.getUser.user.brand === 17) || ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 19) && this.getUser.user.brand === 4))
     }
   },
   mounted() {
