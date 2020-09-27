@@ -125,7 +125,7 @@ let TOOL = {
               category: "1-2-8",
               can: true,//是否可见
               path: "transferAudit",
-              code: "sign-ht-dk-query"  //后期修改
+              code: "sign-cw-zk-query"  //后期修改
             }
           ]
         },

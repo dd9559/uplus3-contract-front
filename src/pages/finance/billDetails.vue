@@ -28,7 +28,7 @@
         <li>
           <h4 class="f14">{{activeItem}}</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
-            <el-table-column align="center" label="合同编号" v-if="!billMsg.payCodeSK">
+            <el-table-column align="center" label="合同编号">
               <template slot-scope="scope">
                 <span>{{billMsg.contCode}}</span>
               </template>
@@ -38,12 +38,16 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="收款单" v-if="billMsg.payCodeSK">
+            <el-table-column
+              align="center"
+              label="收款单"
+              v-if="billMsg.contCode=='-'&&activeItem==='付款信息'"
+            >
               <template slot-scope="scope">
                 <span>{{billMsg.payCodeSK}}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" label="物业地址" v-if="!billMsg.payCodeSK">
+            <el-table-column align="center" label="物业地址">
               <template slot-scope="scope">
                 <span>{{billMsg.address|nullFormatter(2)}}</span>
               </template>
@@ -499,6 +503,12 @@ export default {
       name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
       path: this.$route.fullPath,
     });
+    if (this.$route.query.isZk) {
+      arr = this.$tool.getRouter(
+        ["二手房", "财务", "转款审核","转款详情"],
+        "/transferAudit"
+      );
+    }
     this.setPath(arr);
     this.getInOutPayInfoDetail();
   },
@@ -1022,12 +1032,15 @@ export default {
     }
   }
 
-  /*> p {
-      position: absolute;
-      top: 50%;
-      right: 20px;
-      transform: translateY(-50%);
-    }*/
+  > p {
+    // position: absolute;
+    // top: 50%;
+    // right: 20px;
+    // transform: translateY(-50%);
+    width: 100% !important;
+    text-align: right !important;
+    margin: 5px 0 5px !important;
+  }
 }
 
 .bill-details-content {

@@ -533,37 +533,37 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
 })
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "11111111",
-  guestID: "132",
-  guestIDs: "11.22,333",
-  guestName: "然迪生",
-  guestNames: "eeeeee",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "22222222",
-  ownerID: "123",
-  ownerIDs: "11.22,333",
-  ownerName: "熊先",
-  ownerNames: "sffffs",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "是的噶几开会说",
-  dealPrice: 1000,
-  dealPriceUpper: '壹仟',
-  square: 160,
-  guestStoreRegisterCode: '213',
-  signDate: 1592465819508,
-  organizationCode: "8888888888"
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "11111111",
+//   guestID: "132",
+//   guestIDs: "11.22,333",
+//   guestName: "然迪生",
+//   guestNames: "eeeeee",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "22222222",
+//   ownerID: "123",
+//   ownerIDs: "11.22,333",
+//   ownerName: "熊先",
+//   ownerNames: "sffffs",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "是的噶几开会说",
+//   dealPrice: 1000,
+//   dealPriceUpper: '壹仟',
+//   square: 160,
+//   guestStoreRegisterCode: '213',
+//   signDate: 1592465819508,
+//   organizationCode: "8888888888"
+// }
 for (let readonlyItem in msg) { //得到readonly的值
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   let readonlyArr = ['code', 'ownerTel', 'ownerCardType', 'organizationCode', 'guestCardTypes', 'guestIDs', 'ownerTels', 'ownerCardTypes', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestCardType', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']

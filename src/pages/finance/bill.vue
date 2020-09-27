@@ -268,6 +268,22 @@
             ></el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>转款审核状态：</label>
+          <el-select
+            :clearable="true"
+            size="small"
+            v-model="searchForm.zkAuditState"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in dictionary['77']"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" ref="box">
@@ -452,7 +468,21 @@
                        scope.row.payStatusValue!==11)||
                        (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
             >开票</el-button>
-            <el-button type="text" @click="btnOpera(scope.row,1)">编辑</el-button>
+            <template v-if="scope.row.isZK==='true'">
+              <el-button
+                type="text"
+                @click="btnOpera(scope.row,1)"
+                v-if="power['sign-cw-zk-edit'].state"
+              >编辑</el-button>
+            </template>
+            <template v-else>
+              <el-button
+                type="text"
+                @click="btnOpera(scope.row,1)"
+                v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
+              >编辑</el-button>
+            </template>
+
             <!-- 新增转款按钮 &&power['sign-cw-bill-zk'].state-->
             <template v-if="scope.row.contId!=0">
               <el-button
@@ -809,6 +839,7 @@ export default {
         recordType: "",
         payway: "", //收款方式
         hasCont: "", //有/无合同
+        zkAuditState: "",
       },
       tableTotal: {},
       list: [],
@@ -826,6 +857,7 @@ export default {
         64: "",
         69: "",
         792: "",
+        77: "",
       },
       drop_MoneyType: [],
       //分页
@@ -896,6 +928,10 @@ export default {
         "sign-cw-bill-zk": {
           state: false,
           name: "转款",
+        },
+        "sign-cw-zk-edit": {
+          state: false,
+          name: "转款编辑",
         },
       },
       transterShow: false,
@@ -1473,7 +1509,7 @@ export default {
         return;
       }
       if (this.zkEdit) {
-        if (allMoney > this.transterInfoPerson.amount) {
+        if (allMoney > this.transterInfoPerson.inMoney) {
           this.$message({
             message: "转款金额合计不能超过已收款金额",
           });
@@ -1519,8 +1555,14 @@ export default {
           ? this.transterInfoPerson.inContractCode
           : "", //转入的合同编号
       };
+      let url;
+      if (this.zkEdit) {
+        url = "/api/payInfo/editInOutPayInfo ";
+      } else {
+        url = "/api/payInfo/inOutPayInfo";
+      }
       this.$ajax
-        .postJSON("/api/payInfo/inOutPayInfo", param)
+        .postJSON(url, param)
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
