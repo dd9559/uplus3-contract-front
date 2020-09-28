@@ -77,7 +77,7 @@
             type="primary"
             size="small"
             @click="getExcel"
-            v-if="power['sign-cw-debt-export'].state"
+            v-if="power['sign-cw-zk-export'].state"
           >导出</el-button>
         </p>
       </div>
@@ -89,7 +89,7 @@
         header-row-class-name="theader-bg"
         class="info-scrollbar"
         style="width: 100%"
-        @row-dblclick="toDetails"
+        @row-dblclick="toZkDetail"
       >
         <el-table-column min-width="120" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
@@ -174,17 +174,17 @@
             <p v-for="(item,index) in scope.row.amoutList" :key="index">{{item.amount}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="转款时间" prop="createTime" :formatter="nullFormatter" min-width="90">
+        <el-table-column label="转款时间" prop="createTime" :formatter="nullFormatter" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核时间" prop="createTime" :formatter="nullFormatter" min-width="90">
+        <el-table-column label="审核时间" prop="createTime" :formatter="nullFormatter" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="审核状态">
+        <el-table-column min-width="90" label="审核状态">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
             <span
@@ -204,7 +204,16 @@
           class-name="null-formatter operation-btns"
         >
           <template slot-scope="scope">
-            <el-button type="text" @click="btnOpera(scope.row,1)">编辑</el-button>
+            <el-button
+              type="text"
+              @click="btnOpera(scope.row,1)"
+              v-if="power['sign-cw-zk-edit'].state"
+            >编辑</el-button>
+            <el-button
+              type="text"
+              @click="toZkDetail(scope.row)"
+              v-if="(scope.row.auditBy===getUser.user.empId)&&scope.row.grabDept&&scope.row.isDeal!=3"
+            >审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -233,8 +242,6 @@
             <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
             <span>款类：{{transterInfoPerson&&transterInfoPerson.outPayType}}</span>&nbsp;&nbsp;&nbsp;
             <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp; {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
-            <!-- <span>款类：{{selectPayInfo&&selectPayInfo.moneyType}}</span>&nbsp;&nbsp;&nbsp;
-            <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>-->
           </p>
           <p>物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
           <p class="title">转款操作</p>
@@ -384,6 +391,17 @@
         </el-dialog>
       </el-dialog>
     </div>
+    <checkPerson
+      :show="checkPerson.state"
+      :type="checkPerson.type"
+      :bizCode="checkPerson.code"
+      :flowType="checkPerson.flowType"
+      @close="checkPerson.state=false"
+      v-if="checkPerson.state"
+      @submit="personChose"
+      :showLabel="checkPerson.label"
+      :page="checkPerson.page"
+    ></checkPerson>
   </div>
 </template>
 
@@ -393,11 +411,13 @@ import { MIXINS } from "@/assets/js/mixins";
 import scrollBar from "@/components/scrollBar";
 import moneyTypePop from "@/components/moneyTypePop";
 import { TOOL } from "@/assets/js/common";
+import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [MIXINS, FILTER],
   components: {
     scrollBar,
     moneyTypePop,
+    checkPerson,
   },
   data() {
     return {
@@ -483,6 +503,22 @@ export default {
           state: false,
           name: "转款",
         },
+        "sign-cw-zk-edit": {
+          state: false,
+          name: "转款编辑",
+        },
+        "sign-cw-zk-export": {
+          state: false,
+          name: "转款导出",
+        },
+        "sign-cw-bill-print": {
+          state: false,
+          name: "打印",
+        },
+        "sign-cw-debt-invoice": {
+          state: false,
+          name: "开票",
+        },
       },
       transterShow: false,
       kuanleiVal: [
@@ -504,6 +540,14 @@ export default {
       selectPayInfo: null,
       moneyType: [],
       transterInfoPerson: {},
+      checkPerson: {
+        state: false,
+        type: "init",
+        code: "",
+        label: false,
+        flowType: 0,
+        page: "list",
+      },
     };
   },
   mounted() {
@@ -577,7 +621,7 @@ export default {
       param.contTypes = param.contType.join(",");
       delete param.contType;
       delete param.timeRange;
-      this.excelCreate("/input/payInfoExcel", param);
+      this.excelCreate("/input/zkAuditExcel", param);
     },
     test: function (val) {
       this.getEmployeByText(val);
@@ -648,44 +692,7 @@ export default {
      * 跳转详情页
      * @param row
      */
-    toDetails: function (row) {
-      if (
-        !this.power["sign-cw-debt-rev"].state &&
-        (row.type === 1 || row.type === 8)
-      ) {
-        this.$message({
-          message: "无收款详情查看权限",
-        });
-        return;
-      }
-      if (!this.power["sign-cw-debt-pay"].state && row.type === 2) {
-        this.$message({
-          message: "无付款详情查看权限",
-        });
-        return;
-      }
-      /*if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
-                  this.btnOpera(row, 1)
-                } else {*/
-      this.setPath(
-        this.getPath.concat({
-          name: row.type === 1 || row.type === 8 ? "收款详情" : "付款详情",
-        })
-      );
-      this.$router.push({
-        path: "billDetails",
-        query: {
-          id: row.id,
-          tab: row.type === 1 || row.type === 8 ? "收款信息" : "付款信息",
-          power: this.getUser.user.empId === row.auditBy,
-          bill: this.power["sign-cw-bill-invoice"].state,
-          contId: row.contId,
-          listName: 1,
-          detailType: true,
-        },
-      });
-      // }
-    },
+    toDetails: function (row) {},
     btnOpera: function (val) {
       this.transterShow = true;
       // console.log(val);
@@ -706,6 +713,8 @@ export default {
           outMoney: val.amount,
         },
       ];
+      this.selectPayInfo = val;
+      this.getTransterInfo(val.id);
       //       this.transterShow = true;
       //       this.selectPayInfo = val;
       //       this.getTransterInfo(val.id);
@@ -895,11 +904,10 @@ export default {
         // this.sureSaveTransterShow = false;
         return;
       }
-      if (allMoney > this.selectPayInfo.amount) {
+      if (allMoney > this.transterInfoPerson.inMoney) {
         this.$message({
           message: "转款金额合计不能超过已收款金额",
         });
-        // this.sureSaveTransterShow = false;
         return;
       }
       if (allMoney === 0) {
@@ -918,7 +926,6 @@ export default {
       this.sureSaveTransterShow = true;
     },
     transterSaveFinal() {
-      console.log();
       let param = {
         InOutFormList: JSON.parse(JSON.stringify(this.kuanleiVal)),
         outId: this.selectPayInfo.contId, //转出的合同ID
@@ -935,7 +942,7 @@ export default {
           : "", //转入的合同编号
       };
       this.$ajax
-        .postJSON("/api/payInfo/inOutPayInfo", param)
+        .postJSON("/api/payInfo/editInOutPayInfo", param)
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
@@ -1009,6 +1016,68 @@ export default {
           payBillNoCont: 1,
         },
       });
+    },
+    personChose: function () {
+      this.checkPerson.state = false;
+      this.getData();
+    },
+    // 选择审核人
+    choseCheckPerson: function (row, type) {
+      this.checkPerson.flowType = this.activeView === 1 ? 1 : 0;
+      this.checkPerson.code = row.payCode;
+      this.checkPerson.state = true;
+      this.checkPerson.type = type;
+      if (row.nextAuditId === -1) {
+        this.checkPerson.label = true;
+      } else {
+        this.checkPerson.label = false;
+      }
+    },
+    toZkDetail(item) {
+      if (this.getUser.user.empId === item.auditBy) {
+        this.$router.push({
+          path: "billDetails",
+          query: {
+            tab: "收款信息",
+            id: item.id,
+            type: item.inAccountType,
+            power: this.getUser.user.empId === item.auditBy,
+            print: this.power["sign-cw-bill-print"].state,
+            bill: this.power["sign-cw-debt-invoice"].state,
+            listName: 2,
+            isZk: true,
+          },
+        });
+      } else {
+        this.$ajax
+          .get("/api/machine/getAuditAuth", {
+            bizCode: item.payCode,
+            flowType: 11,
+          })
+          .then((res) => {
+            res = res.data;
+            if (res.status === 200) {
+              this.$router.push({
+                path: "billDetails",
+                query: {
+                  tab: "收款信息",
+                  id: item.id,
+                  type: item.inAccountType,
+                  power: this.getUser.user.empId === item.auditBy,
+                  print: this.power["sign-cw-bill-print"].state,
+                  bill: this.power["sign-cw-debt-invoice"].state,
+                  listName: 2,
+                  isZk: true,
+                },
+              });
+            }
+          })
+          .catch((error) => {
+            this.$message({
+              message: `抢单失败`,
+            });
+          });
+      }
     },
   },
   filters: {
@@ -1454,6 +1523,15 @@ export default {
   }
   padding-bottom: 20px;
   padding-block-start: 1.25vw;
+}
+.btn-text-info {
+  padding: 0;
+  color: @color-blue;
+  cursor: pointer;
+
+  &.color-red {
+    color: red;
+  }
 }
 </style>
 
