@@ -45,14 +45,16 @@ function proxyFn(val) {
 }
 
 // 接口赋值的对象
-let msg = {
-    sellerName: "甲方名字",
-    sellerId: "甲方身份证号码",
-    buyerName: "乙方名字",
-    buyerId: "乙方身份证号码",
-    code: "S0001191107007",
-    signDate: 1592465819508
-}
+//基础数据赋值
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//     sellerName: "甲方名字",
+//     sellerId: "甲方身份证号码",
+//     buyerName: "乙方名字",
+//     buyerId: "乙方身份证号码",
+//     code: "S0001191107007",
+//     signDate: 1592465819508
+// }
 
 // 赋值
 for (let readonlyItem in msg) {
