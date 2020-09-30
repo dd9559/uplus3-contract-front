@@ -252,14 +252,14 @@
         <p class="title">定约定金协议</p>
         <p class="code fb">合同编号：<span class="text-limit" systemParam="code" tag="input-auto"></span></p>
         <ul class="ulbox">
-            <li>甲方（卖方）： <span class="text-limit input-before" systemparam="sellerName" tag="input-auto"></span></li>
-            <li>身份证号： <span class="text-limit input-before" systemparam="sellerId" tag="input-auto"></span></li>
+            <li>甲方（卖方）： <span class="text-limit input-before" systemparam="ownerName" tag="input-auto"></span></li>
+            <li>身份证号： <span class="text-limit input-before" systemparam="ownerID" tag="input-auto"></span></li>
             <li>甲方代理人： <span class="text-limit input-before" extendParam="val1" tag="input-auto"></span></li>
             <li>身份证号： <span class="text-limit input-before" extendParam="val2" tag="input-auto"></span></li>
         </ul>
         <ul class="ulbox">
-            <li>乙方（买方）： <span class="text-limit input-before" systemparam="buyerName" tag="input-auto"></span></li>
-            <li>身份证号： <span class="text-limit input-before" systemparam="buyerId" tag="input-auto"></span></li>
+            <li>乙方（买方）： <span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+            <li>身份证号： <span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
             <li>乙方代理人： <span class="text-limit input-before" extendParam="val3" tag="input-auto"></span></li>
             <li>身份证号： <span class="text-limit input-before" extendParam="val4" tag="input-auto"></span></li>
         </ul>
@@ -308,11 +308,11 @@
 </body>
 
 </html>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mr_djxy_20200928.js"></script>
+<script type="text/javascript" src="/js/bundle_mr_djxy_20200928.js"></script> -->
 <!-- <script>
     (function() {
         var scriptList = document.getElementsByTagName("script")
@@ -320,7 +320,7 @@
         if (!scriptList[0].src) {
             var host = 'https://sign2.jjw.com'
             var host_other = "http://sign2.jjw.com:28879"
-            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/MR-DJXY20200928.js", "datepicker.css"]
+            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
                 if (window.location.host === '192.168.1.192:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {

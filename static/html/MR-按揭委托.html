@@ -284,16 +284,16 @@
         <p class="code fb">合同编号：<span class="text-limit span-time" systemParam="code" tag="input-auto"></span></p>
         <p class="title2">过户、按揭委托合同</p>
         <ul class="ulbox">
-            <li>甲方（出卖人）：<span class="text-limit input-before" systemparam="sellerName" tag="input-auto"></span></li>
-            <li>身份证号/统一社会信用代码：<span class="text-limit input-before" systemparam="sellerId" tag="input-auto"></span></li>
+            <li>甲方（出卖人）：<span class="text-limit input-before" systemparam="ownerName" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码：<span class="text-limit input-before" systemparam="ownerID" tag="input-auto"></span></li>
             <li>共有产权人： <span class="text-limit input-before" extendParam="val1" tag="input-auto"></span></li>
             <li>身份证号/统一社会信用代码： <span class="text-limit input-before" extendParam="val2" tag="input-auto"></span></li>
             <li>甲方代理人： <span class="text-limit input-before" extendParam="val3" tag="input-auto"></span></li>
             <li>身份证号： <span class="text-limit input-before" extendParam="val4" tag="input-auto"></span></li>
         </ul>
         <ul class="ulbox">
-            <li>乙方（买受人）： <span class="text-limit input-before" systemparam="buyerName" tag="input-auto"></span></li>
-            <li>身份证号/统一社会信用代码： <span class="text-limit input-before" systemparam="buyerId" tag="input-auto"></span></li>
+            <li>乙方（买受人）： <span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码： <span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
             <li>共有产权人： <span class="text-limit input-before" extendParam="val5" tag="input-auto"></span></li>
             <li>身份证号/统一社会信用代码： <span class="text-limit input-before" extendParam="val6" tag="input-auto"></span></li>
             <li>乙方代理人： <span class="text-limit input-before" extendParam="val7" tag="input-auto"></span></li>
@@ -372,7 +372,7 @@
         if (!scriptList[0].src) {
             var host = 'https://sign2.jjw.com'
             var host_other = "http://sign2.jjw.com:28879"
-            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/MR-AJWT20200928.js", "datepicker.css"]
+            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
                 if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
