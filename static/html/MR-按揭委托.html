@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/datepicker.css" />
+    <title>定约定金协议</title>
+    <style>
+        /* 默认样式 */
+        body {
+            font-family: SimHei;
+            line-height: 1.8;
+        }
+
+        p {
+            margin: 0px;
+            padding: 0px;
+            line-height: 1.8;
+        }
+
+        input {
+            border: 0;
+            outline: none;
+            border-bottom: 1px solid gray;
+            height: 16px;
+            padding-left: 10px;
+            box-sizing: border-box;
+            font-family: SimHei;
+        }
+
+        input:disabled {
+            background-color: #fff;
+        }
+
+        input[type="checkbox"] {
+            border: 0px;
+        }
+
+        /*去掉谷歌，火狐下的type="number"中的右边箭头*/
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none !important;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .info-checkbox {
+            display: inline;
+            cursor: pointer;
+            text-indent: 0px;
+            line-height: 1;
+        }
+
+        .info-checkbox>p[type="check"] {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid gray;
+            position: relative;
+            -webkit-box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            box-sizing: content-box;
+            margin: 0;
+        }
+
+        .info-checkbox>p[type="check"][checked='true']:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            display: inline-block;
+            width: 100%;
+            height: 10px;
+            background-size: contain;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVQ4T72TsUvDQBjF33cYUhfFP0GIVO7S1cXJxU3sIqiLuHSyOIg4Cro4OBW3jJ10EhcRdHcw2901f0BWh04OmvskpZVYqjYEvPl9v3v3vneEiocqzuP/AY1GY9k5F2VZ1kyS5LWUAynlihDigZnnmblprb2bGhCG4TqAWwCzzNwyxkR5fgNAEARzvu8fGWPOAXyMB6uU2iaiLoAZ51zbWns10gwAUsotIcQNM9/XarXNOI7fRwIp5QERdYiInHOn1tqz4gVfTwjDsAOgzcxP/X5/I03TN6XUBRGdDAcutdbH4+6KGQil1CMRrQF4BtADsJ8PMHNkjGlN6sy3EIdZvBDRUkHc1Vrv5Zw/AbmgXq8vep4XA1gAcK213gXgfmrsxDUqpVaJ6FBrvQMg+63uU/eglIMyH6yyg0+YpmgRBNEBzgAAAABJRU5ErkJggg==");
+        }
+
+        .info-checkbox>p[type="check"][checked='false']:after {
+            content: '';
+            position: absolute;
+            display: inline-block;
+            width: 100%;
+            height: 10px;
+            background-size: contain;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
+        }
+
+        span[tag='input-auto'] {
+            border-bottom: 1px solid gray;
+            padding: 2px 10px;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+
+        span[tag='input-auto'].input-before:before {
+            content: '请输入';
+            text-align: center;
+            color: #a1a1a1;
+        }
+
+        span[tag='input-auto'].input-before.input-select:before {
+            content: '请选择';
+            text-align: center;
+            color: #a1a1a1;
+        }
+
+        /* 页面样式 公共样式 */
+
+        /* 悬浮窗 */
+        .alert-viwer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px;
+            border-radius: 4px;
+            background: #fff;
+            z-index: 999;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+        }
+
+        /* 错误提示 */
+        .BODERRED {
+            border-color: red !important;
+        }
+
+        .alert-viwer>textarea {
+            background: #fff;
+            border: 1px solid #dcdfe6;
+        }
+
+        .alert-viwer>p {
+            text-align: right;
+            margin: 6px 0 0;
+            padding: 0;
+            line-height: normal;
+        }
+
+        .alert-viwer>p>span {
+            display: inline-block;
+            background: #409eff;
+            padding: 6px 12px;
+            color: #FFFFFF;
+            border-radius: 4px;
+        }
+
+        .alert-viwer>p>span:last-of-type {
+            background: #fff;
+            color: #606266;
+            border: 1px solid #dcdfe6;
+        }
+
+        .main {
+            position: relative;
+            font-size: 16px;
+            width: 840px;
+            box-sizing: border-box;
+            padding: 0 40px;
+            margin: 0 auto;
+        }
+
+        .main .title,
+        .main .title2 {
+            font-size: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .main .title2 {
+            padding-bottom: 20px;
+        }
+
+        .fb {
+            font-weight: bold;
+        }
+
+        .code {
+            padding-left: 500px;
+            box-sizing: border-box;
+            margin: 10px 0;
+            text-align: right;
+        }
+
+        .ulbox {
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .ulbox li {
+            float: left;
+            width: 50%;
+            margin-bottom: 10px;
+        }
+
+        .ulbox .li-w {
+            width: 100%;
+        }
+
+        .interval,
+        .agreements.interval {
+            margin-top: 20px;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .mr-20{
+            margin-right: 20px;
+        }
+
+        .lh18 {
+            line-height: 1.8;
+        }
+
+        .agreements {
+            margin-top: 10px;
+            text-indent: 30px;
+        }
+
+        /* 签章 */
+        .signature {
+            position: relative;
+        }
+
+        .signature .signature-img {
+            position: absolute;
+            left: 0;
+            top: 20px;
+        }
+
+        /* 时间 */
+        span.span-time {
+            border-bottom: 0;
+        }
+
+
+        /* 页面样式 个性化样式 */
+
+        /* 双下划线 */
+        .double-ubderline {
+            border-bottom: 1px solid #409eff;
+            position: relative;
+        }
+
+        .double-ubderline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -3px;
+            border-bottom: 1px solid #409eff;
+        }
+
+        .bj-spacing{
+            height: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container main">
+        <!-- 公用输入框开始-->
+        <div class="alert-viwer" style="display: none;">
+            <textarea id="inputArea" cols="30" rows="4"></textarea>
+            <p class="control-btn">
+                <span>保存</span>
+                <span>取消</span>
+            </p>
+        </div>
+        <!-- 公用输入框结束-->
+        <p class="code fb">合同编号：<span class="text-limit span-time" systemParam="code" tag="input-auto"></span></p>
+        <p class="title2">过户、按揭委托合同</p>
+        <ul class="ulbox">
+            <li>甲方（出卖人）：<span class="text-limit input-before" systemparam="ownerName" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码：<span class="text-limit input-before" systemparam="ownerID" tag="input-auto"></span></li>
+            <li>共有产权人： <span class="text-limit input-before" extendParam="val1" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码： <span class="text-limit input-before" extendParam="val2" tag="input-auto"></span></li>
+            <li>甲方代理人： <span class="text-limit input-before" extendParam="val3" tag="input-auto"></span></li>
+            <li>身份证号： <span class="text-limit input-before" extendParam="val4" tag="input-auto"></span></li>
+        </ul>
+        <ul class="ulbox">
+            <li>乙方（买受人）： <span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码： <span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
+            <li>共有产权人： <span class="text-limit input-before" extendParam="val5" tag="input-auto"></span></li>
+            <li>身份证号/统一社会信用代码： <span class="text-limit input-before" extendParam="val6" tag="input-auto"></span></li>
+            <li>乙方代理人： <span class="text-limit input-before" extendParam="val7" tag="input-auto"></span></li>
+            <li>身份证号： <span class="text-limit input-before" extendParam="val8" tag="input-auto"></span></li>
+        </ul>
+        <p class="mt-10 lh18">丙方（见证人）: 武汉吉家正念房地产经纪服务有限公司 </p>
+        <p class="mt-10 lh18">统一社会信用代码：91420100MA49BL0W1L</p>
+        <p class="mt-10 lh18">地址：武汉东湖新技术开发区关南园一路20号当代科技园商业街1层5、6号铺（自贸区武汉片区）</p>
+        <p class="lh18 agreements interval">甲乙双方签订了位于<span class="text-limit input-before" extendParam="val9" tag="input-auto"></span>房屋的买卖合同，现甲乙双方委托丙方协助办理房产交易后期衍生事宜，经协商一致订立以下合同条款，甲乙丙三方共同遵照执行：</p>
+        <div class="lh18 mt-10 fb">第一条、服务事项</div>
+        <div class="lh18 agreements">甲乙双方委托丙方协助办理下列第<span class="input-before" listen="number" max="1" extendParam="val10" tag="input-auto"></span>项服务：</div>
+        <div class="lh18 agreements">1.协助办理按揭贷款手续。 </div>
+        <div class="lh18 agreements">2.协助办理产权过户手续。</div>
+        <div class="lh18 mt-10 fb">第二条、服务费支付时间及标准</div>
+        <div class="lh18 agreements">1、甲乙双方委托丙方协助办理按揭贷款手续，<span class="text-limit input-before" extendParam="val11" tag="input-auto"></span>应当于本合同签订当日支付丙方服务费人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val12" tag="input-auto"></span> 元（大写：<span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>圆整）。</div>
+        <div class="lh18 agreements">2、甲乙双方委托丙方协助办理产权过户手续，<span class="text-limit input-before" extendParam="val13" tag="input-auto"></span>应当于本合同签订当日支付丙方服务费人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val14" tag="input-auto"></span> 元（大写：<span tag="input-auto" extendparam="val14_add" systemParam="true" class="input-readonly"></span>圆整）。</div>
+        <div class="lh18 agreements">3、其他可能产生的贷款费用，包括但不限于抵押登记费、借款合同公证费、划款委托公证费、单身公证费、委托公证费、合同书工本费等由乙方自行缴纳。</div>
+        <div class="lh18 agreements">4、丙方信息</div>
+        <div class="lh18 agreements">开户名：武汉吉家正念房地产经纪服务有限公司</div>
+        <div class="lh18 agreements">开户行：招商银行武汉徐东支行</div>
+        <div class="lh18 agreements">账号：127913250310701</div>
+        <div class="lh18 agreements">丙方服务费标准为：贷款金额小于或等于150万的，贷款服务费为1800元加评估房价的千分之一；贷款金额高于150万的，贷款服务费为2500元加评估房价的千分之一。甲、乙方同意，甲、乙方支付丙方服务费后，由丙方选任房屋评估、贷款担保服务机构和结算（丙方盈亏自担）。服务费发票由丙方开具给甲乙方，评估、担保服务机构不对甲、乙方开票，三方对此不持异议。</div>
+        <div class="lh18 mt-10 fb">第三条、权利义务</div>
+        <div class="lh18 agreements">1、丙方应积极协助办理按揭贷款及产权过户相关事宜；</div>
+        <div class="lh18 agreements">2、甲乙双方应积极配合办理贷款及产权过户事宜，按贷款机构及房产等部门要求提供全部证件和资料，并保证证件和资料真实、合法、有效。</div>
+        <div class="lh18 agreements">3、丙方未提供服务的，退还已收取的服务费，不再承担其他任何责任。</div>
+        <div class="lh18 agreements">4、因房屋买卖合同解除导致本合同不能履行的，丙方已收取的服务费不予退还。</div>
+        <div class="lh18 agreements">5、因甲乙双方原因按揭贷款或过户手续不能办理，丙方已收取的服务费不予退还。</div>
+        <div class="lh18 agreements">6、如乙方未获得相应贷款的，丙方应退还已收取的服务费用，评估费等必要费用已由丙方向相关机构缴纳的，且相关机构一旦受理不予退还的，该笔费用丙方在服务费中扣除不予退还。</div>
+        <div class="lh18 agreements">7、甲乙双方应向丙方预留有效的联系地址、联系电话等，以便丙方可以及时、畅通地联系甲乙双方。如遇有联系地址、联系电话变更或失效的，甲乙双方应及时书面通知丙方。丙方的书面通知以甲乙双方在本合订本中填写的联系地址寄出挂号信或快递后 3 日即视为送达。</div>
+        <div class="lh18 mt-10 fb">第四条、违约责任</div>
+        <div class="lh18 agreements">1、甲乙双方如未按照本合同约定履行义务，导致合同履行迟延或无法履行的，违约方应承担违约责任，并赔偿守约方的损失。因乙方或甲方任何一方违反《存量房买卖合同》导致本合同无法履行的，违约方应向守约方承担违约责任，并承担本合同委托事项已产生的费用。</div>
+        <div class="lh18 agreements">2、甲乙双方未按本合同约定支付服务费的，除应足额向丙方支付其欠缴的服务费外，还需对未支付的部分，按照每日 1%的标准支付违约金。</div>
+        <div class="lh18 agreements">3、各方同意，丙方依本合同第一条约定的标准完成代理事项后，已收取的服务费不予退还。</div>
+        <div class="lh18 agreements">4、因不可抗力、及政府主管机关政策原因而导致本合同无法履行的，三方均不承担违约责任。</div>
+        <div class="lh18 mt-10 fb">第五条、免责事由</div>
+        <div class="lh18 agreements">1、申请贷款的条件及所需要的资料由贷款机构决定，丙方提供的贷款相关信息仅供参考，不作为贷款批复的依据。产权过户缴纳的相关税费由税务等部门决定，丙方提供的税费计算仅供参考，不作为产权过户缴纳税费的依据。</div>
+        <div class="lh18 agreements">2、丙方只负责协助办理本合同约定的相关手续，不承担不能办理或不能如期办理的责任。</div>
+        <div class="lh18 agreements">3、甲乙双方应按本协议约定支付服务费，如未支付服务费，丙方有权不予办理相关手续。</div>
+        <div class="lh18 agreements">4、丙方已提示交易双方：甲乙双方应按照法律法规及政府规定，如实进行纳税申报和征缴，甲乙方如因交易税费征缴而导致承担行政责任，与丙方无关。</div>
+        <div class="lh18 mt-10 fb">第六条、保密事项</div>
+        <div class="lh18 agreements">甲乙丙三方均应充分保守本合同所涉及的商业秘密，任何一方不得对外提供或泄露本合同所约定的内容。</div>
+        <div class="lh18 mt-10 fb">第七条、其他事项</div>
+        <div class="lh18 agreements">1、丙方履行本合同时，预约甲乙双方到相关部门办理手续的通知方式为：电话、短信、信函、电子通讯形式（如微信、电子邮件等），其中任何一种方式的采用都视为向甲乙双方进行了预约，甲乙双方应按约定赴约。电话<span class="double-ubderline">联系按</span>本合同甲乙双方提供的电话号码联络，信函<span class="double-ubderline">发送按</span>本合同甲乙双方提供的住所发出，电子通讯形式发送至甲乙双方提供或告知的账号，丙方按上述方法发出预约后，即视为已向甲乙双方通知。</div>
+        <div class="lh18 agreements">2、本合同未尽事宜，甲乙丙三方协商后可订立补充协议，补充协议与本合同具有同等效力。</div>
+        <div class="lh18 agreements">3、因本合同产生的争议，甲乙丙三方协商解决；协商不成的，任何一方可向丙方所在地人民法院起诉。</div>
+        <div class="lh18 agreements">4、丙方不认可未加盖丙方公章的收款凭证，不认可未加盖丙方公章的任何承诺，也不认可公司员工个人做出的任何书面或口头的承诺，该行为不视为丙方行为，与丙方无关。甲乙双方对此知悉且均无异议。</div>
+        <div class="lh18 agreements">本合同一式三份，甲乙丙三方各执一份，自各方签字盖章之日起生效。各方同意，未经本人签章或加盖公章的任何书面承诺、口头承诺、条款的变更等行为均不产生法律约束力。</div>
+        <div class="bj-spacing"></div>
+        <ul class="ulbox">
+            <li>甲方签章: <span class="signature"><img class="SignatureLocation signature-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" /></span></li>
+            <li>乙方签章:<span class="signature"><img class="SignatureLocation signature-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" /></span></li>
+            <li>甲方代理人签章: </li>
+            <li>乙方代理人签章: </li>
+            <li>签署日期: <span class="span-time" systemparam="signDate" tag="input-auto"></span></li>
+            <li>签署日期: <span class="span-time" systemparam="signDate" tag="input-auto"></span></li>
+        </ul>
+        <ul class="ulbox">
+            <li class="li-w">丙方（签章）:<span class="signature"><img class="SignatureLocation signature-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /></span>武汉吉家正念房地产经纪服务有限公司</li>
+            <li class="li-w">签署日期: <span class="span-time" systemparam="signDate" tag="input-auto"></span></li>
+        </ul>
+        <div class="lh18 mt-20">丙方经办人一：<span class="text-limit input-before mr-20" extendParam="val15" tag="input-auto"></span>登记证号：<span class="text-limit input-before" extendParam="val16" tag="input-auto"></span></div>
+        <div class="lh18 mt-10">丙方经办人二：<span class="text-limit input-before mr-20" extendParam="val15" tag="input-auto"></span>登记证号：<span class="text-limit input-before" extendParam="val16" tag="input-auto"></span></div>
+    </div>
+</body>
+
+</html>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser.min.js"></script>
+<script type="text/javascript" src="/datepicker.js"></script>
+<script type="text/javascript" src="/dropdown.js"></script>
+<script type="text/javascript" src="/js/bundle_mr_ajwt_20200928.js"></script>
+<!-- <script>
+    (function() {
+        var scriptList = document.getElementsByTagName("script")
+        if (!scriptList[0].src) {
+            var host = 'https://sign2.jjw.com'
+            var host_other = "http://sign2.jjw.com:28879"
+            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle.js", "datepicker.css"]
+            for (let i = 0; i < addrList.length; i++) {
+                if (window.location.host === 'localhost:8080') {
+                    if (addrList[i].indexOf('bundle') > -1) {
+                        // addrList[i]=host_other+'/'+addrList[i]
+                        addrList[i] = './MR-AJWT.js'
+                    } else {
+                        addrList[i] = host_other + '/' + addrList[i]
+                    }
+                } else {
+                    addrList[i] = '/' + addrList[i]
+                }
+                if (addrList[i].indexOf('.css') > -1) {
+                    var hm = document.createElement("link");
+                    hm.rel = "stylesheet"
+                    hm.href = addrList[i];
+                    /*var s = document.getElementsByTagName("link")[0];
+                    s.parentNode.insertBefore(hm,s);*/
+                    document.head.appendChild(hm);
+                } else {
+                    var hm = document.createElement("script");
+                    addrList[i].includes('MR-AJWT.js') && (hm.type = 'module');
+                    hm.src = addrList[i];
+                    var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
+                    s.parentNode.insertBefore(hm, s);
+                }
+            }
+        }
+    })();
+</script> -->
