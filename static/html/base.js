@@ -152,6 +152,7 @@ let contractConfig = {
           }
         }
         document.querySelector('.control-btn').onclick = function (e) {
+          debugger
           let btn = e.target.innerHTML
           if (btn === '取消') {
             if (initVal.length > 0) {

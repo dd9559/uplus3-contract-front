@@ -512,13 +512,13 @@
     </div>
   </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_yxj_mr_20200929.js"></script>
+<script type="text/javascript" src="/js/bundle_yxj_mr_20200929.js"></script> -->
 
-<!-- <script>
+<script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -529,7 +529,7 @@
         "js/bundle_mm20190402.js", "datepicker.css"
       ]
       for (let i = 0; i < addrList.length; i++) {
-        if (window.location.host === '192.168.1.168:8080') {
+        if (window.location.host === 'localhost:8080') {
           if (addrList[i].indexOf('bundle') > -1) {
             // addrList[i]=host_other+'/'+addrList[i]
             addrList[i] = './MR-YXS.js'
@@ -557,6 +557,6 @@
     }
   })();
 
-</script> -->
+</script>
 
 </html>
