@@ -412,6 +412,9 @@ setTimeout(() => {
             tip.target.innerHTML = ev.target.value
             let cn_str = tip.target.getAttribute('extendparam')
             if (Obj['cn_arr'].includes(cn_str)) {
+                if (ev.target.value.indexOf(",") != -1) {
+                    ev.target.value = ev.target.value.replace(/,/g, '')
+                }
                 let index = toChineseNumber(ev.target.value).indexOf('元')
                 document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)
                 if (ev.target.value.indexOf(",") == -1) {
@@ -425,8 +428,14 @@ setTimeout(() => {
         let strCn = tip.target.getAttribute('extendparam')
         if (Obj['cn_arr'].includes(strCn)) {
             if (initVal.length > 0) {
+                if (initVal.indexOf(",") != -1) {
+                    initVal = initVal.replace(/,/g, '');
+                }
                 let index = toChineseNumber(initVal).indexOf('元')
                 document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)
+                if (initVal.indexOf(",") == -1) {
+                    document.querySelector(`*[extendparam=${strCn}]`).innerHTML = formatMoney(initVal)
+                }
             } else {
                 document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
             }
