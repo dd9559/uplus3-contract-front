@@ -19,10 +19,10 @@ let contractConfig = {
    * obj配置对象
    * storage保存errorArr校验结果的本地缓存。当模板为买卖的传templateError1，其他情况下都传递templateError
    */
-  submit: function (e, obj,storage='templateError') {
+  submit: function (e, obj, storage = 'templateError') {
     //初始化
     contractConfig.errorArr = [];
-    sessionStorage.setItem(storage,JSON.stringify([]));
+    sessionStorage.setItem(storage, JSON.stringify([]));
     for (let item in obj) {
       // contractConfig.errorArr=JSON.parse(sessionStorage.getItem("templateError"));
       if (contractConfig.errorArr.length > 0) {
@@ -37,18 +37,18 @@ let contractConfig = {
           contractConfig.errorArr.push(item.split('_')[1]);
           break;
         } else {
-          if(obj[item]&&obj[item].state) {
+          if (obj[item] && obj[item].state) {
             // checkbox为多选且有子项要验证需配置属性state:true
-            for(let i = 0; i < doms.length; i++) {
-              if(doms[i].querySelector('p').getAttribute('checked')) {
-                if(contractConfig.errorArr.length) {
+            for (let i = 0; i < doms.length; i++) {
+              if (doms[i].querySelector('p').getAttribute('checked')) {
+                if (contractConfig.errorArr.length) {
                   break
                 }
-                obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](i),storage)
+                obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](i), storage)
               }
             }
           } else {
-            obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex),storage)
+            obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](checkedIndex), storage)
           }
         }
       } else if (item.includes('drapdown')) {
@@ -58,12 +58,12 @@ let contractConfig = {
         let dropdownVal = dropdown.tagName.toLowerCase() === 'span' ? dropdown.innerHTML : dropdown.value;
         if (dropdownVal.length === 0) {
           contractConfig.errorArr.push({
-            type:'input',
-            name:dropdown.getAttribute('extendparam')
+            type: 'input',
+            name: dropdown.getAttribute('extendparam')
           });
           break;
         } else {
-          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal),storage)
+          obj[item] && obj[item]['stateful'] && contractConfig.submit(e, obj[item]['stateful'](dropdownVal), storage)
         }
       } else if (item.includes('time')) {
         let time = document.querySelector(`*[extendparam=${item.split('_')[1]}]`);
@@ -71,32 +71,32 @@ let contractConfig = {
         let timeVal = time.tagName.toLowerCase() === 'span' ? time.innerHTML : time.value;
         if (timeVal.length === 0) {
           contractConfig.errorArr.push({
-            type:'input',
-            name:item.split('_')[1]
+            type: 'input',
+            name: item.split('_')[1]
           });
           break;
         }
       } else if (item.includes('info')) {
-        contractConfig.submit(e, obj[item]['stateful'](),storage);
+        contractConfig.submit(e, obj[item]['stateful'](), storage);
       } else {//输入框非空校验
         let input = document.querySelector(`*[extendparam=${item}]`);
-        if(obj[item]==-1){
+        if (obj[item] == -1) {
           continue
         }
         input.classList.remove('BODERRED');
         let inputVal = input.tagName.toLowerCase() === 'span' ? input.innerHTML : input.value;
         if (inputVal.length === 0) {
-          let _errorMsg={
-            type:'input',
-            name:item
+          let _errorMsg = {
+            type: 'input',
+            name: item
           }
-          input.getAttribute('company')&&(_errorMsg.company=true)
+          input.getAttribute('company') && (_errorMsg.company = true)
           contractConfig.errorArr.push(_errorMsg);
           break;
         }
       }
     }
-    sessionStorage.setItem(storage,JSON.stringify(contractConfig.errorArr))
+    sessionStorage.setItem(storage, JSON.stringify(contractConfig.errorArr))
     return contractConfig.errorArr;
   },
   /**
@@ -123,10 +123,15 @@ let contractConfig = {
 
         textArea.oninput = function (ev) {
           tip.target.innerHTML = ev.target.value
+          console.log("pp");
+          console.log(tip.target.innerHTML)
           callback && callback(ev, tip)//回调要放在赋值之后，防止回调函数的数据操作无效了
           tip.target.classList.remove('input-before')
           if (ev.target.value.length === 0) {
             tip.target.classList.add('input-before')
+          }
+          if (ev.target.value.indexOf(",") == -1) {
+            ev.target.value = formatMoney(ev.target.value);
           }
         }
         document.onclick = function (e) {
@@ -139,9 +144,9 @@ let contractConfig = {
             textArea.value = ''
           }
         }
-        document.onkeydown=function(e){
-          if(e.key==='Enter'){
-            let btns=document.querySelector('.control-btn').getElementsByTagName('span')
+        document.onkeydown = function (e) {
+          if (e.key === 'Enter') {
+            let btns = document.querySelector('.control-btn').getElementsByTagName('span')
             btns[0].click()
           }
         }
@@ -174,25 +179,25 @@ let contractConfig = {
     let checkboxs = document.querySelectorAll(".info-checkbox")
     for (let i = 0; i < checkboxs.length; i++) {
       checkboxs[i].addEventListener('click', function (obj) {
-          let able = obj.currentTarget.getAttribute('readonly') //当前勾选框是否readonly
-          if (!able) {
-            let boxArray = document.getElementsByName(obj.currentTarget.getAttribute('name'));
-            for (let i = 0; i < boxArray.length; i++) {
-              let checkboxTip = boxArray[i].querySelector('p')
-              if (boxArray[i] === obj.currentTarget) {
-                success && success(obj, i)
-                if (checkboxTip.getAttribute('checked') === 'true') {
-                  checkboxTip.removeAttribute('checked')
-                } else {
-                  checkboxTip.setAttribute('checked', true)
-                }
+        let able = obj.currentTarget.getAttribute('readonly') //当前勾选框是否readonly
+        if (!able) {
+          let boxArray = document.getElementsByName(obj.currentTarget.getAttribute('name'));
+          for (let i = 0; i < boxArray.length; i++) {
+            let checkboxTip = boxArray[i].querySelector('p')
+            if (boxArray[i] === obj.currentTarget) {
+              success && success(obj, i)
+              if (checkboxTip.getAttribute('checked') === 'true') {
+                checkboxTip.removeAttribute('checked')
               } else {
-                !obj.currentTarget.getAttribute('more') && checkboxTip.removeAttribute('checked')
+                checkboxTip.setAttribute('checked', true)
               }
+            } else {
+              !obj.currentTarget.getAttribute('more') && checkboxTip.removeAttribute('checked')
             }
-            callback && callback(obj, boxArray)
           }
+          callback && callback(obj, boxArray)
         }
+      }
       )
     }
   },
@@ -225,14 +230,14 @@ let contractConfig = {
    */
   initForm: function (config, readonly = 1) {
     config.forEach(function (item) {
-      let isCheckBox=(item.indexOf('checkbox')===-1)
-      let dom = isCheckBox?document.querySelector(`*[extendparam=${item}]`):document.querySelectorAll(`*[name=${item.split('_')[1]}]`)//将子项中的勾选框和其他表单元素区别
-      if(isCheckBox){
+      let isCheckBox = (item.indexOf('checkbox') === -1)
+      let dom = isCheckBox ? document.querySelector(`*[extendparam=${item}]`) : document.querySelectorAll(`*[name=${item.split('_')[1]}]`)//将子项中的勾选框和其他表单元素区别
+      if (isCheckBox) {
         if (readonly === 1) {
           dom.setAttribute('systemParam', "true");
           dom.setAttribute("readonly", "readonly");
           dom.setAttribute("disabled", "disabled");
-        }else{
+        } else {
           dom.removeAttribute('systemParam');
           // dom.removeAttribute("readonly");
           dom.removeAttribute("disabled");
@@ -247,22 +252,22 @@ let contractConfig = {
           } else {
             dom.innerHTML = ''
             //判断是否需要'input-before'类来显示placeholder属性
-            if(item.indexOf('_')==-1){
+            if (item.indexOf('_') == -1) {
               dom.classList.add('input-before')
             }
             //清空中文数字不可编辑项2020-04-24加
-            let chineseSpan=document.querySelector(`*[extendparam=${item+'_add'}]`)
-            if(chineseSpan){
-              chineseSpan.innerHTML=''
+            let chineseSpan = document.querySelector(`*[extendparam=${item + '_add'}]`)
+            if (chineseSpan) {
+              chineseSpan.innerHTML = ''
             }
           }
         }
-      }else {
-        dom.forEach(item=>{
+      } else {
+        dom.forEach(item => {
           item.querySelector('p').removeAttribute('checked')
           if (readonly === 1) {
             item.setAttribute("readonly", "readonly");
-          }else{
+          } else {
             item.removeAttribute('readonly')
           }
         })
@@ -388,10 +393,19 @@ let toChineseNumber = function (money) {
   }
   return chineseStr;
 }
-
+function formatMoney(num) {
+  var list = new String(num).split('').reverse();
+  for (var i = 0; i < list.length; i++) {
+    if (i % 4 == 3) {
+      list.splice(i, 0, ',');
+    }
+  }
+  return list.reverse().join('');
+}
 export {
   contractConfig,
-  toChineseNumber
+  toChineseNumber,
+  formatMoney
 }
 
 
