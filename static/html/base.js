@@ -130,7 +130,8 @@ let contractConfig = {
           if (ev.target.value.length === 0) {
             tip.target.classList.add('input-before')
           }
-          if (ev.target.value.indexOf(",") == -1) {
+          // 金额格式化显示
+          if (ev.target.value.indexOf(",") == -1 && tip.target.getAttribute('extendparam') && tip.target.getAttribute('listen') && tip.target.getAttribute('max') != 12) {
             ev.target.value = formatMoney(ev.target.value);
           }
         }
