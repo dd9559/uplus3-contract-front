@@ -123,10 +123,16 @@ let contractConfig = {
 
         textArea.oninput = function (ev) {
           tip.target.innerHTML = ev.target.value
+          console.log("pp");
+          console.log(tip.target.innerHTML)
           callback && callback(ev, tip)//回调要放在赋值之后，防止回调函数的数据操作无效了
           tip.target.classList.remove('input-before')
           if (ev.target.value.length === 0) {
             tip.target.classList.add('input-before')
+          }
+          // 金额格式化显示
+          if (ev.target.value.indexOf(",") == -1 && tip.target.getAttribute('extendparam') && tip.target.getAttribute('listen') && tip.target.getAttribute('max') != 12) {
+            ev.target.value = formatMoney(ev.target.value);
           }
         }
         document.onclick = function (e) {
