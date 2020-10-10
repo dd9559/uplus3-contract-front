@@ -572,11 +572,11 @@
                 <!-- 第三条 -->
                 <p class="1h18 agreements"><strong>第三条 租金及押金</strong></p>
                 <p class="1h18 agreements">
-                    1.租金标准及支付方式：每月租金人民币（小写）<span class="input-before" listen="number" max="12"
+                    1.租金标准及支付方式：每月租金人民币（小写）<span class="input-before" listen="number" max="16"
                         extendParam="val10" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val10_add" systemParam="true"
                         class="input-readonly"></span>元),租期内租金总计人民币（小写）
-                        <span class="input-before" listen="number" max="12"
+                        <span class="input-before" listen="number" max="16"
                         extendParam="val11" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val11_add" systemParam="true"
                         class="input-readonly"></span>元,此价格不含相关税费)
@@ -618,7 +618,7 @@
                 </div>
 
                 <p class="1h18 agreements">
-                    2.押金：签订本合同当日，乙方应向甲方支付押金人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val15" tag="input-auto"></span>元
+                    2.押金：签订本合同当日，乙方应向甲方支付押金人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val15" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val15_add" systemParam="true" class="input-readonly"></span>元)
                     <span>，甲方应出具押金收据。租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应当承担的违约赔偿责任外，剩余部分应如数返还给乙方。</span>
                 </p>
@@ -692,7 +692,7 @@
                         <p type="check"></p>保持现状，
                     </div>
                     <span>甲方补偿装修费用共计人民币</span>
-                    （小写）<span class="input-before" listen="number" max="12" extendParam="val19" tag="input-auto"></span>元
+                    （小写）<span class="input-before" listen="number" max="16" extendParam="val19" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val19_add" systemParam="true" class="input-readonly"></span>元)
                 </div>
                 <!-- 第八条 -->
@@ -1019,11 +1019,11 @@
                 <p class="1h18 agreements">3、居间服务费及支付</p>
                 <p class="1h18 agreements">
                     基于丙方提供的居间服务，且丙方已促成甲乙双方签订《房屋租赁合同》，甲方应在本合同签订当日向丙方支付居间服务费人民币
-                    （小写）<span class="input-before" listen="number" max="12"
+                    （小写）<span class="input-before" listen="number" max="16"
                         extendParam="val104" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val104_add" systemParam="true"
                         class="input-readonly"></span>元)，乙方应在本合同签订当日向丙方支付居间服务费人民币
-                        （小写）<span class="input-before" listen="number" max="12"
+                        （小写）<span class="input-before" listen="number" max="16"
                         extendParam="val105" tag="input-auto"></span>元
                     (金额大写：<span tag="input-auto" extendparam="val105_add" systemParam="true"
                         class="input-readonly"></span>元)
@@ -1107,7 +1107,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:8081') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './MR-ZL.js'
