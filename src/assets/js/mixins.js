@@ -375,9 +375,9 @@ const MIXINS = {
         case '.bmp':
           return true
           break;
-          /*case '.avi':
-              return true
-              break;*/
+        /*case '.avi':
+            return true
+            break;*/
         case '.mp4':
           return true
           break;
@@ -424,10 +424,10 @@ const MIXINS = {
         s2 = arg2.toString();
       try {
         m += s1.split(".")[1].length;
-      } catch (e) {}
+      } catch (e) { }
       try {
         m += s2.split(".")[1].length;
-      } catch (e) {}
+      } catch (e) { }
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     },
     //动态高度获取
@@ -459,8 +459,11 @@ const MIXINS = {
     // 兰州3.0
     showTransferTime() {
       //测试环境52，正式环境19(测试城市)，25（兰州）
-      return this.getUser.isProd == 0 ? (this.getUser.version === 3 && this.getUser.user.cityId === 52) : ((this.getUser.version === 3 && this.getUser.user.cityId === 25) || (this.getUser.version === 3 && this.getUser.user.cityId === 19))
-
+      return this.getUser && this.getUser.isProd == 0 ? ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 52)) : (((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 25)) || ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 19)))
+    },
+    // 武汉明瑞
+    isMingRui() {
+      return this.getUser && this.getUser.isProd == 0 ? ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 40) && (this.getUser && this.getUser.user.brand === 1)) : (((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 1) && this.getUser.user.brand === 17) || ((this.getUser && this.getUser.version === 3) && (this.getUser && this.getUser.user.cityId === 19) && this.getUser.user.brand === 4))
     }
   },
   mounted() {

@@ -19,10 +19,17 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
+<<<<<<< HEAD
         // src:'WHU2-买卖.html'
         // src:'WHU2-装饰.html'
         src:'MR-租赁合同.html'
         // src:'WHU2-租赁合同.html'
+=======
+        src:'WHU2-买卖.html'
+        // src:'WHU2-装饰.html'
+        // src:'lz-买卖居间.html'
+        // src:'lz委托.html'
+>>>>>>> 762cfeb612302ba80d93e3d93b61d3285a158f5c
       }
     },
     created(){
