@@ -20,9 +20,9 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     data(){
       return{
         // src:'WHU2-买卖.html'
-        src:'WHU2-装饰.html'
-        // src:'lz-买卖居间.html'
-        // src:'lz委托.html'
+        // src:'WHU2-装饰.html'
+        src:'MR-租赁合同.html'
+        // src:'WHU2-租赁合同.html'
       }
     },
     created(){
