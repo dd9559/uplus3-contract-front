@@ -4,7 +4,7 @@ import {
 } from "./base.js"
 
 let Obj = {
-  cn_arr: ["val7", "val8", "val9", "val10", 'val220', 'val228', 'val229', 'val232', 'val235', 'val237', 'val239', 'val241', 'val242', 'val248', 'val251']
+  cn_arr: ["val7", "val8", "val9", "val10", 'val220', 'val228', 'val229', 'val232', 'val235', 'val237', 'val239', 'val241', 'val242', 'val248', 'val251',"val307", "val308", "val309", "val3010"]
 }
 
 let sub = {
@@ -149,8 +149,6 @@ let sub = {
       }
       return index === 0 ? {
         'val213': null,
-        'val214': null,
-        'val215': null,
       } : index === 1 ? Object.assign(obj, {
         'val218': null,
         'checkbox_fiveOne': null,
@@ -170,18 +168,25 @@ let sub = {
     }
   },
   'val228': null,
-  'checkbox_eightOne': null,
-  'val229': null,
-  'checkbox_eightTwo': null,
-  'checkbox_eightThree': null,
-  'val230': null,
-  'val231': null,
-  'val232': null,
-  'val233': null,
-  'checkbox_eightFour': null,
+  'checkbox_eightOne': {
+    stateful: function (index) {
+      return index === 1 ? {'val229': null} : null
+    }
+  },
+  'checkbox_eightTwo': {
+    stateful: function (index) {
+      return index === 1 ? {'checkbox_eightThree': null,'val230':null,'val231':null,'val232':null,'val233':null,'checkbox_eightFour':null} : null
+    }
+  },
   'checkbox_nine': {
     stateful: function (index) {
-      return index === 0 ? null : { 'checkbox_nineFive': null, 'val242': null, 'checkbox_nineSix1': null, 'val243': null, 'checkbox_nineSix2': null, 'val244': null, 'val246': null }
+      return index === 0 ? null : { 'checkbox_nineFive': null, 'val242': null, 
+      'checkbox_nineSix': {
+        stateful: function (index) {
+          return index === 0 ? {'val243': null} : index === 1 ? {'val244': null} : null
+        }
+      },
+      'val246': null }
     }
   },
   'val234': null,
@@ -196,15 +201,24 @@ let sub = {
   'val240': null,
   'val241': null,
   'checkbox_nineFour': null,
-  'checkbox_nineSeven': null,
-  'val248': null,
-  'val249': null,
-  'checkbox_nineEight': null,
-  'checkbox_nineTen': {
+  'checkbox_nineSeven': {
     stateful: function (index) {
-      return index === 1 ? { 'val251': null, 'val252': null, 'checkbox_nineEleven': null } : null
+      return index === 1 ? {'val248': null, 'val249': null, 'checkbox_nineEight': null} : null
     }
   },
+  'checkbox_nineNine': {
+    stateful: function (index) {
+      return index === 0 ? {
+        'checkbox_nineTen': {
+          stateful: function (index) {
+            return index === 1 ? { 'val251': null, 'val252': null, 'checkbox_nineEleven': null } : null
+          }
+        },
+      } : null
+    }
+  },
+  'checkbox_ten': null,
+  'checkbox_eleven': null,
   'val253': null,
   'checkbox_twelve': {
     stateful: function (index) {
@@ -230,19 +244,50 @@ let sub = {
     }
   },
   'val261': null,
+  'val262': null,
+  'checkbox_thirteen': null,
+  'checkbox_fourteen': null,
+  'checkbox_fifteen': null,
+  'checkbox_sixteen': null,
   'drapdown_val263': {
     stateful: function (index) {
       return index === '1' ? { 'val264': null } : index === '2' ? { 'val265': null } : { 'val266': null }
     }
   },
-  'val277': null,
-  'val279': null,
-  'val280': null,
-  'val281': null,
-  'val282': null,
-  'val283': null,
-  'val284': null,
-  'val286': null,
+  'val267': null,
+  'checkbox_seventeen': null,
+  'drapdown_val269': null,
+  'checkbox_eighteen': null,
+  // 'val277': null,
+  // 'val279': null,
+  // 'val280': null,
+  // 'val281': null,
+  // 'val282': null,
+  // 'val283': null,
+  // 'val284': null,
+  // 'val286': null,
+  // 居间
+  'info_val301': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val301]').innerHTML !== ''? {
+        'val302': null,
+        'val303': null,
+      } : null
+    }
+  },
+  'info_val304': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val304]').innerHTML !== ''? {
+        'val305': null,
+        'val306': null,
+      } : null
+    }
+  },
+  'val307': null,
+  'val308': null,
+  'val309': null,
+  'val3010': null,
+  'drapdown_val3011': null,
 }
 
 //给按钮添加点击事件
@@ -442,8 +487,36 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
       }
     })
   }
+  if (attr === 'eightOne') {
+    let checkIO = ['val229', 'val229_add']
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO, 0)
+          } else {
+            contractConfig.initForm(checkIO, 1)
+          }
+        }
+      }
+    })
+  }
+  if (attr === 'eightTwo') {
+    let checkIO = ['checkbox_eightThree', 'val230','val231','val232','val232_add','val233','checkbox_eightFour']
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO, 0)
+          } else {
+            contractConfig.initForm(checkIO, 1)
+          }
+        }
+      }
+    })
+  }
   if (attr === 'nine') {
-    let checkIO = ['checkbox_nineFive', 'val242', 'checkbox_nineSix1', 'val243', 'checkbox_nineSix2', 'val244', 'checkbox_nineSix', 'val245', 'val246']
+    let checkIO = ['checkbox_nineFive', 'val242', 'checkbox_nineSix', 'val243', 'val244', 'val245', 'val246']
     boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
@@ -457,7 +530,7 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
     })
   }
   if (attr === 'nineNine') {
-    let checkIO = ['val250']
+    let checkIO = ['val250','checkbox_nineTen','val251','val252','checkbox_nineEleven']
     boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
@@ -470,15 +543,53 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
       }
     })
   }
-  if (attr === 'nineTen') {
-    let checkIO = ['val250']
+  if (attr === 'nineSix') {
+    let checkIO = {
+      0:{
+        write: ['val243'],
+        disabled: ['val244','val245']
+      },
+      1:{
+        write: ['val244'],
+        disabled: ['val243','val245']
+      },
+      2:{
+        write: ['val245'],
+        disabled: ['val243','val244']
+      },
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          contractConfig.initForm(checkIO[i].write, 0)
+          contractConfig.initForm(checkIO[i].disabled, 1)
+        }
+      }
+    })
+  }
+  if (attr === 'nineSeven') {
+    let checkIO = ['val248','val249','checkbox_nineEight']
     boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
         if (item.querySelector('p').getAttribute('checked')) {
           if (i === 0) {
-            contractConfig.initForm(checkIO, 0)
-          } else {
             contractConfig.initForm(checkIO, 1)
+          } else {
+            contractConfig.initForm(checkIO, 0)
+          }
+        }
+      }
+    })
+  }
+  if (attr === 'nineTen') {
+    let checkIO = ['val251','val252','checkbox_nineEleven']
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 0) {
+            contractConfig.initForm(checkIO, 1)
+          } else {
+            contractConfig.initForm(checkIO, 0)
           }
         }
       }
