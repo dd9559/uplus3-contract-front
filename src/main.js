@@ -37,6 +37,9 @@ Vue.component("preview", preview)
 Vue.component("selectTree", selectTree)
 Vue.component("scrollBar", scrollBar)
 
+import uPlusScrollTop from '@/pages/commission/uPlusScrollTop';
+Vue.component("uPlusScrollTop", uPlusScrollTop);
+
 Vue.directive('focus', {
   inserted: function (el) {
     // 聚焦元素

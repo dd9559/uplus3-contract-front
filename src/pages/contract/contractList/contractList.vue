@@ -115,7 +115,7 @@
             class="margin-left"
             size="small"
             v-model="contractForm.dealAgentId"
-            
+
             @change="handleEmpNodeClick"
             placeholder="请选择"
           >-->
@@ -658,10 +658,17 @@
         </el-table-column>
         <el-table-column label="结算状态" min-width="80" v-if="contVersion===2">
           <template slot-scope="scope">
-            <span
+            <el-button
+              v-if="scope.row.contType.value<4"
+              type="text"
+              size="medium"
+              @click="closeAccount(scope.row)"
+            >{{scope.row.resultState.label}}</el-button>
+            <span v-else>-</span>
+            <!-- <span
               v-if="scope.row.contType.value<4&&!scope.row.isCombine"
             >{{scope.row.resultState.label}}</span>
-            <span v-else>-</span>
+            <span v-else>-</span> -->
           </template>
         </el-table-column>
         <el-table-column label="业绩状态" min-width="80">
@@ -841,7 +848,7 @@
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span class="submitAudit">确定提审？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button round @click="isSubmitAudit = false">取 消</el-button>
+        <el-button round @click="isSubmitAudit = false" v-dbClick>取 消</el-button>
         <el-button round type="primary" @click="toAudit">确 定</el-button>
       </span>
     </el-dialog>
@@ -955,6 +962,7 @@
       :contCode="contCode"
       :guestList="signGuestList"
       :choseQuery="choseQuery"
+      :checkPersonData="checkPersonData"
       @closeChose="closeChose"
     ></chosePerson>
     <!-- 补发签署信息 -->
@@ -1235,6 +1243,7 @@ export default {
       choseLoading: false,
       closeTitle:'发起签署',
       localChoseList: [],
+      checkPersonData: null
     };
   },
   created() {
@@ -2257,17 +2266,33 @@ export default {
       if (val.ssqId) {
         this.reissueDialog = true
       } else {
+        this.getSignPosition(this.contCode)
         this.closeTitle = '发起签署'
         this.chosePersonDialog = true;
       }
     },
-
+    // 获取合同模板的所有角色签章位置存在情况
+    getSignPosition(contCode) {
+      // this.checkPersonList = []
+      this.$ajax
+      .get("/api/app/contract/GetSignPosition", {contCode})
+      .then(res => {
+        res = res.data
+        if (res.status === 200) {
+          this.checkPersonData = res.data
+        }
+      })
+      .catch(error => {
+        this.$message(error);
+      });
+    },
     closeChose(val) {
       if (val.type == "choseLoading") {
         this.choseLoading = true;
       } else if (val.type === 'reissueChosePerson') {
         this.reissueDialog = val.status
       } else if (val.type === 'openChosePersonDialog') {
+        this.getSignPosition(this.contCode)
         this.chosePersonDialog = true;
         this.closeTitle = '重新发起签署'
       } else if (val.type === 'closeChose'){

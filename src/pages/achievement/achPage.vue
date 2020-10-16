@@ -158,7 +158,7 @@
                     <el-input v-else v-model="hx" disabled></el-input>
                   </el-tooltip>
                 </template>
-              </el-table-column> 
+              </el-table-column>
               <el-table-column label="经纪人工号" v-else width="120">
                 <template slot-scope="scope">
                   <el-tooltip
@@ -569,7 +569,7 @@
                     <el-input v-else v-model="hx" disabled></el-input>
                   </el-tooltip>
                 </template>
-              </el-table-column> 
+              </el-table-column>
               <el-table-column label="经纪人工号" v-else width="120">
                 <template slot-scope="scope">
                   <el-tooltip

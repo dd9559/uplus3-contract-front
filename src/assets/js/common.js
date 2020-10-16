@@ -8,115 +8,114 @@ let TOOL = {
       name: "二手房",
       category: "1",
       icon: "icon-ershoufang",
-      can: true,//是否可见
+      can: true, //是否可见
       child: [
         {
           name: "合同",
           category: "1-1",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "合同列表",
               category: "1-1-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "contractList",
               code: "sign-ht-info-query"
             },
             {
               name: "合同审核",
               category: "1-1-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "contractCheck",
               code: "sign-ht-htsh-query"
             },
             {
               name: "签后审核",
               category: "1-1-7",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "signedCheck",
               code: "sign-ht-qhsh-query"
             },
             {
               name: "调佣审核",
               category: "1-1-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "adjustCheck",
               code: "sign-ht-maid-query"
             },
             {
               name: "结算审核",
               category: "1-1-4",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "settleCheck",
               code: "sign-ht-js-query"
             },
             {
               name: "变更审核",
               category: "1-1-5",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "changeCheck",
               code: "sign-ht-bgsh-query"
             },
             {
               name: "解约审核",
               category: "1-1-6",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "cancelCheck",
               code: "sign-ht-jysh-query"
-            },
-          ]
+            },]
         },
         {
           name: "财务",
           category: "1-2",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "收付款单",
               category: "1-2-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "Bill",
               code: "sign-cw-debt-query"
             },
             {
               name: "收款审核",
               category: "1-2-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "moneyCheck?type=1",
               code: "sign-cw-rev-query"
             },
             {
               name: "付款审核",
               category: "1-2-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "moneyCheck?type=2",
               code: "sign-cw-pay-query"
             },
             {
               name: "应收实收",
               category: "1-2-4",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "actualHarvest",
               code: "sign-cw-rec-query"
             },
             {
               name: "票据管理",
               category: "1-2-5",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "paperSet",
               code: "sign-cw-bill-query"
             },
             {
               name: '分账记录',
               category: "1-2-6",
-              can: true,//是否可见
+              can: true, //是否可见
               path: 'routingRecord',
               code: 'sign-ht-fz-query'
             },
             {
               name: "打款记录",
               category: "1-2-7",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "debitRecord",
               code: "sign-ht-dk-query"
             },
@@ -126,262 +125,246 @@ let TOOL = {
               can: true,//是否可见
               path: "transferAudit",
               code: "sign-cw-zk-query"  //后期修改
-            }
-          ]
+            }]
         },
         {
           name: "业绩",
           category: "1-3",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "应收业绩",
               category: "1-3-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "actualAchievement",
               code: "sign-yj-rev-query"
             },
             {
               name: "结算业绩",
               category: "1-3-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "receivableAchievement",
               code: "sign-yj-rec-query"
             },
             {
               name: "业绩申诉审核",
               category: "1-3-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "achAppeal",
               code: "sign-yj-appeal-query"
             },
             {
               name: '业绩报表',
               category: "1-3-4",
-              can: true,//是否可见
+              can: true, //是否可见
               path: 'achForms',
               code: "sign-yj-report-query"
-            }
-          ]
+            }]
         },
         {
           name: "签后",
           category: "1-4",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "后期接收",
               category: "1-4-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "postReceive",
               code: "sign-qh-rev-query"
             },
             {
               name: "后期管理",
               category: "1-4-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "postManage",
               code: "sign-qh-mgr-query"
             },
             {
               name: "后期监控",
               category: "1-4-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "postMonitor",
               code: "sign-qh-cont-query"
-            }
-          ]
-        }
-      ]
+            }]
+        }]
     },
     {
       id: 2,
       name: "新房",
       category: "2",
-      can: true,//是否可见
+      can: true, //是否可见
       icon: "icon-xinfang",
       child: [
         {
           name: "合同",
           category: "2-1",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "合同列表",
               category: "2-1-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "otherContractList?type=xf",
               code: "sign-xf-ht-ls-query"
-            }
-          ]
+            }]
         },
         {
           name: "财务",
           category: "2-2",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "收款审核",
               category: "2-2-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "receiptCheck?type=xf",
               code: "sign-xf-cw-rev-query"
-            }
-          ]
-        },
-      ]
+            }]
+        },]
     },
     {
       id: 3,
       name: "长租",
       category: "3",
-      can: true,//是否可见
+      can: true, //是否可见
       icon: "icon-changzu",
       child: [
         {
           name: "合同",
           category: "3-1",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "合同列表",
               category: "3-1-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "otherContractList?type=cz",
               code: "sign-cz-ht-ls-query"
-            }
-          ]
+            }]
         },
         {
           name: "财务",
           category: "3-2",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "收款审核",
               category: "3-2-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "receiptCheck?type=cz",
               code: "sign-cz-cw-rev-query"
-            }
-          ]
-        },
-      ]
+            }]
+        },]
     },
     {
       id: 4,
       name: "金融",
       category: "4",
-      can: true,//是否可见
+      can: true, //是否可见
       icon: "icon-jinrong",
       child: [
         {
           name: "合同",
           category: "4-1",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "合同列表",
               category: "4-1-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "otherContractList?type=jr",
               code: "sign-jr-ht-ls-query"
-            }
-          ]
+            }]
         },
         {
           name: "财务",
           category: "4-2",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "收款审核",
               category: "4-2-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "receiptCheck?type=jr",
               code: "sign-jr-cw-rev-query"
-            }
-          ]
-        },
-      ]
+            }]
+        },]
     },
     {
       id: 5,
       name: "设置",
       category: "5",
-      can: true,//是否可见
+      can: true, //是否可见
       icon: "icon-huaban3",
       child: [
         {
           name: "后台设置",
           category: "5-1",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "款类设置",
               category: "5-1-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "moneyType",
               code: "sign-set-kl-query"
             },
             {
               name: "合同模板设置",
               category: "5-1-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "contractTemplate",
               code: "sign-set-ht-query"
             },
             {
               name: "线下手续费设置",
               category: "5-1-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "commissionOff",
               code: "sign-set-bg-sxf-query"
-            }
-          ]
+            }]
         },
         {
           name: "业务设置",
           category: "5-2",
-          can: true,//是否可见
+          can: true, //是否可见
           child: [
             {
               name: "公司设置",
               category: "5-2-1",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "company",
               code: "sign-set-gs"
             },
             {
               name: "审核流程",
               category: "5-2-2",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "approvalProcess",
               code: "sign-set-verify"
             },
             {
               name: "规则设置",
               category: "5-2-3",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "ruleSetting",
               code: ['sign-set-rule-query', 'sign-set-vtime', 'sign-set-dybl', 'sign-set-bl-htym-query', 'sign-set-bl-fcbl-query']
             },
             {
               name: "后期流程设置",
               category: "5-2-4",
-              can: true,//是否可见
+              can: true, //是否可见
               path: "postProcess",
               code: 'sign-set-hq'
-            }
-          ]
-        }
-      ]
+            }]
+        }]
     },
     {
       id: 6,
       name: "操作日志",
       category: "operationLog",
-      can: true,//是否可见
+      can: true, //是否可见
       icon: "icon-caozuorizhi",
       code: "sign-set-log-query",
       child: []
@@ -390,12 +373,11 @@ let TOOL = {
       id: 7,
       name: "手续费设置",
       category: "commission",
-      can: false,//是否可见
+      can: false, //是否可见
       icon: "icon-caiwu",
       code: false,
       child: []
-    },
-  ], //侧边栏导航
+    },], //侧边栏导航
   closeOnClickModal: false,
   contType: {
     "4": 4, //意向金
@@ -418,8 +400,7 @@ let TOOL = {
       {
         label: "回收日期",
         value: 4
-      }
-    ],
+      }],
     dateType_money: [
       /*{
         label: '选择时间',
@@ -755,9 +736,9 @@ let TOOL = {
       let y = time.getFullYear();
       let M = time.getMonth() + 1;
       let D = time.getDate();
-      return type === 1
-        ? `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D}`
-        : `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
+      return type === 1 ?
+        `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D}` :
+        `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
     }
   },
   timeFormat: function (val, second = true) {
@@ -857,8 +838,8 @@ let TOOL = {
       return padNum(result);
     }
     var intNum = numberArr[0], //整数部分
-      deciNum = numberArr[1],//小数部分
-      lastNum = deciNum.substr(len, 1);//最后一个数字
+      deciNum = numberArr[1], //小数部分
+      lastNum = deciNum.substr(len, 1); //最后一个数字
 
     if (deciNum.length == len) {
       //需要截取的长度等于当前长度
@@ -873,10 +854,10 @@ let TOOL = {
     if (parseInt(lastNum, 10) >= 5) {
       //最后一位数字大于5，要进位
       var times = Math.pow(10, len); //需要放大的倍数
-      var changedInt = Number(result.replace('.', ''));//截取后转为整数
-      changedInt++;//整数进位
-      changedInt /= times;//整数转为小数，注：有可能还是整数
-      result = padNum(changedInt + '');//转成字符串类型
+      var changedInt = Number(result.replace('.', '')); //截取后转为整数
+      changedInt++; //整数进位
+      changedInt /= times; //整数转为小数，注：有可能还是整数
+      result = padNum(changedInt + ''); //转成字符串类型
     }
     return result;
   },
@@ -891,7 +872,7 @@ let TOOL = {
     if (parseFloat(val) >= max) {
       return max;
     }
-    if (regex.test(val)) {//不允许小数点开头
+    if (regex.test(val)) { //不允许小数点开头
       return ''
     }
     let pos = val.indexOf(".");
@@ -936,6 +917,54 @@ let TOOL = {
     return arr.map(item => {
       return { name: item, path: root };
     });
+  },
+  /*
+   * j 对象 包含 MessageBox 所有属性
+   * 多一个 typeInfo 属性
+   * 0 默认弹层
+   * 1 计算完成
+   * 2 计算加载中
+   */
+  layerAlert(j) {
+    let { message = "", typeInfo = 0 } = j;
+    // 内容判断
+    let m = typeInfo === 1 ? `<div class="layer-succes-txt">
+        <div class="img"></div>
+        <p class="p">${message || '已计算完成'}</p>
+    </div>` : typeInfo === 2 ? `<div class="layer-loading-txt">
+    <div class="img"></div>
+    <p class="p">${message || '系统正在计算中，请稍后...'}</p>
+</div>` : `<div class="layer-txt">${message}</div>`;
+    // 类名判断
+    let customClass = typeInfo === 1 ? 'layer-succes' : typeInfo === 2 ? 'layer-loading' : '';
+
+    return this.$alert("", {
+      // 自定义html
+      dangerouslyUseHTMLString: true,
+      // 给弹层添加类名
+      customClass: "layer-commission " + customClass,
+      // 是否显示取消按钮
+      showCancelButton: typeInfo === 0 ? true : false,
+      // 是否显示确定按钮
+      showConfirmButton: typeInfo === 0 ? true : false,
+      // 取消按钮添加类名
+      cancelButtonClass: "btn-close",
+      // 确定按钮添加类名
+      confirmButtonClass: "btn-sure",
+      // 关闭回调函数
+      callback() { },
+      // 自定义属性
+      ...j,
+      // 展示内容
+      message: m,
+    });
+  },
+  // 关闭函数 关闭上面弹层函数
+  layerAlertClose() {
+    let t = document.querySelector(
+      ".layer-commission .el-message-box__headerbtn"
+    );
+    t.click();
   }
 };
 

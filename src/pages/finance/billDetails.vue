@@ -503,12 +503,6 @@ export default {
       name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
       path: this.$route.fullPath,
     });
-    if (this.$route.query.isZk) {
-      arr = this.$tool.getRouter(
-        ["二手房", "财务", "转款审核","转款详情"],
-        "/transferAudit"
-      );
-    }
     this.setPath(arr);
     this.getInOutPayInfoDetail();
   },
@@ -1037,9 +1031,9 @@ export default {
     // top: 50%;
     // right: 20px;
     // transform: translateY(-50%);
-    width: 100% !important;
-    text-align: right !important;
-    margin: 5px 0 5px !important;
+    width: 100%!important;
+    text-align: right!important;
+    margin: 5px 0 5px!important;
   }
 }
 
