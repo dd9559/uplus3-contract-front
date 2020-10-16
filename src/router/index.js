@@ -47,7 +47,6 @@ const receiptCheck = () => import('@/pages/finance/receiptCheck')
 const receiptBill_simple = () => import('@/pages/finance/receiptBill_simple')
 const receiptBillDetails = () => import('@/pages/finance/receiptBillDetails')
 const transferAudit = () => import('@/pages/finance/transferAudit')
-
 // 合同模块
 const newIntention = () => import("@/pages/contract/contractList/newIntention")
 // const editIntention = () => import("@/pages/contract/contractList/editIntention")
@@ -87,416 +86,447 @@ const errorMsg = () => import("@/errorMsg")
 
 export default new Router({
   routes: [{
-      path: "/",
-      component: Index,
-      redirect: "/login",
-      children: [
-        // 设置模块
-        {
-          path: "contractTemplate",
-          component: contractTemplate,
-          meta: {
-            root: true,
-            list: ["设置", "后台设置", "合同模板设置"]
-          }
-        },
-        {
-          path: "contraPreview",
-          component: contraPreview
-        },
-        {
-          path: "postProcess",
-          component: postProcess,
-          meta: {
-            root: true,
-            list: ["设置", "业务设置", "后期流程设置"]
-          }
-        },
-        {
-          path: "company",
-          component: Company,
-          meta: {
-            root: true,
-            list: ["设置", "业务设置", "公司设置"]
-          }
-        },
-        {
-          path: "moneyType",
-          component: moneyType,
-          meta: {
-            root: true,
-            list: ["设置", "后台设置", "款类设置"]
-          }
-        },
-        {
-          path: "ruleSetting",
-          component: ruleSetting,
-          meta: {
-            root: true,
-            list: ["设置", "业务设置", "规则设置"]
-          }
-        },
-        {
-          path: "approvalProcess",
-          component: approvalProcess,
-          meta: {
-            root: true,
-            list: ["设置", "业务设置", "审核流程"]
-          }
-        },
-        {
-          path: "commission",
-          component: commission,
-          meta: {
-            root: true,
-            list: ["手续费设置"]
-          }
-        },
-        {
-          path: "commissionOff",
-          component: commissionOff,
-          meta: {
-            root: true,
-            list: ["设置", "后台设置", "线下手续费设置"]
-          }
-        },
-        //设置模块 end
-        //操作模块 start
-        {
-          path: "operationLog",
-          component: operationLog,
-          meta: {
-            root: true,
-            list: ["操作日志"]
-          }
-        },
-        //操作模块 end
-        // 票据管理
-        {
-          path: "paperSet",
-          component: paperSet,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "票据管理"]
-          }
-        },
-        //分账记录
-        {
-          path: "routingRecord",
-          component: routingRecord,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "分账记录"]
-          }
-        },
-        //打款记录
-        {
-          path: "debitRecord",
-          component: debitRecord,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "打款记录"]
-          }
-        },
-        //转款审核
-        {
-          path: "transferAudit",
-          component: transferAudit,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "转款审核"]
-          }
-        },
-        {
-          path: "actualHarvest",
-          component: actualHarvest,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "应收实收"]
-          }
-        },
-        {
-          path: "moneyCheck",
-          component: moneyCheck,
-          meta: {
-            root: true
-          }
-        },
-        {
-          path: "receiptCheck",
-          component: receiptCheck,
-          meta: {
-            root: true,
-            list: ["财务", "收款审核"]
-          }
-        },
-        // 业绩板块
-        {
-          path: "actualAchievement",
-          component: actualAchievement,
-          meta: {
-            root: true,
-            list: ["二手房", "业绩", "应收业绩"]
-          }
-        },
-        {
-          path: "achAppeal",
-          component: achAppeal,
-          meta: {
-            root: true,
-            list: ["二手房", "业绩", "业绩申诉审核"]
-          }
-        },
-        {
-          path: "achPage",
-          component: achPage,
-        },
-        {
-          path: "aplPage",
-          component: aplPage,
-        },
-        {
-          path: "storePage",
-          component: storePage,
-        },
-        {
-          path: "achDetial",
-          component: achDetial,
-        },
-        {
-          path: "receivableAchievement",
-          component: receivableAchievement,
-          meta: {
-            root: true,
-            list: ["二手房", "业绩", "结算业绩"]
-          }
-        },
-        {
-          path: "achForms",
-          component: achForms,
-          meta: {
-            root: true,
-            list: ["二手房", "业绩", "业绩报表"]
-          }
-        },
-        // 业绩板块 end
-        {
-          path: "Bill",
-          component: Bill,
-          meta: {
-            root: true,
-            list: ["二手房", "财务", "收付款单"]
-          }
-        },
-        {
-          path: "billDetails",
-          component: billDetails,
-          meta: {
-            getParent: true
-          }
-        },
-        // 合同——合同列表——新增意向金
-        {
-          path: "newIntention",
-          component: newIntention
-          // meta: {
-          //   root: true,
-          //   list: ['合同', '新增合同']
-          // }
-        },
-        {
-          path: "detailIntention",
-          component: detailIntention
-          // meta: {
-          //   root: true,
-          //   list: ['合同', '合同列表', '合同详情']
-          // }
-        },
-        {
-          path: "adjustCheck",
-          component: adjustCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "调佣审核"]
-          }
-        },
-        {
-          path: "settleCheck",
-          component: settleCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "结算审核"]
-          }
-        },
-        {
-          path: "payBill",
-          component: payBill,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "payResult",
-          component: payResult
-        },
-        {
-          path: "receiptBill",
-          component: receiptBill,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "receiptBill_simple",
-          component: receiptBill_simple,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "receiptBillDetails",
-          component: receiptBillDetails,
-          meta: {
-            getParent: true
-          }
-        },
-        {
-          path: "receiptResult",
-          component: receiptResult
-        },
-        {
-          path: "contractList",
-          component: contractList,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "合同列表"]
-          }
-        },
-        // 签后
-        {
-          path: "postReceive",
-          component: postReceive,
-          meta: {
-            root: true,
-            list: ["二手房", "签后", "后期接收"]
-          }
-        },
-        {
-          path: "postManage",
-          component: postManage,
-          meta: {
-            root: true,
-            list: ["二手房", "签后", "后期管理"]
-          }
-        },
-        {
-          path: "postMonitor",
-          component: postMonitor,
-          meta: {
-            root: true,
-            list: ["二手房", "签后", "后期监控"]
-          }
-        },
-        //新增合同
-        {
-          path: "addContract",
-          component: addContract
-        },
-        //合同详情
-        {
-          path: "contractDetails",
-          component: contractDetails
-        },
-        //合同预览
-        {
-          path: "contractPreview",
-          component: contractPreview
-        },
-        //合同审核
-        {
-          path: "contractCheck",
-          component: contractCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "合同审核"]
-          }
-        },
-        //合同主体审核
-        {
-          path: "signedCheck",
-          component: signedCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "签后审核"]
-          }
-        },
-        //变更解约审核
-        {
-          path: "changeCheck",
-          component: changeCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "变更审核"]
-          }
-        },
-        {
-          path: "cancelCheck",
-          component: cancelCheck,
-          meta: {
-            root: true,
-            list: ["二手房", "合同", "解约审核"]
-          }
-        },
-        //分账/打款详情
-        {
-          path: "routingRemitDetail",
-          component: routingRemitDetail
-        },
-        //扩展参数
-        {
-          path: "extendParams",
-          component: extendParams
-        },
-        {
-          path: 'iframe',
-          component: iframTest
-        },
-        //其他合同列表
-        {
-          path: "otherContractList",
-          component: otherContractList,
-          meta: {
-            root: true,
-            list: ["合同", "合同列表"]
-          }
-        },
-        //新增
-        {
-          path: "addOtherContract",
-          component: addOtherContract,
-        },
-        //详情
-        {
-          path: "otherContractDetail",
-          component: otherContractDetail,
-        },
-      ]
-    },
-    {
-      path: "/login",
-      component: Login
-    },
-    {
-      path: "/ledger",
-      component: ledger
-    },
-    {
-      path: "/error",
-      component: errorMsg
-    },
-    {
-      path: "/choseCont",
-      component: resolve => require(["@/pages/contract/contractList/choseCont"], resolve)
-    }
+    path: "/",
+    component: Index,
+    redirect: "/login",
+    children: [
+      // 设置模块
+      {
+        path: "contractTemplate",
+        component: contractTemplate,
+        meta: {
+          root: true,
+          list: ["设置", "后台设置", "合同模板设置"]
+        }
+      },
+      {
+        path: "contraPreview",
+        component: contraPreview
+      },
+      {
+        path: "postProcess",
+        component: postProcess,
+        meta: {
+          root: true,
+          list: ["设置", "业务设置", "后期流程设置"]
+        }
+      },
+      {
+        path: "company",
+        component: Company,
+        meta: {
+          root: true,
+          list: ["设置", "业务设置", "公司设置"]
+        }
+      },
+      {
+        path: "moneyType",
+        component: moneyType,
+        meta: {
+          root: true,
+          list: ["设置", "后台设置", "款类设置"]
+        }
+      },
+      {
+        path: "ruleSetting",
+        component: ruleSetting,
+        meta: {
+          root: true,
+          list: ["设置", "业务设置", "规则设置"]
+        }
+      },
+      {
+        path: "approvalProcess",
+        component: approvalProcess,
+        meta: {
+          root: true,
+          list: ["设置", "业务设置", "审核流程"]
+        }
+      },
+      {
+        path: "commission",
+        component: commission,
+        meta: {
+          root: true,
+          list: ["手续费设置"]
+        }
+      },
+      {
+        path: "commissionOff",
+        component: commissionOff,
+        meta: {
+          root: true,
+          list: ["设置", "后台设置", "线下手续费设置"]
+        }
+      },
+      //设置模块 end
+      //操作模块 start
+      {
+        path: "operationLog",
+        component: operationLog,
+        meta: {
+          root: true,
+          list: ["操作日志"]
+        }
+      },
+      //操作模块 end
+      // 票据管理
+      {
+        path: "paperSet",
+        component: paperSet,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "票据管理"]
+        }
+      },
+      //分账记录
+      {
+        path: "routingRecord",
+        component: routingRecord,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "分账记录"]
+        }
+      },
+      //打款记录
+      {
+        path: "debitRecord",
+        component: debitRecord,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "打款记录"]
+        }
+      },
+      //转款审核
+      {
+        path: "transferAudit",
+        component: transferAudit,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "转款审核"]
+        }
+      },
+      {
+        path: "actualHarvest",
+        component: actualHarvest,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "应收实收"]
+        }
+      },
+      {
+        path: "moneyCheck",
+        component: moneyCheck,
+        meta: {
+          root: true
+        }
+      },
+      {
+        path: "receiptCheck",
+        component: receiptCheck,
+        meta: {
+          root: true,
+          list: ["财务", "收款审核"]
+        }
+      },
+      // 业绩板块
+      {
+        path: "actualAchievement",
+        component: actualAchievement,
+        meta: {
+          root: true,
+          list: ["二手房", "业绩", "应收业绩"]
+        }
+      },
+      {
+        path: "achAppeal",
+        component: achAppeal,
+        meta: {
+          root: true,
+          list: ["二手房", "业绩", "业绩申诉审核"]
+        }
+      },
+      {
+        path: "achPage",
+        component: achPage,
+      },
+      {
+        path: "aplPage",
+        component: aplPage,
+      },
+      {
+        path: "storePage",
+        component: storePage,
+      },
+      {
+        path: "achDetial",
+        component: achDetial,
+      },
+      {
+        path: "receivableAchievement",
+        component: receivableAchievement,
+        meta: {
+          root: true,
+          list: ["二手房", "业绩", "结算业绩"]
+        }
+      },
+      {
+        path: "achForms",
+        component: achForms,
+        meta: {
+          root: true,
+          list: ["二手房", "业绩", "业绩报表"]
+        }
+      },
+      // 业绩板块 end
+      {
+        path: "Bill",
+        component: Bill,
+        meta: {
+          root: true,
+          list: ["二手房", "财务", "收付款单"]
+        }
+      },
+      {
+        path: "billDetails",
+        component: billDetails,
+        meta: {
+          getParent: true
+        }
+      },
+      // 合同——合同列表——新增意向金
+      {
+        path: "newIntention",
+        component: newIntention
+        // meta: {
+        //   root: true,
+        //   list: ['合同', '新增合同']
+        // }
+      },
+      {
+        path: "detailIntention",
+        component: detailIntention
+        // meta: {
+        //   root: true,
+        //   list: ['合同', '合同列表', '合同详情']
+        // }
+      },
+      {
+        path: "adjustCheck",
+        component: adjustCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "调佣审核"]
+        }
+      },
+      {
+        path: "settleCheck",
+        component: settleCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "结算审核"]
+        }
+      },
+      {
+        path: "payBill",
+        component: payBill,
+        meta: {
+          getParent: true
+        }
+      },
+      {
+        path: "payResult",
+        component: payResult
+      },
+      {
+        path: "receiptBill",
+        component: receiptBill,
+        meta: {
+          getParent: true
+        }
+      },
+      {
+        path: "receiptBill_simple",
+        component: receiptBill_simple,
+        meta: {
+          getParent: true
+        }
+      },
+      {
+        path: "receiptBillDetails",
+        component: receiptBillDetails,
+        meta: {
+          getParent: true
+        }
+      },
+      {
+        path: "receiptResult",
+        component: receiptResult
+      },
+      {
+        path: "contractList",
+        component: contractList,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "合同列表"]
+        }
+      },
+      // 签后
+      {
+        path: "postReceive",
+        component: postReceive,
+        meta: {
+          root: true,
+          list: ["二手房", "签后", "后期接收"]
+        }
+      },
+      {
+        path: "postManage",
+        component: postManage,
+        meta: {
+          root: true,
+          list: ["二手房", "签后", "后期管理"]
+        }
+      },
+      {
+        path: "postMonitor",
+        component: postMonitor,
+        meta: {
+          root: true,
+          list: ["二手房", "签后", "后期监控"]
+        }
+      },
+      //新增合同
+      {
+        path: "addContract",
+        component: addContract
+      },
+      //合同详情
+      {
+        path: "contractDetails",
+        component: contractDetails
+      },
+      //合同预览
+      {
+        path: "contractPreview",
+        component: contractPreview
+      },
+      //合同审核
+      {
+        path: "contractCheck",
+        component: contractCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "合同审核"]
+        }
+      },
+      //合同主体审核
+      {
+        path: "signedCheck",
+        component: signedCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "签后审核"]
+        }
+      },
+      //变更解约审核
+      {
+        path: "changeCheck",
+        component: changeCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "变更审核"]
+        }
+      },
+      {
+        path: "cancelCheck",
+        component: cancelCheck,
+        meta: {
+          root: true,
+          list: ["二手房", "合同", "解约审核"]
+        }
+      },
+      //分账/打款详情
+      {
+        path: "routingRemitDetail",
+        component: routingRemitDetail
+      },
+      //扩展参数
+      {
+        path: "extendParams",
+        component: extendParams
+      },
+      {
+        path: 'iframe',
+        component: iframTest
+      },
+      //其他合同列表
+      {
+        path: "otherContractList",
+        component: otherContractList,
+        meta: {
+          root: true,
+          list: ["合同", "合同列表"]
+        }
+      },
+      //新增
+      {
+        path: "addOtherContract",
+        component: addOtherContract,
+      },
+      //详情
+      {
+        path: "otherContractDetail",
+        component: otherContractDetail,
+      },
+    ]
+  },
+  {
+    path: "/login",
+    component: Login
+  },
+  {
+    path: "/ledger",
+    component: ledger
+  },
+  {
+    path: "/error",
+    component: errorMsg
+  },
+  {
+    path: "/choseCont",
+    component: resolve => require(["@/pages/contract/contractList/choseCont"], resolve)
+  },
+  {
+    path: "/commissionIndex",
+    component: resolve => require(["@/pages/commission/commissionIndex"], resolve),
+    children: [
+      // 提成计算
+      {
+        path: "/commissionCounts",
+        component: resolve => require(["@/pages/commission/commissionCounts"], resolve)
+      },
+      // 提成发放
+      {
+        path: "/commissionGrant",
+        component: resolve => require(["@/pages/commission/commissionGrant"], resolve)
+      },
+      //提成设置
+      {
+        path: "/commissionSetting",
+        component: resolve => require(["@/pages/commission/commissionSetting"], resolve)
+      },
+      //结算周期设置
+      {
+        path: "/accountSetting",
+        component: resolve => require(["@/pages/commission/accountSetting"], resolve)
+      },
+      //提成操作日志
+      {
+        path: "/commissionOperationLog",
+        component: resolve => require(["@/pages/commission/commissionOperationLog"], resolve)
+      }
+    ]
+  }
   ]
 });

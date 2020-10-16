@@ -6,7 +6,7 @@
     <component :is="current" :systemArr="systemTagList" :systemOpt="systemTagSelect"></component>
     </div>
 </template>
-           
+
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import aplTime from "./aplTime";
@@ -14,6 +14,8 @@
   import conAttachment from "./conAttachment";
   import contractLayout from "./contractLayout";
   import divideRatio from "./divideRatio";
+  import choose from "./choose";
+  import choosePeriod from "./choosePeriod";
 export default{
     mixins: [MIXINS],
     data() {
@@ -50,6 +52,18 @@ export default{
                 state: false,
                 name: "分成比例设置",
                 current: 'divideRatio'
+              },
+              'sign-set-bl-jszq-add': {
+                id: 6,
+                state: false,
+                name: "结算周期",
+                current: 'choosePeriod'
+              },
+              'sign-set-bl-jssz-query': {
+                id: 7,
+                state: false,
+                name: "结算设置",
+                current: 'choose'
               }
             }
         }
@@ -78,7 +92,9 @@ export default{
         lowCommission,
         conAttachment,
         contractLayout,
-        divideRatio
+        divideRatio,
+        choose,
+        choosePeriod
     }
 }
 </script>
