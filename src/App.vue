@@ -1,20 +1,23 @@
 <template>
   <div id="app">
-    <router-view :key="$route.fullPath" v-if="['/login','/ledger','/error','/choseCont'].includes($route.path)"></router-view>
+    <router-view
+      :key="$route.fullPath"
+      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog'].includes($route.path)"
+    ></router-view>
     <div class="main" v-else>
       <div class="nav">
-        <img :src="getImg('honghui.png')" alt  v-if="showTransferTime"/>
-        <img :src="getImg('ming-rui.png')" alt  v-else-if="isMingRui"/>
-        <img :src="getImg('logo.png')" alt  v-else/>
-        <ul class="navbar" v-if="getUser&&getUser.user">
-          <li>{{getUser.user.cityName}}</li>
+        <img src="./assets/img/honghui.png" alt v-if="showTransferTime" />
+        <img src="./assets/img/ming-rui.png" alt v-else-if="isMingRui" />
+        <img src="./assets/img/logo.png" v-else />
+        <ul class="navbar" v-if="getUser && getUser.user">
+          <li>{{ getUser.user.cityName }}</li>
           <li>
-            <span>{{getUser.user.depName}}-{{getUser.user.name}}</span>
+            <span>{{ getUser.user.depName }}-{{ getUser.user.name }}</span>
           </li>
         </ul>
       </div>
       <div class="container">
-        <div class="slider" :class="[collapse?'':'collapse-on']">
+        <div class="slider" :class="[collapse ? '' : 'collapse-on']">
           <el-menu
             ref="menu"
             :router="true"
@@ -27,14 +30,14 @@
           >
             <el-submenu
               :index="item.category"
-              :class="[{'collapse-row':collapse}]"
+              :class="[{ 'collapse-row': collapse }]"
               v-for="item in views"
               :key="item.id"
-              v-if="(item.id!==6&&item.id!==7)&&item.can"
+              v-if="item.id !== 6 && item.id !== 7 && item.can"
             >
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
-                <span>{{item.name}}</span>
+                <span>{{ item.name }}</span>
               </template>
               <template>
                 <el-submenu
@@ -46,37 +49,38 @@
                 >
                   <template slot="title">
                     <i class="iconfont icon-icon-test2" v-if="!collapse"></i>
-                    {{grade.name}}
+                    {{ grade.name }}
                   </template>
                   <el-menu-item
                     v-for="tip in grade.child"
                     :key="tip.name"
                     :index="tip.path"
                     v-if="tip.can"
-                  >{{tip.name}}</el-menu-item>
+                    >{{ tip.name }}</el-menu-item
+                  >
                 </el-submenu>
               </template>
             </el-submenu>
             <el-menu-item
               :index="views[5].category"
               class="navbar-item"
-              :class="[{'collapse-row':collapse}]"
+              :class="[{ 'collapse-row': collapse }]"
               v-if="views[5].can"
             >
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[5].icon"></i>
-                <span>{{views[5].name}}</span>
+                <span>{{ views[5].name }}</span>
               </div>
             </el-menu-item>
             <el-menu-item
               :index="views[6].category"
               class="navbar-item"
-              :class="[{'collapse-row':collapse}]"
+              :class="[{ 'collapse-row': collapse }]"
               v-if="views[6].can"
             >
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[6].icon"></i>
-                <span>{{views[6].name}}</span>
+                <span>{{ views[6].name }}</span>
               </div>
             </el-menu-item>
           </el-menu>
@@ -84,9 +88,16 @@
         </div>
         <router-view></router-view>
         <p
-          style="flex:1;align-self: center;font-size: 30px;text-align: center;"
+          style="
+            flex: 1;
+            align-self: center;
+            font-size: 30px;
+            text-align: center;
+          "
           v-if="loadingState"
-        >loading...</p>
+        >
+          loading...
+        </p>
       </div>
     </div>
   </div>
@@ -97,22 +108,22 @@ import { mapMutations, mapGetters } from "vuex";
 import { MIXINS } from "@/assets/js/mixins";
 export default {
   name: "App",
-   mixins: [MIXINS],
+  mixins: [MIXINS],
   data() {
     return {
       activeIndex: "",
-      views: this.$tool.pathList.map(item => Object.assign({}, item)),
+      views: this.$tool.pathList.map((item) => Object.assign({}, item)),
       collapse: false, //menu是否折叠
       activeClass: [], //当前选择项的上级id
       testIndex: "",
-      loadingState: true
+      loadingState: true,
     };
   },
   created() {
     this.activeIndex = JSON.parse(localStorage.getItem("indexPath"));
   },
   methods: {
-    getImg: function(url) {
+    getImg: function (url) {
       return require(`@/assets/img/${url}`);
     },
     /**
@@ -141,18 +152,18 @@ export default {
     /**
      * 折叠侧边栏
      */
-    toCollapse: function() {
+    toCollapse: function () {
       this.collapse = !this.collapse;
       this.setCollapse(this.collapse);
     },
-    ...mapMutations(["setPath", "setCollapse", "setUser"])
+    ...mapMutations(["setPath", "setCollapse", "setUser"]),
   },
   computed: {
-    ...mapGetters(["getUser"])
+    ...mapGetters(["getUser"]),
   },
   watch: {
     getUser: {
-      handler: function(val) {
+      handler: function (val) {
         if (val) {
           let arr = val.privileges;
           this.views.forEach((item, index) => {
@@ -178,13 +189,13 @@ export default {
                 }
               }
             } else {
-              item.child.forEach(tip => {
-                tip.child.forEach(grade => {
+              item.child.forEach((tip) => {
+                tip.child.forEach((grade) => {
                   let objType = Object.prototype.toString.call(grade.code);
                   if (objType === "[object Array]") {
                     let joinCell = true; //父级导航是否子项组合的
                     if (grade.code.length > 0) {
-                      joinCell = !grade.code.every(cell => {
+                      joinCell = !grade.code.every((cell) => {
                         return !arr.includes(cell);
                       });
                     }
@@ -198,7 +209,7 @@ export default {
                   }
                 });
                 //遍历是否所有子项都无权限，是则父级导航也没有权限
-                let status = tip.child.every(cell => {
+                let status = tip.child.every((cell) => {
                   return cell.can === false;
                 });
                 // tip.can=!status
@@ -207,7 +218,7 @@ export default {
             }
             //遍历是否所有子项都无权限，是则父级导航也没有权限
             if (item.child.length > 0) {
-              let status = item.child.every(cell => {
+              let status = item.child.every((cell) => {
                 return cell.can === false;
               });
               // item.can=!status
@@ -218,9 +229,9 @@ export default {
         }
       },
       immediate: true,
-      deep: true
-    }
-  }
+      deep: true,
+    },
+  },
 };
 </script>
 <style lang="less" scoped>

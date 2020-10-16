@@ -206,7 +206,7 @@
     </el-dialog>
   </div>
 </template>
-           
+
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 export default {
@@ -250,6 +250,12 @@ export default {
       default() {
         return []
       }
+    },
+    checkPersonData: {
+      type: Object,
+      default() {
+        return null
+      }
     }
   },
   data() {
@@ -273,7 +279,7 @@ export default {
         "633": "", //证件类型(护照,身份证,营业执照)
         "781": "" //证件类型(护照,身份证,营业执照)
       },
-      checkPersonData: null,
+      // checkPersonData: null,
       checkPersonList: [],
       checkSignInfo: [],
       ownerMobileList: [], //业主手机号
@@ -289,20 +295,20 @@ export default {
   },
   methods: {
     // 获取合同模板的所有角色签章位置存在情况
-    getSignPosition() {
-      this.checkPersonList = []
-      this.$ajax
-      .get("/api/app/contract/GetSignPosition", {contCode:this.contCode})
-      .then(res => {
-        res = res.data
-        if (res.status === 200) {
-          this.checkPersonData = res.data
-        }
-      })
-      .catch(error => {
-        this.$message(error);
-      });
-    },
+    // getSignPosition() {
+    //   this.checkPersonList = []
+    //   this.$ajax
+    //   .get("/api/app/contract/GetSignPosition", {contCode:this.contCode})
+    //   .then(res => {
+    //     res = res.data
+    //     if (res.status === 200) {
+    //       this.checkPersonData = res.data
+    //     }
+    //   })
+    //   .catch(error => {
+    //     this.$message(error);
+    //   });
+    // },
     // 选择角色
     selectRole(val,index,parent) {
       let isSelectFlag = false;
@@ -692,7 +698,7 @@ export default {
         } else {
           // this.isOverCheckSign = false
           // if (this.isCheckGuestSign) {
-          //   this.isOverCheckSign = true 
+          //   this.isOverCheckSign = true
             this.choseGuestM.push(val.mobile);
             this.choseGuest.push(val);
           // } else {
@@ -1051,7 +1057,7 @@ export default {
               res = res.data;
               if (res.status === 200) {
                 this.$emit("closeChose", { type: "closeChose" });
-              } 
+              }
             })
             .catch(error => {
               this.$emit("closeChose",false)
@@ -1073,6 +1079,7 @@ export default {
   },
   watch: {
     checkPersonData(val) {
+      this.checkPersonList = []
       for (const key in val) {
         if (val.hasOwnProperty(key)) {
           val[key] && this.checkPersonList.push(Number(key))
@@ -1154,7 +1161,7 @@ export default {
   computed: {
     getDialogVisible() {
       if (this.dialogVisible) {
-        this.getSignPosition()
+        // this.getSignPosition()
       }
       return this.dialogVisible;
     },

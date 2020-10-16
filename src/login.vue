@@ -14,7 +14,7 @@ export default {
     return {
       userId: "",
       code: {},
-      show: false
+      show: false,
     };
   },
   created() {
@@ -36,13 +36,13 @@ export default {
     this.login();
   },
   methods: {
-    login: function() {
+    login: function () {
       this.$ajax
         .post("/api/verify", this.code)
-        .then(res => {
+        .then((res) => {
           res = res.data;
           if (res.status === 200) {
-            this.$ajax.get("/api/me", { time: new Date() }).then(res => {
+            this.$ajax.get("/api/me", { time: new Date() }).then((res) => {
               res = res.data;
               if (res.status === 200) {
                 this.$store.commit("setUser", res.data);
@@ -53,21 +53,21 @@ export default {
                   res.data.user.empId === 37109
                 ) {
                   this.$router.push({
-                    path: "commission"
+                    path: "commission",
                   });
                   return;
                 }
                 if (res.data.privileges.length > 0) {
                   let arr = res.data.privileges;
-                  let views = this.$tool.pathList.map(item =>
+                  let views = this.$tool.pathList.map((item) =>
                     Object.assign({}, item)
                   );
                   let sliders = [];
 
                   views.forEach((item, index) => {
                     //获取侧边栏信息中用户可访问的元素
-                    item.child.forEach(tip => {
-                      tip.child.forEach(grade => {
+                    item.child.forEach((tip) => {
+                      tip.child.forEach((grade) => {
                         if (arr.includes(grade.code)) {
                           sliders.push(grade);
                         }
@@ -78,8 +78,8 @@ export default {
                   let _appPath = {
                     path: "",
                     query: {
-                      source: "uplus"
-                    }
+                      source: "uplus",
+                    },
                   };
                   let pageIndex = Number(this.$route.query.pageName);
                   switch (pageIndex) {
@@ -104,8 +104,8 @@ export default {
                         path: "moneyCheck",
                         query: {
                           type: pageIndex === 6 ? 1 : 2,
-                          source: "uplus"
-                        }
+                          source: "uplus",
+                        },
                       };
                       break;
                     case 8:
@@ -118,8 +118,13 @@ export default {
                       _appPath = {
                         path: "choseCont",
                         query: {
-                          houseId: this.$route.query.houseId
-                        }
+                          houseId: this.$route.query.houseId,
+                        },
+                      };
+                      break;
+                    case 101:
+                      _appPath = {
+                        path: "commissionSetting",
                       };
                       break;
                   }
@@ -127,27 +132,27 @@ export default {
                     this.$router.push(_appPath);
                   } else {
                     this.$router.push({
-                      path: sliders[0].path
+                      path: sliders[0].path,
                     });
                   }
                 } else {
                   this.$message({
-                    message: "无任何权限"
+                    message: "无任何权限",
                   });
                 }
               }
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$router.push({
             path: "/error",
-            query: { msg: error }
+            query: { msg: error },
           });
         });
     },
-    ...mapMutations(["setPath"])
-  }
+    ...mapMutations(["setPath"]),
+  },
 };
 </script>
 

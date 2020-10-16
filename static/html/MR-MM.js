@@ -9,176 +9,175 @@ let Obj = {
 }
 
 let sub = {
-    // 'info_val1': {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val1]').innerHTML !== '' ? {
-    //             'val2': null
-    //         } : null
-    //     }
-    // },
-    // 'info_val3': {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {
-    //             'val4': null
-    //         } : null
-    //     }
-    // },
-    // "val5": null,
-    // 'info_val3': {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {
-    //             'val4': null
-    //         } : null
-    //     }
-    // },
-    // 'info_val6': {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val6]').innerHTML !== '' ? {
-    //             'checkbox_one': null,
-    //         } : null
-    //     }
-    // },
-    // 'checkbox_two': {
-    //     stateful: function (index) {
-    //         return index === 3 ? {
-    //             'val7': null,
-    //         } : null
-    //     }
-    // },
-    // 'checkbox_three': {
-    //     stateful: function (index) {
-    //         return index === 1 ? {
-    //             'drapdown_val8': {
-    //                 stateful: function (val) {
-    //                     let res = null;
-    //                     switch (val) {
-    //                         case 'A':
-    //                             res = {
-    //                                 'val9': null
-    //                             };
-    //                         case 'B':
-    //                             res = {
-    //                                 'val10': null
-    //                             };
-    //                             break;
-    //                     }
-    //                     return res;
-    //                 }
-    //             },
-    //         } : null
-    //     }
-    // },
-    // 'val50': null,
-    // 'checkbox_four': null,
-    // 'checkbox_five': {
-    //     stateful: function (index) {
-    //         return index === 0 ? {
-    //             'checkbox_six': null,
-    //             'val11': null,
-    //             'checkbox_carPlace': null,
-    //         } : null
-    //     }
-    // },
-    // 'val51': null,
-    // 'val52': null,
-    // 'drapdown_val12': {
-    //     stateful: function (val) {
-    //         let res = null;
-    //         switch (val) {
-    //             case 'A':
-    //                 break;
-    //             case 'B':
-    //                 res = {
-    //                     'checkbox_seven': {
-    //                         stateful: function (index) {
-    //                             return index === 0 ? {
-    //                                 'val13': null
-    //                             } : null
-    //                         }
-    //                     },
-    //                     'val53': null,
-    //                     'val54': null,
+    'info_val1': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val1]').innerHTML !== '' ? {
+                'val2': null
+            } : null
+        }
+    },
+    'info_val3': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {
+                'val4': null
+            } : null
+        }
+    },
+    "val5": null,
+    'info_val3': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {
+                'val4': null
+            } : null
+        }
+    },
+    'info_val6': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val6]').innerHTML !== '' ? {
+                'checkbox_one': null,
+            } : null
+        }
+    },
+    'checkbox_two': {
+        stateful: function (index) {
+            return index === 3 ? {
+                'val7': null,
+            } : null
+        }
+    },
+    'checkbox_three': {
+        stateful: function (index) {
+            return index === 1 ? {
+                'drapdown_val8': {
+                    stateful: function (val) {
+                        let res = null;
+                        switch (val) {
+                            case 'A':
+                                res = {
+                                    'val9': null
+                                };
+                            case 'B':
+                                res = {
+                                    'val10': null
+                                };
+                                break;
+                        }
+                        return res;
+                    }
+                },
+            } : null
+        }
+    },
+    'val50': null,
+    'checkbox_four': null,
+    'checkbox_five': {
+        stateful: function (index) {
+            return index === 0 ? {
+                'checkbox_six': null,
+                'val11': null,
+                'checkbox_carPlace': null,
+            } : null
+        }
+    },
+    'val51': null,
+    'val52': null,
+    'drapdown_val12': {
+        stateful: function (val) {
+            let res = null;
+            switch (val) {
+                case 'A':
+                    break;
+                case 'B':
+                    res = {
+                        'checkbox_seven': {
+                            stateful: function (index) {
+                                return index === 0 ? {
+                                    'val13': null
+                                } : null
+                            }
+                        },
+                        'val53': null,
+                        'val54': null,
 
-    //                 };
-    //                 break;
-    //             case 'C':
-    //                 res = {
-    //                     'val14': null,
-    //                     'val55': null,
-    //                     'val56': null,
-    //                 };
-    //                 break;
-    //             case 'D':
-    //                 res = {
-    //                     'val15': null,
-    //                     'val57': null,
-    //                     'checkbox_eight': null
-    //                 };
-    //                 break;
-    //         }
-    //         return res;
-    //     }
-    // },
-    // 'val58': null,
-    // 'checkbox_nine': {
-    //     stateful: function (index) {
-    //         return index === 1 ? {
-    //             'checkbox_ten': null,
-    //         } : null
-    //     }
-    // },
-    // 'val16': null,
-    // 'drapdown_val17': null,
-    // 'checkbox_ele': null,
-    // 'checkbox_twe': null,
-    // 'checkbox_thirteen': null,
-    // 'val18': null,
-    // 'checkbox_fourteen': null,
-    // 'checkbox_fiveteen': null,
-    // 'checkbox_sixteen': null,
-    // 'checkbox_seventeen': null,
-    // 'drapdown_val19': null,
-    // 'val59': null,
-    // 'drapdown_val20': {
-    //     stateful: function (val) {
-    //         let res = null;
-    //         switch (val) {
-    //             case 'A':
-    //                 res = {
-    //                     'val21': null,
-    //                 };
-    //                 break;
-    //             case 'B':
-    //                 res = {
-    //                     'val22': null,
-    //                 };
-    //                 break;
-    //             case 'C':
-    //                 res = {
-    //                     'val23': null
-    //                 };
-    //                 break;
-    //         }
-    //         return res;
-    //     }
-    // },
-    // info_val305: {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val305]').innerHTML !== '' ? {
-    //             val306: null
-    //         } : null
-    //     }
-    // },
-    // info_val311: {
-    //     stateful: function () {
-    //         return document.querySelector('*[extendparam=val311]').innerHTML !== '' ? {
-    //             val312: null
-    //         } : null
-    //     }
-    // },
-    // val314: null,
-    // val315: null,
-
+                    };
+                    break;
+                case 'C':
+                    res = {
+                        'val14': null,
+                        'val55': null,
+                        'val56': null,
+                    };
+                    break;
+                case 'D':
+                    res = {
+                        'val15': null,
+                        'val57': null,
+                        'checkbox_eight': null
+                    };
+                    break;
+            }
+            return res;
+        }
+    },
+    'val58': null,
+    'checkbox_nine': {
+        stateful: function (index) {
+            return index === 1 ? {
+                'checkbox_ten': null,
+            } : null
+        }
+    },
+    'val16': null,
+    'drapdown_val17': null,
+    'checkbox_ele': null,
+    'checkbox_twe': null,
+    'checkbox_thirteen': null,
+    'val18': null,
+    'checkbox_fourteen': null,
+    'checkbox_fiveteen': null,
+    'checkbox_sixteen': null,
+    'checkbox_seventeen': null,
+    'drapdown_val19': null,
+    'val59': null,
+    'drapdown_val20': {
+        stateful: function (val) {
+            let res = null;
+            switch (val) {
+                case 'A':
+                    res = {
+                        'val21': null,
+                    };
+                    break;
+                case 'B':
+                    res = {
+                        'val22': null,
+                    };
+                    break;
+                case 'C':
+                    res = {
+                        'val23': null
+                    };
+                    break;
+            }
+            return res;
+        }
+    },
+    info_val305: {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val305]').innerHTML !== '' ? {
+                val306: null
+            } : null
+        }
+    },
+    info_val311: {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val311]').innerHTML !== '' ? {
+                val312: null
+            } : null
+        }
+    },
+    val314: null,
+    val315: null,
 }
 
 //给按钮添加点击事件
@@ -254,37 +253,37 @@ setTimeout(() => {
     })
 
     //基础数据赋值
-    // let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-    let msg = {
-        code: "S0001191107007",
-        companyNames: ["金银湖三级门店哦"],
-        guestCardType: "军官证",
-        guestCardTypes: "",
-        guestID: "132",
-        guestIDs: "ee2353-344，ii397-4839",
-        guestName: "然迪生",
-        guestNames: "胜负少，发士夫",
-        guestTel: "13011111111",
-        guestTels: "",
-        id: 3354,
-        isentrust: 1,
-        ownerCardType: "营业执照",
-        ownerCardTypes: "",
-        ownerID: "123",
-        ownerIDs: "ee2353-344，ii397-4839",
-        ownerName: "熊先",
-        ownerNames: "胜多少，发士夫",
-        ownerTel: "18888888888",
-        ownerTels: "",
-        propertyAddr: "a市b区c",
-        singleCompany: "是的噶几开会说",
-        dealPrice: 1000,
-        dealPriceUpper: '壹仟',
-        square: 160,
-        guestStoreRegisterCode: '213',
-        signDate: 1592465819508,
-        organizationCode: "8888888888"
-    }
+    let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+    // let msg = {
+    //     code: "S0001191107007",
+    //     companyNames: ["金银湖三级门店哦"],
+    //     guestCardType: "军官证",
+    //     guestCardTypes: "",
+    //     guestID: "132",
+    //     guestIDs: "ee2353-344，ii397-4839",
+    //     guestName: "然迪生",
+    //     guestNames: "胜负少，发士夫",
+    //     guestTel: "13011111111",
+    //     guestTels: "",
+    //     id: 3354,
+    //     isentrust: 1,
+    //     ownerCardType: "营业执照",
+    //     ownerCardTypes: "",
+    //     ownerID: "123",
+    //     ownerIDs: "ee2353-344，ii397-4839",
+    //     ownerName: "熊先",
+    //     ownerNames: "胜多少，发士夫",
+    //     ownerTel: "18888888888",
+    //     ownerTels: "",
+    //     propertyAddr: "a市b区c",
+    //     singleCompany: "是的噶几开会说",
+    //     dealPrice: 1000,
+    //     dealPriceUpper: '壹仟',
+    //     square: 160,
+    //     guestStoreRegisterCode: '213',
+    //     signDate: 1592465819508,
+    //     organizationCode: "8888888888"
+    // }
     for (let readonlyItem in msg) {
         let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
@@ -442,4 +441,4 @@ setTimeout(() => {
         }
     })
 
-}, 100)
+}, 50)

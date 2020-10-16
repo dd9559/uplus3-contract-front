@@ -1194,13 +1194,6 @@ export default {
           if (res.data.status == 200) {
             this.isSS = true;
             this.people = res.data.data.allRole;
-            this.people.map((item)=>{
-               if(item.type===1){
-                  item.description=item.description+"-房源"
-               }else{
-                 item.description=item.description+"-客源"
-               }
-            })
             this.depName = res.data.data.empNames[0].depName;
             this.empNames = res.data.data.empNames;
 

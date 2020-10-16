@@ -1,56 +1,70 @@
-import { contractConfig, toChineseNumber,formatMoney } from "./base.js";
+import { contractConfig, toChineseNumber, formatMoney } from "./base.js";
 
-let Obj = {
-    cn_arr: ['val12']
-};
+// 动态添加id
+(function() {
+    let t = document.querySelectorAll('.navTitle');
+    t.forEach((e, i) => {
+        e.setAttribute('id', 'a' + i);
+    });
+})()
+
+// 获取阿拉伯数字转小写的字符串add
+let Obj;
+(function() {
+    let t = document.querySelectorAll(`[extendParam]`);
+    let arr = [];
+
+    t.forEach(e => {
+        let name = e.getAttribute("extendParam")
+        if (name.indexOf("_add") > 0) {
+            let name2 = name.slice(0, -4);
+            arr.push(name2);
+        }
+    });
+    Obj = Obj || {};
+    Obj.cn_arr = arr;
+})()
 
 // 必填校验对象
 let sub = {
-    val1_info: {
-        stateful() {
-            return proxyFn(1);
-
-        }
-    },
-    val3_info: {
-        stateful() {
-            return proxyFn(3);
-        }
-    },
-    val5_info: {
-        stateful() {
-            return proxyFn(5);
-        }
-    },
-    val7_info: {
-        stateful() {
-            return proxyFn(7);
-        }
-    },
+    val1: null,
+    val2: null,
+    val3: null,
+    val4: null,
+    val5: null,
+    val6: null,
+    val7: null,
+    val8: null,
+    val9: null,
     val10: null,
     val11: null,
     val12: null,
+    val13: null,
+    val14: null,
+    val15: null,
+    val16: null,
+    val19: null,
+    val20: null,
+    val24: null,
+    val25: null,
+    val26: null,
+    val27: null,
+    val28: null,
+    val29: null,
+    val30: null,
+    val31: null,
 };
-
-function proxyFn(val) {
-    let t = document.querySelector(`.text-limit[extendParam=val${val}]`);
-    let m = document.querySelector(`.text-limit[extendParam=val${val + 1}]`);
-    // 如果 甲方代理人有输入了 甲方代理人身份证 必须输入 
-    if (t.innerText.length > 0 && m.innerText.length < 1) {
-        return {
-            ['val' + (val + 1)]: null
-        };
-    }
-}
 
 // 接口赋值的对象
 //基础数据赋值
 let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 // let msg = {
-//     sellerName: "甲方名字",
-//     sellerId: "甲方身份证号码",
-//     buyerName: "乙方名字",
-//     buyerId: "乙方身份证号码",
+//     ownerName: "甲方名字",
+//     ownerID: "甲方身份证号码",
+//     ownerTel: "甲方电话号码",
+//     guestName: "乙方名字",
+//     guestID: "乙方身份证号码",
+//     guestTel: "乙方电话号码",
 //     code: "S0001191107007",
 //     signDate: 1592465819508
 // }
@@ -75,11 +89,79 @@ for (let readonlyItem in msg) {
     })
 }
 
+// 下拉初始值
+let dropdownDate = {
+    val7: {
+        1: [],
+        2: ['val71'],
+        3: ['val72'],
+        init: ['val71', 'val72']
+    },
+    val8: {
+        1: [],
+        2: ['val81'],
+        init: ['val81']
+    },
+    val16: {
+        1: [],
+        2: [],
+        3: ['val17', 'val18'],
+        4: ['val161'],
+        init: ['val17', 'val18', 'val161']
+    },
+    val20: {
+        1: ["val21", 'val21_add', "val201", "val2011", "val211"],
+        2: ["val22", "val22_add", "val23", "val23_add", "val231"],
+        3: [],
+        init: ["val21", 'val21_add', "val201", "val2011", "val211", "val22", "val22_add", "val23", "val23_add", "val231"]
+    },
+    val201: {
+        1: [],
+        2: [],
+        3: ['val2011'],
+        init: ['val2011']
+    },
+}
+// 封掉整个下拉关联的值
+for (const key in dropdownDate) {
+    if (dropdownDate.hasOwnProperty(key)) {
+        contractConfig.initForm(dropdownDate[key].init, 1)
+    }
+}
+
+//初始化下拉控件
+let oldValue = {};
+Dropdown.create({
+    classN: 'dropdown-item',
+    callBack: function(bindElem, dateObj) {
+        if (bindElem.tagName.toLowerCase() === 'input') {
+            bindElem.value = dateObj.value
+            bindElem.setAttribute('value', bindElem.value)
+            let attr = bindElem.getAttribute('inputmethod')
+            if (attr) {
+                // 如果是选择相同值 不清空
+                if (oldValue[attr] && oldValue[attr] === dateObj.value) {
+                    return;
+                }
+                oldValue[attr] = dateObj.value;
+                // 封
+                contractConfig.initForm(dropdownDate[attr].init, 1)
+                // 解封
+                dropdownDate[attr][bindElem.value].length > 0 ? contractConfig.initForm(dropdownDate[attr][bindElem.value], 0) : ""
+            }
+        } else {
+            bindElem.innerHTML = dateObj.value
+            bindElem.classList.remove('input-select')
+            bindElem.classList.remove('input-before')
+        }
+    }
+})
+
 //给按钮添加点击事件
 let mainBtn = document.querySelector('#submit');
 if (mainBtn) {
     mainBtn.addEventListener('click', function(e) {
-        contractConfig.submit(e, sub, 'templateError')
+        contractConfig.submit(e, sub, 'templateError1')
     })
 } else {
     let btn = document.createElement('span')
@@ -88,7 +170,7 @@ if (mainBtn) {
     btn.innerHTML = 'click'
     document.body.appendChild(btn)
     btn.addEventListener('click', function(e) {
-        contractConfig.submit(e, sub, 'templateError')
+        contractConfig.submit(e, sub, 'templateError1')
     })
 }
 
