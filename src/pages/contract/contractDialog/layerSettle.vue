@@ -7,27 +7,29 @@
                 <div class="audit-col">
                     <div class="col-li col-li2">
                         <p>合同编号：<span class="blue">{{layerAudit.contractCode}}</span></p>
-                        <p>发起日期：<span>{{layerAudit.applicationDate | getDate}}</span></p>
-                        <p>发起人：<span>{{layerAudit.initiatorDepName + '-' + layerAudit.initiatorName}}</span></p>
-                        
+                        <p>发起时间：<span>{{layerAudit.applicationDate | getDate}}</span></p>
+                        <p>发起人：
+                            <span>{{getUser.user.depName + '-' + getUser.user.name}}</span>
+                        </p>
+                    </div>
+                    <div class="col-li col-li2">
+                        <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
+                        <p>后期状态：<span v-if="layerAudit.contarctType.value!==1">{{layerAudit.laterStageStatus.label}}</span><span v-else>--</span></p>
+                        <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p>
+                        <!-- <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p> -->
+                    </div>
+                    <div class="col-li col-li2 col-li-between">
+                        <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+                        <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+                        <!-- <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
+                        <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p> -->
                     </div>
                     <div class="col-li">
                         <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>                  
                     </div>
-                    <div class="col-li col-li2">
-                        <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
-                        <p>后期状态：<span>{{layerAudit.laterStageStatus.label}}</span></p>
-                        <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-                        
-                        
-                    </div>
-                    <div class="col-li col-li2">
-                        <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
-                        <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-                        <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p>
-                    </div>
                     <div class="col-li">
-                        <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p>                
+                        <!-- <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p> -->
+                        <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement}}元</span></p>    
                     </div>
 
                 </div>
@@ -35,22 +37,31 @@
                 <!-- 表格 -->
                 <div class="audit-col">
                     <el-table :data="layerAudit.storeSettle" border style="width: 100%" class="table">
-                        <el-table-column prop="level4" label="合作门店"></el-table-column>
+                        <el-table-column prop="level4" label="门店名称"></el-table-column>
+                        <el-table-column prop="roleName" label="分成角色"></el-table-column>
+                        <el-table-column label="分成人">
+                            <template slot-scope="scope">
+                                <p>{{scope.row.level4}}-{{scope.row.empName}}</p>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="业绩分成比例">
                             <template slot-scope="scope">
                                 <p>{{scope.row.ratio}}%</p>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column>
-                        <el-table-column prop="storefrontReceipts" label="当期实收分成（元）"></el-table-column>
+                        <!-- <el-table-column prop="serviceFee" label="当期刷卡手续费（元）"></el-table-column> -->
+                        <el-table-column prop="storefrontReceipts" label="本次实收分成金额（元）"></el-table-column>
                     </el-table> 
-                    <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div>             
+                    <!-- <div class="zhushi">注：结算中的当期实收分成金额已扣除了特许服务费、刷卡手续费</div> -->
                 </div>
 
                 <!-- 上传附件 -->
                 <div class="audit-col">
                     <div class="uploadfile">
-                        <div class="uploadtitle">结算凭证</div>
+                        <div class="uploadtitle">
+                            <span>结算凭证:</span>
+                            <span class="zhushi">注：支持所有格式</span>
+                        </div>
                         <ul class="ulData">
                             <li>
                                 <file-up class="uploadSubject" @getUrl="uploadSubject" id="zhuti_" :scane="scaneData">
@@ -74,8 +85,8 @@
                 <!-- 审核备注 -->
                 <div class="audit-col bordernone">
                     <div class="textareabox2 textlengthbox">
-                        <span><em>*</em>结算备注</span>
-                        <el-input type="textarea" :rows="5" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请填写审核备注"></el-input>
+                        <span>结算备注:</span>
+                        <el-input type="textarea" :rows="5" class="textarea" maxlength=200  v-model="auditForm.textarea" placeholder="请输入备注信息"></el-input>
                         <span class="textLength">{{auditForm.textarea.length}}/200</span>
                     </div>
                 </div>
@@ -174,7 +185,7 @@ export default {
 
     filters: {
        getDate(val) {
-         return TOOL.dateFormat(val);
+         return TOOL.timeFormat(val,false);
        }
     },
 
@@ -303,9 +314,9 @@ export default {
       auditApply() {
         if(this.uploadList.length > 10){
             this.$message('结算凭证数量上限10个'); 
-        }
-        else if((this.auditForm.textarea).trim() !== ""){
-            
+        } else {
+        // 结算设置修改为不必填
+        // } else if((this.auditForm.textarea).trim() !== ""){
             this.fullscreenLoading=true   
             let param = {
                 id: this.contId,
@@ -339,12 +350,11 @@ export default {
                     })
                   }
             })
-        
-        }else if((this.auditForm.textarea).trim() === ""){
-        this.$message('请填写结算备注'); 
         }
-            
-       
+        // 结算设置修改为不必填
+        // else if((this.auditForm.textarea).trim() === ""){
+        // this.$message('请填写结算备注'); 
+        // }
       }
 
     },
@@ -431,6 +441,16 @@ export default {
                 }
             }
 
+            .col-li-between {
+                display: flex;
+                p:first-child {
+                flex-basis: 65.66%;
+                }
+                p:last-child {
+                color: red;
+                }
+            }
+
             .textareabox{
                 display: flex;
                 align-items: center;
@@ -459,9 +479,10 @@ export default {
             .uploadfile{
                 margin: 20px 0 30px;
                 display: flex;
+                flex-direction: column;
                 .uploadtitle{
                     color: #6C7986;
-                    width: 78px;
+                    // width: 78px;
                     em{
                         color: #FF3E3E;
                         margin-right: 4px;
