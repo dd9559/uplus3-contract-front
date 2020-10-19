@@ -1,11 +1,22 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
+  'info_val116': {
+    stateful: function (index) {
+      return document.querySelector('*[extendparam=val116]').innerHTML !== '' ? {'val117': null} : null
+    }
+  },
+  'info_val118': {
+    stateful: function (index) {
+      return document.querySelector('*[extendparam=val118]').innerHTML !== '' ? {'val119': null} : null
+    }
+  },
   'val1': null,
   'val2': null,
   'checkbox_one': null,
   'checkbox_two': null,
   'val3': null,
   'checkbox_three': {
+    state:true,
     stateful: function (index) {
       return index === 5 ? {'val4': null} : null
     }
@@ -30,6 +41,16 @@ let sub = {
   'checkbox_eight': null,
   'checkbox_nine': null,
   'val19': null,
+  'info_val120': {
+    stateful: function (index) {
+      return document.querySelector('*[extendparam=val120]').innerHTML !== '' ? {'val121': null} : null
+    }
+  },
+  'info_val122': {
+    stateful: function (index) {
+      return document.querySelector('*[extendparam=val122]').innerHTML !== '' ? {'val123': null} : null
+    }
+  },
   'val102': null,
   'val103': null,
   'val104': null,
@@ -133,9 +154,9 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
         if (item.querySelector('p').getAttribute('checked')) {
           if (i === 5) {
             contractConfig.initForm(checkIO, 0)
-          } else {
-            contractConfig.initForm(checkIO, 1)
           }
+        } else {
+          contractConfig.initForm(checkIO, 1)
         }
       }
     })

@@ -438,7 +438,8 @@
             <!-- 封面 -->
             <div class="cover-fm" style="display: none;">
                 <div class="cover-style">
-                    <p class="code">合同编号：<span systemparam="code" tag="input-auto"></span></p>
+                    <p class="code">合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text"
+                        class="text-limit" style="width:150px" /></p>
                     <div class="head_title">
                         <p>房屋租赁业务</p>
                         <p>签订文件合订本</p>
@@ -463,8 +464,8 @@
                             systemparam="ownerIDs"></span></span></li>
                 </ul>
                 <ul>
-                    <li><span>甲方代理人：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
-                    <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
+                    <li><span>甲方代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val116"></span></span></li>
+                    <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto" extendParam="val117"></span></span></li>
                 </ul>
                 <ul>
                     <li><span>乙方（承租人）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
@@ -472,8 +473,8 @@
                             systemparam="guestID"></span></li>
                 </ul>
                 <ul>
-                    <li><span>乙方代理人：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
-                    <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
+                    <li><span>乙方代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val118"></span></span></li>
+                    <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto" extendParam="val119"></span></span></li>
                 </ul>
                 <!-- <ul>
                     <li><span>丙方（居间人）：</span><span class="text-limit " systemparam="companyNames" company="true"></span></span></li>
@@ -520,22 +521,22 @@
             </div>
             <div class="1h18 agreements">
                 <span> 3.房屋已开通的基础设施</span>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>水
                 </div>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>电
                 </div>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>有线电视
                 </div>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>网络
                 </div>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>管道煤气
                 </div>
-                <div class="info-checkbox" name="three">
+                <div class="info-checkbox" more="true" name="three">
                     <p type="check"></p>其他：
                 </div>
                 <span tag="input-auto" class="text-limit input-before" extendParam="val4"></span>
@@ -555,12 +556,12 @@
                 <p class="1h18 agreements navTitle"><strong>第二条 租赁期限</strong></p>
                 <p class="1h18 agreements">
                     1.房屋租赁期自
-                    <input type="text" class="text-limit calendar-item" style="width:105px" readonly="readonly"
+                    <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly"
                         extendParam="val6" />至
-                    <input type="text" class="text-limit calendar-item" style="width:105px" readonly="readonly"
+                    <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly"
                         extendParam="val7" />,共计
                         <span class="input-before" listen="number" max="12" extendParam="val8" tag="input-auto"></span>个月。甲方应于
-                    <input type="text" class="text-limit calendar-item" style="width:105px" readonly="readonly" extendParam="val9" />
+                    <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val9" />
                     将房屋按约定条件交付给乙方。《房屋交割清单》经甲乙双方交验签字盖章并移交房门钥匙后视为交付完成。
                 </p>
                 <p class="1h18 agreements">
@@ -604,9 +605,11 @@
                     </div>
                     <span>（甲方收取租金账户为：</span>
                     <span class="input-before" listen="number" extendParam="val12" tag="input-auto"></span>)天支付给甲方。进行支付，首次租金乙方于
-                    <input type="text" class="text-limit calendar-item" style="width:105px" readonly="readonly" extendParam="val13" />
+                    <span tag="input-auto" class="text-limit input-before" extendParam="val13"></span>
+                    <!-- <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val13" /> -->
                     支付给甲方，以后各期租金交付时间为
-                    <input type="text" class="text-limit calendar-item" style="width:105px" readonly="readonly" extendParam="val14" />
+                    <span tag="input-auto" class="text-limit input-before" extendParam="val14"></span>
+                    <!-- <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val14" /> -->
                     。甲方收取到租金后应出具发票或收据，如有租赁税费的，由
                     <div class="info-checkbox" name="six">
                         <p type="check"></p>甲方
@@ -981,8 +984,8 @@
                                 systemparam="ownerIDs"></span></span></li>
                     </ul>
                     <ul>
-                        <li><span>甲方代理人：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
-                        <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
+                        <li><span>甲方代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val120"></span></span></li>
+                        <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto" extendParam="val121"></span></span></li>
                     </ul>
                     <ul>
                         <li><span>乙方（承租人）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
@@ -990,8 +993,8 @@
                                 systemparam="guestID"></span></li>
                     </ul>
                     <ul>
-                        <li><span>乙方代理人：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
-                        <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></span></li>
+                        <li><span>乙方代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val122"></span></span></li>
+                        <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto" extendParam="val123"></span></span></li>
                     </ul>
                     <ul>
                         <li>
@@ -1107,7 +1110,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:8081') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './MR-ZL.js'
