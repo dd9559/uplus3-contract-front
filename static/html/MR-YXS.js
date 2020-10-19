@@ -9,7 +9,7 @@ let Obj = {
 
 let sub = {
   val301: null, //买方
-  val302: null, //卖方
+  // val302: null, //卖方
   val303: null, //地址
   val304: null, //金额
   val305: null, //付款方式

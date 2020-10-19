@@ -6,22 +6,22 @@ let Obj = {
 
 // 必填校验对象
 let sub = {
-    val1_info: {
-        stateful() {
-            return proxyFn(1);
+    // val1_info: {
+    //     stateful() {
+    //         return proxyFn(1);
 
-        }
-    },
+    //     }
+    // },
     val3_info: {
         stateful() {
             return proxyFn(3);
         }
     },
-    val5_info: {
-        stateful() {
-            return proxyFn(5);
-        }
-    },
+    // val5_info: {
+    //     stateful() {
+    //         return proxyFn(5);
+    //     }
+    // },
     val7_info: {
         stateful() {
             return proxyFn(7);
@@ -52,25 +52,24 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //     buyerName: "乙方名字",
 //     buyerId: "乙方身份证号码",
 //     code: "S0001191107007",
-//     signDate: 1592465819508
+//     wtSignDate: 1592465819508
 // }
 
 // 赋值
 for (let readonlyItem in msg) {
-    let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
+    let nameItem = readonlyItem==='wtSignDate'?'signDate':readonlyItem
+    let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${nameItem}]`));
     onlyReadDom.forEach(e => {
-        if (readonlyItem === 'signDate' && msg["signDate"]) {
-            let time = new Date(Number(msg["signDate"]));
+        if (nameItem === 'signDate' && msg[readonlyItem]) {
+            let time = new Date(Number(msg[readonlyItem]));
             let y = time.getFullYear();
             let M = time.getMonth() + 1;
             let D = time.getDate();
             let signDate = `${y}年${M}月${D}日`
-            console.log(signDate)
             e.innerHTML = signDate
         } else {
             e.innerHTML = msg[readonlyItem]
         }
-
         e.classList.remove('input-before');
     })
 }
