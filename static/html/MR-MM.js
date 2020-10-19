@@ -52,11 +52,12 @@ let sub = {
                     stateful: function (val) {
                         let res = null;
                         switch (val) {
-                            case 'A':
+                            case "A":
                                 res = {
                                     'val9': null
                                 };
-                            case 'B':
+                                break;
+                            case "B":
                                 res = {
                                     'val10': null
                                 };
@@ -124,11 +125,11 @@ let sub = {
         stateful: function (index) {
             return index === 1 ? {
                 'checkbox_ten': null,
+                'val16': null,
+                'drapdown_val17': null,
             } : null
         }
     },
-    'val16': null,
-    'drapdown_val17': null,
     'checkbox_ele': null,
     'checkbox_twe': null,
     'checkbox_thirteen': null,
@@ -162,6 +163,7 @@ let sub = {
             return res;
         }
     },
+    'drapdown_val24': null,
     info_val305: {
         stateful: function () {
             return document.querySelector('*[extendparam=val305]').innerHTML !== '' ? {
@@ -375,7 +377,7 @@ setTimeout(() => {
                 })
             } else if (attr === 'nine') {
                 let checkIO = {
-                    1: ['checkbox_ten'],
+                    1: ['checkbox_ten', 'val16', 'val17'],
                 }
                 boxArray.forEach((item, i) => {
                     // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
