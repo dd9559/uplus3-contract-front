@@ -2,21 +2,21 @@ import { contractConfig, toChineseNumber, formatMoney } from "./base.js";
 
 
 // 获取阿拉伯数字转小写的字符串add
-let Obj;
-(function() {
-    let t = document.querySelectorAll(`[extendParam]`);
-    let arr = [];
+// let Obj;
+// (function() {
+//     let t = document.querySelectorAll(`[extendParam]`);
+//     let arr = [];
 
-    t.forEach(e => {
-        let name = e.getAttribute("extendParam")
-        if (name.indexOf("_add") > 0) {
-            let name2 = name.slice(0, -4);
-            arr.push(name2);
-        }
-    });
-    Obj = Obj || {};
-    Obj.cn_arr = arr;
-})()
+//     t.forEach(e => {
+//         let name = e.getAttribute("extendParam")
+//         if (name.indexOf("_add") > 0) {
+//             let name2 = name.slice(0, -4);
+//             arr.push(name2);
+//         }
+//     });
+//     Obj = Obj || {};
+//     Obj.cn_arr = arr;
+// })()
 
 let checkArr = {
     0: ['val7'],
@@ -39,10 +39,10 @@ let sub = {
     checkbox_two: {
         stateful(i) {
             let j = {};
-            checkArr[i].forEach(e=>{
+            checkArr[i].forEach(e => {
                 j[e] = null;
             })
-            return j 
+            return j
         }
     },
     val6: null,
@@ -83,7 +83,12 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 for (let readonlyItem in msg) {
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     onlyReadDom.forEach(e => {
-        if (readonlyItem === 'signDate' && msg["signDate"]) {
+        if (readonlyItem === "companyNames") {
+            if (msg[readonlyItem].length > 0) {
+                element.innerHTML = msg[readonlyItem][0];
+                element.classList.remove("input-before");
+            }
+        } else if (readonlyItem === 'signDate' && msg["signDate"]) {
             let time = new Date(Number(msg["signDate"]));
             let y = time.getFullYear();
             let M = time.getMonth() + 1;
@@ -112,7 +117,7 @@ Dropdown.create({
 let mainBtn = document.querySelector('#submit');
 if (mainBtn) {
     mainBtn.addEventListener('click', function(e) {
-        contractConfig.submit(e, sub, 'templateError1')
+        contractConfig.submit(e, sub, 'templateError')
     })
 } else {
     let btn = document.createElement('span')
@@ -121,7 +126,7 @@ if (mainBtn) {
     btn.innerHTML = 'click'
     document.body.appendChild(btn)
     btn.addEventListener('click', function(e) {
-        contractConfig.submit(e, sub, 'templateError1')
+        contractConfig.submit(e, sub, 'templateError')
     })
 }
 

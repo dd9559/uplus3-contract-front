@@ -19,7 +19,10 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'KF-代办.html'
+        // src:'KF-租赁合同.html'
+        // src:'KF-意向.html'
+        src:'MR-租赁合同.html'
+        // src:'lz委托.html'
       }
     },
     created(){
