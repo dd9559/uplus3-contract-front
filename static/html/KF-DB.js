@@ -4,10 +4,27 @@ import {
     formatMoney
 } from "./base.js"
 let Obj = {
-    cn_arr: []
+    cn_arr: ['val2','val3','val4','val5','val6','val7']
 }
 
-let sub = {}
+let sub = {
+    'info_val8': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val8]').innerHTML !== '' ? {'val9': null,'val10': null} : null
+        }
+    },
+    'info_val11': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val11]').innerHTML !== '' ? {'val12': null,'val13': null} : null
+        }
+    },
+    'val2': null,
+    'val3': null,
+    'val4': null,
+    'val5': null,
+    'val6': null,
+    'val7': null,
+}
 
 //给按钮添加点击事件
 let mainBtn = document.querySelector('#submit');
