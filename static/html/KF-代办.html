@@ -271,7 +271,7 @@
 
         .cw_message>ul>li {
             display: inline-block;
-            min-width: 240px;
+            min-width: 228px;
             line-height: 1.5;
         }
 
@@ -402,171 +402,133 @@
         .xhx {
             text-decoration: underline
         }
+        .w50 {
+            display: inline-block;
+            min-width: 45%;
+            text-indent: 0;
+        }
+        .text-border {
+            display: inline-block;
+            border-bottom: 1px solid gray;
+            width: 125px;
+        }
     </style>
 </head>
 
 <body>
-    <!-- 公用输入框开始-->
-    <div class="alert-viwer" style="display: none;">
-        <textarea id="inputArea" cols="30" rows="4"></textarea>
-        <p class="control-btn"> <span>保存</span> <span>取消</span> </p>
-    </div>
-    <!-- 公用输入框结束-->
-
-
+    <span id="submit" style="position: absolute;top: -1000px;z-index: 0;">click</span>
     <div class="cw_content container">
+        <!-- 公用输入框开始-->
+        <div class="alert-viwer" style="display: none;">
+            <textarea id="inputArea" cols="30" rows="4"></textarea>
+            <p class="control-btn"> <span>保存</span> <span>取消</span> </p>
+        </div>
+        <!-- 公用输入框结束-->
         <!--第一页开始-->
-        <div class="title" align="center">
+        <div class="title fontBold">
             <p>《房屋交易保障服务合同》</p>
         </div>
+        <div class="title fontBold">
+            <p>签约提示</p>
+        </div>
+
+        <p class="lh18 agreements">
+            1、本合同您需要签署<strong><u>一式三份</u></strong>，交易双方各执一份，服务方（以下简称"我司"）留存一份；各方所执合同的内容（包括手工填写的部分）应<strong><u>完全一致</u></strong>。
+        </p>
+
+        <p class="lh18 agreements">2、请您确认，在签署合同前，<strong><u>您已仔细阅读过合同条款并充分知晓和认可</u></strong>。 </p>
+
+        <p class="lh18 agreements">3、为维护您的权益不受到侵害，我司温馨提示：</p>
+
+        <p class="lh18 agreements">
+            ①凡我司员工向您收取的任何款项，均须出示印有相关公司财务章的正式收据，其他形式我司不予认可。如该经办人员不能提供上述专用收据的，<strong><u>请您务必谨慎付款</u></strong>。
+        </p>
+
+        <p class="lh18 agreements"><strong>②交易过程中我司任何人员签订的协议或承诺，请您务必要求加盖我公司合同章，否则该行为未经授权，不产生法律约束力。</strong></p>
+
+        <!--第一页结束-->
+        <!--第二页开始-->
+        <div class="code fontBold page1" align="right">编号:
+            <span class="text-limit " systemparam="code" tag="input-auto"> </span>
+        </div>
         <div class="title" align="center">
-            <p><strong>签约提示</strong></p>
+            <p><strong>《房屋交易保障服务合同》</strong></p>
         </div>
 
         <div>
-            <p class="lh18 agreements">
-                1、本合同您需要签署<strong><u>一式三份</u></strong>，交易双方各执一份，服务方（以下简称"我司"）留存一份；各方所执合同的内容（包括手工填写的部分）应<strong><u>完全一致</u></strong>。
+            <div class="cw_message">
+                <ul>
+                    <li><span>甲方（出售方）:</span><span systemparam="ownerName" tag="input-auto"></span></li>
+                    <li><span>证件类型：</span><span systemparam="ownerCardType" tag="input-auto"></span></li>
+                    <li><span>证件号码：</span><span systemparam="ownerID" tag="input-auto"></span></li>
+                </ul>
+                <ul>
+                    <li><span>代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val8"></span></li>
+                    <li><span>证件类型：</span><span class="text-limit input-before" tag="input-auto" extendParam="val9"></span></li>
+                    <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" extendParam="val10"></span></li>
+                </ul>
+                <ul>
+                    <li><span>乙方（购买方）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+                    <li><span>证件类型：</span><span class="text-limit input-before" systemparam="guestCardType" tag="input-auto"></span></li>
+                    <li><span>证件号码：</span><span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
+                </ul>
+                <ul>
+                    <li><span>代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val11"></span></li>
+                    <li><span>证件类型：</span><span class="text-limit input-before" tag="input-auto" extendParam="val12"></span></li>
+                    <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" extendParam="val13"></span></li>
+                </ul>
+              </div>
+
+            <p class="lh18 agreements">丙方（服务方）：<span class="text-limit" systemparam="companyNames" tag="input-auto" isEdit="true"></span></p>
+
+            <p class="lh18 agreements">鉴于甲、乙双方就坐落于开封市<span class="text-limit input-before"
+                    tag="input-auto" systemparam="propertyAddr" extendParam="val1"></span>之房屋的交易签署了《开封市存量房买卖合同》（以下简称"《买卖合同》"），现甲、乙双方就委托丙方办理后续交易事宜订立本合同。
             </p>
-
-            <p class="lh18 agreements">2、请您确认，在签署合同前，<strong><u>您已仔细阅读过合同条款并充分知晓和认可</u></strong>。 </p>
-
-            <p class="lh18 agreements">3、为维护您的权益不受到侵害，我司温馨提示：</p>
-
-            <p class="lh18 agreements">
-                ①凡我司员工向您收取的任何款项，均须出示印有相关公司财务章的正式收据，其他形式我司不予认可。如该经办人员不能提供上述专用收据的，<strong><u>请您务必谨慎付款</u></strong>。
-            </p>
-
-            <p class="lh18 agreements"><strong>②交易过程中我司任何人员签订的协议或承诺，请您务必要求加盖我公司合同章，否则该行为未经授权，不产生法律约束力。</strong></p>
         </div>
-        <!--第一页结束-->
-        <!--第二页开始-->
-        <div class="page1">
-            <div class="cw_content container">
-                <div class="code fontBold" align="right">编号:
-                    <span class="text-limit " systemparam="code" tag="input-auto"> </span>
-                </div>
-                <div class="title" align="center">
-                    <p><strong>《房屋交易保障服务合同》</strong></p>
-                </div>
 
-                <div>
-                    <span style="margin-left: 32px">甲方（出售方）：</span>
-                    <span class="text-limit input-before" tag="input-auto"></span>
-                    <span style="margin-left: 32px">证件类型（必填）：</span>
-                    <span class="text-limit input-before" tag="input-auto"></span>
-
-                    <span style="margin-left: 35px">证件号码（必填）：
-                    </span>
-                    <span class="input-before" listen="number" max="12" tag="input-auto" extendParam="val4">
-                    </span>
-                    <br>
-
-                    <span style="margin-left: 32px">代理人（选填）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 32px">证件类型（选填）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 35px">证件号码（必填）：
-                    </span>
-                    <span class="input-before" listen="number" max="12" tag="input-auto" extendParam="val4">
-                    </span>
-                    <br>
-
-                    <span style="margin-left: 32px">乙方（购买方）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 32px">证件类型（选填）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 35px">证件号码（必填）：
-                    </span>
-                    <span class="input-before" listen="number" max="12" tag="input-auto" extendParam="val4">
-                    </span>
-                    <br>
-
-                    <span style="margin-left: 32px">代理人（选填）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 32px">证件类型（选填）：
-                    </span>
-                    <span class="text-limit input-before" tag="input-auto">
-                    </span>
-
-                    <span style="margin-left: 35px">证件号码（必填）：
-                    </span>
-                    <span class="input-before" listen="number" max="12" tag="input-auto" extendParam="val4">
-                    </span>
-                    <br>
-
-                    <span style="margin-left: 35px">丙方（服务方）：
-                    </span>
-                    <span class="text-limit " systemparam="ownerIDs" tag="input-auto" isEdit="true"></span>
-                    （此地需要自动带出营业执照名称，没有给相应数据）
-
-                    <p class="lh18 agreements">鉴于甲、乙双方就坐落于开封市<span class="text-limit input-before"
-                            tag="input-auto"></span>之房屋的交易签署了《开封市存量房买卖合同》（以下简称"《买卖合同》"），现甲、乙双方就委托丙方办理后续交易事宜订立本合同。
-                    </p>
-                </div>
-
-                <div>
-                    <p class="lh18 agreements"><strong>第一条 服务内容</strong></p>
-                    <p class="lh18 agreements">房屋交易代办服务是指，丙方本着诚实守信，尽职尽责的原则，提供以下服务内容：
-                    </p>
-                    <p class="lh18 agreements">1、协助甲、乙双方收集、整理、审核相关交易资料；</p>
-                    <p class="lh18 agreements">2、临时保管与交易相关的房屋产权资料及其他重要材料的原件；</p>
-                    <p class="lh18 agreements">3、向甲、乙双方介绍资金监管政策；</p>
-                    <p class="lh18 agreements">4、协助甲、乙双方办理资金监管手续；</p>
-                    <p class="lh18 agreements">5、协助甲、乙双方办理房屋评估手续；</p>
-                    <p class="lh18 agreements">6、协助甲、乙双方办理贷款申请手续；</p>
-                    <p class="lh18 agreements">7、协助甲、乙双方办理权属转移登记手续；</p>
-                    <p class="lh18 agreements">8、协助甲、乙双方办理领取《不动产权证书》或其他产权证书；</p>
-                    <p class="lh18 agreements">9、向甲、乙双方提供相关税收政策和税费缴纳标准咨询；</p>
-                    <p class="lh18 agreements">10、协助甲、乙双方办理房屋买卖涉及的各类税收的报税手续；</p>
-                    <p class="lh18 agreements">11、督促甲、乙双方按约定履行合同义务，协助发送履约催告函件或告知函件了。</p>
-                    <p class="lh18 agreements">
-                        各方确认，以上各项为丙方在房屋买卖交易通常可提供的服务内容，甲乙双方可根据房屋买卖的具体情况选择服务内容。如本合同项下服房屋买卖交易不涉及上述或几项服务内容，或无需丙方提供上述一项或几项服务内容的，丙方收取的保障服务费不做调整。
-                    </p>
-                </div>
-            </div>
+        <div>
+            <p class="lh18 agreements"><strong>第一条 服务内容</strong></p>
+            <p class="lh18 agreements">房屋交易代办服务是指，丙方本着诚实守信，尽职尽责的原则，提供以下服务内容：
+            </p>
+            <p class="lh18 agreements">1、协助甲、乙双方收集、整理、审核相关交易资料；</p>
+            <p class="lh18 agreements">2、临时保管与交易相关的房屋产权资料及其他重要材料的原件；</p>
+            <p class="lh18 agreements">3、向甲、乙双方介绍资金监管政策；</p>
+            <p class="lh18 agreements">4、协助甲、乙双方办理资金监管手续；</p>
+            <p class="lh18 agreements">5、协助甲、乙双方办理房屋评估手续；</p>
+            <p class="lh18 agreements">6、协助甲、乙双方办理贷款申请手续；</p>
+            <p class="lh18 agreements">7、协助甲、乙双方办理权属转移登记手续；</p>
+            <p class="lh18 agreements">8、协助甲、乙双方办理领取《不动产权证书》或其他产权证书；</p>
+            <p class="lh18 agreements">9、向甲、乙双方提供相关税收政策和税费缴纳标准咨询；</p>
+            <p class="lh18 agreements">10、协助甲、乙双方办理房屋买卖涉及的各类税收的报税手续；</p>
+            <p class="lh18 agreements">11、督促甲、乙双方按约定履行合同义务，协助发送履约催告函件或告知函件了。</p>
+            <p class="lh18 agreements">
+                各方确认，以上各项为丙方在房屋买卖交易通常可提供的服务内容，甲乙双方可根据房屋买卖的具体情况选择服务内容。如本合同项下服房屋买卖交易不涉及上述或几项服务内容，或无需丙方提供上述一项或几项服务内容的，丙方收取的保障服务费不做调整。
+            </p>
         </div>
         <!---第二页结束-->
         <!--第三页开始-->
-        <div class="page1">
-            <div class="cw_content container">
-                <p class="lh18 agreements"><strong>第二条 相关费用</strong></p>
+        <p class="lh18 agreements"><strong>第二条 相关费用</strong></p>
                 <p class="lh18 agreements">1、丙方的收费标准为：固定收费，贷款服务费共计人民币（小写） <span class="input-before" listen="number"
-                        max="12" extendParam="val2" tag="input-auto"></span>
+                        max="16" extendParam="val2" tag="input-auto"></span>
                     (金额大写：<span tag="input-auto" extendparam="val2_add" systemParam="true"
                         class="input-readonly"></span>)
-                    ，其中甲方承担人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val3"
+                    ，其中甲方承担人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val3"
                         tag="input-auto"></span>
                     (金额大写：<span tag="input-auto" extendparam="val3_add" systemParam="true"
                         class="input-readonly"></span>)
-                    ，乙方承担人民币（小写）<span class="input-before" listen="number" max="12" extendParam="val8"
+                    ，乙方承担人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val4"
                         tag="input-auto"></span>
-                    (金额大写：<span tag="input-auto" extendparam="val8_add" systemParam="true"
-                        class="input-readonly"></span>)
-                    ；
+                    (金额大写：<span tag="input-auto" extendparam="val4_add" systemParam="true"
+                        class="input-readonly"></span>)；
                 </p>
 
-                <p class="lh18 agreements">1、过户服务费共计人民币（小写） <span class="input-before" listen="number" max="12"
+                <p class="lh18 agreements">过户服务费共计人民币（小写） <span class="input-before" listen="number" max="16"
                         extendParam="val5" tag="input-auto"></span>
                     (金额大写：<span tag="input-auto" extendparam="val5_add" systemParam="true"
-                        class="input-readonly"></span>)，其中甲方承担人民币（小写）<span class="input-before" listen="number" max="12"
+                        class="input-readonly"></span>)，其中甲方承担人民币（小写）<span class="input-before" listen="number" max="16"
                         extendParam="val6" tag="input-auto"></span>
                     (金额大写：<span tag="input-auto" extendparam="val6_add" systemParam="true"
-                        class="input-readonly"></span>)，乙方承担人民币（小写）<span class="input-before" listen="number" max="12"
+                        class="input-readonly"></span>)，乙方承担人民币（小写）<span class="input-before" listen="number" max="16"
                         extendParam="val7" tag="input-auto"></span>
                     (金额大写：<span tag="input-auto" extendparam="val7_add" systemParam="true"
                         class="input-readonly"></span>)；
@@ -590,66 +552,55 @@
                 <p class="lh18 agreements">
                     5、甲、乙双方保证在本合同中保留的联系地址、联系电话、电子邮箱等信息真实有效，以便丙方可以及时、畅通地联系甲、乙双方。如遇有联系地址、联系电话、电子邮箱变更或失效的，甲、乙双方应于变更或失效当日书面通知丙方。丙方的书面通知以甲、乙双方在合同中填写的联系地址寄出挂号信或快递后三日即视为送达。
                 </p>
-
-            </div>
-        </div>
         <!--第三页结束-->
         <!--第四页开始-->
-        <div class="page1">
-            <div class="cw_content container">
                 <p class="lh18 agreements"><strong>第四条 违约责任</strong></p>
                 <p class="lh18 agreements">1、甲、乙双方中任何一方如未按照本合同约定履行义务，导致本合同迟延或无法履行的，违约方应承担违约责任，并赔偿守约方的损失。</p>
                 <p class="lh18 agreements">2、甲、乙双方未按本合同约定支付保障服务费的，除应足额向丙方支付欠缴的保障服务费外，还需对未支付部分，按照每日1%的标准支付违约金。</p>
                 <p class="lh18 agreements">
                     3、在本合同履行过程中，丙方因工作疏忽，遗失甲、乙双方甲、乙双方相关文件及资料。丙方承担补办手续费并给予相应的经济补偿。甲、乙双方中任何一方拖延或拒绝配合补办交易中各项手续，造成另一方损失的，由拖延或拒绝配合一方承担赔偿责任。
                 </p>
-
-
-
                 <p class="lh18 agreements"><strong>第五条 争议解决</strong></p>
                 <p class="lh18 agreements">与本合同相关的任何争议，三方应协商解决；协商不成的，任何一方均可向交易房屋所在地人民法院提起诉讼。</p>
-
-
-
                 <p class="lh18 agreements"><strong>第六条 其他</strong></p>
                 <p class="lh18 agreements">
                     本协议一式三份，甲乙丙三方各执一份，自各方签章之日起生效，具有同等法律效力。各方同意，未经本人签字或未经丙方盖章（合同专业章）确认的任何书面承诺、口头承诺、条款的变更等行为均不产生法律约束力。</p>
-                <p class="lh18 agreements">（以下无正文，为本协议签章页）</p>
+                <p style="margin-top: 56px;" class="lh18 agreements">（以下无正文，为本协议签章页）</p>
+                <div class="1h18 agreements" style="margin-top: 30px;">
+                    <span class="w50" style="position: relative;">甲方签章：<img
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg=="
+                            style="position: absolute;left:74px;top:-21px;"></span>
+                    <span class="w50" style="position: relative;">乙方签章：<img
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
+                            style="position: absolute;left:74px;top:-21px;"></span>
+                </div>
 
+                <div class="1h18 agreements">
+                    <!-- <span class="w50">甲方代理人签章：<span class="text-limit input-before" tag="input-auto" extendParam="val109"></span></span>
+                    <span class="w50">乙方代理人签章： <span class="text-limit input-before" tag="input-auto" extendParam="val110"></span></span> -->
+                    <span class="w50">代理人/法定代表人（签章）：<span class="text-border"></span></span>
+                    <span class="w50">代理人/法定代表人（签章）： <span class="text-border"></span></span>
+                </div>
 
-                <span style="margin-left: 32px">甲方（签章）：
-                </span>
+                <div class="1h18 agreements" style="margin-top: 20px;">
+                    <span class="w50" style="position: relative;">丙方（经纪方）签章：<img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII="
+                        style="position: absolute;left:151px;top:-23px;"></span>
+                </div>
 
-
-                <span style="margin-left: 138px">乙方（签章）：
-                </span>
-
-                <br>
-
-                <span style="margin-left: 35px">代理人/法定代表人（签章）：
-                </span>
-
-
-                <span style="margin-left: 32px">代理人/法定代表人（签章）：
-                </span>
-
-                <br>
-
-                <span style="margin-left: 32px">丙方（盖章）：
-                </span>
-
-                <br>
-
-                <span style="margin-left: 35px">签订日期：
-                </span>
-                <input type="text" class="text-limit calendar-item" readonly="readonly" />
-            </div>
-        </div>
+                <div class="1h18 agreements">
+                    <!-- <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val114"></span></span> -->
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
+                </div>
         <!--第四页结束-->
     </div>
 </body>
-
-<script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser.min.js"></script>
+<script type="text/javascript" src="/datepicker.js"></script>
+<script type="text/javascript" src="/dropdown.js"></script>
+<script type="text/javascript" src="/js/bundle_KF_DB_20201020.js"></script>
+<!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -658,7 +609,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === '192.168.1.29:8080') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './KF-DB.js'
@@ -685,6 +636,6 @@
             }
         }
     })();
-</script>
+</script> -->
 
 </html>
