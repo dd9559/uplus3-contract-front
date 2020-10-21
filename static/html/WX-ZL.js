@@ -90,7 +90,7 @@ let sub = {
   val324: null, //日期
   val325: null, //日期
   val326: null, //日期
-  val326_1: null, //后视为交付完成
+  // val326_1: null, //后视为交付完成
   val327: null, //合同期满前
   val328: null, //合同期满前
   val329: null, //金额
@@ -108,49 +108,49 @@ let sub = {
   val340: null, //天
   val341: null, //其他约定
   val342: null, //其他约定事项
-  info_val345: {
-    // 自来水
-    stateful: function () {
-      return document.querySelector("*[extendparam=val345]").innerHTML !== "" ? {
-          val345: null
-        } :
-        document.querySelector("*[extendparam=val346]").innerHTML !== "" ? {
-          val346: null
-        } : {
-          val345: null,
-          val346: null
-        };
-    }
-  },
-  info_val347: {
-    // 供电
-    stateful: function () {
-      return document.querySelector("*[extendparam=val347]").innerHTML !== "" ? {
-          val347: null
-        } :
-        document.querySelector("*[extendparam=val348]").innerHTML !== "" ? {
-          val348: null
-        } : {
-          val347: null,
-          val348: null
-        };
-    }
-  },
-  info_val349: {
-    // 燃气
-    stateful: function () {
-      return document.querySelector("*[extendparam=val349]").innerHTML !== "" ? {
-          val349: null
-        } :
-        document.querySelector("*[extendparam=val350]").innerHTML !== "" ? {
-          val350: null
-        } : {
-          val349: null,
-          val350: null
-        };
-    }
-  },
-  val360: null, //物业费已缴费至
+  // info_val345: {
+  //   // 自来水
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val345]").innerHTML !== "" ? {
+  //         val345: null
+  //       } :
+  //       document.querySelector("*[extendparam=val346]").innerHTML !== "" ? {
+  //         val346: null
+  //       } : {
+  //         val345: null,
+  //         val346: null
+  //       };
+  //   }
+  // },
+  // info_val347: {
+  //   // 供电
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val347]").innerHTML !== "" ? {
+  //         val347: null
+  //       } :
+  //       document.querySelector("*[extendparam=val348]").innerHTML !== "" ? {
+  //         val348: null
+  //       } : {
+  //         val347: null,
+  //         val348: null
+  //       };
+  //   }
+  // },
+  // info_val349: {
+  //   // 燃气
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val349]").innerHTML !== "" ? {
+  //         val349: null
+  //       } :
+  //       document.querySelector("*[extendparam=val350]").innerHTML !== "" ? {
+  //         val350: null
+  //       } : {
+  //         val349: null,
+  //         val350: null
+  //       };
+  //   }
+  // },
+  // val360: null, //物业费已缴费至
   // 家具家电交付清单
   info_val369: {
     //冰箱
@@ -391,37 +391,44 @@ setTimeout(() => {
   });
 
   //基础数据赋值
-  let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-  // let msg = {
-  //   code: "S0001191107007",
-  //   companyNames: ["金银湖三级门店哦"],
-  //   guestCardType: "军官证",
-  //   guestCardTypes: "",
-  //   guestID: "132",
-  //   guestIDs: "ee2353-344，ii397-4839",
-  //   guestName: "然迪生",
-  //   guestNames: "胜负少，发士夫",
-  //   guestTel: "13011111111",
-  //   guestTels: "",
-  //   id: 3354,
-  //   isentrust: 1,
-  //   ownerCardType: "营业执照",
-  //   ownerCardTypes: "营业执照",
-  //   ownerID: "123",
-  //   ownerIDs: "ee2353-344，ii397-4839",
-  //   ownerName: "熊先",
-  //   ownerNames: "胜多少，发士夫",
-  //   ownerTel: "18888888888",
-  //   ownerTels: "",
-  //   propertyAddr: "a市b区c",
-  //   singleCompany: "是的噶几开会说",
-  //   dealPrice: 1000,
-  //   dealPriceUpper: "壹仟",
-  //   square: 160,
-  //   guestStoreRegisterCode: "213",
-  //   signDate: 1592465819508,
-  //   organizationCode: "8888888888"
-  // };
+  let msg = {}
+
+  if (window.location.href.indexOf('//192.168') > 0 || window.location.href.indexOf('//localhost') > 0) {
+    msg = {
+      code: "S0001191107007",
+      companyNames: ["金银湖三级门店哦"],
+      guestCardType: "军官证",
+      guestCardTypes: "",
+      guestID: "132",
+      guestIDs: "ee2353-344，ii397-4839",
+      guestName: "然迪生",
+      guestNames: "胜负少，发士夫",
+      guestTel: "13011111111",
+      guestTels: "",
+      id: 3354,
+      isentrust: 1,
+      ownerCardType: "营业执照",
+      ownerCardTypes: "营业执照",
+      ownerID: "123",
+      ownerIDs: "ee2353-344，ii397-4839",
+      ownerName: "熊先",
+      ownerNames: "胜多少，发士夫",
+      ownerTel: "18888888888",
+      ownerTels: "",
+      propertyAddr: "a市b区c",
+      singleCompany: "是的噶几开会说",
+      dealPrice: 1000,
+      dealPriceUpper: "壹仟",
+      square: 160,
+      guestStoreRegisterCode: "213",
+      signDate: 1592465819508,
+      organizationCode: "8888888888"
+    }
+  } else {
+    msg = JSON.parse(window.sessionStorage.getItem("contractMsg"))
+  }
+
+
   for (let readonlyItem in msg) {
     let onlyReadDom = Array.from(
       document.querySelectorAll(`*[systemparam=${readonlyItem}]`)
@@ -521,38 +528,54 @@ setTimeout(() => {
       } else if (attr === "cb3") {
         //房屋权属证明
         let checkIO = {
-          0: {
-            disabled: ["val318", "val319", "val320", "val321"],
-            write: ["val317"]
-          },
-          1: {
-            disabled: ["val317", "val319", "val320", "val321"],
-            write: ["val318"]
-          },
-          2: {
-            disabled: ["val317", "val318", "val320", "val321"],
-            write: ["val319"]
-          },
-          3: {
-            disabled: ["val317", "val318", "val319", "val321"],
-            write: ["val320"]
-          },
-          4: {
-            disabled: ["val317", "val318", "val319", "val320"],
-            write: ["val321"]
-          }
-        };
+          0: ["val317"],
+          1: ["val318"],
+          2: ["val319"],
+          3: ["val320"],
+          4: ["val321"],
+        }
         boxArray.forEach((item, i) => {
           if (item === obj.currentTarget) {
             if (item.querySelector("p").getAttribute("checked")) {
-              contractConfig.initForm(checkIO[i].disabled, 1);
-              contractConfig.initForm(checkIO[i].write, 0);
+              contractConfig.initForm(checkIO[i], 0);
             } else {
-              contractConfig.initForm(checkIO[i].disabled, 1);
-              contractConfig.initForm(checkIO[i].write, 1);
+              contractConfig.initForm(checkIO[i], 1);
             }
           }
         });
+        // let checkIO = {
+        //   0: {
+        //     disabled: ["val318", "val319", "val320", "val321"],
+        //     write: ["val317"]
+        //   },
+        //   1: {
+        //     disabled: ["val317", "val319", "val320", "val321"],
+        //     write: ["val318"]
+        //   },
+        //   2: {
+        //     disabled: ["val317", "val318", "val320", "val321"],
+        //     write: ["val319"]
+        //   },
+        //   3: {
+        //     disabled: ["val317", "val318", "val319", "val321"],
+        //     write: ["val320"]
+        //   },
+        //   4: {
+        //     disabled: ["val317", "val318", "val319", "val320"],
+        //     write: ["val321"]
+        //   }
+        // };
+        // boxArray.forEach((item, i) => {
+        //   if (item === obj.currentTarget) {
+        //     if (item.querySelector("p").getAttribute("checked")) {
+        //       contractConfig.initForm(checkIO[i].disabled, 1);
+        //       contractConfig.initForm(checkIO[i].write, 0);
+        //     } else {
+        //       contractConfig.initForm(checkIO[i].disabled, 1);
+        //       contractConfig.initForm(checkIO[i].write, 1);
+        //     }
+        //   }
+        // });
       } else if (attr === "cb4") {
         //类型
         let checkIO = {
