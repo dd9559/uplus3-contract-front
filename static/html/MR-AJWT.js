@@ -1,7 +1,7 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js";
 
 let Obj = {
-    cn_arr: ['val12']
+    cn_arr: ['val12','val14']
 };
 
 // 必填校验对象
