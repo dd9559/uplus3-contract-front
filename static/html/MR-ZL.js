@@ -38,9 +38,17 @@ let sub = {
   'val15': null,
   'val17': null,
   'checkbox_seven': null,
-  'checkbox_eight': null,
-  'checkbox_nine': null,
-  'val19': null,
+  'checkbox_eight': {
+    stateful: function (index) {
+      return index === 0 ? {'checkbox_nine': {
+        stateful: function (index) {
+          return index === 2 ? {'val19': null} : null
+        }
+      }} : null
+    }
+  },
+  // 'checkbox_nine': null,
+  // 'val19': null,
   'info_val120': {
     stateful: function (index) {
       return document.querySelector('*[extendparam=val120]').innerHTML !== '' ? {'val121': null} : null

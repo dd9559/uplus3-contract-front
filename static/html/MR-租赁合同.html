@@ -403,24 +403,25 @@
             font-size: 20px;
             font-weight: 400;
         }
-
-        .tablestyle th,
-        td {
+        .tablestyle th,td{
             padding: 0;
             text-align: center;
             text-indent: 0;
         }
-
-        .new_table_style td {
+        .new_table_style td{
             text-align: left;
         }
-
-        .tablestyle span[tag='input-auto'] {
+        .tablestyle span[tag='input-auto']{
             display: inline-block;
             padding: 0;
             text-align: center;
             width: 80%;
             border: none;
+        }
+        .text-border {
+            display: inline-block;
+            border-bottom: 1px solid gray;
+            width: 125px;
         }
     </style>
 </head>
@@ -472,8 +473,7 @@
                     <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto" extendParam="val117"></span></span></li>
                 </ul>
                 <ul>
-                    <li><span>乙方（承租人）：</span><span class="text-limit input-before" systemparam="guestName"
-                            tag="input-auto"></span></li>
+                    <li><span>乙方（承租人）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
                     <li><span>身份证号/统一社会信用代码：</span><span class="text-limit input-before" tag="input-auto"
                             systemparam="guestID"></span></li>
                 </ul>
@@ -555,7 +555,7 @@
                 <span tag="input-auto" class="text-limit input-before" extendParam="val5"></span>
                 <span>，并遵守国家和本市有关房屋使用和物业管理的规定。若租赁用途为非居住的，乙方保证，在租期内未征得甲方书面同意以及按规定须经有关部门审批而未核准前，不擅自改变上述约定的使用用途。</span>
             </div>
-
+            
             <!-- <div class="1h18 agreements"> -->
                 <!-- 第二条 -->
                 <p class="1h18 agreements navTitle"><strong>第二条 租赁期限</strong></p>
@@ -609,7 +609,7 @@
                         <p type="check"></p>转账
                     </div>
                     <span>（甲方收取租金账户为：</span>
-                    <span class="input-before" listen="number" extendParam="val12" tag="input-auto"></span>)天支付给甲方。进行支付，首次租金乙方于
+                    <span class="input-before" listen="number" extendParam="val12" tag="input-auto"></span>)进行支付，首次租金乙方于
                     <span tag="input-auto" class="text-limit input-before" extendParam="val13"></span>
                     <!-- <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val13" /> -->
                     支付给甲方，以后各期租金交付时间为
@@ -624,96 +624,126 @@
                     </div>
                     承担。
                 </div>
-                ),乙方通过
-                <div class="info-checkbox" name="five">
-                    <p type="check"></p>现金
-                </div>
-                <div class="info-checkbox" name="five">
-                    <p type="check"></p>转账
-                </div>
-                <span>（甲方收取租金账户为：</span>
-                <span class="input-before" listen="number" extendParam="val12"
-                    tag="input-auto"></span>)天支付给甲方。进行支付，首次租金乙方于
-                <span tag="input-auto" class="text-limit input-before" extendParam="val13"></span>
-                <!-- <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val13" /> -->
-                支付给甲方，以后各期租金交付时间为
-                <span tag="input-auto" class="text-limit input-before" extendParam="val14"></span>
-                <!-- <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendParam="val14" /> -->
-                。甲方收取到租金后应出具发票或收据，如有租赁税费的，由
-                <div class="info-checkbox" name="six">
-                    <p type="check"></p>甲方
-                </div>
-                <div class="info-checkbox" name="six">
-                    <p type="check"></p>乙方
-                </div>
-                承担。
-            </div>
 
-            <p class="1h18 agreements">
-                2.押金：签订本合同当日，乙方应向甲方支付押金人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val15"
-                    tag="input-auto"></span>元
-                (金额大写：<span tag="input-auto" extendparam="val15_add" systemParam="true" class="input-readonly"></span>元)
-                <span>，甲方应出具押金收据。租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应当承担的违约赔偿责任外，剩余部分应如数返还给乙方。</span>
-            </p>
-            <!-- 第四条 -->
-            <p class="1h18 agreements navTitle"><strong>第四条 其他相关费用的承担方式</strong></p>
-            <p class="1h18 agreements">
-                1.租赁期内的下列费用中，<span tag="input-auto" class="text-limit input-before" disabled="disabled"
-                    readonly="readonly" extendParam="val16"></span>由甲方承担，
-                <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
-                    extendParam="val17"></span>由乙方承担:
-            </p>
-            <span class="1h18 agreements">（1）水费</span>
-            <span class="1h18 agreements">（2）电费</span>
-            <span class="1h18 agreements">（3）电话费</span>
-            <span class="1h18 agreements">（4）电视收视费</span>
-            <span class="1h18 agreements">（5）供暖费</span>
-            <span class="1h18 agreements">（6）燃气费</span>
-            <span class="1h18 agreements">（7）物业管理费</span>
-            <span class="1h18 agreements">（8）房屋租赁税费</span>
-            <span class="1h18 agreements">（9）卫生费</span>
-            <span class="1h18 agreements">（10）上网费</span>
-            <span class="1h18 agreements">（11）车位费</span>
-            <span class="1h18 agreements">（12）室内设施维修费</span>
-            <span class="1h18 agreements">（13）其他<span tag="input-auto" class="text-limit input-before"
-                    extendParam="val18"></span>费用。
-            </span>
-            <p class="1h18 agreements">2.本合同中未列明的与房屋有关的其他费用均由甲方承担。如乙方垫付了应由甲方支付的费用，甲方应根据乙方出示的相关缴费凭据向乙方返还相应费用。</p>
-            <!-- 第五条 -->
-            <p class="1h18 agreements navTitle"><strong>第五条 房屋维护及维修</strong></p>
-            <p class="1h18 agreements">
-                1.甲方应保证房屋的建筑结构和设备设施符合建筑、消防、治安、卫生等方面的安全条件，不得危及人身安全;承租人保证遵守国家、武汉市的法律法规规定以及房屋所在小区的物业管理规约。</p>
-            <p class="1h18 agreements">2.租赁期内，甲乙双方应共同保障房屋及其附属物品、设备设施处于适用和安全的状态：</p>
-            <p class="1h18 agreements">
-                （1）对于房屋及其附属物品、设备设施因自然属性或合理使用而导致的损耗，乙方应及时通知甲方修复。甲方应在接到乙方通知后的七日内进行维修。逾期不维修的，乙方可代为维修，费用由甲方承担。因维修房屋影响乙方使用的，应相应减少租金或延长租赁期限。
-            </p>
-            <p class="1h18 agreements">（2）因乙方保管不当或不合理使用，致使房屋及其附属物品、设备设施发生损坏或故障的，乙方应负责维修或承担赔偿责任。</p>
-            <div class="1h18 agreements">
-                <span>（3）甲方承诺，出租房屋在其本人或他人持有期间，在房屋主体结构范围内</span>
-                <div class="info-checkbox" name="seven">
-                    <p type="check"></p>是
+                <p class="1h18 agreements">
+                    2.押金：签订本合同当日，乙方应向甲方支付押金人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val15" tag="input-auto"></span>元
+                    (金额大写：<span tag="input-auto" extendparam="val15_add" systemParam="true" class="input-readonly"></span>元)
+                    <span>，甲方应出具押金收据。租赁期满或合同解除后，房屋租赁押金除抵扣应由乙方承担的费用、租金，以及乙方应当承担的违约赔偿责任外，剩余部分应如数返还给乙方。</span>
+                </p>
+                <!-- 第四条 -->
+                <p class="1h18 agreements navTitle"><strong>第四条 其他相关费用的承担方式</strong></p>
+                <p class="1h18 agreements">
+                    1.租赁期内的下列费用中，<span tag="input-auto" class="text-limit input-before" disabled="disabled"
+                        readonly="readonly" extendParam="val16"></span>由甲方承担，
+                    <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+                        extendParam="val17"></span>由乙方承担:
+                </p>
+                <span class="1h18 agreements">（1）水费</span>
+                <span class="1h18 agreements">（2）电费</span>
+                <span class="1h18 agreements">（3）电话费</span>
+                <span class="1h18 agreements">（4）电视收视费</span>
+                <span class="1h18 agreements">（5）供暖费</span>
+                <span class="1h18 agreements">（6）燃气费</span>
+                <span class="1h18 agreements">（7）物业管理费</span>
+                <span class="1h18 agreements">（8）房屋租赁税费</span>
+                <span class="1h18 agreements">（9）卫生费</span>
+                <span class="1h18 agreements">（10）上网费</span>
+                <span class="1h18 agreements">（11）车位费</span>
+                <span class="1h18 agreements">（12）室内设施维修费</span>
+                <span class="1h18 agreements">（13）其他<span tag="input-auto" class="text-limit input-before" extendParam="val18"></span>费用。
+                </span>
+                <p class="1h18 agreements">2.本合同中未列明的与房屋有关的其他费用均由甲方承担。如乙方垫付了应由甲方支付的费用，甲方应根据乙方出示的相关缴费凭据向乙方返还相应费用。</p>
+                <!-- 第五条 -->
+                <p class="1h18 agreements navTitle"><strong>第五条 房屋维护及维修</strong></p>
+                <p class="1h18 agreements">1.甲方应保证房屋的建筑结构和设备设施符合建筑、消防、治安、卫生等方面的安全条件，不得危及人身安全;承租人保证遵守国家、武汉市的法律法规规定以及房屋所在小区的物业管理规约。</p>
+                <p class="1h18 agreements">2.租赁期内，甲乙双方应共同保障房屋及其附属物品、设备设施处于适用和安全的状态：</p>
+                <p class="1h18 agreements">（1）对于房屋及其附属物品、设备设施因自然属性或合理使用而导致的损耗，乙方应及时通知甲方修复。甲方应在接到乙方通知后的七日内进行维修。逾期不维修的，乙方可代为维修，费用由甲方承担。因维修房屋影响乙方使用的，应相应减少租金或延长租赁期限。</p>
+                <p class="1h18 agreements">（2）因乙方保管不当或不合理使用，致使房屋及其附属物品、设备设施发生损坏或故障的，乙方应负责维修或承担赔偿责任。</p>
+                <div class="1h18 agreements">
+                    <span>（3）甲方承诺，出租房屋在其本人或他人持有期间，在房屋主体结构范围内</span>
+                    <div class="info-checkbox" name="seven">
+                        <p type="check"></p>是
+                    </div>
+                    <div class="info-checkbox" name="seven">
+                        <p type="check"></p>否
+                    </div>
+                    <span>发生过非正常死亡事件（包括但不限于自杀、他杀、从该房屋内坠出死亡、意外死亡等）。如甲方在签署本合同前就上述事项隐瞒真实情况的，各方确认：甲方构成欺诈，乙方有权依法撤销本合同，且甲方应赔偿乙方因此产生的全部损失。</span>
                 </div>
-                <div class="info-checkbox" name="seven">
-                    <p type="check"></p>否
+                <!-- 第六条 -->
+                <p class="1h18 agreements navTitle"><strong>第六条 转租及出售</strong></p>
+                <p class="1h18 agreements">
+                    1.除甲乙双方另有约定以外，乙方需事先征得甲方书面同意，方可在租赁期内将房屋部分或全部转租给他人，并就受转租人的行为向甲方承担责任。</p>
+                <p class="1h18 agreements">
+                    2.若甲方在租赁期限内出售该房屋，应提前15日通知乙方，乙方在同等条件下享有优先购买权；若乙方不行使优先购买权，乙方应配合签署放弃优先购买权声明。
+                </p>
+                <!-- 第七条 -->
+                <p class="1h18 agreements navTitle"><strong>第七条 装修条款</strong></p>
+                <div class="1h18 agreements">
+                    <span>1.租赁期内，甲方</span>
+                    <div class="info-checkbox" name="eight">
+                        <p type="check"></p>同意
+                    </div>
+                    <div class="info-checkbox" name="eight">
+                        <p type="check"></p>不同意
+                    </div>
+                    <span>乙方对房屋进行装修；</span>
                 </div>
-                <span>发生过非正常死亡事件（包括但不限于自杀、他杀、从该房屋内坠出死亡、意外死亡等）。如甲方在签署本合同前就上述事项隐瞒真实情况的，各方确认：甲方构成欺诈，乙方有权依法撤销本合同，且甲方应赔偿乙方因此产生的全部损失。</span>
-            </div>
-            <!-- 第六条 -->
-            <p class="1h18 agreements navTitle"><strong>第六条 转租及出售</strong></p>
-            <p class="1h18 agreements">
-                1.除甲乙双方另有约定以外，乙方需事先征得甲方书面同意，方可在租赁期内将房屋部分或全部转租给他人，并就受转租人的行为向甲方承担责任。</p>
-            <p class="1h18 agreements">
-                2.若甲方在租赁期限内出售该房屋，应提前15日通知乙方，乙方在同等条件下享有优先购买权；若乙方不行使优先购买权，乙方应配合签署放弃优先购买权声明。
-            </p>
-            <!-- 第七条 -->
-            <p class="1h18 agreements navTitle"><strong>第七条 装修条款</strong></p>
-            <div class="1h18 agreements">
-                <span>1.租赁期内，甲方</span>
-                <div class="info-checkbox" name="eight">
-                    <p type="check"></p>同意
+                <div class="1h18 agreements">
+                    <span>2.甲方同意乙方装修房屋的，租赁合同给解除时，甲乙双方协商一致，按照以下哪种方式处理:</span>
+                    <div class="info-checkbox" name="nine">
+                        <p type="check"></p>保持现状；
+                    </div>
+                    <div class="info-checkbox" name="nine">
+                        <p type="check"></p>恢复原状；
+                    </div>
+                    <div class="info-checkbox" name="nine">
+                        <p type="check"></p>保持现状，
+                    </div>
+                    <span>甲方补偿装修费用共计人民币</span>
+                    （小写）<span class="input-before" listen="number" max="16" extendParam="val19" tag="input-auto"></span>元
+                    (金额大写：<span tag="input-auto" extendparam="val19_add" systemParam="true" class="input-readonly"></span>元)
                 </div>
-                <div class="info-checkbox" name="eight">
-                    <p type="check"></p>不同意
+                <!-- 第八条 -->
+                <p class="1h18 agreements navTitle"><strong>第八条 合同解除 </strong></p>
+                <p class="1h18 agreements">1.经甲乙双方协商一致，可以解除本合同。</p>
+                <p class="1h18 agreements">2.因不可抗力导致本合同无法继续履行的，本合同自行解除。</p>
+                <p class="1h18 agreements">3.甲方有下列情形之一的，乙方有权单方解除合同：</p>
+                <p style="margin-left: 10px;">（1）迟延交付房屋达10日以上的。</p>
+                <p style="margin-left: 10px;">（2）交付的房屋严重不符合合同约定或影响乙方安全、健康的。</p>
+                <p style="margin-left: 10px;">（3）不承担约定的维修义务，致使乙方无法正常使用房屋的。</p>
+                <p style="margin-left: 10px;">（4）欠缴各项费用的金额相当于壹个月房屋租金的，致使乙方无法正常使用房屋的。</p>
+                <p style="margin-left: 10px;">（5）签署本合同后未到起租日，甲方单方拒绝承租该房屋的。</p>
+                <p style="margin-left: 10px;">（6）租赁期届满前，甲方单方提出解除合同的。</p>
+                <p style="margin-left: 10px;">（7）其他法定的合同解除情形。</p>
+                <p class="1h18 agreements">4.乙方有下列情形之一的，甲方有权单方解除合同，收回房屋：</p>
+                <p style="margin-left: 10px;">（1）不按照约定支付租金达10日以上的；</p>
+                <p style="margin-left: 10px;">（2）欠缴各项费用的金额相当于壹个月房屋租金的；</p>
+                <p style="margin-left: 10px;">（3）擅自改变房屋用途的；</p>
+                <p style="margin-left: 10px;">（4）擅自拆改变动或损坏房屋主体结构的；</p>
+                <p style="margin-left: 10px;">（5）保管不当或不合理使用导致附属物品、设备设施损坏并拒不赔偿的；</p>
+                <p style="margin-left: 10px;">（6）利用房屋从事违法活动、损害公共利益或者妨碍他人正常工作、生活的；</p>
+                <p style="margin-left: 10px;">（7）擅自将房屋转租给第三人的；</p>
+                <p style="margin-left: 10px;">（8）签署本合同后未到起租日，乙方单方拒绝承租该房屋的；</p>
+                <p style="margin-left: 10px;">（9）租赁期届满前，乙方单方提出解除合同的；</p>
+                <p style="margin-left: 10px;">（10）其他法定的合同解除情形；</p>
+                <!--第九条  -->
+                <p class="1h18 agreements navTitle"><strong>第九条 违约责任 </strong></p>
+                <p class="1h18 agreements">
+                    1.如甲方违约或单方提出解除合同的，甲方应退还乙方已向其支付但并未实际承租期限内的租金，并赔偿乙方
+                    <span tag="input-auto" class="input-before"></span>
+                    个月租金作为另行求租损失；乙方单方违约或者单方提出解除合同的，甲方有权没收乙方支付的租赁押金并解除合同，乙方应付清所欠租金、水电费、物业管理费等应付费用，并赔偿甲方
+                    <span tag="input-auto" class="input-before"></span>个月租金作为再次出租前的闲置损失。
+                </p>
+                <p class="1h18 agreements">2.因甲方未按约定履行维修义务造成乙方人身、财产损失的，甲方应承担赔偿责任。</p>
+                <p class="1h18 agreements">3.甲方未按约定时间交付房屋或者乙方不按约定支付租金但未达到解除合同条件的，以及乙方未按约定时间返还房屋的，每日应按月租金的3%支付违约金。</p>
+                <!-- 第十条  -->
+                <p class="1h18 agreements navTitle"><strong>第十条 争议解决及合同生效</strong></p>
+                <p class="1h18 agreements">本合同项下发生的争议，由双方当事人协商解决;协商不成的，各方均可向房屋所在地的人民法院提起诉讼。</p>
+                <p class="1h18 agreements">本合同经双方签字盖章后生效。本合同(及附件)一式三份，其中甲方执一份，乙方执一份，居间方执一份。</p>
+                <!-- 第十一条 -->
+                <p class="1h18 agreements navTitle"><strong>第十一条 其他约定事项</strong></p>
+                <div class="1h18 agreements">
+                    <span tag="input-auto" class="text-limit input-before" extendParam="val20"></span>
                 </div>
                 <div class="1h18 agreements" style="margin-top: 30px;">
                     <span class="w50" style="position: relative;">甲方（出租人）签章：<img
@@ -723,257 +753,197 @@
                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
                             style="position: absolute;left:149px;top:-21px;"></span></br>
                 </div>
-                <div class="info-checkbox" name="nine">
-                    <p type="check"></p>恢复原状；
+                <div class="1h18 agreements">
+                    <!-- <span class="w50">甲方代理人签章：<span class="text-limit input-before" tag="input-auto" extendParam="val21"></span></span>
+                    <span class="w50">乙方代理人签章： <span class="text-limit input-before" tag="input-auto" extendParam="val22"></span></span> -->
+                    <span class="w50">甲方代理人签章：<span class="text-border"></span></span>
+                    <span class="w50">乙方代理人签章： <span class="text-border"></span></span>
                 </div>
-                <div class="info-checkbox" name="nine">
-                    <p type="check"></p>保持现状，
+                <div class="1h18 agreements">
+                    <!-- <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val23"></span></span>
+                    <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val24"></span></span> -->
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
                 </div>
-                <span>甲方补偿装修费用共计人民币</span>
-                （小写）<span class="input-before" listen="number" max="16" extendParam="val19" tag="input-auto"></span>元
-                (金额大写：<span tag="input-auto" extendparam="val19_add" systemParam="true" class="input-readonly"></span>元)
-            </div>
-            <!-- 第八条 -->
-            <p class="1h18 agreements navTitle"><strong>第八条 合同解除 </strong></p>
-            <p class="1h18 agreements">1.经甲乙双方协商一致，可以解除本合同。</p>
-            <p class="1h18 agreements">2.因不可抗力导致本合同无法继续履行的，本合同自行解除。</p>
-            <p class="1h18 agreements">3.甲方有下列情形之一的，乙方有权单方解除合同：</p>
-            <p style="margin-left: 10px;">（1）迟延交付房屋达10日以上的。</p>
-            <p style="margin-left: 10px;">（2）交付的房屋严重不符合合同约定或影响乙方安全、健康的。</p>
-            <p style="margin-left: 10px;">（3）不承担约定的维修义务，致使乙方无法正常使用房屋的。</p>
-            <p style="margin-left: 10px;">（4）欠缴各项费用的金额相当于壹个月房屋租金的，致使乙方无法正常使用房屋的。</p>
-            <p style="margin-left: 10px;">（5）签署本合同后未到起租日，甲方单方拒绝承租该房屋的。</p>
-            <p style="margin-left: 10px;">（6）租赁期届满前，甲方单方提出解除合同的。</p>
-            <p style="margin-left: 10px;">（7）其他法定的合同解除情形。</p>
-            <p class="1h18 agreements">4.乙方有下列情形之一的，甲方有权单方解除合同，收回房屋：</p>
-            <p style="margin-left: 10px;">（1）不按照约定支付租金达10日以上的；</p>
-            <p style="margin-left: 10px;">（2）欠缴各项费用的金额相当于壹个月房屋租金的；</p>
-            <p style="margin-left: 10px;">（3）擅自改变房屋用途的；</p>
-            <p style="margin-left: 10px;">（4）擅自拆改变动或损坏房屋主体结构的；</p>
-            <p style="margin-left: 10px;">（5）保管不当或不合理使用导致附属物品、设备设施损坏并拒不赔偿的；</p>
-            <p style="margin-left: 10px;">（6）利用房屋从事违法活动、损害公共利益或者妨碍他人正常工作、生活的；</p>
-            <p style="margin-left: 10px;">（7）擅自将房屋转租给第三人的；</p>
-            <p style="margin-left: 10px;">（8）签署本合同后未到起租日，乙方单方拒绝承租该房屋的；</p>
-            <p style="margin-left: 10px;">（9）租赁期届满前，乙方单方提出解除合同的；</p>
-            <p style="margin-left: 10px;">（10）其他法定的合同解除情形；</p>
-            <!--第九条  -->
-            <p class="1h18 agreements navTitle"><strong>第九条 违约责任 </strong></p>
-            <p class="1h18 agreements">
-                1.如甲方违约或单方提出解除合同的，甲方应退还乙方已向其支付但并未实际承租期限内的租金，并赔偿乙方
-                <span tag="input-auto" class="input-before"></span>
-                个月租金作为另行求租损失；乙方单方违约或者单方提出解除合同的，甲方有权没收乙方支付的租赁押金并解除合同，乙方应付清所欠租金、水电费、物业管理费等应付费用，并赔偿甲方
-                <span tag="input-auto" class="input-before"></span>个月租金作为再次出租前的闲置损失。
-            </p>
-            <p class="1h18 agreements">2.因甲方未按约定履行维修义务造成乙方人身、财产损失的，甲方应承担赔偿责任。</p>
-            <p class="1h18 agreements">3.甲方未按约定时间交付房屋或者乙方不按约定支付租金但未达到解除合同条件的，以及乙方未按约定时间返还房屋的，每日应按月租金的3%支付违约金。</p>
-            <!-- 第十条  -->
-            <p class="1h18 agreements navTitle"><strong>第十条 争议解决及合同生效</strong></p>
-            <p class="1h18 agreements">本合同项下发生的争议，由双方当事人协商解决;协商不成的，各方均可向房屋所在地的人民法院提起诉讼。</p>
-            <p class="1h18 agreements">本合同经双方签字盖章后生效。本合同(及附件)一式三份，其中甲方执一份，乙方执一份，居间方执一份。</p>
-            <!-- 第十一条 -->
-            <p class="1h18 agreements navTitle"><strong>第十一条 其他约定事项</strong></p>
-            <div class="1h18 agreements">
-                <span tag="input-auto" class="text-limit input-before" extendParam="val20"></span>
-            </div>
-            <div class="1h18 agreements" style="margin-top: 60px;">
-                <span class="w50" style="position: relative;">甲方（出租人）签章：<img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg=="
-                        style="position: absolute;left:149px;top:-21px;"></span>
-                <span class="w50" style="position: relative;">乙方（承租人）签章：<img
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
-                        style="position: absolute;left:149px;top:-21px;"></span></br>
-            </div>
-            <div class="1h18 agreements">
-                <span class="w50">甲方代理人签章：<span class="text-limit input-before" tag="input-auto"
-                        extendParam="val21"></span></span>
-                <span class="w50">乙方代理人签章： <span class="text-limit input-before" tag="input-auto"
-                        extendParam="val22"></span></span>
-            </div>
-            <div class="1h18 agreements">
-                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
-                        extendParam="val23"></span></span>
-                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
-                        extendParam="val24"></span></span>
-            </div>
-            <!-- <div style="margin-top: 20px;">
+                <!-- <div style="margin-top: 20px;">
                     <span style="position: relative;">丙方（居间人）（盖章）：<img
                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII="
                             style="position: absolute;left:217px;top:-58px;"></span>
                 </div> -->
-            <!-- <p class="1h18 agreements" style="position: relative;">经纪人签字： <img
+                <!-- <p class="1h18 agreements" style="position: relative;">经纪人签字： <img
                         style="position: absolute;left:118px;top:-20px;"
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0VpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0VBMzQ0RjNDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0VBMzQ0RjJDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+lbs2SQAAABxJREFUeNpi/P//PwM5gImBTDCqcVTjUNEIEGAAefUDGVrh0BsAAAAASUVORK5CYII=">
                 </p> -->
-            <!-- 附件一 -->
-            <p class="page1" style="margin-top: 30px;"><strong>附件一：相关费用明细</strong></p>
-            <table class="tablestyle" border="1">
-                <thead>
-                    <tr>
-                        <th>项目</th>
-                        <th>单价</th>
-                        <th>起计时间</th>
-                        <th>起计底数</th>
-                        <th>项目</th>
-                        <th>单价</th>
-                        <th>起计时间</th>
-                        <th>起计底数</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>水费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val25"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val26"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val27"></span></td>
-                        <td>物业费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val28"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val29"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val30"></span></td>
-                    </tr>
-                    <tr>
-                        <td>电费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val31"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val32"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val33"></span></td>
-                        <td>燃气费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val34"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val35"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val36"></span></td>
-                    </tr>
-                    <tr>
-                        <td>电话费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val37"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val38"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val39"></span></td>
-                        <td>上网费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val40"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val41"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val42"></span></td>
-                    </tr>
-                    <tr>
-                        <td>收视费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val43"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val44"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val45"></span></td>
-                        <td>车位费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val46"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val47"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val48"></span></td>
-                    </tr>
-                    <tr>
-                        <td>供暖费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val49"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val50"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val51"></span></td>
-                        <td>租赁税费</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val52"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val53"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val54"></span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- 附件二 -->
-            <p style="margin-top: 30px;"><strong>附件二：房屋交割清单</strong></p>
-            <table class="tablestyle" border="1">
-                <thead>
-                    <tr>
-                        <th>名称</th>
-                        <th>品牌</th>
-                        <th>数量</th>
-                        <th>名称</th>
-                        <th>品牌</th>
-                        <th>数量</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>床</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val55"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val56"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val57"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val58"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val59"></span></td>
-                    </tr>
-                    <tr>
-                        <td>沙发</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val60"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val61"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val62"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val63"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val64"></span></td>
-                    </tr>
-                    <tr>
-                        <td>衣柜</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val65"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val66"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val67"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val68"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val69"></span></td>
-                    </tr>
-                    <tr>
-                        <td>电视机</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val70"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val71"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val72"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val73"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val74"></span></td>
-                    </tr>
-                    <tr>
-                        <td>洗衣机</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val75"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val76"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val77"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val78"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val79"></span></td>
-                    </tr>
-                    <tr>
-                        <td>油烟机</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val80"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val81"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val82"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val83"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val84"></span></td>
-                    </tr>
-                    <tr>
-                        <td>冰箱</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val85"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val86"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val87"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val88"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val89"></span></td>
-                    </tr>
-                    <tr>
-                        <td>空调</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val90"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val91"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val92"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val93"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val94"></span></td>
-                    </tr>
-                    <tr>
-                        <td>灶台</td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val95"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val96"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val97"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val98"></span></td>
-                        <td><span tag="input-auto" class="input-before" extendParam="val99"></span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <table class="tablestyle new_table_style" border="1">
-                <tbody>
-                    <tr>
-                        <td rowspan="3">交房确认</td>
-                        <td colspan="2">对上述情况，乙方经验收，认为符合房屋交验条件，并且双方已对水、电、燃气等费用结清完毕，同意接收。</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><span>交房日期：<span style="border: none;" systemParam="signDate"
-                                    extendParam="val100"></span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <!-- <span>甲方签章：</span> -->
-                            <span class="w50" style="position: relative;">甲方签章：<img
+                <!-- 附件一 -->
+                <p class="page1" style="margin-top: 30px;"><strong>附件一：相关费用明细</strong></p>
+                <table class="tablestyle" border="1">
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>单价</th>
+                            <th>起计时间</th>
+                            <th>起计底数</th>
+                            <th>项目</th>
+                            <th>单价</th>
+                            <th>起计时间</th>
+                            <th>起计底数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>水费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val25"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val26"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val27"></span></td>
+                            <td>物业费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val28"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val29"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val30"></span></td>
+                        </tr>
+                        <tr>
+                            <td>电费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val31"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val32"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val33"></span></td>
+                            <td>燃气费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val34"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val35"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val36"></span></td>
+                        </tr>
+                        <tr>
+                            <td>电话费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val37"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val38"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val39"></span></td>
+                            <td>上网费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val40"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val41"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val42"></span></td>
+                        </tr>
+                        <tr>
+                            <td>收视费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val43"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val44"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val45"></span></td>
+                            <td>车位费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val46"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val47"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val48"></span></td>
+                        </tr>
+                        <tr>
+                            <td>供暖费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val49"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val50"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val51"></span></td>
+                            <td>租赁税费</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val52"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val53"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val54"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 附件二 -->
+                <p style="margin-top: 30px;"><strong>附件二：房屋交割清单</strong></p>
+                <table class="tablestyle" border="1">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>品牌</th>
+                            <th>数量</th>
+                            <th>名称</th>
+                            <th>品牌</th>
+                            <th>数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>床</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val55"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val56"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val57"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val58"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val59"></span></td>
+                        </tr>
+                        <tr>
+                            <td>沙发</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val60"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val61"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val62"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val63"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val64"></span></td>
+                        </tr>
+                        <tr>
+                            <td>衣柜</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val65"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val66"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val67"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val68"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val69"></span></td>
+                        </tr>
+                        <tr>
+                            <td>电视机</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val70"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val71"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val72"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val73"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val74"></span></td>
+                        </tr>
+                        <tr>
+                            <td>洗衣机</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val75"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val76"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val77"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val78"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val79"></span></td>
+                        </tr>
+                        <tr>
+                            <td>油烟机</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val80"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val81"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val82"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val83"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val84"></span></td>
+                        </tr>
+                        <tr>
+                            <td>冰箱</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val85"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val86"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val87"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val88"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val89"></span></td>
+                        </tr>
+                        <tr>
+                            <td>空调</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val90"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val91"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val92"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val93"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val94"></span></td>
+                        </tr>
+                        <tr>
+                            <td>灶台</td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val95"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val96"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val97"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val98"></span></td>
+                            <td><span tag="input-auto" class="input-before" extendParam="val99"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="tablestyle new_table_style" border="1">
+                    <tbody>
+                        <tr>
+                            <td rowspan="3">交房确认</td>
+                            <td colspan="2">对上述情况，乙方经验收，认为符合房屋交验条件，并且双方已对水、电、燃气等费用结清完毕，同意接收。</td>
+                        </tr>
+                        <tr>
+                            <!-- <td colspan="2"><span>交房日期：<span style="border: none;" systemParam="signDate" extendParam="val100"></span></span></td> -->
+                            <td colspan="2"><span>交房日期：</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <!-- <span>甲方签章：</span> -->
+                                <span class="w50" style="position: relative;">甲方签章：<img
                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg=="
                                     style="position: absolute;left:70px;top:-21px;"></span>
                             </td>
@@ -989,7 +959,8 @@
                             <td colspan="2">甲乙双方已对房屋和附属物品，设备设施及水电使用等情况进行了验收，并办理了退房手续。有关费用的承担及其附属物品、设备设施的返还无纠纷。</td>
                         </tr>
                         <tr>
-                            <td colspan="2"><span>退房日期:<span style="border: none;" systemParam="signDate" extendParam="val101"></span></td>
+                            <!-- <td colspan="2"><span>退房日期:<span style="border: none;" systemParam="signDate" extendParam="val101"></span></span></td> -->
+                            <td colspan="2"><span>退房日期:</span></td>
                         </tr>
                         <tr>
                             <td>
@@ -1111,33 +1082,35 @@
                             style="position: absolute;left:149px;top:-21px;"></span></br>
                 </div>
                 <div class="1h18 agreements">
-                    <span class="w50">甲方代理人签章：<span class="text-limit input-before" tag="input-auto" extendParam="val109"></span></span>
-                    <span class="w50">乙方代理人签章： <span class="text-limit input-before" tag="input-auto" extendParam="val110"></span></span>
+                    <!-- <span class="w50">甲方代理人签章：<span class="text-limit input-before" tag="input-auto" extendParam="val109"></span></span>
+                    <span class="w50">乙方代理人签章： <span class="text-limit input-before" tag="input-auto" extendParam="val110"></span></span> -->
+                    <span class="w50">甲方代理人签章：<span class="text-border"></span></span>
+                    <span class="w50">乙方代理人签章： <span class="text-border"></span></span>
                 </div>
                 <div class="1h18 agreements">
-                    <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val111"></span></span>
-                    <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val112"></span></span>
+                    <!-- <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val111"></span></span>
+                    <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val112"></span></span> -->
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
                 </div>
                 <!-- <div class="1h18 agreements" style="margin-top: 60px;">
                     <span class="w50">丙方（经纪方）签章:<span class="text-limit input-before" tag="input-auto" extendParam="val113"></span></span>
                 </div> -->
-            <div class="1h18 agreements" style="margin-top: 20px;">
-                <span class="w50" style="position: relative;">丙方（经纪方）签章：<img
+                <div class="1h18 agreements" style="margin-top: 20px;">
+                    <span class="w50" style="position: relative;">丙方（经纪方）签章：<img
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII="
                         style="position: absolute;left:151px;top:-23px;"></span>
-            </div>
-            <div class="1h18 agreements">
-                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
-                        extendParam="val114"></span></span>
-            </div>
-            <p class="1h18 agreements" style="position: relative;">经办人签字： <img
-                    style="position: absolute;left:118px;top:-20px;"
-                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0VpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0VBMzQ0RjNDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0VBMzQ0RjJDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+lbs2SQAAABxJREFUeNpi/P//PwM5gImBTDCqcVTjUNEIEGAAefUDGVrh0BsAAAAASUVORK5CYII=">
-            </p>
-            <!-- <div class="1h18 agreements">
+                </div>
+                <div class="1h18 agreements">
+                    <!-- <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val114"></span></span> -->
+                    <span class="w50">签署日期：<span class="text-border"></span></span>
+                </div>
+                <p class="1h18 agreements" style="position: relative;">经办人签字： <img style="position: absolute;left:118px;top:-20px;"
+                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0VpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0VBMzQ0RjNDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0VBMzQ0RjJDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+lbs2SQAAABxJREFUeNpi/P//PwM5gImBTDCqcVTjUNEIEGAAefUDGVrh0BsAAAAASUVORK5CYII="></p>
+                <!-- <div class="1h18 agreements">
                     <span class="w50">经办人签字：<span class="text-limit input-before" tag="input-auto" extendParam="val115"></span></span>
                 </div> -->
-            <!-- 吴兴勇编辑结束 -->
+                <!-- 吴兴勇编辑结束 -->
 </body>
 <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
