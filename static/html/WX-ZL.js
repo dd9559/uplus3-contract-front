@@ -42,6 +42,7 @@ let sub = {
   },
   checkbox_cb3: {
     // 房屋权属证明
+    state: true,
     stateful: function (index) {
       let res = null;
       switch (index) {
