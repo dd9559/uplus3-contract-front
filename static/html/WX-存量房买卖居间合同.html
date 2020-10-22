@@ -205,6 +205,21 @@
         .ulbox .li-w {
             width: 100%;
         }
+        .item-li,
+        .item-li-w{
+            width: 50%;
+            /* display: inline-block; */
+            float: left;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            /* position: relative; */
+        }
+        .item-li-w{
+            width: 100%;
+        }
+        .cl{
+            clear: both;
+        }
 
         .interval,
         .agreements.interval {
@@ -373,13 +388,13 @@
             <li class="li-w">
                 <div class="line-height"></div>
             </li>
-            <li>经纪人： <span class="text-limit input-before" extendParam="val30" tag="input-auto"></span></li>
-            <li>联系电话： <span class="text-limit input-before" extendParam="val31" tag="input-auto" listen="number" max="11"></span></li>
-            <li class="li-w">
-                <div class="line-height"></div>
-            </li>
-            <li class="li-w tr">合同签订日期： <span class="text-limit input-before" systemParam="signDate" tag="input-auto"></span></li>
+            
         </ul>
+        <div class="item-li">经纪人： <span class="text-limit input-before" extendParam="val30" tag="input-auto"></span></div>
+        <div class="item-li">联系电话： <span class="text-limit input-before" extendParam="val31" tag="input-auto"></span></div>
+        <div class="item-li-w line-height"></div>
+        <div class="item-li-w tr">合同签订日期： <span class="text-limit input-before" systemParam="signDate" tag="input-auto"></span></div>
+        <div class="cl"></div>
     </div>
 </body>
 
@@ -397,7 +412,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:5500') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './WX-CLFMMJJHT.js'
