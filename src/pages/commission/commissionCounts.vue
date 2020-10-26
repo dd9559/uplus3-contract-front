@@ -107,7 +107,9 @@
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
         <el-button class="fr btn-orange-border">导出</el-button>
-        <el-button class="fr btn-orange">批量计算提成</el-button>
+        <el-button class="fr btn-orange" @click="batchCalculationFn"
+          >批量计算提成</el-button
+        >
       </div>
       <el-table :data="tableData" class="table-box">
         <el-table-column
@@ -254,7 +256,7 @@ export default {
         // pageSize: "",
         // pageNum: "",
       },
-      copySearchData:{},
+      copySearchData: {},
       tableData: [],
       currentPage: 1,
       pageSize: 20,
@@ -274,7 +276,7 @@ export default {
         signDateValue: 0,
         bonusDateValue: "",
         isCalculation: "", //计算状态（0、未计算1、已计算）
-      }
+      };
     },
     // 查询
     queryFn() {
@@ -309,9 +311,9 @@ export default {
               bonusDateStar: data.bonusDateValue[0],
               bonusDateEnd: data.bonusDateValue[1],
             };
-            
+
       // 删除多余属性
-      delete data.bonusDateValue
+      delete data.bonusDateValue;
 
       // 加载中
       this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
@@ -366,6 +368,47 @@ export default {
     // 时间处理
     dateFormat(val) {
       return this.$tool.dateFormat(val);
+    },
+    // 批量计算
+    batchCalculationFn() {
+      let data = { ...this.searchData };
+      let sign = {
+        signDateStar: "", //签约日期开始
+        signDateEnd: "", //签约日期结束
+        bonusDateStar: "", //提成计算日期开始
+        bonusDateEnd: "", //提成计算日期结束
+      };
+
+      let signJ =
+        data.signDateValue === 0
+          ? {
+              signDateStar: data.bonusDateValue[0],
+              signDateEnd: data.bonusDateValue[1],
+            }
+          : {
+              bonusDateStar: data.bonusDateValue[0],
+              bonusDateEnd: data.bonusDateValue[1],
+            };
+
+      // 删除多余属性
+      delete data.bonusDateValue;
+
+      Object.assign(data, sign, signJ);
+
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+
+      this.$ajax
+        .get("/api/bonus/saveBonus", data)
+        .then((res) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        })
+        .catch((err) => {
+          console.log(err);
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        });
     },
   },
   components: {
