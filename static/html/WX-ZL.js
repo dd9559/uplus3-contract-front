@@ -42,6 +42,7 @@ let sub = {
   },
   checkbox_cb3: {
     // 房屋权属证明
+    state: true,
     stateful: function (index) {
       let res = null;
       switch (index) {
@@ -100,14 +101,14 @@ let sub = {
   val332: null, //金额
   val333: null, //项费用由甲方承担
   val334: null, //项费用由乙方承担
-  val335: null, //其它费用
+  // val335: null, //其它费用
   val336: null, //金额
   val337: null, //金额
-  val338: null, //甲方有下列情形之一的
-  val339: null, //甲方有下列情形之一的
+  // val338: null, //甲方有下列情形之一的
+  // val339: null, //甲方有下列情形之一的
   val340: null, //天
-  val341: null, //其他约定
-  val342: null, //其他约定事项
+  // val341: null, //其他约定
+  // val342: null, //其他约定事项
   // info_val345: {
   //   // 自来水
   //   stateful: function () {
@@ -152,181 +153,181 @@ let sub = {
   // },
   // val360: null, //物业费已缴费至
   // 家具家电交付清单
-  info_val369: {
-    //冰箱
-    stateful: function () {
-      return document.querySelector("*[extendparam=val369").innerHTML !== "" ? {
-        val370: null,
-        checkbox_cb7: null
-      } : null
-    }
-  },
-  info_val371: {
-    //微波炉
-    stateful: function () {
-      return document.querySelector("*[extendparam=val371").innerHTML !== "" ? {
-        val372: null,
-        checkbox_cb8: null
-      } : null
-    }
-  },
-  info_val373: {
-    //洗衣机
-    stateful: function () {
-      return document.querySelector("*[extendparam=val373").innerHTML !== "" ? {
-        val374: null,
-        checkbox_cb9: null
-      } : null
-    }
-  },
-  info_val375: {
-    //热水器
-    stateful: function () {
-      return document.querySelector("*[extendparam=val375").innerHTML !== "" ? {
-        val376: null,
-        checkbox_cb10: null
-      } : null
-    }
-  },
-  info_val377: {
-    //空调
-    stateful: function () {
-      return document.querySelector("*[extendparam=val377").innerHTML !== "" ? {
-        val378: null,
-        checkbox_cb11: null
-      } : null
-    }
-  },
-  info_val379: {
-    //电视
-    stateful: function () {
-      return document.querySelector("*[extendparam=val379").innerHTML !== "" ? {
-        val380: null,
-        checkbox_cb12: null
-      } : null
-    }
-  },
-  info_val384: {
-    //油烟机
-    stateful: function () {
-      return document.querySelector("*[extendparam=val384").innerHTML !== "" ? {
-        val385: null,
-        checkbox_cb13: null
-      } : null
-    }
-  },
-  info_val386: {
-    //燃气灶
-    stateful: function () {
-      return document.querySelector("*[extendparam=val386").innerHTML !== "" ? {
-        val387: null,
-        checkbox_cb14: null
-      } : null
-    }
-  },
-  info_val388: {
-    //固定电话
-    stateful: function () {
-      return document.querySelector("*[extendparam=val388").innerHTML !== "" ? {
-        val389: null,
-        checkbox_cb15: null
-      } : null
-    }
-  },
-  //坐便器
-  info_val390: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val390").innerHTML !== "" ? {
-        val391: null,
-        checkbox_cb16: null
-      } : null
-    }
-  },
-  //床
-  info_val392: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val392").innerHTML !== "" ? {
-        val393: null
-      } : null
-    }
-  },
-  info_val394: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val394").innerHTML !== "" ? {
-        val395: null
-      } : null
-    }
-  },
-  //沙发
-  info_val396: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val396").innerHTML !== "" ? {
-        checkbox_cb17: null
-      } : null
-    }
-  },
-  info_val397: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val397").innerHTML !== "" ? {
-        checkbox_cb17: null
-      } : null
-    }
-  },
-  info_val398: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val398").innerHTML !== "" ? {
-        checkbox_cb17: null
-      } : null
-    }
-  },
-  //衣柜
-  info_val400: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val400").innerHTML !== "" ? {
-        val401: null
-      } : null
-    }
-  },
-  info_val402: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val402").innerHTML !== "" ? {
-        val403: null
-      } : null
-    }
-  },
-  info_val404: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val404").innerHTML !== "" ? {
-        val405: null
-      } : null
-    }
-  },
-  //茶几
-  info_val406: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val406").innerHTML !== "" ? {
-        val407: null,
-        checkbox_cb18: null
-      } : null
-    }
-  },
-  //餐桌
-  info_val409: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val409").innerHTML !== "" ? {
-        val410: null,
-        checkbox_cb19: null
-      } : null
-    }
-  },
-  //椅子
-  info_val412: {
-    stateful: function () {
-      return document.querySelector("*[extendparam=val412").innerHTML !== "" ? {
-        checkbox_cb20: null
-      } : null
-    }
-  },
+  // info_val369: {
+  //   //冰箱
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val369").innerHTML !== "" ? {
+  //       val370: null,
+  //       checkbox_cb7: null
+  //     } : null
+  //   }
+  // },
+  // info_val371: {
+  //   //微波炉
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val371").innerHTML !== "" ? {
+  //       val372: null,
+  //       checkbox_cb8: null
+  //     } : null
+  //   }
+  // },
+  // info_val373: {
+  //   //洗衣机
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val373").innerHTML !== "" ? {
+  //       val374: null,
+  //       checkbox_cb9: null
+  //     } : null
+  //   }
+  // },
+  // info_val375: {
+  //   //热水器
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val375").innerHTML !== "" ? {
+  //       val376: null,
+  //       checkbox_cb10: null
+  //     } : null
+  //   }
+  // },
+  // info_val377: {
+  //   //空调
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val377").innerHTML !== "" ? {
+  //       val378: null,
+  //       checkbox_cb11: null
+  //     } : null
+  //   }
+  // },
+  // info_val379: {
+  //   //电视
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val379").innerHTML !== "" ? {
+  //       val380: null,
+  //       checkbox_cb12: null
+  //     } : null
+  //   }
+  // },
+  // info_val384: {
+  //   //油烟机
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val384").innerHTML !== "" ? {
+  //       val385: null,
+  //       checkbox_cb13: null
+  //     } : null
+  //   }
+  // },
+  // info_val386: {
+  //   //燃气灶
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val386").innerHTML !== "" ? {
+  //       val387: null,
+  //       checkbox_cb14: null
+  //     } : null
+  //   }
+  // },
+  // info_val388: {
+  //   //固定电话
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val388").innerHTML !== "" ? {
+  //       val389: null,
+  //       checkbox_cb15: null
+  //     } : null
+  //   }
+  // },
+  // //坐便器
+  // info_val390: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val390").innerHTML !== "" ? {
+  //       val391: null,
+  //       checkbox_cb16: null
+  //     } : null
+  //   }
+  // },
+  // //床
+  // info_val392: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val392").innerHTML !== "" ? {
+  //       val393: null
+  //     } : null
+  //   }
+  // },
+  // info_val394: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val394").innerHTML !== "" ? {
+  //       val395: null
+  //     } : null
+  //   }
+  // },
+  // //沙发
+  // info_val396: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val396").innerHTML !== "" ? {
+  //       checkbox_cb17: null
+  //     } : null
+  //   }
+  // },
+  // info_val397: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val397").innerHTML !== "" ? {
+  //       checkbox_cb17: null
+  //     } : null
+  //   }
+  // },
+  // info_val398: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val398").innerHTML !== "" ? {
+  //       checkbox_cb17: null
+  //     } : null
+  //   }
+  // },
+  // //衣柜
+  // info_val400: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val400").innerHTML !== "" ? {
+  //       val401: null
+  //     } : null
+  //   }
+  // },
+  // info_val402: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val402").innerHTML !== "" ? {
+  //       val403: null
+  //     } : null
+  //   }
+  // },
+  // info_val404: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val404").innerHTML !== "" ? {
+  //       val405: null
+  //     } : null
+  //   }
+  // },
+  // //茶几
+  // info_val406: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val406").innerHTML !== "" ? {
+  //       val407: null,
+  //       checkbox_cb18: null
+  //     } : null
+  //   }
+  // },
+  // //餐桌
+  // info_val409: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val409").innerHTML !== "" ? {
+  //       val410: null,
+  //       checkbox_cb19: null
+  //     } : null
+  //   }
+  // },
+  // //椅子
+  // info_val412: {
+  //   stateful: function () {
+  //     return document.querySelector("*[extendparam=val412").innerHTML !== "" ? {
+  //       checkbox_cb20: null
+  //     } : null
+  //   }
+  // },
 };
 
 //给按钮添加点击事件
@@ -604,14 +605,14 @@ setTimeout(() => {
           if (item === obj.currentTarget) {
             if (item.querySelector("p").getAttribute("checked")) {
               if (i === index) {
-                sub.val368 = null
+                // sub.val368 = null
                 contractConfig.initForm(checkIO[index], 0);
               } else {
-                delete sub.val368
+                // delete sub.val368
                 contractConfig.initForm(checkIO[index], 1);
               }
             } else {
-              delete sub.val368
+              // delete sub.val368
               contractConfig.initForm(checkIO[i], 1);
             }
           }
@@ -626,14 +627,14 @@ setTimeout(() => {
           if (item === obj.currentTarget) {
             if (item.querySelector("p").getAttribute("checked")) {
               if (i === index) {
-                sub.val399 = null
+                // sub.val399 = null
                 contractConfig.initForm(checkIO[i], 0);
               } else {
-                delete sub.val399
+                // delete sub.val399
                 contractConfig.initForm(checkIO[index], 1);
               }
             } else {
-              delete sub.val399
+              // delete sub.val399
               contractConfig.initForm(checkIO[index], 1);
             }
           }

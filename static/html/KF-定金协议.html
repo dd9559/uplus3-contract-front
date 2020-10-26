@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="./datepicker.css" />
+  <link rel="stylesheet" href="/datepicker.css" />
   <title>定约定金协议</title>
   <style>
     body {
@@ -404,6 +404,10 @@
       width: 100%;
     }
 
+    .ulbox li span {
+      display: inline-block;
+    }
+
     .t2em {
       text-indent: 2em;
     }
@@ -420,11 +424,7 @@
     .mt-20 {
       margin-top: 20px;
     }
-
-    .dates {
-      margin-left: 40px;
-    }
-
+    
   </style>
 </head>
 
@@ -454,7 +454,7 @@
       <li>乙方（买方）： <span class="text-limit input-before" systemParam="guestName" tag="input-auto"></span></li>
       <li>证件类型： <span class="text-limit input-before" systemParam="guestCardType" tag="input-auto"></span></li>
       <li>身份证号： <span class="text-limit input-before" systemParam="guestID" tag="input-auto"></span></li>
-      <li>丙方（见证人）： <span class="text-limit input-before" tag="input-auto"></span></li>
+      <li class="li100">丙方（见证人）： <span class="text-limit input-before" systemParam="companyNames" company="true" tag="input-auto"></span></li>
     </ul>
     <p class="lh18 agreements interval">经丙方居间，甲方代表全体所有人出售座落于<span tag="input-auto" class="text-limit input-before"
         systemParam="propertyAddr"
@@ -462,7 +462,7 @@
     </p>
     <div class="lh18 agreements">一、乙方在本协议签订之日，向甲方交付定金人民币（小写）<span tag="input-auto" listen="number" max="16"
         class="text-limit input-before" extendParam="val302"></span>元整（大写）<span tag="input-auto" class="input-readonly"
-        systemParam="true" extendParam="val302_add"></span>，该定金由甲方
+        systemParam="true" extendParam="val302_add"></span>元，该定金由甲方
       <div class="info-checkbox" name="cb1">
         <p type="check"></p><b>自行保管</b>
       </div>
@@ -474,10 +474,10 @@
         readonly="readonly"
         extendParam="val303" />（请填写具体的日期时间）之前，至丙方指定的签约点签订正式的《开封市存量房居间（买卖）合同》。乙方逾期未签的，甲方有权没收定金；甲方逾期未签的，定金双倍赔付给乙方。</div>
     <div class="lh18 agreements">
-      甲方系全体所有人代表，保证已获得所有共有人一致同意并到期签署《武汉市存量房居间（买卖）合同》，如有任一房屋共有人手续不全不能签署或房屋有碍出售情形的（如查封、债权人占有等），由甲方承担定金赔付责任。</div>
+      甲方系全体所有人代表，保证已获得所有共有人一致同意并到期签署《开封市存量房居间（买卖）合同》，如有任一房屋共有人手续不全不能签署或房屋有碍出售情形的（如查封、债权人占有等），由甲方承担定金赔付责任。</div>
     <div class="lh18 agreements">三、甲、乙双方一致同意，签订正式的《开封市存量房居间(买卖)合同》中的房屋价款（甲方净得价）为人民币（小写）<span class="input-before"
         listen="number" max="16" extendParam="val304" tag="input-auto"></span>（大写）<span tag="input-auto"
-        extendParam="val304_add" systemParam="true" class="input-readonly"></span>，双方约定采取<div class="info-checkbox"
+        extendParam="val304_add" systemParam="true" class="input-readonly"></span>元，双方约定采取<div class="info-checkbox"
         name="cb2">
         <p type="check"></p><b>过户时一次性付款</b>
       </div>
@@ -492,7 +492,7 @@
     </div>
     <div class="lh18 agreements">四、丙方居间服务费（小写）<span class="input-before" listen="number" max="16" extendParam="val306"
         tag="input-auto"></span>（大写）<span tag="input-auto" extendParam="val306_add" systemParam="true"
-        class="input-readonly"></span>，在签订《开封市存量房居间(买卖)合同》时向<div class="info-checkbox" name="cb3">
+        class="input-readonly"></span>元，在签订《开封市存量房居间(买卖)合同》时向<div class="info-checkbox" name="cb3">
         <p type="check"></p><b>甲方</b>
       </div>
       <div class="info-checkbox" name="cb3">
@@ -502,26 +502,26 @@
     <div class="lh18 agreements">
       五、本协议一式三份，三方各执一份，自签字盖章之日起生效，由丙方见证签署。本协议如有纠纷，依法向房屋所在地人民法院提起诉讼。</div>
     <ul class="ulbox">
-      <li>甲方（签字）:
+      <li><span>甲方（签字）:</span></li>
+      <li><span>乙方（签字）:</span></li>
+      <li>
+        <span style="position: relative;">丙方（盖章）:
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:70px;top:-25px;" alt=""></span>
       </li>
-      <li>乙方（签字）:
-      </li>
-      <li>丙方（盖章）:
-      </li>
-      <li><span class="dates">年</span><span class="dates">月</span><span class="dates">日</span></li>
-      <li><span class="dates">年</span><span class="dates">月</span><span class="dates">日</span></li>
-      <li><span class="dates">年</span><span class="dates">月</span><span class="dates">日</span></li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
     </ul>
   </div>
 </body>
 
 </html>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_kf_djxy_20201016.js"></script> -->
-<script>
+<script type="text/javascript" src="/js/bundle_kf_djxy_20201016.js"></script>
+<!-- <script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -532,7 +532,7 @@
         "datepicker.css"
       ]
       for (let i = 0; i < addrList.length; i++) {
-        if (window.location.host === 'localhost:8080') {
+        if (window.location.host === 'localhost:8082') {
           if (addrList[i].indexOf('bundle') > -1) {
             // addrList[i]=host_other+'/'+addrList[i]
             addrList[i] = './KF-DJXY.js'
@@ -560,4 +560,4 @@
     }
   })();
 
-</script>
+</script> -->

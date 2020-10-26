@@ -2,21 +2,21 @@ import { contractConfig, toChineseNumber, formatMoney } from "./base.js";
 
 
 // 获取阿拉伯数字转小写的字符串add
-// let Obj;
-// (function() {
-//     let t = document.querySelectorAll(`[extendParam]`);
-//     let arr = [];
+let Obj;
+(function() {
+    let t = document.querySelectorAll(`[extendParam]`);
+    let arr = [];
 
-//     t.forEach(e => {
-//         let name = e.getAttribute("extendParam")
-//         if (name.indexOf("_add") > 0) {
-//             let name2 = name.slice(0, -4);
-//             arr.push(name2);
-//         }
-//     });
-//     Obj = Obj || {};
-//     Obj.cn_arr = arr;
-// })()
+    t.forEach(e => {
+        let name = e.getAttribute("extendParam")
+        if (name.indexOf("_add") > 0) {
+            let name2 = name.slice(0, -4);
+            arr.push(name2);
+        }
+    });
+    Obj = Obj || {};
+    Obj.cn_arr = arr;
+})()
 
 let checkArr = {
     0: ['val7'],
@@ -35,14 +35,13 @@ let sub = {
             return proxyFn(3);
         }
     },
-    val1: null,
     checkbox_two: {
         stateful(i) {
             let j = {};
             checkArr[i].forEach(e => {
                 j[e] = null;
             })
-            return j
+            return i !== 0 && i !== 1 ? null : j
         }
     },
     val6: null,
@@ -51,7 +50,7 @@ let sub = {
 function proxyFn(val) {
     let t = document.querySelector(`.text-limit[extendParam=agent${val}]`);
     let m = document.querySelector(`.text-limit[extendParam=agent${val + 1}]`);
-    let b = document.querySelector(`.text-limit[extendParam=val${val>1? '8':'7'}]`);
+    let b = document.querySelector(`.text-limit[extendParam=val${val>1? '11':'10'}]`);
     // 如果 甲方代理人有输入了 甲方代理人身份证 必须输入 
     if (t.innerText.length > 0 && m.innerText.length < 1) {
         return {
@@ -59,9 +58,9 @@ function proxyFn(val) {
         };
     }
     // 签章必须输入
-    if (t.innerText.length > 0 && b.innerText.length < 1) {
+    if (t.innerText.length > 0 && b && b.innerText.length < 1) {
         return {
-            ['val' + (val > 1 ? '8' : '7')]: null
+            ['val' + (val > 1 ? '11' : '10')]: null
         };
     }
 }
@@ -85,8 +84,8 @@ for (let readonlyItem in msg) {
     onlyReadDom.forEach(e => {
         if (readonlyItem === "companyNames") {
             if (msg[readonlyItem].length > 0) {
-                element.innerHTML = msg[readonlyItem][0];
-                element.classList.remove("input-before");
+                e.innerHTML = msg[readonlyItem][0];
+                e.classList.remove("input-before");
             }
         } else if (readonlyItem === 'signDate' && msg["signDate"]) {
             let time = new Date(Number(msg["signDate"]));
@@ -94,7 +93,6 @@ for (let readonlyItem in msg) {
             let M = time.getMonth() + 1;
             let D = time.getDate();
             let signDate = `${y}年${M}月${D}日`
-            console.log(signDate)
             e.innerHTML = signDate
         } else {
             e.innerHTML = msg[readonlyItem]
@@ -132,7 +130,15 @@ if (mainBtn) {
 
 // 选择事件
 // 全部禁用
-contractConfig.initForm(checkArr[0].concat(checkArr[1]), 1)
+// let tagTwo = document.querySelectorAll(`*[name="two"]`);
+// tagTwo.forEach((e, i) => {
+//     let bool = e.querySelector('p').getAttribute('checked');
+//     // 如果是选中状态
+//     if (!bool) {
+//         contractConfig.initForm(checkArr[i], 1);
+//     }
+//     console.log(1, e, i, bool);
+// })
 // 选择事件回调
 contractConfig.checkboxListener('', function(obj, boxArray) {
     // 全部禁用
