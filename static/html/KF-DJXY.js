@@ -75,37 +75,43 @@ setTimeout(() => {
   });
 
   //基础数据赋值
-  // let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-  let msg = {
-    code: "S0001191107007",
-    companyNames: ["金银湖三级门店哦"],
-    guestCardType: "军官证",
-    guestCardTypes: "",
-    guestID: "132",
-    guestIDs: "ee2353-344，ii397-4839",
-    guestName: "然迪生",
-    guestNames: "胜负少，发士夫",
-    guestTel: "13011111111",
-    guestTels: "",
-    id: 3354,
-    isentrust: 1,
-    ownerCardType: "营业执照",
-    ownerCardTypes: "营业执照",
-    ownerID: "123",
-    ownerIDs: "ee2353-344，ii397-4839",
-    ownerName: "熊先",
-    ownerNames: "胜多少，发士夫",
-    ownerTel: "18888888888",
-    ownerTels: "",
-    propertyAddr: "a市b区c",
-    singleCompany: "是的噶几开会说",
-    dealPrice: 1000,
-    dealPriceUpper: "壹仟",
-    square: 160,
-    guestStoreRegisterCode: "213",
-    signDate: 1592465819508,
-    organizationCode: "8888888888"
-  };
+  let msg = {}
+
+  if (window.location.href.indexOf('//192.168') > 0 || window.location.href.indexOf('//localhost') > 0) {
+    msg = {
+      code: "S0001191107007",
+      companyNames: ["金银湖三级门店哦"],
+      guestCardType: "军官证",
+      guestCardTypes: "",
+      guestID: "132",
+      guestIDs: "ee2353-344，ii397-4839",
+      guestName: "然迪生",
+      guestNames: "胜负少，发士夫",
+      guestTel: "13011111111",
+      guestTels: "",
+      id: 3354,
+      isentrust: 1,
+      ownerCardType: "营业执照",
+      ownerCardTypes: "营业执照",
+      ownerID: "123",
+      ownerIDs: "ee2353-344，ii397-4839",
+      ownerName: "熊先",
+      ownerNames: "胜多少，发士夫",
+      ownerTel: "18888888888",
+      ownerTels: "",
+      propertyAddr: "a市b区c",
+      singleCompany: "是的噶几开会说",
+      dealPrice: 1000,
+      dealPriceUpper: "壹仟",
+      square: 160,
+      guestStoreRegisterCode: "213",
+      signDate: 1592465819508,
+      organizationCode: "8888888888"
+    }
+  } else {
+    msg = JSON.parse(window.sessionStorage.getItem("contractMsg"))
+  }
+
   for (let readonlyItem in msg) {
     let onlyReadDom = Array.from(
       document.querySelectorAll(`*[systemparam=${readonlyItem}]`)
