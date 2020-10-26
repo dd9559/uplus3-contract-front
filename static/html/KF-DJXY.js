@@ -10,7 +10,10 @@ let Obj = {
 let sub = {
   val301: null, //物业地址
   val302: null, //金额
+  checkbox_cb1: null, //单选
   val303: null, //日期
+  val306: null, //金额
+  checkbox_cb3: null, //单选
 };
 
 //给按钮添加点击事件

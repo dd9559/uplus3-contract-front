@@ -404,6 +404,10 @@
       width: 100%;
     }
 
+    .ulbox li span {
+      display: inline-block;
+    }
+
     .t2em {
       text-indent: 2em;
     }
@@ -450,7 +454,7 @@
       <li>乙方（买方）： <span class="text-limit input-before" systemParam="guestName" tag="input-auto"></span></li>
       <li>证件类型： <span class="text-limit input-before" systemParam="guestCardType" tag="input-auto"></span></li>
       <li>身份证号： <span class="text-limit input-before" systemParam="guestID" tag="input-auto"></span></li>
-      <li>丙方（见证人）： <span class="text-limit input-before" tag="input-auto"></span></li>
+      <li class="li100">丙方（见证人）： <span class="text-limit input-before" systemParam="companyNames" company="true" tag="input-auto"></span></li>
     </ul>
     <p class="lh18 agreements interval">经丙方居间，甲方代表全体所有人出售座落于<span tag="input-auto" class="text-limit input-before"
         systemParam="propertyAddr"
