@@ -1,243 +1,401 @@
 <template>
-    <div class="page-class">
-        <!-- <p class="brand-nav">财务>提成计算</p> -->
-        <!-- 查询组件 -->
-        <uPlusScrollTop @propResetFormFn="reset"
-            @propQueryFn="queryFn"
-            class="commission-top"
-            style="padding:0 12px 12px;">
-            <el-input placeholder="合同编号/纸质合同编号/物业地址"
-                prefix-icon="el-icon-search"
-                class="w300"></el-input>
-            <!-- 日期 -->
-            <div class="item-text">结算周期</div>
-            <el-date-picker class="item-billing-date w160"
-                v-model="billingDate"
-                type="date"
-                placeholder="选择日期"
-                value-format="timestamp">
-            </el-date-picker>
-            <!-- 三联下拉选择 -->
-            <div class="triple-select">
-                <el-select v-model="value1"
-                    class="w100"
-                    placeholder="体系">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-select v-model="value2"
-                    class="w200"
-                    placeholder="选择部门">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-select v-model="value3"
-                    class="w100"
-                    placeholder="选择人员">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-            </div>
+  <div class="page-class">
+    <!-- <p class="brand-nav">财务>提成计算</p> -->
+    <!-- 查询组件 -->
+    <uPlusScrollTop
+      @propResetFormFn="reset"
+      @propQueryFn="queryFn"
+      class="commission-top"
+      style="padding: 0 12px 12px"
+    >
+      <el-input
+        placeholder="合同编号/纸质合同编号/物业地址"
+        prefix-icon="el-icon-search"
+        class="w300"
+        v-model="searchData.keyword"
+      ></el-input>
+      <!-- 日期 -->
+      <div class="item-text">结算周期</div>
+      <el-date-picker
+        class="item-billing-date w160"
+        v-model="searchData.settleDate"
+        type="month"
+        placeholder="请选择"
+        value-format="yyyy-MM"
+      >
+      </el-date-picker>
+      <!-- 三联下拉选择 -->
+      <div class="triple-select">
+        <el-select
+          v-model="searchData.systemTag"
+          class="w100"
+          placeholder="体系"
+          clearable
+        >
+          <el-option
+            v-for="item in systemTagSelect"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          >
+          </el-option>
+        </el-select>
+        <select-tree
+          class="select-tree"
+          :init="searchData.depName"
+          @checkCell="depHandleClick"
+          @clear="clearDep"
+        ></select-tree>
+        <el-select
+          v-model="searchData.empId"
+          v-loadmore="moreEmploye"
+          class="w100"
+          placeholder="选择人员"
+          @change="handleEmpNodeClick"
+          clearable
+        >
+          <el-option
+            v-for="item in EmployeList"
+            :key="item.empId"
+            :label="item.name"
+            :value="item.empId"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <div class="triple-select">
+        <el-select
+          v-model="searchData.signDateValue"
+          class="w100"
+          @change="signDateChangeFn"
+        >
+          <el-option
+            v-for="item in signDateList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-date-picker
+          class="item-billing-date2 w212"
+          v-model="searchData.bonusDateValue"
+          type="monthrange"
+          range-separator="至"
+          start-placeholder="开始月份"
+          end-placeholder="结束月份"
+          value-format="timestamp"
+        >
+        </el-date-picker>
+      </div>
 
-            <div class="triple-select">
-                <el-select v-model="value4"
-                    class="w100">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-date-picker class="item-billing-date2 w212"
-                    v-model="billingDate2"
-                    type="monthrange"
-                    range-separator="至"
-                    start-placeholder="开始月份"
-                    end-placeholder="结束月份">
-                </el-date-picker>
-            </div>
-
-            <el-select v-model="value5"
-                class="w116"
-                placeholder="计算状态">
-                <el-option v-for="item in options1"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-            </el-select>
-
-        </uPlusScrollTop>
-        <div class="main">
-            <div class="reveal-box">
-                <div class="reveal-txt">当前共找到【420】条数据</div>
-                <el-button class="fr btn-orange-border">导出</el-button>
-                <el-button class="fr btn-orange">批量计算提成</el-button>
-            </div>
-            <el-table :data="tableData"
-                class="table-box">
-                <el-table-column prop="name"
-                    min-width="100"
-                    label="姓名"></el-table-column>
-                <el-table-column prop="department"
-                    min-width="110"
-                    label="部门"></el-table-column>
-                <el-table-column prop="position"
-                    min-width="100"
-                    label="职位"></el-table-column>
-                <el-table-column prop="working"
-                    min-width="80"
-                    label="在职状态"></el-table-column>
-                <el-table-column prop="employeeId"
-                    min-width="80"
-                    label="员工编号"></el-table-column>
-                <el-table-column prop="settlementDate"
-                    min-width="105"
-                    label="结算日期"></el-table-column>
-                <el-table-column prop="contractDate"
-                    min-width="105"
-                    label="签约日期"></el-table-column>
-                <el-table-column prop="type"
-                    min-width="105"
-                    label="合同类型"></el-table-column>
-                <el-table-column prop="contractNo"
-                    min-width="125"
-                    label="合同编号"></el-table-column>
-                <el-table-column prop="address"
-                    min-width="145"
-                    label="物业地址"></el-table-column>
-                <el-table-column prop="amount"
-                    min-width="85"
-                    label="结算金额"></el-table-column>
-                <el-table-column prop="calculationStatus"
-                    min-width="85"
-                    label="计算状态"></el-table-column>
-                <el-table-column prop="commissionAmount"
-                    min-width="85"
-                    label="提成金额"></el-table-column>
-                <el-table-column prop="formula"
-                    min-width="265"
-                    label="提成计算公式"></el-table-column>
-                <el-table-column prop="time"
-                    min-width="100"
-                    label="提成生成时间"></el-table-column>
-            </el-table>
-            <myPagination @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-sizes="pageSizes"
-                :page-size="pageSize"
-                :total="total"></myPagination>
-        </div>
+      <el-select
+        v-model="searchData.isCalculation"
+        class="w116"
+        placeholder="计算状态"
+      >
+        <el-option
+          v-for="item in isCalculation"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </uPlusScrollTop>
+    <div class="main">
+      <div class="reveal-box">
+        <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
+        <el-button class="fr btn-orange-border">导出</el-button>
+        <el-button class="fr btn-orange">批量计算提成</el-button>
+      </div>
+      <el-table :data="tableData" class="table-box">
+        <el-table-column
+          prop="empName"
+          min-width="100"
+          label="姓名"
+        ></el-table-column>
+        <el-table-column
+          prop="depName"
+          min-width="110"
+          label="部门"
+        ></el-table-column>
+        <el-table-column
+          prop="positionName"
+          min-width="100"
+          label="职位"
+        ></el-table-column>
+        <el-table-column min-width="80" label="在职状态">
+          <template slot-scope="scope">
+            {{
+              scope.row.rstatus === 0
+                ? "待入职"
+                : scope.row.rstatus === 1
+                ? "在职"
+                : "离职"
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="empId"
+          min-width="80"
+          label="员工编号"
+        ></el-table-column>
+        <el-table-column min-width="105" label="结算日期">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.settleTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column min-width="105" label="签约日期">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.signDate) }}
+          </template>
+        </el-table-column>
+        <el-table-column min-width="105" label="合同类型">
+          <template slot-scope="scope">
+            {{ scope.row.contType.label }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="contCode"
+          min-width="125"
+          label="合同编号"
+        ></el-table-column>
+        <el-table-column
+          prop="proAddr"
+          min-width="145"
+          label="物业地址"
+        ></el-table-column>
+        <el-table-column
+          prop="settleMoney"
+          min-width="85"
+          label="结算金额"
+        ></el-table-column>
+        <el-table-column
+          prop="calculationStatus"
+          min-width="85"
+          label="计算状态"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.isCalculation === 0 ? "未计算" : "已计算" }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="bonusMoney"
+          min-width="85"
+          label="提成金额"
+        ></el-table-column>
+        <el-table-column
+          prop="bonusFormula"
+          min-width="265"
+          label="提成计算公式"
+        ></el-table-column>
+        <el-table-column min-width="100" label="提成生成时间">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.bonusDate) }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <myPagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :total="total"
+      ></myPagination>
     </div>
+  </div>
 </template>
 
 <script>
 import myPagination from "./myPagination";
+import { MIXINS } from "@/assets/js/mixins";
 export default {
-    name: "commissionCounts",
-    data() {
-        return {
-            billingDate: "",
-            billingDate2: "",
-            options1: [
-                {
-                    value: "选项1",
-                    label: "签约时间",
-                },
-                {
-                    value: "选项2",
-                    label: "双皮奶",
-                },
-                {
-                    value: "选项3",
-                    label: "蚵仔煎",
-                },
-                {
-                    value: "选项4",
-                    label: "龙须面",
-                },
-                {
-                    value: "选项5",
-                    label: "北京烤鸭",
-                },
-            ],
-            value1: "",
-            value2: "",
-            value3: "",
-            value4: "选项1",
-            value5: "",
-            tableData: [
-                {
-                    name: "王小虎",
-                    department: "所在部门",
-                    position: "经纪人",
-                    working: "离职",
-                    employeeId: "1234",
-                    settlementDate: "2018/08/06",
-                    contractDate: "2018/08/06",
-                    type: "买卖",
-                    contractNo: "S2020565656",
-                    address: "成交时的u+物业地 址",
-                    amount: "900000",
-                    calculationStatus: "已计算",
-                    commissionAmount: "500000",
-                    formula: "200*10%+800*20%+(1400-800*30%)",
-                    time: "2020/07/25",
-                },
-            ],
-            currentPage: 3,
-            pageSize: 10,
-            total: 400,
-            pageSizes: [10, 200, 300, 400],
-        };
+  name: "commissionCounts",
+  mixins: [MIXINS],
+  data() {
+    return {
+      //   签约时间
+      signDateList: [
+        {
+          value: 0,
+          label: "签约时间",
+        },
+        {
+          value: 1,
+          label: "提成生成时间",
+        },
+      ],
+      //   计算状态
+      isCalculation: [
+        {
+          value: 0,
+          label: "未计算",
+        },
+        {
+          value: 1,
+          label: "已计算",
+        },
+      ],
+      searchData: {
+        keyword: "", //关键字
+        settleDate: "", //yyyy-mm 结算周期
+        systemTag: "", //体系id
+        depId: "", //部门编号
+        depName: "",
+        empId: "", //员工编号
+        signDateValue: 0,
+        bonusDateValue: "",
+        // signDateStar: "", //签约日期开始
+        // signDateEnd: "", //签约日期结束
+        // bonusDateStar: "", //提成计算日期开始
+        // bonusDateEnd: "", //提成计算日期结束
+        isCalculation: "", //计算状态（0、未计算1、已计算）
+        // pageSize: "",
+        // pageNum: "",
+      },
+      copySearchData:{},
+      tableData: [],
+      currentPage: 1,
+      pageSize: 20,
+      total: 20,
+    };
+  },
+  methods: {
+    //重置
+    reset() {
+      this.searchData = {
+        keyword: "", //关键字
+        settleDate: "", //yyyy-mm 结算周期
+        systemTag: "", //体系id
+        depId: "", //部门编号
+        depName: "",
+        empId: "", //员工编号
+        signDateValue: 0,
+        bonusDateValue: "",
+        isCalculation: "", //计算状态（0、未计算1、已计算）
+      }
     },
-    methods: {
-        reset() {
-            console.log("重置");
-        },
-        queryFn() {
-            console.log("查询");
-        },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`2当前页: ${val}`);
-        },
+    // 查询
+    queryFn() {
+      this.currentPage = 1;
+      this.searchFn();
     },
-    components: {
-        myPagination,
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.searchFn();
     },
-    mounted() {
-        // 提示弹层
-        // this.$tool.layerAlert.call(this, {
-        //     message: "确定计算 [结算周期] 的提成吗？",
-        //     title: "确认是否计算提成",
-        //     callback(){
-        //         console.log(11)
-        //     }
-        // })
-        // 结算完成
-        // this.$tool.layerAlert.call(this, { typeInfo: 1 });
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.searchFn();
+    },
+    // 搜索数据
+    searchFn() {
+      let data = { ...this.searchData };
+      let sign = {
+        signDateStar: "", //签约日期开始
+        signDateEnd: "", //签约日期结束
+        bonusDateStar: "", //提成计算日期开始
+        bonusDateEnd: "", //提成计算日期结束
+      };
 
-        // 加载中
-        // this.$tool.layerAlert.call(this, { typeInfo: 2 });
+      let signJ =
+        data.signDateValue === 0
+          ? {
+              signDateStar: data.bonusDateValue[0],
+              signDateEnd: data.bonusDateValue[1],
+            }
+          : {
+              bonusDateStar: data.bonusDateValue[0],
+              bonusDateEnd: data.bonusDateValue[1],
+            };
+            
+      // 删除多余属性
+      delete data.bonusDateValue
 
-        // 关闭加载中
-        // setTimeout(() => {
-        //     this.$tool.layerAlertClose();
-        // }, 2000);
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+
+      Object.assign(data, sign, signJ, {
+        pageSize: this.pageSize,
+        pageNum: this.currentPage,
+      });
+
+      this.$ajax
+        .get("/api/bonus/bonusList", data)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            let { list = [], pageSize = 20, pageNum = 1, total = 0 } =
+              res.data || {};
+            // 赋值
+            Object.assign(this, {
+              tableData: list,
+              currentPage: pageNum,
+              pageSize,
+              total,
+            });
+          }
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        })
+        .catch((err) => {
+          console.log(err);
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        });
     },
+    // 签约时间下拉列表切换
+    signDateChangeFn(val) {
+      this.searchData.bonusDateValue = "";
+    },
+    // 部门第二版 选择部门
+    depHandleClick(data) {
+      this.searchData.depId = data.depId;
+      this.searchData.depName = data.name;
+      this.searchData.empId = "";
+      this.handleNodeClick(data);
+    },
+    // 部门第二版 删除
+    clearDep() {
+      this.searchData.depId = "";
+      this.searchData.empId = "";
+      this.clearSelect();
+      this.remoteMethod();
+    },
+    // 时间处理
+    dateFormat(val) {
+      return this.$tool.dateFormat(val);
+    },
+  },
+  components: {
+    myPagination,
+  },
+  mounted() {
+    // 提示弹层
+    // this.$tool.layerAlert.call(this, {
+    //     message: "确定计算 [结算周期] 的提成吗？",
+    //     title: "确认是否计算提成",
+    //     callback(){
+    //         console.log(11)
+    //     }
+    // })
+    // 结算完成
+    // this.$tool.layerAlert.call(this, { typeInfo: 1 });
+
+    // 加载中
+    // this.$tool.layerAlert.call(this, { typeInfo: 2 });
+
+    // 关闭加载中
+    // setTimeout(() => {
+    //     this.$tool.layerAlertClose();
+    // }, 2000);
+
+    // 体系
+    this.getSystemTagSelect();
+    // 获取数据
+    this.searchFn();
+  },
 };
 </script>
 
