@@ -1,73 +1,20 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
-  'info_val116': {
+  'info_val3': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val116]').innerHTML !== '' ? {'val117': null} : null
+      return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {'val4': null} : null
     }
   },
-  'info_val118': {
+  'info_val7': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val118]').innerHTML !== '' ? {'val119': null} : null
+      return document.querySelector('*[extendparam=val7]').innerHTML !== '' ? {'val8': null} : null
     }
   },
-  'val1': null,
-  'val2': null,
-  'checkbox_one': null,
-  'checkbox_two': null,
-  'val3': null,
-  'checkbox_three': {
-    state:true,
-    stateful: function (index) {
-      return index === 5 ? {'val4': null} : null
-    }
-  },
-  'val5': null,
-  'val6': null,
-  'val7': null,
-  'val8': null,
-  'val9': null,
-  'val10': null,
-  'val11': null,
-  'checkbox_four': null,
-  'checkbox_five': null,
-  'checkbox_four': null,
-  'val12': null,
-  'val13': null,
-  'val14': null,
-  'checkbox_six': null,
-  'val15': null,
-  'val17': null,
-  'checkbox_seven': null,
-  'checkbox_eight': {
-    stateful: function (index) {
-      return index === 0 ? {'checkbox_nine': {
-        stateful: function (index) {
-          return index === 2 ? {'val19': null} : null
-        }
-      }} : null
-    }
-  },
-  // 'checkbox_nine': null,
-  // 'val19': null,
-  'info_val120': {
-    stateful: function (index) {
-      return document.querySelector('*[extendparam=val120]').innerHTML !== '' ? {'val121': null} : null
-    }
-  },
-  'info_val122': {
-    stateful: function (index) {
-      return document.querySelector('*[extendparam=val122]').innerHTML !== '' ? {'val123': null} : null
-    }
-  },
-  'val102': null,
-  'val103': null,
-  'val104': null,
-  'val105': null,
-
-  // old
+  drapdown_val13: null,
+  checkbox_three: null,
 }
 let Obj = {
-  cn_arr: ['val10', 'val11', 'val15', 'val19', 'val104','val105']
+  cn_arr: ['val14', 'val15']
 }
 //初始化下拉控件
 Dropdown.create({
@@ -76,15 +23,6 @@ Dropdown.create({
     if (bindElem.tagName.toLowerCase() === 'input') {
       bindElem.value = dateObj.value
       bindElem.setAttribute('value', bindElem.value)
-      let obj = {
-        'val24': ['val26'],
-        'val25': ['val26'],
-      }
-      let attr = bindElem.getAttribute('extendParam')
-      console.log(attr, 'attr', dateObj.value);
-      if (obj[attr]) {
-        contractConfig.initForm(obj[attr], 0)
-      }
     } else {
       bindElem.innerHTML = dateObj.value
       bindElem.classList.remove('input-select')
@@ -155,20 +93,6 @@ contractConfig.inputListener(function (ev, tip) {
 contractConfig.checkboxListener(function () { }, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
-  if (attr === 'three') {
-    let checkIO = ['val4']
-    boxArray.forEach((item, i) => {
-      if (item === obj.currentTarget) {
-        if (item.querySelector('p').getAttribute('checked')) {
-          if (i === 5) {
-            contractConfig.initForm(checkIO, 0)
-          }
-        } else {
-          contractConfig.initForm(checkIO, 1)
-        }
-      }
-    })
-  }
 })
 
 
