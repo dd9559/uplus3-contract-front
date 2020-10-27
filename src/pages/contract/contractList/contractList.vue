@@ -1,8 +1,17 @@
 <template>
   <div class="view-container" ref="tableComView" v-loading="choseLoading">
     <!-- 筛选查询 -->
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" v-if="dictionary['9']">
-      <el-form :inline="true" :model="contractForm" class="prop-form" size="small">
+    <ScreeningTop
+      @propQueryFn="queryFn"
+      @propResetFormFn="resetFormFn"
+      v-if="dictionary['9']"
+    >
+      <el-form
+        :inline="true"
+        :model="contractForm"
+        class="prop-form"
+        size="small"
+      >
         <el-form-item label="关键字">
           <el-tooltip
             class="item"
@@ -10,7 +19,12 @@
             content="物业地址/业主/客户/手机号/合同编号/纸质合同编号/房源编号/客源编号/房客源店长"
             placement="top"
           >
-            <el-input v-model="keyword" style="width:150px" placeholder="请输入" :clearable="true"></el-input>
+            <el-input
+              v-model="keyword"
+              style="width: 150px"
+              placeholder="请输入"
+              :clearable="true"
+            ></el-input>
           </el-tooltip>
         </el-form-item>
         <el-form-item label="签约日期">
@@ -22,7 +36,7 @@
             :default-time="['00:00:00', '23:59:59']"
             format="yyyy-MM-dd"
             value-format="yyyy/MM/dd"
-            style="width:330px"
+            style="width: 330px"
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="合同类型">
@@ -30,8 +44,11 @@
             v-model="contractForm.contTypes"
             multiple
             placeholder="全部"
-            style="width:200px"
-            :class="{'width300':contractForm.contTypes&&contractForm.contTypes.length>3}"
+            style="width: 200px"
+            :class="{
+              width300:
+                contractForm.contTypes && contractForm.contTypes.length > 3,
+            }"
           >
             <el-option
               v-for="item in dictionary['10']"
@@ -47,7 +64,7 @@
             v-model="contractForm.contState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['9']"
@@ -62,7 +79,7 @@
             v-model="contractForm.recordType"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['64']"
@@ -72,12 +89,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="成交报告" v-if="contVersion===2">
+        <el-form-item label="成交报告" v-if="contVersion === 2">
           <el-select
             v-model="contractForm.reportRecord"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option label="已录" value="1"></el-option>
             <el-option label="未录" value="2"></el-option>
@@ -88,7 +105,7 @@
             v-model="contractForm.housePurpose"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in housePurpose"
@@ -137,7 +154,7 @@
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId+'/'+item.depName+'/'+item.depId"
+              :value="item.empId + '/' + item.depName + '/' + item.depId"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -146,7 +163,7 @@
             v-model="contractForm.toExamineState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['51']"
@@ -161,7 +178,7 @@
             v-model="contractForm.signinState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['72']"
@@ -176,7 +193,7 @@
             v-model="contractForm.contChangeState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['6']"
@@ -186,12 +203,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="结算状态" v-if="contVersion===2">
+        <el-form-item label="结算状态" v-if="contVersion === 2">
           <el-select
             v-model="contractForm.resultState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['14']"
@@ -206,7 +223,7 @@
             v-model="contractForm.receiveAmountState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['13']"
@@ -221,7 +238,7 @@
             v-model="contractForm.achievementState"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['54']"
@@ -236,7 +253,7 @@
             v-model="contractForm.dealAgentStoreAttr"
             placeholder="全部"
             :clearable="true"
-            style="width:150px"
+            style="width: 150px"
           >
             <el-option
               v-for="item in dictionary['53']"
@@ -246,8 +263,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="后期状态" v-if="contVersion===2">
-          <el-select v-model="contractForm.laterStageState" placeholder="全部" :clearable="true">
+        <el-form-item label="后期状态" v-if="contVersion === 2">
+          <el-select
+            v-model="contractForm.laterStageState"
+            placeholder="全部"
+            :clearable="true"
+          >
             <el-option
               v-for="item in dictionary['11']"
               :key="item.key"
@@ -261,15 +282,16 @@
             class="percent"
             v-model="contractForm.beginRatio"
             @input.native="changeRatio('begin')"
-            style="width:85px"
+            style="width: 85px"
             placeholder="请输入"
             :clearable="true"
-          ></el-input>-
+          ></el-input
+          >-
           <el-input
             class="percent"
             v-model="contractForm.endRatio"
             @input.native="changeRatio('end')"
-            style="width:85px"
+            style="width: 85px"
             placeholder="请输入"
             :clearable="true"
           ></el-input>
@@ -287,34 +309,39 @@
         <div>
           <div
             class="haveSon"
-            :class="{'showOnLine':showOnLine}"
+            :class="{ showOnLine: showOnLine }"
             @mouseover="moveIn('online')"
             @mouseout="moveOut('online')"
             v-if="power['sign-ht-info-add'].state"
           >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
-            <div class="holderPlace" v-if="dictionary['71']">
+            <div class="holderPlace" v-if="onlineContractList">
               <ul class="mainList">
                 <li
-                  v-for="item in dictionary['71']"
+                  v-for="item in onlineContractList"
                   :key="item.key"
                   @click="addOnLine(item)"
-                  style="position:relative;"
+                  style="position: relative"
                 >
-                  {{item.value}}
+                  {{ item.type.label }}
                   <i
                     class="el-icon-caret-right"
-                    v-if="item.key===2&&item.children"
-                    style="position:absolute;top:10px;left:55px;"
+                    v-if="item.key === 2 && item.children"
+                    style="position: absolute; top: 10px; left: 55px"
                   ></i>
-                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                  <div
+                    class="childrenModule"
+                    v-if="item.key === 2 && item.children"
+                  >
                     <ul class="childrenList">
                       <li
                         v-for="item_ in item.children"
                         :key="item_.key"
                         @click="addOnLine(item_)"
-                      >{{item_.value}}</li>
+                      >
+                        {{ item_.value }}
+                      </li>
                     </ul>
                   </div>
                 </li>
@@ -323,7 +350,7 @@
           </div>
           <div
             class="haveSon"
-            :class="{'showOnLine':showOffLine}"
+            :class="{ showOnLine: showOffLine }"
             @mouseover="moveIn('offline')"
             @mouseout="moveOut('offline')"
             v-if="power['sign-ht-info-addoffline'].state"
@@ -336,21 +363,26 @@
                   v-for="item in dictionary['65']"
                   :key="item.key"
                   @click="addOffLine(item)"
-                  style="position:relative;"
+                  style="position: relative"
                 >
-                  {{item.value}}
+                  {{ item.value }}
                   <i
                     class="el-icon-caret-right"
-                    v-if="item.key===2&&item.children"
-                    style="position:absolute;top:10px;left:55px;"
+                    v-if="item.key === 2 && item.children"
+                    style="position: absolute; top: 10px; left: 55px"
                   ></i>
-                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                  <div
+                    class="childrenModule"
+                    v-if="item.key === 2 && item.children"
+                  >
                     <ul class="childrenList">
                       <li
                         v-for="item_ in item.children"
                         :key="item_.key"
                         @click="addOffLine(item_)"
-                      >{{item_.value}}</li>
+                      >
+                        {{ item_.value }}
+                      </li>
                     </ul>
                   </div>
                 </li>
@@ -359,7 +391,7 @@
           </div>
           <div
             class="haveSon printStyle"
-            :class="{'showOnLine':showPrint}"
+            :class="{ showOnLine: showPrint }"
             @mouseover="moveIn('print')"
             @mouseout="moveOut('print')"
             v-if="power['sign-ht-info-print'].state"
@@ -372,21 +404,26 @@
                   v-for="item in dictionary['71']"
                   :key="item.key"
                   @click="printCont(item)"
-                  style="position:relative;"
+                  style="position: relative"
                 >
-                  {{item.value}}
+                  {{ item.value }}
                   <i
                     class="el-icon-caret-right"
-                    v-if="item.key===2&&item.children"
-                    style="position:absolute;top:10px;left:55px;"
+                    v-if="item.key === 2 && item.children"
+                    style="position: absolute; top: 10px; left: 55px"
                   ></i>
-                  <div class="childrenModule" v-if="item.key===2&&item.children">
+                  <div
+                    class="childrenModule"
+                    v-if="item.key === 2 && item.children"
+                  >
                     <ul class="childrenList">
                       <li
                         v-for="item_ in item.children"
                         :key="item_.key"
                         @click="printCont(item_)"
-                      >{{item_.value}}</li>
+                      >
+                        {{ item_.value }}
+                      </li>
                     </ul>
                   </div>
                 </li>
@@ -400,7 +437,8 @@
             type="primary"
             size="small"
             @click="getExcel"
-          >导出</el-button>
+            >导出</el-button
+          >
         </div>
       </div>
       <el-table
@@ -414,7 +452,13 @@
         border
         :max-height="tableNumberCom"
       >
-        <el-table-column label="合同信息" label-class-name="pdl" class-name="bgc" min-width="250" fixed>
+        <el-table-column
+          label="合同信息"
+          label-class-name="pdl"
+          class-name="bgc"
+          min-width="250"
+          fixed
+        >
           <template slot-scope="scope">
             <div class="contract_msg">
               <div class="riskLabel">
@@ -426,35 +470,40 @@
                   content="风险单"
                   v-if="scope.row.isRisk"
                 >
-                  <i slot="reference" class="iconfont icon-tubiao_shiyong-1 risk"></i>
+                  <i
+                    slot="reference"
+                    class="iconfont icon-tubiao_shiyong-1 risk"
+                  ></i>
                 </el-popover>
               </div>
               <ul class="contract-msglist">
                 <li>
                   合同：
-                  <span class="blueColor" @click="toDetail(scope.row)">{{scope.row.code}}</span>
+                  <span class="blueColor" @click="toDetail(scope.row)">{{
+                    scope.row.code
+                  }}</span>
                 </li>
-                <li v-if="scope.row.recordType.value===2">
+                <li v-if="scope.row.recordType.value === 2">
                   纸质合同编号：
-                  <span class="blueColor" @click="toDetail(scope.row)">{{scope.row.pCode}}</span>
+                  <span class="blueColor" @click="toDetail(scope.row)">{{
+                    scope.row.pCode
+                  }}</span>
                 </li>
                 <li v-if="scope.row.houseinfoCode">
                   房源：
-                  <span>{{scope.row.houseinfoCode}}</span>
-                  {{scope.row.showOwnerName}}
-                  <span
-                    class="zhuanjie"
-                    v-if="scope.row.isRetained===1"
-                  >留</span>
+                  <span>{{ scope.row.houseinfoCode }}</span>
+                  {{ scope.row.showOwnerName }}
+                  <span class="zhuanjie" v-if="scope.row.isRetained === 1"
+                    >留</span
+                  >
                 </li>
                 <li>
                   客源：
-                  <span>{{scope.row.guestinfoCode}}</span>
-                  {{scope.row.showCustName}}
-                  <span
-                    class="zhuanjie"
-                    v-if="scope.row.isRefer===1"
-                  >转介</span>
+                  <span>{{ scope.row.guestinfoCode }}</span>
+                  {{ scope.row.showCustName }}
+                  <span class="zhuanjie" v-if="scope.row.isRefer === 1"
+                    >转介</span
+                  >
                 </li>
               </ul>
             </div>
@@ -462,28 +511,36 @@
         </el-table-column>
         <el-table-column label="合同类型" min-width="70">
           <template slot-scope="scope">
-            <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
-            <span v-else>{{scope.row.isCombine?"委托合同":scope.row.contType.label}}</span>
+            <span v-if="scope.row.loanType">{{
+              scope.row.loanType === 7 ? "全款买卖" : "贷款买卖"
+            }}</span>
+            <span v-else>{{
+              scope.row.isCombine ? "委托合同" : scope.row.contType.label
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column label="物业地址" min-width="160">
           <template slot-scope="scope">
             <span v-if="!scope.row.propertyAddr">-</span>
             <template>
-              <p>{{scope.row.propertyAddr.split(' ')[0]}}</p>
-              <p>{{scope.row.propertyAddr.split(' ')[1]}}</p>
+              <p>{{ scope.row.propertyAddr.split(" ")[0] }}</p>
+              <p>{{ scope.row.propertyAddr.split(" ")[1] }}</p>
             </template>
           </template>
         </el-table-column>
         <el-table-column label="成交总价" prop="dealPrice" min-width="90">
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
-              <span>{{scope.row.dealPrice}}元</span>
+              <span>{{ scope.row.dealPrice }}元</span>
               <template v-for="item in dictionary['507']">
                 <span
                   :key="item.key"
-                  v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"
-                >/ {{item.value}}</span>
+                  v-if="
+                    item.key === scope.row.timeUnit &&
+                    scope.row.contType.value === 1
+                  "
+                  >/ {{ item.value }}</span
+                >
               </template>
             </div>
             <span v-else>-</span>
@@ -492,8 +549,18 @@
         <el-table-column label="佣金比例(%)" min-width="100">
           <template slot-scope="scope">
             <span
-              v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine"
-            >{{((scope.row.receivableCommission/scope.row.dealPrice)*100).toFixed(2)}}</span>
+              v-if="
+                (scope.row.contType.value === 2 ||
+                  scope.row.contType.value === 3) &&
+                !scope.row.isCombine
+              "
+              >{{
+                (
+                  (scope.row.receivableCommission / scope.row.dealPrice) *
+                  100
+                ).toFixed(2)
+              }}</span
+            >
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -501,135 +568,201 @@
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
               <div class="btn" @click="runningWater(scope.row)">流水</div>
-              <div class="btn" v-if="!scope.row.isTransaction" @click="gathering(scope.row)">收款</div>
-              <div class="btn" v-if="!scope.row.isTransaction" @click="payment(scope.row)">付款</div>
+              <div
+                class="btn"
+                v-if="!scope.row.isTransaction"
+                @click="gathering(scope.row)"
+              >
+                收款
+              </div>
+              <div
+                class="btn"
+                v-if="!scope.row.isTransaction"
+                @click="payment(scope.row)"
+              >
+                付款
+              </div>
             </div>
-            <div class="btn" v-else-if="!scope.row.isTransaction" @click="gathering(scope.row)">收款</div>
+            <div
+              class="btn"
+              v-else-if="!scope.row.isTransaction"
+              @click="gathering(scope.row)"
+            >
+              收款
+            </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="成交经纪人" min-width="120">
           <template slot-scope="scope">
-            <div v-if="scope.row.dealAgentStoreName||scope.row.dealAgentName">
-              <p>{{scope.row.dealAgentStoreName}}</p>
-              <p>{{scope.row.dealAgentName}}</p>
+            <div v-if="scope.row.dealAgentStoreName || scope.row.dealAgentName">
+              <p>{{ scope.row.dealAgentStoreName }}</p>
+              <p>{{ scope.row.dealAgentName }}</p>
             </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="房客源店长" min-width="150">
           <template slot-scope="scope">
-            <p>房：{{scope.row.houseStoreName+"-"+scope.row.houseShopOwner}}</p>
-            <p>客：{{scope.row.guestStoreName}}-{{scope.row.guestShopOwner?scope.row.guestShopOwner:''}}</p>
+            <p>
+              房：{{
+                scope.row.houseStoreName + "-" + scope.row.houseShopOwner
+              }}
+            </p>
+            <p>
+              客：{{ scope.row.guestStoreName }}-{{
+                scope.row.guestShopOwner ? scope.row.guestShopOwner : ""
+              }}
+            </p>
           </template>
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
           <template slot-scope="scope">
-            <span>{{scope.row.contState.label}}</span>
+            <span>{{ scope.row.contState.label }}</span>
           </template>
         </el-table-column>
         <el-table-column label="合同审核状态" min-width="100">
           <template slot-scope="scope">
-            <span
-              v-if="scope.row.toExamineState.value===-1"
-              class="blue"
-            >{{scope.row.toExamineState.label}}</span>
-            <span
-              v-if="scope.row.toExamineState.value===0"
-              class="yellow"
-            >{{scope.row.toExamineState.label}}</span>
-            <span
-              v-if="scope.row.toExamineState.value===1"
-              class="green"
-            >{{scope.row.toExamineState.label}}</span>
-            <span
-              v-if="scope.row.toExamineState.value===2"
-              class="red"
-            >{{scope.row.toExamineState.label}}</span>
+            <span v-if="scope.row.toExamineState.value === -1" class="blue">{{
+              scope.row.toExamineState.label
+            }}</span>
+            <span v-if="scope.row.toExamineState.value === 0" class="yellow">{{
+              scope.row.toExamineState.label
+            }}</span>
+            <span v-if="scope.row.toExamineState.value === 1" class="green">{{
+              scope.row.toExamineState.label
+            }}</span>
+            <span v-if="scope.row.toExamineState.value === 2" class="red">{{
+              scope.row.toExamineState.label
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column label="变更/解约" min-width="80">
           <template slot-scope="scope">
             <div v-if="!scope.row.isCombine">
-              <span v-if="scope.row.contChangeState.label==='未变更/解约'">-</span>
+              <span v-if="scope.row.contChangeState.label === '未变更/解约'"
+                >-</span
+              >
               <el-button
                 type="text"
                 size="medium"
                 v-else
                 @click="goChangeCancel(scope.row)"
-              >{{scope.row.contChangeState.label}}</el-button>
+                >{{ scope.row.contChangeState.label }}</el-button
+              >
             </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="成交报告" min-width="80" v-if="contVersion===2" key="dealReportState">
+        <el-table-column
+          label="成交报告"
+          min-width="80"
+          v-if="contVersion === 2"
+          key="dealReportState"
+        >
           <template slot-scope="scope">
             <span
-              v-if="(scope.row.contType.value===2||scope.row.contType.value===3)&&!scope.row.isCombine"
-            >{{scope.row.dealReportState.label}}</span>
+              v-if="
+                (scope.row.contType.value === 2 ||
+                  scope.row.contType.value === 3) &&
+                !scope.row.isCombine
+              "
+              >{{ scope.row.dealReportState.label }}</span
+            >
             <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="签后审核状态" min-width="100">
           <template slot-scope="scope">
             <div v-if="scope.row.signingState">
-              <span
-                v-if="scope.row.signingState.value===-1"
-                class="blue"
-              >{{scope.row.signingState.label}}</span>
-              <span
-                v-if="scope.row.signingState.value===0"
-                class="yellow"
-              >{{scope.row.signingState.label}}</span>
-              <span
-                v-if="scope.row.signingState.value===1"
-                class="green"
-              >{{scope.row.signingState.label}}</span>
+              <span v-if="scope.row.signingState.value === -1" class="blue">{{
+                scope.row.signingState.label
+              }}</span>
+              <span v-if="scope.row.signingState.value === 0" class="yellow">{{
+                scope.row.signingState.label
+              }}</span>
+              <span v-if="scope.row.signingState.value === 1" class="green">{{
+                scope.row.signingState.label
+              }}</span>
               <!-- <span v-if="scope.row.signingState.value===2" class="red">{{scope.row.signingState.label}}</span> -->
               <el-tooltip
                 class="item"
                 popper-class="tooltipWidth"
-                v-if="scope.row.signingState.value===2&&scope.row.signingRemarks"
+                v-if="
+                  scope.row.signingState.value === 2 && scope.row.signingRemarks
+                "
                 effect="dark"
                 placement="top"
               >
-                <span slot="content">{{scope.row.signingRemarks}}</span>
-                <span class="red">{{scope.row.signingState.label}}</span>
+                <span slot="content">{{ scope.row.signingRemarks }}</span>
+                <span class="red">{{ scope.row.signingState.label }}</span>
               </el-tooltip>
               <span
-                v-if="scope.row.signingState.value===2&&!scope.row.signingRemarks"
+                v-if="
+                  scope.row.signingState.value === 2 &&
+                  !scope.row.signingRemarks
+                "
                 class="red"
-              >{{scope.row.signingState.label}}</span>
+                >{{ scope.row.signingState.label }}</span
+              >
             </div>
             <div v-else class="blue">待提审</div>
           </template>
         </el-table-column>
-        <el-table-column label="上传合同主体时间" min-width="120" key="uploadTime">
+        <el-table-column
+          label="上传合同主体时间"
+          min-width="120"
+          key="uploadTime"
+        >
           <template slot-scope="scope">
-            <span v-if="scope.row.uploadTime">{{Number(scope.row.uploadTime)|timeFormat_hm}}</span>
+            <span v-if="scope.row.uploadTime">{{
+              Number(scope.row.uploadTime) | timeFormat_hm
+            }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期状态" min-width="80" v-if="contVersion===2" key="laterStageState">
+        <el-table-column
+          label="后期状态"
+          min-width="80"
+          v-if="contVersion === 2"
+          key="laterStageState"
+        >
           <template slot-scope="scope">
             <span
-              v-if="scope.row.contType.value<4&&scope.row.contType.value!==1&&!scope.row.isCombine"
+              v-if="
+                scope.row.contType.value < 4 &&
+                scope.row.contType.value !== 1 &&
+                !scope.row.isCombine
+              "
             >
               <!-- @click="uploadData(scope.row)" -->
               <el-button
-                v-if="scope.row.laterStageState&&scope.row.laterStageState.label==='已拒绝'"
+                v-if="
+                  scope.row.laterStageState &&
+                  scope.row.laterStageState.label === '已拒绝'
+                "
                 type="text"
                 size="medium"
-              >已拒绝</el-button>
-              <span v-else>{{scope.row.laterStageState?scope.row.laterStageState.label:'-'}}</span>
+                >已拒绝</el-button
+              >
+              <span v-else>{{
+                scope.row.laterStageState
+                  ? scope.row.laterStageState.label
+                  : "-"
+              }}</span>
             </span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="后期进度" min-width="80" v-if="contVersion===2" key="stepInstanceName">
+        <el-table-column
+          label="后期进度"
+          min-width="80"
+          v-if="contVersion === 2"
+          key="stepInstanceName"
+        >
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">
-              <span v-if="scope.row.stepInstanceName==='-'">-</span>
+            <span v-if="scope.row.contType.value < 4 && !scope.row.isCombine">
+              <span v-if="scope.row.stepInstanceName === '-'">-</span>
               <el-tooltip
                 class="item"
                 v-else
@@ -640,7 +773,8 @@
                 <span
                   class="stepInstanceName"
                   @click="showStepInstance(scope.row)"
-                >{{scope.row.stepInstanceName}}</span>
+                  >{{ scope.row.stepInstanceName }}</span
+                >
               </el-tooltip>
             </span>
             <span v-else>-</span>
@@ -651,19 +785,28 @@
             <div
               class="btn"
               @click="runningWater(scope.row)"
-              v-if="scope.row.contType.value<4"
-            >{{scope.row.receivedCommission}}/{{scope.row.receivableCommission}}</div>
+              v-if="scope.row.contType.value < 4"
+            >
+              {{ scope.row.receivedCommission }}/{{
+                scope.row.receivableCommission
+              }}
+            </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="结算状态" min-width="80" v-if="contVersion===2">
+        <el-table-column
+          label="结算状态"
+          min-width="80"
+          v-if="contVersion === 2"
+        >
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.contType.value<4"
+              v-if="scope.row.contType.value < 4"
               type="text"
               size="medium"
               @click="closeAccount(scope.row)"
-            >{{scope.row.resultState.label}}</el-button>
+              >{{ scope.row.resultState.label }}</el-button
+            >
             <span v-else>-</span>
             <!-- <span
               v-if="scope.row.contType.value<4&&!scope.row.isCombine"
@@ -673,28 +816,36 @@
         </el-table-column>
         <el-table-column label="业绩状态" min-width="80">
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value<4">{{scope.row.achievementState.label}}</span>
+            <span v-if="scope.row.contType.value < 4">{{
+              scope.row.achievementState.label
+            }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="签约方式" prop="recordType.label" min-width="70"></el-table-column>
+        <el-table-column
+          label="签约方式"
+          prop="recordType.label"
+          min-width="70"
+        ></el-table-column>
         <el-table-column label="签约时间" min-width="90">
           <template slot-scope="scope">
-            <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
-            <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>
+            <span v-if="scope.row.isCombine">{{
+              scope.row.signDate.substr(0, 16)
+            }}</span>
+            <span v-else>{{ Number(scope.row.signDate) | timeFormat_ }}</span>
           </template>
         </el-table-column>
         <el-table-column label="录入时间" min-width="90">
           <template slot-scope="scope">
             <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>-->
-            <span>{{Number(scope.row.createTime)|timeFormat_}}</span>
+            <span>{{ Number(scope.row.createTime) | timeFormat_ }}</span>
           </template>
         </el-table-column>
         <el-table-column label="录入人" min-width="90">
           <template slot-scope="scope">
-            <p>{{scope.row.recordDeptName}}</p>
-            <p>{{scope.row.recordName}}</p>
+            <p>{{ scope.row.recordDeptName }}</p>
+            <p>{{ scope.row.recordName }}</p>
           </template>
         </el-table-column>
         <el-table-column min-width="140">
@@ -706,13 +857,18 @@
               content="可分配业绩=总佣金-佣金支付费-第三方合作费-权证费用"
               placement="top"
             >
-              <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
+              <i
+                class="el-icon-info"
+                style="padding-left: 5px; color: #909399"
+              ></i>
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            <span
-              v-if="scope.row.contType.value<4"
-            >{{scope.row.distributableAchievement?scope.row.distributableAchievement:0}}</span>
+            <span v-if="scope.row.contType.value < 4">{{
+              scope.row.distributableAchievement
+                ? scope.row.distributableAchievement
+                : 0
+            }}</span>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -722,80 +878,161 @@
               type="text"
               size="medium"
               @click="selectPrintInfo(scope.row)"
-              v-if="scope.row.printCount>0"
-            >{{scope.row.printCount}}</el-button>
+              v-if="scope.row.printCount > 0"
+              >{{ scope.row.printCount }}</el-button
+            >
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="80" fixed="right" class-name="null-formatter">
+        <el-table-column
+          label="操作"
+          min-width="80"
+          fixed="right"
+          class-name="null-formatter"
+        >
           <template slot-scope="scope">
-            <template v-if="!scope.row.isCombine&&scope.row.contState.value!=-1">
+            <template
+              v-if="!scope.row.isCombine && scope.row.contState.value != -1"
+            >
               <div
                 class="btn"
-                v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value!=2"
+                v-if="
+                  power['sign-ht-info-view'].state &&
+                  scope.row.recordType.value != 2
+                "
                 @click="goPreview(scope.row)"
-              >预览</div>
+              >
+                预览
+              </div>
               <div
                 class="btn"
-                v-if="power['sign-ht-view-toverify'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.isCanAudit===1"
-                @click="goSave(scope.row,'cont')"
-              >合同提审</div>
+                v-if="
+                  power['sign-ht-view-toverify'].state &&
+                  (scope.row.toExamineState.value < 0 ||
+                    scope.row.toExamineState.value === 2) &&
+                  scope.row.isCanAudit === 1
+                "
+                @click="goSave(scope.row, 'cont')"
+              >
+                合同提审
+              </div>
               <div
                 class="btn"
-                v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit"
-                @click="toSignAudit(scope.row,'sign')"
-              >签后提审</div>
+                v-if="
+                  power['sign-ht-qhsh-toverify'].state && scope.row.signAudit
+                "
+                @click="toSignAudit(scope.row, 'sign')"
+              >
+                签后提审
+              </div>
               <div
                 class="btn"
-                v-if="scope.row.contState.value===3&&(scope.row.contType.value===1||scope.row.contType.value===2||scope.row.contType.value===3)&&scope.row.contChangeState.value!=2&&scope.row.isHaveData===1&&scope.row.isCanChangeCommission===1"
+                v-if="
+                  scope.row.contState.value === 3 &&
+                  (scope.row.contType.value === 1 ||
+                    scope.row.contType.value === 2 ||
+                    scope.row.contType.value === 3) &&
+                  scope.row.contChangeState.value != 2 &&
+                  scope.row.isHaveData === 1 &&
+                  scope.row.isCanChangeCommission === 1
+                "
                 @click="toLayerAudit(scope.row)"
-              >调佣</div>
+              >
+                调佣
+              </div>
               <div
                 class="btn"
-                v-if="scope.row.contState.value==1&&power['sign-ht-info-del'].state"
+                v-if="
+                  scope.row.contState.value == 1 &&
+                  power['sign-ht-info-del'].state
+                "
                 @click="showDelete(scope.row)"
-              >删除</div>
+              >
+                删除
+              </div>
               <!-- &&power['sign-ht-info-zcj'].state -->
               <div
-                v-if="(scope.row.contType.value==4||scope.row.contType.value==5)&&scope.row.contState.value===3 &&scope.row.isDeal==0&&power['sign-ht-info-zcj'].state"
+                v-if="
+                  (scope.row.contType.value == 4 ||
+                    scope.row.contType.value == 5) &&
+                  scope.row.contState.value === 3 &&
+                  scope.row.isDeal == 0 &&
+                  power['sign-ht-info-zcj'].state
+                "
                 class="btn"
                 @click="toDeal(scope.row)"
-              >转成交</div>
+              >
+                转成交
+              </div>
               <div
-                v-if="power['sign-ht-info-fqqs'].state&&(scope.row.contState.value===1||scope.row.contState.value===2)&&scope.row.toExamineState.value===1&&scope.row.recordType.value===10"
+                v-if="
+                  power['sign-ht-info-fqqs'].state &&
+                  (scope.row.contState.value === 1 ||
+                    scope.row.contState.value === 2) &&
+                  scope.row.toExamineState.value === 1 &&
+                  scope.row.recordType.value === 10
+                "
                 class="btn"
                 @click="toSign(scope.row)"
-              >{{scope.row.ssqId?'签署中':'发起签署'}}</div>
+              >
+                {{ scope.row.ssqId ? "签署中" : "发起签署" }}
+              </div>
             </template>
-            <template v-if="scope.row.isCombine&&scope.row.contState.value!=-1">
+            <template
+              v-if="scope.row.isCombine && scope.row.contState.value != -1"
+            >
+              <!-- 20201021武汉直营增加需求，无纸化委托合同显示预览按钮 -->
               <div
                 class="btn"
-                v-if="power['sign-ht-info-view'].state&&scope.row.recordType.value===1"
+                v-if="
+                  (power['sign-ht-info-view'].state &&
+                    scope.row.recordType.value === 1) ||
+                  (power['sign-ht-info-view'].state &&
+                    scope.row.recordType.value === 10)
+                "
                 @click="goPreview(scope.row)"
-              >预览</div>
+              >
+                预览
+              </div>
               <div
                 class="btn"
-                v-if="power['sign-ht-xq-entrust-edit'].state&&(scope.row.toExamineState.value<0||scope.row.toExamineState.value===2)&&scope.row.contType.value<4&&scope.row.isCanAudit===1"
-                @click="goSave(scope.row,'cont')"
-              >合同提审</div>
+                v-if="
+                  power['sign-ht-xq-entrust-edit'].state &&
+                  (scope.row.toExamineState.value < 0 ||
+                    scope.row.toExamineState.value === 2) &&
+                  scope.row.contType.value < 4 &&
+                  scope.row.isCanAudit === 1
+                "
+                @click="goSave(scope.row, 'cont')"
+              >
+                合同提审
+              </div>
               <div
                 class="btn"
-                v-if="power['sign-ht-qhsh-toverify'].state&&scope.row.signAudit"
-                @click="toSignAudit(scope.row,'sign')"
-              >签后提审</div>
+                v-if="
+                  power['sign-ht-qhsh-toverify'].state && scope.row.signAudit
+                "
+                @click="toSignAudit(scope.row, 'sign')"
+              >
+                签后提审
+              </div>
             </template>
-            <template v-if="scope.row.contState.value===-1">
+            <template v-if="scope.row.contState.value === -1">
               <div
                 class="btn"
-                @click="deleteCont(scope.row,1)"
-                v-if="power['sign-ht-info-recovery'].state&&!scope.row.isCombine"
-              >恢复</div>
+                @click="deleteCont(scope.row, 1)"
+                v-if="
+                  power['sign-ht-info-recovery'].state && !scope.row.isCombine
+                "
+              >
+                恢复
+              </div>
             </template>
           </template>
         </el-table-column>
       </el-table>
       <!-- 固定滚动条 -->
-      <div class="pagination" v-if="tableData.length>0">
+      <div class="pagination" v-if="tableData.length > 0">
         <el-pagination
           class="pagination-info"
           @current-change="handleCurrentChange"
@@ -848,7 +1085,9 @@
     <el-dialog title="提示" :visible.sync="isSubmitAudit" width="460px">
       <span class="submitAudit">确定提审？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button round @click="isSubmitAudit = false" v-dbClick>取 消</el-button>
+        <el-button round @click="isSubmitAudit = false" v-dbClick
+          >取 消</el-button
+        >
         <el-button round type="primary" @click="toAudit">确 定</el-button>
       </span>
     </el-dialog>
@@ -857,20 +1096,31 @@
       <div>
         <el-table :data="printData" border>
           <el-table-column label="操作人">
-            <template slot-scope="scope">{{scope.row.createDeptName+'-'+scope.row.createByName}}</template>
+            <template slot-scope="scope">{{
+              scope.row.createDeptName + "-" + scope.row.createByName
+            }}</template>
           </el-table-column>
           <el-table-column label="打印时间">
-            <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+            <template slot-scope="scope">{{
+              scope.row.createTime | formatTime
+            }}</template>
           </el-table-column>
           <el-table-column label="类型">
-            <template slot-scope="scope">{{scope.row.printType.label}}</template>
+            <template slot-scope="scope">{{
+              scope.row.printType.label
+            }}</template>
           </el-table-column>
         </el-table>
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </el-dialog>
     <!-- 打印 -->
-    <PdfPrint :url="pdfUrl" ref="pdfPrint" v-if="haveUrl" @closePrint="closePrint"></PdfPrint>
+    <PdfPrint
+      :url="pdfUrl"
+      ref="pdfPrint"
+      v-if="haveUrl"
+      @closePrint="closePrint"
+    ></PdfPrint>
     <!-- <iframe :src="pdfUrl" frameborder="0" style="width:100px" id="dayin"></iframe> -->
     <div class="printMaskLayer" v-if="haveUrl"></div>
     <!-- <span @click="dayin">打印</span> -->
@@ -886,14 +1136,21 @@
       v-if="checkPerson.state"
     ></checkPerson>
     <!-- 删除确认框 -->
-    <el-dialog title="确认删除" :visible.sync="deleteDialog" width="460px" class="deleteDialog">
+    <el-dialog
+      title="确认删除"
+      :visible.sync="deleteDialog"
+      width="460px"
+      class="deleteDialog"
+    >
       <div class="deleteType">
         <p>确认删除该合同？</p>
         <p>删除后此合同在合同列表隐藏</p>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="deleteDialog = false">取 消</el-button>
-        <el-button round type="primary" @click="deleteCont(deleteItem,0)">确 定</el-button>
+        <el-button round type="primary" @click="deleteCont(deleteItem, 0)"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
     <!-- u+转成交弹框 -->
@@ -907,25 +1164,39 @@
     >
       <div>
         <ul class="uPlus-class">
-          <li class="li" style="width:100%;">
+          <li class="li" style="width: 100%">
             <em class="cl-999">房源编号：</em>
-            {{uPlusHouseDetail&&uPlusHouseDetail.PropertyNo}}
+            {{ uPlusHouseDetail && uPlusHouseDetail.PropertyNo }}
           </li>
-          <li class="li" style="width:100%;">
+          <li class="li" style="width: 100%">
             <em class="cl-999">建筑面积：</em>
-            {{uPlusHouseDetail&&uPlusHouseDetail.Square}}㎡
+            {{ uPlusHouseDetail && uPlusHouseDetail.Square }}㎡
           </li>
-          <li class="li" style="width:100%;">
+          <li class="li" style="width: 100%">
             <em class="cl-999">业主姓名：</em>
-            {{uPlusHouseDetail&&uPlusHouseDetail.OwnerInfoList[0].OwnerName}}
+            {{
+              uPlusHouseDetail && uPlusHouseDetail.OwnerInfoList[0].OwnerName
+            }}
           </li>
-          <li class="li" style="width:100%;">
+          <li class="li" style="width: 100%">
             <em class="cl-999">物业地址：</em>
-            {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
+            {{
+              uPlusHouseDetail &&
+              uPlusHouseDetail.EstateName.replace(/\s/g, "") +
+                " " +
+                uPlusHouseDetail.BuildingName.replace(/\s/g, "") +
+                uPlusHouseDetail.Unit.replace(/\s/g, "") +
+                uPlusHouseDetail.RoomNo.replace(/\s/g, "")
+            }}
           </li>
         </ul>
-        <p style="margin-bottom:20px;">选择合同类型：</p>
-        <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px">
+        <p style="margin-bottom: 20px">选择合同类型：</p>
+        <el-select
+          v-model="uPlusContType"
+          placeholder="合同类型"
+          :clearable="true"
+          style="width: 600px"
+        >
           <el-option
             v-for="item in uPlusDictionary71"
             :key="item.key"
@@ -933,12 +1204,14 @@
             :value="item.key"
           ></el-option>
         </el-select>
-        <p style="margin-bottom:20px;overflow: hidden;margin-top:20px;">选择签约方式：</p>
+        <p style="margin-bottom: 20px; overflow: hidden; margin-top: 20px">
+          选择签约方式：
+        </p>
         <el-select
           v-model="uPlusQianyueType"
           placeholder="签约方式"
           :clearable="true"
-          style="width:600px"
+          style="width: 600px"
         >
           <el-option
             v-for="item in dictionary['64']"
@@ -949,7 +1222,9 @@
         </el-select>
         <p class="dialog-footer">
           <el-button round @click="uPlusIsShow = false">取 消</el-button>
-          <el-button round type="primary" @click="skipAddCont()">确 定</el-button>
+          <el-button round type="primary" @click="skipAddCont()"
+            >确 定</el-button
+          >
         </p>
       </div>
     </el-dialog>
@@ -967,18 +1242,25 @@
     ></chosePerson>
     <!-- 补发签署信息 -->
     <reissueChosePerson
-    :dialogVisible="reissueDialog"
-    :choseQuery="choseQuery"
-    :ssqId='ssqId'
-    @closeChose="closeChose"
+      :dialogVisible="reissueDialog"
+      :choseQuery="choseQuery"
+      :ssqId="ssqId"
+      @closeChose="closeChose"
     >
     </reissueChosePerson>
     <!-- 发起签署成功上传资料库弹窗 -->
-    <el-dialog title="提示" :visible.sync="dataBaseDialog" width="400px" class="dataBase">
+    <el-dialog
+      title="提示"
+      :visible.sync="dataBaseDialog"
+      width="400px"
+      class="dataBase"
+    >
       <div>合同已发起签署</div>
       <div>请完成资料库的上传</div>
       <div class="dataBaseBtn">
-        <el-button round type="primary" @click="toDataBase">上传资料库</el-button>
+        <el-button round type="primary" @click="toDataBase"
+          >上传资料库</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -1037,21 +1319,21 @@ export default {
       dialogType: "",
       dictionary: {
         //数据字典
-        "10": "", //合同类型（创建线上  打印空白）
-        "65": "", //线下合同类型
-        "71": "", //合同类型（筛选条件）
-        "9": "", //合同状态
-        "51": "", //审核状态
-        "6": "", //变更/解约
-        "14": "", //结算状态
-        "13": "", //收佣状态
-        "53": "", //合作方式
-        "54": "", //业绩状态
-        "538": "", //用途
-        "507": "", //租赁时间单位
-        "11": "", //后期状态
-        "64": "", //签约方式  线上线下
-        "72": "", //签后审核状态
+        10: "", //合同类型（创建线上  打印空白）
+        65: "", //线下合同类型
+        71: "", //合同类型（筛选条件）
+        9: "", //合同状态
+        51: "", //审核状态
+        6: "", //变更/解约
+        14: "", //结算状态
+        13: "", //收佣状态
+        53: "", //合作方式
+        54: "", //业绩状态
+        538: "", //用途
+        507: "", //租赁时间单位
+        11: "", //后期状态
+        64: "", //签约方式  线上线下
+        72: "", //签后审核状态
       },
       loading: false,
       //部门选择列表
@@ -1235,15 +1517,16 @@ export default {
       //发起签署选择业主客户
       chosePersonDialog: false,
       reissueDialog: false,
-      ssqId: '',
+      ssqId: "",
       signOwnerList: [],
       signGuestList: [],
       choseQuery: {},
       dataBaseDialog: false,
       choseLoading: false,
-      closeTitle:'发起签署',
+      closeTitle: "发起签署",
       localChoseList: [],
-      checkPersonData: null
+      checkPersonData: null,
+      onlineContractList: [],
     };
   },
   created() {
@@ -1309,6 +1592,7 @@ export default {
     } else {
       this.getContractList(); //合同列表
     }
+    this.getList(); //获取创建线上合同列表
   },
   methods: {
     moveIn(type) {
@@ -1405,7 +1689,10 @@ export default {
         pageSize: this.pageSize,
         keyword: this.keyword,
       };
-      param = type !== "ChosePersonEditor"?Object.assign({}, param, this.contractForm):param;
+      param =
+        type !== "ChosePersonEditor"
+          ? Object.assign({}, param, this.contractForm)
+          : param;
       if (this.signDate) {
         if (this.signDate.length > 0) {
           param.beginDate = this.signDate[0];
@@ -1444,13 +1731,13 @@ export default {
         res = res.data;
         if (res.status === 200) {
           if (type === "ChosePersonEditor") {
-            let index = this.tableData.findIndex(item => {
-              return item.code === this.contCode
-            })
+            let index = this.tableData.findIndex((item) => {
+              return item.code === this.contCode;
+            });
             if (index !== -1) {
-              this.$set(this.tableData,index,res.data.list[0])
+              this.$set(this.tableData, index, res.data.list[0]);
             }
-            console.log(index,777777777777777);
+            console.log(index, 777777777777777);
           } else {
             this.tableData = res.data.list;
             this.total = res.data.count;
@@ -1556,7 +1843,7 @@ export default {
               // address: item.propertyAddr,
             },
           });
-          localStorage.setItem("contPropertyAddr",item.propertyAddr);
+          localStorage.setItem("contPropertyAddr", item.propertyAddr);
         } else {
           this.$message({
             message: "此合同已删除无法进行操作",
@@ -1668,11 +1955,11 @@ export default {
     },
     //新增线上合同
     addOnLine(val) {
-      if (val.key != 2 || (val.key === 2 && !val.children)) {
+      if (val.type.value != 2 || (val.type.value=== 2 && !val.children)) {
         this.showOnLine = false;
         let param = {
           recordType: 1,
-          type: val.key,
+          type: val.type.value,
         };
         this.$ajax
           .get("/api/contract/checkContTemplate", param)
@@ -1680,17 +1967,17 @@ export default {
             res = res.data;
             if (res.status === 200) {
               localStorage.removeItem("backMsg");
-              if (val.key === 1 || val.key === 2 || val.key === 3) {
+              if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
                 this.$router.push({
                   path: "/addContract",
                   query: {
-                    type: val.key,
+                    type: val.type.value,
                     operateType: 1,
                     // isOffline: 0
                     recordType: 1,
                   },
                 });
-              } else if (val.key === 7 || val.key === 8) {
+              } else if (val.type.value === 7 || val.type.value === 8) {
                 this.$router.push({
                   path: "/addContract",
                   query: {
@@ -1698,14 +1985,14 @@ export default {
                     operateType: 1,
                     // isOffline: 0,
                     recordType: 1,
-                    loanType: val.key,
+                    loanType: val.type.value,
                   },
                 });
-              } else if (val.key === 4 || val.key === 5) {
+              } else if (val.type.value=== 4 || val.type.value === 5) {
                 this.$router.push({
                   path: "/newIntention",
                   query: {
-                    contType: val.key,
+                    contType: val.type.value,
                     operateType: 1,
                     // isOffline: 0
                     recordType: 1,
@@ -2264,10 +2551,10 @@ export default {
       this.contCode = val.code;
       this.ssqId = val.ssqId;
       if (val.ssqId) {
-        this.reissueDialog = true
+        this.reissueDialog = true;
       } else {
-        this.getSignPosition(this.contCode)
-        this.closeTitle = '发起签署'
+        this.getSignPosition(this.contCode);
+        this.closeTitle = "发起签署";
         this.chosePersonDialog = true;
       }
     },
@@ -2275,30 +2562,30 @@ export default {
     getSignPosition(contCode) {
       // this.checkPersonList = []
       this.$ajax
-      .get("/api/app/contract/GetSignPosition", {contCode})
-      .then(res => {
-        res = res.data
-        if (res.status === 200) {
-          this.checkPersonData = res.data
-        }
-      })
-      .catch(error => {
-        this.$message(error);
-      });
+        .get("/api/app/contract/GetSignPosition", { contCode })
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            this.checkPersonData = res.data;
+          }
+        })
+        .catch((error) => {
+          this.$message(error);
+        });
     },
     closeChose(val) {
       if (val.type == "choseLoading") {
         this.choseLoading = true;
-      } else if (val.type === 'reissueChosePerson') {
-        this.reissueDialog = val.status
-      } else if (val.type === 'openChosePersonDialog') {
-        this.getSignPosition(this.contCode)
+      } else if (val.type === "reissueChosePerson") {
+        this.reissueDialog = val.status;
+      } else if (val.type === "openChosePersonDialog") {
+        this.getSignPosition(this.contCode);
         this.chosePersonDialog = true;
-        this.closeTitle = '重新发起签署'
-      } else if (val.type === 'closeChose'){
+        this.closeTitle = "重新发起签署";
+      } else if (val.type === "closeChose") {
         this.chosePersonDialog = false;
         this.choseLoading = false;
-        this.getContractList('ChosePersonEditor')
+        this.getContractList("ChosePersonEditor");
         if (val) {
           this.dataBaseDialog = true;
         }
@@ -2404,6 +2691,32 @@ export default {
       //   });
       //   this.$router.push("/contractList");
       // }
+    },
+    /**
+     * 获取列表数据
+     */
+    getList: function () {
+      console.log("pppp");
+      console.log(this.getUser.user);
+      let param = {
+        cityId: this.getUser.user.cityId,
+        systemTag: this.getUser.user.deptSystemtag,
+      };
+      this.$ajax
+        .get("/api/setting/contractTemplate/list", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            res.data.map((item) => {
+              if (item.enableTemplateId != 0 && item.type.value != 6) {
+                this.onlineContractList.push(item);
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
   computed: {
