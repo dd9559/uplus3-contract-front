@@ -801,7 +801,7 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.contType.value < 4"
+              v-if="!scope.row.isCombine && scope.row.contType.value < 4"
               type="text"
               size="medium"
               @click="closeAccount(scope.row)"
