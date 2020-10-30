@@ -98,7 +98,7 @@ setTimeout(() => {
         guestCardTypes: "",
         guestID: "132",
         guestIDs: "ee2353-344，ii397-4839",
-        guestName: "然迪生",
+        guestName: "然迪生改的发个的",
         guestNames: "胜负少，发士夫",
         guestTel: "13011111111",
         guestTels: "",
@@ -108,7 +108,7 @@ setTimeout(() => {
         ownerCardTypes: "",
         ownerID: "123",
         ownerIDs: "ee2353-344，ii397-4839",
-        ownerName: "熊先",
+        ownerName: "熊先水电费水电费",
         ownerNames: "胜多少，发士夫",
         ownerTel: "18888888888",
         ownerTels: "",
@@ -124,7 +124,7 @@ setTimeout(() => {
     for (let readonlyItem in msg) {
         let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-        let readonlyArr = ['code', 'ownerTel', 'organizationCode', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
+        let readonlyArr = ['code', 'ownerTel', 'organizationCode', 'guestTel', 'ownerName', 'ownerCardType', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestCardType', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
         if (onlyReadDom.length > 0) {
             onlyReadDom.forEach((element, index) => {
                 if (readonlyArr.includes(readonlyItem)) {

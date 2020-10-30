@@ -60,103 +60,34 @@ let sub = {
   'val23': null,
   'val24': null,
   'val25': null,
-  // 'drapdown_val24': {
-  //   stateful: function (index) {
-  //     return index === '(13)' ? { 'val26': null } : null
-  //   }
-  // },
-  // 'drapdown_val25': {
-  //   stateful: function (index) {
-  //     return index === '(13)' ? { 'val26': null } : null
-  //   }
-  // },
   'val27': null,
   'val28': null,
   'val32': null,
   'parties1': null,
-  // 'val55': null,
-  // 'val56': null,
-  // 'val57': null,
-  // 'checkbox_accessCard': {
-  //   stateful: function (index) {
-  //     return index === 0 ? {'val58':null}:null
-  //   }
-  // },
-  // 'info_val59': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val59]').innerHTML !== '' ? {
-  //       'val60': null,
-  //       'checkbox_refrigerator':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val61': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val61]').innerHTML !== '' ? {
-  //       'val62': null,
-  //       'checkbox_microwaveOven':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val63': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val63]').innerHTML !== '' ? {
-  //       'val64': null,
-  //       'checkbox_washer':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val65': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val65]').innerHTML !== '' ? {
-  //       'val66': null,
-  //       'checkbox_calorifier':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val67': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val67]').innerHTML !== '' ? {
-  //       'val68': null,
-  //       'checkbox_airConditioner':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val69': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val69]').innerHTML !== '' ? {
-  //       'val70': null,
-  //       'checkbox_television':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val74': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val74]').innerHTML !== '' ? {
-  //       'val75': null,
-  //       'checkbox_kitchen':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val76': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val76]').innerHTML !== '' ? {
-  //       'val77': null,
-  //       'checkbox_stove':null
-  //     } : null
-  //   }
-  // },
-  // 'info_val78': {
-  //   stateful: function () {
-  //     return document.querySelector('*[extendparam=val78]').innerHTML !== '' ? {
-  //       'val79': null,
-  //       'checkbox_phone':null
-  //     } : null
-  //   }
-  // },
-  // 'val95': null,
-  // 'val97': null,
-  // 'val99': null,
+  'info_val35': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val35]').innerHTML === '' && document.querySelector('*[extendparam=val36]').innerHTML === '' ? {
+        'val35': null,
+        'val36':null
+      } : null
+    }
+  },
+  'info_val37': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val37]').innerHTML === '' && document.querySelector('*[extendparam=val38]').innerHTML === '' ? {
+        'val37': null,
+        'val38':null
+      } : null
+    }
+  },
+  'info_val39': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val39]').innerHTML === '' && document.querySelector('*[extendparam=val40]').innerHTML === '' ? {
+        'val39': null,
+        'val40':null
+      } : null
+    }
+  },
 }
 let Obj = {
   cn_arr: ['val20', 'val21', 'val23', 'val27', 'val28',]
