@@ -5,72 +5,35 @@
         <div class="input-group">
           <label>关键字:</label>
           <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID" placement="top">
-            <el-input
-              class="w200"
-              :clearable="true"
-              size="small"
-              v-model="searchForm.keyword"
-              placeholder="请输入"
-            ></el-input>
+            <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入">
+            </el-input>
           </el-tooltip>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select
-            :clearable="true"
-            class="width200"
-            :class="{'width325':searchForm.contType.length>3}"
-            multiple
-            size="small"
-            v-model="searchForm.contType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['10']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" class="width200" :class="{'width325':searchForm.contType.length>3}" multiple
+            size="small" v-model="searchForm.contType" placeholder="请选择">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select
-              :clearable="true"
-              size="small"
-              v-model="searchForm.timeType"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in $tool.dropdown.dateType_money"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
+              <el-option v-for="item in $tool.dropdown.dateType_money" :key="item.value" :label="item.label"
+                :value="item.value"></el-option>
             </el-select>
-            <el-date-picker
-              v-model="searchForm.timeRange"
-              type="daterange"
-              size="small"
-              class="margin-left"
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
+            <el-date-picker v-model="searchForm.timeRange" type="daterange" size="small" class="margin-left"
+              value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </div>
         </div>
         <div class="input-group">
           <label>部门:</label>
           <div>
-            <select-tree
-              :data="DepList"
-              :init="searchForm.depName"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-              @search="searchDep"
-            ></select-tree>
+            <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"
+              @search="searchDep"></select-tree>
           </div>
           <!--<el-select
             class="w200"
@@ -96,192 +59,87 @@
             @change="handleEmpNodeClick"
             placeholder="请选择"
           >-->
-          <el-select
-            :clearable="true"
-            filterable
-            remote
-            :remote-method="test"
-            v-loadmore="moreEmploye"
-            @visible-change="empHandle"
-            class="margin-left"
-            size="small"
-            v-model="searchForm.empId"
-            placeholder="请选择"
-            @change="empHandleAdd"
-            @clear="clearDep"
-          >
-            <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
-              :label="item.name"
-              :value="item.empId+'/'+item.depName+'/'+item.depId"
-            ></el-option>
+          <el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye"
+            @visible-change="empHandle" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择"
+            @change="empHandleAdd" @clear="clearDep">
+            <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"></el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>票据状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.billStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['56']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
+            <el-option v-for="item in dictionary['56']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收款账户:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.proAccount"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['32']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
+            <el-option v-for="item in dictionary['32']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.checkStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['23']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
+            <el-option v-for="item in dictionary['23']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.moneyType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in drop_MoneyType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
+            <el-option v-for="item in drop_MoneyType" :key="item.id" :label="item.name" :value="item.key"></el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payMethod"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['24']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
+            <el-option v-for="item in dictionary['24']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付对象:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payObjType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['57']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.payObjType" placeholder="请选择">
+            <el-option v-for="item in dictionary['57']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>合作方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.cooperation"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['53']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>签约方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.recordType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['64']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.recordType" placeholder="请选择">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收款方式:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.payway" placeholder="请选择">
-            <el-option
-              v-for="item in dictionary['69']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+            <el-option v-for="item in dictionary['69']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>有/无合同：</label>
           <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
-            <el-option
-              v-for="item in dictionary['792']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+            <el-option v-for="item in dictionary['792']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>转款审核状态：</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.zkAuditState"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['77']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.zkAuditState" placeholder="请选择">
+            <el-option v-for="item in dictionary['77']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
       </div>
@@ -316,26 +174,12 @@
         <p>
           <el-button class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
           <el-button class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
-          <el-button
-            class="btn-info"
-            round
-            type="primary"
-            size="small"
-            @click="getExcel"
-            v-if="power['sign-cw-debt-export'].state"
-          >导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+            v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table
-        ref="tableCom"
-        :max-height="tableNumberCom"
-        border
-        :data="list"
-        header-row-class-name="theader-bg"
-        class="info-scrollbar"
-        style="width: 100%"
-        @row-dblclick="toDetails"
-      >
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
+        class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
         <el-table-column min-width="120" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -372,12 +216,8 @@
           </template>
         </el-table-column>
         <el-table-column min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column
-          min-width="60"
-          label="签约方式"
-          prop="recordType.label"
-          :formatter="nullFormatter"
-        ></el-table-column>
+        <el-table-column min-width="60" label="签约方式" prop="recordType.label" :formatter="nullFormatter">
+        </el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="100" label="收付方式">
           <template slot-scope="scope">
@@ -421,12 +261,7 @@
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="到账时间"
-          prop="toAccountTime"
-          :formatter="nullFormatter"
-          min-width="90"
-        >
+        <el-table-column label="到账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
@@ -434,11 +269,7 @@
         <el-table-column min-width="80" label="收付状态" prop="payStatus">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
-            <span
-              class="text-warning"
-              v-else
-              @click="getErrorMsg(scope.row)"
-            >{{scope.row.payStatus|getLabel}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="90" label="结算信息">
@@ -449,123 +280,70 @@
         <el-table-column min-width="80" label="票据状态">
           <template slot-scope="scope">{{scope.row|billState}}</template>
         </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          min-width="120"
-          class-name="null-formatter operation-btns"
-        >
+        <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="btnOpera(scope.row,3)"
-              v-if="(power['sign-cw-bill-invoice'].state&&
+            <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
                        (scope.row.type===1||scope.row.type===8)&&
                        scope.row.isDel===1&&
                        scope.row.billStatus&&
                        (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
                        scope.row.payStatusValue!==4&&
                        scope.row.payStatusValue!==11)||
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)"
-            >开票</el-button>
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)">开票</el-button>
             <template v-if="scope.row.isZK==='true'">
-              <el-button
-                type="text"
-                @click="btnOpera(scope.row,1)"
-                v-if="power['sign-cw-zk-edit'].state"
-              >编辑</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
             </template>
             <template v-else>
-              <el-button
-                type="text"
-                @click="btnOpera(scope.row,1)"
-                v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
-              >编辑</el-button>
+              <el-button type="text" @click="btnOpera(scope.row,1)"
+                v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3">
+                编辑</el-button>
             </template>
 
             <!-- 新增转款按钮 &&power['sign-cw-bill-zk'].state-->
             <template v-if="scope.row.contId!=0">
-              <el-button
-                type="text"
-                @click="btnTransfer(scope.row)"
-                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-              >转款</el-button>
+              <el-button type="text" @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state">
+                转款</el-button>
             </template>
             <template v-else>
-              <el-button
-                type="text"
-                @click="btnTransfer(scope.row)"
-                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state"
-              >转款</el-button>
+              <el-button type="text" @click="btnTransfer(scope.row)"
+                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-bill-zk'].state">转款</el-button>
             </template>
             <template
-              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1"
-            >
+              v-if="(((scope.row.type===1||scope.row.type===8)&&scope.row.billStatus&&scope.row.billStatus.value===1)||scope.row.type===2)&&scope.row.isDel===1">
               <!-- <el-button type="text"
                                 @click="btnOpera(scope.row,2)"
                                 v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
               </el-button>-->
             </template>
             <div
-              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal===3"
-            >
+              v-if="power['sign-cw-bill-invoice'].state&&scope.row.billStatus&&scope.row.billStatus.value===2&&scope.row.isDeal===3">
               <el-button type="text" @click="btnOpera(scope.row,4)">打印客户联</el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="list.length>0"
-        class="pagination-info"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination v-if="list.length>0" class="pagination-info" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <!-- 票据编号弹层 -->
     <layer-invoice ref="layerInvoice" :contId="activeRow.contId" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <!--作废-->
-    <el-dialog
-      title="作废"
-      :visible.sync="layer.show"
-      :closeOnClickModal="$tool.closeOnClickModal"
-      width="740px"
-    >
+    <el-dialog title="作废" :visible.sync="layer.show" :closeOnClickModal="$tool.closeOnClickModal" width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{(layer.content[0].type===1||layer.content[0].type===8)?'收款单':'付款单'}}</p>
-        <el-table
-          border
-          :data="layer.content"
-          style="width: 100%"
-          header-row-class-name="theader-bg"
-          key="other"
-        >
-          <el-table-column
-            align="center"
-            min-width="120"
-            label="收付编号"
-            prop="payCode"
-            :formatter="nullFormatter"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            :label="(layer.content[0].type===1||layer.content[0].type===8)?'收款金额':'付款金额'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
+          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode" :formatter="nullFormatter">
+          </el-table-column>
+          <el-table-column align="center" :label="(layer.content[0].type===1||layer.content[0].type===8)?'收款金额':'付款金额'"
+            prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column
-            align="center"
-            :label="(layer.content[0].type===1||layer.content[0].type===8)?'付款方':'收款方'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
+          <el-table-column align="center" :label="(layer.content[0].type===1||layer.content[0].type===8)?'付款方':'收款方'"
+            prop="cityName" :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType.label:scope.row.inObjType.label}}{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
@@ -574,73 +352,48 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
-        <el-button
-          size="small"
-          class="btn-info"
-          round
-          type="primary"
-          @click="deleteBill"
-          v-loading.fullscreen.lock="getLoading"
-        >确 定</el-button>
+        <el-button size="small" class="btn-info" round type="primary" @click="deleteBill"
+          v-loading.fullscreen.lock="getLoading">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 转款 -->
     <div v-show="transterShow">
-      <el-dialog
-        :title="zkTitle"
-        :visible.sync="transterShow"
-        :closeOnClickModal="$tool.closeOnClickModal"
-        width="800px"
-      >
+      <el-dialog :title="zkTitle" :visible.sync="transterShow" :closeOnClickModal="$tool.closeOnClickModal"
+        width="800px">
         <div class="transter-detail">
           <p class="title">合同信息</p>
           <p class="info" v-if="!zkEdit">
             <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
             <span>款类：{{selectPayInfo&&selectPayInfo.moneyType}}</span>&nbsp;&nbsp;&nbsp;
-            <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp; {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>
+            <span>金额：{{selectPayInfo&&selectPayInfo.amount}}元&nbsp;&nbsp;
+              {{selectPayInfo&&selectPayInfo.amount|moneyFormat}}</span>
           </p>
           <p class="info" v-else>
             <span>合同编号：{{transterInfoPerson&&transterInfoPerson.outContractCode?transterInfoPerson.outContractCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
             <span>款类：{{transterInfoPerson&&transterInfoPerson.outPayType}}</span>&nbsp;&nbsp;&nbsp;
-            <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp; {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
+            <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp;
+              {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
           </p>
           <p v-if="!zkEdit">物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
-          <p
-            v-else
-          >物业地址：{{transterInfoPerson&&transterInfoPerson.outPropertyAddr?transterInfoPerson.outPropertyAddr:"-"}}</p>
+          <p v-else>
+            物业地址：{{transterInfoPerson&&transterInfoPerson.outPropertyAddr?transterInfoPerson.outPropertyAddr:"-"}}</p>
           <p class="title">转款操作</p>
           <p>
             转入合同：
             <span
-              v-if="transterInfoPerson.inContractId"
-            >{{transterInfoPerson&&transterInfoPerson.inContractCode?transterInfoPerson.inContractCode:"-"}}</span>
-            <span
-              class="select"
-              style="margin:0 0 10px 0px;"
-              @click="chooseCont()"
-              v-else
-            >{{(transterInfoPerson&&transterInfoPerson.inContractCode)?transterInfoPerson.inContractCode:"请选择合同"}}</span>
+              v-if="transterInfoPerson.inContractId">{{transterInfoPerson&&transterInfoPerson.inContractCode?transterInfoPerson.inContractCode:"-"}}</span>
+            <span class="select" style="margin:0 0 10px 0px;" @click="chooseCont()"
+              v-else>{{(transterInfoPerson&&transterInfoPerson.inContractCode)?transterInfoPerson.inContractCode:"请选择合同"}}</span>
           </p>
           <p>物业地址：{{transterInfoPerson&&transterInfoPerson.propertyAddr?transterInfoPerson.propertyAddr :"-"}}</p>
           <div class="kuanlei clearfix">
             <label>选择款类：</label>
             <ul v-if="!zkEdit">
               <li v-for="(item,index) in kuanleiVal" :key="index">
-                <moneyTypePop
-                  style="display: inline-block;"
-                  ref="moneyType"
-                  :data="moneyType"
-                  @checkCell="getCell"
-                  :chooseIndex="index"
-                  v-if="transterShow"
-                ></moneyTypePop>
-                <el-input
-                  size="small"
-                  class="w200"
-                  placeholder="请输入金额"
-                  v-model="item.outMoney"
-                  @input="cutNum(index)"
-                ></el-input>
+                <moneyTypePop style="display: inline-block;" ref="moneyType" :data="moneyType" @checkCell="getCell"
+                  :chooseIndex="index" v-if="transterShow"></moneyTypePop>
+                <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.outMoney" @input="cutNum(index)">
+                </el-input>
                 <span class="icon" @click.stop="addcommissionData" v-if="index===0">
                   <i class="iconfont icon-tubiao_shiyong-14"></i>
                 </span>
@@ -651,84 +404,35 @@
             </ul>
             <ul v-if="zkEdit">
               <li v-for="(item,index) in kuanleiVal" :key="index">
-                <moneyTypePop
-                  style="display: inline-block;"
-                  ref="moneyType"
-                  :data="moneyType"
-                  @checkCell="getCell"
-                  :chooseIndex="index"
-                  v-if="transterShow"
-                  :init="item.name"
-                ></moneyTypePop>
-                <el-input
-                  size="small"
-                  class="w200"
-                  placeholder="请输入金额"
-                  v-model="item.outMoney"
-                  @input="cutNum(index)"
-                ></el-input>
+                <moneyTypePop style="display: inline-block;" ref="moneyType" :data="moneyType" @checkCell="getCell"
+                  :chooseIndex="index" v-if="transterShow" :init="item.name"></moneyTypePop>
+                <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.outMoney" @input="cutNum(index)">
+                </el-input>
               </li>
             </ul>
           </div>
           <p style="color:#FF2711;">注：一旦转款成功，不同合同转款，实收金额相应增减；同一合同转款，实收金额不变</p>
           <p style="text-align:right;margin:50px 50px 0 0;">
             <el-button size="small" class="btn-info" round @click="transterShow=false">取消</el-button>
-            <el-button
-              size="small"
-              class="btn-info"
-              round
-              type="primary"
-              @click="transterSave()"
-              v-if="!zkEdit"
-            >保存</el-button>
-            <el-button
-              size="small"
-              class="btn-info"
-              round
-              type="primary"
-              @click="transterSave()"
-              v-else
-            >提交审核</el-button>
+            <el-button size="small" class="btn-info" round type="primary" @click="transterSave()" v-if="!zkEdit">保存
+            </el-button>
+            <el-button size="small" class="btn-info" round type="primary" @click="transterSave()" v-else>提交审核
+            </el-button>
           </p>
         </div>
-        <el-dialog
-          width="600px"
-          title="选择合同"
-          :visible.sync="chooseContShow"
-          append-to-body
-          :closeOnClickModal="$tool.closeOnClickModal"
-          height="300"
-          style="margin-top:-8vh;"
-          v-show="chooseContShow"
-        >
+        <el-dialog width="600px" title="选择合同" :visible.sync="chooseContShow" append-to-body
+          :closeOnClickModal="$tool.closeOnClickModal" height="300" style="margin-top:-8vh;" v-show="chooseContShow">
           <div>
             <p style="width:600px;height:40px;line-height:65px;">
               <span style="float:left;" class="clearfix">关键字：</span>
-              <el-input
-                v-model="contKeyWord"
-                maxlength="100"
-                class="w200"
-                style="float:left;"
-                placeholder="请输入收款ID"
-              ></el-input>
-              <el-button
-                size="small"
-                class="btn-info"
-                round
-                type="primary"
-                style="float:right;margin:20px 20px 0 0;"
-                @click="toContWord()"
-              >查询</el-button>
+              <el-input v-model="contKeyWord" maxlength="100" class="w200" style="float:left;" placeholder="请输入合同编号">
+              </el-input>
+              <el-button size="small" class="btn-info" round type="primary" style="float:right;margin:20px 20px 0 0;"
+                @click="toContWord()">查询</el-button>
             </p>
             <div style="padding:0 0 50px 0;" class="about-cont">
-              <el-table
-                border
-                :data="contList"
-                style="width: 100%"
-                header-row-class-name="theader-bg"
-                key="other"
-                @row-click="selectItem"
-              >
+              <el-table border :data="contList" style="width: 100%" header-row-class-name="theader-bg" key="other"
+                @row-click="selectItem">
                 <el-table-column width="40">
                   <template slot-scope="scope">
                     <span class="outSide">
@@ -736,30 +440,14 @@
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  align="center"
-                  min-width="120"
-                  label="合同编号"
-                  prop="code"
-                  :formatter="nullFormatter"
-                ></el-table-column>
-                <el-table-column
-                  align="center"
-                  min-width="120"
-                  label="物业地址"
-                  prop="propertyAddr"
-                  :formatter="nullFormatter"
-                ></el-table-column>
+                <el-table-column align="center" min-width="120" label="合同编号" prop="code" :formatter="nullFormatter">
+                </el-table-column>
+                <el-table-column align="center" min-width="120" label="物业地址" prop="propertyAddr"
+                  :formatter="nullFormatter"></el-table-column>
               </el-table>
-              <el-pagination
-                class="pagination-info"
-                @current-change="handleCurrentChange2"
-                :current-page="currentPage2"
-                :page-size="pageSize2"
-                layout="total, prev, pager, next, jumper"
-                :total="contTotal"
-                style="margin-top:30px;"
-              ></el-pagination>
+              <el-pagination class="pagination-info" @current-change="handleCurrentChange2" :current-page="currentPage2"
+                :page-size="pageSize2" layout="total, prev, pager, next, jumper" :total="contTotal"
+                style="margin-top:30px;"></el-pagination>
 
               <p style="text-align:right;margin:50px 50px 0 0;">
                 <el-button size="small" class="btn-info" round @click="chooseContShow=false">取消</el-button>
@@ -768,28 +456,16 @@
             </div>
           </div>
         </el-dialog>
-        <el-dialog
-          width="600px"
-          title="确认保存"
-          :visible.sync="sureSaveTransterShow"
-          append-to-body
-          :closeOnClickModal="$tool.closeOnClickModal"
-          style="margin-top:8vh;"
-        >
+        <el-dialog width="600px" title="确认保存" :visible.sync="sureSaveTransterShow" append-to-body
+          :closeOnClickModal="$tool.closeOnClickModal" style="margin-top:8vh;">
           <div class="sure-transter-dialog">
             <p>确认转款？</p>
             <p>转款成功后，不同合同转款，原合同实收金额会减掉，转入合同</p>
             <p>实收金额会增加；同一个合同转款，实收金额不变</p>
             <p style="text-align:right;margin:50px 50px 0 0;">
               <el-button size="small" class="btn-info" round @click="sureSaveTransterShow=false">取消</el-button>
-              <el-button
-                size="small"
-                class="btn-info"
-                round
-                type="primary"
-                @click="transterSaveFinal()"
-                v-dbClick
-              >保存</el-button>
+              <el-button size="small" class="btn-info" round type="primary" @click="transterSaveFinal()" v-dbClick>保存
+              </el-button>
             </p>
           </div>
         </el-dialog>
@@ -1237,6 +913,7 @@ export default {
               outTypeId: row.moneyTypePid,
               name: row.moneyType,
               outMoney: row.amount,
+              payId: row.id,
             },
           ];
           this.getTransterInfo(row.id);
@@ -1511,7 +1188,7 @@ export default {
       if (this.zkEdit) {
         if (allMoney > this.transterInfoPerson.inMoney) {
           this.$message({
-            message: "转款金额合计不能超过已收款金额",
+            message: "编辑金额不能超过申请金额！",
           });
           return;
         }
@@ -1554,6 +1231,7 @@ export default {
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
           : "", //转入的合同编号
+        payId: this.selectPayInfo.id,
       };
       let url;
       if (this.zkEdit) {
@@ -1567,7 +1245,7 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.$message({
-              message: "转款成功",
+              message: "提交成功",
               type: "success",
             });
             this.transterShow = false;

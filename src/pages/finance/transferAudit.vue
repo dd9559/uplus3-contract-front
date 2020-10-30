@@ -5,60 +5,28 @@
         <div class="input-group">
           <label>关键字:</label>
           <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/收付ID" placement="top">
-            <el-input
-              class="w200"
-              :clearable="true"
-              size="small"
-              v-model="searchForm.keyword"
-              placeholder="请输入"
-            ></el-input>
+            <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入">
+            </el-input>
           </el-tooltip>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select
-            :clearable="true"
-            class="width200"
-            :class="{'width325':searchForm.contType.length>3}"
-            multiple
-            size="small"
-            v-model="searchForm.contType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['10']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" class="width200" :class="{'width325':searchForm.contType.length>3}" multiple
+            size="small" v-model="searchForm.contType" placeholder="请选择">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select
-              :clearable="true"
-              size="small"
-              v-model="searchForm.timeType"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in $tool.dropdown.dateType_money"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
+              <el-option v-for="item in $tool.dropdown.dateType_money" :key="item.value" :label="item.label"
+                :value="item.value"></el-option>
             </el-select>
-            <el-date-picker
-              v-model="searchForm.timeRange"
-              type="daterange"
-              size="small"
-              class="margin-left"
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
+            <el-date-picker v-model="searchForm.timeRange" type="daterange" size="small" class="margin-left"
+              value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </div>
         </div>
       </div>
@@ -71,26 +39,12 @@
           </h4>
         </div>
         <p>
-          <el-button
-            class="btn-info"
-            round
-            type="primary"
-            size="small"
-            @click="getExcel"
-            v-if="power['sign-cw-zk-export'].state"
-          >导出</el-button>
+          <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+            v-if="power['sign-cw-zk-export'].state">导出</el-button>
         </p>
       </div>
-      <el-table
-        ref="tableCom"
-        :max-height="tableNumberCom"
-        border
-        :data="list"
-        header-row-class-name="theader-bg"
-        class="info-scrollbar"
-        style="width: 100%"
-        @row-dblclick="toZkDetail"
-      >
+      <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
+        class="info-scrollbar" style="width: 100%" @row-dblclick="toZkDetail">
         <el-table-column min-width="120" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -126,16 +80,12 @@
           </template>
         </el-table-column>
         <el-table-column min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column
-          min-width="60"
-          label="签约方式"
-          prop="recordType.label"
-          :formatter="nullFormatter"
-        ></el-table-column>
+        <el-table-column min-width="60" label="签约方式" prop="recordType.label" :formatter="nullFormatter">
+        </el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="转款人">
           <template slot-scope="scope">
-            <span>{{scope.row.depName+"-"+scope.row.createByName}}</span>
+            <span>{{scope.row.inObjStore+"-"+scope.row.inObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="120" label="当前审核人">
@@ -145,12 +95,10 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <p
-              class="btn-text-info"
-              type="text"
+            <p class="btn-text-info" type="text"
               v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
-              @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)"
-            >{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
+              @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)">
+              {{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column min-width="120" label="下一步审核人">
@@ -161,12 +109,9 @@
 
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <p
-              class="btn-text-info color-red"
-              type="text"
+            <p class="btn-text-info color-red" type="text"
               v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
-              @click="choseCheckPerson(scope.row,3)"
-            >设置审核人</p>
+              @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="金额（元）">
@@ -181,103 +126,62 @@
         </el-table-column>
         <el-table-column label="审核时间" prop="createTime" :formatter="nullFormatter" min-width="130">
           <template slot-scope="scope">
-            <span>{{scope.row.toAccountTime|formatTime}}</span>
+            <span v-if="scope.row.payStatus.value==3">-</span>
+            <span v-else>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="90" label="审核状态">
+        <el-table-column min-width="90" label="收付状态">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
-            <span
-              class="text-warning"
-              v-else
-              @click="getErrorMsg(scope.row)"
-            >{{scope.row.payStatus|getLabel}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="票据状态">
           <template slot-scope="scope">{{scope.row|billState}}</template>
         </el-table-column>
-        <el-table-column
-          fixed="right"
-          label="操作"
-          min-width="120"
-          class-name="null-formatter operation-btns"
-        >
+        <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="btnOpera(scope.row,1)"
-              v-if="power['sign-cw-zk-edit'].state"
-            >编辑</el-button>
-            <el-button
-              type="text"
-              @click="toZkDetail(scope.row)"
-              v-if="(scope.row.auditBy===getUser.user.empId)&&scope.row.grabDept&&scope.row.isDeal!=3"
-            >审核</el-button>
+            <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
+            <el-button type="text" @click="toZkDetail(scope.row)"
+              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal!=3)||scope.row.grabDept">审核</el-button>
+
+            {{scope.row.auditBy+','+getUser.user.empId+','+scope.row.isDeal+','+scope.row.grabDept}}
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="list.length>0"
-        class="pagination-info"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination v-if="list.length>0" class="pagination-info" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
     <!-- 转款 -->
     <div v-show="transterShow">
-      <el-dialog
-        title="编辑转款"
-        :visible.sync="transterShow"
-        :closeOnClickModal="$tool.closeOnClickModal"
-        width="800px"
-      >
+      <el-dialog title="编辑转款" :visible.sync="transterShow" :closeOnClickModal="$tool.closeOnClickModal" width="800px">
         <div class="transter-detail">
           <p class="title">合同信息</p>
           <p class="info">
             <span>合同编号：{{selectPayInfo&&selectPayInfo.contCode?selectPayInfo.contCode:"-"}}</span>&nbsp;&nbsp;&nbsp;
             <span>款类：{{transterInfoPerson&&transterInfoPerson.outPayType}}</span>&nbsp;&nbsp;&nbsp;
-            <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp; {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
+            <span>金额：{{transterInfoPerson&&transterInfoPerson.outMoney}}元&nbsp;&nbsp;
+              {{transterInfoPerson&&transterInfoPerson.outMoney|moneyFormat}}</span>
           </p>
           <p>物业地址：{{selectPayInfo&&selectPayInfo.address?selectPayInfo.address:"-"}}</p>
           <p class="title">转款操作</p>
           <p>
             转入合同：
             <span
-              v-if="transterInfoPerson.inContractId"
-            >{{transterInfoPerson&&transterInfoPerson.inContractCode?transterInfoPerson.inContractCode:"-"}}</span>
-            <span
-              class="select"
-              style="margin:0 0 10px 0px;"
-              @click="chooseCont()"
-              v-else
-            >{{(transterInfoPerson&&transterInfoPerson.inContractCode)?transterInfoPerson.inContractCode:"请选择合同"}}</span>
+              v-if="transterInfoPerson.inContractId">{{transterInfoPerson&&transterInfoPerson.inContractCode?transterInfoPerson.inContractCode:"-"}}</span>
+            <span class="select" style="margin:0 0 10px 0px;" @click="chooseCont()"
+              v-else>{{(transterInfoPerson&&transterInfoPerson.inContractCode)?transterInfoPerson.inContractCode:"请选择合同"}}</span>
           </p>
           <p>物业地址：{{transterInfoPerson&&transterInfoPerson.propertyAddr?transterInfoPerson.propertyAddr :"-"}}</p>
           <div class="kuanlei clearfix">
             <label>选择款类：</label>
             <ul>
               <li v-for="(item,index) in kuanleiVal" :key="index">
-                <moneyTypePop
-                  style="display: inline-block;"
-                  ref="moneyType"
-                  :data="moneyType"
-                  @checkCell="getCell"
-                  :chooseIndex="index"
-                  v-if="transterShow"
-                  :init="item.name"
-                ></moneyTypePop>
-                <el-input
-                  size="small"
-                  class="w200"
-                  placeholder="请输入金额"
-                  v-model="item.outMoney"
-                  @input="cutNum(index)"
-                ></el-input>
+                <moneyTypePop style="display: inline-block;" ref="moneyType" :data="moneyType" @checkCell="getCell"
+                  :chooseIndex="index" v-if="transterShow" :init="item.name"></moneyTypePop>
+                <el-input size="small" class="w200" placeholder="请输入金额" v-model="item.outMoney" @input="cutNum(index)">
+                </el-input>
               </li>
             </ul>
           </div>
@@ -287,44 +191,19 @@
             <el-button size="small" class="btn-info" round type="primary" @click="transterSave()">保存</el-button>
           </p>
         </div>
-        <el-dialog
-          width="600px"
-          title="选择合同"
-          :visible.sync="chooseContShow"
-          append-to-body
-          :closeOnClickModal="$tool.closeOnClickModal"
-          height="300"
-          style="margin-top:-8vh;"
-          v-show="chooseContShow"
-        >
+        <el-dialog width="600px" title="选择合同" :visible.sync="chooseContShow" append-to-body
+          :closeOnClickModal="$tool.closeOnClickModal" height="300" style="margin-top:-8vh;" v-show="chooseContShow">
           <div>
             <p style="width:600px;height:40px;line-height:65px;">
               <span style="float:left;" class="clearfix">关键字：</span>
-              <el-input
-                v-model="contKeyWord"
-                maxlength="100"
-                class="w200"
-                style="float:left;"
-                placeholder="请输入收款ID"
-              ></el-input>
-              <el-button
-                size="small"
-                class="btn-info"
-                round
-                type="primary"
-                style="float:right;margin:20px 20px 0 0;"
-                @click="toContWord()"
-              >查询</el-button>
+              <el-input v-model="contKeyWord" maxlength="100" class="w200" style="float:left;" placeholder="请输入收款ID">
+              </el-input>
+              <el-button size="small" class="btn-info" round type="primary" style="float:right;margin:20px 20px 0 0;"
+                @click="toContWord()">查询</el-button>
             </p>
             <div style="padding:0 0 50px 0;" class="about-cont">
-              <el-table
-                border
-                :data="contList"
-                style="width: 100%"
-                header-row-class-name="theader-bg"
-                key="other"
-                @row-click="selectItem"
-              >
+              <el-table border :data="contList" style="width: 100%" header-row-class-name="theader-bg" key="other"
+                @row-click="selectItem">
                 <el-table-column width="40">
                   <template slot-scope="scope">
                     <span class="outSide">
@@ -332,30 +211,14 @@
                     </span>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  align="center"
-                  min-width="120"
-                  label="合同编号"
-                  prop="code"
-                  :formatter="nullFormatter"
-                ></el-table-column>
-                <el-table-column
-                  align="center"
-                  min-width="120"
-                  label="物业地址"
-                  prop="propertyAddr"
-                  :formatter="nullFormatter"
-                ></el-table-column>
+                <el-table-column align="center" min-width="120" label="合同编号" prop="code" :formatter="nullFormatter">
+                </el-table-column>
+                <el-table-column align="center" min-width="120" label="物业地址" prop="propertyAddr"
+                  :formatter="nullFormatter"></el-table-column>
               </el-table>
-              <el-pagination
-                class="pagination-info"
-                @current-change="handleCurrentChange2"
-                :current-page="currentPage2"
-                :page-size="pageSize2"
-                layout="total, prev, pager, next, jumper"
-                :total="contTotal"
-                style="margin-top:30px;"
-              ></el-pagination>
+              <el-pagination class="pagination-info" @current-change="handleCurrentChange2" :current-page="currentPage2"
+                :page-size="pageSize2" layout="total, prev, pager, next, jumper" :total="contTotal"
+                style="margin-top:30px;"></el-pagination>
 
               <p style="text-align:right;margin:50px 50px 0 0;">
                 <el-button size="small" class="btn-info" round @click="chooseContShow=false">取消</el-button>
@@ -364,44 +227,24 @@
             </div>
           </div>
         </el-dialog>
-        <el-dialog
-          width="600px"
-          title="确认保存"
-          :visible.sync="sureSaveTransterShow"
-          append-to-body
-          :closeOnClickModal="$tool.closeOnClickModal"
-          style="margin-top:8vh;"
-        >
+        <el-dialog width="600px" title="确认保存" :visible.sync="sureSaveTransterShow" append-to-body
+          :closeOnClickModal="$tool.closeOnClickModal" style="margin-top:8vh;">
           <div class="sure-transter-dialog">
             <p>确认转款？</p>
             <p>转款成功后，不同合同转款，原合同实收金额会减掉，转入合同</p>
             <p>实收金额会增加；同一个合同转款，实收金额不变</p>
             <p style="text-align:right;margin:50px 50px 0 0;">
               <el-button size="small" class="btn-info" round @click="sureSaveTransterShow=false">取消</el-button>
-              <el-button
-                size="small"
-                class="btn-info"
-                round
-                type="primary"
-                @click="transterSaveFinal()"
-                v-dbClick
-              >保存</el-button>
+              <el-button size="small" class="btn-info" round type="primary" @click="transterSaveFinal()" v-dbClick>保存
+              </el-button>
             </p>
           </div>
         </el-dialog>
       </el-dialog>
     </div>
-    <checkPerson
-      :show="checkPerson.state"
-      :type="checkPerson.type"
-      :bizCode="checkPerson.code"
-      :flowType="checkPerson.flowType"
-      @close="checkPerson.state=false"
-      v-if="checkPerson.state"
-      @submit="personChose"
-      :showLabel="checkPerson.label"
-      :page="checkPerson.page"
-    ></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code"
+      :flowType="checkPerson.flowType" @close="checkPerson.state=false" v-if="checkPerson.state" @submit="personChose"
+      :showLabel="checkPerson.label" :page="checkPerson.page"></checkPerson>
   </div>
 </template>
 
@@ -906,7 +749,7 @@ export default {
       }
       if (allMoney > this.transterInfoPerson.inMoney) {
         this.$message({
-          message: "转款金额合计不能超过已收款金额",
+          message: "编辑金额不能超过申请金额！",
         });
         return;
       }
@@ -940,6 +783,7 @@ export default {
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
           : "", //转入的合同编号
+        payId: this.selectPayInfo.id,
       };
       this.$ajax
         .postJSON("/api/payInfo/editInOutPayInfo", param)
@@ -1023,7 +867,7 @@ export default {
     },
     // 选择审核人
     choseCheckPerson: function (row, type) {
-      this.checkPerson.flowType = this.activeView === 1 ? 1 : 0;
+      this.checkPerson.flowType = 13; //转款审核
       this.checkPerson.code = row.payCode;
       this.checkPerson.state = true;
       this.checkPerson.type = type;
@@ -1038,13 +882,13 @@ export default {
         this.$router.push({
           path: "billDetails",
           query: {
-            tab: "收款信息",
+            tab: "合同信息",
             id: item.id,
             type: item.inAccountType,
             power: this.getUser.user.empId === item.auditBy,
             print: this.power["sign-cw-bill-print"].state,
             bill: this.power["sign-cw-debt-invoice"].state,
-            listName: 2,
+            listName: 4,
             isZk: true,
           },
         });
@@ -1052,7 +896,7 @@ export default {
         this.$ajax
           .get("/api/machine/getAuditAuth", {
             bizCode: item.payCode,
-            flowType: 11,
+            flowType: 13,
           })
           .then((res) => {
             res = res.data;
@@ -1060,13 +904,13 @@ export default {
               this.$router.push({
                 path: "billDetails",
                 query: {
-                  tab: "收款信息",
+                  tab: "合同信息",
                   id: item.id,
                   type: item.inAccountType,
                   power: this.getUser.user.empId === item.auditBy,
                   print: this.power["sign-cw-bill-print"].state,
                   bill: this.power["sign-cw-debt-invoice"].state,
-                  listName: 2,
+                  listName: 4,
                   isZk: true,
                 },
               });
@@ -1074,7 +918,7 @@ export default {
           })
           .catch((error) => {
             this.$message({
-              message: `抢单失败`,
+              message: `${error}`,
             });
           });
       }
