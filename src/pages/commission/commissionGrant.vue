@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class">
+  <div class="page-class"  ref="tableComView">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop
@@ -129,6 +129,8 @@
         :data="tableData"
         class="table-box"
         @selection-change="handleSelectionChange"
+         ref="tableCom"
+        :max-height="tableNumberCom"
       >
         <el-table-column
           type="selection"

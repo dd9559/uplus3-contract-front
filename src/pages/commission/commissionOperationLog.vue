@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class">
+  <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop
@@ -56,9 +56,10 @@
       </div>
 
       <el-select
-        v-model="searchData.isCalculation"
+        v-model="searchData.typeId"
         class="w116 mr-16"
         placeholder="全部"
+        clearable
       >
         <el-option
           v-for="item in isCalculation"
@@ -86,36 +87,45 @@
 
     <div class="main">
       <div class="reveal-box">
-        <div class="reveal-txt">当前共找到【420】条数据</div>
+        <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
       </div>
-      <el-table :data="tableData" class="table-box">
+      <el-table
+        :data="tableData"
+        class="table-box"
+        ref="tableCom"
+        :max-height="tableNumberCom"
+      >
         <el-table-column
-          prop="a1"
+          prop="systemtagName"
           min-width="100"
           label="体系"
         ></el-table-column>
+        <el-table-column min-width="130" label="操作日期">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.createTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column min-width="170" label="操作人">
+          <template slot-scope="scope">
+            <span
+              >{{ scope.row.createByDepName }}-{{
+                scope.row.createByName
+              }}</span
+            >
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="a2"
-          min-width="130"
-          label="操作日期"
-        ></el-table-column>
-        <el-table-column
-          prop="a3"
-          min-width="170"
-          label="操作人"
-        ></el-table-column>
-        <el-table-column
-          prop="a4"
+          prop="objectType.label"
           min-width="100"
           label="模块"
         ></el-table-column>
         <el-table-column
-          prop="a5"
+          prop="content"
           min-width="300"
           label="操作内容"
         ></el-table-column>
         <el-table-column
-          prop="a6"
+          prop="ip"
           min-width="200"
           label="IP地址"
         ></el-table-column>
@@ -143,28 +153,30 @@ export default {
       //   计算状态
       isCalculation: [
         {
-          value: 0,
-          label: "未计算",
+          value: 41,
+          label: "提成计算",
         },
         {
-          value: 1,
-          label: "已计算",
+          value: 42,
+          label: "提成发放",
+        },
+        {
+          value: 43,
+          label: "提成设置",
         },
       ],
       searchData: {
-        keyword: "", //关键字
-        systemTag: "", //体系id
-        depId: "", //部门编号
+        keyword: "", //内容
+        systemTag: "", //体系
+        depId: "", //部门id
         depName: "",
-        empId: "", //员工编号
+        empId: "", //员工id
         bonusDateValue: "",
-        // signDateStar: "", //签约日期开始
-        // signDateEnd: "", //签约日期结束
-        // bonusDateStar: "", //提成计算日期开始
-        // bonusDateEnd: "", //提成计算日期结束
-        isCalculation: "", //计算状态（0、未计算1、已计算）
-        // pageSize: "",
-        // pageNum: "",
+        // startTime: "", //开始日期
+        // endTime: "", //结束日期
+        typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
+        // pageSize: "", //条数
+        // pageNum: "", //页码
       },
       copySearchData: {},
       tableData: [],
@@ -175,7 +187,15 @@ export default {
   },
   methods: {
     reset() {
-      console.log("重置");
+      this.searchData = {
+        keyword: "", //内容
+        systemTag: "", //体系
+        depId: "", //部门id
+        depName: "",
+        empId: "", //员工id
+        bonusDateValue: "",
+        typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
+      };
     },
     // 查询
     queryFn() {
@@ -210,6 +230,50 @@ export default {
     dateFormat(val) {
       return this.$tool.dateFormat(val);
     },
+    // 搜索数据
+    searchFn() {
+      let data = { ...this.copySearchData };
+
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+
+      Object.assign(data, {
+        startTime: data.bonusDateValue[0] || "",
+        endTime: data.bonusDateValue[1] || "",
+        pageSize: this.pageSize,
+        pageNum: this.currentPage,
+      });
+      // 删除多余属性
+      delete data.bonusDateValue;
+
+      this.$ajax
+        .get("/api/operation/getBonusList", data)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            let { list = [], pageSize = 20, pageNum = 1, total = 0 } =
+              res.data || {};
+            // 赋值
+            Object.assign(this, {
+              tableData: list,
+              currentPage: pageNum || 1,
+              pageSize,
+              total,
+            });
+          }
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        })
+        .catch((err) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+
+          this.$message({
+            message: err,
+            type: "error",
+          });
+        });
+    },
   },
   components: {
     myPagination,
@@ -217,6 +281,8 @@ export default {
   mounted() {
     // 体系
     this.getSystemTagSelect();
+    // 获取数据
+    this.queryFn();
   },
 };
 </script>

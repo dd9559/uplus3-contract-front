@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class">
+  <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop
@@ -113,7 +113,8 @@
           >批量计算提成</el-button
         >
       </div>
-      <el-table :data="tableData" class="table-box">
+      <el-table :data="tableData" class="table-box"  ref="tableCom"
+        :max-height="tableNumberCom">
         <el-table-column
           prop="empName"
           min-width="100"
@@ -170,7 +171,7 @@
           min-width="145"
           label="物业地址"
         ></el-table-column>
-        <el-table-column prop="settleMoney" min-width="285">
+        <el-table-column prop="settleMoney" min-width="105">
           <template slot="header"
             >结算金额
             <el-tooltip
