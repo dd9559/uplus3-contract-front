@@ -12,15 +12,9 @@
           @click="choseTab(item)"
         >{{item}}</li>
       </ul>-->
-      <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'">
-        <el-button
-          class="btn-info"
-          round
-          size="small"
-          type="primary"
-          @click="quickCheck"
-          v-if="billMsg.auditButton"
-        >审核</el-button>
+      <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'||activeItem==='合同信息'">
+        <el-button class="btn-info" round size="small" type="primary" @click="quickCheck" v-if="billMsg.auditButton">审核
+        </el-button>
       </p>
     </div>
     <ul class="bill-details-content">
@@ -38,11 +32,7 @@
                 <span>{{billMsg.payCode}}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              align="center"
-              label="收款单"
-              v-if="billMsg.contCode=='-'&&activeItem==='付款信息'"
-            >
+            <el-table-column align="center" label="收款单" v-if="billMsg.contCode=='-'&&activeItem==='付款信息'">
               <template slot-scope="scope">
                 <span>{{billMsg.payCodeSK}}</span>
               </template>
@@ -104,19 +94,15 @@
               </el-table-column>
               <el-table-column align="center" label="票据">
                 <template slot-scope="scope">
-                  <span
-                    class="span-cursor"
-                    @click="getPaper('details')"
-                    v-if="billMsg.billCode"
-                  >{{billMsg.billCode}}</span>
+                  <span class="span-cursor" @click="getPaper('details')"
+                    v-if="billMsg.billCode">{{billMsg.billCode}}</span>
                   <span v-else>--</span>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="支付方式">
                 <template slot-scope="scope">
                   <span
-                    v-if="billMsg.inAccount&&billMsg.inAccount.length>0"
-                  >{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
+                    v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
                   <span v-else>{{billMsg.method}}</span>
                 </template>
               </el-table-column>
@@ -160,8 +146,7 @@
               </el-table-column>-->
             </el-table>
             <template
-              v-if="billMsg.account&&billMsg.account.length>0&&billMsg.account[index].cardNumber.length>0&&billMsg.inAccountType===4"
-            >
+              v-if="billMsg.account&&billMsg.account.length>0&&billMsg.account[index].cardNumber.length>0&&billMsg.inAccountType===4">
               <h4 class="f14">资料补充：</h4>
               <el-table border :data="[billMsg.account[index]]" header-row-class-name="theader-bg">
                 <el-table-column align="center" prop="bankName" label="刷卡/转账银行">
@@ -240,20 +225,9 @@
           <div class="input-group">
             <label>付款凭证:</label>
             <ul class="image-list" v-if="files.length>0">
-              <li
-                class="margin-right"
-                v-for="(item,index) in files"
-                :key="index"
-                @click="previewPhoto(files,index)"
-              >
-                <img
-                  :src="item|getSignImage(preloadFiles,_self)"
-                  alt
-                  v-if="isPictureFile(item.type)"
-                  height="90px"
-                  :key="item.path"
-                  :width="item.width"
-                />
+              <li class="margin-right" v-for="(item,index) in files" :key="index" @click="previewPhoto(files,index)">
+                <img :src="item|getSignImage(preloadFiles,_self)" alt v-if="isPictureFile(item.type)" height="90px"
+                  :key="item.path" :width="item.width" />
                 <upload-cell :type="item.type" v-else></upload-cell>
                 <el-tooltip :content="item.name" placement="top">
                   <p class="span">{{item.name}}</p>
@@ -318,13 +292,8 @@
           <el-table-column align="center" prop="operate" label="操作"></el-table-column>
           <el-table-column align="center" label="备注">
             <template slot-scope="scope">
-              <el-popover
-                v-if="scope.row.auditInfo!=='-'"
-                placement="top-start"
-                width="200"
-                trigger="hover"
-                :content="scope.row.auditInfo"
-              >
+              <el-popover v-if="scope.row.auditInfo!=='-'" placement="top-start" width="200" trigger="hover"
+                :content="scope.row.auditInfo">
                 <p class="one-row" slot="reference">{{scope.row.auditInfo|nullFilter}}</p>
               </el-popover>
               <span v-else>{{scope.row.auditInfo}}</span>
@@ -342,25 +311,14 @@
         </el-pagination>-->
       </li>
     </ul>
-    <el-dialog
-      title="审核"
-      :closeOnClickModal="$tool.closeOnClickModal"
-      :visible.sync="layer.show"
-      width="740px"
-      @close="clearLayer"
-    >
+    <el-dialog title="审核" :closeOnClickModal="$tool.closeOnClickModal" :visible.sync="layer.show" width="740px"
+      @close="clearLayer">
       <div class="reasion-dialog">
         <label>备注：</label>
         <div class="input">
-          <el-input
-            type="textarea"
-            resize="none"
-            placeholder="请输入同意/拒绝理由"
-            :maxlength="invalidMax"
-            v-model="layer.reasion"
-            class="input-textarea"
-            :class="[layer.reasion.length>0?'':'scroll-hidden']"
-          ></el-input>
+          <el-input type="textarea" resize="none" placeholder="请输入同意/拒绝理由" :maxlength="invalidMax"
+            v-model="layer.reasion" class="input-textarea" :class="[layer.reasion.length>0?'':'scroll-hidden']">
+          </el-input>
           <div class="text-absloute">{{invalidNumber}}/{{invalidMax}}</div>
         </div>
       </div>
@@ -391,30 +349,16 @@
       </ul>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="checkBill(2)" v-loading.fullscreen.lock="fullscreenLoading">拒 绝</el-button>
-        <el-button
-          round
-          type="primary"
-          @click="checkBill(1)"
-          v-loading.fullscreen.lock="fullscreenLoading"
-        >同 意</el-button>
+        <el-button round type="primary" @click="checkBill(1)" v-loading.fullscreen.lock="fullscreenLoading">同 意
+        </el-button>
       </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <layer-invoice
-      ref="layerInvoice"
-      :printType="printType"
-      :contId="$route.query.contId"
-      @emitPaperSet="emitPaperSetFn"
-    ></layer-invoice>
-    <checkPerson
-      :show="checkPerson.state"
-      :type="checkPerson.type"
-      :bizCode="checkPerson.code"
-      :flowType="checkPerson.flowType"
-      @submit="personChose"
-      @close="checkPerson.state=false"
-      v-if="checkPerson.state"
-    ></checkPerson>
+    <layer-invoice ref="layerInvoice" :printType="printType" :contId="$route.query.contId"
+      @emitPaperSet="emitPaperSetFn"></layer-invoice>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" :bizCode="checkPerson.code"
+      :flowType="checkPerson.flowType" @submit="personChose" @close="checkPerson.state=false" v-if="checkPerson.state">
+    </checkPerson>
   </div>
 </template>
 
@@ -471,15 +415,19 @@ export default {
       btnBill: false, //是否有开票权限
       printType: "client", //票据是否只显示客户联
       transferInfo: [],
+      isZk: false, //是否转款
     };
   },
   created() {
-    // debugger
     this.activeItem = this.$route.query.tab;
     this.checkPerson.flowType = this.activeItem === "收款信息" ? 1 : 0;
     this.billId = this.$route.query.id;
     this.btnCheck =
       this.$route.query.power.toString() === "true" ? true : false;
+
+    if (this.$route.query.isZk)
+      this.isZk = this.$route.query.isZk.toString() === "true" ? true : false;
+
     // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
     this.btnBill = this.$route.query.bill.toString() === "true" ? true : false;
     this.tabs.unshift(this.activeItem);
@@ -494,15 +442,26 @@ export default {
       1: { name: "收付款单", url: "/Bill" },
       2: { name: "收款审核", url: "/moneyCheck?type=1" },
       3: { name: "付款审核", url: "/moneyCheck?type=2" },
+      4: { name: "转款审核", url: "/transferAudit" },
     };
+
     let arr = this.$tool.getRouter(
       ["二手房", "财务", _listName[Number(this.$route.query.listName)].name],
       _listName[Number(this.$route.query.listName)].url
     );
-    arr.push({
-      name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
-      path: this.$route.fullPath,
-    });
+
+    if (this.isZk) {
+      arr.push({
+        name: "转款详情",
+        path: this.$route.fullPath,
+      });
+    } else {
+      arr.push({
+        name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
+        path: this.$route.fullPath,
+      });
+    }
+
     this.setPath(arr);
     this.getInOutPayInfoDetail();
   },
@@ -634,9 +593,9 @@ export default {
      */
     getCheckData: function () {
       let param = {
-        /*pageSize:this.pageSize,
-                    pageNum:this.currentPage,*/
-        flowType: this.billMsg.audit.flowType,
+        // ageSize: this.pageSize,
+        // pageNum: this.currentPage,
+        flowType: this.isZk ? 13 : this.billMsg.audit.flowType, //转款详情-flowType = 13
         bizCode: this.billMsg.audit.bizCode,
       };
       this.$ajax
@@ -672,6 +631,13 @@ export default {
         result: type,
         remark: this.layer.reasion,
       };
+      //转款审核-flowType=13(hy,20201029)
+      if (this.isZk) {
+        param.flowType = 13;
+      } else {
+        param.flowType = this.activeItem === "付款信息" ? 0 : 1;
+      }
+
       if (type === 2 && this.layer.reasion.length === 0) {
         this.$message({
           message: "请输入拒绝原因",
@@ -680,6 +646,7 @@ export default {
       } else {
         this.fullscreenLoading = true;
       }
+      // debugger;
       this.$ajax
         .postJSON("/api/machine/audit", param)
         .then((res) => {
@@ -1031,9 +998,9 @@ export default {
     // top: 50%;
     // right: 20px;
     // transform: translateY(-50%);
-    width: 100%!important;
-    text-align: right!important;
-    margin: 5px 0 5px!important;
+    width: 100% !important;
+    text-align: right !important;
+    margin: 5px 0 5px !important;
   }
 }
 

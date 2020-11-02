@@ -2,20 +2,17 @@ let stepIndex = 0 //记录执行合并次数
 let otherStep = 0 //除合并外，剩余行数
 
 let TOOL = {
-  pathList: [
-    {
+  pathList: [{
       id: 1,
       name: "二手房",
       category: "1",
       icon: "icon-ershoufang",
       can: true, //是否可见
-      child: [
-        {
+      child: [{
           name: "合同",
           category: "1-1",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "合同列表",
               category: "1-1-1",
               can: true, //是否可见
@@ -63,14 +60,14 @@ let TOOL = {
               can: true, //是否可见
               path: "cancelCheck",
               code: "sign-ht-jysh-query"
-            },]
+            },
+          ]
         },
         {
           name: "财务",
           category: "1-2",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "收付款单",
               category: "1-2-1",
               can: true, //是否可见
@@ -83,6 +80,13 @@ let TOOL = {
               can: true, //是否可见
               path: "moneyCheck?type=1",
               code: "sign-cw-rev-query"
+            },
+            {
+              name: "转款审核",
+              category: "1-2-8",
+              can: true, //是否可见
+              path: "transferAudit",
+              code: "sign-cw-zk-query" //后期修改
             },
             {
               name: "付款审核",
@@ -118,21 +122,14 @@ let TOOL = {
               can: true, //是否可见
               path: "debitRecord",
               code: "sign-ht-dk-query"
-            },
-            {
-              name: "转款审核",
-              category: "1-2-8",
-              can: true,//是否可见
-              path: "transferAudit",
-              code: "sign-cw-zk-query"  //后期修改
-            }]
+            }
+          ]
         },
         {
           name: "业绩",
           category: "1-3",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "应收业绩",
               category: "1-3-1",
               can: true, //是否可见
@@ -159,14 +156,14 @@ let TOOL = {
               can: true, //是否可见
               path: 'achForms',
               code: "sign-yj-report-query"
-            }]
+            }
+          ]
         },
         {
           name: "签后",
           category: "1-4",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "后期接收",
               category: "1-4-1",
               can: true, //是否可见
@@ -186,8 +183,10 @@ let TOOL = {
               can: true, //是否可见
               path: "postMonitor",
               code: "sign-qh-cont-query"
-            }]
-        }]
+            }
+          ]
+        }
+      ]
     },
     {
       id: 2,
@@ -195,33 +194,31 @@ let TOOL = {
       category: "2",
       can: true, //是否可见
       icon: "icon-xinfang",
-      child: [
-        {
+      child: [{
           name: "合同",
           category: "2-1",
           can: true, //是否可见
-          child: [
-            {
-              name: "合同列表",
-              category: "2-1-1",
-              can: true, //是否可见
-              path: "otherContractList?type=xf",
-              code: "sign-xf-ht-ls-query"
-            }]
+          child: [{
+            name: "合同列表",
+            category: "2-1-1",
+            can: true, //是否可见
+            path: "otherContractList?type=xf",
+            code: "sign-xf-ht-ls-query"
+          }]
         },
         {
           name: "财务",
           category: "2-2",
           can: true, //是否可见
-          child: [
-            {
-              name: "收款审核",
-              category: "2-2-1",
-              can: true, //是否可见
-              path: "receiptCheck?type=xf",
-              code: "sign-xf-cw-rev-query"
-            }]
-        },]
+          child: [{
+            name: "收款审核",
+            category: "2-2-1",
+            can: true, //是否可见
+            path: "receiptCheck?type=xf",
+            code: "sign-xf-cw-rev-query"
+          }]
+        },
+      ]
     },
     {
       id: 3,
@@ -229,33 +226,31 @@ let TOOL = {
       category: "3",
       can: true, //是否可见
       icon: "icon-changzu",
-      child: [
-        {
+      child: [{
           name: "合同",
           category: "3-1",
           can: true, //是否可见
-          child: [
-            {
-              name: "合同列表",
-              category: "3-1-1",
-              can: true, //是否可见
-              path: "otherContractList?type=cz",
-              code: "sign-cz-ht-ls-query"
-            }]
+          child: [{
+            name: "合同列表",
+            category: "3-1-1",
+            can: true, //是否可见
+            path: "otherContractList?type=cz",
+            code: "sign-cz-ht-ls-query"
+          }]
         },
         {
           name: "财务",
           category: "3-2",
           can: true, //是否可见
-          child: [
-            {
-              name: "收款审核",
-              category: "3-2-1",
-              can: true, //是否可见
-              path: "receiptCheck?type=cz",
-              code: "sign-cz-cw-rev-query"
-            }]
-        },]
+          child: [{
+            name: "收款审核",
+            category: "3-2-1",
+            can: true, //是否可见
+            path: "receiptCheck?type=cz",
+            code: "sign-cz-cw-rev-query"
+          }]
+        },
+      ]
     },
     {
       id: 4,
@@ -263,33 +258,31 @@ let TOOL = {
       category: "4",
       can: true, //是否可见
       icon: "icon-jinrong",
-      child: [
-        {
+      child: [{
           name: "合同",
           category: "4-1",
           can: true, //是否可见
-          child: [
-            {
-              name: "合同列表",
-              category: "4-1-1",
-              can: true, //是否可见
-              path: "otherContractList?type=jr",
-              code: "sign-jr-ht-ls-query"
-            }]
+          child: [{
+            name: "合同列表",
+            category: "4-1-1",
+            can: true, //是否可见
+            path: "otherContractList?type=jr",
+            code: "sign-jr-ht-ls-query"
+          }]
         },
         {
           name: "财务",
           category: "4-2",
           can: true, //是否可见
-          child: [
-            {
-              name: "收款审核",
-              category: "4-2-1",
-              can: true, //是否可见
-              path: "receiptCheck?type=jr",
-              code: "sign-jr-cw-rev-query"
-            }]
-        },]
+          child: [{
+            name: "收款审核",
+            category: "4-2-1",
+            can: true, //是否可见
+            path: "receiptCheck?type=jr",
+            code: "sign-jr-cw-rev-query"
+          }]
+        },
+      ]
     },
     {
       id: 5,
@@ -297,13 +290,11 @@ let TOOL = {
       category: "5",
       can: true, //是否可见
       icon: "icon-huaban3",
-      child: [
-        {
+      child: [{
           name: "后台设置",
           category: "5-1",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "款类设置",
               category: "5-1-1",
               can: true, //是否可见
@@ -323,14 +314,14 @@ let TOOL = {
               can: true, //是否可见
               path: "commissionOff",
               code: "sign-set-bg-sxf-query"
-            }]
+            }
+          ]
         },
         {
           name: "业务设置",
           category: "5-2",
           can: true, //是否可见
-          child: [
-            {
+          child: [{
               name: "公司设置",
               category: "5-2-1",
               can: true, //是否可见
@@ -357,8 +348,10 @@ let TOOL = {
               can: true, //是否可见
               path: "postProcess",
               code: 'sign-set-hq'
-            }]
-        }]
+            }
+          ]
+        }
+      ]
     },
     {
       id: 6,
@@ -377,15 +370,15 @@ let TOOL = {
       icon: "icon-caiwu",
       code: false,
       child: []
-    },], //侧边栏导航
+    },
+  ], //侧边栏导航
   closeOnClickModal: false,
   contType: {
     "4": 4, //意向金
     "5": 5 //定金
   },
   dropdown: {
-    dateType: [
-      {
+    dateType: [{
         label: "开票日期",
         value: 1
       },
@@ -400,7 +393,8 @@ let TOOL = {
       {
         label: "回收日期",
         value: 4
-      }],
+      }
+    ],
     dateType_money: [
       /*{
         label: '选择时间',
@@ -456,7 +450,12 @@ let TOOL = {
    * @param type     该列所有单元格是否合并为一个
    * @returns {*}
    */
-  collapseRow: function ({ rowIndex, rowTotal, collapse, type }) {
+  collapseRow: function ({
+    rowIndex,
+    rowTotal,
+    collapse,
+    type
+  }) {
     // collapse=collapseMsg
     // debugger
     if (type === "all") {
@@ -862,7 +861,11 @@ let TOOL = {
     return result;
   },
   //保留小数位
-  cutFloat: function ({ val, max, num = 2 }) {
+  cutFloat: function ({
+    val,
+    max,
+    num = 2
+  }) {
     val = val
       .toString()
       .replace(/[^\d.]/g, "")
@@ -915,7 +918,10 @@ let TOOL = {
   //生成面包屑导航数组
   getRouter: function (arr, root) {
     return arr.map(item => {
-      return { name: item, path: root };
+      return {
+        name: item,
+        path: root
+      };
     });
   },
   /*
@@ -926,7 +932,9 @@ let TOOL = {
    * 2 计算加载中
    */
   layerAlert(j) {
-    let { message = "", typeInfo = 0 } = j;
+    let {
+      message = "", typeInfo = 0
+    } = j;
     // 内容判断
     let m = typeInfo === 1 ? `<div class="layer-succes-txt">
         <div class="img"></div>
@@ -952,7 +960,7 @@ let TOOL = {
       // 确定按钮添加类名
       confirmButtonClass: "btn-sure",
       // 关闭回调函数
-      callback() { },
+      callback() {},
       // 自定义属性
       ...j,
       // 展示内容
