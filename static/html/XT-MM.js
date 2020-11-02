@@ -1,74 +1,60 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
-  'info_val116': {
+  'info_val5': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val116]').innerHTML !== '' ? {'val117': null} : null
+      return document.querySelector('*[extendparam=val5]').innerHTML !== '' ? {'val6': null} : null
     }
   },
-  'info_val118': {
+  'info_val11': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val118]').innerHTML !== '' ? {'val119': null} : null
+      return document.querySelector('*[extendparam=val11]').innerHTML !== '' ? {'val12': null} : null
     }
   },
-  'val1': null,
-  'val2': null,
   'checkbox_one': null,
-  'checkbox_two': null,
-  'val3': null,
-  'checkbox_three': {
-    state:true,
-    stateful: function (index) {
-      return index === 5 ? {'val4': null} : null
-    }
-  },
-  'val5': null,
-  'val6': null,
-  'val7': null,
-  'val8': null,
-  'val9': null,
-  'val10': null,
-  'val11': null,
-  'checkbox_four': null,
-  'checkbox_five': null,
-  'checkbox_four': null,
-  'val12': null,
-  'val13': null,
   'val14': null,
-  'checkbox_six': null,
   'val15': null,
+  'val16': null,
   'val17': null,
-  'checkbox_seven': null,
-  'checkbox_eight': {
+  'val18': null,
+  'val19': null,
+  'info_val20': {
     stateful: function (index) {
-      return index === 0 ? {'checkbox_nine': {
-        stateful: function (index) {
-          return index === 2 ? {'val19': null} : null
+      return document.querySelector('*[extendparam=val20]').innerHTML !== '' ? {'val21': null} : null
+    }
+  },
+  'drapdown_val22': {
+    stateful: function (index) {
+      return index === '(1)' ? {'drapdown_val23': {
+        stateful: function (index1) {
+          return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
         }
-      }} : null
+      }} : {'time_val29':null,'val30':null,'time_val31':null}
     }
   },
-  // 'checkbox_nine': null,
-  // 'val19': null,
-  'info_val120': {
+  'drapdown_val32': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val120]').innerHTML !== '' ? {'val121': null} : null
+      return index === '(1)' ? {'val33':null} : index === '(2)' ? {'val34':null} : {'val35':null}
     }
   },
-  'info_val122': {
+  'drapdown_val36': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val122]').innerHTML !== '' ? {'val123': null} : null
+      return index === '(3)' ? {'time_val37':null,'val38':null,'val39':null,'val40':null} : null
     }
   },
-  'val102': null,
-  'val103': null,
-  'val104': null,
-  'val105': null,
-
-  // old
+  'val41': null,
+  'val42': null,
+  'drapdown_val43': {
+    stateful: function (index) {
+      return index === '(2)' ? {'val44':null} : index === '(3)' ? {'val45':null,'val46':null} : null
+    }
+  },
+  'val47': null,
+  'val48': null,
 }
 let Obj = {
-  cn_arr: ['val10', 'val11', 'val15', 'val19', 'val104','val105']
+  cn_arr: ['val17', 'val19', 'val21', 'val25', 'val27', 'val28', 'val30', 'val38', 'val39', 'val48']
 }
+
 //初始化下拉控件
 Dropdown.create({
   classN: 'dropdown-item',
@@ -77,13 +63,73 @@ Dropdown.create({
       bindElem.value = dateObj.value
       bindElem.setAttribute('value', bindElem.value)
       let obj = {
-        'val24': ['val26'],
-        'val25': ['val26'],
+        'val22': {
+          '(1)': {
+            'write': ['val23','val24','val25','val26','val27','val28'],
+            'disabled':  ['val29','val30','val31']
+          },
+          '(2)': {
+            'disabled': ['val23','val24','val25','val26','val27','val28'],
+            'write':  ['val29','val30','val31']
+          }
+        },
+        'val23': {
+          '①': {
+            'write': ['val24','val25'],
+            'disabled': ['val26','val27','val28']
+          },
+          '②': {
+            'write': ['val26','val27','val28'],
+            'disabled': ['val24','val25']
+          }
+        },
+        'val32': {
+          '(1)': {
+            'write': ['val33'],
+            'disabled': ['val34','val35']
+          },
+          '(2)': {
+            'write': ['val34'],
+            'disabled': ['val33','val35']
+          },
+          '(3)': {
+            'write':['val35'],
+            'disabled': ['val33','val34']
+          }
+        },
+        'val36': {
+          '(1)': {
+            'write': [],
+            'disabled': ['val37','val38','val39','val40']
+          },
+          '(2)': {
+            'write': [],
+            'disabled': ['val37','val38','val39','val40']
+          },
+          '(3)': {
+            'write':['val37','val38','val39','val40'],
+            'disabled': []
+          }
+        },
+        'val43': {
+          '(1)': {
+            'write': [],
+            'disabled': ['val44','val45','val46']
+          },
+          '(2)': {
+            'write': ['val44'],
+            'disabled': ['val45','val46']
+          },
+          '(3)': {
+            'write':['val45','val46'],
+            'disabled': ['val44']
+          }
+        }
       }
       let attr = bindElem.getAttribute('extendParam')
-      console.log(attr, 'attr', dateObj.value);
-      if (obj[attr]) {
-        contractConfig.initForm(obj[attr], 0)
+      if (obj[attr] && obj[attr][dateObj.value]) {
+        contractConfig.initForm(obj[attr][dateObj.value].write, 0)
+        contractConfig.initForm(obj[attr][dateObj.value].disabled, 1)
       }
     } else {
       bindElem.innerHTML = dateObj.value
@@ -155,20 +201,6 @@ contractConfig.inputListener(function (ev, tip) {
 contractConfig.checkboxListener(function () { }, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
-  if (attr === 'three') {
-    let checkIO = ['val4']
-    boxArray.forEach((item, i) => {
-      if (item === obj.currentTarget) {
-        if (item.querySelector('p').getAttribute('checked')) {
-          if (i === 5) {
-            contractConfig.initForm(checkIO, 0)
-          }
-        } else {
-          contractConfig.initForm(checkIO, 1)
-        }
-      }
-    })
-  }
 })
 
 

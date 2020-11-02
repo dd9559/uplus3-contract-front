@@ -20,7 +20,7 @@
         class="item-billing-date w160"
         v-model="searchData.settleDate"
         type="month"
-        placeholder="请选择"
+        :placeholder="initialTime"
         value-format="yyyy-MM"
       >
       </el-date-picker>
@@ -212,6 +212,8 @@
 <script>
 import myPagination from "./myPagination";
 import { MIXINS } from "@/assets/js/mixins";
+
+let initialTime = "";
 export default {
   name: "commissionCounts",
   mixins: [MIXINS],
@@ -261,6 +263,7 @@ export default {
       currentPage: 1,
       pageSize: 20,
       total: 20,
+      initialTime: "",
     };
   },
   methods: {
@@ -281,6 +284,7 @@ export default {
     // 查询
     queryFn() {
       this.currentPage = 1;
+      this.copySearchData = { ...this.searchData };
       this.searchFn();
     },
     handleSizeChange(val) {
@@ -293,7 +297,7 @@ export default {
     },
     // 搜索数据
     searchFn() {
-      let data = { ...this.searchData };
+      let data = { ...this.copySearchData };
       let sign = {
         signDateStar: "", //签约日期开始
         signDateEnd: "", //签约日期结束
@@ -320,7 +324,7 @@ export default {
 
       Object.assign(data, sign, signJ, {
         pageSize: this.pageSize,
-        pageNum: this.currentPage,
+        pageNum: this.currentPage || 1,
       });
 
       this.$ajax
@@ -342,9 +346,13 @@ export default {
           this.$tool.layerAlertClose();
         })
         .catch((err) => {
-          console.log(err);
           // 关闭加载中
           this.$tool.layerAlertClose();
+
+          this.$message({
+            message: err,
+            type: "error",
+          });
         });
     },
     // 签约时间下拉列表切换
@@ -369,9 +377,17 @@ export default {
     dateFormat(val) {
       return this.$tool.dateFormat(val);
     },
+    // 初始时间
+    initialTimeFn() {
+      let d = this.dateFormat(new Date()).split("-");
+      let t = d[1] - 1;
+      d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
+      d.splice(2, 1);
+      this.initialTime = d.join("-");
+    },
     // 批量计算
     batchCalculationFn() {
-      let data = { ...this.searchData };
+      let data = { ...this.copySearchData };
       let sign = {
         signDateStar: "", //签约日期开始
         signDateEnd: "", //签约日期结束
@@ -405,9 +421,13 @@ export default {
           this.$tool.layerAlertClose();
         })
         .catch((err) => {
-          console.log(err);
           // 关闭加载中
           this.$tool.layerAlertClose();
+
+          this.$message({
+            message: err,
+            type: "error",
+          });
         });
     },
   },
@@ -434,10 +454,12 @@ export default {
     //     this.$tool.layerAlertClose();
     // }, 2000);
 
+    // 时间
+    this.initialTimeFn();
     // 体系
     this.getSystemTagSelect();
     // 获取数据
-    this.searchFn();
+    this.queryFn();
   },
 };
 </script>

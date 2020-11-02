@@ -10,7 +10,7 @@ let sub = {
       return document.querySelector('*[extendparam=val7]').innerHTML !== '' ? {'val8': null} : null
     }
   },
-  drapdown_val13: null,
+  checkbox_other: null,
   checkbox_three: null,
 }
 let Obj = {
