@@ -1231,12 +1231,13 @@ export default {
         inCode: this.transterInfoPerson.inContractCode
           ? this.transterInfoPerson.inContractCode
           : "", //转入的合同编号
-        payId: this.selectPayInfo.id,
       };
       let url;
       if (this.zkEdit) {
+        param.payId = this.selectPayInfo.id; //转款编辑需要入参
         url = "/api/payInfo/editInOutPayInfo ";
       } else {
+        if (param.payId) delete param.payId; //转款不需要入参
         url = "/api/payInfo/inOutPayInfo";
       }
       this.$ajax
