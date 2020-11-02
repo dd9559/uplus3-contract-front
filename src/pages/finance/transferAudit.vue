@@ -143,7 +143,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
             <el-button type="text" @click="toZkDetail(scope.row)"
-              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal!=3)||scope.row.grabDept">审核</el-button>
+              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3)||scope.row.grabDept">审核</el-button>
 
             {{scope.row.auditBy+','+getUser.user.empId+','+scope.row.isDeal+','+scope.row.grabDept}}
           </template>
@@ -791,7 +791,7 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.$message({
-              message: "转款成功",
+              message: "提交成功！",
               type: "success",
             });
             this.transterShow = false;

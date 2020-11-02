@@ -424,7 +424,10 @@ export default {
     this.billId = this.$route.query.id;
     this.btnCheck =
       this.$route.query.power.toString() === "true" ? true : false;
-    this.isZk = this.$route.query.isZk.toString() === "true" ? true : false;
+
+    if (this.$route.query.isZk)
+      this.isZk = this.$route.query.isZk.toString() === "true" ? true : false;
+
     // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
     this.btnBill = this.$route.query.bill.toString() === "true" ? true : false;
     this.tabs.unshift(this.activeItem);
