@@ -144,8 +144,7 @@
             <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
             <el-button type="text" @click="toZkDetail(scope.row)"
               v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3)||scope.row.grabDept">审核</el-button>
-
-            {{scope.row.auditBy+','+getUser.user.empId+','+scope.row.isDeal+','+scope.row.grabDept}}
+            <!-- {{scope.row.auditBy+','+getUser.user.empId+','+scope.row.isDeal+','+scope.row.grabDept}} -->
           </template>
         </el-table-column>
       </el-table>
@@ -361,6 +360,10 @@ export default {
         "sign-cw-debt-invoice": {
           state: false,
           name: "开票",
+        },
+        "sign-viewcol-room": {
+          state: false,
+          name: "物业地址",
         },
       },
       transterShow: false,
