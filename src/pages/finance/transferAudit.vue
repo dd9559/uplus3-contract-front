@@ -881,50 +881,63 @@ export default {
       }
     },
     toZkDetail(item) {
-      if (this.getUser.user.empId === item.auditBy) {
-        this.$router.push({
-          path: "billDetails",
-          query: {
-            tab: "合同信息",
-            id: item.id,
-            type: item.inAccountType,
-            power: this.getUser.user.empId === item.auditBy,
-            print: this.power["sign-cw-bill-print"].state,
-            bill: this.power["sign-cw-debt-invoice"].state,
-            listName: 4,
-            isZk: true,
-          },
-        });
-      } else {
-        this.$ajax
-          .get("/api/machine/getAuditAuth", {
-            bizCode: item.payCode,
-            flowType: 13,
-          })
-          .then((res) => {
-            res = res.data;
-            if (res.status === 200) {
-              this.$router.push({
-                path: "billDetails",
-                query: {
-                  tab: "合同信息",
-                  id: item.id,
-                  type: item.inAccountType,
-                  power: this.getUser.user.empId === item.auditBy,
-                  print: this.power["sign-cw-bill-print"].state,
-                  bill: this.power["sign-cw-debt-invoice"].state,
-                  listName: 4,
-                  isZk: true,
-                },
-              });
-            }
-          })
-          .catch((error) => {
-            this.$message({
-              message: `${error}`,
-            });
-          });
-      }
+      this.$router.push({
+        path: "billDetails",
+        query: {
+          tab: "收款信息",
+          id: item.id,
+          type: item.inAccountType,
+          power: this.getUser.user.empId === item.auditBy,
+          print: this.power["sign-cw-bill-print"].state,
+          bill: this.power["sign-cw-debt-invoice"].state,
+          listName: 4,
+          isZk: true,
+        },
+      });
+      // if (this.getUser.user.empId === item.auditBy) {
+      //   this.$router.push({
+      //     path: "billDetails",
+      //     query: {
+      //       tab: "合同信息",
+      //       id: item.id,
+      //       type: item.inAccountType,
+      //       power: this.getUser.user.empId === item.auditBy,
+      //       print: this.power["sign-cw-bill-print"].state,
+      //       bill: this.power["sign-cw-debt-invoice"].state,
+      //       listName: 4,
+      //       isZk: true,
+      //     },
+      //   });
+      // } else {
+      //   this.$ajax
+      //     .get("/api/machine/getAuditAuth", {
+      //       bizCode: item.payCode,
+      //       flowType: 13,
+      //     })
+      //     .then((res) => {
+      //       res = res.data;
+      //       if (res.status === 200) {
+      //         this.$router.push({
+      //           path: "billDetails",
+      //           query: {
+      //             tab: "合同信息",
+      //             id: item.id,
+      //             type: item.inAccountType,
+      //             power: this.getUser.user.empId === item.auditBy,
+      //             print: this.power["sign-cw-bill-print"].state,
+      //             bill: this.power["sign-cw-debt-invoice"].state,
+      //             listName: 4,
+      //             isZk: true,
+      //           },
+      //         });
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       this.$message({
+      //         message: `${error}`,
+      //       });
+      //     });
+      // }
     },
   },
   filters: {

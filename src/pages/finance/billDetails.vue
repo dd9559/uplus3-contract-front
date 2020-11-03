@@ -20,7 +20,7 @@
     <ul class="bill-details-content">
       <template v-if="!checkBoxShow&&activeItem!='转款信息'">
         <li>
-          <h4 class="f14">{{activeItem}}</h4>
+          <h4 class="f14">合同信息</h4>
           <el-table border :data="list" header-row-class-name="theader-bg">
             <el-table-column align="center" label="合同编号">
               <template slot-scope="scope">
