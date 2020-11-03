@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class">
+  <div class="page-class"  ref="tableComView">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop
@@ -118,7 +118,9 @@
             未发放总金额：<em class="cl-red">2000.00</em>元</span
           >
         </div>
-        <el-button class="fr btn-orange-border">导出</el-button>
+        <el-button class="fr btn-orange-border" @click="clickExportFn"
+          >导出</el-button
+        >
         <el-button class="fr btn-orange" @click="batchCalculationFn"
           >批量发放</el-button
         >
@@ -127,8 +129,15 @@
         :data="tableData"
         class="table-box"
         @selection-change="handleSelectionChange"
+         ref="tableCom"
+        :max-height="tableNumberCom"
       >
-        <el-table-column type="selection" min-width="60"> </el-table-column>
+        <el-table-column
+          type="selection"
+          min-width="60"
+          :selectable="selectableFn"
+        >
+        </el-table-column>
         <el-table-column min-width="100" label="结算周期">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.settleDate) }}
@@ -282,35 +291,10 @@ export default {
     },
     // 搜索数据
     searchFn() {
-      let data = { ...this.copySearchData };
-      let sign = {
-        signDateStar: "", //发起日期开始
-        signDateEnd: "", //发起日期结束
-        bonusDateStar: "", //提成计算日期开始
-        bonusDateEnd: "", //提成计算日期结束
-      };
-
-      let signJ =
-        data.signDateValue === 0
-          ? {
-              signDateStar: data.bonusDateValue[0],
-              signDateEnd: data.bonusDateValue[1],
-            }
-          : {
-              bonusDateStar: data.bonusDateValue[0],
-              bonusDateEnd: data.bonusDateValue[1],
-            };
-
-      // 删除多余属性
-      delete data.bonusDateValue;
+      let data = this.getParamFn();
 
       // 加载中
       this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
-
-      Object.assign(data, sign, signJ, {
-        pageSize: this.pageSize,
-        pageNum: this.currentPage || 1,
-      });
 
       this.$ajax
         .get("/api/bonus/bonusSummaryList", data)
@@ -322,7 +306,7 @@ export default {
             // 赋值
             Object.assign(this, {
               tableData: list,
-              currentPage: pageNum,
+              currentPage: pageNum || 1,
               pageSize,
               total,
             });
@@ -417,14 +401,16 @@ export default {
       // 加载中
       this.$tool.layerAlert.call(this, { typeInfo: 2 });
       this.$ajax
-        .postJSON("/api/bonus/updateBonus", { ids: arr.join() })
+        .post("/api/bonus/updateBonus", { ids: arr.join() })
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
-            console.log(res);
+            // 关闭加载中
+            this.$tool.layerAlertClose();
+            // 数据刷新
+            this.searchFn();
           }
-          // 关闭加载中
-          this.$tool.layerAlertClose();
+          // console.log(res);
         })
         .catch((err) => {
           // 关闭加载中
@@ -435,6 +421,46 @@ export default {
             type: "error",
           });
         });
+    },
+    // 请求数据生成
+    getParamFn() {
+      let data = { ...this.copySearchData };
+      let sign = {
+        signDateStar: "", //发起日期开始
+        signDateEnd: "", //发起日期结束
+        bonusDateStar: "", //提成计算日期开始
+        bonusDateEnd: "", //提成计算日期结束
+      };
+
+      let signJ =
+        data.signDateValue === 0
+          ? {
+              signDateStar: data.bonusDateValue[0],
+              signDateEnd: data.bonusDateValue[1],
+            }
+          : {
+              bonusDateStar: data.bonusDateValue[0],
+              bonusDateEnd: data.bonusDateValue[1],
+            };
+
+      // 删除多余属性
+      delete data.bonusDateValue;
+
+      Object.assign(data, sign, signJ, {
+        pageSize: this.pageSize,
+        pageNum: this.currentPage,
+      });
+
+      return data;
+    },
+    // 导出
+    clickExportFn() {
+      let p = this.getParamFn()
+      this.excelCreate("/input/bonusSummaryExcel", p);
+    },
+    // 勾选禁用
+    selectableFn(row, rowIndex) {
+      return row.status == 0 ? true : false;
     },
   },
   components: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class">
+  <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop
@@ -106,12 +106,15 @@
     <div class="main">
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
-        <el-button class="fr btn-orange-border">导出</el-button>
+        <el-button class="fr btn-orange-border" @click="clickExportFn"
+          >导出</el-button
+        >
         <el-button class="fr btn-orange" @click="batchCalculationFn"
           >批量计算提成</el-button
         >
       </div>
-      <el-table :data="tableData" class="table-box">
+      <el-table :data="tableData" class="table-box"  ref="tableCom"
+        :max-height="tableNumberCom">
         <el-table-column
           prop="empName"
           min-width="100"
@@ -168,11 +171,17 @@
           min-width="145"
           label="物业地址"
         ></el-table-column>
-        <el-table-column
-          prop="settleMoney"
-          min-width="85"
-          label="结算金额"
-        ></el-table-column>
+        <el-table-column prop="settleMoney" min-width="105">
+          <template slot="header"
+            >结算金额
+            <el-tooltip
+              content="结算金额=合同总实收-第三方-佣金支付费-权证费"
+              placement="top"
+            >
+              <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+            </el-tooltip>
+            </template>
+        </el-table-column>
         <el-table-column
           prop="calculationStatus"
           min-width="85"
@@ -213,7 +222,6 @@
 import myPagination from "./myPagination";
 import { MIXINS } from "@/assets/js/mixins";
 
-let initialTime = "";
 export default {
   name: "commissionCounts",
   mixins: [MIXINS],
@@ -297,34 +305,14 @@ export default {
     },
     // 搜索数据
     searchFn() {
-      let data = { ...this.copySearchData };
-      let sign = {
-        signDateStar: "", //签约日期开始
-        signDateEnd: "", //签约日期结束
-        bonusDateStar: "", //提成计算日期开始
-        bonusDateEnd: "", //提成计算日期结束
-      };
-
-      let signJ =
-        data.signDateValue === 0
-          ? {
-              signDateStar: data.bonusDateValue[0],
-              signDateEnd: data.bonusDateValue[1],
-            }
-          : {
-              bonusDateStar: data.bonusDateValue[0],
-              bonusDateEnd: data.bonusDateValue[1],
-            };
-
-      // 删除多余属性
-      delete data.bonusDateValue;
+      let data = this.getParamFn();
 
       // 加载中
       this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
 
-      Object.assign(data, sign, signJ, {
+      Object.assign(data, {
         pageSize: this.pageSize,
-        pageNum: this.currentPage || 1,
+        pageNum: this.currentPage,
       });
 
       this.$ajax
@@ -337,7 +325,7 @@ export default {
             // 赋值
             Object.assign(this, {
               tableData: list,
-              currentPage: pageNum,
+              currentPage: pageNum || 1,
               pageSize,
               total,
             });
@@ -387,6 +375,42 @@ export default {
     },
     // 批量计算
     batchCalculationFn() {
+      this.$tool.layerAlert.call(this, {
+        message: "确定计算 [结算周期] 的提成吗？",
+        title: "确认是否计算提成",
+        callback: (action) => {
+          // 如果为选择确定
+          if (action === "confirm" && id) {
+            let data = this.getParamFn();
+            // 加载中
+            this.$tool.layerAlert.call(this, {
+              typeInfo: 2,
+              message: "加载中",
+            });
+
+            this.$ajax
+              .get("/api/bonus/saveBonus", data)
+              .then((res) => {
+                // 关闭加载中
+                this.$tool.layerAlertClose();
+                // 结算完成
+                this.$tool.layerAlert.call(this, { typeInfo: 1 });
+              })
+              .catch((err) => {
+                // 关闭加载中
+                this.$tool.layerAlertClose();
+
+                this.$message({
+                  message: err,
+                  type: "error",
+                });
+              });
+          }
+        },
+      });
+    },
+    // 获取请求参数
+    getParamFn() {
       let data = { ...this.copySearchData };
       let sign = {
         signDateStar: "", //签约日期开始
@@ -411,24 +435,16 @@ export default {
 
       Object.assign(data, sign, signJ);
 
-      // 加载中
-      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
-
-      this.$ajax
-        .get("/api/bonus/saveBonus", data)
-        .then((res) => {
-          // 关闭加载中
-          this.$tool.layerAlertClose();
-        })
-        .catch((err) => {
-          // 关闭加载中
-          this.$tool.layerAlertClose();
-
-          this.$message({
-            message: err,
-            type: "error",
-          });
-        });
+      return data;
+    },
+    // 导出
+    clickExportFn() {
+      let data = this.getParamFn();
+      Object.assign(data, {
+        pageSize: this.pageSize,
+        pageNum: this.currentPage,
+      });
+      this.excelCreate("/input/bonusListExcel", data);
     },
   },
   components: {
@@ -465,4 +481,13 @@ export default {
 </script>
 
 <style scoped lang="less">
+.icon-prompt{
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
 </style>
