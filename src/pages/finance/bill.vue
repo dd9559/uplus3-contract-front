@@ -229,7 +229,7 @@
             <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="收/付款人" min-width="120">
+        <el-table-column label="收/付/转款人" min-width="120">
           <template slot-scope="scope">
             <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
             <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
@@ -263,7 +263,12 @@
         </el-table-column>
         <el-table-column label="到账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
-            <span>{{scope.row.toAccountTime|formatTime}}</span>
+            <template v-if="scope.row.payStatus.value == 3">
+              <span>--</span>
+            </template>
+            <template v-else>
+              <span>{{scope.row.toAccountTime|formatTime}}</span>
+            </template>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收付状态" prop="payStatus">
@@ -282,15 +287,26 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
           <template slot-scope="scope">
+
             <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
-                       (scope.row.type===1||scope.row.type===8)&&
-                       scope.row.isDel===1&&
-                       scope.row.billStatus&&
-                       (scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&
-                       scope.row.payStatusValue!==4&&
-                       scope.row.payStatusValue!==11)||
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)">开票</el-button>
-            <template v-if="scope.row.isZK==='true'">
+                       (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
+                       scope.row.isDel===1&&//未删除
+                       scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
+                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)//转入收款+已开票
+                       ">开票
+            </el-button>
+
+            <!-- <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
+                       (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
+                       scope.row.isDel===1&&//未删除
+                       scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
+                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2)//转入收款+已开票
+                       ">开票
+            </el-button> -->
+
+            <template v-if="scope.row.isZK==='true'&&(scope.row.payStatus.value===3||scope.row.payStatus.value===11)">
               <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
             </template>
             <template v-else>
@@ -692,6 +708,12 @@ export default {
     });
     // this.getAdmin()
   },
+  watch: {
+    //转款弹层清空合同搜索框
+    chooseContShow(val) {
+      this.contKeyWord = "";
+    },
+  },
   /*watch:{
           getCollapse:function (val) {
             this.tableBody=this.$refs.table.$refs.bodyWrapper.clientWidth
@@ -895,6 +917,7 @@ export default {
           contId: row.contId,
           listName: 1,
           detailType: true,
+          isZk: row.isZK === "true" ? true : false,//是否转款单
         },
       });
       // }
