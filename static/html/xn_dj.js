@@ -1,58 +1,18 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
-  'info_val5': {
-    stateful: function (index) {
-      return document.querySelector('*[extendparam=val5]').innerHTML !== '' ? {'val6': null} : null
-    }
-  },
-  'info_val11': {
-    stateful: function (index) {
-      return document.querySelector('*[extendparam=val11]').innerHTML !== '' ? {'val12': null} : null
-    }
-  },
+  'val1': null,
   'checkbox_one': null,
-  'val14': null,
-  'val15': null,
-  'val16': null,
-  'val17': null,
-  'val18': null,
-  'val19': null,
-  'info_val20': {
+  'val4': null,
+  'checkbox_two': {
     stateful: function (index) {
-      return document.querySelector('*[extendparam=val20]').innerHTML !== '' ? {'val21': null} : null
+      return index === 2 ? {'val5': null} : null
     }
   },
-  'drapdown_val22': {
-    stateful: function (index) {
-      return index === '(1)' ? {'drapdown_val23': {
-        stateful: function (index1) {
-          return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
-        }
-      }} : {'time_val29':null,'val30':null,'time_val31':null}
-    }
-  },
-  'drapdown_val32': {
-    stateful: function (index) {
-      return index === '(1)' ? {'val33':null} : index === '(2)' ? {'val34':null} : {'val35':null}
-    }
-  },
-  'drapdown_val36': {
-    stateful: function (index) {
-      return index === '(3)' ? {'time_val37':null,'val38':null,'val39':null,'val40':null} : null
-    }
-  },
-  'val41': null,
-  'val42': null,
-  'drapdown_val43': {
-    stateful: function (index) {
-      return index === '(2)' ? {'val44':null} : index === '(3)' ? {'val45':null,'val46':null} : null
-    }
-  },
-  'val47': null,
-  'val48': null,
+  'val6': null,
+  'checkbox_three': null
 }
 let Obj = {
-  cn_arr: ['val17', 'val19', 'val21', 'val25', 'val27', 'val28', 'val30', 'val38', 'val39', 'val48']
+  cn_arr: ['val1', 'val4', 'val6']
 }
 
 //初始化下拉控件
@@ -62,75 +22,6 @@ Dropdown.create({
     if (bindElem.tagName.toLowerCase() === 'input') {
       bindElem.value = dateObj.value
       bindElem.setAttribute('value', bindElem.value)
-      let obj = {
-        'val22': {
-          '(1)': {
-            'write': ['val23','val24','val25','val26','val27','val28'],
-            'disabled':  ['val29','val30','val31']
-          },
-          '(2)': {
-            'disabled': ['val23','val24','val25','val26','val27','val28'],
-            'write':  ['val29','val30','val31']
-          }
-        },
-        'val23': {
-          '①': {
-            'write': ['val24','val25'],
-            'disabled': ['val26','val27','val28']
-          },
-          '②': {
-            'write': ['val26','val27','val28'],
-            'disabled': ['val24','val25']
-          }
-        },
-        'val32': {
-          '(1)': {
-            'write': ['val33'],
-            'disabled': ['val34','val35']
-          },
-          '(2)': {
-            'write': ['val34'],
-            'disabled': ['val33','val35']
-          },
-          '(3)': {
-            'write':['val35'],
-            'disabled': ['val33','val34']
-          }
-        },
-        'val36': {
-          '(1)': {
-            'write': [],
-            'disabled': ['val37','val38','val39','val40']
-          },
-          '(2)': {
-            'write': [],
-            'disabled': ['val37','val38','val39','val40']
-          },
-          '(3)': {
-            'write':['val37','val38','val39','val40'],
-            'disabled': []
-          }
-        },
-        'val43': {
-          '(1)': {
-            'write': [],
-            'disabled': ['val44','val45','val46']
-          },
-          '(2)': {
-            'write': ['val44'],
-            'disabled': ['val45','val46']
-          },
-          '(3)': {
-            'write':['val45','val46'],
-            'disabled': ['val44']
-          }
-        }
-      }
-      let attr = bindElem.getAttribute('extendParam')
-      if (obj[attr] && obj[attr][dateObj.value]) {
-        contractConfig.initForm(obj[attr][dateObj.value].write, 0)
-        contractConfig.initForm(obj[attr][dateObj.value].disabled, 1)
-      }
     } else {
       bindElem.innerHTML = dateObj.value
       bindElem.classList.remove('input-select')
@@ -201,6 +92,25 @@ contractConfig.inputListener(function (ev, tip) {
 contractConfig.checkboxListener(function () { }, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
+  if (attr === 'two') {
+    let checkIO = {
+        2: ['val5'],
+    }
+    boxArray.forEach((item, i) => {
+        // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
+        if (item === obj.currentTarget) {
+            if (item.querySelector('p').getAttribute('checked')) {
+                if (i === 2) {
+                    contractConfig.initForm(checkIO[2], 0)
+                } else {
+                    contractConfig.initForm(checkIO[2], 1)
+                }
+            } else {
+                contractConfig.initForm(checkIO[2], 1)
+            }
+        }
+    })
+  }
 })
 
 

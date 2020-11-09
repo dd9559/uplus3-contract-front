@@ -79,13 +79,14 @@ let sub = {
     val23: null,
     val24: null,
     val27: null,
+    val300: null,
 };
 
 function proxyFn(val) {
     let t = document.querySelector(`.text-limit[extendParam=val${val}]`);
     let m = document.querySelector(`.text-limit[extendParam=val${val + 1}]`);
-    let p = val == 1 ? '30' : '31';
-    let b = document.querySelector(`.text-limit[extendParam=val${p}]`);
+    // let p = val == 1 ? '30' : '31';
+    // let b = document.querySelector(`.text-limit[extendParam=val${p}]`);
     // 如果 甲方代理人有输入了 甲方代理人身份证 必须输入 
     if (t.innerText.length > 0 && m.innerText.length < 1) {
         return {
@@ -93,25 +94,41 @@ function proxyFn(val) {
         };
     }
     // 签章必须输入
-    if (t.innerText.length > 0 && b && b.innerText.length < 1) {
-        return {
-            ['val' + p]: null
-        };
-    }
+    // if (t.innerText.length > 0 && b && b.innerText.length < 1) {
+    //     return {
+    //         ['val' + p]: null
+    //     };
+    // }
 }
 
 // 接口赋值的对象
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg = {
-//     ownerName: "甲方名字",
-//     ownerID: "甲方身份证号码",
-//     guestName: "乙方名字",
-//     guestID: "乙方身份证号码",
-//     code: "S0001191107007",
-//     signDate: 1592465819508,
-//     companyNames: "第三方服务公司名称"
-// }
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg = {
+    code: "S0001191107007",
+    companyNames: ["金银湖三级门店哦"],
+    guestCardType: "军官证",
+    guestCardTypes: "",
+    guestID: "132",
+    guestIDs: "",
+    guestName: "然爱迪生",
+    guestNames: "",
+    guestTel: "13011111111",
+    guestTels: "",
+    id: 3354,
+    isentrust: 1,
+    ownerCardType: "营业执照",
+    ownerCardTypes: "",
+    ownerID: "123",
+    ownerIDs: "",
+    ownerName: "熊先",
+    ownerNames: "",
+    ownerTel: "18888888888",
+    ownerTels: "",
+    signDate: 1592465819508,
+    propertyAddr: "a市b区c",
+    singleCompany: "",
+  }
 
 // 赋值
 for (let readonlyItem in msg) {
@@ -169,7 +186,8 @@ for (const key in checkArr) {
         for (const k in e) {
             if (e.hasOwnProperty(k)) {
                 let tag = document.querySelectorAll(`[name='${key}']`);
-                if (!tag[k].getAttribute('checked')) {
+                console.log(tag[k].querySelector('p').getAttribute('checked'),8888);
+                if (!tag[k].querySelector('p').getAttribute('checked')) {
                     contractConfig.initForm(e[k], 1);
                 }
             }
