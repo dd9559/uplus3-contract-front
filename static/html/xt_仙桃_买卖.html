@@ -228,7 +228,7 @@
         }
 
         .agreements {
-            margin-top: 15px;
+            margin-top: 10px;
             text-indent: 30px;
         }
 
@@ -823,9 +823,9 @@
                 <span class="w50">【委托代理人】(签章)： <span class="text-border"></span></span>
             </div>
             <div class="1h18 agreements" style="text-align: right;">
-                <!-- <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
-                        extendParam="val52"></span></span> -->
-                <span class="w50">签署日期：<span style="display:inline-block; border-bottom: 1px solid gray; min-width: 150px;"></span></span>
+                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
+                        extendParam="val52"></span></span>
+                <!-- <span class="w50">签署日期：<span style="display:inline-block; border-bottom: 1px solid gray; min-width: 150px;"></span></span> -->
             </div>
 
 
@@ -917,10 +917,6 @@
                             <span tag="input-auto" class="text-limit input-before" extendParam="val66"></span>
                         </td>
                     </tr>
-
-
-
-
                     <tr>
                         <td rowspan="5">家电</td>
                     </tr>
@@ -996,7 +992,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:8081') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './xt-mm.js'
