@@ -21,13 +21,53 @@
           <label>查询时间:</label>
           <div class="time-picker">
             <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
-              <el-option v-for="item in $tool.dropdown.dateType_money" :key="item.value" :label="item.label"
+              <el-option v-for="item in $tool.dropdown.dateType_money_zk" :key="item.value" :label="item.label"
                 :value="item.value"></el-option>
             </el-select>
             <el-date-picker v-model="searchForm.timeRange" type="daterange" size="small" class="margin-left"
               value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </div>
+        </div>
+        <div class="input-group">
+          <label>部门:</label>
+          <div>
+            <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"
+              @search="searchDep"></select-tree>
+          </div>
+          <el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye"
+            @visible-change="empHandle" class="margin-left" size="small" v-model="searchForm.empName" placeholder="请选择"
+            @change="empHandleAdd" @clear="clearDep">
+            <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
+              :value="item.empId+'/'+item.depName+'/'+item.depId"></el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>票据状态:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
+            <el-option v-for="item in dictionary['56']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>审核状态：</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.zkAuditState" placeholder="请选择">
+            <el-option v-for="item in dictionary['77']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>收付款类:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
+            <el-option v-for="item in drop_MoneyType" :key="item.id" :label="item.name" :value="item.key"></el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>签约方式:</label>
+          <el-select :clearable="true" size="small" v-model="searchForm.recordType" placeholder="请选择">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
         </div>
       </div>
     </ScreeningTop>
@@ -126,14 +166,21 @@
         </el-table-column>
         <el-table-column label="审核时间" prop="createTime" :formatter="nullFormatter" min-width="130">
           <template slot-scope="scope">
-            <span v-if="scope.row.payStatus.value==3">-</span>
+            <span v-if="scope.row.payStatus.value===3 || scope.row.payStatus.value===11">-</span>
             <span v-else>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="90" label="收付状态">
+        <!-- <el-table-column min-width="90" label="收付状态">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
             <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
+          </template>
+        </el-table-column> -->
+        <el-table-column min-width="80" label="审核状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatus.value===11">{{dictionary['77'][2].value}}</span>
+            <span v-else-if="scope.row.payStatus.value===3">{{dictionary['77'][0].value}}</span>
+            <span v-else>{{dictionary['77'][1].value}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="票据状态">
@@ -141,10 +188,26 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
           <template slot-scope="scope">
-            <el-button type="text" @click="btnOpera(scope.row,1)" v-if="power['sign-cw-zk-edit'].state">编辑</el-button>
+
+            <el-button type="text" @click="btnOpera(scope.row,1)" v-if="(power['sign-cw-zk-edit'].state&&
+            (scope.row.payStatus.value===3||scope.row.payStatus.value===11))">编辑</el-button>
+
             <el-button type="text" @click="toZkDetail(scope.row)"
-              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3)||scope.row.grabDept">审核</el-button>
-            <!-- {{scope.row.auditBy+','+getUser.user.empId+','+scope.row.isDeal+','+scope.row.grabDept}} -->
+              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3&&scope.row.payStatus.value!==11)||scope.row.grabDept&&scope.row.payStatus.value!==11">审核</el-button>
+
+            <div style="color:red"
+              v-if="scope.row.auditStore&&scope.row.auditName&&scope.row.auditBy!==getUser.user.empId&&scope.row.payStatus.value===3&&!scope.row.grabDept">
+              {{scope.row.auditName}}正在审核
+            </div>
+
+            <template
+              v-if="!(power['sign-cw-zk-edit'].state&&
+            (scope.row.payStatus.value===3||scope.row.payStatus.value===11))&&!(((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3)||scope.row.grabDept)">
+              -
+            </template>
+
+            <!-- {{[scope.row.auditBy,getUser.user.empId,scope.row.isDeal,scope.row.grabDept]}} -->
+
           </template>
         </el-table-column>
       </el-table>
@@ -250,9 +313,9 @@
 <script>
 import { FILTER } from "@/assets/js/filter";
 import { MIXINS } from "@/assets/js/mixins";
+import { TOOL } from "@/assets/js/common";
 import scrollBar from "@/components/scrollBar";
 import moneyTypePop from "@/components/moneyTypePop";
-import { TOOL } from "@/assets/js/common";
 import checkPerson from "@/components/checkPerson";
 export default {
   mixins: [MIXINS, FILTER],
@@ -271,13 +334,29 @@ export default {
       searchForm: {
         contType: [],
         timeType: "",
+        depName: "",
+        deptId: "",
+        empId: "",
+        billStatus: "",
+        proAccount: "",
+        checkStatus: "",
+        moneyType: "",
+        payMethod: "",
         keyword: "",
-        timeRange: [],
+        timeRange: "",
+        payObjType: "",
+        cooperation: "",
+        recordType: "",
+        hasCont: "", //有/无合同
+        zkAuditState: "", //转款审核
       },
       tableTotal: {},
       list: [],
       dictionary: {
         10: "",
+        56: "",
+        64: "",
+        77: "",
       },
       drop_MoneyType: [],
       //分页
@@ -482,6 +561,45 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getData("pagination");
+    },
+    clearDep: function () {
+      // 部门
+      this.searchForm.deptId = "";
+      this.searchForm.depName = "";
+      // 员工
+      this.searchForm.empId = "";
+      this.searchForm.empName = "";
+      this.clearSelect();
+    },
+    searchDep: function (payload) {
+      /*this.DepList=payload.list
+                this.searchForm.depName=payload.depName*/
+      this.searchForm.empId = "";
+      this.clearSelect("emp");
+    },
+    depHandleClick(data) {
+      this.searchForm.deptId = data.depId;
+      this.searchForm.depName = data.name;
+      this.searchForm.empId = "";
+      this.handleNodeClick(data);
+    },
+    empHandle: function (val) {
+      console.log(this.searchForm.empId);
+      if (
+        val &&
+        this.EmployeInit !== this.employeTotal &&
+        this.searchForm.deptId
+      ) {
+        this.getEmployeByText();
+      }
+    },
+    empHandleAdd(val) {
+      let depVal = val.split("/");
+      this.searchForm.empId = depVal[0];
+      this.searchForm.deptId = depVal[2];
+      this.searchForm.depName = depVal[1];
+      this.EmployeList = [];
+      this.getEmploye(this.searchForm.deptId);
     },
     getData: function (type = "init") {
       if (type === "search") {
@@ -907,7 +1025,7 @@ export default {
       this.$router.push({
         path: "billDetails",
         query: {
-          tab: "收款信息",
+          tab: "转款信息",
           id: item.id,
           type: item.inAccountType,
           power: this.getUser.user.empId === item.auditBy,

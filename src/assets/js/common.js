@@ -412,6 +412,16 @@ let TOOL = {
         label: "入账时间",
         value: 4
       }
+    ],
+    dateType_money_zk: [
+      {
+        label: "转款时间",
+        value: 2
+      },
+      {
+        label: "入账时间",
+        value: 4
+      }
     ]
   },
   // 操作状态

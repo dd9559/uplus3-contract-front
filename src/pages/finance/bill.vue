@@ -60,7 +60,7 @@
             placeholder="请选择"
           >-->
           <el-select :clearable="true" filterable remote :remote-method="test" v-loadmore="moreEmploye"
-            @visible-change="empHandle" class="margin-left" size="small" v-model="searchForm.empId" placeholder="请选择"
+            @visible-change="empHandle" class="margin-left" size="small" v-model="searchForm.empName" placeholder="请选择"
             @change="empHandleAdd" @clear="clearDep">
             <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
               :value="item.empId+'/'+item.depName+'/'+item.depId"></el-option>
@@ -263,7 +263,7 @@
         </el-table-column>
         <el-table-column label="到账时间" prop="toAccountTime" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
-            <template v-if="scope.row.payStatus.value == 3">
+            <template v-if="scope.row.payStatus.value == 3||scope.row.payStatus.value == 11">
               <span>--</span>
             </template>
             <template v-else>
@@ -277,6 +277,13 @@
             <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
+        <el-table-column min-width="80" label="转款审核状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatus.value===11">{{dictionary['77'][2].value}}</span>
+            <span v-else-if="scope.row.payStatus.value===3">{{dictionary['77'][0].value}}</span>
+            <span v-else>{{dictionary['77'][1].value}}</span>
+          </template>
+        </el-table-column>
         <el-table-column min-width="90" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
@@ -287,7 +294,6 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" min-width="120" class-name="null-formatter operation-btns">
           <template slot-scope="scope">
-
             <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.isDel===1&&//未删除
@@ -766,10 +772,12 @@ export default {
       this.getData("pagination");
     },
     clearDep: function () {
+      // 部门
       this.searchForm.deptId = "";
       this.searchForm.depName = "";
-      // this.EmployeList=[]
+      // 员工
       this.searchForm.empId = "";
+      this.searchForm.empName = "";
       this.clearSelect();
     },
     searchDep: function (payload) {
@@ -798,7 +806,7 @@ export default {
     },
     empHandleAdd(val) {
       let depVal = val.split("/");
-      // this.searchForm.empId=depVal[0]
+      this.searchForm.empId = depVal[0];
       this.searchForm.deptId = depVal[2];
       this.searchForm.depName = depVal[1];
       this.EmployeList = [];
@@ -902,22 +910,39 @@ export default {
       /*if (row.payStatus === '未付款'&&this.power['sign-cw-debt-edit'].state&&row.caozuo===1&&row.isDel===1&&((row.type===1&&row.billStatus&&row.billStatus.value===1)||row.type===2)) {
                   this.btnOpera(row, 1)
                 } else {*/
+
+      // 判断收款/付款/转款
+      let name,
+        tab,
+        isZk = false;
+
+      if (row.isZK === "true") {
+        // 转款
+        name = "转款详情";
+        tab = "转款信息";
+        isZk = true;
+      } else {
+        //收款或付款
+        (name = row.type === 1 || row.type === 8 ? "收款详情" : "付款详情"),
+          (tab = row.type === 1 || row.type === 8 ? "收款信息" : "付款信息");
+      }
       this.setPath(
         this.getPath.concat({
-          name: row.type === 1 || row.type === 8 ? "收款详情" : "付款详情",
+          name,
+          tab,
         })
       );
       this.$router.push({
         path: "billDetails",
         query: {
           id: row.id,
-          tab: row.type === 1 || row.type === 8 ? "收款信息" : "付款信息",
+          tab,
           power: this.getUser.user.empId === row.auditBy,
           bill: this.power["sign-cw-bill-invoice"].state,
           contId: row.contId,
           listName: 1,
           detailType: true,
-          isZk: row.isZK === "true" ? true : false,//是否转款单
+          isZk,
         },
       });
       // }
