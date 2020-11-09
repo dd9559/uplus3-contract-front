@@ -880,7 +880,30 @@ export default {
         this.checkPerson.label = false;
       }
     },
+    //详情
     toZkDetail(item) {
+      if (item.grabDept) {
+        this.$ajax
+          .get("/api/machine/getAuditAuth", {
+            bizCode: item.payCode,
+            flowType: 13,
+          })
+          .then((res) => {
+            res = res.data;
+            if (res.status === 200) {
+              this.toZkDetailFun(item);
+            }
+          })
+          .catch((error) => {
+            this.$message({
+              message: `${error}`,
+            });
+          });
+      } else {
+        this.toZkDetailFun(item);
+      }
+    },
+    toZkDetailFun(item) {
       this.$router.push({
         path: "billDetails",
         query: {
@@ -894,50 +917,6 @@ export default {
           isZk: true,
         },
       });
-      // if (this.getUser.user.empId === item.auditBy) {
-      //   this.$router.push({
-      //     path: "billDetails",
-      //     query: {
-      //       tab: "合同信息",
-      //       id: item.id,
-      //       type: item.inAccountType,
-      //       power: this.getUser.user.empId === item.auditBy,
-      //       print: this.power["sign-cw-bill-print"].state,
-      //       bill: this.power["sign-cw-debt-invoice"].state,
-      //       listName: 4,
-      //       isZk: true,
-      //     },
-      //   });
-      // } else {
-      //   this.$ajax
-      //     .get("/api/machine/getAuditAuth", {
-      //       bizCode: item.payCode,
-      //       flowType: 13,
-      //     })
-      //     .then((res) => {
-      //       res = res.data;
-      //       if (res.status === 200) {
-      //         this.$router.push({
-      //           path: "billDetails",
-      //           query: {
-      //             tab: "合同信息",
-      //             id: item.id,
-      //             type: item.inAccountType,
-      //             power: this.getUser.user.empId === item.auditBy,
-      //             print: this.power["sign-cw-bill-print"].state,
-      //             bill: this.power["sign-cw-debt-invoice"].state,
-      //             listName: 4,
-      //             isZk: true,
-      //           },
-      //         });
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       this.$message({
-      //         message: `${error}`,
-      //       });
-      //     });
-      // }
     },
   },
   filters: {
