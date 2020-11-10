@@ -178,9 +178,9 @@
         </el-table-column> -->
         <el-table-column min-width="80" label="审核状态" prop="payStatus">
           <template slot-scope="scope">
-            <span v-if="scope.row.payStatus.value===11">{{dictionary['77'][2].value}}</span>
-            <span v-else-if="scope.row.payStatus.value===3">{{dictionary['77'][0].value}}</span>
-            <span v-else>{{dictionary['77'][1].value}}</span>
+            <span v-if="scope.row.payStatus.value===11">已驳回</span>
+            <span v-else-if="scope.row.payStatus.value===3">审核中</span>
+            <span v-else>已通过</span>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="票据状态">
@@ -193,7 +193,8 @@
             (scope.row.payStatus.value===3||scope.row.payStatus.value===11))">编辑</el-button>
 
             <el-button type="text" @click="toZkDetail(scope.row)"
-              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3&&scope.row.payStatus.value!==11)||scope.row.grabDept&&scope.row.payStatus.value!==11">审核</el-button>
+              v-if="((scope.row.auditBy===getUser.user.empId)&&scope.row.isDeal==3&&scope.row.payStatus.value!==11)||scope.row.grabDept&&scope.row.payStatus.value!==11">
+              审核</el-button>
 
             <div style="color:red"
               v-if="scope.row.auditStore&&scope.row.auditName&&scope.row.auditBy!==getUser.user.empId&&scope.row.payStatus.value===3&&!scope.row.grabDept">

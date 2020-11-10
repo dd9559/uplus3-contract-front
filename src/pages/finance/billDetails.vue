@@ -490,18 +490,43 @@ export default {
     };
   },
   created() {
-    this.activeItem = this.$route.query.tab;
-    this.checkPerson.flowType = this.activeItem === "收款信息" ? 1 : 0;
-    this.billId = this.$route.query.id;
-    this.btnCheck =
-      this.$route.query.power.toString() === "true" ? true : false;
+    // debugger
+    this.activeItem = this.$route.query.tab || "收款信息";
+    this.billId = parseInt(this.$route.query.id) || 0;
 
+    //审批流参数
+    switch (this.activeItem) {
+      case "付款信息":
+        this.checkPerson.flowType = 0;
+        break;
+      case "收款信息":
+        this.checkPerson.flowType = 1;
+        break;
+      case "转款信息":
+        this.checkPerson.flowType = 13;
+        break;
+    }
+
+    //权限
+    if (this.$route.query.power)
+      this.btnCheck =
+        this.$route.query.power.toString() === "true" ? true : false;
+
+    //是否转款
     if (this.$route.query.isZk)
       this.isZk = this.$route.query.isZk.toString() === "true" ? true : false;
 
-    // this.btnPrint = this.$route.query.print.toString()==='true'?true:false
-    this.btnBill = this.$route.query.bill.toString() === "true" ? true : false;
+    //清单
+    if (this.$route.query.bill)
+      this.btnBill =
+        this.$route.query.bill.toString() === "true" ? true : false;
+
+    // 打印
+    // if (this.$route.query.print)
+    //   this.btnPrint = this.$route.query.print.toString() === "true" ? true : false;
+
     this.tabs.unshift(this.activeItem);
+
     if (this.$route.query.detailType && this.$route.query.tab != "付款信息") {
       this.tabs.push("转款信息");
     }
@@ -575,7 +600,7 @@ export default {
         this.$ajax
           .get("/api/machine/getAuditAuth", {
             bizCode: this.billMsg.payCode,
-            flowType: this.activeItem === "付款信息" ? 0 : 1,
+            flowType: this.checkPerson.flowType,
           })
           .then((res) => {
             res = res.data;
@@ -669,7 +694,7 @@ export default {
       let param = {
         // ageSize: this.pageSize,
         // pageNum: this.currentPage,
-        flowType: this.isZk ? 13 : this.billMsg.audit.flowType, //转款详情-flowType = 13
+        flowType: this.checkPerson.flowType,
         bizCode: this.billMsg.audit.bizCode,
       };
       this.$ajax
@@ -698,19 +723,13 @@ export default {
         bizCode: this.billMsg.audit.bizCode,
         // flowId: this.billMsg.audit.flowId,
         // sort: this.billMsg.audit.nodeSort,
-        flowType: this.activeItem === "付款信息" ? 0 : 1,
+        flowType: this.checkPerson.flowType,
         modularType: 0,
       };
       param.ApprovalForm = {
         result: type,
         remark: this.layer.reasion,
       };
-      //转款审核-flowType=13(hy,20201029)
-      if (this.isZk) {
-        param.flowType = 13;
-      } else {
-        param.flowType = this.activeItem === "付款信息" ? 0 : 1;
-      }
 
       if (type === 2 && this.layer.reasion.length === 0) {
         this.$message({
