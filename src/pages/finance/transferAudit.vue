@@ -125,7 +125,7 @@
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="转款人">
           <template slot-scope="scope">
-            <span>{{scope.row.depName+"-"+scope.row.createByName}}</span>
+            <span>{{scope.row.store+"-"+scope.row.createByName}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="120" label="当前审核人">

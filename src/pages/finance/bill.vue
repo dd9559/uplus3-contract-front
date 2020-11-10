@@ -231,8 +231,13 @@
         </el-table-column>
         <el-table-column label="收/付/转款人" min-width="120">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
-            <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
+            <template v-if="scope.row.isZK.toString()==='true'">
+              {{scope.row.store+"-"+scope.row.createByName}}
+            </template>
+            <template v-else>
+              <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjStore:scope.row.store}}</span>
+              <p>{{(scope.row.type===1||scope.row.type===8)?scope.row.inObjName:scope.row.createByName}}</p>
+            </template>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收款方式" prop="payway" :formatter="nullFormatter"></el-table-column>
