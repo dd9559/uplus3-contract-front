@@ -277,13 +277,13 @@
             <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
-        <el-table-column min-width="80" label="转款审核状态" prop="payStatus">
+        <!-- <el-table-column min-width="80" label="转款审核状态" prop="payStatus">
           <template slot-scope="scope">
-            <span v-if="scope.row.payStatus.value===11">{{dictionary['77'][2].value}}</span>
-            <span v-else-if="scope.row.payStatus.value===3">{{dictionary['77'][0].value}}</span>
-            <span v-else>{{dictionary['77'][1].value}}</span>
+            <span v-if="scope.row.payStatus.value===11">已驳回</span>
+            <span v-else-if="scope.row.payStatus.value===3">审核中</span>
+            <span v-else>已通过</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column min-width="90" label="结算信息">
           <template slot-scope="scope">
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
