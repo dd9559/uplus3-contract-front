@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="/datepicker.css" />
+  <title>定约定金协议</title>
+  <style>
+    body {
+      font-family: SimHei;
+      line-height: 1.8;
+    }
+
+    p {
+      margin: 0px;
+      padding: 0px;
+      line-height: 1.8;
+    }
+
+    span.no-border[tag="input-auto"] {
+      border: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .red {
+      color: red;
+    }
+
+    .textleft {
+      text-align: left;
+    }
+
+    .textcenter {
+      text-align: center;
+    }
+
+    .textright {
+      text-align: right;
+    }
+
+    .mt60 {
+      margin-top: 60px;
+      margin-bottom: 10px;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .lingH18 {
+      line-height: 1.8;
+    }
+
+    .padL25 {
+      padding-left: 25px;
+    }
+
+    .mt-30 {
+      margin-top: 30px;
+    }
+
+    input {
+      border: 0;
+      outline: none;
+      border-bottom: 1px solid gray;
+      height: 16px;
+      padding-left: 10px;
+      box-sizing: border-box;
+      font-family: SimHei;
+      text-align: center;
+    }
+
+    input:disabled {
+      background-color: #fff;
+    }
+
+    input[type="checkbox"] {
+      border: 0px;
+    }
+
+    /*去掉谷歌，火狐下的type="number"中的右边箭头*/
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .BODERRED {
+      border-color: red !important;
+    }
+
+    .no-border {
+      border: none;
+    }
+
+    .fontBold {
+      font-weight: bold;
+    }
+
+    .info-checkbox {
+      display: inline;
+      cursor: pointer;
+      text-indent: 0px;
+      line-height: 1;
+    }
+
+    .info-checkbox>p[type="check"] {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border: 1px solid gray;
+      position: relative;
+      -webkit-box-sizing: content-box;
+      -moz-box-sizing: content-box;
+      box-sizing: content-box;
+      margin: 0;
+    }
+
+    .info-checkbox>p[type="check"][checked='true']:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      display: inline-block;
+      width: 100%;
+      height: 10px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABPElEQVQ4T72TsUvDQBjF33cYUhfFP0GIVO7S1cXJxU3sIqiLuHSyOIg4Cro4OBW3jJ10EhcRdHcw2901f0BWh04OmvskpZVYqjYEvPl9v3v3vneEiocqzuP/AY1GY9k5F2VZ1kyS5LWUAynlihDigZnnmblprb2bGhCG4TqAWwCzzNwyxkR5fgNAEARzvu8fGWPOAXyMB6uU2iaiLoAZ51zbWns10gwAUsotIcQNM9/XarXNOI7fRwIp5QERdYiInHOn1tqz4gVfTwjDsAOgzcxP/X5/I03TN6XUBRGdDAcutdbH4+6KGQil1CMRrQF4BtADsJ8PMHNkjGlN6sy3EIdZvBDRUkHc1Vrv5Zw/AbmgXq8vep4XA1gAcK213gXgfmrsxDUqpVaJ6FBrvQMg+63uU/eglIMyH6yyg0+YpmgRBNEBzgAAAABJRU5ErkJggg==");
+    }
+
+    .info-checkbox>p[type="check"][checked='false']:after {
+      content: '';
+      position: absolute;
+      display: inline-block;
+      width: 100%;
+      height: 10px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
+    }
+
+    span[tag='input-auto'] {
+      border-bottom: 1px solid gray;
+      padding: 2px 10px;
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+
+    span[tag='input-auto'].input-before:before {
+      content: '请输入';
+      text-align: center;
+      color: #a1a1a1;
+    }
+
+    span[tag='input-auto'].input-before.input-select:before {
+      content: '请选择';
+      text-align: center;
+      color: #a1a1a1;
+    }
+
+    .alert-viwer {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px;
+      border-radius: 4px;
+      background: #fff;
+      z-index: 999;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+    }
+
+    .alert-viwer>textarea {
+      background: #fff;
+      border: 1px solid #dcdfe6;
+    }
+
+    .alert-viwer>p {
+      text-align: right;
+      margin: 6px 0 0;
+      padding: 0;
+      line-height: normal;
+    }
+
+    .alert-viwer>p>span {
+      display: inline-block;
+      background: #409eff;
+      padding: 6px 12px;
+      color: #FFFFFF;
+      border-radius: 4px;
+    }
+
+    .alert-viwer>p>span:last-of-type {
+      background: #fff;
+      color: #606266;
+      border: 1px solid #dcdfe6;
+    }
+
+    .txt-size {
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    @page {
+      size: 955px 1350px;
+    }
+
+    .page1 {
+      break-before: page;
+      page-break-before: always;
+    }
+
+    .lh18 {
+      line-height: 1.8;
+    }
+
+    .agreements {
+      margin-top: 10px;
+      text-indent: 30px;
+    }
+
+    .sign-pos>p {
+      text-align: right;
+      padding-right: 10px;
+    }
+
+    .sign-pos input {
+      width: 250px;
+    }
+
+    .cw_content {
+      position: relative;
+      font-size: 16px;
+      width: 840px;
+      box-sizing: border-box;
+      padding: 0 40px;
+      margin: 0 auto;
+    }
+
+    .cw_content .title {
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .code {
+      padding-left: 500px;
+      box-sizing: border-box;
+      margin: 10px 0;
+    }
+
+    .cw_message {
+      padding: 5px 30px;
+    }
+
+    .cw_message>ul:nth-child(-n+5) {
+      margin-bottom: 5px;
+    }
+
+    .cw_message>ul>li {
+      display: inline-block;
+      min-width: 240px;
+      line-height: 1.5;
+    }
+
+    .cw_agreement {
+      text-indent: 32px;
+    }
+
+    .nav {
+      position: absolute;
+      right: 0;
+      top: 0;
+      visibility: hidden;
+    }
+
+    .nav ul a {
+      text-decoration: none;
+      color: #000;
+    }
+
+    /* 胡劲草样式 */
+    .contanier {
+      width: 840px;
+      margin: 0 auto;
+      padding: 0px 40px;
+      box-sizing: border-box;
+    }
+
+    .paragraph[name='text-indent'] p {
+      text-indent: 32px;
+    }
+
+    .p-indent {
+      text-indent: 0 !important;
+    }
+
+    .contanier .color-red p {
+      color: red;
+    }
+
+    .contanier .ulbox ul li,
+    .htbox {
+      font-weight: bold;
+    }
+
+    .htbox {
+      margin-top: 20px;
+      clear: both;
+    }
+
+    .contanier .ulbox {
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .contanier .ulbox li.fl {
+      float: left;
+    }
+
+    .contanier .ulbox li {
+      float: left;
+      width: 50%;
+      margin-bottom: 10px;
+    }
+
+    .contanier .ulbox li input {
+      max-width: initial;
+      width: inherit;
+    }
+
+    .tablestyle {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .tablestyle tr td {
+      height: 25px;
+    }
+
+    .tablestyle .item>td:first-child {
+      width: 45px;
+    }
+
+    .tablestyle .is-can span:first-child {
+      margin-right: 30px;
+    }
+
+    .tablestyle .w-100 td:first-child {
+      width: 100px;
+    }
+
+    .tablestyle .w-100 td:last-child {
+      width: 200px;
+    }
+
+    /* 封面样式 */
+    .cover-fm {
+      text-align: center;
+      line-height: normal;
+    }
+
+    .cover-fm div {
+      font-size: 80px;
+      margin-top: 20px;
+    }
+
+    .cover-fm .first {
+      margin-top: 100px;
+    }
+
+    .cover-fm p {
+      margin-top: 100px;
+      font-size: 20px;
+    }
+
+    .ulbox {
+      overflow: hidden;
+      margin-top: 50px;
+    }
+
+    .ulbox li {
+      float: left;
+      width: 33.3%;
+      margin-bottom: 10px;
+    }
+
+    .ulbox li.li100 {
+      width: 100%;
+    }
+
+    .ulbox li span {
+      display: inline-block;
+    }
+
+    .t2em {
+      text-indent: 2em;
+    }
+
+    .bs1 {
+      border: 1px #000 dashed;
+      padding: 5px;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="container main">
+    <!-- 公用输入框开始-->
+    <div class="alert-viwer" style="display: none;">
+      <textarea id="inputArea" cols="30" rows="4"></textarea>
+      <p class="control-btn">
+        <span>保存</span>
+        <span>取消</span>
+      </p>
+    </div>
+    <!-- 公用输入框结束-->
+    <h2 class="c">定约定金协议</h2>
+    <p style="text-align:right;">
+      <span>编号：</span>
+      <span tag="input-auto" class="text-limit" systemParam="code"></span></p>
+    <p>&nbsp;</p>
+    <p class="bs1">
+      <b>提示：</b>凡我司替客户保管任何款项，均须向客户出具盖有我司财务专用章的正式收据或发票；所有客户主张相关权利均须出示此种收据或发票方为有效，其余形式我司一律不予认可，并与我司无关。
+    </p>
+    <ul class="ulbox">
+      <li>甲方（卖方）： <span class="text-limit input-before" systemParam="ownerName" tag="input-auto"></span></li>
+      <li>证件类型： <span class="text-limit input-before" systemParam="ownerCardType" tag="input-auto"></span></li>
+      <li>身份证号： <span class="text-limit input-before" systemParam="ownerID" tag="input-auto"></span></li>
+      <li>乙方（买方）： <span class="text-limit input-before" systemParam="guestName" tag="input-auto"></span></li>
+      <li>证件类型： <span class="text-limit input-before" systemParam="guestCardType" tag="input-auto"></span></li>
+      <li>身份证号： <span class="text-limit input-before" systemParam="guestID" tag="input-auto"></span></li>
+      <li class="li100">丙方（见证人）： <span class="text-limit input-before" systemParam="companyNames" company="true" tag="input-auto"></span></li>
+    </ul>
+    <p class="lh18 agreements interval">经丙方居间，甲方代表全体所有人出售座落于<span tag="input-auto" class="text-limit input-before"
+        systemParam="propertyAddr"
+        extendParam="val301"></span>的房屋给乙方。乙方对房屋位置、面积、户型、配套设施等现状均已了解清楚且无异议。为保证能顺利订立《开封市存量房居间(买卖)合同》（双方已知晓样本合同的内容），经甲、乙双方协商，丙方见证，特约定本协议。
+    </p>
+    <div class="lh18 agreements">一、乙方在本协议签订之日，向甲方交付定金人民币（小写）<span tag="input-auto" listen="number" max="16"
+        class="text-limit input-before" extendParam="val302"></span>元整（大写）<span tag="input-auto" class="input-readonly"
+        systemParam="true" extendParam="val302_add"></span>元，该定金由甲方
+      <div class="info-checkbox" name="cb1">
+        <p type="check"></p><b>自行保管</b>
+      </div>
+      <div class="info-checkbox" name="cb1">
+        <p type="check"></p><b>委托丙方代为保管</b>
+      </div>，甲乙双方完全明确定金的法律意义。甲方在签署本协议时将“两证”/不动产权证（或购房合同、权属证明等全部权利凭证）交予丙方保管，直至交易完毕。
+    </div>
+    <div class="lh18 agreements">二、乙方交付定金后，甲、乙双方应于<input type="text" class="text-limit calendar-item"
+        readonly="readonly"
+        extendParam="val303" />（请填写具体的日期时间）之前，至丙方指定的签约点签订正式的《开封市存量房居间（买卖）合同》。乙方逾期未签的，甲方有权没收定金；甲方逾期未签的，定金双倍赔付给乙方。</div>
+    <div class="lh18 agreements">
+      甲方系全体所有人代表，保证已获得所有共有人一致同意并到期签署《开封市存量房居间（买卖）合同》，如有任一房屋共有人手续不全不能签署或房屋有碍出售情形的（如查封、债权人占有等），由甲方承担定金赔付责任。</div>
+    <div class="lh18 agreements">三、甲、乙双方一致同意，签订正式的《开封市存量房居间(买卖)合同》中的房屋价款（甲方净得价）为人民币（小写）<span class="input-before"
+        listen="number" max="16" extendParam="val304" tag="input-auto"></span>（大写）<span tag="input-auto"
+        extendParam="val304_add" systemParam="true" class="input-readonly"></span>元，双方约定采取<div class="info-checkbox"
+        name="cb2">
+        <p type="check"></p><b>过户时一次性付款</b>
+      </div>
+      <div class="info-checkbox" name="cb2">
+        <p type="check"></p><b>首付款加贷款的方式支付房款；</b>
+      </div>
+      <div class="info-checkbox" name="cb2">
+        <p type="check"></p><b>其他：</b>
+      </div>
+      <span class="text-limit input-before" tag="input-auto" readonly="readonly" systemParam="true" disabled="disabled"
+        extendParam="val305"></span>
+    </div>
+    <div class="lh18 agreements">四、丙方居间服务费（小写）<span class="input-before" listen="number" max="16" extendParam="val306"
+        tag="input-auto"></span>（大写）<span tag="input-auto" extendParam="val306_add" systemParam="true"
+        class="input-readonly"></span>元，在签订《开封市存量房居间(买卖)合同》时向<div class="info-checkbox" name="cb3">
+        <p type="check"></p><b>甲方</b>
+      </div>
+      <div class="info-checkbox" name="cb3">
+        <p type="check"></p><b>乙方</b>
+      </div>收取。如因一方违约，未能签署《开封市存量房居间(买卖)合同》的，<b>守约方同意给付定金的50%作为丙方的居间损失。</b>
+    </div>
+    <div class="lh18 agreements">
+      五、本协议一式三份，三方各执一份，自签字盖章之日起生效，由丙方见证签署。本协议如有纠纷，依法向房屋所在地人民法院提起诉讼。</div>
+    <ul class="ulbox">
+      <li><span>甲方（签字）:</span></li>
+      <li><span>乙方（签字）:</span></li>
+      <li>
+        <span style="position: relative;">丙方（盖章）:
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:70px;top:-25px;" alt=""></span>
+      </li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
+      <li><span style="border:none;" systemParam="signDate"></span></li>
+    </ul>
+  </div>
+</body>
+
+</html>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser.min.js"></script>
+<script type="text/javascript" src="/datepicker.js"></script>
+<script type="text/javascript" src="/dropdown.js"></script>
+<script type="text/javascript" src="/js/bundle_kf_djxy_20201016.js"></script>
+<!-- <script>
+  (function () {
+    var scriptList = document.getElementsByTagName("script")
+    console.log(scriptList)
+    if (!scriptList[0].src) {
+      var host = 'https://sign2.jjw.com'
+      var host_other = "http://sign2.jjw.com:28879"
+      var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle.js",
+        "datepicker.css"
+      ]
+      for (let i = 0; i < addrList.length; i++) {
+        if (window.location.host === 'localhost:8082') {
+          if (addrList[i].indexOf('bundle') > -1) {
+            // addrList[i]=host_other+'/'+addrList[i]
+            addrList[i] = './KF-DJXY.js'
+          } else {
+            addrList[i] = host_other + '/' + addrList[i]
+          }
+        } else {
+          addrList[i] = '/' + addrList[i]
+        }
+        if (addrList[i].indexOf('.css') > -1) {
+          var hm = document.createElement("link");
+          hm.rel = "stylesheet"
+          hm.href = addrList[i];
+          /*var s = document.getElementsByTagName("link")[0];
+          s.parentNode.insertBefore(hm,s);*/
+          document.head.appendChild(hm);
+        } else {
+          var hm = document.createElement("script");
+          addrList[i].includes('KF-DJXY.js') && (hm.type = 'module');
+          hm.src = addrList[i];
+          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
+          s.parentNode.insertBefore(hm, s);
+        }
+      }
+    }
+  })();
+
+</script> -->

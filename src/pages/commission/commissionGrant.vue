@@ -1,215 +1,489 @@
 <template>
-    <div class="page-class">
-        <!-- <p class="brand-nav">财务>提成发放</p> -->
-        <!-- 查询组件 -->
-        <uPlusScrollTop @propResetFormFn="reset"
-            @propQueryFn="queryFn"
-            class="commission-top"
-            style="padding:0 12px 12px;">
-            <el-input placeholder="登录账号/员工工号"
-                prefix-icon="el-icon-search"
-                class="w300"></el-input>
-            <!-- 日期 -->
-            <div class="item-text">结算周期</div>
-            <el-date-picker class="item-billing-date w160"
-                v-model="billingDate"
-                type="date"
-                placeholder="选择日期"
-                value-format="timestamp">
-            </el-date-picker>
+  <div class="page-class"  ref="tableComView">
+    <!-- <p class="brand-nav">财务>提成发放</p> -->
+    <!-- 查询组件 -->
+    <uPlusScrollTop
+      @propResetFormFn="reset"
+      @propQueryFn="queryFn"
+      class="commission-top"
+      style="padding: 0 12px 12px"
+    >
+      <el-input
+        placeholder="登录账号/员工工号"
+        prefix-icon="el-icon-search"
+        class="w300"
+        v-model="searchData.keyword"
+      ></el-input>
+      <!-- 日期 -->
+      <div class="item-text">结算周期</div>
+      <el-date-picker
+        class="item-billing-date w160"
+        v-model="searchData.settleDate"
+        type="month"
+        :placeholder="initialTime"
+        value-format="yyyy-MM"
+      >
+      </el-date-picker>
 
-            <!-- 三联下拉选择 -->
-            <el-select v-model="value1"
-                class="w100 mr-16"
-                placeholder="体系">
-                <el-option v-for="item in options1"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-            </el-select>
+      <!-- 三联下拉选择 -->
+      <el-select
+        v-model="searchData.systemTag"
+        class="w100 mr-16"
+        placeholder="体系"
+        clearable
+      >
+        <el-option
+          v-for="item in systemTagSelect"
+          :key="item.key"
+          :label="item.value"
+          :value="item.key"
+        >
+        </el-option>
+      </el-select>
 
-            <div class="triple-select">
+      <div class="triple-select">
+        <select-tree
+          class="select-tree"
+          :init="searchData.depName"
+          @checkCell="depHandleClick"
+          @clear="clearDep"
+        ></select-tree>
+        <el-select
+          v-model="searchData.empId"
+          v-loadmore="moreEmploye"
+          class="w100"
+          placeholder="选择人员"
+          @change="handleEmpNodeClick"
+          clearable
+        >
+          <el-option
+            v-for="item in EmployeList"
+            :key="item.empId"
+            :label="item.name"
+            :value="item.empId"
+          >
+          </el-option>
+        </el-select>
+      </div>
 
-                <el-select v-model="value2"
-                    class="w200"
-                    placeholder="选择部门">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-select v-model="value3"
-                    class="w100"
-                    placeholder="选择人员">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-            </div>
+      <el-select
+        v-model="searchData.isCalculation"
+        class="w116 mr-16"
+        placeholder="在职状态"
+      >
+        <el-option
+          v-for="item in isCalculation"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
 
-            <el-select v-model="value5"
-                class="w116 mr-16"
-                placeholder="在职状态">
-                <el-option v-for="item in options1"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-            </el-select>
+      <div class="triple-select">
+        <el-select
+          v-model="searchData.signDateValue"
+          class="w100"
+          @change="signDateChangeFn"
+        >
+          <el-option
+            v-for="item in signDateList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-date-picker
+          class="item-billing-date2 w212"
+          v-model="searchData.bonusDateValue"
+          type="monthrange"
+          range-separator="至"
+          start-placeholder="开始月份"
+          end-placeholder="结束月份"
+          value-format="timestamp"
+        >
+        </el-date-picker>
+      </div>
+    </uPlusScrollTop>
 
-            <div class="triple-select">
-                <el-select v-model="value4"
-                    class="w100">
-                    <el-option v-for="item in options1"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-date-picker class="item-billing-date2 w212"
-                    v-model="billingDate2"
-                    type="monthrange"
-                    range-separator="至"
-                    start-placeholder="开始月份"
-                    end-placeholder="结束月份">
-                </el-date-picker>
-            </div>
-
-        </uPlusScrollTop>
-
-        <div class="main">
-            <div class="reveal-box">
-                <div class="reveal-txt">当前共找到【420】条数据<span class="reveal-p1">发放人数：<em class="cl-red">20</em>人 提成总金额：<em class="cl-red">20000.00</em>元 已发放总金额：<em class="cl-red">18000.00</em>元 未发放总金额：<em class="cl-red">2000.00</em>元</span></div>
-                <el-button class="fr btn-orange-border">导出</el-button>
-                <el-button class="fr btn-orange">批量发放</el-button>
-            </div>
-            <el-table :data="tableData"
-                class="table-box">
-                <el-table-column type="selection"
-                    min-width="60">
-                </el-table-column>
-                <el-table-column prop="billingCycle"
-                    min-width="100"
-                    label="结算周期"></el-table-column>
-                <el-table-column min-width="100"
-                    label="发放状态">
-                    <template slot-scope="scope">
-                        <span :class="scope.row.releaseStatus === '未发放'?'cl-red':'cl-green'">{{scope.row.releaseStatus}}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="IssueDate"
-                    min-width="140"
-                    label="发放日期"></el-table-column>
-                <el-table-column prop="name"
-                    min-width="250"
-                    label="员工姓名"></el-table-column>
-                <el-table-column prop="workingStatus"
-                    min-width="100"
-                    label="在职状态"></el-table-column>
-                <el-table-column prop="commission"
-                    min-width="130"
-                    label="提成（元）"></el-table-column>
-                <el-table-column min-width="120"
-                    label="操作">
-                    <template slot-scope="scope">
-                        <span :class="scope.row.operating === '发放'?'cl-blue':''">{{scope.row.operating || '--'}}</span>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <myPagination @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="currentPage"
-                :page-sizes="pageSizes"
-                :page-size="pageSize"
-                :total="total"></myPagination>
+    <div class="main">
+      <div class="reveal-box">
+        <div class="reveal-txt">
+          当前共找到【{{ total }}】条数据<span class="reveal-p1"
+            >发放人数：<em class="cl-red">20</em>人 提成总金额：<em
+              class="cl-red"
+              >20000.00</em
+            >元 已发放总金额：<em class="cl-red">18000.00</em>元
+            未发放总金额：<em class="cl-red">2000.00</em>元</span
+          >
         </div>
+        <el-button class="fr btn-orange-border" @click="clickExportFn"
+          >导出</el-button
+        >
+        <el-button class="fr btn-orange" @click="batchCalculationFn"
+          >批量发放</el-button
+        >
+      </div>
+      <el-table
+        :data="tableData"
+        class="table-box"
+        @selection-change="handleSelectionChange"
+         ref="tableCom"
+        :max-height="tableNumberCom"
+      >
+        <el-table-column
+          type="selection"
+          min-width="60"
+          :selectable="selectableFn"
+        >
+        </el-table-column>
+        <el-table-column min-width="100" label="结算周期">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.settleDate) }}
+          </template>
+        </el-table-column>
+        <el-table-column min-width="100" label="发放状态">
+          <template slot-scope="scope">
+            <span :class="scope.row.status == 0 ? 'cl-red' : 'cl-green'">{{
+              scope.row.status == 0 ? "未发放" : "已发放"
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="140" label="发放日期">
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.bonusDate) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="bonusName"
+          min-width="250"
+          label="员工姓名"
+        ></el-table-column>
+        <el-table-column min-width="100" label="在职状态">
+          <template slot-scope="scope">
+            {{
+              scope.row.empStatus == 1
+                ? "在职"
+                : scope.row.empStatus == 2
+                ? "离职"
+                : "待职"
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="bonusMoney"
+          min-width="130"
+          label="提成（元）"
+        ></el-table-column>
+        <el-table-column min-width="120" label="操作">
+          <template slot-scope="scope">
+            <span
+              :class="scope.row.status === 0 ? 'cl-blue' : ''"
+              @click="clickIssueFn(scope)"
+              >{{ scope.row.status === 0 ? "发放" : "--" }}</span
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <myPagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :total="total"
+      ></myPagination>
     </div>
+  </div>
 </template>
 
 <script>
 import myPagination from "./myPagination";
+import { MIXINS } from "@/assets/js/mixins";
 export default {
-    name: "commissionGrant",
-    data() {
-        return {
-            billingDate: "",
-            billingDate2: "",
-            options1: [
-                {
-                    value: "选项1",
-                    label: "发放时间",
-                },
-                {
-                    value: "选项2",
-                    label: "双皮奶",
-                },
-                {
-                    value: "选项3",
-                    label: "蚵仔煎",
-                },
-                {
-                    value: "选项4",
-                    label: "龙须面",
-                },
-                {
-                    value: "选项5",
-                    label: "北京烤鸭",
-                },
-            ],
-            value1: "",
-            value2: "",
-            value3: "",
-            value4: "选项1",
-            value5: "",
-            tableData: [
-                {
-                    billingCycle: "2016-05-02",
-                    releaseStatus: "未发放",
-                    address: "上海市普陀区金沙江路 1518 弄",
-                    IssueDate: "2019/04/31",
-                    name: "黄小玉-保利利利利保利保利花园一店",
-                    workingStatus: "在职",
-                    commission: "120.00",
-                    operating: "发放",
-                },
-            ],
-            currentPage: 3,
-            pageSize: 10,
-            total: 400,
-            pageSizes: [10, 200, 300, 400],
-        };
+  name: "commissionGrant",
+  mixins: [MIXINS],
+  data() {
+    return {
+      //   签约时间
+      signDateList: [
+        {
+          value: 0,
+          label: "发放时间",
+        },
+        {
+          value: 1,
+          label: "提成生成时间",
+        },
+      ],
+      //   在职状态
+      isCalculation: [
+        {
+          value: 1,
+          label: "在职",
+        },
+        {
+          value: 2,
+          label: "离职",
+        },
+        {
+          value: "",
+          label: "全部",
+        },
+      ],
+      searchData: {
+        keyword: "", //关键字
+        settleDate: "", //yyyy-mm 结算周期
+        systemTag: "", //体系id
+        depId: "", //部门编号
+        depName: "",
+        empId: "", //员工编号
+        signDateValue: 0,
+        bonusDateValue: "",
+        // signDateStar: "", //发起日期开始
+        // signDateEnd: "", //发起日期结束
+        // bonusDateStar: "", //提成生成日期开始
+        // bonusDateEnd: "", //提成生成日期结束
+        isCalculation: "", //在职状态: 0待入职，1在职，2离职
+        // pageSize: "",
+        // pageNum: "",
+      },
+      copySearchData: {},
+      tableData: [],
+      currentPage: 1,
+      pageSize: 20,
+      total: 20,
+      initialTime: "",
+      selectionList: [],
+    };
+  },
+  methods: {
+    //重置
+    reset() {
+      this.searchData = {
+        keyword: "", //关键字
+        settleDate: "", //yyyy-mm 结算周期
+        systemTag: "", //体系id
+        depId: "", //部门编号
+        depName: "",
+        empId: "", //员工编号
+        signDateValue: 0,
+        bonusDateValue: "",
+        isCalculation: "", //在职状态: 0待入职，1在职，2离职
+      };
     },
-    methods: {
-        reset() {
-            console.log("重置");
-        },
-        queryFn() {
-            console.log("查询");
-        },
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-            console.log(`2当前页: ${val}`);
-        },
+    // 查询
+    queryFn() {
+      this.currentPage = 1;
+      this.copySearchData = { ...this.searchData };
+      this.searchFn();
     },
-    components: {
-        myPagination,
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.searchFn();
     },
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      this.searchFn();
+    },
+    handleSelectionChange(val) {
+      this.selectionList = val;
+    },
+    // 搜索数据
+    searchFn() {
+      let data = this.getParamFn();
+
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+
+      this.$ajax
+        .get("/api/bonus/bonusSummaryList", data)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            let { list = [], pageSize = 20, pageNum = 1, total = 0 } =
+              res.data || {};
+            // 赋值
+            Object.assign(this, {
+              tableData: list,
+              currentPage: pageNum || 1,
+              pageSize,
+              total,
+            });
+          }
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+        })
+        .catch((err) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+
+          this.$message({
+            message: err,
+            type: "error",
+          });
+        });
+    },
+    // 签约时间下拉列表切换
+    signDateChangeFn(val) {
+      this.searchData.bonusDateValue = "";
+    },
+    // 部门第二版 选择部门
+    depHandleClick(data) {
+      this.searchData.depId = data.depId;
+      this.searchData.depName = data.name;
+      this.searchData.empId = "";
+      this.handleNodeClick(data);
+    },
+    // 部门第二版 删除
+    clearDep() {
+      this.searchData.depId = "";
+      this.searchData.empId = "";
+      this.clearSelect();
+      this.remoteMethod();
+    },
+    // 时间处理
+    dateFormat(val) {
+      return this.$tool.dateFormat(val);
+    },
+    // 初始时间
+    initialTimeFn() {
+      let d = this.dateFormat(new Date()).split("-");
+      let t = d[1] - 1;
+      d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
+      d.splice(2, 1);
+      this.initialTime = d.join("-");
+    },
+    // 批量发放
+    batchCalculationFn() {
+      let arr = [];
+
+      if (this.selectionList.length <= 0) {
+        this.$message({
+          message: "未勾选数据！",
+          type: "warning",
+        });
+        return false;
+      }
+      // 提示弹层
+      this.$tool.layerAlert.call(this, {
+        message: "确定计算 [结算周期] 的提成吗？",
+        title: "确认是否计算提成",
+        callback: (action) => {
+          // 如果为选择确定
+          if (action === "confirm") {
+            this.selectionList.forEach((e) => {
+              arr.push(e.id);
+            });
+            this.updateBonusFn(arr);
+          }
+        },
+      });
+    },
+    // 发放
+    clickIssueFn(scope) {
+      let { row } = scope || {};
+      let { id = 0 } = row || {};
+
+      this.$tool.layerAlert.call(this, {
+        message: "确定计算 [结算周期] 的提成吗？",
+        title: "确认是否计算提成",
+        callback: (action) => {
+          // 如果为选择确定
+          if (action === "confirm" && id) {
+            this.updateBonusFn([id]);
+          }
+        },
+      });
+    },
+    // 批量发放请求
+    updateBonusFn(arr = []) {
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2 });
+      this.$ajax
+        .post("/api/bonus/updateBonus", { ids: arr.join() })
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            // 关闭加载中
+            this.$tool.layerAlertClose();
+            // 数据刷新
+            this.searchFn();
+          }
+          // console.log(res);
+        })
+        .catch((err) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
+
+          this.$message({
+            message: err,
+            type: "error",
+          });
+        });
+    },
+    // 请求数据生成
+    getParamFn() {
+      let data = { ...this.copySearchData };
+      let sign = {
+        signDateStar: "", //发起日期开始
+        signDateEnd: "", //发起日期结束
+        bonusDateStar: "", //提成计算日期开始
+        bonusDateEnd: "", //提成计算日期结束
+      };
+
+      let signJ =
+        data.signDateValue === 0
+          ? {
+              signDateStar: data.bonusDateValue[0],
+              signDateEnd: data.bonusDateValue[1],
+            }
+          : {
+              bonusDateStar: data.bonusDateValue[0],
+              bonusDateEnd: data.bonusDateValue[1],
+            };
+
+      // 删除多余属性
+      delete data.bonusDateValue;
+
+      Object.assign(data, sign, signJ, {
+        pageSize: this.pageSize,
+        pageNum: this.currentPage,
+      });
+
+      return data;
+    },
+    // 导出
+    clickExportFn() {
+      let p = this.getParamFn()
+      this.excelCreate("/input/bonusSummaryExcel", p);
+    },
+    // 勾选禁用
+    selectableFn(row, rowIndex) {
+      return row.status == 0 ? true : false;
+    },
+  },
+  components: {
+    myPagination,
+  },
+  mounted() {
+    // 时间
+    this.initialTimeFn();
+    // 体系
+    this.getSystemTagSelect();
+    // 获取数据
+    this.queryFn();
+  },
 };
 </script>
 
 <style scoped>
 .brand-nav {
-    background-color: #f5f5f5;
-    height: 50px;
-    line-height: 50px;
-    border: none;
-    font-size: 16px;
-    padding-left: 20px;
+  background-color: #f5f5f5;
+  height: 50px;
+  line-height: 50px;
+  border: none;
+  font-size: 16px;
+  padding-left: 20px;
 }
 </style>

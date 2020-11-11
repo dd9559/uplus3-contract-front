@@ -6,6 +6,9 @@
       <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn">
         <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
           <el-form-item>
+            <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search" style="width:300px"></el-input>
+          </el-form-item>
+          <el-form-item>
             <el-select
               v-model="searchForm.systemTag"
               placeholder="体系"
@@ -20,9 +23,6 @@
                 :value="item.key"
               ></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="searchForm.bonusName" placeholder="提成规则名称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-select
@@ -86,16 +86,17 @@
         <div class="contract-list">
           <div class="listTitle">
             <span class="title">
-              <i class="iconfont icon-tubiao-11"></i>数据列表
+              <!-- <i class="iconfont icon-tubiao-11"></i>数据列表 -->
+              <!-- <i class="iconfont icon-tubiao-11"></i> -->
+              <span>当前共找到【{{total}}】条数据</span>
             </span>
             <el-button
               class="btn-info"
-              icon="el-icon-plus"
-              round
-              type="primary"
+              type="warning"
               size="small"
               @click="add('add')"
-            >新增结算设置</el-button>
+            >新增</el-button>
+            <!-- >新增结算设置</el-button> -->
           </div>
           <el-table
             :data="tableData"
@@ -385,10 +386,14 @@
               </div>
             </div>
           </div>
+          <div class="info-box">
+            <p>注：1.遵循右包含原则，例如业绩档次0-5000元，其中包含5000</p>
+            <p>2.最后一档最大值为：99999999999</p>
+          </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAddDeduct = false">取消</el-button>
-          <el-button type="primary" @click="checkSave()">保 存</el-button>
+          <el-button @click="dialogAddDeduct = false" type="info" plain>取消</el-button>
+          <el-button type="warning" @click="checkSave()">保 存</el-button>
         </div>
       </el-dialog>
       <!-- 保存提成设置方案确认框 -->
@@ -401,14 +406,16 @@
       >
         <div class="warning-box">
           <p>确认保存该提成设置？</p>
-          <p>合同类型：{{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p>
-          <p>提成计算日期：{{"合同【实收日期】计算"}}</p>
-          <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
-          <p>执行时间：{{deductData.executionStartTime}}</p>
+          <div class="warning-content">
+            <p>合同类型：{{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p>
+            <p>提成计算日期：{{"合同【实收日期】计算"}}</p>
+            <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
+            <p>执行时间：{{deductData.executionStartTime}}</p>
+          </div>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogSave = false">取消</el-button>
-          <el-button type="primary" @click="addDeduct">确认</el-button>
+          <el-button type="info" plain @click="dialogSave = false">取消</el-button>
+          <el-button type="warning" @click="addDeduct">确认</el-button>
         </span>
       </el-dialog>
     </div>
@@ -1098,6 +1105,9 @@ export default {
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
+.commission-bgc {
+  background-color: #FFA148;
+}
 .brand-nav {
   background-color: #f5f5f5;
   height: 50px;
@@ -1105,6 +1115,37 @@ export default {
   border: none;
   font-size: 16px;
   padding-left: 20px;
+}
+/deep/ .view-header {
+  padding: 10px !important;
+  .paper-box-content {
+    margin-top: -33px !important;
+  }
+}
+/deep/ .el-select .el-input.is-focus .el-input__inner {
+    border-color: #FFA148;
+}
+/deep/ .is-active, .el-range-editor.is-active:hover {
+    border-color: #FFA148;
+}
+/deep/ .el-input__inner:focus {
+  border-color: #FFA148 !important;
+  outline: 0;
+}
+/deep/.el-table__body {
+  .el-table__row {
+    &.hover-row {
+      background-color: #fff !important;
+      td {
+        background-color: #fff !important;
+      }
+    }
+    &.collapseRow {
+      .bgc {
+        background-color: #ecf5ff !important;
+      }
+    }
+  }
 }
 /deep/ .colorful {
   input::-webkit-input-placeholder {
@@ -1127,6 +1168,11 @@ export default {
   background-color: #fff;
   padding: 0 10px;
   border-radius: 2px;
+  /deep/ .theader-bg {
+    > th {
+      background-color: #F5F5F9;
+    }
+  }
   .pagination-info {
     float: right;
     padding: 0 5px;
@@ -1139,10 +1185,20 @@ export default {
     padding: 8px 0;
   }
 }
+/deep/ .el-dialog {
+  border-radius: 12px;
+  .el-dialog__header {
+    background-color: #f0f3fa;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+}
 .deduct-dialog {
-  /deep/ .el-dialog__body {
-    padding-left: 20px;
-    border-bottom: 1px solid #edecf0;
+  /deep/ .el-dialog {
+    .el-dialog__body {
+      padding-left: 20px;
+      border-bottom: 1px solid #edecf0;
+    }
   }
   .deduct-content {
     padding: 10px;
@@ -1171,11 +1227,11 @@ export default {
           cursor: pointer;
         }
         .add {
-          background-color: #39bd8b;
+          background-color: #FFA148;
           margin-left: 25px;
         }
         .sub {
-          background-color: #a1a1a1;
+          background-color: #8492A6;
           margin-left: 25px;
         }
       }
@@ -1186,13 +1242,28 @@ export default {
         border: none;
       }
     }
+    .info-box {
+      padding: 5px 10px;
+      color: #e87058;
+      background: rgba(232, 112, 88, 0.3);
+      border-radius: 4px;
+      p:nth-child(2) {
+        text-indent: 28px;
+      }
+    }
   }
 }
 .warning-box {
+  padding: 20px 50px;
   text-align: center;
-  >p:first-child {
-    padding-top: 32px;
-    padding-bottom: 10px;
+  &>p:first-child {
+    font-weight: bold;
+  }
+  .warning-content {
+    margin-top: 10px;
+    padding: 10px 30px;
+    border-radius: 8px;
+    background: #edeff5;
   }
 }
 </style>

@@ -127,7 +127,7 @@
               :value="item.key"></el-option>
           </el-select>
         </el-form-item>
-        <!-- <el-form-item
+        <el-form-item
           label="有/无合同："
           prop="state">
           <el-select
@@ -139,7 +139,7 @@
               :label="item.value"
               :value="item.key"></el-option>
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item
           label="业绩状态"
           prop="state">

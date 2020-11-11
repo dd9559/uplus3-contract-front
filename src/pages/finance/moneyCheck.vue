@@ -4,274 +4,127 @@
       <div class="content">
         <div class="input-group">
           <label>关键字:</label>
-          <el-tooltip
-            :content="`合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/${activeView===1?'收款ID':'付款ID'}`"
-            placement="top"
-          >
-            <el-input
-              class="w200"
-              :clearable="true"
-              size="small"
-              v-model="searchForm.keyword"
-              placeholder="请输入"
-            ></el-input>
+          <el-tooltip :content="`合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/手机号/${activeView===1?'收款ID':'付款ID'}`" placement="top">
+            <el-input class="w200" :clearable="true" size="small" v-model="searchForm.keyword" placeholder="请输入">
+            </el-input>
           </el-tooltip>
         </div>
         <div class="input-group">
           <label>合同类型:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            class="width200"
-            :class="{'width325':searchForm.contType.length>3}"
-            multiple
-            v-model="searchForm.contType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['10']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" class="width200" :class="{'width325':searchForm.contType.length>3}"
+            multiple v-model="searchForm.contType" placeholder="请选择">
+            <el-option v-for="item in dictionary['10']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>查询时间:</label>
           <div class="time-picker">
-            <el-select
-              :clearable="true"
-              size="small"
-              v-model="searchForm.timeType"
-              placeholder="请选择"
-            >
-              <el-option
-                v-if="(activeView===1&&item.value!==3)||(activeView===2&&item.value===3)"
-                v-for="item in $tool.dropdown.dateType_money"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
+            <el-select :clearable="true" size="small" v-model="searchForm.timeType" placeholder="请选择">
+              <el-option v-if="(activeView===1&&item.value!==3)||(activeView===2&&item.value===3)"
+                v-for="item in $tool.dropdown.dateType_money" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
             </el-select>
-            <el-date-picker
-              v-model="searchForm.timeRange"
-              type="daterange"
-              size="small"
-              class="margin-left"
-              value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            ></el-date-picker>
+            <el-date-picker v-model="searchForm.timeRange" type="daterange" size="small" class="margin-left"
+              value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+            </el-date-picker>
           </div>
         </div>
         <div class="input-group">
           <label>部门:</label>
           <div>
-            <select-tree
-              :data="DepList"
-              :init="searchForm.depName"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-              @search="searchDep"
-            ></select-tree>
+            <select-tree :data="DepList" :init="searchForm.depName" @checkCell="depHandleClick" @clear="clearDep"
+              @search="searchDep"></select-tree>
           </div>
           <!--<el-select class="w200" :clearable="true" ref="tree" size="small" :loading="Loading" :remote-method="remoteMethod" @visible-change="initDepList" @clear="clearDep" v-model="searchForm.depName" placeholder="请选择">
             <el-option class="drop-tree" value="">
               <el-tree :data="DepList" :props="defaultProps" @node-click="depHandleClick"></el-tree>
             </el-option>
           </el-select>-->
-          <el-select
-            :clearable="true"
-            v-loadmore="moreEmploye"
-            class="margin-left"
-            size="small"
-            @change="handleEmpNodeClick"
-            v-model="searchForm.empId"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in EmployeList"
-              :key="item.empId"
-              :label="item.name"
-              :value="item.empId"
-            ></el-option>
+          <el-select :clearable="true" v-loadmore="moreEmploye" class="margin-left" size="small"
+            @change="handleEmpNodeClick" v-model="searchForm.empId" placeholder="请选择">
+            <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId"></el-option>
           </el-select>
         </div>
         <div class="input-group" v-if="activeView===1">
           <label>票据状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.billStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['56']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.billStatus" placeholder="请选择">
+            <el-option v-for="item in dictionary['56']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group" v-if="activeView===1">
           <label>收款账户:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.proAccount"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['32']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.proAccount" placeholder="请选择">
+            <el-option v-for="item in dictionary['32']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付状态:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.checkStatus"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary[activeView===1?'61':'62']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.checkStatus" placeholder="请选择">
+            <el-option v-for="item in dictionary[activeView===1?'61':'62']" :key="item.key" :label="item.value"
+              :value="item.key"></el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付款类:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.moneyType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in drop_MoneyType"
-              :key="item.id"
-              :label="item.name"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.moneyType" placeholder="请选择">
+            <el-option v-for="item in drop_MoneyType" :key="item.id" :label="item.name" :value="item.key"></el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payMethod"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary[activeView===1?'59':'60']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
+            <el-option v-for="item in dictionary[activeView===1?'59':'60']" :key="item.key" :label="item.value"
+              :value="item.key"></el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>收付对象:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.payObjType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['57']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.payObjType" placeholder="请选择">
+            <el-option v-for="item in dictionary['57']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>合作方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.cooperation"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['53']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.cooperation" placeholder="请选择">
+            <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
         <div class="input-group">
           <label>签约方式:</label>
-          <el-select
-            :clearable="true"
-            size="small"
-            v-model="searchForm.recordType"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in dictionary['64']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+          <el-select :clearable="true" size="small" v-model="searchForm.recordType" placeholder="请选择">
+            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
         </div>
-        <!-- <div class="input-group">
+        <div class="input-group">
           <label>有/无合同：</label>
           <el-select :clearable="true" size="small" v-model="searchForm.hasCont" placeholder="请选择">
-            <el-option
-              v-for="item in dictionary['792']"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            ></el-option>
+            <el-option v-for="item in dictionary['792']" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
           </el-select>
-        </div> -->
+        </div>
       </div>
     </ScreeningTop>
-    <div
-      class="view-context"
-      :class="[((activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state))?'':'other']"
-    >
-      <div
-        class="table-tool"
-        v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)"
-      >
+    <div class="view-context"
+      :class="[((activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state))?'':'other']">
+      <div class="table-tool"
+        v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">
         <h4 class="f14">
           <i class="iconfont icon-tubiao-11"></i>数据列表
         </h4>
         <p>
-          <el-button
-            class="btn-info"
-            round
-            size="small"
-            type="primary"
-            @click="getExcel"
-            v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)"
-          >导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" @click="getExcel"
+            v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">
+            导出</el-button>
         </p>
       </div>
-      <el-table
-        class="info-scrollbar"
-        ref="tableCom"
-        :max-height="tableNumberCom"
-        border
-        :data="list"
-        :key="activeView"
-        header-row-class-name="theader-bg"
-        style="width: 100%;max-height:500px;"
-        @row-dblclick="toDetails"
-      >
+      <el-table class="info-scrollbar" ref="tableCom" :max-height="tableNumberCom" border :data="list" :key="activeView"
+        header-row-class-name="theader-bg" style="width: 100%;max-height:500px;" @row-dblclick="toDetails">
         <el-table-column min-width="120" :label="getView" prop="payCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="合同信息" min-width="200px" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
@@ -307,12 +160,8 @@
           </template>
         </el-table-column>
         <el-table-column min-width="60" label="合同类型" prop="contType" :formatter="nullFormatter"></el-table-column>
-        <el-table-column
-          min-width="60"
-          label="签约方式"
-          prop="recordType.label"
-          :formatter="nullFormatter"
-        ></el-table-column>
+        <el-table-column min-width="60" label="签约方式" prop="recordType.label" :formatter="nullFormatter">
+        </el-table-column>
         <el-table-column min-width="60" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="80" label="收付方式">
           <template slot-scope="scope">
@@ -337,12 +186,10 @@
               <span>{{scope.row.auditStore}}</span>
               <p>{{scope.row.auditName}}</p>
             </template>
-            <p
-              class="btn-text-info"
-              type="text"
+            <p class="btn-text-info" type="text"
               v-if="getUser.user&&(getUser.user.empId===scope.row.preAuditId||getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
-              @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)"
-            >{{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
+              @click="choseCheckPerson(scope.row,getUser.user.empId===scope.row.auditBy?2:1)">
+              {{getUser.user.empId===scope.row.auditBy?'转交审核人':'设置审核人'}}</p>
           </template>
         </el-table-column>
         <el-table-column label="下一步审核人" min-width="120">
@@ -353,32 +200,20 @@
 
               <p>{{scope.row.nextAuditName}}</p>
             </template>
-            <p
-              class="btn-text-info color-red"
-              type="text"
+            <p class="btn-text-info color-red" type="text"
               v-if="getUser.user&&(scope.row.nextAuditId!==0&&getUser.user.empId===scope.row.auditBy)&&scope.row.checkStatus&&scope.row.checkStatus.value===0"
-              @click="choseCheckPerson(scope.row,3)"
-            >设置审核人</p>
+              @click="choseCheckPerson(scope.row,3)">设置审核人</p>
           </template>
         </el-table-column>
         <el-table-column min-width="90" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column
-          :label="activeView===1?'收款时间':'付款时间'"
-          :formatter="nullFormatter"
-          min-width="90"
-        >
+        <el-table-column :label="activeView===1?'收款时间':'付款时间'" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="入账时间"
-          prop="toAccountTime"
-          :formatter="nullFormatter"
-          v-if="activeView===1"
-          min-width="90"
-        >
+        <el-table-column label="入账时间" prop="toAccountTime" :formatter="nullFormatter" v-if="activeView===1"
+          min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.toAccountTime|formatTime}}</span>
           </template>
@@ -386,11 +221,7 @@
         <el-table-column min-width="80" label="状态" prop="payStatus">
           <template slot-scope="scope">
             <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
-            <span
-              class="text-warning"
-              v-else
-              @click="getErrorMsg(scope.row)"
-            >{{scope.row.payStatus|getLabel}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="结算信息" v-if="activeView===1">
@@ -401,34 +232,23 @@
         <el-table-column min-width="80" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120" class-name="null-formatter">
           <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="cellOpera(scope.row,'edit')"
-              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3"
-            >编辑</el-button>
-            <div
-              style="color:red"
-              v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId&&scope.row.isDeal!=3"
-            >{{scope.row.auditByName}}正在审核</div>
-            <el-button
-              type="text"
-              @click="cellOpera(scope.row)"
-              v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3"
-            >审核</el-button>
+            <el-button type="text" @click="cellOpera(scope.row,'edit')"
+              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3">
+              编辑</el-button>
+            <div style="color:red"
+              v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId&&scope.row.isDeal!=3">
+              {{scope.row.auditByName}}正在审核</div>
+            <el-button type="text" @click="cellOpera(scope.row)"
+              v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3">审核</el-button>
             <!-- 20200630新加反审核按钮 -->
             <template v-if="scope.row.contId!=0">
-              <el-button
-                type="text"
-                @click="cellOpera(scope.row,'deAudit')"
-                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
-              >反审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
+                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">
+                反审核</el-button>
             </template>
             <template v-else>
-              <el-button
-                type="text"
-                @click="cellOpera(scope.row,'deAudit')"
-                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state"
-              >反审核</el-button>
+              <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
+                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">反审核</el-button>
             </template>
             <!-- <el-button
               type="text"
@@ -441,16 +261,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        v-if="list.length>0"
-        class="pagination-info"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
+      <el-pagination v-if="list.length>0" class="pagination-info" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+        layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
       <!--<scrollBar :table="tableBox" v-if="tableBox">
         <el-pagination
           v-if="list.length>0"
@@ -465,44 +278,20 @@
       </scrollBar>-->
     </div>
     <!--作废dialog-->
-    <el-dialog
-      title="作废"
-      :visible.sync="layer.show"
-      :closeOnClickModal="$tool.closeOnClickModal"
-      width="740px"
-    >
+    <el-dialog title="作废" :visible.sync="layer.show" :closeOnClickModal="$tool.closeOnClickModal" width="740px">
       <div class="delete-dialog" v-if="layer.content.length>0">
         <p>是否作废该{{activeView===1?'收款单':'付款单'}}</p>
-        <el-table
-          border
-          :data="layer.content"
-          style="width: 100%"
-          header-row-class-name="theader-bg"
-          key="other"
-        >
-          <el-table-column
-            align="center"
-            min-width="120"
-            label="收付编号"
-            prop="payCode"
-            :formatter="nullFormatter"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            :label="activeView===1?'收款金额':'付款金额'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
+        <el-table border :data="layer.content" style="width: 100%" header-row-class-name="theader-bg" key="other">
+          <el-table-column align="center" min-width="120" label="收付编号" prop="payCode" :formatter="nullFormatter">
+          </el-table-column>
+          <el-table-column align="center" :label="activeView===1?'收款金额':'付款金额'" prop="cityName"
+            :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{scope.row.amount}}元</span>
             </template>
           </el-table-column>
-          <el-table-column
-            align="center"
-            :label="activeView===1?'付款方':'收款方'"
-            prop="cityName"
-            :formatter="nullFormatter"
-          >
+          <el-table-column align="center" :label="activeView===1?'付款方':'收款方'" prop="cityName"
+            :formatter="nullFormatter">
             <template slot-scope="scope">
               <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType.label:scope.row.inObjType.label}}{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName?`-${scope.row.outObjName}`:'':scope.row.inObjName?`-${scope.row.inObjName}`:''}}</span>
             </template>
@@ -511,27 +300,13 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" class="btn-info" round @click="layer.show = false">返 回</el-button>
-        <el-button
-          size="small"
-          class="btn-info"
-          round
-          type="primary"
-          @click="deleteBill"
-          v-loading.fullscreen.lock="getLoading"
-        >确 定</el-button>
+        <el-button size="small" class="btn-info" round type="primary" @click="deleteBill"
+          v-loading.fullscreen.lock="getLoading">确 定</el-button>
       </span>
     </el-dialog>
-    <checkPerson
-      :show="checkPerson.state"
-      :type="checkPerson.type"
-      page="list"
-      :showLabel="checkPerson.label"
-      :bizCode="checkPerson.code"
-      :flowType="checkPerson.flowType"
-      @submit="personChose"
-      @close="checkPerson.state=false"
-      v-if="checkPerson.state"
-    ></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label"
+      :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose"
+      @close="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
@@ -578,21 +353,21 @@ export default {
       },
       list: [],
       dictionary: {
-        "10": "",
-        "56": "",
-        "32": "",
-        "23": "",
-        "24": "",
-        "25": "",
-        "507": "",
-        "57": "",
-        "59": "",
-        "60": "",
-        "61": "",
-        "62": "",
-        "53": "",
-        "64": "",
-        "792": "",
+        10: "",
+        56: "",
+        32: "",
+        23: "",
+        24: "",
+        25: "",
+        507: "",
+        57: "",
+        59: "",
+        60: "",
+        61: "",
+        62: "",
+        53: "",
+        64: "",
+        792: "",
       },
       drop_MoneyType: [],
       //分页
@@ -942,6 +717,7 @@ export default {
         });
     },
     toDetails: function (item) {
+      // debugger;
       let powerMsg = this.power[
         this.activeView === 1 ? "sign-cw-debt-rev" : "sign-cw-debt-pay"
       ].state;
@@ -967,6 +743,10 @@ export default {
           bill: this.power["sign-cw-debt-invoice"].state,
           listName: 2,
         };
+        //转款审核-转出款类(hy,20201029)
+        // if (item.isDeal === 3) {
+        //   param.query.isZkFromMoneyCheck = true;
+        // }
         // this.setPath(this.getPath.concat({name: '收款详情'}))
       } else {
         param.query = {

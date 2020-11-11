@@ -6,69 +6,149 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <!-- 分类账 -->
         <el-tab-pane label="分类账" name="first">
-          <el-table :data="gridData1" border :row-class-name="rowClass" height="450">
-            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+          <el-table
+            :data="gridData1"
+            border
+            :row-class-name="rowClass"
+            height="450"
+          >
+            <el-table-column
+              prop="moneyTypeDetail"
+              label="款类"
+            ></el-table-column>
+            <el-table-column
+              prop="receive"
+              label="收款（元）"
+            ></el-table-column>
             <el-table-column label="付款（元）">
-              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
+              <template slot-scope="scope">{{
+                scope.row.pay === "-0" ? "0" : scope.row.pay
+              }}</template>
             </el-table-column>
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 业主分类账 -->
-        <el-tab-pane label="业主分类账" name="second" v-if="flowType===1">
-          <el-table :data="gridData2" border :row-class-name="rowClass" height="450">
-            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+        <el-tab-pane label="业主分类账" name="second" v-if="flowType === 1">
+          <el-table
+            :data="gridData2"
+            border
+            :row-class-name="rowClass"
+            height="450"
+          >
+            <el-table-column
+              prop="moneyTypeDetail"
+              label="款类"
+            ></el-table-column>
+            <el-table-column
+              prop="receive"
+              label="收款（元）"
+            ></el-table-column>
             <el-table-column label="付款（元）">
-              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
+              <template slot-scope="scope">{{
+                scope.row.pay === "-0" ? "0" : scope.row.pay
+              }}</template>
             </el-table-column>
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 客户分类账 -->
         <el-tab-pane label="客户分类账" name="third">
-          <el-table :data="gridData2" border :row-class-name="rowClass" height="450">
-            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+          <el-table
+            :data="gridData2"
+            border
+            :row-class-name="rowClass"
+            height="450"
+          >
+            <el-table-column
+              prop="moneyTypeDetail"
+              label="款类"
+            ></el-table-column>
+            <el-table-column
+              prop="receive"
+              label="收款（元）"
+            ></el-table-column>
             <el-table-column label="付款（元）">
-              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
+              <template slot-scope="scope">{{
+                scope.row.pay === "-0" ? "0" : scope.row.pay
+              }}</template>
             </el-table-column>
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 分类流水账 -->
         <el-tab-pane label="分类流水账" name="fourth">
-          <el-table :data="gridData4" border :row-class-name="rowClass" height="450">
-            <el-table-column prop="moneyTypeDetail" label="款类"></el-table-column>
-            <el-table-column prop="payCode" label="收付款编号"></el-table-column>
-            <el-table-column prop="type" label="类型" width="50"></el-table-column>
+          <el-table
+            :data="gridData4"
+            border
+            :row-class-name="rowClass"
+            height="450"
+          >
+            <el-table-column
+              prop="moneyTypeDetail"
+              label="款类"
+            ></el-table-column>
+            <el-table-column
+              prop="payCode"
+              label="收付款编号"
+            ></el-table-column>
+            <el-table-column
+              prop="type"
+              label="类型"
+              width="50"
+            ></el-table-column>
             <el-table-column label="业务日期" width="90">
-              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+              <template slot-scope="scope">{{
+                scope.row.createTime | formatTime
+              }}</template>
             </el-table-column>
-            <el-table-column prop="obj" label="业务对象" width="50"></el-table-column>
-            <el-table-column prop="receive" label="收款（元）"></el-table-column>
+            <el-table-column
+              prop="obj"
+              label="业务对象"
+              width="50"
+            ></el-table-column>
+            <el-table-column
+              prop="receive"
+              label="收款（元）"
+            ></el-table-column>
             <el-table-column label="付款（元）">
-              <template slot-scope="scope">{{scope.row.pay==="-0"?"0":scope.row.pay}}</template>
+              <template slot-scope="scope">{{
+                scope.row.pay === "-0" ? "0" : scope.row.pay
+              }}</template>
             </el-table-column>
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
-            <el-table-column prop="checkStatus" label="审核状态" width="70"></el-table-column>
+            <el-table-column
+              prop="checkStatus"
+              label="审核状态"
+              width="70"
+            ></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 流水账 -->
         <el-tab-pane label="流水账" name="fifth">
           <el-table :data="gridData5" border height="450">
-            <el-table-column prop="createByName" label="录入人"></el-table-column>
+            <el-table-column
+              prop="createByName"
+              label="录入人"
+            ></el-table-column>
             <el-table-column prop="deptName" label="录入门店"></el-table-column>
             <el-table-column label="录入日期" width="90">
-              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+              <template slot-scope="scope">{{
+                scope.row.createTime | formatTime
+              }}</template>
             </el-table-column>
             <el-table-column prop="type" label="类型"></el-table-column>
             <el-table-column prop="objType" label="业务对象"></el-table-column>
             <el-table-column prop="moneyType" label="款类"></el-table-column>
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
-            <el-table-column prop="billStatus" label="票据状态"></el-table-column>
-            <el-table-column prop="checkStatus" label="审核状态"></el-table-column>
+            <el-table-column
+              prop="billStatus"
+              label="票据状态"
+            ></el-table-column>
+            <el-table-column
+              prop="checkStatus"
+              label="审核状态"
+            ></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 转款流水 -->
@@ -76,16 +156,31 @@
           <el-table :data="gridData7" border height="450">
             <el-table-column label="录入人">
               <template slot-scope="scope">
-                {{scope.row.deptName+"-"+scope.row.createByName}}
+                {{ scope.row.deptName + "-" + scope.row.createByName }}
               </template>
             </el-table-column>
             <el-table-column label="录入日期" width="90">
-              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+              <template slot-scope="scope">{{
+                scope.row.createTime | formatTime
+              }}</template>
             </el-table-column>
             <el-table-column prop="objType" label="业务对象"></el-table-column>
-            <el-table-column prop="outTypeName" label="转出合同/款类"></el-table-column>
-            <el-table-column prop="thisTypeName" label="转入合同/款类"></el-table-column>
-            <el-table-column prop="billStatus" label="票据状态"></el-table-column>
+            <el-table-column
+              prop="outTypeName"
+              label="转出合同/款类金额"
+            ></el-table-column>
+            <el-table-column
+              prop="originOutTypeName"
+              label="转出合同/款类余额"
+            ></el-table-column>
+            <el-table-column
+              prop="thisTypeName"
+              label="转入合同/款类金额"
+            ></el-table-column>
+            <el-table-column
+              prop="billStatus"
+              label="票据状态"
+            ></el-table-column>
           </el-table>
         </el-tab-pane>
         <!-- 票据 -->
@@ -93,19 +188,29 @@
           <el-table :data="gridData6" border height="450">
             <el-table-column prop="moneyType" label="款类"></el-table-column>
             <el-table-column label="开票时间" width="90">
-              <template slot-scope="scope">{{scope.row.createTime|formatTime}}</template>
+              <template slot-scope="scope">{{
+                scope.row.createTime | formatTime
+              }}</template>
             </el-table-column>
-            <el-table-column prop="amount" label="开票金额（元）"></el-table-column>
+            <el-table-column
+              prop="amount"
+              label="开票金额（元）"
+            ></el-table-column>
             <el-table-column prop="code" label="票据号"></el-table-column>
             <el-table-column prop="status" label="票据状态"></el-table-column>
             <el-table-column prop="drawerName" label="开票人">
               <template slot-scope="scope">
-                <span v-if="scope.row.drawerName==='--'&&scope.row.drawerDepName==='--'">
+                <span
+                  v-if="
+                    scope.row.drawerName === '--' &&
+                    scope.row.drawerDepName === '--'
+                  "
+                >
                   <p>--</p>
                 </span>
                 <span v-else>
-                  <p>{{scope.row.drawerDepName}}</p>
-                  <p>{{scope.row.drawerName}}</p>
+                  <p>{{ scope.row.drawerDepName }}</p>
+                  <p>{{ scope.row.drawerName }}</p>
                 </span>
               </template>
             </el-table-column>
@@ -130,7 +235,7 @@
                     <el-table-column prop="divideAmount" label="分佣金额（元）"> </el-table-column>
                     <el-table-column prop="divideTime" label="分佣时间"></el-table-column>
                     <el-table-column prop="divideName" label="被拆名称"></el-table-column>
-                    <el-table-column prop="originalAmount" label="原始金额"></el-table-column>          
+                    <el-table-column prop="originalAmount" label="原始金额"></el-table-column>
                 </el-table>
         </el-tab-pane>-->
       </el-tabs>
@@ -263,7 +368,7 @@ export default {
         });
       } else if (tab.name === "seventh") {
         //转款
-         let param = {
+        let param = {
           contractCode: this.contCode,
           contractType: this.flowType,
         };
