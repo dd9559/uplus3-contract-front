@@ -488,12 +488,12 @@ export default {
   },
   created() {
     // 获取体系
+    this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
     this.getDep()
     this.getPosition('search')
-    this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
     let res = this.getDataList
 
     console.log(this.getDataList,767);
@@ -1053,7 +1053,7 @@ export default {
     resetFormFn() {
       this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
       this.searchForm.bonusName = ''
-      this.searchForm.position = ''
+      this.searchForm.positions = ''
       this.searchForm.depId = ''
       this.searchForm.timeType = '1'
       this.searchForm.executionStartTime = ''
