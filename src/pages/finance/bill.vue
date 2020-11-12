@@ -303,8 +303,11 @@
             <template v-if="(power['sign-cw-bill-invoice'].state&&scope.row.isDel===1)//权限+未删除
             ">
               <!-- 线下收款 -->
-              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(scope.row.payway&&scope.row.payway.value===4&&//线下转款
-              scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4))//票据状态等于(未开票||已作废)
+              <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(
+                       (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
+                       scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
+                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payway&&scope.row.payway.value===4)||//收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payway&&scope.row.payway.value===4)//转入收款+未开票+线下转款
               ">开票
               </el-button>
               <!-- 线上收款,需判断收付+支付状态或转入收款+未开票 -->
@@ -312,11 +315,10 @@
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
                        scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)//转入收款+已开票
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)//转入收款+已开票+收付状态不等于(失败和审核中)
                        ">开票
               </el-button>
             </template>
-
             <!-- <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.isDel===1&&//未删除
