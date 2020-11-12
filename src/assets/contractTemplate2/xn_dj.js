@@ -2,6 +2,7 @@ import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
   'val1': null,
   'checkbox_one': null,
+  'val3': null,
   'val4': null,
   'checkbox_two': {
     stateful: function (index) {
@@ -118,7 +119,7 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
 let mainBtn = document.querySelector('#submit');
 if (mainBtn) {
   mainBtn.addEventListener('click', function (e) {
-    contractConfig.submit(e, sub, 'templateError1')
+    contractConfig.submit(e, sub, 'templateError')
   })
 } else {
   let btn = document.createElement('span')
@@ -127,7 +128,7 @@ if (mainBtn) {
   btn.innerHTML = 'click'
   document.body.appendChild(btn)
   btn.addEventListener('click', function (e) {
-    contractConfig.submit(e, sub, 'templateError1')
+    contractConfig.submit(e, sub, 'templateError')
   })
 }
 

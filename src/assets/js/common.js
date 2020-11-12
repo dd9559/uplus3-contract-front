@@ -371,6 +371,25 @@ let TOOL = {
       code: false,
       child: []
     },
+    {
+      id: 8,
+      name: "提成",
+      category: "8",
+      can: true, //是否可见
+      icon: "icon-caozuorizhi",
+      child: [{
+        name: "提成业务",
+        category: "8-1",
+        can: true, //是否可见
+        child: [{
+          name: "提成计算",
+          category: "8-1-1",
+          can: true, //是否可见
+          path: "commissionIndex",
+          code: "sign-yj-rec-export",
+        }]
+      }]
+    },
   ], //侧边栏导航
   closeOnClickModal: false,
   contType: {
@@ -413,8 +432,7 @@ let TOOL = {
         value: 4
       }
     ],
-    dateType_money_zk: [
-      {
+    dateType_money_zk: [{
         label: "转款时间",
         value: 2
       },
