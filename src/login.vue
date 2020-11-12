@@ -124,7 +124,7 @@ export default {
                       break;
                     case 101:
                       _appPath = {
-                        path: "commissionSetting",
+                        path: "commissionCounts",
                       };
                       break;
                   }
