@@ -1,14 +1,8 @@
 <template>
   <div class="app-bj">
     <el-col :span="2" class="el-col-left">
-      <el-menu
-        :default-active="this.$route.path"
-        router
-        mode="horizontal"
-        class="nav-box"
-        @open="handleOpen"
-        @close="handleClose"
-      >
+      <el-menu :default-active="this.$route.path" router mode="horizontal" class="nav-box" @open="handleOpen"
+        @close="handleClose">
         <template v-for="(item, i) in commissionTabs">
           <el-menu-item :key="i" :index="item.path" v-if="item.code">
             <template slot="title">
@@ -69,6 +63,24 @@ export default {
   },
   created() {
     console.log(this.$route.path);
+    console.log(this.$store.state.user.privileges);
+
+    let arr = this.$store.state.user.privileges;
+    let views = this.$tool.pathList.map((item) => Object.assign({}, item));
+    console.log(views)
+    let sliders = [];
+
+    views.forEach((item, index) => {
+      //获取侧边栏信息中用户可访问的元素
+      item.child.forEach((tip) => {
+        tip.child.forEach((grade) => {
+          if (arr.includes(grade.code)) {
+            sliders.push(grade);
+          }
+        });
+      });
+    });
+    console.log(sliders)
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -316,12 +328,12 @@ export default {
         border-right: 1px solid #ffa148;
       }
     }
-    .select-tree{
+    .select-tree {
       width: 200px;
       display: inline-block;
       position: relative;
       top: 13px;
-      .el-input{
+      .el-input {
         margin-top: 0;
       }
     }
@@ -374,9 +386,9 @@ export default {
     .triple-select {
       display: inline-block;
       margin-right: 16px;
-    //   .el-input {
-    //     margin-top: 0;
-    //   }
+      //   .el-input {
+      //     margin-top: 0;
+      //   }
       &:last-child {
         margin-right: 0;
       }
@@ -389,8 +401,8 @@ export default {
           border-right: 1px solid #d3d6e6;
           border-radius: 0px 4px 4px 0px;
         }
-        &:last-child .el-input.is-focus .el-input__inner{
-            border-right: 1px solid #ffa148;
+        &:last-child .el-input.is-focus .el-input__inner {
+          border-right: 1px solid #ffa148;
         }
 
         &:first-child .el-input__inner {
@@ -405,8 +417,8 @@ export default {
         &:first-child {
           border-radius: 4px 0px 0px 4px;
         }
-        &.is-active:last-child{
-            border-right: 1px solid #ffa148;
+        &.is-active:last-child {
+          border-right: 1px solid #ffa148;
         }
       }
     }
