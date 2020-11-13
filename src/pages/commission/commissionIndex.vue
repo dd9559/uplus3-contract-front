@@ -67,7 +67,7 @@ export default {
 
     let arr = this.$store.state.user.privileges;
     let views = this.$tool.pathList.map((item) => Object.assign({}, item));
-    console.log(views)
+    console.log(views);
     let sliders = [];
 
     views.forEach((item, index) => {
@@ -80,7 +80,7 @@ export default {
         });
       });
     });
-    console.log(sliders)
+    console.log(sliders);
   },
   methods: {
     handleOpen(key, keyPath) {

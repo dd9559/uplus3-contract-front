@@ -2,135 +2,54 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop
-      @propResetFormFn="reset"
-      @propQueryFn="queryFn"
-      class="commission-top"
-      style="padding: 0 12px 12px"
-    >
-      <el-input
-        placeholder="合同编号/纸质合同编号/物业地址"
-        prefix-icon="el-icon-search"
-        class="w300"
-        v-model="searchData.keyword"
-      ></el-input>
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
+      <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword">
+      </el-input>
       <!-- 日期 -->
       <div class="item-text">结算周期</div>
-      <el-date-picker
-        class="item-billing-date w160"
-        v-model="searchData.settleDate"
-        type="month"
-        :placeholder="initialTime"
-        value-format="yyyy-MM"
-      >
+      <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="month"
+        :placeholder="initialTime" value-format="yyyy-MM">
       </el-date-picker>
       <!-- 三联下拉选择 -->
       <div class="triple-select">
-        <el-select
-          v-model="searchData.systemTag"
-          class="w100"
-          placeholder="体系"
-          clearable
-        >
-          <el-option
-            v-for="item in systemTagSelect"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key"
-          >
+        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" clearable>
+          <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
           </el-option>
         </el-select>
-        <select-tree
-          class="select-tree"
-          :init="searchData.depName"
-          @checkCell="depHandleClick"
-          @clear="clearDep"
-        ></select-tree>
-        <el-select
-          v-model="searchData.empId"
-          v-loadmore="moreEmploye"
-          class="w100"
-          placeholder="选择人员"
-          @change="handleEmpNodeClick"
-          clearable
-        >
-          <el-option
-            v-for="item in EmployeList"
-            :key="item.empId"
-            :label="item.name"
-            :value="item.empId"
-          >
+        <select-tree class="select-tree" :init="searchData.depName" @checkCell="depHandleClick" @clear="clearDep">
+        </select-tree>
+        <el-select v-model="searchData.empId" v-loadmore="moreEmploye" class="w100" placeholder="选择人员"
+          @change="handleEmpNodeClick" clearable>
+          <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
         </el-select>
       </div>
       <div class="triple-select">
-        <el-select
-          v-model="searchData.signDateValue"
-          class="w100"
-          @change="signDateChangeFn"
-        >
-          <el-option
-            v-for="item in signDateList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn">
+          <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-date-picker
-          class="item-billing-date2 w212"
-          v-model="searchData.bonusDateValue"
-          type="monthrange"
-          range-separator="至"
-          start-placeholder="开始月份"
-          end-placeholder="结束月份"
-          value-format="timestamp"
-        >
+        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="monthrange"
+          range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份" value-format="timestamp">
         </el-date-picker>
       </div>
 
-      <el-select
-        v-model="searchData.isCalculation"
-        class="w116"
-        placeholder="计算状态"
-      >
-        <el-option
-          v-for="item in isCalculation"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
+      <el-select v-model="searchData.isCalculation" class="w116" placeholder="计算状态">
+        <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
     </uPlusScrollTop>
     <div class="main">
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
-        <el-button class="fr btn-orange-border" @click="clickExportFn"
-          >导出</el-button
-        >
-        <el-button class="fr btn-orange" @click="batchCalculationFn"
-          >批量计算提成</el-button
-        >
+        <el-button class="fr btn-orange-border" @click="clickExportFn">导出</el-button>
+        <el-button class="fr btn-orange" @click="batchCalculationFn">批量计算提成</el-button>
       </div>
-      <el-table :data="tableData" class="table-box"  ref="tableCom"
-        :max-height="tableNumberCom">
-        <el-table-column
-          prop="empName"
-          min-width="100"
-          label="姓名"
-        ></el-table-column>
-        <el-table-column
-          prop="depName"
-          min-width="110"
-          label="部门"
-        ></el-table-column>
-        <el-table-column
-          prop="positionName"
-          min-width="100"
-          label="职位"
-        ></el-table-column>
-        <el-table-column min-width="80" label="在职状态">
+      <el-table :data="tableData" class="table-box" ref="tableCom" :max-height="tableNumberCom">
+        <el-table-column prop="empName" min-width="100" label="姓名"></el-table-column>
+        <el-table-column prop="depName" min-width="110" label="部门"></el-table-column>
+        <el-table-column prop="positionName" min-width="100" label="职位"></el-table-column>
+        <el-table-column min-width="100" label="在职状态">
           <template slot-scope="scope">
             {{
               scope.row.rstatus === 0
@@ -141,11 +60,7 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="empId"
-          min-width="80"
-          label="员工编号"
-        ></el-table-column>
+        <el-table-column prop="empId" min-width="100" label="员工编号"></el-table-column>
         <el-table-column min-width="105" label="结算日期">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.settleTime) }}
@@ -161,59 +76,30 @@
             {{ scope.row.contType.label }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="contCode"
-          min-width="125"
-          label="合同编号"
-        ></el-table-column>
-        <el-table-column
-          prop="proAddr"
-          min-width="145"
-          label="物业地址"
-        ></el-table-column>
+        <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
+        <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
-          <template slot="header"
-            >结算金额
-            <el-tooltip
-              content="结算金额=合同总实收-第三方-佣金支付费-权证费"
-              placement="top"
-            >
+          <template slot="header">结算金额
+            <el-tooltip content="结算金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
               <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
             </el-tooltip>
-            </template>
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="calculationStatus"
-          min-width="85"
-          label="计算状态"
-        >
+        <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
           <template slot-scope="scope">
             {{ scope.row.isCalculation === 0 ? "未计算" : "已计算" }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="bonusMoney"
-          min-width="85"
-          label="提成金额"
-        ></el-table-column>
-        <el-table-column
-          prop="bonusFormula"
-          min-width="265"
-          label="提成计算公式"
-        ></el-table-column>
-        <el-table-column min-width="100" label="提成生成时间">
+        <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
+        <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式"></el-table-column>
+        <el-table-column min-width="110" label="提成生成时间">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.bonusDate) }}
           </template>
         </el-table-column>
       </el-table>
-      <myPagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="total"
-      ></myPagination>
+      <myPagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+        :page-size="pageSize" :total="total"></myPagination>
     </div>
   </div>
 </template>
@@ -481,7 +367,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.icon-prompt{
+.icon-prompt {
   width: 14px;
   height: 14px;
   display: inline-block;

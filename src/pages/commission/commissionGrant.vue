@@ -1,108 +1,44 @@
 <template>
-  <div class="page-class"  ref="tableComView">
+  <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop
-      @propResetFormFn="reset"
-      @propQueryFn="queryFn"
-      class="commission-top"
-      style="padding: 0 12px 12px"
-    >
-      <el-input
-        placeholder="登录账号/员工工号"
-        prefix-icon="el-icon-search"
-        class="w300"
-        v-model="searchData.keyword"
-      ></el-input>
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
+      <el-input placeholder="登录账号/员工工号" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword">
+      </el-input>
       <!-- 日期 -->
       <div class="item-text">结算周期</div>
-      <el-date-picker
-        class="item-billing-date w160"
-        v-model="searchData.settleDate"
-        type="month"
-        :placeholder="initialTime"
-        value-format="yyyy-MM"
-      >
+      <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="month"
+        :placeholder="initialTime" value-format="yyyy-MM">
       </el-date-picker>
 
       <!-- 三联下拉选择 -->
-      <el-select
-        v-model="searchData.systemTag"
-        class="w100 mr-16"
-        placeholder="体系"
-        clearable
-      >
-        <el-option
-          v-for="item in systemTagSelect"
-          :key="item.key"
-          :label="item.value"
-          :value="item.key"
-        >
+      <el-select v-model="searchData.systemTag" class="w100 mr-16" placeholder="体系" clearable>
+        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
         </el-option>
       </el-select>
 
       <div class="triple-select">
-        <select-tree
-          class="select-tree"
-          :init="searchData.depName"
-          @checkCell="depHandleClick"
-          @clear="clearDep"
-        ></select-tree>
-        <el-select
-          v-model="searchData.empId"
-          v-loadmore="moreEmploye"
-          class="w100"
-          placeholder="选择人员"
-          @change="handleEmpNodeClick"
-          clearable
-        >
-          <el-option
-            v-for="item in EmployeList"
-            :key="item.empId"
-            :label="item.name"
-            :value="item.empId"
-          >
+        <select-tree class="select-tree" :init="searchData.depName" @checkCell="depHandleClick" @clear="clearDep">
+        </select-tree>
+        <el-select v-model="searchData.empId" v-loadmore="moreEmploye" class="w100" placeholder="选择人员"
+          @change="handleEmpNodeClick" clearable>
+          <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
         </el-select>
       </div>
 
-      <el-select
-        v-model="searchData.isCalculation"
-        class="w116 mr-16"
-        placeholder="在职状态"
-      >
-        <el-option
-          v-for="item in isCalculation"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
+      <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态">
+        <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
 
       <div class="triple-select">
-        <el-select
-          v-model="searchData.signDateValue"
-          class="w100"
-          @change="signDateChangeFn"
-        >
-          <el-option
-            v-for="item in signDateList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          >
+        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn">
+          <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-date-picker
-          class="item-billing-date2 w212"
-          v-model="searchData.bonusDateValue"
-          type="monthrange"
-          range-separator="至"
-          start-placeholder="开始月份"
-          end-placeholder="结束月份"
-          value-format="timestamp"
-        >
+        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="monthrange"
+          range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份" value-format="timestamp">
         </el-date-picker>
       </div>
     </uPlusScrollTop>
@@ -110,33 +46,16 @@
     <div class="main">
       <div class="reveal-box">
         <div class="reveal-txt">
-          当前共找到【{{ total }}】条数据<span class="reveal-p1"
-            >发放人数：<em class="cl-red">20</em>人 提成总金额：<em
-              class="cl-red"
-              >20000.00</em
-            >元 已发放总金额：<em class="cl-red">18000.00</em>元
-            未发放总金额：<em class="cl-red">2000.00</em>元</span
-          >
+          当前共找到【{{ total }}】条数据<span class="reveal-p1">发放人数：<em class="cl-red">20</em>人 提成总金额：<em
+              class="cl-red">20000.00</em>元 已发放总金额：<em class="cl-red">18000.00</em>元
+            未发放总金额：<em class="cl-red">2000.00</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" @click="clickExportFn"
-          >导出</el-button
-        >
-        <el-button class="fr btn-orange" @click="batchCalculationFn"
-          >批量发放</el-button
-        >
+        <el-button class="fr btn-orange-border" @click="clickExportFn">导出</el-button>
+        <el-button class="fr btn-orange" @click="batchCalculationFn">批量发放</el-button>
       </div>
-      <el-table
-        :data="tableData"
-        class="table-box"
-        @selection-change="handleSelectionChange"
-         ref="tableCom"
-        :max-height="tableNumberCom"
-      >
-        <el-table-column
-          type="selection"
-          min-width="60"
-          :selectable="selectableFn"
-        >
+      <el-table :data="tableData" class="table-box" @selection-change="handleSelectionChange" ref="tableCom"
+        :max-height="tableNumberCom">
+        <el-table-column type="selection" min-width="60" :selectable="selectableFn">
         </el-table-column>
         <el-table-column min-width="100" label="结算周期">
           <template slot-scope="scope">
@@ -155,11 +74,7 @@
             {{ dateFormat(scope.row.bonusDate) }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="bonusName"
-          min-width="250"
-          label="员工姓名"
-        ></el-table-column>
+        <el-table-column prop="bonusName" min-width="250" label="员工姓名"></el-table-column>
         <el-table-column min-width="100" label="在职状态">
           <template slot-scope="scope">
             {{
@@ -171,28 +86,16 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="bonusMoney"
-          min-width="130"
-          label="提成（元）"
-        ></el-table-column>
+        <el-table-column prop="bonusMoney" min-width="130" label="提成（元）"></el-table-column>
         <el-table-column min-width="120" label="操作">
           <template slot-scope="scope">
-            <span
-              :class="scope.row.status === 0 ? 'cl-blue' : ''"
-              @click="clickIssueFn(scope)"
-              >{{ scope.row.status === 0 ? "发放" : "--" }}</span
-            >
+            <span :class="scope.row.status === 0 ? 'cl-blue' : ''"
+              @click="clickIssueFn(scope)">{{ scope.row.status === 0 ? "发放" : "--" }}</span>
           </template>
         </el-table-column>
       </el-table>
-      <myPagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="total"
-      ></myPagination>
+      <myPagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+        :page-size="pageSize" :total="total"></myPagination>
     </div>
   </div>
 </template>
@@ -455,7 +358,7 @@ export default {
     },
     // 导出
     clickExportFn() {
-      let p = this.getParamFn()
+      let p = this.getParamFn();
       this.excelCreate("/input/bonusSummaryExcel", p);
     },
     // 勾选禁用
