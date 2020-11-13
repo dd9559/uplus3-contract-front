@@ -265,8 +265,9 @@ export default {
         message: "确定计算 [结算周期] 的提成吗？",
         title: "确认是否计算提成",
         callback: (action) => {
+          // debugger
           // 如果为选择确定
-          if (action === "confirm" && id) {
+          if (action === "confirm") {
             let data = this.getParamFn();
             // 加载中
             this.$tool.layerAlert.call(this, {
