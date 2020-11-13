@@ -385,7 +385,7 @@ let TOOL = {
           name: "提成计算",
           category: "8-1-1",
           can: true, //是否可见
-          path: "commissionIndex",
+          path: "commissionCounts",
           code: "sign-yj-rec-export",
         }]
       }]

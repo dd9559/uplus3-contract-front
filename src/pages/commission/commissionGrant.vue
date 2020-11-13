@@ -45,7 +45,7 @@
 
     <div class="main">
       <div class="reveal-box">
-        <div class="reveal-txt">当前共找到【{{ total }}】条数据<span class="reveal-p1">发放人数：<em class="cl-red">{{empCount}}</em>人
+        <div class="reveal-txt">当前共找到【{{ total }}】条数据 <span class="reveal-p1">发放人数：<em class="cl-red">{{empCount}}</em>人
             提成总金额：<em class="cl-red">{{moneySum}}</em>元 已发放总金额：<em class="cl-red">{{moneyFFsum}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFsum}}</em>元</span>
         </div>
@@ -220,6 +220,16 @@ export default {
               // moneyFFsum: moneyFFsum || 0, //已发放
               // moneyWFFsum: moneyWFFsum || 0, //未发放
             });
+
+            if (list.length > 0) {
+              let arr = {};
+              arr.empCount = list[0].empCount || 0; //人数
+              arr.moneySum = list[0].moneySum || 0; //提成总额
+              arr.moneyFFsum = list[0].moneyFFsum || 0; //已发放
+              arr.moneyWFFsum = list[0].moneyWFFsum || 0; //未发放
+
+              Object.assign(this, arr);
+            }
           }
           // 关闭加载中
           this.$tool.layerAlertClose();

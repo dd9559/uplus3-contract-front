@@ -60,7 +60,7 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column prop="empId" min-width="100" label="员工编号"></el-table-column>
+        <el-table-column prop="empCode" min-width="100" label="员工编号"></el-table-column>
         <el-table-column min-width="105" label="结算日期">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.settleTime) }}
@@ -92,7 +92,7 @@
         </el-table-column>
         <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
         <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式"></el-table-column>
-        <el-table-column min-width="110" label="提成生成时间">
+        <el-table-column min-width="130" label="提成生成时间">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.bonusDate) }}
           </template>
