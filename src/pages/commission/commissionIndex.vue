@@ -62,25 +62,25 @@ export default {
     };
   },
   created() {
-    console.log(this.$route.path);
-    console.log(this.$store.state.user.privileges);
+    // console.log(this.$route.path);
+    // console.log(this.$store.state.user.privileges);
 
-    let arr = this.$store.state.user.privileges;
-    let views = this.$tool.pathList.map((item) => Object.assign({}, item));
-    console.log(views);
-    let sliders = [];
+    // let arr = this.$store.state.user.privileges;
+    // let views = this.$tool.pathList.map((item) => Object.assign({}, item));
+    // console.log(views);
+    // let sliders = [];
 
-    views.forEach((item, index) => {
-      //获取侧边栏信息中用户可访问的元素
-      item.child.forEach((tip) => {
-        tip.child.forEach((grade) => {
-          if (arr.includes(grade.code)) {
-            sliders.push(grade);
-          }
-        });
-      });
-    });
-    console.log(sliders);
+    // views.forEach((item, index) => {
+    //   //获取侧边栏信息中用户可访问的元素
+    //   item.child.forEach((tip) => {
+    //     tip.child.forEach((grade) => {
+    //       if (arr.includes(grade.code)) {
+    //         sliders.push(grade);
+    //       }
+    //     });
+    //   });
+    // });
+    // console.log(sliders);
   },
   methods: {
     handleOpen(key, keyPath) {

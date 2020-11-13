@@ -364,6 +364,11 @@ export default {
     // 获取数据
     this.queryFn();
   },
+  watch: {
+    "searchData.systemTag"(val) {
+      console.log(val);
+    },
+  },
 };
 </script>
 
