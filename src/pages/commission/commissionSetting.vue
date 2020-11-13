@@ -29,6 +29,7 @@
               v-model="searchForm.positions"
               placeholder="职务名称"
               :clearable="true"
+              @change="positionChange"
               style="width:150px"
             >
               <el-option
@@ -56,6 +57,41 @@
                 :value="item.id"
               ></el-option>
             </el-select>
+
+
+          <!-- <el-select
+                size="small"
+                v-model="searchForm.depId"
+                :placeholder="searchDepName.length===0?'部门':searchDepName.join(',')"
+                ref="searchDep"
+                id="searchDep"
+                collapse-tags
+                :class="searchDepName.length>0?'colorful':''"
+                multiple
+                style="width:240px"
+              >
+                <el-option
+                  v-if="searchDepList.length > 0"
+                  style="height:auto;line-height:0;"
+                  :value="searchForm.depId"
+                >
+                  <elTree2
+                    :data="searchDepList"
+                    :show-checkbox="true"
+                    node-key="id"
+                    :props="defaultProps"
+                    ref="tree"
+                    empty-text="暂无数据"
+                    check-strictly
+                    @check="setCheckedNodes"
+                    :default-checked-keys="defaultCheckedKeys"
+                    :default-expanded-keys="defaultExpandedKeys"
+                  ></elTree2>
+                </el-option>
+              </el-select> -->
+
+
+
           </el-form-item>
           <el-form-item>
             <el-select
@@ -442,6 +478,8 @@ export default {
         timeType: "",
         executionStartTime: [],
       },
+      searchDepName: [],
+      searchDepList: [],
       searchPositionRanksList: [],
       tableData: [],
       dialogTitle: "提成规则设置",
@@ -654,8 +692,16 @@ export default {
       this.depKeyWords = '';
       this.getDepcopy();
     },
+    //如果体系为空，职务不能选择
+    positionChange () {
+      if (this.searchForm.systemTag == '') {
+        this.searchForm.positions = ''
+        this.$message('请先选择体系')
+      }
+    },
     //如果体系为空，部门不能选择
     depChange() {
+      console.log(12321321312321);
       if (this.searchForm.systemTag == '') {
         this.searchForm.depId = []
         this.$message('请先选择体系')
@@ -1069,10 +1115,10 @@ export default {
       this.getList('search')
     },
     resetFormFn() {
-      // this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+      this.searchForm.systemTag = ''
       this.searchForm.bonusName = ''
       this.searchForm.positions = ''
-      this.searchForm.depId = ''
+      this.searchForm.depId = []
       this.searchForm.timeType = ''
       this.searchForm.executionStartTime = []
     },
@@ -1084,7 +1130,7 @@ export default {
         position: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
-        executionStartTime: "", //执行开始时间
+        executionStartTime: new Date(), //执行开始时间
       },
       this.commissionScheme = [
         {
