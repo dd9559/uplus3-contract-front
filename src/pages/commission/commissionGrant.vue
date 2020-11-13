@@ -45,10 +45,9 @@
 
     <div class="main">
       <div class="reveal-box">
-        <div class="reveal-txt">
-          当前共找到【{{ total }}】条数据<span class="reveal-p1">发放人数：<em class="cl-red">20</em>人 提成总金额：<em
-              class="cl-red">20000.00</em>元 已发放总金额：<em class="cl-red">18000.00</em>元
-            未发放总金额：<em class="cl-red">2000.00</em>元</span>
+        <div class="reveal-txt">当前共找到【{{ total }}】条数据 <span class="reveal-p1">发放人数：<em class="cl-red">{{empCount}}</em>人
+            提成总金额：<em class="cl-red">{{moneySum}}</em>元 已发放总金额：<em class="cl-red">{{moneyFFsum}}</em>元
+            未发放总金额：<em class="cl-red">{{moneyWFFsum}}</em>元</span>
         </div>
         <el-button class="fr btn-orange-border" @click="clickExportFn">导出</el-button>
         <el-button class="fr btn-orange" @click="batchCalculationFn">批量发放</el-button>
@@ -158,6 +157,10 @@ export default {
       total: 20,
       initialTime: "",
       selectionList: [],
+      empCount: 0, //人数
+      moneySum: 0, //提成总额
+      moneyFFsum: 0, //已发放
+      moneyWFFsum: 0, //未发放
     };
   },
   methods: {
@@ -212,7 +215,21 @@ export default {
               currentPage: pageNum || 1,
               pageSize,
               total,
+              // empCount: empCount || 0, //人数
+              // moneySum: moneySum || 0, //提成总额
+              // moneyFFsum: moneyFFsum || 0, //已发放
+              // moneyWFFsum: moneyWFFsum || 0, //未发放
             });
+
+            if (list.length > 0) {
+              let arr = {};
+              arr.empCount = list[0].empCount || 0; //人数
+              arr.moneySum = list[0].moneySum || 0; //提成总额
+              arr.moneyFFsum = list[0].moneyFFsum || 0; //已发放
+              arr.moneyWFFsum = list[0].moneyWFFsum || 0; //未发放
+
+              Object.assign(this, arr);
+            }
           }
           // 关闭加载中
           this.$tool.layerAlertClose();
@@ -377,6 +394,11 @@ export default {
     // 获取数据
     this.queryFn();
   },
+  watch: {
+    "searchData.systemTag"(val) {
+      console.log(val);
+    },
+  },
 };
 </script>
 
@@ -388,5 +410,8 @@ export default {
   border: none;
   font-size: 16px;
   padding-left: 20px;
+}
+.cl-blue {
+  cursor: pointer;
 }
 </style>

@@ -1,21 +1,15 @@
 <template>
   <div class="pagination-box">
-    <el-pagination
-      class="pagination"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="pageSize"
-      :total="total"
-      layout=" prev, pager, next"
-    >
+    <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :current-page="currentPage" :page-size="pageSize" :total="total" layout=" prev, pager, next">
     </el-pagination>
     <div class="my-pagination">
       <el-input class="my-inp" type="number" v-model="value" :placeholder="currentPage"></el-input>
       <el-button class="my-inp-btn" @click="btnClickFn">确定</el-button>
       <span class="my-txt">共有{{ total }}条数据</span>
       <span class="my-txt">每页显示</span>
-      <el-input class="my-inp" type="number" v-model="value2" :placeholder="pageSize" @keyup.enter.native="selectChangeFn"></el-input>
+      <el-input class="my-inp" type="number" v-model="value2" :placeholder="pageSize"
+        @keyup.enter.native="selectChangeFn"></el-input>
       <el-button class="my-inp-btn" @click="selectChangeFn">确定</el-button>
       <!-- <el-select v-model="selectVal" class="my-select" @change="selectChangeFn">
         <el-option
@@ -56,8 +50,8 @@ export default {
   data() {
     return {
       // currentIndex: 1,
-      value: "",
-      value2: "",
+      value: 1,
+      value2: 20,
       selectArr: [10, 200, 300, 400],
       // selectVal: 1,
     };
