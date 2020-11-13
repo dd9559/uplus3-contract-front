@@ -29,8 +29,10 @@
               v-model="searchForm.positions"
               placeholder="职务名称"
               :clearable="true"
+              multiple
+              collapse-tags
               @change="positionChange"
-              style="width:150px"
+              style="width:265px"
             >
               <el-option
                 v-for="item in searchPositionRanksList"
