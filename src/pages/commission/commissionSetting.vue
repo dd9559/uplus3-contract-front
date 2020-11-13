@@ -77,6 +77,8 @@
               :end-placeholder="searchForm.timeType==='1'?'结束月份':'结束日期'"
               :format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
               :value-format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
+              :disabled="this.searchForm.timeType===''"
+              @focus="dataPickerFocus"
             ></el-date-picker>
           </el-form-item>
         </el-form>
@@ -437,7 +439,7 @@ export default {
         bonusName: '',
         position: "",
         depId: "",
-        timeType: "1",
+        timeType: "",
         executionStartTime: [],
       },
       searchPositionRanksList: [],
@@ -488,7 +490,7 @@ export default {
   },
   created() {
     // 获取体系
-    this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+    // this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
@@ -524,17 +526,17 @@ export default {
           executionStartTimeE: '',
           createTimeS: '',
           createTimeE: '',
-          depIds: '',
-          positions: '',
+          depIds: this.searchForm.depId,
+          positions: this.searchForm.positions,
           pageSize: this.pageSize,
           pageNum: this.pageNum
       }
       if (this.searchForm.timeType === '1') {
-        params.executionStartTimeS = this.searchForm.executionStartTime[0]
-        params.executionStartTimeE = this.searchForm.executionStartTime[1]
+        params.executionStartTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : ''
+        params.executionStartTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : ''
       } else {
-        params.createTimeS = this.searchForm.executionStartTime[0]
-        params.createTimeE = this.searchForm.executionStartTime[1]
+        params.createTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : ''
+        params.createTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : ''
       }
       //点击查询时，缓存筛选条件
       if(type==='search' || type === 'page'){
@@ -587,15 +589,22 @@ export default {
           this.$message({ message: error });
         });
     },
+    // 判断筛选类型是否选择
+    dataPickerFocus() {
+      if (this.searchForm.timeType === '') {
+        return this.$message({ message: '请先选择时间类型' });
+      }
+    },
     // 改变体系初始化节点数据
     changeSystemFn(val) {
       this.depKeyWords = "";
       this.defaultCheckedKeys = [];
+      this.depName = [];
       this.getDepcopy();
       this.deductData.position = []
       this.positionName = []
       this.positionRanksList = [];
-      this.getPosition('add')
+      this.getPosition()
     },
     getPosition(type) {
       let systemTag;
@@ -620,6 +629,10 @@ export default {
                 Text: "全部",
               });
               this.positionRanksList = this.positionRanksList.concat(res.data);
+              if (type === 'add') {
+                this.deductData.position = [-1].concat(res.data.map(item => item.Value))
+                this.positionName = res.data.map((item) => item.Text)
+              }
             }
           }
         })
@@ -669,7 +682,7 @@ export default {
         }
       })
     },
-    getDepcopy() {
+    getDepcopy(type='other') {
       if(!this.deductData.system || this.deductData.system.key=='') return
       this.depList = [];
       let param = {
@@ -705,6 +718,10 @@ export default {
               showCheckbox: true,
               subs: res.data
             });
+            if (type === 'add') {
+              this.defaultCheckedKeys = [-1].concat(res.data.map(item => item.id))
+              this.depName = res.data.map(item => item.name)
+            }
           // }
         }
       });
@@ -771,6 +788,7 @@ export default {
       this.positionName = []
     },
     changePositionRanks(val) {
+      console.log(val,787878878);
       let allRanks = [];
       let positionName = [];
       this.positionRanksList.forEach((item) => {
@@ -891,7 +909,7 @@ export default {
           val.achievementGrade.resultsEnd = "";
           return this.$message({
             type: "warning",
-            message: `该值取值大于${last}`,
+            message: `该值取值小于${last}`,
           });
         }
       }
@@ -1051,12 +1069,12 @@ export default {
       this.getList('search')
     },
     resetFormFn() {
-      this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+      // this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
       this.searchForm.bonusName = ''
       this.searchForm.positions = ''
       this.searchForm.depId = ''
-      this.searchForm.timeType = '1'
-      this.searchForm.executionStartTime = ''
+      this.searchForm.timeType = ''
+      this.searchForm.executionStartTime = []
     },
     add(type) {
       this.deductData = {
@@ -1077,7 +1095,7 @@ export default {
       this.positionRanksList = []
       this.defaultCheckedKeys = []
       this.depName = []
-      this.getDepcopy();
+      this.getDepcopy('add');
       this.getPosition('add')
       // this.changePositionRanks(this.positionRanksList[0])
       this.dialogAddDeduct = true;
