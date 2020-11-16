@@ -475,9 +475,9 @@ export default {
       searchForm: {
         systemTag: "",
         bonusName: '',
-        position: "",
-        depId: "",
-        timeType: "",
+        positions: [],
+        depId: [],
+        timeType: "1",
         executionStartTime: [],
       },
       searchDepName: [],
@@ -530,7 +530,7 @@ export default {
   },
   created() {
     // 获取体系
-    // this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+    this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
@@ -697,7 +697,7 @@ export default {
     //如果体系为空，职务不能选择
     positionChange () {
       if (this.searchForm.systemTag == '') {
-        this.searchForm.positions = ''
+        this.searchForm.positions = []
         this.$message('请先选择体系')
       }
     },
@@ -712,7 +712,9 @@ export default {
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
       this.searchForm.depId = []
+      this.searchForm.positions = []
       this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -723,6 +725,7 @@ export default {
     },
     getDep() {
       this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -1119,20 +1122,28 @@ export default {
     resetFormFn() {
       this.searchForm.systemTag = ''
       this.searchForm.bonusName = ''
-      this.searchForm.positions = ''
+      this.searchForm.positions = []
       this.searchForm.depId = []
       this.searchForm.timeType = ''
       this.searchForm.executionStartTime = []
     },
     add(type) {
+      let myDate = new Date();
+      let tYear = myDate.getFullYear();
+      let tMonth = myDate.getMonth();
+  
+      let m = tMonth + 1;
+      if (m.toString().length == 1) {
+          m = "0" + m;
+      }
       this.deductData = {
         bonusName: "", // 规则名
         system: this.systemTagSelect.filter(item => item.key === this.user.deptSystemtag)[0], // 体系
         depId: [], //部门id
-        position: [], //职务
+        positions: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
-        executionStartTime: new Date(), //执行开始时间
+        executionStartTime: tYear +'-'+ m, //执行开始时间
       },
       this.commissionScheme = [
         {
