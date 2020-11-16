@@ -4,11 +4,11 @@
       :current-page="currentPage" :page-size="pageSize" :total="total" layout=" prev, pager, next">
     </el-pagination>
     <div class="my-pagination">
-      <el-input class="my-inp" type="number" v-model="value" :placeholder="currentPage"></el-input>
+      <el-input class="my-inp" type="number" v-model="cPageValue" :placeholder="currentPage"></el-input>
       <el-button class="my-inp-btn" @click="btnClickFn">确定</el-button>
       <span class="my-txt">共有{{ total }}条数据</span>
       <span class="my-txt">每页显示</span>
-      <el-input class="my-inp" type="number" v-model="value2" :placeholder="pageSize"
+      <el-input class="my-inp" type="number" v-model="cPageSize" :placeholder="pageSize"
         @keyup.enter.native="selectChangeFn"></el-input>
       <el-button class="my-inp-btn" @click="selectChangeFn">确定</el-button>
       <!-- <el-select v-model="selectVal" class="my-select" @change="selectChangeFn">
@@ -50,9 +50,9 @@ export default {
   data() {
     return {
       // currentIndex: 1,
-      value: 1,
-      value2: 20,
-      selectArr: [10, 200, 300, 400],
+      cPageValue: 1,
+      cPageSize: 20,
+      // selectArr: [10, 200, 300, 400],
       // selectVal: 1,
     };
   },
@@ -78,11 +78,20 @@ export default {
       this.$emit("current-change", val);
     },
     btnClickFn() {
-      // this.currentIndex = parseInt(this.value);
-      this.$emit("current-change", parseInt(this.value));
+      if (isNaN(this.cPageValue)) {
+        return false;
+      } else {
+        if (this.cPageValue < 1) this.cPageValue = 1;
+        this.$emit("current-change", parseInt(this.cPageValue));
+      }
     },
     selectChangeFn() {
-      this.$emit("size-change", parseInt(this.value2));
+      if (isNaN(this.cPageSize)) {
+        return false;
+      } else {
+        if (this.cPageSize < 1) this.cPageSize = 1;
+        this.$emit("size-change", parseInt(this.cPageSize));
+      }
     },
   },
 };
