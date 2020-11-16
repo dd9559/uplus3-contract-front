@@ -545,7 +545,7 @@ export default {
         this.tableData = res.data.list
         this.searchForm.systemTag = query.systemTag
         this.searchForm.bonusName = query.bonusName
-        this.searchForm.position = query.position
+        this.searchForm.positions = query.positions
         this.searchForm.depId = query.depId
         this.searchForm.timeType = query.timeType
         this.searchForm.executionStartTime = query.executionStartTime
@@ -560,23 +560,23 @@ export default {
   methods: {
     getList(type) {
       let params = {
-          systemTag: this.searchForm.systemTag,
-          bonusName: this.searchForm.bonusName,
-          executionStartTimeS: '',
-          executionStartTimeE: '',
-          createTimeS: '',
-          createTimeE: '',
-          depIds: this.searchForm.depId,
-          positions: this.searchForm.positions,
+          systemTag: this.searchForm.systemTag?this.searchForm.systemTag:null,
+          bonusName: this.searchForm.bonusName?this.searchForm.bonusName:null,
+          // executionStartTimeS: '',
+          // executionStartTimeE: '',
+          // createTimeS: '',
+          // createTimeE: '',
+          depId: this.searchForm.depId.length>0?this.searchForm.depId.toString():null,
+          position: this.searchForm.positions.length>0?this.searchForm.positions.toString():null,
           pageSize: this.pageSize,
           pageNum: this.pageNum
       }
       if (this.searchForm.timeType === '1') {
-        params.executionStartTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : ''
-        params.executionStartTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : ''
+        params.executionStartTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
+        params.executionStartTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
       } else {
-        params.createTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : ''
-        params.createTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : ''
+        params.createTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
+        params.createTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
       }
       //点击查询时，缓存筛选条件
       if(type==='search' || type === 'page'){
