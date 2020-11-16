@@ -27,13 +27,13 @@
         </el-select>
       </div>
 
-      <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态">
+      <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
 
       <div class="triple-select">
-        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn">
+        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn" clearable>
           <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -73,16 +73,14 @@
             {{ dateFormat(scope.row.bonusDate) }}
           </template>
         </el-table-column>
-        <el-table-column prop="bonusName" min-width="250" label="员工姓名"></el-table-column>
+        <el-table-column min-width="250" label="员工姓名">
+          <template slot-scope="scope">
+            {{ scope.row.bonusSorterName +'-'+ scope.row.bonusName }}
+          </template>
+        </el-table-column>
         <el-table-column min-width="100" label="在职状态">
           <template slot-scope="scope">
-            {{
-              scope.row.empStatus == 1
-                ? "在职"
-                : scope.row.empStatus == 2
-                ? "离职"
-                : "待职"
-            }}
+            {{isCalculation[scope.row.empStatus].label}}
           </template>
         </el-table-column>
         <el-table-column prop="bonusMoney" min-width="130" label="提成（元）"></el-table-column>
@@ -120,6 +118,10 @@ export default {
       ],
       //   在职状态
       isCalculation: [
+        {
+          value: 0,
+          label: "待入职",
+        },
         {
           value: 1,
           label: "在职",
@@ -302,12 +304,13 @@ export default {
     },
     // 发放
     clickIssueFn(scope) {
+      console.log(scope)
       let { row } = scope || {};
       let { id = 0 } = row || {};
 
       this.$tool.layerAlert.call(this, {
-        message: "确定计算 [结算周期] 的提成吗？",
-        title: "确认是否计算提成",
+        message: "确定发放{结算周期}的提成吗？",
+        title: "确认是否发放提成",
         callback: (action) => {
           // 如果为选择确定
           if (action === "confirm" && id) {

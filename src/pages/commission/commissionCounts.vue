@@ -25,7 +25,7 @@
         </el-select>
       </div>
       <div class="triple-select">
-        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn">
+        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn" clearable>
           <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -34,7 +34,7 @@
         </el-date-picker>
       </div>
 
-      <el-select v-model="searchData.isCalculation" class="w116" placeholder="计算状态">
+      <el-select v-model="searchData.isCalculation" class="w116" placeholder="计算状态" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
