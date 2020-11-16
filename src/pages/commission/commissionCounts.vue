@@ -71,11 +71,11 @@
             {{ dateFormat(scope.row.signDate) }}
           </template>
         </el-table-column>
-        <el-table-column min-width="105" label="合同类型">
+        <!-- <el-table-column min-width="105" label="合同类型">
           <template slot-scope="scope">
             {{ scope.row.contType.label }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
         <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
