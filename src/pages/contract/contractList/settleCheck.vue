@@ -640,7 +640,7 @@
           this.getCheckData(param)
         }else{
           let param={
-            bizCode:e.code,
+            bizCode:e.id,
             flowType:5
           }
           this.$ajax.get('/api/machine/getAuditAuth',param).then(res=>{
