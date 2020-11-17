@@ -13,7 +13,7 @@
       <!-- 三联下拉选择 -->
       <div class="triple-select">
 
-        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="clearSystem" clearable>
+        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="clearSystem">
           <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
           </el-option>
         </el-select>
@@ -173,6 +173,9 @@ export default {
       total: 20,
       initialTime: "",
     };
+  },
+  created() {
+    this.searchData.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag //获取用户当前体系
   },
   methods: {
     abc() {
