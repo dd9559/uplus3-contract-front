@@ -448,7 +448,6 @@
           <p>确认保存该提成设置？</p>
           <div class="warning-content">
             <p>合同类型：{{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p>
-            <p>提成计算日期：{{"合同【实收日期】计算"}}</p>
             <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
             <p>执行时间：{{deductData.executionStartTime}}</p>
           </div>

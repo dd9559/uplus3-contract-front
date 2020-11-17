@@ -115,7 +115,7 @@
                     <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
                     <span class="text">{{commissionTotal}} 元</span>
                   </p>
-                  <p v-if="getUser.user.cityId!=40">
+                  <p v-if="getUser.user.cityId!=1">
                     <span class="tag">佣金支付费：</span>
                     <!-- <span class="text">{{contractDetail.custCommission+contractDetail.ownerCommission}} 元</span> -->
                     <span
