@@ -25,7 +25,7 @@
         </el-select>
       </div>
       <div class="triple-select">
-        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn">
+        <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn" clearable>
           <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -34,7 +34,7 @@
         </el-date-picker>
       </div>
 
-      <el-select v-model="searchData.isCalculation" class="w116" placeholder="计算状态">
+      <el-select v-model="searchData.isCalculation" class="w116" placeholder="计算状态" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -60,7 +60,7 @@
             }}
           </template>
         </el-table-column>
-        <el-table-column prop="empId" min-width="100" label="员工编号"></el-table-column>
+        <el-table-column prop="empCode" min-width="100" label="员工编号"></el-table-column>
         <el-table-column min-width="105" label="结算日期">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.settleTime) }}
@@ -71,11 +71,11 @@
             {{ dateFormat(scope.row.signDate) }}
           </template>
         </el-table-column>
-        <el-table-column min-width="105" label="合同类型">
+        <!-- <el-table-column min-width="105" label="合同类型">
           <template slot-scope="scope">
             {{ scope.row.contType.label }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
         <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
@@ -92,7 +92,7 @@
         </el-table-column>
         <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
         <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式"></el-table-column>
-        <el-table-column min-width="110" label="提成生成时间">
+        <el-table-column min-width="130" label="提成生成时间">
           <template slot-scope="scope">
             {{ dateFormat(scope.row.bonusDate) }}
           </template>
@@ -265,8 +265,9 @@ export default {
         message: "确定计算 [结算周期] 的提成吗？",
         title: "确认是否计算提成",
         callback: (action) => {
+          // debugger
           // 如果为选择确定
-          if (action === "confirm" && id) {
+          if (action === "confirm") {
             let data = this.getParamFn();
             // 加载中
             this.$tool.layerAlert.call(this, {
@@ -362,6 +363,11 @@ export default {
     this.getSystemTagSelect();
     // 获取数据
     this.queryFn();
+  },
+  watch: {
+    "searchData.systemTag"(val) {
+      console.log(val);
+    },
   },
 };
 </script>

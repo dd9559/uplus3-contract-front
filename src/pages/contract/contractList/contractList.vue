@@ -2709,7 +2709,12 @@ export default {
           if (res.status === 200) {
             res.data.map((item) => {
               if (item.enableTemplateId != 0 && item.type.value != 6) {
-                this.onlineContractList.push(item);
+                this.dictionary['71'].map((dictionaryItem) => {
+                  if (dictionaryItem.key === item.type.value) {
+                    this.onlineContractList.push(Object.assign({},item,dictionaryItem));
+                  }
+                })
+                // this.onlineContractList.push(item);
               }
             });
           }

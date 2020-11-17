@@ -29,7 +29,10 @@
               v-model="searchForm.positions"
               placeholder="职务名称"
               :clearable="true"
-              style="width:150px"
+              multiple
+              collapse-tags
+              @change="positionChange"
+              style="width:265px"
             >
               <el-option
                 v-for="item in searchPositionRanksList"
@@ -56,6 +59,41 @@
                 :value="item.id"
               ></el-option>
             </el-select>
+
+
+          <!-- <el-select
+                size="small"
+                v-model="searchForm.depId"
+                :placeholder="searchDepName.length===0?'部门':searchDepName.join(',')"
+                ref="searchDep"
+                id="searchDep"
+                collapse-tags
+                :class="searchDepName.length>0?'colorful':''"
+                multiple
+                style="width:240px"
+              >
+                <el-option
+                  v-if="searchDepList.length > 0"
+                  style="height:auto;line-height:0;"
+                  :value="searchForm.depId"
+                >
+                  <elTree2
+                    :data="searchDepList"
+                    :show-checkbox="true"
+                    node-key="id"
+                    :props="defaultProps"
+                    ref="tree"
+                    empty-text="暂无数据"
+                    check-strictly
+                    @check="setCheckedNodes"
+                    :default-checked-keys="defaultCheckedKeys"
+                    :default-expanded-keys="defaultExpandedKeys"
+                  ></elTree2>
+                </el-option>
+              </el-select> -->
+
+
+
           </el-form-item>
           <el-form-item>
             <el-select
@@ -77,6 +115,8 @@
               :end-placeholder="searchForm.timeType==='1'?'结束月份':'结束日期'"
               :format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
               :value-format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
+              :disabled="this.searchForm.timeType===''"
+              @focus="dataPickerFocus"
             ></el-date-picker>
           </el-form-item>
         </el-form>
@@ -435,11 +475,13 @@ export default {
       searchForm: {
         systemTag: "",
         bonusName: '',
-        position: "",
-        depId: "",
+        positions: [],
+        depId: [],
         timeType: "1",
         executionStartTime: [],
       },
+      searchDepName: [],
+      searchDepList: [],
       searchPositionRanksList: [],
       tableData: [],
       dialogTitle: "提成规则设置",
@@ -503,7 +545,7 @@ export default {
         this.tableData = res.data.list
         this.searchForm.systemTag = query.systemTag
         this.searchForm.bonusName = query.bonusName
-        this.searchForm.position = query.position
+        this.searchForm.positions = query.positions
         this.searchForm.depId = query.depId
         this.searchForm.timeType = query.timeType
         this.searchForm.executionStartTime = query.executionStartTime
@@ -518,23 +560,23 @@ export default {
   methods: {
     getList(type) {
       let params = {
-          systemTag: this.searchForm.systemTag,
-          bonusName: this.searchForm.bonusName,
-          executionStartTimeS: '',
-          executionStartTimeE: '',
-          createTimeS: '',
-          createTimeE: '',
-          depIds: '',
-          positions: '',
+          systemTag: this.searchForm.systemTag?this.searchForm.systemTag:null,
+          bonusName: this.searchForm.bonusName?this.searchForm.bonusName:null,
+          // executionStartTimeS: '',
+          // executionStartTimeE: '',
+          // createTimeS: '',
+          // createTimeE: '',
+          depId: this.searchForm.depId.length>0?this.searchForm.depId.toString():null,
+          position: this.searchForm.positions.length>0?this.searchForm.positions.toString():null,
           pageSize: this.pageSize,
           pageNum: this.pageNum
       }
       if (this.searchForm.timeType === '1') {
-        params.executionStartTimeS = this.searchForm.executionStartTime[0]
-        params.executionStartTimeE = this.searchForm.executionStartTime[1]
+        params.executionStartTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
+        params.executionStartTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
       } else {
-        params.createTimeS = this.searchForm.executionStartTime[0]
-        params.createTimeE = this.searchForm.executionStartTime[1]
+        params.createTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
+        params.createTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
       }
       //点击查询时，缓存筛选条件
       if(type==='search' || type === 'page'){
@@ -587,15 +629,22 @@ export default {
           this.$message({ message: error });
         });
     },
+    // 判断筛选类型是否选择
+    dataPickerFocus() {
+      if (this.searchForm.timeType === '') {
+        return this.$message({ message: '请先选择时间类型' });
+      }
+    },
     // 改变体系初始化节点数据
     changeSystemFn(val) {
       this.depKeyWords = "";
       this.defaultCheckedKeys = [];
+      this.depName = [];
       this.getDepcopy();
       this.deductData.position = []
       this.positionName = []
       this.positionRanksList = [];
-      this.getPosition('add')
+      this.getPosition()
     },
     getPosition(type) {
       let systemTag;
@@ -620,6 +669,10 @@ export default {
                 Text: "全部",
               });
               this.positionRanksList = this.positionRanksList.concat(res.data);
+              if (type === 'add') {
+                this.deductData.position = [-1].concat(res.data.map(item => item.Value))
+                this.positionName = res.data.map((item) => item.Text)
+              }
             }
           }
         })
@@ -641,8 +694,16 @@ export default {
       this.depKeyWords = '';
       this.getDepcopy();
     },
+    //如果体系为空，职务不能选择
+    positionChange () {
+      if (this.searchForm.systemTag == '') {
+        this.searchForm.positions = []
+        this.$message('请先选择体系')
+      }
+    },
     //如果体系为空，部门不能选择
     depChange() {
+      console.log(12321321312321);
       if (this.searchForm.systemTag == '') {
         this.searchForm.depId = []
         this.$message('请先选择体系')
@@ -651,7 +712,9 @@ export default {
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
       this.searchForm.depId = []
+      this.searchForm.positions = []
       this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -662,6 +725,7 @@ export default {
     },
     getDep() {
       this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -669,7 +733,7 @@ export default {
         }
       })
     },
-    getDepcopy() {
+    getDepcopy(type='other') {
       if(!this.deductData.system || this.deductData.system.key=='') return
       this.depList = [];
       let param = {
@@ -705,6 +769,10 @@ export default {
               showCheckbox: true,
               subs: res.data
             });
+            if (type === 'add') {
+              this.defaultCheckedKeys = [-1].concat(res.data.map(item => item.id))
+              this.depName = res.data.map(item => item.name)
+            }
           // }
         }
       });
@@ -771,6 +839,7 @@ export default {
       this.positionName = []
     },
     changePositionRanks(val) {
+      console.log(val,787878878);
       let allRanks = [];
       let positionName = [];
       this.positionRanksList.forEach((item) => {
@@ -891,7 +960,7 @@ export default {
           val.achievementGrade.resultsEnd = "";
           return this.$message({
             type: "warning",
-            message: `该值取值大于${last}`,
+            message: `该值取值小于${last}`,
           });
         }
       }
@@ -1051,22 +1120,30 @@ export default {
       this.getList('search')
     },
     resetFormFn() {
-      this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+      this.searchForm.systemTag = ''
       this.searchForm.bonusName = ''
-      this.searchForm.positions = ''
-      this.searchForm.depId = ''
-      this.searchForm.timeType = '1'
-      this.searchForm.executionStartTime = ''
+      this.searchForm.positions = []
+      this.searchForm.depId = []
+      this.searchForm.timeType = ''
+      this.searchForm.executionStartTime = []
     },
     add(type) {
+      let myDate = new Date();
+      let tYear = myDate.getFullYear();
+      let tMonth = myDate.getMonth();
+  
+      let m = tMonth + 1;
+      if (m.toString().length == 1) {
+          m = "0" + m;
+      }
       this.deductData = {
         bonusName: "", // 规则名
         system: this.systemTagSelect.filter(item => item.key === this.user.deptSystemtag)[0], // 体系
         depId: [], //部门id
-        position: [], //职务
+        positions: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
-        executionStartTime: "", //执行开始时间
+        executionStartTime: tYear +'-'+ m, //执行开始时间
       },
       this.commissionScheme = [
         {
@@ -1077,7 +1154,7 @@ export default {
       this.positionRanksList = []
       this.defaultCheckedKeys = []
       this.depName = []
-      this.getDepcopy();
+      this.getDepcopy('add');
       this.getPosition('add')
       // this.changePositionRanks(this.positionRanksList[0])
       this.dialogAddDeduct = true;
