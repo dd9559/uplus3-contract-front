@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column min-width="100" label="结算周期">
           <template slot-scope="scope">
-            {{ dateFormat(scope.row.settleDate) }}
+            {{ scope.row.settleDate }}
           </template>
         </el-table-column>
         <el-table-column min-width="100" label="发放状态">
@@ -75,7 +75,7 @@
         </el-table-column>
         <el-table-column min-width="250" label="员工姓名">
           <template slot-scope="scope">
-            {{ scope.row.bonusSorterName +'-'+ scope.row.bonusName }}
+            {{ scope.row.bonusName +'-'+ scope.row.bonusSorterName }}
           </template>
         </el-table-column>
         <el-table-column min-width="100" label="在职状态">
@@ -309,7 +309,7 @@ export default {
       let { id = 0 } = row || {};
 
       this.$tool.layerAlert.call(this, {
-        message: "确定发放{结算周期}的提成吗？",
+        message: `确定发放 ${scope.row.settleDate} 的提成吗？`,
         title: "确认是否发放提成",
         callback: (action) => {
           // 如果为选择确定

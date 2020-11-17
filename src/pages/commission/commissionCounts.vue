@@ -12,16 +12,21 @@
       </el-date-picker>
       <!-- 三联下拉选择 -->
       <div class="triple-select">
-        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" clearable>
+
+        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="clearSystem" clearable>
           <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
           </el-option>
         </el-select>
-        <select-tree class="select-tree" :init="searchData.depName" @checkCell="depHandleClick" @clear="clearDep">
+
+        <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
+          @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
+
         <el-select v-model="searchData.empId" v-loadmore="moreEmploye" class="w100" placeholder="选择人员"
           @change="handleEmpNodeClick" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
+
         </el-select>
       </div>
       <div class="triple-select">
@@ -51,13 +56,7 @@
         <el-table-column prop="positionName" min-width="100" label="职位"></el-table-column>
         <el-table-column min-width="100" label="在职状态">
           <template slot-scope="scope">
-            {{
-              scope.row.rstatus === 0
-                ? "待入职"
-                : scope.row.rstatus === 1
-                ? "在职"
-                : "离职"
-            }}
+            {{isWorking[scope.row.rstatus].label}}
           </template>
         </el-table-column>
         <el-table-column prop="empCode" min-width="100" label="员工编号"></el-table-column>
@@ -87,7 +86,7 @@
         </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
           <template slot-scope="scope">
-            {{ scope.row.isCalculation === 0 ? "未计算" : "已计算" }}
+            {{isCalculation[scope.row.isCalculation].label}}
           </template>
         </el-table-column>
         <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
@@ -122,6 +121,21 @@ export default {
         {
           value: 1,
           label: "提成生成时间",
+        },
+      ],
+      //   在职状态
+      isWorking: [
+        {
+          value: 0,
+          label: "待入职",
+        },
+        {
+          value: 1,
+          label: "在职",
+        },
+        {
+          value: 2,
+          label: "离职",
         },
       ],
       //   计算状态
@@ -161,6 +175,14 @@ export default {
     };
   },
   methods: {
+    abc() {
+      this.searchData.depName = "";
+      this.searchData.depId = "";
+      this.searchData.empId = "";
+      this.clearSelect();
+      this.remoteMethod();
+      console.log("abc");
+    },
     //重置
     reset() {
       this.searchData = {
@@ -235,13 +257,23 @@ export default {
     },
     // 部门第二版 选择部门
     depHandleClick(data) {
+      console.log("depHandleClick");
       this.searchData.depId = data.depId;
       this.searchData.depName = data.name;
       this.searchData.empId = "";
       this.handleNodeClick(data);
     },
+    // 体系选择清空部门/人员
+    clearSystem() {
+      this.searchData.depName = "";
+      this.searchData.depId = "";
+      this.searchData.empId = "";
+      this.clearSelect();
+      this.remoteMethod();
+    },
     // 部门第二版 删除
     clearDep() {
+      console.log("clearDep");
       this.searchData.depId = "";
       this.searchData.empId = "";
       this.clearSelect();
@@ -262,7 +294,7 @@ export default {
     // 批量计算
     batchCalculationFn() {
       this.$tool.layerAlert.call(this, {
-        message: "确定计算 [结算周期] 的提成吗？",
+        message: "确定计算{结算周期}的提成吗？",
         title: "确认是否计算提成",
         callback: (action) => {
           // debugger
@@ -278,10 +310,16 @@ export default {
             this.$ajax
               .get("/api/bonus/saveBonus", data)
               .then((res) => {
-                // 关闭加载中
-                this.$tool.layerAlertClose();
-                // 结算完成
-                this.$tool.layerAlert.call(this, { typeInfo: 1 });
+                res = res.data;
+                if (res.status === 200 && res.data === "操作成功！") {
+                  this.queryFn();
+                  // 关闭加载中
+                  this.$tool.layerAlertClose();
+                  // 结算完成
+                  this.$tool.layerAlert.call(this, { typeInfo: 1 });
+                } else {
+                  this.$tool.layerAlertClose();
+                }
               })
               .catch((err) => {
                 // 关闭加载中
@@ -364,11 +402,11 @@ export default {
     // 获取数据
     this.queryFn();
   },
-  watch: {
-    "searchData.systemTag"(val) {
-      console.log(val);
-    },
-  },
+  // watch: {
+  //   "searchData.systemTag"(systemTag) {
+
+  //   },
+  // },
 };
 </script>
 
