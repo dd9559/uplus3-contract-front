@@ -12,18 +12,22 @@
       </el-date-picker>
 
       <!-- 三联下拉选择 -->
-      <el-select v-model="searchData.systemTag" class="w100 mr-16" placeholder="体系" clearable>
-        <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
-        </el-option>
-      </el-select>
-
       <div class="triple-select">
-        <select-tree class="select-tree" :init="searchData.depName" @checkCell="depHandleClick" @clear="clearDep">
+
+        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="clearSystem">
+          <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
+          </el-option>
+        </el-select>
+
+        <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
+          @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
+
         <el-select v-model="searchData.empId" v-loadmore="moreEmploye" class="w100" placeholder="选择人员"
           @change="handleEmpNodeClick" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
+
         </el-select>
       </div>
 
@@ -165,13 +169,16 @@ export default {
       moneyWFFsum: 0, //未发放
     };
   },
+  created() {
+    this.searchData.systemTag = this.$store.state.user.user.deptSystemtag || 0; //获取用户当前体系
+  },
   methods: {
     //重置
     reset() {
       this.searchData = {
         keyword: "", //关键字
         settleDate: "", //yyyy-mm 结算周期
-        systemTag: "", //体系id
+        systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         depId: "", //部门编号
         depName: "",
         empId: "", //员工编号
@@ -250,6 +257,14 @@ export default {
     signDateChangeFn(val) {
       this.searchData.bonusDateValue = "";
     },
+    // 体系选择清空部门/人员
+    clearSystem() {
+      this.searchData.depName = "";
+      this.searchData.depId = "";
+      this.searchData.empId = "";
+      this.clearSelect();
+      this.remoteMethod();
+    },
     // 部门第二版 选择部门
     depHandleClick(data) {
       this.searchData.depId = data.depId;
@@ -304,7 +319,7 @@ export default {
     },
     // 发放
     clickIssueFn(scope) {
-      console.log(scope)
+      console.log(scope);
       let { row } = scope || {};
       let { id = 0 } = row || {};
 

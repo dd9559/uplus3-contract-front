@@ -175,7 +175,7 @@ export default {
     };
   },
   created() {
-    this.searchData.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag //获取用户当前体系
+    this.searchData.systemTag = this.$store.state.user.user.deptSystemtag || 0; //获取用户当前体系
   },
   methods: {
     abc() {
@@ -191,7 +191,7 @@ export default {
       this.searchData = {
         keyword: "", //关键字
         settleDate: "", //yyyy-mm 结算周期
-        systemTag: "", //体系id
+        systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         depId: "", //部门编号
         depName: "",
         empId: "", //员工编号
