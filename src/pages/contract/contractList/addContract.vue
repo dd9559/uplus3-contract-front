@@ -170,7 +170,7 @@
                             <i class="yuan">元</i>
                         </el-form-item>
                         <el-form-item 
-                            v-if="userMsg.cityId!=40"
+                            v-if="userMsg.cityId!=1"
                             label="佣金支付费："
                             style="text-align:right;width:280px;">
                             <input 
