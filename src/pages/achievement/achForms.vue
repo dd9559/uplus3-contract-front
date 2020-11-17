@@ -101,7 +101,7 @@
         <div style="display:flex" class="pp">
           <div>
             <!-- 临时添加，城市为武汉佣金支付费合计为0， cityId为1是武汉 -->
-            <span v-if="userMsg.cityId != 1">佣金支付费合计：{{achList.length>0?achList[0].commissionPayments:0}}元</span>
+            <span v-if="userInfo.cityId != 1">佣金支付费合计：{{achList.length>0?achList[0].commissionPayments:0}}元</span>
             <span v-else>佣金支付费合计：0元</span>
             <span>权证费用合计：{{achList.length>0?achList[0].warrantFees:0}}元</span>
             <span>签约总单数： {{achList.length>0?achList[0].amounts:0}}</span>
@@ -140,7 +140,7 @@
           </template>
         </el-table-column>
         <el-table-column label="佣金支付费（元）">
-          <template slot-scope="scope">{{userMsg.cityId != 1 ? scope.row.commissionPayment:0}}</template>
+          <template slot-scope="scope">{{userInfo.cityId != 1 ? scope.row.commissionPayment:0}}</template>
         </el-table-column>
         <el-table-column label="权证费用（元）">
           <template slot-scope="scope">{{scope.row.warrantFee}}</template>
