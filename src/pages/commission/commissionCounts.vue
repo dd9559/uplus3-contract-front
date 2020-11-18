@@ -8,12 +8,12 @@
       <!-- 日期 -->
       <div class="item-text">结算周期</div>
       <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="month"
-        :placeholder="initialTime" value-format="yyyy-MM">
+        value-format="yyyy-MM">
       </el-date-picker>
       <!-- 三联下拉选择 -->
       <div class="triple-select">
 
-        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="clearSystem">
+        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="changeSystem">
           <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
           </el-option>
         </el-select>
@@ -22,12 +22,20 @@
           @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
 
-        <el-select v-model="searchData.empId" v-loadmore="moreEmploye" class="w100" placeholder="选择人员"
-          @change="handleEmpNodeClick" clearable>
+        <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
+          @clear="clearEmp">
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
-
         </el-select>
+
+        <!-- 接口还未实现体系兼职，延后上 -->
+        <!-- <el-select filterable remote class="w100" placeholder="请选择" :clearable="true" :remote-method="employeByText" v-loadmore="moreEmploye"
+          v-model="searchData.empName" @change="empHandleAdd" @clear="clearEmp">
+          <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
+            :value="item.systemtag + '/' + item.depId + '/' + item.depName + '/' + item.empId + '/' + item.name">
+          </el-option>
+        </el-select> -->
+
       </div>
       <div class="triple-select">
         <el-select v-model="searchData.signDateValue" class="w100" @change="signDateChangeFn" clearable>
@@ -70,11 +78,11 @@
             {{ dateFormat(scope.row.signDate) }}
           </template>
         </el-table-column>
-        <!-- <el-table-column min-width="105" label="合同类型">
+        <el-table-column min-width="105" label="合同类型">
           <template slot-scope="scope">
             {{ scope.row.contType.label }}
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
         <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
@@ -154,8 +162,9 @@ export default {
         settleDate: "", //yyyy-mm 结算周期
         systemTag: "", //体系id
         depId: "", //部门编号
-        depName: "",
+        depName: "", //部门名称
         empId: "", //员工编号
+        empName: "", //员工姓名
         signDateValue: 0,
         bonusDateValue: "",
         // signDateStar: "", //签约日期开始
@@ -171,21 +180,12 @@ export default {
       currentPage: 1,
       pageSize: 20,
       total: 20,
-      initialTime: "",
     };
   },
   created() {
     this.searchData.systemTag = this.$store.state.user.user.deptSystemtag || 0; //获取用户当前体系
   },
   methods: {
-    abc() {
-      this.searchData.depName = "";
-      this.searchData.depId = "";
-      this.searchData.empId = "";
-      this.clearSelect();
-      this.remoteMethod();
-      console.log("abc");
-    },
     //重置
     reset() {
       this.searchData = {
@@ -193,8 +193,9 @@ export default {
         settleDate: "", //yyyy-mm 结算周期
         systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         depId: "", //部门编号
-        depName: "",
+        depName: "", //部门名称
         empId: "", //员工编号
+        empName: "", //员工姓名
         signDateValue: 0,
         bonusDateValue: "",
         isCalculation: "", //计算状态（0、未计算1、已计算）
@@ -258,29 +259,56 @@ export default {
     signDateChangeFn(val) {
       this.searchData.bonusDateValue = "";
     },
-    // 部门第二版 选择部门
+    // 选择部门
     depHandleClick(data) {
-      console.log("depHandleClick");
       this.searchData.depId = data.depId;
       this.searchData.depName = data.name;
       this.searchData.empId = "";
+      this.searchData.empName = "";
       this.handleNodeClick(data);
     },
-    // 体系选择清空部门/人员
-    clearSystem() {
-      this.searchData.depName = "";
+    // 获取员工信息
+    empHandleAdd(val) {
+      let depVal = val.split("/");
+      this.searchData.systemTag = depVal[0];
+      this.searchData.depId = depVal[1];
+      this.searchData.depName = depVal[2];
+      this.searchData.empId = depVal[3];
+      this.searchData.empName = depVal[4];
+      this.EmployeList = [];
+      this.getEmploye(this.searchData.depId);
+    },
+    //人员搜索
+    employeByText(val) {
+      console.log("employeByText");
+      this.getEmployeByText(val);
+    },
+    // 选择体系
+    changeSystem() {
+      console.log("changeSystem");
       this.searchData.depId = "";
+      this.searchData.depName = "";
       this.searchData.empId = "";
+      this.searchData.empName = "";
       this.clearSelect();
       this.remoteMethod();
     },
-    // 部门第二版 删除
+    // 部门清空
     clearDep() {
       console.log("clearDep");
       this.searchData.depId = "";
       this.searchData.empId = "";
+      this.searchData.empName = "";
       this.clearSelect();
       this.remoteMethod();
+    },
+    // 人员清空
+    clearEmp() {
+      console.log("clearEmp");
+      this.searchData.empId = "";
+      this.searchData.empName = "";
+      // this.clearSelect();
+      // this.remoteMethod();
     },
     // 时间处理
     dateFormat(val) {
@@ -292,12 +320,12 @@ export default {
       let t = d[1] - 1;
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
       d.splice(2, 1);
-      this.initialTime = d.join("-");
+      this.searchData.settleDate = d.join("-");
     },
     // 批量计算
     batchCalculationFn() {
       this.$tool.layerAlert.call(this, {
-        message: "确定计算{结算周期}的提成吗？",
+        message: "确认计算提成",
         title: "确认是否计算提成",
         callback: (action) => {
           // debugger
@@ -405,11 +433,6 @@ export default {
     // 获取数据
     this.queryFn();
   },
-  // watch: {
-  //   "searchData.systemTag"(systemTag) {
-
-  //   },
-  // },
 };
 </script>
 
