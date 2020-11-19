@@ -159,6 +159,10 @@ export default {
           value: 1,
           label: "已计算",
         },
+        {
+          value: "",
+          label: "全部",
+        },
       ],
       searchData: {
         keyword: "", //关键字

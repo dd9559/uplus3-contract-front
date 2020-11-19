@@ -64,12 +64,10 @@ export default {
   created() {
     // console.log(this.$route.path);
     // console.log(this.$store.state.user.privileges);
-
     // let arr = this.$store.state.user.privileges;
     // let views = this.$tool.pathList.map((item) => Object.assign({}, item));
     // console.log(views);
     // let sliders = [];
-
     // views.forEach((item, index) => {
     //   //获取侧边栏信息中用户可访问的元素
     //   item.child.forEach((tip) => {
@@ -332,7 +330,7 @@ export default {
       width: 200px;
       display: inline-block;
       position: relative;
-      top: 13px;
+      top: 12px;
       .el-input {
         margin-top: 0;
       }
@@ -352,8 +350,8 @@ export default {
       display: inline-block;
       border-right: 0;
       border-radius: 4px 0 0 4px;
-      position: relative;
-      top: 1px;
+      // position: relative;
+      // top: 1px;
       margin-top: 12px;
     }
     .item-billing-date {
@@ -383,43 +381,53 @@ export default {
     .mr-16 {
       margin-right: 16px;
     }
-    .triple-select {
-      display: inline-block;
-      margin-right: 16px;
-      //   .el-input {
-      //     margin-top: 0;
-      //   }
-      &:last-child {
-        margin-right: 0;
-      }
-      .el-input__inner {
-        border-radius: 0;
-        border-right: 0;
-      }
-      .el-select {
-        &:last-child .el-input__inner {
-          border-right: 1px solid #d3d6e6;
-          border-radius: 0px 4px 4px 0px;
-        }
-        &:last-child .el-input.is-focus .el-input__inner {
-          border-right: 1px solid #ffa148;
-        }
+    .paper-box-btns {
+      position: relative;
+      top: 3px;
+    }
+    // .triple-select {
+    //   display: inline-block;
+    //   margin-right: 16px;
+    //   //   .el-input {
+    //   //     margin-top: 0;
+    //   //   }
+    //   &:last-child {
+    //     margin-right: 0;
+    //   }
+    //   .el-input__inner {
+    //     border-radius: 0;
+    //     border-right: 0;
+    //   }
+    //   .el-select {
+    //     &:last-child .el-input__inner {
+    //       border-right: 1px solid #d3d6e6;
+    //       border-radius: 0px 4px 4px 0px;
+    //     }
+    //     &:last-child .el-input.is-focus .el-input__inner {
+    //       border-right: 1px solid #ffa148;
+    //     }
 
-        &:first-child .el-input__inner {
-          border-radius: 4px 0px 0px 4px;
-        }
-      }
-      .el-date-editor {
-        &:last-child {
-          border-right: 1px solid #d3d6e6;
-          border-radius: 0px 4px 4px 0px;
-        }
-        &:first-child {
-          border-radius: 4px 0px 0px 4px;
-        }
-        &.is-active:last-child {
-          border-right: 1px solid #ffa148;
-        }
+    //     &:first-child .el-input__inner {
+    //       border-radius: 4px 0px 0px 4px;
+    //     }
+    //   }
+    //   .el-date-editor {
+    //     &:last-child {
+    //       border-right: 1px solid #d3d6e6;
+    //       border-radius: 0px 4px 4px 0px;
+    //     }
+    //     &:first-child {
+    //       border-radius: 4px 0px 0px 4px;
+    //     }
+    //     &.is-active:last-child {
+    //       border-right: 1px solid #ffa148;
+    //     }
+    //   }
+    // }
+    .triple-select {
+      .el-input--suffix {
+        position: relative;
+        top: -1px;
       }
     }
   }
