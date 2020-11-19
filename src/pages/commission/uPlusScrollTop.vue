@@ -1,26 +1,12 @@
 <template>
   <!-- 筛选 -->
-  <div
-    class="paper-box view-header"
-    :class="[show?'collapse-on':'collapse-off']"
-    style="padding: 20px;"
-  >
+  <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
     <div class="paper-box-title">
       <p class="f14"></p>
-      <p>
-        <el-button
-          class="paper-btn btn-info paper-btn-blue"
-          type="primary"
-          size="small"
-          @click="queryFn"
-          round
-        >查 询</el-button>
-        <el-button
-          class="paper-btn btn-info paper-btn-gray"
-          size="small"
-          @click="resetFormFn"
-          round
-        >重 置</el-button>
+      <p class="paper-box-btns">
+        <el-button class="paper-btn btn-info paper-btn-blue" type="primary" size="small" @click="queryFn" round>查 询
+        </el-button>
+        <el-button class="paper-btn btn-info paper-btn-gray" size="small" @click="resetFormFn" round>重 置</el-button>
       </p>
     </div>
     <!-- 筛选条件 -->
@@ -158,18 +144,18 @@ export default {
 }
 
 .paper-btn-blue {
-  background-color: #FFA148;
+  background-color: #ffa148;
   border-color: #fff;
   &:hover {
-    background-color: #FFA148;
+    background-color: #ffa148;
   }
 }
 .paper-btn-gray {
-  background-color: #EDEFF5;
-  border-color: #EDEFF5;
-  color: #8492A6;
+  background-color: #edeff5;
+  border-color: #edeff5;
+  color: #8492a6;
   &:hover {
-    background-color: #EDEFF5;
+    background-color: #edeff5;
     // color: #333;
   }
 }
