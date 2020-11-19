@@ -316,7 +316,7 @@
           >
             创建线上合同
             <i class="el-icon-arrow-down el-icon--right"></i>
-            <div class="holderPlace" v-if="onlineContractList">
+            <div class="holderPlace" v-if="onlineContractList.toString()">
               <ul class="mainList">
                 <li
                   v-for="item in onlineContractList"
@@ -357,15 +357,15 @@
           >
             录入线下合同
             <i class="el-icon-arrow-down el-icon--right"></i>
-            <div class="holderPlace" v-if="dictionary['65']">
+            <div class="holderPlace" v-if="offlineContractList.toString()">
               <ul class="mainList">
                 <li
-                  v-for="item in dictionary['65']"
+                  v-for="item in offlineContractList"
                   :key="item.key"
                   @click="addOffLine(item)"
                   style="position: relative"
                 >
-                  {{ item.value }}
+                  {{ item.type.label }}
                   <i
                     class="el-icon-caret-right"
                     v-if="item.key === 2 && item.children"
@@ -398,15 +398,15 @@
           >
             打印空白合同
             <i class="el-icon-arrow-down el-icon--right"></i>
-            <div class="holderPlace" v-if="dictionary['71']">
+            <div class="holderPlace" v-if="onlineContractList.toString()">
               <ul class="mainList">
                 <li
-                  v-for="item in dictionary['71']"
+                  v-for="item in onlineContractList"
                   :key="item.key"
                   @click="printCont(item)"
                   style="position: relative"
                 >
-                  {{ item.value }}
+                  {{ item.type.label }}
                   <i
                     class="el-icon-caret-right"
                     v-if="item.key === 2 && item.children"
@@ -1527,6 +1527,7 @@ export default {
       localChoseList: [],
       checkPersonData: null,
       onlineContractList: [],
+      offlineContractList: [],
     };
   },
   created() {
@@ -2016,19 +2017,19 @@ export default {
     },
     //新增线下合同
     addOffLine(val) {
-      if (val.key != 2 || (val.key === 2 && !val.children)) {
+      if (val.type.value != 2 || (val.type.value === 2 && !val.children)) {
         this.showOffLine = false;
-        if (val.key === 1 || val.key === 2 || val.key === 3) {
+        if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
           this.$router.push({
             path: "/addContract",
             query: {
-              type: val.key,
+              type: val.type.value,
               operateType: 1,
               // isOffline: 1
               recordType: 2,
             },
           });
-        } else if (val.key === 7 || val.key === 8) {
+        } else if (val.type.value === 7 || val.type.value === 8) {
           this.$router.push({
             path: "/addContract",
             query: {
@@ -2036,14 +2037,14 @@ export default {
               operateType: 1,
               // isOffline: 1,
               recordType: 2,
-              loanType: val.key,
+              loanType: val.type.value,
             },
           });
-        } else if (val.key === 4 || val.key === 5) {
+        } else if (val.type.value === 4 || val.type.value === 5) {
           this.$router.push({
             path: "/newIntention",
             query: {
-              contType: val.key,
+              contType: val.type.value,
               operateType: 1,
               // isOffline: 1
               recordType: 2,
@@ -2283,10 +2284,10 @@ export default {
     },
     //打印空白合同
     printCont(val) {
-      if (val.key != 2 || (val.key === 2 && !val.children)) {
+      if (val.type.value != 2 || (val.type.value === 2 && !val.children)) {
         this.showPrint = false;
         let param = {
-          type: val.key,
+          type: val.type.value,
         };
         this.$ajax
           .get("/api/setting/contractTemplate/checkBlankPdf", param)
@@ -2294,7 +2295,7 @@ export default {
             res = res.data;
             if (res.status === 200) {
               let dayRandomTime = new Date().getTime();
-              this.pdfUrl = `${this.http}/api/setting/contractTemplate/getBlankPdf?type=${val.key}&dayRandomTime=${dayRandomTime}`;
+              this.pdfUrl = `${this.http}/api/setting/contractTemplate/getBlankPdf?type=${val.type.value}&dayRandomTime=${dayRandomTime}`;
               this.haveUrl = true;
             }
           })
@@ -2709,12 +2710,10 @@ export default {
           if (res.status === 200) {
             res.data.map((item) => {
               if (item.enableTemplateId != 0 && item.type.value != 6) {
-                // this.dictionary['71'].map((dictionaryItem) => {
-                //   if (dictionaryItem.key === item.type.value) {
-                //     this.onlineContractList.push(Object.assign({},item,dictionaryItem));
-                //   }
-                // })
                 this.onlineContractList.push(item);
+              }
+              if (item.type.value != 6) {
+                this.offlineContractList.push(item)
               }
             });
           }

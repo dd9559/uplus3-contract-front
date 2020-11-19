@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="brand-nav">财务>提成设置</p>
+    <!-- <p class="brand-nav">财务>提成设置</p> -->
     <div ref="tableComView">
         <!-- 查询组件 -->
       <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn">
@@ -42,7 +42,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <!-- <el-form-item>
             <el-select
               v-model="searchForm.depId"
               placeholder="部门"
@@ -58,7 +58,20 @@
                 :label="item.name"
                 :value="item.id"
               ></el-option>
-            </el-select>
+            </el-select> -->
+
+            <select-tree
+              size="small"
+              ref="selectTreeRef"
+              :data="searchDepList"
+              :obj="obj"
+              clearable
+              collapseTags
+              multiple
+              expand-click-node
+              checkStrictly
+              @getValue="setTreeMenu"
+            ></select-tree>
 
 
           <!-- <el-select
@@ -193,7 +206,7 @@
               <template slot-scope="scope">{{scope.row.createTime|formatTime(false)}}</template>
             </el-table-column>
           </el-table>
-          <el-pagination
+          <!-- <el-pagination
             v-if="total"
             class="pagination-info"
             @current-change="handleCurrentChange"
@@ -201,7 +214,14 @@
             :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
-          ></el-pagination>
+          ></el-pagination> -->
+          <myPagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-size="pageSize"
+            :total="total"
+          ></myPagination>
         </div>
       </div>
       <!-- 添加 编辑 弹窗 -->
@@ -465,10 +485,12 @@
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
 import elTree2 from "@/components/tree/src/tree.vue";
+import selectTree from "./selectTree.vue";
+import myPagination from "./myPagination";
 export default {
   name: "deduct",
   mixins: [MIXINS],
-  components: { elTree2 },
+  components: { elTree2, selectTree, myPagination },
   data() {
     return {
       searchForm: {
@@ -478,6 +500,11 @@ export default {
         depId: [],
         timeType: "1",
         executionStartTime: [],
+      },
+      obj: {
+        id: "depId",
+        label: "name",
+        children: "subs",
       },
       searchDepName: [],
       searchDepList: [],
@@ -708,12 +735,18 @@ export default {
         this.$message('请先选择体系')
       }
     },
+    setTreeMenu(key, data) {
+      //获取子组件值
+      this.searchForm.depId = key
+      console.log(key);
+      console.log(data);
+    },
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
       this.searchForm.depId = []
       this.searchForm.positions = []
-      this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -723,8 +756,8 @@ export default {
       this.getPosition('search')
     },
     getDep() {
-      this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -1111,6 +1144,10 @@ export default {
           this.$message({ message: error });
         });
     },
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.getList('page')
+    },
     handleCurrentChange(val) {
         this.pageNum = val
         this.getList('page')
@@ -1119,6 +1156,7 @@ export default {
       this.getList('search')
     },
     resetFormFn() {
+      this.$refs.selectTreeRef.clean()
       this.searchForm.systemTag = ''
       this.searchForm.bonusName = ''
       this.searchForm.positions = []
@@ -1139,7 +1177,7 @@ export default {
         bonusName: "", // 规则名
         system: this.systemTagSelect.filter(item => item.key === this.user.deptSystemtag)[0], // 体系
         depId: [], //部门id
-        positions: [], //职务
+        position: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
         executionStartTime: tYear +'-'+ m, //执行开始时间
