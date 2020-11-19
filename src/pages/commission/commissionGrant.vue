@@ -63,8 +63,9 @@
     <div class="main">
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据 <span class="reveal-p1">发放人数：<em class="cl-red">{{empCount}}</em>人
-            提成总金额：<em class="cl-red">{{moneySum}}</em>元 已发放总金额：<em class="cl-red">{{moneyFFSum}}</em>元
-            未发放总金额：<em class="cl-red">{{moneyWFFSum}}</em>元</span>
+            提成总金额：<em class="cl-red">{{moneySum|fomatFloat}}</em>元 已发放总金额：<em
+              class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
+            未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
         <el-button class="fr btn-orange-border" @click="clickExportFn">导出</el-button>
         <el-button class="fr btn-orange" @click="batchCalculationFn">批量发放</el-button>
@@ -100,7 +101,11 @@
             {{isCalculation[scope.row.empStatus].label}}
           </template>
         </el-table-column>
-        <el-table-column prop="bonusMoney" min-width="130" label="提成（元）"></el-table-column>
+        <el-table-column min-width="130" label="提成（元）">
+          <template slot-scope="scope">
+            {{scope.row.bonusMoney|fomatFloat}}
+          </template>
+        </el-table-column>
         <el-table-column min-width="120" label="操作">
           <template slot-scope="scope">
             <span :class="scope.row.status === 0 ? 'cl-blue' : ''"
@@ -117,9 +122,10 @@
 <script>
 import myPagination from "./myPagination";
 import { MIXINS } from "@/assets/js/mixins";
+import { FILTER } from "@/assets/js/filter";
 export default {
   name: "commissionGrant",
-  mixins: [MIXINS],
+  mixins: [MIXINS, FILTER],
   data() {
     return {
       //   发放状态
@@ -177,7 +183,7 @@ export default {
         empName: "", //员工姓名
         signDateValue: 0,
         bonusDateValue: "",
-        grantStatus: "", //发放状态
+        status: "", //发放状态
         // signDateStar: "", //发起日期开始
         // signDateEnd: "", //发起日期结束
         // bonusDateStar: "", //提成生成日期开始
@@ -215,6 +221,7 @@ export default {
         signDateValue: 0,
         bonusDateValue: "",
         isCalculation: "", //在职状态: 0待入职，1在职，2离职
+        status: "", //发放状态
       };
     },
     // 查询

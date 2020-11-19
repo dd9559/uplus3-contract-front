@@ -91,6 +91,9 @@
               <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
             </el-tooltip>
           </template>
+          <template slot-scope="scope">
+            {{scope.row.settleMoney|fomatFloat}}
+          </template>
         </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
           <template slot-scope="scope">
@@ -114,10 +117,10 @@
 <script>
 import myPagination from "./myPagination";
 import { MIXINS } from "@/assets/js/mixins";
-
+import { FILTER } from "@/assets/js/filter";
 export default {
   name: "commissionCounts",
-  mixins: [MIXINS],
+  mixins: [MIXINS, FILTER],
   data() {
     return {
       //   签约时间
