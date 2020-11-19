@@ -1,37 +1,16 @@
 <template>
-  <el-popover
-    @show="initList('show')"
-    @hide="initList('hide')"
-    ref="popover"
-    trigger="manual"
-    placement="bottom"
-    v-model="visible"
-  >
+  <el-popover @show="initList('show')" @hide="initList('hide')" ref="popover" trigger="manual" placement="bottom"
+    v-model="visible">
     <div class="select-tree">
       <el-tree accordion :data="list" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
-    <p
-      class="tree-box"
-      slot="reference"
-      @click="opera('init',$event)"
-      @mouseenter="showClear"
-      @mouseleave="clearVal=false"
-    >
-      <el-input
-        size="small"
-        class="w200"
-        ref="btn"
-        placeholder="请选择"
-        v-model="inputVal"
-        @keyup.native="getDep"
-      ></el-input>
+    <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear"
+      @mouseleave="clearVal=false">
+      <el-input size="small" class="w200" ref="btn" placeholder="请选择" v-model="inputVal" @keyup.native="getDep">
+      </el-input>
       <!--<input type="text" placeholder="请选择" ref="btn" v-model="inputVal" @input="getDep">-->
       <span class="box-icon" ref="triggerBtn">
-        <i
-          class="el-select__caret el-icon-arrow-up"
-          :class="[visible?'is-reverse':'']"
-          v-if="!clearVal"
-        ></i>
+        <i class="el-select__caret el-icon-arrow-up" :class="[visible?'is-reverse':'']" v-if="!clearVal"></i>
         <i class="iconfont icon-tubiao-7" v-else @click.stop="opera('clear')"></i>
       </span>
     </p>
@@ -48,29 +27,29 @@ export default {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     defaultProps: {
       type: Object,
       default() {
         return {
           children: "subs",
-          label: "name"
+          label: "name",
         };
-      }
+      },
     },
     init: {
       type: String,
-      default: ""
+      default: "",
     },
     treeType: {
       type: String,
-      default: "none"
+      default: "none",
     },
     systemKey: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   data() {
     return {
@@ -83,7 +62,7 @@ export default {
       list: [],
       cellClick: false, //是否选择
       operaTime: null, //键盘输入时间
-      operaStatus: false
+      operaStatus: false,
     };
   },
   mounted() {
@@ -96,13 +75,16 @@ export default {
     document.body.removeEventListener("mousedown", this.bodyClick);
   },
   watch: {
-    init: function(val) {
+    init: function (val) {
       this.inputVal = val;
       // this.getList(this.inputVal,'search')
-    }
+    },
+    systemKey: function (val) {
+      this.getList()
+    },
   },
   methods: {
-    bodyClick: function(e) {
+    bodyClick: function (e) {
       if (
         this.$refs.popover &&
         !(
@@ -118,13 +100,13 @@ export default {
         this.visible = false;
       }
     },
-    showClear: function() {
+    showClear: function () {
       // debugger
       if (this.inputVal.length > 0 && this.list.length > 0) {
         this.clearVal = true;
       }
     },
-    depHandleClick: function(data) {
+    depHandleClick: function (data) {
       this.cellClick = true;
       _inputVal = data.name;
       // if (data.subs.length === 0) {
@@ -137,7 +119,7 @@ export default {
       }
       this.$emit("checkCell", data);
     },
-    opera: function(type, e) {
+    opera: function (type, e) {
       if (type === "init") {
         this.visible = !this.visible;
         // this.$refs.popover.showPopper = true
@@ -145,7 +127,7 @@ export default {
       } else if (type === "clear") {
         this.visible = false;
         // this.$refs.popover.showPopper = false
-        this.list = _list.map(item => Object.assign({}, item));
+        this.list = _list.map((item) => Object.assign({}, item));
         /*if(this.init.length>0){
           }else {
             this.inputVal=''
@@ -154,7 +136,7 @@ export default {
         this.$emit("clear");
       }
     },
-    initList: function(type = "hide") {
+    initList: function (type = "hide") {
       // this.inputVal=''
       if (type === "hide") {
         if (_inputVal !== this.inputVal) {
@@ -169,13 +151,13 @@ export default {
             this.list = _list.map(item=>Object.assign({},item))
           }*/
       } else {
-        this.list = _list.map(item => Object.assign({}, item));
+        this.list = _list.map((item) => Object.assign({}, item));
         _inputVal = this.inputVal;
         this.cellClick = false;
       }
     },
 
-    getList: function(keyword = "", type = "init", addType = 1) {
+    getList: function (keyword = "", type = "init", addType = 1) {
       let url = "";
       if (addType == 1) {
         url = "/api/access/deps/tree";
@@ -193,29 +175,29 @@ export default {
       this.treeType === "power" && (url = "/api/access/deps");
       let param = {
         keyword: keyword,
-        isControl: isControl
+        isControl: isControl,
       };
       if (this.systemKey) {
         //如果是审核流程页面根据选择的体系请求树形数据
         url = "/api/access/systemtag/deps/tree";
         // addType != 1 && (url = '/api/access/systemtag/deps')
         // addType == 1 &&this.systemKey!='-100' && (url = '/api/access/systemtag/deps/tree')
-        if(this.systemKey!='-100'){
+        if (this.systemKey != "-100") {
           param.systemTag = this.systemKey;
         }
       }
-      this.$ajax.get(url, param).then(res => {
+      this.$ajax.get(url, param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.list = res.data;
           if (type === "init") {
-            _list = res.data.map(item => Object.assign({}, item));
+            _list = res.data.map((item) => Object.assign({}, item));
           }
         }
       });
     },
     //部门搜索
-    getDep: function(e, clear = false) {
+    getDep: function (e, clear = false) {
       this.visible = true;
       this.inputVal = e.target.value.replace(/\s/g, "");
       this.operaStatus = false;
@@ -227,7 +209,7 @@ export default {
             this.getList(this.inputVal, "search", 2);
             this.$emit("search");
           } else {
-            this.list = _list.map(item => Object.assign({}, item));
+            this.list = _list.map((item) => Object.assign({}, item));
             //部门选择添加初始值--2019/05/28
             /*if(_list.length===0){
                 this.getList()
@@ -236,13 +218,13 @@ export default {
         }, 800);
       }
       // debugger
-    }
+    },
   },
   computed: {
-    dataList: function() {
+    dataList: function () {
       return this.data;
-    }
-  }
+    },
+  },
 };
 </script>
 

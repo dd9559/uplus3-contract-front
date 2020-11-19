@@ -969,7 +969,7 @@ let TOOL = {
         <p class="p">${message || '已计算完成'}</p>
     </div>` : typeInfo === 2 ? `<div class="layer-loading-txt">
     <div class="img"></div>
-    <p class="p">${message || '系统正在计算中，请稍后...'}</p>
+    <p class="p">${message || '系统正在计算中，请稍后'}</p>
 </div>` : `<div class="layer-txt">${message}</div>`;
     // 类名判断
     let customClass = typeInfo === 1 ? 'layer-succes' : typeInfo === 2 ? 'layer-loading' : '';
