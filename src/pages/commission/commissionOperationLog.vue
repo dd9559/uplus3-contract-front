@@ -3,7 +3,8 @@
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
-      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable></el-input>
+      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
+      </el-input>
 
       <!-- 三联下拉选择 -->
       <div class="triple-select">
@@ -126,13 +127,13 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //内容
-        systemTag: "", //体系
+        systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         depId: "", //部门编号
         depName: "", //部门名称
         empId: "", //员工编号
         empName: "", //员工姓名
         bonusDateValue: "",
-        typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
+        typeId: "", // 日志类型
       };
       this.EmployeList = []; //清空已获取的人员
     },

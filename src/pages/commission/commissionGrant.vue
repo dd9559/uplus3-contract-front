@@ -20,7 +20,7 @@
         </el-select>
 
         <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
-          @checkCell="depHandleClick" @clear="clearDep">
+          @checkCell="depHandleClick" @clear="clearDep" ref="depTree">
         </select-tree>
 
         <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
@@ -214,8 +214,10 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //关键字
-        settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        settleDate: "", //yyyy-mm 结算周期
+        // settleDate: this.defSettleDate, //yyyy-mm 结算周期
         systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
+        // systemTag: "",
         depId: "", //部门编号
         depName: "", //部门名称
         empId: "", //员工编号
@@ -482,11 +484,6 @@ export default {
     this.getSystemTagSelect();
     // 获取数据
     this.queryFn();
-  },
-  watch: {
-    "searchData.systemTag"(val) {
-      console.log(val);
-    },
   },
 };
 </script>

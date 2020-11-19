@@ -199,8 +199,10 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //关键字
-        settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        settleDate: "", //yyyy-mm 结算周期
+        // settleDate: this.defSettleDate, //yyyy-mm 结算周期
         systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
+        // systemTag: "",
         depId: "", //部门编号
         depName: "", //部门名称
         empId: "", //员工编号
