@@ -353,10 +353,13 @@ export default {
       // position: relative;
       // top: 1px;
       margin-top: 12px;
+      background: #fff;
     }
     .item-billing-date {
       display: inline-block;
       .el-input__inner {
+        position: relative;
+        top: -1px;
         border-radius: 0 4px 4px 0;
       }
     }
@@ -364,7 +367,7 @@ export default {
       .item-billing-date;
       position: relative;
       padding: 0 10px;
-      top: 1px;
+      // top: 1px;
     }
     .w160 {
       width: 160px;
@@ -381,54 +384,55 @@ export default {
     .mr-16 {
       margin-right: 16px;
     }
+    .triple-select {
+      display: inline-block;
+      margin-right: 16px;
+      &:last-child {
+        margin-right: 0;
+      }
+      .el-input__inner {
+        border-radius: 0;
+        border-right: 0;
+      }
+      .el-select {
+        &:last-child .el-input__inner {
+          border-right: 1px solid #d3d6e6;
+          border-radius: 0px 4px 4px 0px;
+        }
+        &:last-child .el-input.is-focus .el-input__inner {
+          border-right: 1px solid #ffa148;
+        }
+
+        &:first-child .el-input__inner {
+          border-radius: 4px 0px 0px 4px;
+        }
+      }
+      .el-date-editor {
+        &:last-child {
+          border-right: 1px solid #d3d6e6;
+          border-radius: 0px 4px 4px 0px;
+        }
+        &:first-child {
+          border-radius: 4px 0px 0px 4px;
+        }
+        &.is-active:last-child {
+          border-right: 1px solid #ffa148;
+        }
+        .el-range-input {
+          width: 34%;
+          height: 30px;
+          line-height: 30px;
+          position: relative;
+          top: 0;
+          font-size: 13px;
+        }
+      }
+    }
     .paper-box-btns {
       position: relative;
       top: 3px;
     }
-    // .triple-select {
-    //   display: inline-block;
-    //   margin-right: 16px;
-    //   //   .el-input {
-    //   //     margin-top: 0;
-    //   //   }
-    //   &:last-child {
-    //     margin-right: 0;
-    //   }
-    //   .el-input__inner {
-    //     border-radius: 0;
-    //     border-right: 0;
-    //   }
-    //   .el-select {
-    //     &:last-child .el-input__inner {
-    //       border-right: 1px solid #d3d6e6;
-    //       border-radius: 0px 4px 4px 0px;
-    //     }
-    //     &:last-child .el-input.is-focus .el-input__inner {
-    //       border-right: 1px solid #ffa148;
-    //     }
-
-    //     &:first-child .el-input__inner {
-    //       border-radius: 4px 0px 0px 4px;
-    //     }
-    //   }
-    //   .el-date-editor {
-    //     &:last-child {
-    //       border-right: 1px solid #d3d6e6;
-    //       border-radius: 0px 4px 4px 0px;
-    //     }
-    //     &:first-child {
-    //       border-radius: 4px 0px 0px 4px;
-    //     }
-    //     &.is-active:last-child {
-    //       border-right: 1px solid #ffa148;
-    //     }
-    //   }
-    // }
     .triple-select {
-      .el-input--suffix {
-        position: relative;
-        top: -1px;
-      }
     }
   }
 }
