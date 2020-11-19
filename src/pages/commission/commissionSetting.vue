@@ -1047,7 +1047,7 @@ export default {
         this.deductData.position.length === 0 ||
         this.deductData.tradeType === '' ||
         this.deductData.commissionCalculation === '' ||
-        this.deductData.executionStartTime === ''
+        !this.deductData.executionStartTime
       ) {
         return this.$message({
               type: "warning",
@@ -1066,6 +1066,12 @@ export default {
       };
       for (let index = 0; index < this.commissionScheme.length; index++) {
         const element = this.commissionScheme[index];
+        if (!element.bonusProportion) {
+          return this.$message({
+            type: "warning",
+            message: "请把信息填写完整",
+          });
+        }
         for (let i = 0; i < this.commissionScheme.length; i++) {
           const item = this.commissionScheme[i];
           if (
