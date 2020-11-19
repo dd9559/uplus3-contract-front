@@ -3,7 +3,7 @@
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
-      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"></el-input>
+      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable></el-input>
 
       <!-- 三联下拉选择 -->
       <div class="triple-select">
@@ -18,7 +18,7 @@
         </select-tree>
 
         <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
-          @clear="clearEmp">
+          @clear="clearEmp" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
         </el-select>
@@ -134,6 +134,7 @@ export default {
         bonusDateValue: "",
         typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
       };
+      this.EmployeList = []; //清空已获取的人员
     },
     // 查询
     queryFn() {

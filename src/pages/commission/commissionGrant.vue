@@ -3,7 +3,8 @@
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
-      <el-input placeholder="登录账号/员工工号" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword">
+      <el-input placeholder="登录账号/员工工号" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
+        clearable>
       </el-input>
       <!-- 日期 -->
       <div class="item-text">结算周期</div>
@@ -23,7 +24,7 @@
         </select-tree>
 
         <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
-          @clear="clearEmp">
+          @clear="clearEmp" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
         </el-select>
@@ -192,6 +193,7 @@ export default {
         // pageSize: "",
         // pageNum: "",
       },
+      defSettleDate: "", //初始化结算周期
       copySearchData: {},
       tableData: [],
       currentPage: 1,
@@ -212,7 +214,7 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //关键字
-        settleDate: "", //yyyy-mm 结算周期
+        settleDate: this.defSettleDate, //yyyy-mm 结算周期
         systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         depId: "", //部门编号
         depName: "", //部门名称
@@ -223,6 +225,7 @@ export default {
         isCalculation: "", //在职状态: 0待入职，1在职，2离职
         status: "", //发放状态
       };
+      this.EmployeList = []; //清空已获取的人员
     },
     // 查询
     queryFn() {
@@ -356,6 +359,7 @@ export default {
       let t = d[1] - 1;
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
       d.splice(2, 1);
+      this.defSettleDate = d.join("-");
       this.searchData.settleDate = d.join("-");
     },
     // 批量发放
