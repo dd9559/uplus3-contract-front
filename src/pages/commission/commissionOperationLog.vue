@@ -40,8 +40,8 @@
 
       <div class="triple-select">
         <div class="item-text">时间</div>
-        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="monthrange"
-          range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份" value-format="timestamp">
+        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="timestamp">
         </el-date-picker>
       </div>
     </uPlusScrollTop>
@@ -86,15 +86,15 @@ export default {
       //   计算状态
       isCalculation: [
         {
-          value: 41,
+          value: 42,
           label: "提成计算",
         },
         {
-          value: 42,
+          value: 43,
           label: "提成发放",
         },
         {
-          value: 43,
+          value: 44,
           label: "提成设置",
         },
       ],

@@ -42,8 +42,8 @@
           <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="monthrange"
-          range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份" value-format="timestamp">
+        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="timestamp">
         </el-date-picker>
       </div>
 

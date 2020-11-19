@@ -48,10 +48,16 @@
           <el-option v-for="item in signDateList" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="monthrange"
-          range-separator="至" start-placeholder="开始月份" end-placeholder="结束月份" value-format="timestamp">
+        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="timestamp">
         </el-date-picker>
       </div>
+
+      <el-select v-model="searchData.status" class="w116 mr-16" placeholder="发放状态" clearable>
+        <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
+
     </uPlusScrollTop>
 
     <div class="main">
@@ -116,6 +122,21 @@ export default {
   mixins: [MIXINS],
   data() {
     return {
+      //   发放状态
+      status: [
+        {
+          value: 0,
+          label: "未发放",
+        },
+        {
+          value: 1,
+          label: "已发放",
+        },
+        {
+          value: "",
+          label: "全部",
+        },
+      ],
       //   签约时间
       signDateList: [
         {
@@ -156,6 +177,7 @@ export default {
         empName: "", //员工姓名
         signDateValue: 0,
         bonusDateValue: "",
+        grantStatus: "", //发放状态
         // signDateStar: "", //发起日期开始
         // signDateEnd: "", //发起日期结束
         // bonusDateStar: "", //提成生成日期开始
@@ -219,6 +241,12 @@ export default {
       // 加载中
       this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
 
+      let arr = {};
+      arr.empCount = 0;
+      arr.moneySum = 0;
+      arr.moneyFFSum = 0;
+      arr.moneyWFFSum = 0;
+
       this.$ajax
         .get("/api/bonus/bonusSummaryList", data)
         .then((res) => {
@@ -235,19 +263,18 @@ export default {
             });
 
             if (list.length > 0) {
-              let arr = {};
-              arr.empCount = list[0].empCount; //人数
-              arr.moneySum = list[0].moneySum; //提成总额
-              arr.moneyFFSum = list[0].moneyFFSum; //已发放
-              arr.moneyWFFSum = list[0].moneyWFFSum; //未发放
-
-              Object.assign(this, arr);
+              arr.empCount = list[0].empCount || 0; //人数
+              arr.moneySum = list[0].moneySum || 0; //提成总额
+              arr.moneyFFSum = list[0].moneyFFSum || 0; //已发放
+              arr.moneyWFFSum = list[0].moneyWFFSum || 0; //未发放
             }
+            Object.assign(this, arr);
           }
           // 关闭加载中
           this.$tool.layerAlertClose();
         })
         .catch((err) => {
+          Object.assign(this, arr);
           // 关闭加载中
           this.$tool.layerAlertClose();
 
