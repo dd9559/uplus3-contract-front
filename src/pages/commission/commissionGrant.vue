@@ -23,7 +23,7 @@
           :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
 
-        <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
+        <el-select class="w100 select-emp" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
           @clear="clearEmp" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
@@ -36,7 +36,6 @@
             :value="item.systemtag + '/' + item.depId + '/' + item.depName + '/' + item.empId + '/' + item.name">
           </el-option>
         </el-select> -->
-
       </div>
 
       <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态" clearable>
@@ -215,8 +214,8 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //关键字
-        settleDate: "", //yyyy-mm 结算周期
-        // settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        // settleDate: "", //yyyy-mm 结算周期
+        settleDate: this.defSettleDate, //yyyy-mm 结算周期
         // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         systemTag: "",
         depId: "", //部门编号
