@@ -38,6 +38,13 @@
       :size="size"
       v-model="returnDataLabels"
       :multiple="multiple"
+      :filterable="filterable"
+      :remote="remote"
+      reserve-keyword
+      :loading="loading"
+      :loading-text="loadingText"
+      :remote-method="remoteMethod"
+      :filter-method="filterMethod"
       :clearable="clearable"
       :collapse-tags="collapseTags"
       @click.native="selectClick"
@@ -113,7 +120,35 @@ export default {
         return false;
       },
     },
-    // 显示复选框情况下，是否严格遵循父子不互相关联
+    // 是否可搜索 
+    filterable: {
+      tepe: Boolean,
+      default() {
+        return false
+      }
+    },
+    // 是否可远程搜索 filterable
+    remote: {
+      tepe: Boolean,
+      default() {
+        return false
+      }
+    },
+    // 是否正在从远程加载数据
+    loading: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    },
+    // 远程加载时显示的文字
+    loadingText: {
+      type: String,
+      default() {
+        return "加载中"
+      }
+    },
+    // 默认选中项
     defaultKeys: {
       type: Array,
       default() {
@@ -164,8 +199,10 @@ export default {
       options: [], //select option选项
       returnDatas: [], //返回给父组件数组对象
       returnDataKeys: [], //返回父组件数组主键值
-      returnData: [], //返回父组件数组主键值
-      returnDataLabels: [], //返回父组件数组主键值
+      returnData: [], //返回父组件数组
+      returnDataLabels: [], //返回父组件数组label值
+      remoteKeyWord: '', //远程搜索关键字
+      filterKeyWord: '', //远程搜索关键字
     };
   },
   computed: {
@@ -178,7 +215,8 @@ export default {
   },
   methods: {
     init() {
-        console.log(667565);
+      if (!this.$refs.tree) return
+      console.log('我看看跑了几次');
       // eslint-disable-next-line no-undef,no-debugger
       // debugger
       if (this.defaultKey != undefined && this.defaultKey.length > 0) {
@@ -270,9 +308,26 @@ export default {
         this.returnDatas = t;
       }
     },
+    // select聚焦时相关逻辑
+    // selectFocus() {
+    //   this.$emit("selectFocus",true,'')
+    // },
+    // 搜索方法
+    filterMethod(val) {
+      console.log(val,223311);
+      if (val) {
+        this.$emit("selectFocus",true,'')
+        this.$refs.select.remoteMethod(val)
+      }
+    },
+    // 远程搜素方法
+    remoteMethod(val) {
+      if(val) {
+        this.$emit("selectFocus",true,val)
+      }
+    },
     //单选:清空选中
     clean() {
-      console.log(123213);
       this.$refs.tree.setCheckedKeys([]); //清除树选中key
       this.returnDatas = null;
       this.returnDataKeys = "";
@@ -298,10 +353,12 @@ export default {
     },
     //多选:设置、初始化值 keys
     setKeys(thisKeys) {
+      console.log(this.$refs,889999999999);
       this.$refs.tree.setCheckedKeys(thisKeys);
       this.returnDataKeys = thisKeys;
       var t = [];
       thisKeys.map((item) => {
+        console.log(item,'史蒂芬霍金炬华科技和');
         //设置option选项
         var node = this.$refs.tree.getNode(item); // 所有被选中的节点对应的node
         t.push(node.data);
@@ -393,6 +450,7 @@ export default {
       this.$emit("getValue", this.returnDataKeys, this.returnDatas);
     },
     treeData() {
+      // debugger
       this.$nextTick(() => {
         this.init();
       });

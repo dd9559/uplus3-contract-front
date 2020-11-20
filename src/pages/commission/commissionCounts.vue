@@ -44,7 +44,7 @@
           </el-option>
         </el-select>
         <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="timestamp">
+          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
         </el-date-picker>
       </div>
 
@@ -393,7 +393,7 @@ export default {
         bonusDateStar: "", //提成计算日期开始
         bonusDateEnd: "", //提成计算日期结束
       };
-
+      console.log(data.bonusDateValue,9999);
       let signJ =
         data.signDateValue === 0
           ? {
