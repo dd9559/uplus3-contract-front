@@ -1209,6 +1209,8 @@ export default {
       this.searchForm.depId = []
       this.searchForm.timeType = ''
       this.searchForm.executionStartTime = []
+      this.searchDepList = []
+      this.searchPositionRanksList = []
     },
     add(type) {
       let myDate = new Date();
