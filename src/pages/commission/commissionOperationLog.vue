@@ -3,7 +3,8 @@
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
-      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"></el-input>
+      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
+      </el-input>
 
       <!-- 三联下拉选择 -->
       <div class="triple-select">
@@ -14,11 +15,11 @@
         </el-select>
 
         <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
-          @checkCell="depHandleClick" @clear="clearDep">
+          :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
 
         <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
-          @clear="clearEmp">
+          @clear="clearEmp" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
         </el-select>
@@ -97,6 +98,10 @@ export default {
           value: 44,
           label: "提成设置",
         },
+        {
+          value: "",
+          label: "全部",
+        },
       ],
       searchData: {
         keyword: "", //内容
@@ -111,6 +116,7 @@ export default {
         typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
         // pageSize: "", //条数
         // pageNum: "", //页码
+        searchStatus: true,
       },
       copySearchData: {},
       tableData: [],
@@ -126,18 +132,23 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //内容
-        systemTag: "", //体系
+        // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
+        systemTag: "",
         depId: "", //部门编号
         depName: "", //部门名称
         empId: "", //员工编号
         empName: "", //员工姓名
         bonusDateValue: "",
-        typeId: "", // 日志类型 （41、提成计算 42、提成发放 43、提成设置）
+        typeId: "", // 日志类型
+        searchStatus: false,
       };
+      this.EmployeList = []; //清空已获取的人员
     },
     // 查询
     queryFn() {
       this.currentPage = 1;
+      if (this.searchData.bonusDateValue === null)
+        this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
       this.searchFn();
     },
@@ -257,6 +268,13 @@ export default {
     this.getSystemTagSelect();
     // 获取数据
     this.queryFn();
+  },
+  watch: {
+    "searchData.systemTag"(val) {
+      val === ""
+        ? (this.searchData.searchStatus = false)
+        : (this.searchData.searchStatus = true);
+    },
   },
 };
 </script>
