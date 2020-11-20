@@ -373,7 +373,6 @@ export default {
               .catch((err) => {
                 // 关闭加载中
                 this.$tool.layerAlertClose();
-
                 this.$message({
                   message: err,
                   type: "error",
@@ -393,7 +392,7 @@ export default {
         bonusDateStar: "", //提成计算日期开始
         bonusDateEnd: "", //提成计算日期结束
       };
-      console.log(data.bonusDateValue,9999);
+
       let signJ =
         data.signDateValue === 0
           ? {
@@ -404,37 +403,17 @@ export default {
               bonusDateStar: data.bonusDateValue[0],
               bonusDateEnd: data.bonusDateValue[1],
             };
-
       // 删除多余属性
       delete data.bonusDateValue;
-
       Object.assign(data, sign, signJ);
-
       return data;
     },
     // 导出
     clickExportFn() {
       let data = this.getParamFn();
-      console.log(data);
       Object.assign(data, {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
-        signDateStar:
-          this.dateFormat(data.signDateStar) === "--"
-            ? ""
-            : this.dateFormat(data.signDateStar),
-        signDateEnd:
-          this.dateFormat(data.signDateEnd) === "--"
-            ? ""
-            : this.dateFormat(data.signDateEnd),
-        bonusDateStar:
-          this.dateFormat(data.bonusDateStar) === "--"
-            ? ""
-            : this.dateFormat(data.bonusDateStar),
-        bonusDateEnd:
-          this.dateFormat(data.bonusDateEnd) === "--"
-            ? ""
-            : this.dateFormat(data.bonusDateEnd),
       });
 
       this.excelCreate("/input/bonusListExcel", data);
