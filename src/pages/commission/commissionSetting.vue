@@ -263,20 +263,27 @@
             </div>
             <div class="dialog-item">
               <p class="form-label system">部门：</p>
-              <!-- <el-select
-                size="small"
-                v-model="deductData.depId"
-                :placeholder="depName.length===0?'请选择':depName.join(',')"
-                multiple
-                ref="dep"
-                id="dep"
-                collapse-tags
-                remote
-                :remote-method="remoteMethod"
-                filterable
-                reserve-keyword
-                style="width:240px"
-              >-->
+
+
+              <!-- <select-tree
+              size="small"
+              ref="deductSelectTreeRef"
+              :data="depList"
+              :defaultKey="deductDefaultKey"
+              :obj="obj"
+              :filterable="deductFilterable"
+              :remote="deductRemote"
+              clearable
+              collapseTags
+              multiple
+              expand-click-node
+              checkStrictly
+              @getValue="setDeductTreeMenu"
+              @selectFocus="setTreeRomete"
+            ></select-tree> -->
+
+
+
               <el-select
                 size="small"
                 v-model="deductData.depId"
@@ -516,11 +523,14 @@ export default {
         "659": "职级类型",
       },
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       dialogAddDeduct: false, // 提成规则弹窗,
       dialogSave: false,
       params: {},
+      deductFilterable: true,
+      deductRemote: false,
+      deductDefaultKey: [],
       deductData: {
         // 提成字段对象
         bonusName: "", // 规则名
@@ -735,6 +745,29 @@ export default {
         this.$message('请先选择体系')
       }
     },
+    setDeductTreeMenu (key,data) {
+      this.deductData.depId = key
+      this.deductDefaultKey = key
+    },
+    // 设置是否开启远程搜索
+    setTreeRomete(state,keyword) {
+      if (state) {
+        if (!keyword) {
+          this.deductRemote = true
+          this.deductFilterable = true
+          return
+        }
+        // console.log(this.$refs.deductSelectTreeRef.$refs.select.remoteMethod);
+        console.log(this.keyword,565656);
+        // this.deductRemote = true
+        // this.deductFilterable = true
+        this.depKeyWords = keyword
+        this.getDepcopy()
+      } else {
+        this.deductRemote = false
+        this.deductFilterable = true
+      }
+    },
     setTreeMenu(key, data) {
       //获取子组件值
       this.searchForm.depId = key
@@ -743,17 +776,23 @@ export default {
     },
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
+      console.log(val,9090000);
       this.searchForm.depId = []
       this.searchForm.positions = []
       // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
-        res = res.data
-        if (res.status == 200) {
-          this.searchDepList = res.data
-          console.log(this.searchDepList)
-        }
-      })
-      this.getPosition('search')
+      if (val) {
+        this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
+          res = res.data
+          if (res.status == 200) {
+            this.searchDepList = res.data
+            console.log(this.searchDepList)
+          }
+        })
+        this.getPosition('search')
+      } else {
+        this.searchDepList = []
+        this.searchPositionRanksList = []
+      }
     },
     getDep() {
       // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
@@ -801,6 +840,7 @@ export default {
               showCheckbox: true,
               subs: res.data
             });
+            // this.depList = res.data
             if (type === 'add') {
               this.defaultCheckedKeys = [-1].concat(res.data.map(item => item.id))
               this.depName = res.data.map(item => item.name)
