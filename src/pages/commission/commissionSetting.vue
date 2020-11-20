@@ -3,7 +3,7 @@
     <!-- <p class="brand-nav">财务>提成设置</p> -->
     <div ref="tableComView">
         <!-- 查询组件 -->
-      <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn">
+      <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
         <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
           <el-form-item>
             <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search" style="width:300px"></el-input>
@@ -1281,7 +1281,7 @@ export default {
 /deep/ .view-header {
   padding: 10px !important;
   .paper-box-content {
-    margin-top: -33px !important;
+    margin-top: -30px !important;
   }
 }
 /deep/ .el-select .el-input.is-focus .el-input__inner {

@@ -2,7 +2,7 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
       <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
       </el-input>
 

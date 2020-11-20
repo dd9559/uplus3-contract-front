@@ -2,7 +2,7 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
       <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
         clearable>
       </el-input>
