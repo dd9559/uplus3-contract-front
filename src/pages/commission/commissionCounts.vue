@@ -415,10 +415,28 @@ export default {
     // 导出
     clickExportFn() {
       let data = this.getParamFn();
+      console.log(data);
       Object.assign(data, {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
+        signDateStar:
+          this.dateFormat(data.signDateStar) === "--"
+            ? ""
+            : this.dateFormat(data.signDateStar),
+        signDateEnd:
+          this.dateFormat(data.signDateEnd) === "--"
+            ? ""
+            : this.dateFormat(data.signDateEnd),
+        bonusDateStar:
+          this.dateFormat(data.bonusDateStar) === "--"
+            ? ""
+            : this.dateFormat(data.bonusDateStar),
+        bonusDateEnd:
+          this.dateFormat(data.bonusDateEnd) === "--"
+            ? ""
+            : this.dateFormat(data.bonusDateEnd),
       });
+
       this.excelCreate("/input/bonusListExcel", data);
     },
   },
