@@ -50,6 +50,10 @@ export default {
       type: String,
       default: "",
     },
+    searchStatus: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -80,7 +84,7 @@ export default {
       // this.getList(this.inputVal,'search')
     },
     systemKey: function (val) {
-      this.getList()
+      this.getList();
     },
   },
   methods: {
@@ -158,43 +162,47 @@ export default {
     },
 
     getList: function (keyword = "", type = "init", addType = 1) {
-      let url = "";
-      if (addType == 1) {
-        url = "/api/access/deps/tree";
-      } else {
-        url = "/api/access/deps";
-      }
+      if (this.searchStatus) {
+        let url = "";
+        if (addType == 1) {
+          url = "/api/access/deps/tree";
+        } else {
+          url = "/api/access/deps";
+        }
 
-      let isControl = true;
-      if (this.treeType !== "none") {
-        url = "/api/contract/access/deps/tree";
-        if (this.treeType === "house") {
-          isControl = false;
-        }
-      }
-      this.treeType === "power" && (url = "/api/access/deps");
-      let param = {
-        keyword: keyword,
-        isControl: isControl,
-      };
-      if (this.systemKey) {
-        //如果是审核流程页面根据选择的体系请求树形数据
-        url = "/api/access/systemtag/deps/tree";
-        // addType != 1 && (url = '/api/access/systemtag/deps')
-        // addType == 1 &&this.systemKey!='-100' && (url = '/api/access/systemtag/deps/tree')
-        if (this.systemKey != "-100") {
-          param.systemTag = this.systemKey;
-        }
-      }
-      this.$ajax.get(url, param).then((res) => {
-        res = res.data;
-        if (res.status === 200) {
-          this.list = res.data;
-          if (type === "init") {
-            _list = res.data.map((item) => Object.assign({}, item));
+        let isControl = true;
+        if (this.treeType !== "none") {
+          url = "/api/contract/access/deps/tree";
+          if (this.treeType === "house") {
+            isControl = false;
           }
         }
-      });
+        this.treeType === "power" && (url = "/api/access/deps");
+        let param = {
+          keyword: keyword,
+          isControl: isControl,
+        };
+        if (this.systemKey) {
+          //如果是审核流程页面根据选择的体系请求树形数据
+          url = "/api/access/systemtag/deps/tree";
+          // addType != 1 && (url = '/api/access/systemtag/deps')
+          // addType == 1 &&this.systemKey!='-100' && (url = '/api/access/systemtag/deps/tree')
+          if (this.systemKey != "-100") {
+            param.systemTag = this.systemKey;
+          }
+        }
+        this.$ajax.get(url, param).then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            this.list = res.data;
+            if (type === "init") {
+              _list = res.data.map((item) => Object.assign({}, item));
+            }
+          }
+        });
+      } else {
+        _list = [];
+      }
     },
     //部门搜索
     getDep: function (e, clear = false) {

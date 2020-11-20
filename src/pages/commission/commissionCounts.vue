@@ -20,7 +20,7 @@
         </el-select>
 
         <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
-          @checkCell="depHandleClick" @clear="clearDep">
+          :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
 
         <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
@@ -117,6 +117,7 @@
 
 <script>
 import myPagination from "./myPagination";
+
 import { MIXINS } from "@/assets/js/mixins";
 import { FILTER } from "@/assets/js/filter";
 export default {
@@ -182,6 +183,7 @@ export default {
         isCalculation: "", //计算状态（0、未计算1、已计算）
         // pageSize: "",
         // pageNum: "",
+        searchStatus: true,
       },
       defSettleDate: "", //初始化结算周期
       copySearchData: {},
@@ -201,8 +203,8 @@ export default {
         keyword: "", //关键字
         settleDate: "", //yyyy-mm 结算周期
         // settleDate: this.defSettleDate, //yyyy-mm 结算周期
-        systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
-        // systemTag: "",
+        // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
+        systemTag: "",
         depId: "", //部门编号
         depName: "", //部门名称
         empId: "", //员工编号
@@ -210,12 +212,15 @@ export default {
         signDateValue: 0,
         bonusDateValue: "",
         isCalculation: "", //计算状态（0、未计算1、已计算）
+        searchStatus: false,
       };
       this.EmployeList = []; //清空已获取的人员
     },
     // 查询
     queryFn() {
       this.currentPage = 1;
+      if (this.searchData.bonusDateValue === null)
+        this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
       this.searchFn();
     },
@@ -381,6 +386,7 @@ export default {
     // 获取请求参数
     getParamFn() {
       let data = { ...this.copySearchData };
+
       let sign = {
         signDateStar: "", //签约日期开始
         signDateEnd: "", //签约日期结束
@@ -445,6 +451,13 @@ export default {
     this.getSystemTagSelect();
     // 获取数据
     this.queryFn();
+  },
+  watch: {
+    "searchData.systemTag"(val) {
+      val === ""
+        ? (this.searchData.searchStatus = false)
+        : (this.searchData.searchStatus = true);
+    },
   },
 };
 </script>
