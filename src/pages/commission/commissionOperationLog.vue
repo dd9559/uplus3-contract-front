@@ -180,12 +180,10 @@ export default {
     },
     //人员搜索
     employeByText(val) {
-      console.log("employeByText");
       this.getEmployeByText(val);
     },
     // 选择体系
     changeSystem() {
-      console.log("changeSystem");
       this.searchData.depId = "";
       this.searchData.depName = "";
       this.searchData.empId = "";
@@ -195,7 +193,6 @@ export default {
     },
     // 部门清空
     clearDep() {
-      console.log("clearDep");
       this.searchData.depId = "";
       this.searchData.empId = "";
       this.searchData.empName = "";
@@ -204,7 +201,6 @@ export default {
     },
     // 人员清空
     clearEmp() {
-      console.log("clearEmp");
       this.searchData.empId = "";
       this.searchData.empName = "";
       // this.clearSelect();
