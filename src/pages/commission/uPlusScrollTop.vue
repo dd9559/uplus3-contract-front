@@ -37,7 +37,7 @@ export default {
   },
   data() {
     return {
-      show: true,
+      show: false,
     };
   },
   methods: {
@@ -128,9 +128,8 @@ export default {
       font-size: 12px;
     }
     color: #6c7986;
-    width: 97px;
+    width: 100px;
     height: 17px;
-    border-radius: 10px;
     position: absolute;
     bottom: -17px;
     left: 50%;

@@ -2,7 +2,7 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
       <el-input placeholder="登录账号/员工工号" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
         clearable>
       </el-input>
@@ -23,7 +23,7 @@
           :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
         </select-tree>
 
-        <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
+        <el-select class="w100 select-emp" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
           @clear="clearEmp" clearable>
           <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
           </el-option>
@@ -36,7 +36,6 @@
             :value="item.systemtag + '/' + item.depId + '/' + item.depName + '/' + item.empId + '/' + item.name">
           </el-option>
         </el-select> -->
-
       </div>
 
       <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态" clearable>
@@ -215,8 +214,8 @@ export default {
     reset() {
       this.searchData = {
         keyword: "", //关键字
-        settleDate: "", //yyyy-mm 结算周期
-        // settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        // settleDate: "", //yyyy-mm 结算周期
+        settleDate: this.defSettleDate, //yyyy-mm 结算周期
         // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         systemTag: "",
         depId: "", //部门编号
@@ -325,12 +324,10 @@ export default {
     },
     //人员搜索
     employeByText(val) {
-      console.log("employeByText");
       this.getEmployeByText(val);
     },
     // 选择体系
     changeSystem() {
-      console.log("changeSystem");
       this.searchData.depId = "";
       this.searchData.depName = "";
       this.searchData.empId = "";
@@ -340,7 +337,6 @@ export default {
     },
     // 部门清空
     clearDep() {
-      console.log("clearDep");
       this.searchData.depId = "";
       this.searchData.empId = "";
       this.searchData.empName = "";
@@ -349,7 +345,6 @@ export default {
     },
     // 人员清空
     clearEmp() {
-      console.log("clearEmp");
       this.searchData.empId = "";
       this.searchData.empName = "";
       // this.clearSelect();

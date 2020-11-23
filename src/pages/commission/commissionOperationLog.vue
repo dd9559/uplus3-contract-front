@@ -2,48 +2,49 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop ref="topRef" :height="searchTop" @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 12px 12px">
-      <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
-      </el-input>
+    <uPlusScrollTop ref="topRef" :height="searchTop" @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
+      <div>
+        <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
+        </el-input>
 
-      <!-- 三联下拉选择 -->
-      <div class="triple-select">
+        <!-- 三联下拉选择 -->
+        <div class="triple-select">
 
-        <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="changeSystem">
-          <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
+          <el-select v-model="searchData.systemTag" class="w100" placeholder="体系" @change="changeSystem">
+            <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
+            </el-option>
+          </el-select>
+
+          <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
+            :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
+          </select-tree>
+
+          <el-select class="w100 select-emp" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
+            @clear="clearEmp" clearable>
+            <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
+            </el-option>
+          </el-select>
+
+          <!-- 接口还未实现体系兼职，延后上 -->
+          <!-- <el-select filterable remote class="w100" placeholder="请选择" :clearable="true" :remote-method="employeByText" v-loadmore="moreEmploye"
+            v-model="searchData.empName" @change="empHandleAdd" @clear="clearEmp">
+            <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
+              :value="item.systemtag + '/' + item.depId + '/' + item.depName + '/' + item.empId + '/' + item.name">
+            </el-option>
+          </el-select> -->
+        </div>
+
+        <el-select v-model="searchData.typeId" class="w116 mr-16" placeholder="全部" clearable>
+          <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
 
-        <select-tree class="select-tree" :systemKey="searchData.systemTag.toString()" :init="searchData.depName"
-          :searchStatus="searchData.searchStatus" @checkCell="depHandleClick" @clear="clearDep">
-        </select-tree>
-
-        <el-select class="w100" placeholder="请选择人员" v-loadmore="moreEmploye" v-model="searchData.empId"
-          @clear="clearEmp" clearable>
-          <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name" :value="item.empId">
-          </el-option>
-        </el-select>
-
-        <!-- 接口还未实现体系兼职，延后上 -->
-        <!-- <el-select filterable remote class="w100" placeholder="请选择" :clearable="true" :remote-method="employeByText" v-loadmore="moreEmploye"
-          v-model="searchData.empName" @change="empHandleAdd" @clear="clearEmp">
-          <el-option v-for="item in EmployeList" :key="item.empId" :label="item.name"
-            :value="item.systemtag + '/' + item.depId + '/' + item.depName + '/' + item.empId + '/' + item.name">
-          </el-option>
-        </el-select> -->
-
-      </div>
-
-      <el-select v-model="searchData.typeId" class="w116 mr-16" placeholder="全部" clearable>
-        <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
-        </el-option>
-      </el-select>
-
-      <div class="triple-select">
-        <div class="item-text">时间</div>
-        <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
-          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
-        </el-date-picker>
+        <div class="triple-select">
+          <div class="item-text">时间</div>
+          <el-date-picker class="item-billing-date2 w212" v-model="searchData.bonusDateValue" type="daterange"
+            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
+          </el-date-picker>
+        </div>
       </div>
     </uPlusScrollTop>
 
@@ -182,12 +183,10 @@ export default {
     },
     //人员搜索
     employeByText(val) {
-      console.log("employeByText");
       this.getEmployeByText(val);
     },
     // 选择体系
     changeSystem() {
-      console.log("changeSystem");
       this.searchData.depId = "";
       this.searchData.depName = "";
       this.searchData.empId = "";
@@ -197,7 +196,6 @@ export default {
     },
     // 部门清空
     clearDep() {
-      console.log("clearDep");
       this.searchData.depId = "";
       this.searchData.empId = "";
       this.searchData.empName = "";
@@ -206,7 +204,6 @@ export default {
     },
     // 人员清空
     clearEmp() {
-      console.log("clearEmp");
       this.searchData.empId = "";
       this.searchData.empName = "";
       // this.clearSelect();
@@ -265,9 +262,9 @@ export default {
     myPagination,
   },
   mounted() {
-    this.searchTop = this.$refs.topRef.$refs.content.clientHeight
+    this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
     window.onresize = () => {
-      this.searchTop = this.$refs.topRef.$refs.content.clientHeight
+      this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
     }
     // 体系
     this.getSystemTagSelect();
