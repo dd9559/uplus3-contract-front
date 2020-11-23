@@ -27,7 +27,7 @@
     <div class="paper-box-content">
       <slot></slot>
     </div>
-    <div class="btn" @click="show=!show">
+    <div class="btn" @click="show=!show" v-if="ishidden">
       <i class="iconfont icon-zhankai"></i>
       <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"收起":"展开"}}</span>
     </div>
@@ -46,7 +46,18 @@ export default {
   data() {
     return {
       show: false,
+      ishidden:false
     };
+  },
+  mounted(){
+    let _this = this
+    this.$nextTick(()=>{
+      _this.ishidden = _this.getHidden()
+      window.onresize = ()=>{
+        //调用methods中的事件
+        _this.ishidden = _this.getHidden()
+      }
+    })
   },
   methods: {
     // 点击查询
@@ -58,6 +69,14 @@ export default {
       this.$emit("propResetFormFn");
     },
     ...mapMutations(["bodyScollShowFn"]),
+    getHidden(){
+      let content = document.getElementsByClassName('paper-box-content')[0]
+      if(content.scrollHeight>content.clientHeight+40){
+        return true
+      }else{
+        return false
+      }
+    }
   },
   beforeUpdate() {
     this.bodyScollShowFn();
@@ -80,7 +99,7 @@ export default {
   background-color: @bg-white;
   position: relative;
 
-  &:after {
+  &:after { 
     content: "";
     width: 100%;
     height: 15px;
