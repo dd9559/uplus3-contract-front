@@ -10,10 +10,10 @@
       </p>
     </div>
     <!-- 筛选条件 -->
-    <div class="paper-box-content">
+    <div class="paper-box-content" ref="content">
       <slot></slot>
     </div>
-    <div class="btn" @click="show=!show">
+    <div v-if="isShowOpen" class="btn" @click="show=!show">
       <i class="iconfont icon-zhankai"></i>
       <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"收起":"展开"}}</span>
     </div>
@@ -26,8 +26,14 @@ export default {
   props: {
     min: {
       type: Number,
-      default: 61,
+      default: 57,
     },
+    height: {
+      type: Number,
+      default() {
+        return 0
+      }
+    }
   },
   data() {
     return {
@@ -44,6 +50,15 @@ export default {
       this.$emit("propResetFormFn");
     },
     ...mapMutations(["bodyScollShowFn"]),
+  },
+  computed: {
+    isShowOpen() {
+      if (this.height === 0) {
+        return true
+      } else {
+        return this.height > this.min
+      }
+    }
   },
   beforeUpdate() {
     this.bodyScollShowFn();
