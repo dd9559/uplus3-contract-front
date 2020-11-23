@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <router-view
-      :key="$route.fullPath"
-      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog'].includes($route.path)"
-    ></router-view>
+    <router-view :key="$route.fullPath"
+      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog'].includes($route.path)">
+    </router-view>
     <div class="main" v-else>
       <div class="nav">
         <img src="./assets/img/honghui.png" alt v-if="showTransferTime" />
@@ -18,66 +17,41 @@
       </div>
       <div class="container">
         <div class="slider" :class="[collapse ? '' : 'collapse-on']">
-          <el-menu
-            ref="menu"
-            :router="true"
-            :collapse-transition="false"
-            :collapse="collapse"
-            @open="openAllNav"
-            @select="handleSelect"
-            class="el-menu-demo"
-            active-text-color="#409EFF"
-          >
-            <el-submenu
-              :index="item.category"
-              :class="[{ 'collapse-row': collapse }]"
-              v-for="item in views"
-              :key="item.id"
-              v-if="item.id !== 6 && item.id !== 7 && item.can"
-            >
+          <el-menu ref="menu" :router="true" :collapse-transition="false" :collapse="collapse" @open="openAllNav"
+            @select="handleSelect" class="el-menu-demo" active-text-color="#409EFF">
+            <el-submenu :index="item.category" :class="[{ 'collapse-row': collapse }]" v-for="item in views"
+              :key="item.id" v-if="item.id !== 6 && item.id !== 7 && item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{ item.name }}</span>
               </template>
               <template>
-                <el-submenu
-                  :index="grade.category"
-                  v-for="grade in item.child"
-                  :key="grade.name"
-                  class="second-grade-menu"
-                  v-if="grade.can"
-                >
+                <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
+                  class="second-grade-menu" v-if="grade.can">
                   <template slot="title">
                     <i class="iconfont icon-icon-test2" v-if="!collapse"></i>
                     {{ grade.name }}
                   </template>
-                  <el-menu-item
-                    v-for="tip in grade.child"
-                    :key="tip.name"
-                    :index="tip.path"
-                    v-if="tip.can"
-                    >{{ tip.name }}</el-menu-item
-                  >
+                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
+                    <template v-if="tip.to">
+                      <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link>
+                    </template>
+                    <template v-else>
+                      {{ tip.name }}
+                    </template>
+                  </el-menu-item>
                 </el-submenu>
               </template>
             </el-submenu>
-            <el-menu-item
-              :index="views[6].category"
-              class="navbar-item"
-              :class="[{ 'collapse-row': collapse }]"
-              v-if="views[6].can"
-            >
+            <el-menu-item :index="views[6].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
+              v-if="views[6].can">
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[6].icon"></i>
                 <span>{{ views[6].name }}</span>
               </div>
             </el-menu-item>
-            <el-menu-item
-              :index="views[7].category"
-              class="navbar-item"
-              :class="[{ 'collapse-row': collapse }]"
-              v-if="views[7].can"
-            >
+            <el-menu-item :index="views[7].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
+              v-if="views[7].can">
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[7].icon"></i>
                 <span>{{ views[7].name }}</span>
@@ -87,15 +61,12 @@
           <p class="slider-bar-control" @click="toCollapse"></p>
         </div>
         <router-view></router-view>
-        <p
-          style="
+        <p style="
             flex: 1;
             align-self: center;
             font-size: 30px;
             text-align: center;
-          "
-          v-if="loadingState"
-        >
+          " v-if="loadingState">
           loading...
         </p>
       </div>
@@ -412,6 +383,12 @@ export default {
           height: 100%;
           overflow-x: hidden;
           overflow-y: auto;
+        }
+
+        .link {
+          display: block;
+          color: #6c7986;
+          text-decoration: none;
         }
       }
 
