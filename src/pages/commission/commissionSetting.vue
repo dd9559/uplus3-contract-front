@@ -3,7 +3,8 @@
     <!-- <p class="brand-nav">财务>提成设置</p> -->
     <div ref="tableComView">
         <!-- 查询组件 -->
-      <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
+      <!-- <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px"> -->
+      <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
         <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
           <el-form-item>
             <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search" style="width:300px"></el-input>
@@ -416,7 +417,7 @@ export default {
   components: { elTree2, selectTree, myPagination },
   data() {
     return {
-      searchTop: null,
+      // searchTop: null,
       searchForm: {
         systemTag: "",
         bonusName: '',
@@ -507,12 +508,12 @@ export default {
         this.getList()
     }
   },
-  mounted() {
-    this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
-    window.onresize = () => {
-      this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
-    }
-  },
+  // mounted() {
+  //   this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+  //   window.onresize = () => {
+  //     this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+  //   }
+  // },
   methods: {
     getList(type) {
       let params = {
@@ -1104,11 +1105,6 @@ export default {
   font-size: 16px;
   padding-left: 20px;
 }
-// .search-top {
-//   /deep/ .el-form-item {
-//     margin-bottom: 0 !important;
-//   }
-// }
 /deep/ .view-header {
   padding: 10px !important;
   .paper-box-content {
