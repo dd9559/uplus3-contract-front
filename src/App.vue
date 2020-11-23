@@ -62,17 +62,6 @@
               </template>
             </el-submenu>
             <el-menu-item
-              :index="views[5].category"
-              class="navbar-item"
-              :class="[{ 'collapse-row': collapse }]"
-              v-if="views[5].can"
-            >
-              <div class="el-submenu__title">
-                <i class="iconfont" :class="views[5].icon"></i>
-                <span>{{ views[5].name }}</span>
-              </div>
-            </el-menu-item>
-            <el-menu-item
               :index="views[6].category"
               class="navbar-item"
               :class="[{ 'collapse-row': collapse }]"
@@ -81,6 +70,17 @@
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[6].icon"></i>
                 <span>{{ views[6].name }}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item
+              :index="views[7].category"
+              class="navbar-item"
+              :class="[{ 'collapse-row': collapse }]"
+              v-if="views[7].can"
+            >
+              <div class="el-submenu__title">
+                <i class="iconfont" :class="views[7].icon"></i>
+                <span>{{ views[7].name }}</span>
               </div>
             </el-menu-item>
           </el-menu>
