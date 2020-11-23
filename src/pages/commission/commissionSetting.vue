@@ -567,7 +567,7 @@ export default {
                       achievementGrade.end = Number.parseInt(item.achievementGrade)
                     } else {
                       for (let k = 0; k < j; k++) {
-                        console.log(Number.parseInt(currentArray[k].achievementGrade),k);
+                        // console.log(Number.parseInt(currentArray[k].achievementGrade),k);
                         achievementGrade.start += Number.parseInt(currentArray[k].achievementGrade)
                       }
                       achievementGrade.end = Number.parseInt(achievementGrade.start) + Number.parseInt(item.achievementGrade)
@@ -578,7 +578,7 @@ export default {
                 }
               }
             }
-            console.log(this.tableData,89888);
+            // console.log(this.tableData,89888);
             this.total = res.data.total
           }
         })
@@ -638,6 +638,7 @@ export default {
         })
     },
     setDeductTreeMenu (keys,names) {
+      console.log(keys,"传递了几次事件");
       this.defaultCheckedKeys = keys
       this.depName = names
     },
@@ -674,7 +675,7 @@ export default {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
-          console.log(this.searchDepList)
+          // console.log(this.searchDepList)
         }
       })
     },
