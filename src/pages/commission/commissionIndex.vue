@@ -4,10 +4,10 @@
       <el-menu :default-active="this.$route.path" router mode="horizontal" class="nav-box" @open="handleOpen"
         @close="handleClose">
         <template v-for="(item, i) in commissionTabs">
-          <el-menu-item :key="i" :index="item.path" v-if="item.code">
+          <el-menu-item :key="i" :index="item.path" v-if="item.code&&item.can">
             <template slot="title">
               <i :class="item.iconClass"></i>
-              <span>{{ item.label }}</span>
+              <span>{{ item.name }}</span>
             </template>
           </el-menu-item>
         </template>
@@ -23,64 +23,23 @@ export default {
   name: "commissionIndex",
   data() {
     return {
-      commissionTabs: [
-        {
-          label: "提成计算",
-          id: 1,
-          path: "/commissionCounts",
-          code: true,
-          iconClass: "icon-commission-01",
-        },
-        {
-          label: "提成发放",
-          id: 2,
-          path: "/commissionGrant",
-          code: true,
-          iconClass: "icon-commission-02",
-        },
-        {
-          label: "提成设置",
-          id: 3,
-          path: "/commissionSetting",
-          code: true,
-          iconClass: "icon-commission-03",
-        },
-        // {
-        //   label: "结算周期设置",
-        //   id: 4,
-        //   path: "/accountSetting",
-        //   code: true,
-        // },
-        {
-          label: "操作日志",
-          id: 5,
-          path: "/commissionOperationLog",
-          code: true,
-          iconClass: "icon-commission-04",
-        },
-      ],
+      commissionTabs: [],
     };
   },
   created() {
-    // console.log(this.$route.path);
+    // 导航权限判断
     // console.log(this.$store.state.user.privileges);
-
-    // let arr = this.$store.state.user.privileges;
-    // let views = this.$tool.pathList.map((item) => Object.assign({}, item));
-    // console.log(views);
-    // let sliders = [];
-
-    // views.forEach((item, index) => {
-    //   //获取侧边栏信息中用户可访问的元素
-    //   item.child.forEach((tip) => {
-    //     tip.child.forEach((grade) => {
-    //       if (arr.includes(grade.code)) {
-    //         sliders.push(grade);
-    //       }
-    //     });
-    //   });
-    // });
-    // console.log(sliders);
+    let sliders = [];
+    let arr = this.$store.state.user.privileges || [];
+    if (arr === []) {
+       this.commissionTabs.push(this.$tool.pathCommission[0])
+    }
+    this.$tool.pathCommission.forEach((item) => {
+      if (arr.includes(item.code)) {
+        sliders.push(item);
+      }
+    });
+    this.commissionTabs = sliders;
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -332,7 +291,7 @@ export default {
       width: 200px;
       display: inline-block;
       position: relative;
-      top: 13px;
+      top: 12px;
       .el-input {
         margin-top: 0;
       }
@@ -352,13 +311,16 @@ export default {
       display: inline-block;
       border-right: 0;
       border-radius: 4px 0 0 4px;
-      position: relative;
-      top: 1px;
+      // position: relative;
+      // top: 1px;
       margin-top: 12px;
+      background: #fff;
     }
     .item-billing-date {
       display: inline-block;
       .el-input__inner {
+        position: relative;
+        top: -1px;
         border-radius: 0 4px 4px 0;
       }
     }
@@ -366,7 +328,7 @@ export default {
       .item-billing-date;
       position: relative;
       padding: 0 10px;
-      top: 1px;
+      // top: 1px;
     }
     .w160 {
       width: 160px;
@@ -386,9 +348,6 @@ export default {
     .triple-select {
       display: inline-block;
       margin-right: 16px;
-      //   .el-input {
-      //     margin-top: 0;
-      //   }
       &:last-child {
         margin-right: 0;
       }
@@ -420,9 +379,29 @@ export default {
         &.is-active:last-child {
           border-right: 1px solid #ffa148;
         }
+        .el-range-input {
+          width: 34%;
+          height: 30px;
+          line-height: 30px;
+          position: relative;
+          top: 0;
+          font-size: 13px;
+        }
       }
     }
+    .paper-box-btns {
+      position: relative;
+      top: 3px;
+    }
+    .select-emp {
+      position: relative;
+      top: -1px;
+    }
   }
+}
+/deep/.el-button--warning {
+  background-color: #ffa148;
+  border-color: #ffa148;
 }
 </style>
 <style lang="less">

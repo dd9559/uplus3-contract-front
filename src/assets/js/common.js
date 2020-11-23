@@ -1,18 +1,22 @@
-let stepIndex = 0 //记录执行合并次数
-let otherStep = 0 //除合并外，剩余行数
+let stepIndex = 0; //记录执行合并次数
+let otherStep = 0; //除合并外，剩余行数
 
 let TOOL = {
-  pathList: [{
+  //侧边栏导航
+  pathList: [
+    {
       id: 1,
       name: "二手房",
       category: "1",
       icon: "icon-ershoufang",
       can: true, //是否可见
-      child: [{
+      child: [
+        {
           name: "合同",
           category: "1-1",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "合同列表",
               category: "1-1-1",
               can: true, //是否可见
@@ -60,14 +64,15 @@ let TOOL = {
               can: true, //是否可见
               path: "cancelCheck",
               code: "sign-ht-jysh-query"
-            },
+            }
           ]
         },
         {
           name: "财务",
           category: "1-2",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "收付款单",
               category: "1-2-1",
               can: true, //是否可见
@@ -110,11 +115,11 @@ let TOOL = {
               code: "sign-cw-bill-query"
             },
             {
-              name: '分账记录',
+              name: "分账记录",
               category: "1-2-6",
               can: true, //是否可见
-              path: 'routingRecord',
-              code: 'sign-ht-fz-query'
+              path: "routingRecord",
+              code: "sign-ht-fz-query"
             },
             {
               name: "打款记录",
@@ -129,7 +134,8 @@ let TOOL = {
           name: "业绩",
           category: "1-3",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "应收业绩",
               category: "1-3-1",
               can: true, //是否可见
@@ -151,10 +157,10 @@ let TOOL = {
               code: "sign-yj-appeal-query"
             },
             {
-              name: '业绩报表',
+              name: "业绩报表",
               category: "1-3-4",
               can: true, //是否可见
-              path: 'achForms',
+              path: "achForms",
               code: "sign-yj-report-query"
             }
           ]
@@ -163,7 +169,8 @@ let TOOL = {
           name: "签后",
           category: "1-4",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "后期接收",
               category: "1-4-1",
               can: true, //是否可见
@@ -194,30 +201,35 @@ let TOOL = {
       category: "2",
       can: true, //是否可见
       icon: "icon-xinfang",
-      child: [{
+      child: [
+        {
           name: "合同",
           category: "2-1",
           can: true, //是否可见
-          child: [{
-            name: "合同列表",
-            category: "2-1-1",
-            can: true, //是否可见
-            path: "otherContractList?type=xf",
-            code: "sign-xf-ht-ls-query"
-          }]
+          child: [
+            {
+              name: "合同列表",
+              category: "2-1-1",
+              can: true, //是否可见
+              path: "otherContractList?type=xf",
+              code: "sign-xf-ht-ls-query"
+            }
+          ]
         },
         {
           name: "财务",
           category: "2-2",
           can: true, //是否可见
-          child: [{
-            name: "收款审核",
-            category: "2-2-1",
-            can: true, //是否可见
-            path: "receiptCheck?type=xf",
-            code: "sign-xf-cw-rev-query"
-          }]
-        },
+          child: [
+            {
+              name: "收款审核",
+              category: "2-2-1",
+              can: true, //是否可见
+              path: "receiptCheck?type=xf",
+              code: "sign-xf-cw-rev-query"
+            }
+          ]
+        }
       ]
     },
     {
@@ -226,30 +238,35 @@ let TOOL = {
       category: "3",
       can: true, //是否可见
       icon: "icon-changzu",
-      child: [{
+      child: [
+        {
           name: "合同",
           category: "3-1",
           can: true, //是否可见
-          child: [{
-            name: "合同列表",
-            category: "3-1-1",
-            can: true, //是否可见
-            path: "otherContractList?type=cz",
-            code: "sign-cz-ht-ls-query"
-          }]
+          child: [
+            {
+              name: "合同列表",
+              category: "3-1-1",
+              can: true, //是否可见
+              path: "otherContractList?type=cz",
+              code: "sign-cz-ht-ls-query"
+            }
+          ]
         },
         {
           name: "财务",
           category: "3-2",
           can: true, //是否可见
-          child: [{
-            name: "收款审核",
-            category: "3-2-1",
-            can: true, //是否可见
-            path: "receiptCheck?type=cz",
-            code: "sign-cz-cw-rev-query"
-          }]
-        },
+          child: [
+            {
+              name: "收款审核",
+              category: "3-2-1",
+              can: true, //是否可见
+              path: "receiptCheck?type=cz",
+              code: "sign-cz-cw-rev-query"
+            }
+          ]
+        }
       ]
     },
     {
@@ -258,30 +275,35 @@ let TOOL = {
       category: "4",
       can: true, //是否可见
       icon: "icon-jinrong",
-      child: [{
+      child: [
+        {
           name: "合同",
           category: "4-1",
           can: true, //是否可见
-          child: [{
-            name: "合同列表",
-            category: "4-1-1",
-            can: true, //是否可见
-            path: "otherContractList?type=jr",
-            code: "sign-jr-ht-ls-query"
-          }]
+          child: [
+            {
+              name: "合同列表",
+              category: "4-1-1",
+              can: true, //是否可见
+              path: "otherContractList?type=jr",
+              code: "sign-jr-ht-ls-query"
+            }
+          ]
         },
         {
           name: "财务",
           category: "4-2",
           can: true, //是否可见
-          child: [{
-            name: "收款审核",
-            category: "4-2-1",
-            can: true, //是否可见
-            path: "receiptCheck?type=jr",
-            code: "sign-jr-cw-rev-query"
-          }]
-        },
+          child: [
+            {
+              name: "收款审核",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "receiptCheck?type=jr",
+              code: "sign-jr-cw-rev-query"
+            }
+          ]
+        }
       ]
     },
     {
@@ -290,11 +312,13 @@ let TOOL = {
       category: "5",
       can: true, //是否可见
       icon: "icon-huaban3",
-      child: [{
+      child: [
+        {
           name: "后台设置",
           category: "5-1",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "款类设置",
               category: "5-1-1",
               can: true, //是否可见
@@ -321,7 +345,8 @@ let TOOL = {
           name: "业务设置",
           category: "5-2",
           can: true, //是否可见
-          child: [{
+          child: [
+            {
               name: "公司设置",
               category: "5-2-1",
               can: true, //是否可见
@@ -340,14 +365,20 @@ let TOOL = {
               category: "5-2-3",
               can: true, //是否可见
               path: "ruleSetting",
-              code: ['sign-set-rule-query', 'sign-set-vtime', 'sign-set-dybl', 'sign-set-bl-htym-query', 'sign-set-bl-fcbl-query']
+              code: [
+                "sign-set-rule-query",
+                "sign-set-vtime",
+                "sign-set-dybl",
+                "sign-set-bl-htym-query",
+                "sign-set-bl-fcbl-query"
+              ]
             },
             {
               name: "后期流程设置",
               category: "5-2-4",
               can: true, //是否可见
               path: "postProcess",
-              code: 'sign-set-hq'
+              code: "sign-set-hq"
             }
           ]
         }
@@ -377,27 +408,63 @@ let TOOL = {
       category: "8",
       can: true, //是否可见
       icon: "icon-caozuorizhi",
-      child: [{
-        name: "提成业务",
-        category: "8-1",
-        can: true, //是否可见
-        child: [{
-          name: "提成计算",
-          category: "8-1-1",
+      child: [
+        {
+          name: "提成业务",
+          category: "8-1",
           can: true, //是否可见
-          path: "commissionCounts",
-          code: "sign-yj-rec-export",
-        }]
-      }]
+          child: [
+            {
+              name: "提成计算",
+              category: "8-1-1",
+              can: true, //是否可见
+              path: "commissionCounts",
+              code: "sign-yj-rec-export"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  //提成导航
+  pathCommission: [
+    {
+      name: "提成计算",
+      can: true, //是否可见
+      path: "/commissionCounts",
+      code: "sign-ht-info-query",
+      iconClass: "icon-commission-01"
     },
-  ], //侧边栏导航
+    {
+      name: "提成发放",
+      can: true, //是否可见
+      path: "/commissionGrant",
+      code: "sign-ht-info-query",
+      iconClass: "icon-commission-02"
+    },
+    {
+      name: "提成设置",
+      can: true, //是否可见
+      path: "/commissionSetting",
+      code: "sign-ht-info-query",
+      iconClass: "icon-commission-03"
+    },
+    {
+      name: "操作日志",
+      can: true, //是否可见
+      path: "/commissionOperationLog",
+      code: "sign-ht-info-query",
+      iconClass: "icon-commission-04"
+    }
+  ],
   closeOnClickModal: false,
   contType: {
     "4": 4, //意向金
     "5": 5 //定金
   },
   dropdown: {
-    dateType: [{
+    dateType: [
+      {
         label: "开票日期",
         value: 1
       },
@@ -432,7 +499,8 @@ let TOOL = {
         value: 4
       }
     ],
-    dateType_money_zk: [{
+    dateType_money_zk: [
+      {
         label: "转款时间",
         value: 2
       },
@@ -457,7 +525,7 @@ let TOOL = {
    * @param event
    * @returns {{x: number, y: number}}
    */
-  getMousePos: function (event) {
+  getMousePos: function(event) {
     var e = event || window.event;
     var scrollX =
       document.documentElement.scrollLeft || document.body.scrollLeft;
@@ -478,12 +546,7 @@ let TOOL = {
    * @param type     该列所有单元格是否合并为一个
    * @returns {*}
    */
-  collapseRow: function ({
-    rowIndex,
-    rowTotal,
-    collapse,
-    type
-  }) {
+  collapseRow: function({ rowIndex, rowTotal, collapse, type }) {
     // collapse=collapseMsg
     // debugger
     if (type === "all") {
@@ -563,7 +626,7 @@ let TOOL = {
    * 重置表单对象
    * @param form
    */
-  clearForm: function (form, num = false) {
+  clearForm: function(form, num = false) {
     for (let item in form) {
       let type = typeof form[item];
       switch (type) {
@@ -591,7 +654,7 @@ let TOOL = {
   /**
    * 表单校验 rule{'propName':{name:'label',type:'变量类型'}}
    */
-  checkForm: function (form, rule) {
+  checkForm: function(form, rule) {
     return new Promise((resolve, reject) => {
       for (let item in rule) {
         let val = form[item];
@@ -660,7 +723,7 @@ let TOOL = {
   },
 
   //数字转中文数字
-  toChineseNumber: function (money) {
+  toChineseNumber: function(money) {
     //汉字的数字
     var cnNums = new Array(
       "零",
@@ -755,7 +818,7 @@ let TOOL = {
     }
     return chineseStr;
   },
-  dateFormat: function (val, type = 1) {
+  dateFormat: function(val, type = 1) {
     if (!val) {
       return "--";
     } else {
@@ -763,12 +826,12 @@ let TOOL = {
       let y = time.getFullYear();
       let M = time.getMonth() + 1;
       let D = time.getDate();
-      return type === 1 ?
-        `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D}` :
-        `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
+      return type === 1
+        ? `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D}`
+        : `${y}/${M > 9 ? M : "0" + M}/${D > 9 ? D : "0" + D}`;
     }
   },
-  timeFormat: function (val, second = true) {
+  timeFormat: function(val, second = true) {
     if (!val) {
       return "--";
     } else {
@@ -780,15 +843,17 @@ let TOOL = {
       let m = time.getMinutes();
       let s = time.getSeconds();
       if (second) {
-        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${h > 9 ? h : "0" + h
-          }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+          h > 9 ? h : "0" + h
+        }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
       } else {
-        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${h > 9 ? h : "0" + h
-          }:${m > 9 ? m : "0" + m}`;
+        return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+          h > 9 ? h : "0" + h
+        }:${m > 9 ? m : "0" + m}`;
       }
     }
   },
-  nullFormat: function (val, number) {
+  nullFormat: function(val, number) {
     // debugger
     if (!val && typeof val !== "number") {
       return !number ? "--" : 0;
@@ -797,14 +862,14 @@ let TOOL = {
     }
   },
   //上传拼接
-  getFilePath: function (arr) {
+  getFilePath: function(arr) {
     let newArr = [];
     arr.forEach(item => {
       newArr.push(`${item.path}?${item.name}`);
     });
     return newArr;
   },
-  cutFilePath: function (arr) {
+  cutFilePath: function(arr) {
     let newArr = [];
     arr.forEach(item => {
       let cell = {
@@ -828,37 +893,39 @@ let TOOL = {
   //toFixed精度问题
   toFixed(digital, len) {
     //对数字末尾加0
-    let padNum = function (num) {
-      var dotPos = num.indexOf('.');
+    let padNum = function(num) {
+      var dotPos = num.indexOf(".");
       if (dotPos === -1) {
         //整数的情况
-        num += '.';
+        num += ".";
         for (var i = 0; i < len; i++) {
-          num += '0';
+          num += "0";
         }
         return num;
       } else {
         //小数的情况
         var need = len - (num.length - dotPos - 1);
         for (var j = 0; j < need; j++) {
-          num += '0';
+          num += "0";
         }
         return num;
       }
     };
     if (len > 20 || len < 0) {
-      throw new RangeError('toFixed() digits argument must be between 0 and 20');
+      throw new RangeError(
+        "toFixed() digits argument must be between 0 and 20"
+      );
     }
     // .123转为0.123
     var number = Number(digital);
     if (isNaN(number) || number >= Math.pow(10, 21)) {
       return number.toString();
     }
-    if (typeof (len) == 'undefined' || len == 0) {
-      return (Math.round(number)).toString();
+    if (typeof len == "undefined" || len == 0) {
+      return Math.round(number).toString();
     }
     var result = number.toString(),
-      numberArr = result.split('.');
+      numberArr = result.split(".");
 
     if (numberArr.length < 2) {
       //整数的情况
@@ -874,26 +941,22 @@ let TOOL = {
     }
     if (deciNum.length < len) {
       //需要截取的长度大于当前长度 1.3.toFixed(2)
-      return padNum(result)
+      return padNum(result);
     }
     //需要截取的长度小于当前长度，需要判断最后一位数字
-    result = intNum + '.' + deciNum.substr(0, len);
+    result = intNum + "." + deciNum.substr(0, len);
     if (parseInt(lastNum, 10) >= 5) {
       //最后一位数字大于5，要进位
       var times = Math.pow(10, len); //需要放大的倍数
-      var changedInt = Number(result.replace('.', '')); //截取后转为整数
+      var changedInt = Number(result.replace(".", "")); //截取后转为整数
       changedInt++; //整数进位
       changedInt /= times; //整数转为小数，注：有可能还是整数
-      result = padNum(changedInt + ''); //转成字符串类型
+      result = padNum(changedInt + ""); //转成字符串类型
     }
     return result;
   },
   //保留小数位
-  cutFloat: function ({
-    val,
-    max,
-    num = 2
-  }) {
+  cutFloat: function({ val, max, num = 2 }) {
     val = val
       .toString()
       .replace(/[^\d.]/g, "")
@@ -903,8 +966,9 @@ let TOOL = {
     if (parseFloat(val) >= max) {
       return max;
     }
-    if (regex.test(val)) { //不允许小数点开头
-      return ''
+    if (regex.test(val)) {
+      //不允许小数点开头
+      return "";
     }
     let pos = val.indexOf(".");
     if (pos > -1) {
@@ -917,7 +981,7 @@ let TOOL = {
       return val;
     }
   },
-  textInput: function (val, type = 1) {
+  textInput: function(val, type = 1) {
     // debugger
     if (type === 1) {
       return val.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "");
@@ -929,11 +993,11 @@ let TOOL = {
       return val.replace(/[^\d\a-zA-Z\u4E00-\u9FA5]/g, "").replace(/\s/g, "");
     }
   },
-  numberInput: function (val) {
+  numberInput: function(val) {
     return val.replace(/[^\d]/g, "");
   },
   //数组是否有重复元素
-  repeatCell: function (arr) {
+  repeatCell: function(arr) {
     // debugger
     let old = arr.length;
     let newArr = new Set(arr);
@@ -944,7 +1008,7 @@ let TOOL = {
     }
   },
   //生成面包屑导航数组
-  getRouter: function (arr, root) {
+  getRouter: function(arr, root) {
     return arr.map(item => {
       return {
         name: item,
@@ -960,19 +1024,23 @@ let TOOL = {
    * 2 计算加载中
    */
   layerAlert(j) {
-    let {
-      message = "", typeInfo = 0
-    } = j;
+    let { message = "", typeInfo = 0 } = j;
     // 内容判断
-    let m = typeInfo === 1 ? `<div class="layer-succes-txt">
+    let m =
+      typeInfo === 1
+        ? `<div class="layer-succes-txt">
         <div class="img"></div>
-        <p class="p">${message || '已计算完成'}</p>
-    </div>` : typeInfo === 2 ? `<div class="layer-loading-txt">
+        <p class="p">${message || "已计算完成"}</p>
+    </div>`
+        : typeInfo === 2
+        ? `<div class="layer-loading-txt">
     <div class="img"></div>
-    <p class="p">${message || '系统正在计算中，请稍后...'}</p>
-</div>` : `<div class="layer-txt">${message}</div>`;
+    <p class="p">${message || "系统正在计算中，请稍后"}</p>
+</div>`
+        : `<div class="layer-txt">${message}</div>`;
     // 类名判断
-    let customClass = typeInfo === 1 ? 'layer-succes' : typeInfo === 2 ? 'layer-loading' : '';
+    let customClass =
+      typeInfo === 1 ? "layer-succes" : typeInfo === 2 ? "layer-loading" : "";
 
     return this.$alert("", {
       // 自定义html
@@ -992,7 +1060,7 @@ let TOOL = {
       // 自定义属性
       ...j,
       // 展示内容
-      message: m,
+      message: m
     });
   },
   // 关闭函数 关闭上面弹层函数
@@ -1004,6 +1072,4 @@ let TOOL = {
   }
 };
 
-export {
-  TOOL
-}
+export { TOOL };

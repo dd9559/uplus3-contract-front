@@ -1,9 +1,9 @@
 <template>
   <div>
-    <p class="brand-nav">财务>提成设置</p>
+    <!-- <p class="brand-nav">财务>提成设置</p> -->
     <div ref="tableComView">
         <!-- 查询组件 -->
-      <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn">
+      <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
         <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
           <el-form-item>
             <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search" style="width:300px"></el-input>
@@ -31,7 +31,6 @@
               :clearable="true"
               multiple
               collapse-tags
-              @change="positionChange"
               style="width:265px"
             >
               <el-option
@@ -42,58 +41,20 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
-            <el-select
-              v-model="searchForm.depId"
-              placeholder="部门"
-              :clearable="true"
+            <select-tree
+              size="small"
+              width="266"
+              show
+              ref="selectTreeRef"
+              :data="searchDepList"
+              :obj="obj"
+              clearable
+              collapseTags
               multiple
-              collapse-tags
-              @change="depChange"
-              style="width:230px"
-            >
-              <el-option
-                v-for="item in searchDepList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
-
-
-          <!-- <el-select
-                size="small"
-                v-model="searchForm.depId"
-                :placeholder="searchDepName.length===0?'部门':searchDepName.join(',')"
-                ref="searchDep"
-                id="searchDep"
-                collapse-tags
-                :class="searchDepName.length>0?'colorful':''"
-                multiple
-                style="width:240px"
-              >
-                <el-option
-                  v-if="searchDepList.length > 0"
-                  style="height:auto;line-height:0;"
-                  :value="searchForm.depId"
-                >
-                  <elTree2
-                    :data="searchDepList"
-                    :show-checkbox="true"
-                    node-key="id"
-                    :props="defaultProps"
-                    ref="tree"
-                    empty-text="暂无数据"
-                    check-strictly
-                    @check="setCheckedNodes"
-                    :default-checked-keys="defaultCheckedKeys"
-                    :default-expanded-keys="defaultExpandedKeys"
-                  ></elTree2>
-                </el-option>
-              </el-select> -->
-
-
-
+              expand-click-node
+              checkStrictly
+              @getValue="setTreeMenu"
+            ></select-tree>
           </el-form-item>
           <el-form-item>
             <el-select
@@ -193,7 +154,7 @@
               <template slot-scope="scope">{{scope.row.createTime|formatTime(false)}}</template>
             </el-table-column>
           </el-table>
-          <el-pagination
+          <!-- <el-pagination
             v-if="total"
             class="pagination-info"
             @current-change="handleCurrentChange"
@@ -201,7 +162,14 @@
             :page-size="pageSize"
             layout="total, prev, pager, next, jumper"
             :total="total"
-          ></el-pagination>
+          ></el-pagination> -->
+          <myPagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="pageNum"
+            :page-size="pageSize"
+            :total="total"
+          ></myPagination>
         </div>
       </div>
       <!-- 添加 编辑 弹窗 -->
@@ -243,54 +211,29 @@
             </div>
             <div class="dialog-item">
               <p class="form-label system">部门：</p>
-              <!-- <el-select
-                size="small"
-                v-model="deductData.depId"
-                :placeholder="depName.length===0?'请选择':depName.join(',')"
-                multiple
-                ref="dep"
-                id="dep"
-                collapse-tags
-                remote
-                :remote-method="remoteMethod"
-                filterable
-                reserve-keyword
-                style="width:240px"
-              >-->
-              <el-select
-                size="small"
-                v-model="deductData.depId"
-                :placeholder="depName.length===0?'请选择':depName.join(',')"
-                ref="dep"
-                id="dep"
-                collapse-tags
-                :class="depName.length>0?'colorful':''"
-                remote
-                :remote-method="remoteMethod"
-                multiple
-                @focus="depFocus"
-                filterable
-                style="width:240px"
-              >
-                <el-option
-                  v-if="depList.length > 0"
-                  style="height:auto;line-height:0;"
-                  :value="deductData.depId"
-                >
-                  <elTree2
-                    :data="depList"
-                    :show-checkbox="true"
-                    node-key="id"
-                    :props="defaultProps"
-                    ref="tree"
-                    empty-text="暂无数据"
-                    check-strictly
-                    @check="setCheckedNodes"
-                    :default-checked-keys="defaultCheckedKeys"
-                    :default-expanded-keys="defaultExpandedKeys"
-                  ></elTree2>
-                </el-option>
-              </el-select>
+
+
+              <select-tree
+              size="small"
+              width="240"
+              ref="deductSelectTreeRef"
+              :data="depList"
+              show
+              :defaultKeys="depDefaultCheckedKeys"
+              :obj="obj"
+              :filterable="deductFilterable"
+              reserveKeyword
+              clearable
+              collapseTags
+              multiple
+              checkAll
+              expandClickNode
+              expand-on-click-node
+              expand-click-node
+              checkStrictly
+              @getValue="setDeductTreeMenu"
+              @cleanDefault="cleanDefault"
+            ></select-tree>
             </div>
             <div class="dialog-item">
               <p class="form-label system">职务：</p>
@@ -448,7 +391,6 @@
           <p>确认保存该提成设置？</p>
           <div class="warning-content">
             <p>合同类型：{{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p>
-            <p>提成计算日期：{{"合同【实收日期】计算"}}</p>
             <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
             <p>执行时间：{{deductData.executionStartTime}}</p>
           </div>
@@ -466,12 +408,15 @@
 import { MIXINS } from "@/assets/js/mixins";
 import { TOOL } from "@/assets/js/common";
 import elTree2 from "@/components/tree/src/tree.vue";
+import selectTree from "./selectTree.vue";
+import myPagination from "./myPagination";
 export default {
   name: "deduct",
   mixins: [MIXINS],
-  components: { elTree2 },
+  components: { elTree2, selectTree, myPagination },
   data() {
     return {
+      searchTop: null,
       searchForm: {
         systemTag: "",
         bonusName: '',
@@ -479,6 +424,11 @@ export default {
         depId: [],
         timeType: "1",
         executionStartTime: [],
+      },
+      obj: {
+        id: "depId",
+        label: "name",
+        children: "subs",
       },
       searchDepName: [],
       searchDepList: [],
@@ -490,11 +440,12 @@ export default {
         "659": "职级类型",
       },
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       dialogAddDeduct: false, // 提成规则弹窗,
       dialogSave: false,
       params: {},
+      deductFilterable: true,
       deductData: {
         // 提成字段对象
         bonusName: "", // 规则名
@@ -521,8 +472,8 @@ export default {
         children: "subs",
         label: "name",
       },
+      depDefaultCheckedKeys: [], //默认选中数组
       defaultCheckedKeys: [], //默认选中数组
-      defaultExpandedKeys: [-1],
       positionRanksList: [], // 体系对应职级列表
       levelsList: [], // 体系对应等级列表
       infinity: false, // 选择无穷大
@@ -556,7 +507,12 @@ export default {
         this.getList()
     }
   },
-
+  mounted() {
+    this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+    window.onresize = () => {
+      this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+    }
+  },
   methods: {
     getList(type) {
       let params = {
@@ -680,52 +636,40 @@ export default {
           console.log(err)
         })
     },
-    remoteMethod(key) {
-      if (key) {
-        this.depKeyWords = key;
-        this.defaultCheckedKeys = [];
-        this.getDepcopy();
-      } else {
-        this.depKeyWords = '';
-        this.getDepcopy();
-      }
+    setDeductTreeMenu (keys,names) {
+      this.defaultCheckedKeys = keys
+      this.depName = names
     },
-    depFocus() {
-      this.depKeyWords = '';
-      this.getDepcopy();
+    cleanDefault () {
+      this.depDefaultCheckedKeys = []
     },
-    //如果体系为空，职务不能选择
-    positionChange () {
-      if (this.searchForm.systemTag == '') {
-        this.searchForm.positions = []
-        this.$message('请先选择体系')
-      }
-    },
-    //如果体系为空，部门不能选择
-    depChange() {
-      console.log(12321321312321);
-      if (this.searchForm.systemTag == '') {
-        this.searchForm.depId = []
-        this.$message('请先选择体系')
-      }
+    setTreeMenu(key, data) {
+      //获取子组件值
+      this.searchForm.depId = key
     },
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
+      console.log(val,9090000);
       this.searchForm.depId = []
       this.searchForm.positions = []
-      this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
-        res = res.data
-        if (res.status == 200) {
-          this.searchDepList = res.data
-          console.log(this.searchDepList)
-        }
-      })
-      this.getPosition('search')
+      // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      if (val) {
+        this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
+          res = res.data
+          if (res.status == 200) {
+            this.searchDepList = res.data
+            console.log(this.searchDepList)
+          }
+        })
+        this.getPosition('search')
+      } else {
+        this.searchDepList = []
+        this.searchPositionRanksList = []
+      }
     },
     getDep() {
-      this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      // this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
+      // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
+      this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
         res = res.data
         if (res.status == 200) {
           this.searchDepList = res.data
@@ -760,70 +704,24 @@ export default {
           // if (this.depKeyWords) {
           //     this.depList = res.data.filter((v) => v.field2 === 0)
           // } else {
-            this.$set(this.depList, 0, {
-              depId: -1,
-              fiveLevelNum: 0,
-              id: -1,
-              level: -1,
-              name: "全部",
-              showCheckbox: true,
-              subs: res.data
-            });
+            // this.$set(this.depList, 0, {
+            //   depId: -1,
+            //   fiveLevelNum: 0,
+            //   id: -1,
+            //   level: -1,
+            //   name: "全部",
+            //   showCheckbox: true,
+            //   subs: res.data
+            // });
+            this.depList = res.data
             if (type === 'add') {
-              this.defaultCheckedKeys = [-1].concat(res.data.map(item => item.id))
-              this.depName = res.data.map(item => item.name)
+              this.defaultCheckedKeys = [].concat(res.data.map(item => item.id))
+              this.depDefaultCheckedKeys = [].concat(res.data.map(item => item.id))
+              // this.depName = res.data.map(item => item.name)
             }
           // }
         }
       });
-    },
-    setCheckedNodes(val, checked) {
-      console.log(val, checked, 888);
-      if (val.id === -1) {
-        let allCheckList = [];
-        if (!checked.checkedKeys.includes(val.id)) {
-          this.$refs.tree.setCheckedKeys([]);
-          this.defaultCheckedKeys = [];
-          this.depName = [];
-        } else {
-          let allCheckList = this.depList[0].subs.map((item) => {
-            if (item.showCheckbox) return item.id;
-          });
-          this.depName = this.depList[0].subs.map((item) => {
-            if (item.showCheckbox) return item.name;
-          });
-          this.defaultCheckedKeys = allCheckList;
-        }
-      } else {
-        if (!checked.checkedKeys.includes(val.id)) {
-          let currentCheckList = checked.checkedKeys.filter((item) => {
-            return item !== val.id && item !== -1;
-          });
-          this.depName = this.depName.filter((item) => {
-            return item !== val.name;
-          });
-          this.defaultCheckedKeys = currentCheckList;
-          this.$refs.tree.setCheckedKeys(currentCheckList);
-        } else {
-          this.depName.push(val.name);
-          this.defaultCheckedKeys.push(val.id);
-          let all = this.depList[0].subs.map((item) => {
-            if (item.showCheckbox) return item.id;
-          });
-          console.log(all.length);
-          if (
-            !checked.checkedKeys.includes(-1) &&
-            all.length === checked.checkedKeys.length
-          ) {
-            all.push(-1);
-            this.defaultCheckedKeys = all;
-            this.$refs.tree.setCheckedKeys(all);
-          }
-        }
-      }
-      this.depKeyWords = ''
-      this.$refs.dep.previousQuery = ''
-      this.$refs.dep.query = ''
     },
     removeTagPositionRank(val) {
       let positionName = [];
@@ -1015,7 +913,7 @@ export default {
         this.deductData.position.length === 0 ||
         this.deductData.tradeType === '' ||
         this.deductData.commissionCalculation === '' ||
-        this.deductData.executionStartTime === ''
+        !this.deductData.executionStartTime
       ) {
         return this.$message({
               type: "warning",
@@ -1034,6 +932,12 @@ export default {
       };
       for (let index = 0; index < this.commissionScheme.length; index++) {
         const element = this.commissionScheme[index];
+        if (!element.bonusProportion) {
+          return this.$message({
+            type: "warning",
+            message: "请把信息填写完整",
+          });
+        }
         for (let i = 0; i < this.commissionScheme.length; i++) {
           const item = this.commissionScheme[i];
           if (
@@ -1112,6 +1016,10 @@ export default {
           this.$message({ message: error });
         });
     },
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.getList('page')
+    },
     handleCurrentChange(val) {
         this.pageNum = val
         this.getList('page')
@@ -1120,12 +1028,15 @@ export default {
       this.getList('search')
     },
     resetFormFn() {
+      this.$refs.selectTreeRef.clean()
       this.searchForm.systemTag = ''
       this.searchForm.bonusName = ''
       this.searchForm.positions = []
       this.searchForm.depId = []
       this.searchForm.timeType = ''
       this.searchForm.executionStartTime = []
+      this.searchDepList = []
+      this.searchPositionRanksList = []
     },
     add(type) {
       let myDate = new Date();
@@ -1140,7 +1051,7 @@ export default {
         bonusName: "", // 规则名
         system: this.systemTagSelect.filter(item => item.key === this.user.deptSystemtag)[0], // 体系
         depId: [], //部门id
-        positions: [], //职务
+        position: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
         executionStartTime: tYear +'-'+ m, //执行开始时间
@@ -1193,10 +1104,15 @@ export default {
   font-size: 16px;
   padding-left: 20px;
 }
+// .search-top {
+//   /deep/ .el-form-item {
+//     margin-bottom: 0 !important;
+//   }
+// }
 /deep/ .view-header {
   padding: 10px !important;
   .paper-box-content {
-    margin-top: -33px !important;
+    margin-top: -30px !important;
   }
 }
 /deep/ .el-select .el-input.is-focus .el-input__inner {
