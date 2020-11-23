@@ -2,8 +2,9 @@
   <div class="page-class" ref="tableComView">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop ref="topRef" :height="searchTop" @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
-      <div>
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
+    <!-- <uPlusScrollTop ref="topRef" :height="searchTop" @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px"> -->
+      <!-- <div> -->
         <el-input placeholder="操作内容" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" clearable>
         </el-input>
 
@@ -45,7 +46,7 @@
             range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy-MM-dd">
           </el-date-picker>
         </div>
-      </div>
+      <!-- </div> -->
     </uPlusScrollTop>
 
     <div class="main">
@@ -85,7 +86,7 @@ export default {
   mixins: [MIXINS],
   data() {
     return {
-      searchTop: null,
+      // searchTop: null,
       //   计算状态
       isCalculation: [
         {
@@ -262,10 +263,10 @@ export default {
     myPagination,
   },
   mounted() {
-    this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
-    window.onresize = () => {
-      this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
-    }
+    // this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+    // window.onresize = () => {
+    //   this.searchTop = this.$refs.topRef.$refs.content.firstChild.clientHeight
+    // }
     // 体系
     this.getSystemTagSelect();
     // 获取数据

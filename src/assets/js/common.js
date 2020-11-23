@@ -307,6 +307,50 @@ let TOOL = {
       ]
     },
     {
+      id: 8,
+      name: "提成",
+      category: "8",
+      can: true, //是否可见
+      icon: "icon-caozuorizhi",
+      child: [
+        {
+          name: "提成业务",
+          category: "8-1",
+          can: true, //是否可见
+          child: [
+            {
+              name: "提成计算",
+              category: "8-1-1",
+              can: true, //是否可见
+              path: "commissionCounts",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "提成发放",
+              category: "8-1-2",
+              can: true, //是否可见
+              path: "commissionGrant",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "提成设置",
+              category: "8-1-3",
+              can: true, //是否可见
+              path: "commissionSetting",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "操作日志",
+              category: "8-1-4",
+              can: true, //是否可见
+              path: "commissionOperationLog",
+              code: "sign-ht-info-query"
+            }
+          ]
+        }
+      ]
+    },
+    {
       id: 5,
       name: "设置",
       category: "5",
@@ -401,29 +445,6 @@ let TOOL = {
       icon: "icon-caiwu",
       code: false,
       child: []
-    },
-    {
-      id: 8,
-      name: "提成",
-      category: "8",
-      can: true, //是否可见
-      icon: "icon-caozuorizhi",
-      child: [
-        {
-          name: "提成业务",
-          category: "8-1",
-          can: true, //是否可见
-          child: [
-            {
-              name: "提成计算",
-              category: "8-1-1",
-              can: true, //是否可见
-              path: "commissionCounts",
-              code: "sign-yj-rec-export"
-            }
-          ]
-        }
-      ]
     }
   ],
   //提成导航

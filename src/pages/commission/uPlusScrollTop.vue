@@ -10,10 +10,11 @@
       </p>
     </div>
     <!-- 筛选条件 -->
-    <div class="paper-box-content" ref="content">
+    <!-- <div class="paper-box-content" ref="content"> -->
+    <div class="paper-box-content">
       <slot></slot>
     </div>
-    <div v-if="isShowOpen" class="btn" @click="show=!show">
+    <div class="btn" @click="show=!show" v-if="ishidden">
       <i class="iconfont icon-zhankai"></i>
       <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"收起":"展开"}}</span>
     </div>
@@ -28,17 +29,28 @@ export default {
       type: Number,
       default: 57,
     },
-    height: {
-      type: Number,
-      default() {
-        return 0
-      }
-    }
+    // height: {
+    //   type: Number,
+    //   default() {
+    //     return 0
+    //   }
+    // }
   },
   data() {
     return {
       show: false,
+      ishidden:false
     };
+  },
+  mounted(){
+    let _this = this
+    this.$nextTick(()=>{
+      _this.ishidden = _this.getHidden()
+      window.onresize = ()=>{
+        //调用methods中的事件
+        _this.ishidden = _this.getHidden()
+      }
+    })
   },
   methods: {
     // 点击查询
@@ -50,16 +62,24 @@ export default {
       this.$emit("propResetFormFn");
     },
     ...mapMutations(["bodyScollShowFn"]),
-  },
-  computed: {
-    isShowOpen() {
-      if (this.height === 0) {
+    getHidden(){
+      let content = document.getElementsByClassName('paper-box-content')[0]
+      if(content.scrollHeight>content.clientHeight+40){
         return true
-      } else {
-        return this.height > this.min
+      }else{
+        return false
       }
     }
   },
+  // computed: {
+  //   isShowOpen() {
+  //     if (this.height === 0) {
+  //       return true
+  //     } else {
+  //       return this.height > this.min
+  //     }
+  //   }
+  // },
   beforeUpdate() {
     this.bodyScollShowFn();
   },
@@ -81,7 +101,7 @@ export default {
   background-color: @bg-white;
   position: relative;
 
-  &:after {
+  &:after { 
     content: "";
     width: 100%;
     height: 15px;
