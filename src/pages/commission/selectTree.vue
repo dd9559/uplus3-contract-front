@@ -37,8 +37,9 @@
           :accordion="true"
           :auto-expand-parent="false"
           :render-after-expand="false"
-          @check-change="nodeClick"
+          @check="nodeClick"
         ></el-tree>
+          <!-- @check-change="nodeClick" -->
       </template>
     </el-select>
   </div>
@@ -186,15 +187,14 @@ export default {
         return this.returnDataKeys.length === this.treeData.length
       },
       set (value) {
-        console.log(value);
         if (value){
           let all = this.treeData.map(item => {
             return item[this.obj.id]
           })
-          this.$refs.tree.setCheckedKeys(all);
+          this.setDataKey("init",all)
           return value
         } else {
-          this.$refs.tree.setCheckedKeys([]);
+          this.setDataKey("init",[]);
           return value
         }
       }  
@@ -207,7 +207,7 @@ export default {
     //   初始化数据
     init() {
         if (!!this.data && Object.prototype.toString.call(this.data).indexOf("Array") !== -1) {
-            this.initTrereData("init",this.data)
+          this.initTrereData("init",this.data)
         }
         if(!!this.defaultKeys && Object.prototype.toString.call(this.defaultKeys).indexOf("Array") !== -1 && this.defaultKeys.length > 0) {
             this.setDataKey("init",this.defaultKeys)
@@ -244,6 +244,8 @@ export default {
             this.returnDataLabels = this.options.map(item => {
                 return item.label
             })
+            this.$emit('cleanDefault')
+            this.$emit('getValue',this.returnDataKeys,this.returnDataLabels)
         } else {
             let node = this.$refs.tree.getNode(key).data
             this.$refs.tree.setCurrentKey(key);
@@ -253,15 +255,19 @@ export default {
                 label:node[this.obj.label],
                 value:node[this.obj.id]
             })
+            this.$emit('cleanDefault')
+            this.$emit('getValue',this.returnDataKeys,this.returnDataLabels)
         }
-        this.$emit('getValue',this.returnDataKeys,this.returnDataLabels)
+        
     },
 
     // tree节点店家事件
-    nodeClick(data,node,el) {
-      this.$emit('cleanDefault')
+    nodeClick(data,keys,halfDatas,halfKeys) {
+      if (this.defaultKeys.length > 0) {
+        this.$emit('cleanDefault')
+      }
       let type = 'click'
-      if (node) {
+      if (keys.checkedKeys.includes(data[this.obj.id])) {
         this.setDataKey(type,data[this.obj.id]);
       } else {
         type = 'delete'
@@ -293,6 +299,7 @@ export default {
       this.returnDataLabels = [];
       this.options = [];
       this.$emit('cleanDefault')
+      this.$emit('getValue',this.returnDataKeys,this.returnDataLabels)
     },
     // 多选,删除任一select选项的回调
     removeTag(val) {
@@ -303,10 +310,15 @@ export default {
         return item.label === val;
       }).value;
       this.$refs.tree.setChecked(value, false);
+      this.setDataKey("delete",value);
     },
   },
   watch: {
     data() {
+      this.returnDataKeys = []
+      this.returnDataLabels = []
+      this.options = []
+      this.$refs.tree.setCheckedKeys([]);
       this.init()
     }
   }
