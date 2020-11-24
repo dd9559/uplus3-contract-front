@@ -322,29 +322,33 @@ let TOOL = {
               name: "提成计算",
               category: "8-1-1",
               can: true, //是否可见
-              path: "commissionCounts",
-              code: "sign-ht-info-query"
+              path: "",
+              code: "sign-ht-info-query",
+              to: "commissionCounts",
             },
             {
               name: "提成发放",
               category: "8-1-2",
               can: true, //是否可见
-              path: "commissionGrant",
-              code: "sign-ht-info-query"
+              path: "",
+              code: "sign-ht-info-query",
+              to: "commissionGrant",
             },
             {
               name: "提成设置",
               category: "8-1-3",
               can: true, //是否可见
-              path: "commissionSetting",
-              code: "sign-ht-info-query"
+              path: "",
+              code: "sign-ht-info-query",
+              to: "commissionSetting",
             },
             {
               name: "操作日志",
               category: "8-1-4",
               can: true, //是否可见
-              path: "commissionOperationLog",
-              code: "sign-ht-info-query"
+              path: "",
+              code: "sign-ht-info-query",
+              to: "commissionOperationLog",
             }
           ]
         }
