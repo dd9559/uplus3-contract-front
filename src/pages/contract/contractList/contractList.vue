@@ -2717,11 +2717,11 @@ export default {
           res = res.data;
           if (res.status === 200) {
             res.data.map((item) => {
-              if (item.enableTemplateId != 0 && item.type.value != 6) {
-                this.onlineContractList.push(item);
+              if (item.onLine === 0 && item.enableTemplateId != 0 && item.type.value != 6) {
+                this.onlineContractList.push(item);// 线上/打印空白模板 判断 onLine === 0 
               }
-              if (item.type.value != 6) {
-                this.offlineContractList.push(item)
+              if (item.unLine === 0 && item.type.value != 6) {
+                this.offlineContractList.push(item) // 线下 判断 unLine === 0
               }
             });
           }
