@@ -307,47 +307,43 @@ let TOOL = {
       ]
     },
     {
-      id: 8,
+      id: 5,
       name: "提成",
-      category: "8",
+      category: "5",
       can: true, //是否可见
       icon: "icon-caozuorizhi",
       child: [
         {
           name: "提成业务",
-          category: "8-1",
+          category: "5-1",
           can: true, //是否可见
           child: [
             {
               name: "提成计算",
-              category: "8-1-1",
+              category: "5-1-1",
               can: true, //是否可见
-              path: "",
-              code: "sign-ht-info-query",
+              code: "sign-set-log-query",
               to: "commissionCounts",
             },
             {
               name: "提成发放",
-              category: "8-1-2",
+              category: "5-1-2",
               can: true, //是否可见
-              path: "",
-              code: "sign-ht-info-query",
+              code: "sign-set-log-query",
               to: "commissionGrant",
             },
             {
               name: "提成设置",
-              category: "8-1-3",
+              category: "5-1-3",
               can: true, //是否可见
-              path: "",
-              code: "sign-ht-info-query",
+              code: "sign-set-log-query",
               to: "commissionSetting",
             },
             {
               name: "操作日志",
-              category: "8-1-4",
+              category: "5-1-4",
               can: true, //是否可见
-              path: "",
-              code: "sign-ht-info-query",
+              code: "sign-set-log-query",
               to: "commissionOperationLog",
             }
           ]
@@ -355,34 +351,34 @@ let TOOL = {
       ]
     },
     {
-      id: 5,
+      id: 6,
       name: "设置",
-      category: "5",
+      category: "6",
       can: true, //是否可见
       icon: "icon-huaban3",
       child: [
         {
           name: "后台设置",
-          category: "5-1",
+          category: "6-1",
           can: true, //是否可见
           child: [
             {
               name: "款类设置",
-              category: "5-1-1",
+              category: "6-1-1",
               can: true, //是否可见
               path: "moneyType",
               code: "sign-set-kl-query"
             },
             {
               name: "合同模板设置",
-              category: "5-1-2",
+              category: "6-1-2",
               can: true, //是否可见
               path: "contractTemplate",
               code: "sign-set-ht-query"
             },
             {
               name: "线下手续费设置",
-              category: "5-1-3",
+              category: "6-1-3",
               can: true, //是否可见
               path: "commissionOff",
               code: "sign-set-bg-sxf-query"
@@ -391,26 +387,26 @@ let TOOL = {
         },
         {
           name: "业务设置",
-          category: "5-2",
+          category: "6-2",
           can: true, //是否可见
           child: [
             {
               name: "公司设置",
-              category: "5-2-1",
+              category: "6-2-1",
               can: true, //是否可见
               path: "company",
               code: "sign-set-gs"
             },
             {
               name: "审核流程",
-              category: "5-2-2",
+              category: "6-2-2",
               can: true, //是否可见
               path: "approvalProcess",
               code: "sign-set-verify"
             },
             {
               name: "规则设置",
-              category: "5-2-3",
+              category: "6-2-3",
               can: true, //是否可见
               path: "ruleSetting",
               code: [
@@ -423,7 +419,7 @@ let TOOL = {
             },
             {
               name: "后期流程设置",
-              category: "5-2-4",
+              category: "6-2-4",
               can: true, //是否可见
               path: "postProcess",
               code: "sign-set-hq"
@@ -433,7 +429,7 @@ let TOOL = {
       ]
     },
     {
-      id: 6,
+      id: 7,
       name: "操作日志",
       category: "operationLog",
       can: true, //是否可见
@@ -442,7 +438,7 @@ let TOOL = {
       child: []
     },
     {
-      id: 7,
+      id: 8,
       name: "手续费设置",
       category: "commission",
       can: false, //是否可见

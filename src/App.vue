@@ -20,7 +20,7 @@
           <el-menu ref="menu" :router="true" :collapse-transition="false" :collapse="collapse" @open="openAllNav"
             @select="handleSelect" class="el-menu-demo" active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{ 'collapse-row': collapse }]" v-for="item in views"
-              :key="item.id" v-if="item.id !== 6 && item.id !== 7 && item.can">
+              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{ item.name }}</span>
@@ -39,6 +39,7 @@
                     <template v-else>
                       {{ tip.name }}
                     </template>
+                    <!-- {{ tip.name }} -->
                   </el-menu-item>
                 </el-submenu>
               </template>
@@ -91,7 +92,7 @@ export default {
     };
   },
   created() {
-    this.activeIndex = JSON.parse(localStorage.getItem("indexPath"));
+    // this.activeIndex = JSON.parse(localStorage.getItem("indexPath"));
   },
   methods: {
     getImg: function (url) {
@@ -139,14 +140,14 @@ export default {
           let arr = val.privileges;
           this.views.forEach((item, index) => {
             let sliders = [];
-            if (item.id === 6 || item.id === 7) {
+            if (item.id === 7 || item.id === 8) {
               let objType = Object.prototype.toString.call(item.code);
               if (objType === "[object Boolean]") {
                 // item.can = item.code
                 this.$set(item, "can", item.code);
                 let host = window.location.host;
                 if (
-                  item.id === 7 &&
+                  item.id === 8 &&
                   ((["localhost:8080", "sign2.jjw.com:28879"].includes(host) &&
                     (val.user.empId === 15349 || val.user.empId === 100778)) ||
                     (host === "sign2.jjw.com" && val.user.empId === 37109))
