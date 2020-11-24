@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView">
+  <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-log-query'].state">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
@@ -86,6 +86,12 @@ export default {
   mixins: [MIXINS],
   data() {
     return {
+      power: {
+        "sign-tcyw-log-query": {
+          state: false,
+          name: "查询",
+        },
+      },
       // searchTop: null,
       //   计算状态
       isCalculation: [

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView">
+  <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-tcff-query'].state">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
@@ -67,8 +67,10 @@
               class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" @click="clickExportFn">导出</el-button>
-        <el-button class="fr btn-orange" @click="batchCalculationFn">批量发放</el-button>
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" @click="clickExportFn">导出
+        </el-button>
+        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn">批量发放
+        </el-button>
       </div>
       <el-table :data="tableData" class="table-box" @selection-change="handleSelectionChange" ref="tableCom"
         :max-height="tableNumberCom">
@@ -108,7 +110,7 @@
         </el-table-column>
         <el-table-column min-width="120" label="操作">
           <template slot-scope="scope">
-            <span :class="scope.row.status === 0 ? 'cl-blue' : ''"
+            <span v-if="power['sign-tcyw-tcff-ff'].state" :class="scope.row.status === 0 ? 'cl-blue' : ''"
               @click="clickIssueFn(scope)">{{ scope.row.status === 0 ? "发放" : "--" }}</span>
           </template>
         </el-table-column>
@@ -128,6 +130,20 @@ export default {
   mixins: [MIXINS, FILTER],
   data() {
     return {
+      power: {
+        "sign-tcyw-tcff-query": {
+          state: false,
+          name: "查询",
+        },
+        "sign-tcyw-tcff-ff": {
+          state: false,
+          name: "发放/批量发放",
+        },
+        "sign-tcyw-tcff-export": {
+          state: false,
+          name: "导出",
+        },
+      },
       //   发放状态
       status: [
         {

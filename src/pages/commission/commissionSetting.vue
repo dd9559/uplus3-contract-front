@@ -1,85 +1,46 @@
 <template>
   <div>
     <!-- <p class="brand-nav">财务>提成设置</p> -->
-    <div ref="tableComView">
-        <!-- 查询组件 -->
+    <div ref="tableComView" v-if="power['sign-tcyw-set-query'].state">
+      <!-- 查询组件 -->
       <!-- <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px"> -->
       <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
         <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
           <el-form-item>
-            <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search" style="width:300px"></el-input>
+            <el-input v-model="searchForm.bonusName" placeholder="提成规则名称" prefix-icon="el-icon-search"
+              style="width:300px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select
-              v-model="searchForm.systemTag"
-              placeholder="体系"
-              :clearable="true"
-              @change="sysTagChange"
-              style="width:150px"
-            >
-              <el-option
-                v-for="item in systemTagSelect"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key"
-              ></el-option>
+            <el-select v-model="searchForm.systemTag" placeholder="体系" :clearable="true" @change="sysTagChange"
+              style="width:150px">
+              <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item.key">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select
-              v-model="searchForm.positions"
-              placeholder="职务名称"
-              :clearable="true"
-              multiple
-              collapse-tags
-              style="width:265px"
-            >
-              <el-option
-                v-for="item in searchPositionRanksList"
-                :key="item.Value"
-                :label="item.Text"
-                :value="item.Value"
-              ></el-option>
+            <el-select v-model="searchForm.positions" placeholder="职务名称" :clearable="true" multiple collapse-tags
+              style="width:265px">
+              <el-option v-for="item in searchPositionRanksList" :key="item.Value" :label="item.Text"
+                :value="item.Value"></el-option>
             </el-select>
           </el-form-item>
-            <select-tree
-              size="small"
-              width="266"
-              show
-              ref="selectTreeRef"
-              :data="searchDepList"
-              :obj="obj"
-              clearable
-              collapseTags
-              multiple
-              expand-click-node
-              checkStrictly
-              @getValue="setTreeMenu"
-            ></select-tree>
+          <select-tree size="small" width="266" show ref="selectTreeRef" :data="searchDepList" :obj="obj" clearable
+            collapseTags multiple expand-click-node checkStrictly @getValue="setTreeMenu"></select-tree>
           </el-form-item>
           <el-form-item>
-            <el-select
-              v-model="searchForm.timeType"
-              placeholder="请选择"
-              :clearable="true"
-              style="width:150px"
-            >
+            <el-select v-model="searchForm.timeType" placeholder="请选择" :clearable="true" style="width:150px">
               <el-option label="执行时间" value="1"></el-option>
               <el-option label="创建时间" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-date-picker
-              v-model="searchForm.executionStartTime"
-              :type="searchForm.timeType==='1'?'monthrange':'daterange'"
-              range-separator="至"
+            <el-date-picker v-model="searchForm.executionStartTime"
+              :type="searchForm.timeType==='1'?'monthrange':'daterange'" range-separator="至"
               :start-placeholder="searchForm.timeType==='1'?'开始月份':'开始日期'"
               :end-placeholder="searchForm.timeType==='1'?'结束月份':'结束日期'"
               :format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
-              :value-format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'"
-              :disabled="this.searchForm.timeType===''"
-              @focus="dataPickerFocus"
-            ></el-date-picker>
+              :value-format="searchForm.timeType==='1'?'yyyy-MM':'yyyy-MM-dd'" :disabled="this.searchForm.timeType===''"
+              @focus="dataPickerFocus"></el-date-picker>
           </el-form-item>
         </el-form>
       </uPlusScrollTop>
@@ -92,22 +53,11 @@
               <!-- <i class="iconfont icon-tubiao-11"></i> -->
               <span>当前共找到【{{total}}】条数据</span>
             </span>
-            <el-button
-              class="btn-info"
-              type="warning"
-              size="small"
-              @click="add('add')"
-            >新增</el-button>
+            <el-button v-if="power['sign-tcyw-set-add'].state" class="btn-info" type="warning" size="small" @click="add('add')">新增</el-button>
             <!-- >新增结算设置</el-button> -->
           </div>
-          <el-table
-            :data="tableData"
-            border
-            style="width: 100%"
-            ref="tableCom"
-            :max-height="tableNumberCom"
-            header-row-class-name="theader-bg"
-          >
+          <el-table :data="tableData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom"
+            header-row-class-name="theader-bg">
             <el-table-column label="体系" prop="systemName" min-width="120"></el-table-column>
             <el-table-column label="部门" prop="depName" min-width="250">
               <template slot-scope="scope">
@@ -137,18 +87,12 @@
             </el-table-column>
             <el-table-column label="业绩档次（元）" min-width="180">
               <template slot-scope="scope">
-                <p
-                  v-for="(item,index) in scope.row.achievementGrade"
-                  :key="index"
-                >{{item.start}}-{{item.end}}</p>
+                <p v-for="(item,index) in scope.row.achievementGrade" :key="index">{{item.start}}-{{item.end}}</p>
               </template>
             </el-table-column>
             <el-table-column label="提成比例" min-width="120">
               <template slot-scope="scope">
-                <p
-                  v-for="(item,index) in scope.row.commissionSchemes"
-                  :key="index"
-                >{{item.bonusProportion}}%</p>
+                <p v-for="(item,index) in scope.row.commissionSchemes" :key="index">{{item.bonusProportion}}%</p>
               </template>
             </el-table-column>
             <el-table-column label="创建时间" prop="createTime" min-width="180">
@@ -164,99 +108,42 @@
             layout="total, prev, pager, next, jumper"
             :total="total"
           ></el-pagination> -->
-          <myPagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="pageNum"
-            :page-size="pageSize"
-            :total="total"
-          ></myPagination>
+          <myPagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum"
+            :page-size="pageSize" :total="total"></myPagination>
         </div>
       </div>
       <!-- 添加 编辑 弹窗 -->
-      <el-dialog
-        class="deduct-dialog"
-        :title="dialogTitle"
-        :visible.sync="dialogAddDeduct"
-        width="580px"
-        @close="dialogAddDeduct = false"
-        :closeOnClickModal="$tool.closeOnClickModal"
-      >
+      <el-dialog class="deduct-dialog" :title="dialogTitle" :visible.sync="dialogAddDeduct" width="580px"
+        @close="dialogAddDeduct = false" :closeOnClickModal="$tool.closeOnClickModal">
         <div class="deduct-content">
           <div class="row">
             <div class="dialog-item">
               <p class="form-label system">提成规则名称：</p>
-              <el-input
-                size="small"
-                style="width:240px"
-                v-model="deductData.bonusName"
-                placeholder="请输入"
-                maxlength="15"
-              ></el-input>
+              <el-input size="small" style="width:240px" v-model="deductData.bonusName" placeholder="请输入"
+                maxlength="15"></el-input>
             </div>
             <div class="dialog-item">
               <p class="form-label system">体系：</p>
-              <el-select
-                size="small"
-                v-model="deductData.system"
-                style="width:240px"
-                @change="changeSystemFn"
-              >
-                <el-option
-                  v-for="item in systemTagSelect"
-                  :key="item.key"
-                  :label="item.value"
-                  :value="item"
-                ></el-option>
+              <el-select size="small" v-model="deductData.system" style="width:240px" @change="changeSystemFn">
+                <el-option v-for="item in systemTagSelect" :key="item.key" :label="item.value" :value="item">
+                </el-option>
               </el-select>
             </div>
             <div class="dialog-item">
               <p class="form-label system">部门：</p>
 
-
-              <select-tree
-              size="small"
-              width="240"
-              ref="deductSelectTreeRef"
-              :data="depList"
-              show
-              :defaultKeys="depDefaultCheckedKeys"
-              :obj="obj"
-              :filterable="deductFilterable"
-              reserveKeyword
-              clearable
-              collapseTags
-              multiple
-              checkAll
-              expandClickNode
-              expand-on-click-node
-              expand-click-node
-              checkStrictly
-              @getValue="setDeductTreeMenu"
-              @cleanDefault="cleanDefault"
-            ></select-tree>
+              <select-tree size="small" width="240" ref="deductSelectTreeRef" :data="depList" show
+                :defaultKeys="depDefaultCheckedKeys" :obj="obj" :filterable="deductFilterable" reserveKeyword clearable
+                collapseTags multiple checkAll expandClickNode expand-on-click-node expand-click-node checkStrictly
+                @getValue="setDeductTreeMenu" @cleanDefault="cleanDefault"></select-tree>
             </div>
             <div class="dialog-item">
               <p class="form-label system">职务：</p>
-              <el-select
-                size="small"
-                v-model="deductData.position"
-                @focus="showPositionRanksList"
-                collapse-tags
-                style="width:240px"
-                multiple
-                filterable
-                @clear="clearPositionRank"
-                @remove-tag="removeTagPositionRank"
-                :clearable="true"
-              >
-                <el-option
-                  v-for="item in positionRanksList"
-                  :key="item.Value"
-                  :label="item.Text"
-                  :value="item.Value"
-                  @click.native="changePositionRanks(item)"
-                ></el-option>
+              <el-select size="small" v-model="deductData.position" @focus="showPositionRanksList" collapse-tags
+                style="width:240px" multiple filterable @clear="clearPositionRank" @remove-tag="removeTagPositionRank"
+                :clearable="true">
+                <el-option v-for="item in positionRanksList" :key="item.Value" :label="item.Text" :value="item.Value"
+                  @click.native="changePositionRanks(item)"></el-option>
               </el-select>
             </div>
             <!-- <div class="dialog-item">
@@ -272,12 +159,7 @@
             </div>-->
             <div class="dialog-item">
               <p class="form-label system">合同类型：</p>
-              <el-select
-                size="small"
-                v-model="deductData.tradeType"
-                placeholder="请选择"
-                style="width:240px"
-              >
+              <el-select size="small" v-model="deductData.tradeType" placeholder="请选择" style="width:240px">
                 <el-option label="租赁" value="1"></el-option>
                 <el-option label="买卖/代办" value="2"></el-option>
                 <el-option label="新房" value="3"></el-option>
@@ -292,14 +174,8 @@
             </div>
             <div class="dialog-item">
               <p class="form-label system">执行开始时间：</p>
-              <el-date-picker
-                v-model="deductData.executionStartTime"
-                type="month"
-                placeholder="年月份"
-                format="yyyy-MM"
-                value-format="yyyy-MM"
-                style="width:240px"
-              ></el-date-picker>
+              <el-date-picker v-model="deductData.executionStartTime" type="month" placeholder="年月份" format="yyyy-MM"
+                value-format="yyyy-MM" style="width:240px"></el-date-picker>
             </div>
           </div>
           <div class="grade">
@@ -308,62 +184,32 @@
               <div class="row" v-for="(item,index) in commissionScheme" :key="index">
                 <div class="dialog-item">
                   <p class="form-label system">业绩档次（元）：</p>
-                  <el-input
-                    size="small"
-                    type="number"
-                    disabled
-                    style="width:105px"
-                    v-model="item.achievementGrade.resultsStart"
-                    placeholder=">某个值"
-                  ></el-input>
+                  <el-input size="small" type="number" disabled style="width:105px"
+                    v-model="item.achievementGrade.resultsStart" placeholder=">某个值"></el-input>
                   <span>——</span>
-                  <el-input
-                    size="small"
-                    v-if="commissionScheme.length - 1 !== index"
-                    type="number"
-                    style="width:105px"
-                    v-model="item.achievementGrade.resultsEnd"
-                    placeholder=">某个值"
-                    @input="inputResultEnd(item,index,'commissionScheme')"
-                    @blur="checkResultEnd(item,index)"
-                  ></el-input>
-                  <el-autocomplete
-                    v-else
-                    size="small"
-                    style="width:105px"
-                    v-model="item.achievementGrade.resultsEnd"
-                    :fetch-suggestions="querySearch"
-                    @input="inputResultEnd(item,index,'commissionScheme')"
-                    @blur="checkResultEnd(item,index)"
-                    placeholder="≤某个值"
-                  ></el-autocomplete>
+                  <el-input size="small" v-if="commissionScheme.length - 1 !== index" type="number" style="width:105px"
+                    v-model="item.achievementGrade.resultsEnd" placeholder=">某个值"
+                    @input="inputResultEnd(item,index,'commissionScheme')" @blur="checkResultEnd(item,index)">
+                  </el-input>
+                  <el-autocomplete v-else size="small" style="width:105px" v-model="item.achievementGrade.resultsEnd"
+                    :fetch-suggestions="querySearch" @input="inputResultEnd(item,index,'commissionScheme')"
+                    @blur="checkResultEnd(item,index)" placeholder="≤某个值"></el-autocomplete>
                 </div>
                 <div class="dialog-item">
                   <p class="form-label system">提成比例（%）：</p>
-                  <el-input
-                    size="small"
-                    style="width:125px"
-                    v-model="item.bonusProportion"
-                    placeholder="请输入提成比例"
-                    @input="checkResultBonus(item,index)"
-                  ></el-input>
+                  <el-input size="small" style="width:125px" v-model="item.bonusProportion" placeholder="请输入提成比例"
+                    @input="checkResultBonus(item,index)"></el-input>
                   <!-- <span
                     class="add circle"
                     v-if="(index === 0 && !infinity) || (commissionScheme.length !== 1 && commissionScheme.length - 1 === index && !infinity) || (commissionScheme.length - 1 !== index)"
                     @click="addCircle(item,index,'add')"
                   >-->
-                  <span
-                    class="add circle"
-                    v-if="commissionScheme.length - 1 === index && !infinity"
-                    @click="addCircle(item,index,'add')"
-                  >
+                  <span class="add circle" v-if="commissionScheme.length - 1 === index && !infinity"
+                    @click="addCircle(item,index,'add')">
                     <i class="icon el-icon-plus"></i>
                   </span>
-                  <span
-                    class="sub circle"
-                    v-if="commissionScheme.length - 1 === index"
-                    @click="addCircle(item,index,'sub')"
-                  >
+                  <span class="sub circle" v-if="commissionScheme.length - 1 === index"
+                    @click="addCircle(item,index,'sub')">
                     <i class="icon el-icon-minus"></i>
                   </span>
                 </div>
@@ -381,13 +227,8 @@
         </div>
       </el-dialog>
       <!-- 保存提成设置方案确认框 -->
-      <el-dialog
-        title="确认保存"
-        :visible.sync="dialogSave"
-        class="ratioMsg"
-        width="500px"
-        :closeOnClickModal="$tool.closeOnClickModal"
-      >
+      <el-dialog title="确认保存" :visible.sync="dialogSave" class="ratioMsg" width="500px"
+        :closeOnClickModal="$tool.closeOnClickModal">
         <div class="warning-box">
           <p>确认保存该提成设置？</p>
           <div class="warning-content">
@@ -417,10 +258,20 @@ export default {
   components: { elTree2, selectTree, myPagination },
   data() {
     return {
+      power: {
+        "sign-tcyw-set-query": {
+          state: false,
+          name: "查询",
+        },
+        "sign-tcyw-set-add": {
+          state: false,
+          name: "新增",
+        },
+      },
       // searchTop: null,
       searchForm: {
         systemTag: "",
-        bonusName: '',
+        bonusName: "",
         positions: [],
         depId: [],
         timeType: "1",
@@ -438,7 +289,7 @@ export default {
       dialogTitle: "提成规则设置",
       dictionary: {
         // 字典
-        "659": "职级类型",
+        659: "职级类型",
       },
       pageNum: 1,
       pageSize: 20,
@@ -482,30 +333,32 @@ export default {
   },
   created() {
     // 获取体系
-    this.searchForm.systemTag = JSON.parse(sessionStorage.getItem('userMsg')).user.deptSystemtag
+    this.searchForm.systemTag = JSON.parse(
+      sessionStorage.getItem("userMsg")
+    ).user.deptSystemtag;
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
-    this.getDep()
-    this.getPosition('search')
-    let res = this.getDataList
+    this.getDep();
+    this.getPosition("search");
+    let res = this.getDataList;
 
-    console.log(this.getDataList,767);
-    if(res&&(res.route === this.$route.path)){
-        let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
-        let query = session.query
-        this.tableData = res.data.list
-        this.searchForm.systemTag = query.systemTag
-        this.searchForm.bonusName = query.bonusName
-        this.searchForm.positions = query.positions
-        this.searchForm.depId = query.depId
-        this.searchForm.timeType = query.timeType
-        this.searchForm.executionStartTime = query.executionStartTime
-        this.pageSize = query.pageSize
-        this.pageNum = query.pageNum
-    }else{
-        // 列表
-        this.getList()
+    console.log(this.getDataList, 767);
+    if (res && res.route === this.$route.path) {
+      let session = JSON.parse(sessionStorage.getItem("sessionQuery"));
+      let query = session.query;
+      this.tableData = res.data.list;
+      this.searchForm.systemTag = query.systemTag;
+      this.searchForm.bonusName = query.bonusName;
+      this.searchForm.positions = query.positions;
+      this.searchForm.depId = query.depId;
+      this.searchForm.timeType = query.timeType;
+      this.searchForm.executionStartTime = query.executionStartTime;
+      this.pageSize = query.pageSize;
+      this.pageNum = query.pageNum;
+    } else {
+      // 列表
+      this.getList();
     }
   },
   // mounted() {
@@ -517,69 +370,97 @@ export default {
   methods: {
     getList(type) {
       let params = {
-          systemTag: this.searchForm.systemTag?this.searchForm.systemTag:null,
-          bonusName: this.searchForm.bonusName?this.searchForm.bonusName:null,
-          // executionStartTimeS: '',
-          // executionStartTimeE: '',
-          // createTimeS: '',
-          // createTimeE: '',
-          depId: this.searchForm.depId.length>0?this.searchForm.depId.toString():null,
-          position: this.searchForm.positions.length>0?this.searchForm.positions.toString():null,
-          pageSize: this.pageSize,
-          pageNum: this.pageNum
-      }
-      if (this.searchForm.timeType === '1') {
-        params.executionStartTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
-        params.executionStartTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
+        systemTag: this.searchForm.systemTag ? this.searchForm.systemTag : null,
+        bonusName: this.searchForm.bonusName ? this.searchForm.bonusName : null,
+        // executionStartTimeS: '',
+        // executionStartTimeE: '',
+        // createTimeS: '',
+        // createTimeE: '',
+        depId:
+          this.searchForm.depId.length > 0
+            ? this.searchForm.depId.toString()
+            : null,
+        position:
+          this.searchForm.positions.length > 0
+            ? this.searchForm.positions.toString()
+            : null,
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+      };
+      if (this.searchForm.timeType === "1") {
+        params.executionStartTimeS =
+          this.searchForm.executionStartTime.length > 0
+            ? this.searchForm.executionStartTime[0]
+            : null;
+        params.executionStartTimeE =
+          this.searchForm.executionStartTime.length > 0
+            ? this.searchForm.executionStartTime[1]
+            : null;
       } else {
-        params.createTimeS = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[0] : null
-        params.createTimeE = this.searchForm.executionStartTime.length>0 ? this.searchForm.executionStartTime[1] : null
+        params.createTimeS =
+          this.searchForm.executionStartTime.length > 0
+            ? this.searchForm.executionStartTime[0]
+            : null;
+        params.createTimeE =
+          this.searchForm.executionStartTime.length > 0
+            ? this.searchForm.executionStartTime[1]
+            : null;
       }
       //点击查询时，缓存筛选条件
-      if(type==='search' || type === 'page'){
-          sessionStorage.setItem('sessionQuery',JSON.stringify({
-              path:'/test',
-              url:'/bonusSetting/listBonusSetting',
-              query:params
-          }))
+      if (type === "search" || type === "page") {
+        sessionStorage.setItem(
+          "sessionQuery",
+          JSON.stringify({
+            path: "/test",
+            url: "/bonusSetting/listBonusSetting",
+            query: params,
+          })
+        );
       }
       this.$ajax
-        .postJSON("/api/bonusSetting/listBonusSetting",params)
+        .postJSON("/api/bonusSetting/listBonusSetting", params)
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
-            this.tableData = res.data.list
-            over:
-            for (let index = 0; index < this.tableData.length; index++) {
+            this.tableData = res.data.list;
+            over: for (let index = 0; index < this.tableData.length; index++) {
               const element = this.tableData[index];
               for (let i = 0; i < Object.keys(element).length; i++) {
                 const key = Object.keys(element)[i];
-                if (key !== 'commissionSchemes') {
+                if (key !== "commissionSchemes") {
                   continue;
                 } else {
-                  element['achievementGrade'] = element[key].map((item,j,currentArray) => {
-                    let achievementGrade = {
-                      start: 0,
-                      end: 0
-                    }
-                    if (j === 0) {
-                      achievementGrade.start = 0
-                      achievementGrade.end = Number.parseInt(item.achievementGrade)
-                    } else {
-                      for (let k = 0; k < j; k++) {
-                        // console.log(Number.parseInt(currentArray[k].achievementGrade),k);
-                        achievementGrade.start += Number.parseInt(currentArray[k].achievementGrade)
+                  element["achievementGrade"] = element[key].map(
+                    (item, j, currentArray) => {
+                      let achievementGrade = {
+                        start: 0,
+                        end: 0,
+                      };
+                      if (j === 0) {
+                        achievementGrade.start = 0;
+                        achievementGrade.end = Number.parseInt(
+                          item.achievementGrade
+                        );
+                      } else {
+                        for (let k = 0; k < j; k++) {
+                          // console.log(Number.parseInt(currentArray[k].achievementGrade),k);
+                          achievementGrade.start += Number.parseInt(
+                            currentArray[k].achievementGrade
+                          );
+                        }
+                        achievementGrade.end =
+                          Number.parseInt(achievementGrade.start) +
+                          Number.parseInt(item.achievementGrade);
                       }
-                      achievementGrade.end = Number.parseInt(achievementGrade.start) + Number.parseInt(item.achievementGrade)
+                      return achievementGrade;
                     }
-                    return achievementGrade
-                  })
+                  );
                   continue over;
                 }
               }
             }
             // console.log(this.tableData,89888);
-            this.total = res.data.total
+            this.total = res.data.total;
           }
         })
         .catch((error) => {
@@ -588,8 +469,8 @@ export default {
     },
     // 判断筛选类型是否选择
     dataPickerFocus() {
-      if (this.searchForm.timeType === '') {
-        return this.$message({ message: '请先选择时间类型' });
+      if (this.searchForm.timeType === "") {
+        return this.$message({ message: "请先选择时间类型" });
       }
     },
     // 改变体系初始化节点数据
@@ -598,27 +479,30 @@ export default {
       this.defaultCheckedKeys = [];
       this.depName = [];
       this.getDepcopy();
-      this.deductData.position = []
-      this.positionName = []
+      this.deductData.position = [];
+      this.positionName = [];
       this.positionRanksList = [];
-      this.getPosition()
+      this.getPosition();
     },
     getPosition(type) {
       let systemTag;
-      if (type === 'search') {
-        systemTag = this.searchForm.systemTag
+      if (type === "search") {
+        systemTag = this.searchForm.systemTag;
       } else {
-        systemTag = this.deductData.system.key
+        systemTag = this.deductData.system.key;
       }
       this.$ajax
-        .get('/api/employee/getPositionRank', { cityId:this.user.cityId, systemTag })
-        .then(res => {
-          res = res.data
+        .get("/api/employee/getPositionRank", {
+          cityId: this.user.cityId,
+          systemTag,
+        })
+        .then((res) => {
+          res = res.data;
           if (res.status == 200) {
-            if (type === 'search') {
-              this.searchPositionRanksList = res.data
+            if (type === "search") {
+              this.searchPositionRanksList = res.data;
             } else {
-              this.jobNameList = res.data
+              this.jobNameList = res.data;
               this.$set(this.positionRanksList, 0, {
                 id: -1,
                 Value: -1,
@@ -626,61 +510,71 @@ export default {
                 Text: "全部",
               });
               this.positionRanksList = this.positionRanksList.concat(res.data);
-              if (type === 'add') {
-                this.deductData.position = [-1].concat(res.data.map(item => item.Value))
-                this.positionName = res.data.map((item) => item.Text)
+              if (type === "add") {
+                this.deductData.position = [-1].concat(
+                  res.data.map((item) => item.Value)
+                );
+                this.positionName = res.data.map((item) => item.Text);
               }
             }
           }
         })
-        .catch(err => {
-          console.log(err)
-        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    setDeductTreeMenu (keys,names) {
-      console.log(keys,"传递了几次事件");
-      this.defaultCheckedKeys = keys
-      this.depName = names
+    setDeductTreeMenu(keys, names) {
+      console.log(keys, "传递了几次事件");
+      this.defaultCheckedKeys = keys;
+      this.depName = names;
     },
-    cleanDefault () {
-      this.depDefaultCheckedKeys = []
+    cleanDefault() {
+      this.depDefaultCheckedKeys = [];
     },
     setTreeMenu(key, data) {
       //获取子组件值
-      this.searchForm.depId = key
+      this.searchForm.depId = key;
     },
     //搜索框体系变化时dep也随之变化
     sysTagChange(val) {
-      console.log(val,9090000);
-      this.searchForm.depId = []
-      this.searchForm.positions = []
+      console.log(val, 9090000);
+      this.searchForm.depId = [];
+      this.searchForm.positions = [];
       // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
       if (val) {
-        this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
-          res = res.data
-          if (res.status == 200) {
-            this.searchDepList = res.data
-            console.log(this.searchDepList)
-          }
-        })
-        this.getPosition('search')
+        this.$ajax
+          .get("/api/access/systemtag/deps/tree", {
+            systemTag: this.searchForm.systemTag,
+          })
+          .then((res) => {
+            res = res.data;
+            if (res.status == 200) {
+              this.searchDepList = res.data;
+              console.log(this.searchDepList);
+            }
+          });
+        this.getPosition("search");
       } else {
-        this.searchDepList = []
-        this.searchPositionRanksList = []
+        this.searchDepList = [];
+        this.searchPositionRanksList = [];
       }
     },
     getDep() {
       // this.$ajax.get('/api/organize/systemtag/deps', { systemTag: this.searchForm.systemTag }).then(res => {
-      this.$ajax.get('/api/access/systemtag/deps/tree', { systemTag: this.searchForm.systemTag }).then(res => {
-        res = res.data
-        if (res.status == 200) {
-          this.searchDepList = res.data
-          // console.log(this.searchDepList)
-        }
-      })
+      this.$ajax
+        .get("/api/access/systemtag/deps/tree", {
+          systemTag: this.searchForm.systemTag,
+        })
+        .then((res) => {
+          res = res.data;
+          if (res.status == 200) {
+            this.searchDepList = res.data;
+            // console.log(this.searchDepList)
+          }
+        });
     },
-    getDepcopy(type='other') {
-      if(!this.deductData.system || this.deductData.system.key=='') return
+    getDepcopy(type = "other") {
+      if (!this.deductData.system || this.deductData.system.key == "") return;
       this.depList = [];
       let param = {
         systemTag: this.deductData.system.key,
@@ -706,21 +600,25 @@ export default {
           // if (this.depKeyWords) {
           //     this.depList = res.data.filter((v) => v.field2 === 0)
           // } else {
-            // this.$set(this.depList, 0, {
-            //   depId: -1,
-            //   fiveLevelNum: 0,
-            //   id: -1,
-            //   level: -1,
-            //   name: "全部",
-            //   showCheckbox: true,
-            //   subs: res.data
-            // });
-            this.depList = res.data
-            if (type === 'add') {
-              this.defaultCheckedKeys = [].concat(res.data.map(item => item.id))
-              this.depDefaultCheckedKeys = [].concat(res.data.map(item => item.id))
-              // this.depName = res.data.map(item => item.name)
-            }
+          // this.$set(this.depList, 0, {
+          //   depId: -1,
+          //   fiveLevelNum: 0,
+          //   id: -1,
+          //   level: -1,
+          //   name: "全部",
+          //   showCheckbox: true,
+          //   subs: res.data
+          // });
+          this.depList = res.data;
+          if (type === "add") {
+            this.defaultCheckedKeys = [].concat(
+              res.data.map((item) => item.id)
+            );
+            this.depDefaultCheckedKeys = [].concat(
+              res.data.map((item) => item.id)
+            );
+            // this.depName = res.data.map(item => item.name)
+          }
           // }
         }
       });
@@ -728,18 +626,21 @@ export default {
     removeTagPositionRank(val) {
       let positionName = [];
       this.positionRanksList.forEach((item) => {
-        if (!this.deductData.position.includes(item.Value)) return
-        if (item.Value !== -1 && this.deductData.position.includes(item.Value)) {
+        if (!this.deductData.position.includes(item.Value)) return;
+        if (
+          item.Value !== -1 &&
+          this.deductData.position.includes(item.Value)
+        ) {
           positionName.push(item.Text);
         }
-      })
-      this.positionName = positionName
+      });
+      this.positionName = positionName;
     },
     clearPositionRank() {
-      this.positionName = []
+      this.positionName = [];
     },
     changePositionRanks(val) {
-      console.log(val,787878878);
+      console.log(val, 787878878);
       let allRanks = [];
       let positionName = [];
       this.positionRanksList.forEach((item) => {
@@ -774,11 +675,9 @@ export default {
         this.deductData.position.length === allRanks.length &&
         this.deductData.position.includes(-1)
       ) {
-        this.deductData.position = this.deductData.position.filter(
-          (item) => {
-            return item !== -1;
-          }
-        );
+        this.deductData.position = this.deductData.position.filter((item) => {
+          return item !== -1;
+        });
         this.positionName = this.positionName.filter((item) => {
           return item !== val.Text;
         });
@@ -793,8 +692,8 @@ export default {
       }
     },
     showPositionRanksList() {
-      if(!this.deductData.system || this.deductData.system.key=='') {
-        return this.$message('请先选择体系')
+      if (!this.deductData.system || this.deductData.system.key == "") {
+        return this.$message("请先选择体系");
       }
     },
     handleSelect(val) {
@@ -807,14 +706,14 @@ export default {
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
-    checkResultBonus(val,index) {
+    checkResultBonus(val, index) {
       val.bonusProportion = this.$tool.cutFloat({
-          val: val.bonusProportion,
-          max: 100
+        val: val.bonusProportion,
+        max: 100,
       });
 
       // val.bonusProportion = val.bonusProportion.replace(/^([1-9]{1}\d{1}\.\d{2})$/,"")
-      console.log(val.bonusProportion,888);
+      console.log(val.bonusProportion, 888);
     },
     checkResultEnd(val, index) {
       console.log(val, 333333);
@@ -913,14 +812,14 @@ export default {
         this.deductData.bonusName === "" ||
         this.defaultCheckedKeys.length === 0 ||
         this.deductData.position.length === 0 ||
-        this.deductData.tradeType === '' ||
-        this.deductData.commissionCalculation === '' ||
+        this.deductData.tradeType === "" ||
+        this.deductData.commissionCalculation === "" ||
         !this.deductData.executionStartTime
       ) {
         return this.$message({
-              type: "warning",
-              message: "请把信息填写完整",
-            });
+          type: "warning",
+          message: "请把信息填写完整",
+        });
       }
       let params = {
         systemTag: this.deductData.system.key,
@@ -928,7 +827,7 @@ export default {
         positionName: this.positionName.join(","),
         tradeType: this.deductData.tradeType,
         commissionCalculation: this.deductData.commissionCalculation,
-        executionStartTime: this.deductData.executionStartTime + '-01',
+        executionStartTime: this.deductData.executionStartTime + "-01",
         bonusName: this.deductData.bonusName,
         commissionScheme: [],
       };
@@ -960,8 +859,8 @@ export default {
             });
           } else if (
             index > i &&
-            (Number.parseInt(element.achievementGrade.resultsEnd) <=
-              Number.parseInt(item.achievementGrade.resultsEnd))
+            Number.parseInt(element.achievementGrade.resultsEnd) <=
+              Number.parseInt(item.achievementGrade.resultsEnd)
           ) {
             return this.$message({
               type: "warning",
@@ -969,8 +868,8 @@ export default {
             });
           } else if (
             index < i &&
-            (Number.parseInt(element.achievementGrade.resultsEnd) >=
-              Number.parseInt(item.achievementGrade.resultsEnd))
+            Number.parseInt(element.achievementGrade.resultsEnd) >=
+              Number.parseInt(item.achievementGrade.resultsEnd)
           ) {
             return this.$message({
               type: "warning",
@@ -996,8 +895,8 @@ export default {
       params["depId"] = depId.join(",");
       params["depName"] = this.depName.join(",");
       params["position"] = position.join(",");
-      this.params = params
-      this.dialogSave = true
+      this.params = params;
+      this.dialogSave = true;
     },
     addDeduct() {
       this.$ajax
@@ -1007,11 +906,11 @@ export default {
           if (res.status === 200) {
             this.$message({
               type: "success",
-              message: res.message
+              message: res.message,
             });
-            this.dialogSave = false
-            this.dialogAddDeduct = false
-            this.getList()
+            this.dialogSave = false;
+            this.dialogAddDeduct = false;
+            this.getList();
           }
         })
         .catch((error) => {
@@ -1020,62 +919,64 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getList('page')
+      this.getList("page");
     },
     handleCurrentChange(val) {
-        this.pageNum = val
-        this.getList('page')
+      this.pageNum = val;
+      this.getList("page");
     },
     queryFn() {
-      this.getList('search')
+      this.getList("search");
     },
     resetFormFn() {
-      this.$refs.selectTreeRef.clean()
-      this.searchForm.systemTag = ''
-      this.searchForm.bonusName = ''
-      this.searchForm.positions = []
-      this.searchForm.depId = []
-      this.searchForm.timeType = ''
-      this.searchForm.executionStartTime = []
-      this.searchDepList = []
-      this.searchPositionRanksList = []
+      this.$refs.selectTreeRef.clean();
+      this.searchForm.systemTag = "";
+      this.searchForm.bonusName = "";
+      this.searchForm.positions = [];
+      this.searchForm.depId = [];
+      this.searchForm.timeType = "";
+      this.searchForm.executionStartTime = [];
+      this.searchDepList = [];
+      this.searchPositionRanksList = [];
     },
     add(type) {
       let myDate = new Date();
       let tYear = myDate.getFullYear();
       let tMonth = myDate.getMonth();
-  
+
       let m = tMonth + 1;
       if (m.toString().length == 1) {
-          m = "0" + m;
+        m = "0" + m;
       }
-      this.deductData = {
+      (this.deductData = {
         bonusName: "", // 规则名
-        system: this.systemTagSelect.filter(item => item.key === this.user.deptSystemtag)[0], // 体系
+        system: this.systemTagSelect.filter(
+          (item) => item.key === this.user.deptSystemtag
+        )[0], // 体系
         depId: [], //部门id
         position: [], //职务
         tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
-        executionStartTime: tYear +'-'+ m, //执行开始时间
-      },
-      this.commissionScheme = [
-        {
-          achievementGrade: { resultsStart: 0, resultsEnd: "" }, //业绩档次
-          bonusProportion: "", //提成比例
-        },
-      ]
-      this.positionRanksList = []
-      this.defaultCheckedKeys = []
-      this.depName = []
-      this.getDepcopy('add');
-      this.getPosition('add')
+        executionStartTime: tYear + "-" + m, //执行开始时间
+      }),
+        (this.commissionScheme = [
+          {
+            achievementGrade: { resultsStart: 0, resultsEnd: "" }, //业绩档次
+            bonusProportion: "", //提成比例
+          },
+        ]);
+      this.positionRanksList = [];
+      this.defaultCheckedKeys = [];
+      this.depName = [];
+      this.getDepcopy("add");
+      this.getPosition("add");
       // this.changePositionRanks(this.positionRanksList[0])
       this.dialogAddDeduct = true;
     },
   },
   watch: {
-    'searchForm.timeType': function(val,old) {
-      this.searchForm.executionStartTime = []
+    "searchForm.timeType": function (val, old) {
+      this.searchForm.executionStartTime = [];
     },
     lastCommissionSchemeResultsEnd: function (val, old) {
       val === "99999999999" ? (this.infinity = true) : (this.infinity = false);
@@ -1087,7 +988,7 @@ export default {
         .achievementGrade.resultsEnd;
     },
     user() {
-      return this.getUser.user
+      return this.getUser.user;
     },
   },
 };
@@ -1096,7 +997,7 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .commission-bgc {
-  background-color: #FFA148;
+  background-color: #ffa148;
 }
 .brand-nav {
   background-color: #f5f5f5;
@@ -1113,13 +1014,14 @@ export default {
   }
 }
 /deep/ .el-select .el-input.is-focus .el-input__inner {
-    border-color: #FFA148;
+  border-color: #ffa148;
 }
-/deep/ .is-active, .el-range-editor.is-active:hover {
-    border-color: #FFA148;
+/deep/ .is-active,
+.el-range-editor.is-active:hover {
+  border-color: #ffa148;
 }
 /deep/ .el-input__inner:focus {
-  border-color: #FFA148 !important;
+  border-color: #ffa148 !important;
   outline: 0;
 }
 /deep/.el-table__body {
@@ -1160,7 +1062,7 @@ export default {
   border-radius: 2px;
   /deep/ .theader-bg {
     > th {
-      background-color: #F5F5F9;
+      background-color: #f5f5f9;
     }
   }
   .pagination-info {
@@ -1217,11 +1119,11 @@ export default {
           cursor: pointer;
         }
         .add {
-          background-color: #FFA148;
+          background-color: #ffa148;
           margin-left: 25px;
         }
         .sub {
-          background-color: #8492A6;
+          background-color: #8492a6;
           margin-left: 25px;
         }
       }
@@ -1246,7 +1148,7 @@ export default {
 .warning-box {
   padding: 20px 50px;
   text-align: center;
-  &>p:first-child {
+  & > p:first-child {
     font-weight: bold;
   }
   .warning-content {

@@ -92,7 +92,33 @@ export default {
     };
   },
   created() {
-    // this.activeIndex = JSON.parse(localStorage.getItem("indexPath"));
+    if (process.env.NODE_ENV === "development") {
+      console.log("开发环境");
+    } else {
+      console.log("生产环境");
+    }
+    //临时权限,仅在本地开发环境调试使用
+    let tempPrivileges = [
+      "sign-tcyw-tcjs-query", //查询
+      "sign-tcyw-tcjs-calc", //批量计算提成
+      "sign-tcyw-tcjs-export", //导出
+      "sign-tcyw-tcff-query", //查询
+      "sign-tcyw-tcff-ff", //发放/批量发放
+      "sign-tcyw-tcff-export", //导出
+      "sign-tcyw-set-query", //查询
+      "sign-tcyw-set-add", //新增
+      "sign-tcyw-log-query", //查询
+    ];
+
+    let userMsg = JSON.parse(sessionStorage.getItem("userMsg")); //当前登录权限
+    tempPrivileges.forEach((item) => {
+      if (userMsg.privileges.includes(item)) {
+        userMsg.privileges.splice(userMsg.privileges.indexOf(item), 1); //删除
+      } else {
+        userMsg.privileges.push(item); //添加
+      }
+    });
+    // this.$store.commit("setUser", userMsg);
   },
   methods: {
     getImg: function (url) {
