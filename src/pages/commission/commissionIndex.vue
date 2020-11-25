@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import router from 'vue-router'
 export default {
   name: "commissionIndex",
   data() {
@@ -27,19 +28,29 @@ export default {
     };
   },
   created() {
-    // 导航权限判断
-    // console.log(this.$store.state.user.privileges);
+    let arr = [];
     let sliders = [];
-    let arr = this.$store.state.user.privileges || [];
-    if (arr === []) {
-       this.commissionTabs.push(this.$tool.pathCommission[0])
-    }
-    this.$tool.pathCommission.forEach((item) => {
-      if (arr.includes(item.code)) {
-        sliders.push(item);
+
+    if (sessionStorage.getItem("userMsg")) {
+      let userMsg = JSON.parse(sessionStorage.getItem("userMsg"));
+      if (userMsg && userMsg.privileges) {
+        // 导航权限判断
+        let arr = userMsg.privileges || [];
+        if (arr === []) {
+          this.commissionTabs.push(this.$tool.pathCommission[0]);
+        }
+        this.$tool.pathCommission.forEach((item) => {
+          if (arr.includes(item.code)) {
+            sliders.push(item);
+          }
+        });
+        this.commissionTabs = sliders;
       }
-    });
-    this.commissionTabs = sliders;
+    } else {
+      this.$router.push({
+        path: "/login",
+      });
+    }
   },
   methods: {
     handleOpen(key, keyPath) {

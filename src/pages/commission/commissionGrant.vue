@@ -223,7 +223,11 @@ export default {
     };
   },
   created() {
-    this.searchData.systemTag = this.$store.state.user.user.deptSystemtag || 0; //获取用户当前体系
+    //获取用户当前体系
+    if (sessionStorage.getItem("userMsg")) {
+      this.searchData.systemTag =
+        JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
+    }
   },
   methods: {
     //重置
@@ -325,7 +329,7 @@ export default {
       this.searchData.depName = data.name;
       this.searchData.empId = "";
       this.searchData.empName = "";
-      this.handleNodeClick(data);
+      this.handleNodeClick(data,true);
     },
     // 获取员工信息
     empHandleAdd(val) {
