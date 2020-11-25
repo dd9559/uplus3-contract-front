@@ -136,12 +136,17 @@ const MIXINS = {
         }
       })
     },
-    getEmploye: function (val, page = 1, sub = true) {
-      this.$ajax.get('/api/organize/employees/pages', {
+    getEmploye: function (val, page = 1, sub = true, leave = false) {
+      let params = {
         depId: val,
         pageNum: page,
         selectSubs: sub
-      }).then(res => {
+      }
+      // leave 是否展示离职人员，默认false，传true展示
+      if (leave) {
+        params["leave"] = leave
+      }
+      this.$ajax.get('/api/organize/employees/pages', params).then(res => {
         res = res.data
         if (res.status === 200) {
           res.data.list.some((item, index) => {
@@ -182,8 +187,8 @@ const MIXINS = {
       }
     },
     //部门、员工树结构选择操作
-    handleNodeClick(data) {
-      this.getEmploye(data.depId)
+    handleNodeClick(data, leave = false) {
+      this.getEmploye(data.depId,1,true,leave)
       this.clearSelect('emp')
       this.dep.id = data.depId
       this.dep.name = data.name
@@ -192,6 +197,16 @@ const MIXINS = {
         this.$refs.tree.blur()
       }*/
     },
+    // handleNodeClick(data) {
+    //   this.getEmploye(data.depId)
+    //   this.clearSelect('emp')
+    //   this.dep.id = data.depId
+    //   this.dep.name = data.name
+    //   this.dep.empId = ''
+    //   /*if(data.subs.length===0){
+    //     this.$refs.tree.blur()
+    //   }*/
+    // },
     //员工树结构选择操作
     handleEmpNodeClick(data) {
       let cell = {

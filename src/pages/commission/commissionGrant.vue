@@ -309,7 +309,7 @@ export default {
       this.searchData.depName = data.name;
       this.searchData.empId = "";
       this.searchData.empName = "";
-      this.handleNodeClick(data);
+      this.handleNodeClick(data,true);
     },
     // 获取员工信息
     empHandleAdd(val) {
