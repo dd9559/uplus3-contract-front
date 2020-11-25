@@ -582,15 +582,8 @@
               >
                 付款
               </div>
-              <!-- 2020年11月24日修改合同列表，委托合同，不显示收款 -->
-              <div
-                class="btn"
-                v-if="!scope.row.isTransaction"
-                @click="gathering(scope.row)"
-              >
-                收款
-              </div>
             </div>
+            <!-- 2020年11月24日修改合同列表，委托合同，不显示收款 -->
             <!-- <div
               class="btn"
               v-else-if="!scope.row.isTransaction"
