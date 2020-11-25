@@ -223,7 +223,11 @@ export default {
     };
   },
   created() {
-    this.searchData.systemTag = this.$store.state.user.user.deptSystemtag || 0; //获取用户当前体系
+    //获取用户当前体系
+    if (sessionStorage.getItem("userMsg")) {
+      this.searchData.systemTag =
+        JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
+    }
   },
   methods: {
     //重置

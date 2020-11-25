@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import router from 'vue-router'
 export default {
   name: "commissionIndex",
   data() {
@@ -32,7 +33,7 @@ export default {
 
     if (sessionStorage.getItem("userMsg")) {
       let userMsg = JSON.parse(sessionStorage.getItem("userMsg"));
-      if (userMsg.privileges) {
+      if (userMsg && userMsg.privileges) {
         // 导航权限判断
         let arr = userMsg.privileges || [];
         if (arr === []) {
@@ -45,6 +46,10 @@ export default {
         });
         this.commissionTabs = sliders;
       }
+    } else {
+      this.$router.push({
+        path: "/login",
+      });
     }
   },
   methods: {

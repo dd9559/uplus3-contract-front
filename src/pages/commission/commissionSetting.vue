@@ -53,7 +53,8 @@
               <!-- <i class="iconfont icon-tubiao-11"></i> -->
               <span>当前共找到【{{total}}】条数据</span>
             </span>
-            <el-button v-if="power['sign-tcyw-set-add'].state" class="btn-info" type="warning" size="small" @click="add('add')">新增</el-button>
+            <el-button v-if="power['sign-tcyw-set-add'].state" class="btn-info" type="warning" size="small"
+              @click="add('add')">新增</el-button>
             <!-- >新增结算设置</el-button> -->
           </div>
           <el-table :data="tableData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom"
@@ -332,10 +333,11 @@ export default {
     };
   },
   created() {
-    // 获取体系
-    this.searchForm.systemTag = JSON.parse(
-      sessionStorage.getItem("userMsg")
-    ).user.deptSystemtag;
+    //获取用户当前体系
+    if (sessionStorage.getItem("userMsg")) {
+      this.searchForm.systemTag =
+        JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
+    }
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
