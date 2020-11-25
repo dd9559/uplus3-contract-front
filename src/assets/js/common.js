@@ -322,28 +322,28 @@ let TOOL = {
               name: "提成计算",
               category: "5-1-1",
               can: true, //是否可见
-              code: "sign-set-log-query",
+              code: "sign-tcyw-tcjs-query",
               to: "commissionCounts",
             },
             {
               name: "提成发放",
               category: "5-1-2",
               can: true, //是否可见
-              code: "sign-set-log-query",
+              code: "sign-tcyw-tcff-query",
               to: "commissionGrant",
             },
             {
               name: "提成设置",
               category: "5-1-3",
               can: true, //是否可见
-              code: "sign-set-log-query",
+              code: "sign-tcyw-set-query",
               to: "commissionSetting",
             },
             {
               name: "操作日志",
               category: "5-1-4",
               can: true, //是否可见
-              code: "sign-set-log-query",
+              code: "sign-tcyw-log-query",
               to: "commissionOperationLog",
             }
           ]
@@ -453,28 +453,28 @@ let TOOL = {
       name: "提成计算",
       can: true, //是否可见
       path: "/commissionCounts",
-      code: "sign-ht-info-query",
+      code: "sign-tcyw-tcjs-query",
       iconClass: "icon-commission-01"
     },
     {
       name: "提成发放",
       can: true, //是否可见
       path: "/commissionGrant",
-      code: "sign-ht-info-query",
+      code: "sign-tcyw-tcff-query",
       iconClass: "icon-commission-02"
     },
     {
       name: "提成设置",
       can: true, //是否可见
       path: "/commissionSetting",
-      code: "sign-ht-info-query",
+      code: "sign-tcyw-set-query",
       iconClass: "icon-commission-03"
     },
     {
       name: "操作日志",
       can: true, //是否可见
       path: "/commissionOperationLog",
-      code: "sign-ht-info-query",
+      code: "sign-tcyw-log-query",
       iconClass: "icon-commission-04"
     }
   ],
