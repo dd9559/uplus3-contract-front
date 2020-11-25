@@ -57,7 +57,7 @@
             size="small"
             v-model="searchForm.name"
             :clearable="true"
-            onkeyup="value=value.replace(/\s+/g,'')"
+            @input="inputLimit($event)"
           ></el-input>
         </div>
         <div class="input-search">
@@ -377,7 +377,7 @@
               size="small"
               maxlength="15"
               v-model.trim="aduitForm.name"
-              onkeyup="value=value.replace(/\s+/g,'')"
+              @input="inputLimit($event)"
               clearable
             ></el-input>
           </div>
@@ -399,7 +399,7 @@
                   v-model.trim="item.name"
                   maxlength="15"
                   placeholder="设置节点名称"
-                  onkeyup="value=value.replace(/\s+/g,'')"
+                  @input="inputLimit($event)"
                   clearable
                 ></el-input>
                 <el-select
@@ -738,6 +738,10 @@ export default {
     if (this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
   },
   methods: {
+    inputLimit(val){
+      val = val.replace(/\s+/g,'')
+      return val
+    },
     selectChange(val) {
       this.depName=[]
     },
