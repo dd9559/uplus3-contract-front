@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="/datepicker.css" />
-    <title>租赁合同</title>
+    <title>买卖合同</title>
     <style>
         body {
             font-family: SimHei;
@@ -1006,7 +1006,7 @@
                 if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
-                        addrList[i] = './xt-mm.js'
+                        addrList[i] = './xt_mm.js'
                     } else {
                         addrList[i] = host_other + '/' + addrList[i]
                     }
@@ -1022,7 +1022,7 @@
                     document.head.appendChild(hm);
                 } else {
                     var hm = document.createElement("script");
-                    addrList[i].includes('xt-mm') && (hm.type = 'module');
+                    addrList[i].includes('xt_mm') && (hm.type = 'module');
                     hm.src = addrList[i];
                     var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
                     s.parentNode.insertBefore(hm, s);
