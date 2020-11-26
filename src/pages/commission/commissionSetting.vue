@@ -392,7 +392,7 @@ export default {
       if (this.searchForm.timeType === "1") {
         params.executionStartTimeS =
           this.searchForm.executionStartTime.length > 0
-            ? this.searchForm.executionStartTime[0]
+            ? this.searchForm.executionStartTime[0] + '-1'
             : null;
         params.executionStartTimeE =
           this.searchForm.executionStartTime.length > 0
