@@ -109,7 +109,7 @@
                     <el-input v-model.trim="addForm.name"
                         autocomplete="off"
                         maxlength="30"
-                        @input="inputLimit($event)"></el-input>
+                        @input="inputLimit($event,'addForm')"></el-input>
                 </el-form-item>
                 <el-form-item label="分配负责角色:">
                     <!-- <el-select v-model="addForm.dutyType" filterable>
@@ -152,7 +152,7 @@
                         <el-input type="text"
                             v-model.trim="stepBusiness.name"
                             :maxlength="inputMax"
-                            @input="inputLimit($event)"
+                            @input="inputLimit($event,'stepBusiness')"
                             size="small"></el-input>
                         <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
                     </div>
@@ -176,7 +176,7 @@
                                 <template slot-scope="scope">
                                     <el-input v-model="tableForm[scope.$index].title"
                                         maxlength="15"
-                                        @input="inputLimit($event)"
+                                        @input="inputLimit($event,'tableForm',scope.$index)"
                                         size="small"></el-input>
                                 </template>
                             </el-table-column>
@@ -361,9 +361,12 @@ export default {
         this.tableHeight = h - 40 - 150;
     },
     methods: {
-        inputLimit(val){
-            val = val.replace(/\s+/g,'')
-            return val
+        inputLimit(val,type,index=-1){
+            if(index != -1){
+                this[type][index].title = val.replace(/\s+/g,'')
+            }else{
+                this[type].name = val.replace(/\s+/g,'')
+            }
         },
         querySearch(queryString, cb) {
             this.roleList = JSON.parse(JSON.stringify(this.tempRoleList));
@@ -481,6 +484,7 @@ export default {
          * 提交表单
          */
         submitForm: function() {
+            console.log(this.addForm);
             if (this.addForm.name === "") {
                 this.$message("步骤类型不能为空");
             } else {

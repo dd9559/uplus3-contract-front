@@ -1,33 +1,20 @@
 <template>
   <!-- 筛选 -->
-  <div
-    class="paper-box view-header"
-    :class="[show?'collapse-on':'collapse-off']"
-    style="padding: 20px;"
-  >
+  <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
     <div class="paper-box-title">
       <p class="f14"></p>
-      <p>
-        <el-button
-          class="paper-btn btn-info paper-btn-blue"
-          type="primary"
-          size="small"
-          @click="queryFn"
-          round
-        >查 询</el-button>
-        <el-button
-          class="paper-btn btn-info paper-btn-gray"
-          size="small"
-          @click="resetFormFn"
-          round
-        >重 置</el-button>
+      <p class="paper-box-btns">
+        <el-button class="paper-btn btn-info paper-btn-blue" type="primary" size="small" @click="queryFn" round>查 询
+        </el-button>
+        <el-button class="paper-btn btn-info paper-btn-gray" size="small" @click="resetFormFn" round>重 置</el-button>
       </p>
     </div>
     <!-- 筛选条件 -->
+    <!-- <div class="paper-box-content" ref="content"> -->
     <div class="paper-box-content">
       <slot></slot>
     </div>
-    <div class="btn" @click="show=!show">
+    <div class="btn" @click="show=!show" v-if="ishidden">
       <i class="iconfont icon-zhankai"></i>
       <span style="left: 18px;top: -5px;font-size: 13px;">{{show?"收起":"展开"}}</span>
     </div>
@@ -40,13 +27,30 @@ export default {
   props: {
     min: {
       type: Number,
-      default: 61,
+      default: 57,
     },
+    // height: {
+    //   type: Number,
+    //   default() {
+    //     return 0
+    //   }
+    // }
   },
   data() {
     return {
       show: false,
+      ishidden:false
     };
+  },
+  mounted(){
+    let _this = this
+    this.$nextTick(()=>{
+      _this.ishidden = _this.getHidden()
+      window.onresize = ()=>{
+        //调用methods中的事件
+        _this.ishidden = _this.getHidden()
+      }
+    })
   },
   methods: {
     // 点击查询
@@ -58,7 +62,24 @@ export default {
       this.$emit("propResetFormFn");
     },
     ...mapMutations(["bodyScollShowFn"]),
+    getHidden(){
+      let content = document.getElementsByClassName('paper-box-content')[0]
+      if(content.scrollHeight>content.clientHeight+40){
+        return true
+      }else{
+        return false
+      }
+    }
   },
+  // computed: {
+  //   isShowOpen() {
+  //     if (this.height === 0) {
+  //       return true
+  //     } else {
+  //       return this.height > this.min
+  //     }
+  //   }
+  // },
   beforeUpdate() {
     this.bodyScollShowFn();
   },
@@ -80,7 +101,7 @@ export default {
   background-color: @bg-white;
   position: relative;
 
-  &:after {
+  &:after { 
     content: "";
     width: 100%;
     height: 15px;
@@ -127,9 +148,8 @@ export default {
       font-size: 12px;
     }
     color: #6c7986;
-    width: 97px;
+    width: 100px;
     height: 17px;
-    border-radius: 10px;
     position: absolute;
     bottom: -17px;
     left: 50%;
@@ -158,18 +178,18 @@ export default {
 }
 
 .paper-btn-blue {
-  background-color: #FFA148;
+  background-color: #ffa148;
   border-color: #fff;
   &:hover {
-    background-color: #FFA148;
+    background-color: #ffa148;
   }
 }
 .paper-btn-gray {
-  background-color: #EDEFF5;
-  border-color: #EDEFF5;
-  color: #8492A6;
+  background-color: #edeff5;
+  border-color: #edeff5;
+  color: #8492a6;
   &:hover {
-    background-color: #EDEFF5;
+    background-color: #edeff5;
     // color: #333;
   }
 }

@@ -57,7 +57,7 @@
             size="small"
             v-model="searchForm.name"
             :clearable="true"
-            @input="inputLimit($event)"
+            @input="inputLimit($event,'searchForm')"
           ></el-input>
         </div>
         <div class="input-search">
@@ -377,7 +377,7 @@
               size="small"
               maxlength="15"
               v-model.trim="aduitForm.name"
-              @input="inputLimit($event)"
+              @input="inputLimit($event,'aduitForm')"
               clearable
             ></el-input>
           </div>
@@ -399,7 +399,7 @@
                   v-model.trim="item.name"
                   maxlength="15"
                   placeholder="设置节点名称"
-                  @input="inputLimit($event)"
+                  @input="inputLimit($event,'nodeList',index)"
                   clearable
                 ></el-input>
                 <el-select
@@ -738,9 +738,12 @@ export default {
     if (this.searchForm.cityId != 16 && this.version == 2) this.getRoles()
   },
   methods: {
-    inputLimit(val){
-      val = val.replace(/\s+/g,'')
-      return val
+    inputLimit(val,type,index=-1){
+      if(index != -1){
+          this[type][index].name = val.replace(/\s+/g,'')
+      }else{
+          this[type].name = val.replace(/\s+/g,'')
+      }
     },
     selectChange(val) {
       this.depName=[]

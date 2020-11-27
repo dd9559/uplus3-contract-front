@@ -183,7 +183,7 @@
                         <el-select size="small" class="w100" v-model="report.buyerAgentCardType" @change="cardTypeChange(1)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" :maxlength="report.buyerAgentCardType===1?18:report.buyerAgentCardType===2?30:report.buyerAgentCardType===3?20:18" @input="inputLimit($event)" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.buyerAgentCardType===1?18:report.buyerAgentCardType===2?30:report.buyerAgentCardType===3?20:18" @input="inputLimit($event,'report',1)" class="w200" v-model="report.buyerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -200,7 +200,7 @@
                         <el-select size="small" class="w100" v-model="report.sellerAgentCardType" @change="cardTypeChange(2)" :disabled="!saveBtnShow" clearable>
                             <el-option v-for="item in dictionary['630']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                         </el-select>
-                        <el-input size="small" :maxlength="report.sellerAgentCardType===1?18:report.sellerAgentCardType===2?30:report.sellerAgentCardType===3?20:18" @input="inputLimit($event)" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
+                        <el-input size="small" :maxlength="report.sellerAgentCardType===1?18:report.sellerAgentCardType===2?30:report.sellerAgentCardType===3?20:18" @input="inputLimit($event,'report',2)" class="w200" v-model="report.sellerAgentCard" :disabled="!saveBtnShow"></el-input>
                     </p>
                     <p>
                         <span>电话：</span>
@@ -347,9 +347,12 @@ export default {
         }
     },
     methods: {
-        inputLimit(val){
-            val = val.replace(/\s+/g,'')
-            return val
+        inputLimit(val,type,index){
+            if(index == 1){
+                this[type].buyerAgentCard = val.replace(/\s+/g,'')
+            }else{
+                this[type].sellerAgentCard = val.replace(/\s+/g,'')
+            }
         },
         setTypeFn(val) {
             if(this.loadType) {

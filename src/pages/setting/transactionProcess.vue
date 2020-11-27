@@ -22,7 +22,7 @@
         <el-dialog :title="processTitle" :visible.sync="dialogProcessVisible" width="700px" class="processDialog" :closeOnClickModal="$tool.closeOnClickModal">
           <el-form v-model="addForm" size="small">
             <el-form-item label="名称:" class="add-form-item">
-              <el-input v-model.trim="addForm.name" :maxlength="inputMax" @input="inputLimit($event)"></el-input>
+              <el-input v-model.trim="addForm.name" :maxlength="inputMax" @input="inputLimit($event,'addForm')"></el-input>
               <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
             </el-form-item>
             <el-form-item label="权证费用:" class="add-form-item">
@@ -146,9 +146,8 @@
       this.tableHeight = h - 40 - 140
     },
     methods: {
-      inputLimit(val){
-        val = val.replace(/\s+/g,'')
-        return val
+      inputLimit(val,type){
+        this[type].name = val.replace(/\s+/g,'')
       },
       // 获取交易流程列表
       getData: function() {

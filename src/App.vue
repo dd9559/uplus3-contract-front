@@ -1,9 +1,8 @@
 <template>
   <div id="app">
-    <router-view
-      :key="$route.fullPath"
-      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog'].includes($route.path)"
-    ></router-view>
+    <router-view :key="$route.fullPath"
+      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog'].includes($route.path)">
+    </router-view>
     <div class="main" v-else>
       <div class="nav">
         <img src="./assets/img/honghui.png" alt v-if="showTransferTime" />
@@ -18,84 +17,57 @@
       </div>
       <div class="container">
         <div class="slider" :class="[collapse ? '' : 'collapse-on']">
-          <el-menu
-            ref="menu"
-            :router="true"
-            :collapse-transition="false"
-            :collapse="collapse"
-            @open="openAllNav"
-            @select="handleSelect"
-            class="el-menu-demo"
-            active-text-color="#409EFF"
-          >
-            <el-submenu
-              :index="item.category"
-              :class="[{ 'collapse-row': collapse }]"
-              v-for="item in views"
-              :key="item.id"
-              v-if="item.id !== 6 && item.id !== 7 && item.can"
-            >
+          <el-menu ref="menu" :router="true" :collapse-transition="false" :collapse="collapse" @open="openAllNav"
+            @select="handleSelect" class="el-menu-demo" active-text-color="#409EFF">
+            <el-submenu :index="item.category" :class="[{ 'collapse-row': collapse }]" v-for="item in views"
+              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{ item.name }}</span>
               </template>
               <template>
-                <el-submenu
-                  :index="grade.category"
-                  v-for="grade in item.child"
-                  :key="grade.name"
-                  class="second-grade-menu"
-                  v-if="grade.can"
-                >
+                <el-submenu :index="grade.category" v-for="grade in item.child" :key="grade.name"
+                  class="second-grade-menu" v-if="grade.can">
                   <template slot="title">
                     <i class="iconfont icon-icon-test2" v-if="!collapse"></i>
                     {{ grade.name }}
                   </template>
-                  <el-menu-item
-                    v-for="tip in grade.child"
-                    :key="tip.name"
-                    :index="tip.path"
-                    v-if="tip.can"
-                    >{{ tip.name }}</el-menu-item
-                  >
+                  <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
+                    <template v-if="tip.to">
+                      <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link>
+                    </template>
+                    <template v-else>
+                      {{ tip.name }}
+                    </template>
+                    <!-- {{ tip.name }} -->
+                  </el-menu-item>
                 </el-submenu>
               </template>
             </el-submenu>
-            <el-menu-item
-              :index="views[5].category"
-              class="navbar-item"
-              :class="[{ 'collapse-row': collapse }]"
-              v-if="views[5].can"
-            >
-              <div class="el-submenu__title">
-                <i class="iconfont" :class="views[5].icon"></i>
-                <span>{{ views[5].name }}</span>
-              </div>
-            </el-menu-item>
-            <el-menu-item
-              :index="views[6].category"
-              class="navbar-item"
-              :class="[{ 'collapse-row': collapse }]"
-              v-if="views[6].can"
-            >
+            <el-menu-item :index="views[6].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
+              v-if="views[6].can">
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[6].icon"></i>
                 <span>{{ views[6].name }}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item :index="views[7].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
+              v-if="views[7].can">
+              <div class="el-submenu__title">
+                <i class="iconfont" :class="views[7].icon"></i>
+                <span>{{ views[7].name }}</span>
               </div>
             </el-menu-item>
           </el-menu>
           <p class="slider-bar-control" @click="toCollapse"></p>
         </div>
         <router-view></router-view>
-        <p
-          style="
+        <p style="
             flex: 1;
             align-self: center;
             font-size: 30px;
             text-align: center;
-          "
-          v-if="loadingState"
-        >
+          " v-if="loadingState">
           loading...
         </p>
       </div>
@@ -120,7 +92,36 @@ export default {
     };
   },
   created() {
-    this.activeIndex = JSON.parse(localStorage.getItem("indexPath"));
+    if (process.env.NODE_ENV === "development") {
+      console.log("dev");
+
+      //临时权限,仅在本地开发环境调试使用
+      let tempPrivileges = [
+        // "sign-tcyw-tcjs-query", //查询
+        // "sign-tcyw-tcjs-calc", //批量计算提成
+        // "sign-tcyw-tcjs-export", //导出
+        // "sign-tcyw-tcff-query", //查询
+        // "sign-tcyw-tcff-ff", //发放/批量发放
+        // "sign-tcyw-tcff-export", //导出
+        // "sign-tcyw-set-query", //查询
+        // "sign-tcyw-set-add", //新增
+        // "sign-tcyw-log-query", //查询
+      ];
+
+      let userMsg = JSON.parse(sessionStorage.getItem("userMsg")); //当前登录权限
+      if (tempPrivileges && tempPrivileges.length > 0) {
+        tempPrivileges.forEach((item) => {
+          if (userMsg.privileges.includes(item)) {
+            // userMsg.privileges.splice(userMsg.privileges.indexOf(item), 1); //删除
+          } else {
+            userMsg.privileges.push(item); //添加
+          }
+        });
+        // this.$store.commit("setUser", userMsg);
+      }
+    } else {
+      console.log("pro");
+    }
   },
   methods: {
     getImg: function (url) {
@@ -168,14 +169,14 @@ export default {
           let arr = val.privileges;
           this.views.forEach((item, index) => {
             let sliders = [];
-            if (item.id === 6 || item.id === 7) {
+            if (item.id === 7 || item.id === 8) {
               let objType = Object.prototype.toString.call(item.code);
               if (objType === "[object Boolean]") {
                 // item.can = item.code
                 this.$set(item, "can", item.code);
                 let host = window.location.host;
                 if (
-                  item.id === 7 &&
+                  item.id === 8 &&
                   ((["localhost:8080", "sign2.jjw.com:28879"].includes(host) &&
                     (val.user.empId === 15349 || val.user.empId === 100778)) ||
                     (host === "sign2.jjw.com" && val.user.empId === 37109))
@@ -412,6 +413,12 @@ export default {
           height: 100%;
           overflow-x: hidden;
           overflow-y: auto;
+        }
+
+        .link {
+          display: block;
+          color: #6c7986;
+          text-decoration: none;
         }
       }
 
