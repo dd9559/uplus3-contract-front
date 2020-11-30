@@ -1,7 +1,11 @@
-import { contractConfig, toChineseNumber, formatMoney } from "./base.js";
+import {
+  contractConfig,
+  toChineseNumber,
+  formatMoney
+} from "./base.js"
 let Obj = {
-  cn_arr: ["val304", "val307", "val315"]
-};
+  cn_arr: ['val304', 'val307', 'val315']
+}
 
 let sub = {
   val301: null, //买方
@@ -13,26 +17,27 @@ let sub = {
   val307: null, //金额
   val308: null, //天
   val309: null, //天
-  val310: null //身份证号码
-};
+  val310: null, //身份证号码
+}
 
 //给按钮添加点击事件
-let mainBtn = document.querySelector("#submit");
+let mainBtn = document.querySelector('#submit');
 if (mainBtn) {
-  mainBtn.addEventListener("click", function(e) {
-    contractConfig.submit(e, sub, "templateError");
-  });
+  mainBtn.addEventListener('click', function (e) {
+    contractConfig.submit(e, sub, 'templateError')
+  })
 } else {
-  let btn = document.createElement("span");
-  btn.id = "submit";
-  btn.style.display = "none";
-  btn.innerHTML = "click";
-  document.body.appendChild(btn);
-  btn.addEventListener("click", function(e) {
-    contractConfig.submit(e, sub, "templateError");
-  });
+  let btn = document.createElement('span')
+  btn.id = 'submit'
+  btn.style.display = 'none'
+  btn.innerHTML = 'click'
+  document.body.appendChild(btn)
+  btn.addEventListener('click', function (e) {
+    contractConfig.submit(e, sub, 'templateError')
+  })
 }
 setTimeout(() => {
+
   //初始化时间控件
   // Calendar.create({
   //   classN: 'calendar-item',
@@ -64,26 +69,24 @@ setTimeout(() => {
   //   }
   // })
 
+
   // 输入框右侧吸边
-  let textLong = Array.from(document.querySelectorAll(".text-limit"));
-  textLong.forEach(function(item) {
-    item.addEventListener("input", function() {
-      let leng = this.value.length;
+  let textLong = Array.from(document.querySelectorAll('.text-limit'))
+  textLong.forEach(function (item) {
+    item.addEventListener('input', function () {
+      let leng = this.value.length
       for (let i = 0; i < leng; i++) {
         if (this.scrollWidth > this.clientWidth) {
-          this.value = this.value.substring(0, this.value.length - 1);
+          this.value = this.value.substring(0, this.value.length - 1)
         }
       }
-    });
-  });
+    })
+  })
 
   //基础数据赋值
-  let msg = {};
+  let msg = {}
 
-  if (
-    window.location.href.indexOf("//192.168") > 0 ||
-    window.location.href.indexOf("//localhost") > 0
-  ) {
+  if (window.location.href.indexOf('//192.168') > 0 || window.location.href.indexOf('//localhost') > 0) {
     msg = {
       code: "S0001191107007",
       companyNames: ["金银湖三级门店哦"],
@@ -113,104 +116,89 @@ setTimeout(() => {
       guestStoreRegisterCode: "213",
       signDate: 1592465819508,
       organizationCode: "8888888888"
-    };
+    }
   } else {
-    msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+    msg = JSON.parse(window.sessionStorage.getItem("contractMsg"))
   }
 
   for (let readonlyItem in msg) {
-    let onlyReadDom = Array.from(
-      document.querySelectorAll(`*[systemparam=${readonlyItem}]`)
-    );
+    let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
+
+    let readonlyArr = ['code', 'ownerTel', 'organizationCode', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
     if (onlyReadDom.length > 0) {
       onlyReadDom.forEach((element, index) => {
-        if (readonlyItem === "code") {
-          element.value = msg[readonlyItem];
-          element.setAttribute("value", msg[readonlyItem]);
-        } else if (readonlyItem === "companyNames") {
-          element.innerHTML = msg[readonlyItem][0];
-          element.classList.remove("input-before");
-        } else if (readonlyItem === "signDate") {
-          let time = new Date(Number(msg["signDate"]));
-          let y = time.getFullYear();
-          let M = time.getMonth() + 1;
-          let D = time.getDate();
-          let signDate = `${y}年${M}月${D}日`;
-          element.innerHTML = signDate;
-        } else {
-          element.innerHTML = msg[readonlyItem];
-          element.classList.remove("input-title");
-          element.classList.remove("input-title2");
-          element.classList.remove("input-before");
+        if (readonlyArr.includes(readonlyItem)) {
+          if (readonlyItem === 'companyNames') {
+            element.innerHTML = msg[readonlyItem][0]
+          } else if (readonlyItem === 'propertyAddr') {
+            element.innerHTML = msg[readonlyItem]
+            // document.querySelector(`*[extendparam=val22]`).innerHTML = msg[readonlyItem]
+            // document.querySelector(`*[extendparam=val22]`).classList.remove('input-before')
+          } else if (readonlyItem === 'signDate' && msg["signDate"]) {
+            let time = new Date(Number(msg["signDate"]));
+            let y = time.getFullYear();
+            let M = time.getMonth() + 1;
+            let D = time.getDate();
+            let signDate = `${y}年${M}月${D}日`
+            element.innerHTML = signDate
+          } else {
+            element.innerHTML = msg[readonlyItem]
+          }
+          element.classList.remove('input-before')
         }
-      });
+      })
     }
   }
 
   // 勾选框逻辑
-  contractConfig.checkboxListener(
-    function() {},
-    function(obj, index) {
-      let attr = obj.currentTarget.getAttribute("name");
-      let boxArray = document.getElementsByName(attr);
-    }
-  );
+  contractConfig.checkboxListener(function () {}, function (obj, index) {
+    let attr = obj.currentTarget.getAttribute('name')
+    let boxArray = document.getElementsByName(attr);
+  })
 
   //输入自适应
-  contractConfig.inputListener(
-    function(ev, tip) {
-      let max = tip.target.getAttribute("max");
-      let textArea = document.getElementById("inputArea");
-      if (max) {
-        //监听max属性，判断文本框是有有输入长度限制
-        textArea.setAttribute("maxLength", parseInt(max));
-      } else {
-        textArea.removeAttribute("maxLength");
-      }
-      //监听listen属性，判断是否有输入类型限制
-      let spanAttr = tip.target.getAttribute("listen");
-      if (spanAttr === "number") {
-        ev.target.value = ev.target.value.replace(/[^\d]/g, "");
-        tip.target.innerHTML = ev.target.value;
-        let cn_str = tip.target.getAttribute("extendparam");
-        if (Obj["cn_arr"].includes(cn_str)) {
-          if (ev.target.value.indexOf(",") != -1) {
-            ev.target.value = ev.target.value.replace(/,/g, "");
-          }
-          let index = toChineseNumber(ev.target.value).indexOf("元");
-          document.querySelector(
-            `*[extendparam=${cn_str}_add]`
-          ).innerHTML = toChineseNumber(ev.target.value).substring(0, index);
-          if (ev.target.value.indexOf(",") == -1) {
-            document.querySelector(
-              `*[extendparam=${cn_str}]`
-            ).innerHTML = formatMoney(ev.target.value);
-          }
+  contractConfig.inputListener(function (ev, tip) {
+    let max = tip.target.getAttribute('max')
+    let textArea = document.getElementById('inputArea')
+    if (max) { //监听max属性，判断文本框是有有输入长度限制
+      textArea.setAttribute('maxLength', parseInt(max))
+    } else {
+      textArea.removeAttribute('maxLength')
+    }
+    //监听listen属性，判断是否有输入类型限制
+    let spanAttr = tip.target.getAttribute('listen')
+    if (spanAttr === 'number') {
+      ev.target.value = ev.target.value.replace(/[^\d]/g, "")
+      tip.target.innerHTML = ev.target.value
+      let cn_str = tip.target.getAttribute('extendparam')
+      if (Obj['cn_arr'].includes(cn_str)) {
+        if (ev.target.value.indexOf(",") != -1) {
+          ev.target.value = ev.target.value.replace(/,/g, '')
         }
-      }
-    },
-    function(tip) {
-      //获取输入框的默认值
-      let initVal = tip.target.innerHTML;
-      let strCn = tip.target.getAttribute("extendparam");
-      if (Obj["cn_arr"].includes(strCn)) {
-        if (initVal.length > 0) {
-          if (initVal.indexOf(",") != -1) {
-            initVal = initVal.replace(/,/g, "");
-          }
-          let index = toChineseNumber(initVal).indexOf("元");
-          document.querySelector(
-            `*[extendparam=${strCn}_add]`
-          ).innerHTML = toChineseNumber(initVal).substring(0, index);
-          if (initVal.indexOf(",") == -1) {
-            document.querySelector(
-              `*[extendparam=${strCn}]`
-            ).innerHTML = formatMoney(initVal);
-          }
-        } else {
-          document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = "";
+        let index = toChineseNumber(ev.target.value).indexOf('元')
+        document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)
+        if (ev.target.value.indexOf(",") == -1) {
+          document.querySelector(`*[extendparam=${cn_str}]`).innerHTML = formatMoney(ev.target.value)
         }
       }
     }
-  );
-}, 100);
+  }, function (tip) {
+    //获取输入框的默认值
+    let initVal = tip.target.innerHTML
+    let strCn = tip.target.getAttribute('extendparam')
+    if (Obj['cn_arr'].includes(strCn)) {
+      if (initVal.length > 0) {
+        if (initVal.indexOf(",") != -1) {
+          initVal = initVal.replace(/,/g, '');
+        }
+        let index = toChineseNumber(initVal).indexOf('元')
+        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)
+        if (initVal.indexOf(",") == -1) {
+          document.querySelector(`*[extendparam=${strCn}]`).innerHTML = formatMoney(initVal)
+        }
+      } else {
+        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+      }
+    }
+  })
+}, 100)
