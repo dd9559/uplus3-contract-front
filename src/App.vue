@@ -34,7 +34,8 @@
                   </template>
                   <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
                     <template v-if="tip.to">
-                      <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link>
+                      <span @click="toDetail(tip.to)">{{tip.name}}</span>
+                      <!-- <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link> -->
                     </template>
                     <template v-else>
                       {{ tip.name }}
@@ -124,6 +125,12 @@ export default {
     }
   },
   methods: {
+    toDetail(path) {
+      let newPage = this.$router.resolve({
+        path
+      });
+      window.open(newPage.href, "_blank");
+    },
     getImg: function (url) {
       return require(`@/assets/img/${url}`);
     },
