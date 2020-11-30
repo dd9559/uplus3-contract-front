@@ -477,7 +477,7 @@
     <!-- 吴兴勇开始编辑 -->
     <div class="page_one">
       <!-- 封面 -->
-      <div class="cover-fm" style="display: block;">
+      <div class="cover-fm" style="display: none;">
         <div class="cover-style">
           <div class="top">
             <img
@@ -497,7 +497,7 @@
             alt="二维码" />
         </p>
         <p class="code">
-          合同编号：<input systemParam="code" tag="input" readonly="readonly" type="text" class="text-limit"
+          合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit"
             style="width:150px" />
         </p>
       </div>
@@ -995,49 +995,51 @@
       </div>
     </div>
   </div>
-
 </body>
+
+</html>
 <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_XT_MM_20201030.js"></script>
+<script type="text/javascript" src="/js/bundle_xt_mm_20201130.js"></script>
 <!-- <script>
-    (function () {
-        var scriptList = document.getElementsByTagName("script")
-        console.log(scriptList)
-        if (!scriptList[0].src) {
-            var host = 'https://sign2.jjw.com'
-            var host_other = "http://sign2.jjw.com:28879"
-            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
-            for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:8080') {
-                    if (addrList[i].indexOf('bundle') > -1) {
-                        // addrList[i]=host_other+'/'+addrList[i]
-                        addrList[i] = './xt_mm.js'
-                    } else {
-                        addrList[i] = host_other + '/' + addrList[i]
-                    }
-                } else {
-                    addrList[i] = '/' + addrList[i]
-                }
-                if (addrList[i].indexOf('.css') > -1) {
-                    var hm = document.createElement("link");
-                    hm.rel = "stylesheet"
-                    hm.href = addrList[i];
-                    /*var s = document.getElementsByTagName("link")[0];
-                    s.parentNode.insertBefore(hm,s);*/
-                    document.head.appendChild(hm);
-                } else {
-                    var hm = document.createElement("script");
-                    addrList[i].includes('xt_mm') && (hm.type = 'module');
-                    hm.src = addrList[i];
-                    var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
-                    s.parentNode.insertBefore(hm, s);
-                }
-            }
+  (function () {
+    var scriptList = document.getElementsByTagName("script")
+    console.log(scriptList)
+    if (!scriptList[0].src) {
+      var host = 'https://sign2.jjw.com'
+      var host_other = "http://sign2.jjw.com:28879"
+      var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js",
+        "js/bundle_mm20190402.js", "datepicker.css"
+      ]
+      for (let i = 0; i < addrList.length; i++) {
+        if (window.location.host === 'localhost:8080') {
+          if (addrList[i].indexOf('bundle') > -1) {
+            // addrList[i]=host_other+'/'+addrList[i]
+            addrList[i] = './xt_mm.js'
+          } else {
+            addrList[i] = host_other + '/' + addrList[i]
+          }
+        } else {
+          addrList[i] = '/' + addrList[i]
         }
-    })();
-</script> -->
+        if (addrList[i].indexOf('.css') > -1) {
+          var hm = document.createElement("link");
+          hm.rel = "stylesheet"
+          hm.href = addrList[i];
+          /*var s = document.getElementsByTagName("link")[0];
+          s.parentNode.insertBefore(hm,s);*/
+          document.head.appendChild(hm);
+        } else {
+          var hm = document.createElement("script");
+          addrList[i].includes('xt_mm') && (hm.type = 'module');
+          hm.src = addrList[i];
+          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
+          s.parentNode.insertBefore(hm, s);
+        }
+      }
+    }
+  })();
 
-</html>
+</script> -->
