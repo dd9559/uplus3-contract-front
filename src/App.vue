@@ -458,6 +458,10 @@ export default {
     }
   }
 }
+a.link {
+  color: #303133;
+  text-decoration: none !important;
+}
 </style>
 <style lang="less">
 @import "~@/assets/common.less";
