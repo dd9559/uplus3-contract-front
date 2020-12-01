@@ -1,7 +1,4 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
-let tbody = document.querySelector('#tbody')
-let bodyItem = tbody.querySelectorAll('.body-item')
-
 let sub = {
   'info_val5': {
     stateful: function (index) {
@@ -53,30 +50,6 @@ let sub = {
   },
   'val47': null,
   'val48': null,
-  'checkbox_four': {
-    stateful: function (index) {
-      return index === 0 ? {'info_val666': {
-        stateful: function (index) {
-          let flag = false
-          for (let i = 0; i < bodyItem.length; i++) {
-            const element = bodyItem[i];
-            if (element.tagName.toLocaleLowerCase() === 'div') {
-              if (element.querySelector('p').getAttribute('checked')) {
-                flag = true
-                break
-              }
-            } else if (element.tagName.toLocaleLowerCase() === 'span'){
-              if (element.innerHTML !== '') {
-                flag = true
-                break
-              }
-            }
-          }
-          return flag ? null : {'val888': null}
-        }
-      }} : null
-    }
-  },
 }
 let Obj = {
   cn_arr: ['val17', 'val19', 'val21', 'val25', 'val27', 'val28', 'val30', 'val38', 'val39', 'val48']
@@ -228,39 +201,6 @@ contractConfig.inputListener(function (ev, tip) {
 contractConfig.checkboxListener(function () { }, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
-  if (attr === 'four') {
-    let bodyCheckboxs = []
-    let bodyInputs = []
-    for (let i = 0; i < bodyItem.length; i++) {
-      const element = bodyItem[i];
-      if (element.tagName.toLocaleLowerCase() === 'div') {
-        if (bodyCheckboxs.indexOf('checkbox_'+element.getAttribute('name')) === -1) {
-          bodyCheckboxs.push('checkbox_'+element.getAttribute('name'))
-        }
-      } else if (element.tagName.toLocaleLowerCase() === 'span'){
-        if (bodyInputs.indexOf(element.getAttribute('extendparam')) === -1) {
-          bodyInputs.push(element.getAttribute('extendparam'))
-        }
-      }
-    }
-    let checkIO = {
-      0: [...bodyCheckboxs,...bodyInputs],
-    }
-    console.log(checkIO);
-    boxArray.forEach((item, i) => {
-      if (item === obj.currentTarget) {
-        if (item.querySelector('p').getAttribute('checked')) {
-          if (i === 0) {
-            contractConfig.initForm(checkIO[0], 0)
-          } else {
-            contractConfig.initForm(checkIO[0], 1)
-          }
-        } else {
-          contractConfig.initForm(checkIO[0], 1)
-        }
-      }
-    })
-  }
 })
 
 
