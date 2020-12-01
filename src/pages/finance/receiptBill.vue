@@ -7,20 +7,10 @@
           <div class="input-group" style="white-space: nowrap;">
             <label class="form-label no-width f14 margin-bottom-base">收款方式:</label>
             <p class="block-receipt-type">
-              <el-button
-                size="small"
-                class="btn-info"
-                :type="!billStatus?'primary':''"
-                @click="checkReceiptType(1)"
-                :disabled="Boolean($route.query.deAudit)"
-              >线上收款</el-button>
-              <el-button
-                size="small"
-                class="btn-info"
-                :type="billStatus?'primary':''"
-                @click="checkReceiptType(2)"
-                :disabled="Boolean($route.query.deAudit)"
-              >线下收款</el-button>
+              <el-button size="small" class="btn-info" :type="!billStatus?'primary':''" @click="checkReceiptType(1)"
+                :disabled="Boolean($route.query.deAudit)">线上收款</el-button>
+              <el-button size="small" class="btn-info" :type="billStatus?'primary':''" @click="checkReceiptType(2)"
+                :disabled="Boolean($route.query.deAudit)">线下收款</el-button>
               <!--<el-tooltip content="同一个合同的收款方式必须统一，要么全部选线上要么全部选线下" width="100" placement="top">
                 <i class="iconfont icon-wenhao"></i>
               </el-tooltip>-->
@@ -44,37 +34,21 @@
                 </p>
               </el-tooltip>
             </div>
-            <moneyTypePop
-              v-if="!isentrust||$route.query.collect"
-              ref="moneyType"
-              :data="moneyType"
-              :init="moneyTypeName"
-              @checkCell="getCell"
-              @clear="clearMoneyType"
-            ></moneyTypePop>
+            <moneyTypePop v-if="!isentrust||$route.query.collect" ref="moneyType" :data="moneyType"
+              :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
             <el-input v-else type="text" size="small" class="w200" disabled placeholder="交易服务费"></el-input>
           </div>
           <!-- 分割线 收款开始 -->
           <div class="input-group col active-400 address-label" v-if="collect">
             <label class="form-label no-width f14 margin-bottom-base">房/客源:</label>
             <div class="flex-box w400">
-              <el-select
-                size="small"
-                v-model="addressVal"
-                @change="addressChangeFn"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="(item,index) in addressList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
+              <el-select size="small" v-model="addressVal" @change="addressChangeFn" placeholder="请选择">
+                <el-option v-for="(item,index) in addressList" :key="index" :label="item.name" :value="item.id">
+                </el-option>
               </el-select>
               <div class="address-slelect" @click="addressClickFn">
                 <span
-                  :class="[addressLabel.selectCode?'':'cl-gray']"
-                >{{addressLabel.selectCode?addressLabel.selectCode:"请选择"}}</span>
+                  :class="[addressLabel.selectCode?'':'cl-gray']">{{addressLabel.selectCode?addressLabel.selectCode:"请选择"}}</span>
                 <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val}}</span> -->
                 <!-- >{{addressLabel.name?addressLabel.name:addressLabel.val + addressValCom.name}}</span> -->
                 <i class="el-icon-arrow-down"></i>
@@ -86,43 +60,20 @@
           <div class="input-group col" :class="[inputPerson?'active-360':'']">
             <label class="form-label no-width f14 margin-bottom-base">付款方</label>
             <div class="flex-box">
-              <el-select
-                size="small"
-                class="w200"
-                v-model="form.outObjType"
-                placeholder="请选择"
-                @change="getOption(form.outObjType,1)"
-              >
-                <el-option
-                  v-for="item in dropdown"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select size="small" class="w200" v-model="form.outObjType" placeholder="请选择"
+                @change="getOption(form.outObjType,1)">
+                <el-option v-for="item in dropdown" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
               </el-select>
-              <input
-                type="text"
-                size="small"
-                class="w140 el-input__inner person"
-                placeholder="请输入"
-                maxlength="20"
-                v-model.trim="form.outObj"
-                @input="inputOnly('normal')"
-                v-if="inputPerson"
-              />
+              <input type="text" size="small" class="w140 el-input__inner person" placeholder="请输入" maxlength="20"
+                v-model.trim="form.outObj" @input="inputOnly('normal')" v-if="inputPerson" />
             </div>
           </div>
           <div class="input-group col active-400">
             <label class="form-label no-width f14 margin-bottom-base">收款人:</label>
             <div class="flex-box w400" v-if="inObjPerson">
-              <select-tree
-                :data="DepList"
-                :init="dep.name"
-                @checkCell="handleNodeClick"
-                @clear="clearSelect('dep')"
-                @search="searchDep"
-                key="other"
-              ></select-tree>
+              <select-tree :data="DepList" :init="dep.name" @checkCell="handleNodeClick" @clear="clearSelect('dep')"
+                @search="searchDep" key="other"></select-tree>
               <!-- <select-tree
                 v-if="firstCreate.state"
                 :data="DepList"
@@ -137,25 +88,12 @@
                 :class="[!firstCreate.state?'no-min':'']"
                 v-else
               >{{firstCreate.content.storeName}}</div>-->
-              <el-select
-                :clearable="true"
-                ref="employe"
-                v-loadmore="moreEmploye"
-                class="margin-left"
-                size="small"
-                v-model="form.inObjId"
-                placeholder="请选择"
-                @clear="clearSelect('emp')"
-                @focus="employeInfo=false"
-                @change="getOption(form.inObjId,2)"
-              >
+              <el-select :clearable="true" ref="employe" v-loadmore="moreEmploye" class="margin-left" size="small"
+                v-model="form.inObjId" placeholder="请选择" @clear="clearSelect('emp')" @focus="employeInfo=false"
+                @change="getOption(form.inObjId,2)">
                 <el-option :label="form.inObj" :value="form.inObjId" v-if="employeInfo"></el-option>
-                <el-option
-                  v-for="(item,index) in EmployeList"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.empId"
-                ></el-option>
+                <el-option v-for="(item,index) in EmployeList" :key="index" :label="item.name" :value="item.empId">
+                </el-option>
               </el-select>
             </div>
             <div class="h32" v-else>{{dep.name}}-{{form.inObj}}</div>
@@ -164,44 +102,25 @@
         <li>
           <div class="input-group col" v-if="billStatus">
             <label class="form-label no-width f14 margin-bottom-base">收款时间</label>
-            <el-date-picker
-              class="w200"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.createTime"
-              type="datetime"
-              @change="checkDate"
-              placeholder="选择日期时间"
-              :picker-options="pickerOptions"
-            ></el-date-picker>
+            <el-date-picker class="w200" size="small" value-format="yyyy-MM-dd HH:mm:ss" v-model="form.createTime"
+              type="datetime" @change="checkDate" placeholder="选择日期时间" :picker-options="pickerOptions"></el-date-picker>
           </div>
           <div class="input-group col active-400">
             <div class="flex-box tool-tip no-max">
               <label class="form-label no-width f14 margin-bottom-base">收款金额（元）</label>
               <span>{{form.amount|formatChinese}}</span>
             </div>
-            <input
-              type="text"
-              size="small"
-              class="w400 el-input__inner"
-              placeholder="请输入"
-              v-model="form.amount"
-              @input="cutNum(1)"
-            />
+            <input type="text" size="small" class="w400 el-input__inner" placeholder="请输入" v-model="form.amount"
+              @input="cutNum(1)" />
           </div>
           <div class="input-group col" :class="[!firstCreate.state?'no-max':'']" v-if="billStatus">
             <label class="form-label f14 margin-bottom-base">收账账户</label>
             <el-select size="small" class="w200" v-model="activeAdmin" placeholder="请选择">
-              <el-option
-                v-for="item in account"
-                :key="item.id"
+              <el-option v-for="item in account" :key="item.id"
                 :label="`${item.storeName}-${item.bankAccountName} ${item.bankBranchName} ${item.bankCard}`"
-                :value="item.id"
-              >
+                :value="item.id">
                 {{item.storeName}}-{{item.bankAccountName}}
-                <span
-                  style="margin: 0 4px;"
-                >{{item.bankBranchName}}</span>
+                <span style="margin: 0 4px;">{{item.bankBranchName}}</span>
                 {{item.bankCard}}
               </el-option>
             </el-select>
@@ -227,20 +146,11 @@
             <div class="message-box flex-box">
               <section>
                 <label class="form-label f14 margin-bottom-base">支付方式</label>
-                <el-select
-                  size="small"
-                  class="w200"
-                  v-model="item.payMethod"
-                  placeholder="请选择"
-                  @change="hideCardList(item)"
-                >
+                <el-select size="small" class="w200" v-model="item.payMethod" placeholder="请选择"
+                  @change="hideCardList(item)">
                   <el-option-group v-for="group in getDir" :key="group.label" :label="group.label">
-                    <el-option
-                      v-for="item in group.options"
-                      :key="item.key"
-                      :label="getPayMethod(item.key)?item.value:'刷卡-'+item.value"
-                      :value="item.key"
-                    ></el-option>
+                    <el-option v-for="item in group.options" :key="item.key"
+                      :label="getPayMethod(item.key)?item.value:'刷卡-'+item.value" :value="item.key"></el-option>
                   </el-option-group>
                 </el-select>
               </section>
@@ -249,26 +159,16 @@
                   <label class="form-label f14 margin-bottom-base">金额（元）</label>
                   <span>{{item.amount|formatChinese}}</span>
                 </div>
-                <input
-                  type="text"
-                  class="w400 el-input__inner"
-                  placeholder="请输入"
-                  v-model="item.amount"
-                  @input="cutNum(item,'amount')"
-                />
+                <input type="text" class="w400 el-input__inner" placeholder="请输入" v-model="item.amount"
+                  @input="cutNum(item,'amount')" />
               </section>
               <section>
                 <div class="flex-box tool-tip w200 no-max">
                   <label class="form-label f14 margin-bottom-base">手续费金额（元）</label>
                 </div>
                 <!--                <el-input size="small" :disabled="!getPayMethod(item.payMethod)" placeholder="请输入" v-model="item.fee" @input.native="cutNum(item,'fee')"></el-input>-->
-                <input
-                  type="text"
-                  class="w200 el-input__inner input-info"
-                  placeholder="请输入"
-                  v-model="item.fee"
-                  @input="cutNum(item,'fee')"
-                />
+                <input type="text" class="w200 el-input__inner input-info" placeholder="请输入" v-model="item.fee"
+                  @input="cutNum(item,'fee')" />
               </section>
               <!--<section v-if="item.payMethod===2">
                 <label class="f14 margin-bottom-base">收账账户</label>
@@ -287,12 +187,7 @@
               <p>
                 <label class="f14">刷卡资料补充</label>
               </p>
-              <el-table
-                border
-                :data="[cardList[index]]"
-                style="width: 100%"
-                header-row-class-name="theader-bg"
-              >
+              <el-table border :data="[cardList[index]]" style="width: 100%" header-row-class-name="theader-bg">
                 <el-table-column align="center" label="刷卡/转账银行">
                   <template slot-scope="scope">
                     <span>{{scope.row.bankName|formatNull}}</span>
@@ -300,24 +195,14 @@
                 </el-table-column>
                 <el-table-column align="center" label="户名">
                   <template slot-scope="scope">
-                    <input
-                      type="text"
-                      v-model.trim="scope.row.userName"
-                      class="no-style"
-                      placeholder="请输入"
-                      @input="inputOnly('userName',index)"
-                    />
+                    <input type="text" v-model.trim="scope.row.userName" class="no-style" placeholder="请输入"
+                      @input="inputOnly('userName',index)" />
                   </template>
                 </el-table-column>
                 <el-table-column align="center" label="账户 ">
                   <template slot-scope="scope">
-                    <input
-                      type="text"
-                      v-model="scope.row.cardNumber"
-                      class="no-style"
-                      placeholder="请输入"
-                      @input="getBank(scope.row,index)"
-                    />
+                    <input type="text" v-model="scope.row.cardNumber" class="no-style" placeholder="请输入"
+                      @input="getBank(scope.row,index)" />
                   </template>
                 </el-table-column>
                 <!--<el-table-column align="center" label="金额（元）">
@@ -328,14 +213,8 @@
                 </el-table-column>-->
                 <el-table-column align="center" label="订单编号">
                   <template slot-scope="scope">
-                    <input
-                      type="text"
-                      v-model="scope.row.orderNo"
-                      maxlength="20"
-                      class="no-style"
-                      placeholder="请输入"
-                      @input="inputOnly('orderNo',index)"
-                    />
+                    <input type="text" v-model="scope.row.orderNo" maxlength="20" class="no-style" placeholder="请输入"
+                      @input="inputOnly('orderNo',index)" />
                   </template>
                 </el-table-column>
                 <!--<el-table-column align="center" label="手续费（元）">
@@ -352,11 +231,7 @@
                 </el-table-column>-->
               </el-table>
             </div>
-            <i
-              class="iconfont"
-              :class="[index===0?'icon-icon-test':'icon-del']"
-              @click="payListOper(index)"
-            ></i>
+            <i class="iconfont" :class="[index===0?'icon-icon-test':'icon-del']" @click="payListOper(index)"></i>
           </li>
         </ul>
       </div>
@@ -375,21 +250,10 @@
                   <span>点击上传</span>
                 </file-up>
               </li>
-              <li
-                v-for="(item,index) in imgList"
-                :key="index"
-                @mouseenter="activeLi=index"
-                @mouseleave="activeLi=''"
-                @click="previewPhoto(imgList,index)"
-              >
-                <img
-                  :src="item|getSignImage(preloadFiles,_self)"
-                  alt
-                  v-if="isPictureFile(item.type)"
-                  height="90px"
-                  :key="item.path"
-                  :width="item.width"
-                />
+              <li v-for="(item,index) in imgList" :key="index" @mouseenter="activeLi=index" @mouseleave="activeLi=''"
+                @click="previewPhoto(imgList,index)">
+                <img :src="item|getSignImage(preloadFiles,_self)" alt v-if="isPictureFile(item.type)" height="90px"
+                  :key="item.path" :width="item.width" />
                 <upload-cell :type="item.type" v-else></upload-cell>
                 <!--<span>{{item.name}}</span>-->
                 <el-tooltip :content="item.name" placement="top">
@@ -405,29 +269,16 @@
           <!-- 新增反审核时间 -->
           <div class="input-group" v-if="$route.query.deAudit" style="margin:20px 0 20px 0;">
             <label class="form-label f14">审核时间：</label>
-            <el-date-picker
-              class="w200"
-              size="small"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="examineDate"
-              type="datetime"
-              @change="checkDate"
-              placeholder="选择日期时间"
-            ></el-date-picker>
+            <el-date-picker class="w200" size="small" value-format="yyyy-MM-dd HH:mm:ss" v-model="examineDate"
+              type="datetime" @change="checkDate" placeholder="选择日期时间"></el-date-picker>
           </div>
           <div class="input-group">
             <p>
               <label class="f14">备注信息</label>
             </p>
-            <el-input
-              v-model="form.remark"
-              class="info-textarea"
-              :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']"
-              placeholder="请填写备注信息"
-              rows="5"
-              maxlength="200"
-              type="textarea"
-            ></el-input>
+            <el-input v-model="form.remark" class="info-textarea"
+              :class="[form.remark&&form.remark.length>0?'':'scroll-hidden']" placeholder="请填写备注信息" rows="5"
+              maxlength="200" type="textarea"></el-input>
           </div>
           <!--<div class="input-group">
             <p><label class="f14">温馨提示</label></p>
@@ -441,53 +292,21 @@
       </section>
     </div>
     <p>
-      <el-button
-        class="btn-info"
-        round
-        size="small"
-        @click="goCancel"
-        v-if="!$route.query.deAudit"
-      >取消</el-button>
-      <el-button
-        class="btn-info"
-        round
-        size="small"
-        type="primary"
-        @click="goResult"
-        v-loading.fullscreen.lock="fullscreenLoading"
-        v-if="!$route.query.deAudit"
-      >{{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
-      <el-button
-        class="btn-info"
-        round
-        size="small"
-        type="primary"
-        @click="goResult"
-        v-loading.fullscreen.lock="fullscreenLoading"
-        v-if="$route.query.deAudit"
-      >保存</el-button>
+      <el-button class="btn-info" round size="small" @click="goCancel" v-if="!$route.query.deAudit">取消</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
+        v-loading.fullscreen.lock="fullscreenLoading" v-if="!$route.query.deAudit">
+        {{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
+        v-loading.fullscreen.lock="fullscreenLoading" v-if="$route.query.deAudit">保存</el-button>
     </p>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
-    <checkPerson
-      :show="checkPerson.state"
-      :type="checkPerson.type"
-      page="list"
-      :showLabel="checkPerson.label"
-      :bizCode="checkPerson.code"
-      :flowType="checkPerson.flowType"
-      @submit="personChose"
-      @close="personChose"
-      v-if="checkPerson.state"
-    ></checkPerson>
+    <checkPerson :show="checkPerson.state" :type="checkPerson.type" page="list" :showLabel="checkPerson.label"
+      :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @submit="personChose" @close="personChose"
+      v-if="checkPerson.state"></checkPerson>
     <!-- 房源客源弹窗 -->
-    <houseGuest
-      :dialogType="addressValCom.type"
-      :dialogVisible="isShowDialog"
-      :choseHcode="addressLabel.selectCode || 0"
-      :choseGcode="addressLabel.selectCode || 0"
-      @closeHouseGuest="closeHouseGuest"
-      v-if="isShowDialog"
-    ></houseGuest>
+    <houseGuest :dialogType="addressValCom.type" :dialogVisible="isShowDialog"
+      :choseHcode="addressLabel.selectCode || 0" :choseGcode="addressLabel.selectCode || 0"
+      @closeHouseGuest="closeHouseGuest" v-if="isShowDialog"></houseGuest>
   </div>
 </template>
 
@@ -624,8 +443,8 @@ export default {
         },
       ],
       dictionary: {
-        "534": [],
-        "644": [],
+        534: [],
+        644: [],
       },
       activeAdmin: "",
       account: [],
@@ -1541,6 +1360,7 @@ export default {
               }
             });
         } else {
+          this.isentrust ? (param.isEntrust = 1) : (param.isEntrust = 0); //委托合同收款=1、非委托合同收款=0
           this.$ajax
             .postJSON("/api/payInfo/saveProceeds", param)
             .then((res) => {
@@ -2394,10 +2214,6 @@ input.person {
         margin: 0;
       }
     }
-  }
-
-  /deep/ .el-table,
-  .el-textarea {
   }
 }
 
