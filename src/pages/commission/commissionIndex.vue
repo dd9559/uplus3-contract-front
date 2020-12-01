@@ -526,4 +526,11 @@ export default {
     }
   }
 }
+
+.el-menu--horizontal > .el-menu-item.is-active {
+  border: 0 !important;
+  span {
+    color: #fff !important;
+  }
+}
 </style>
