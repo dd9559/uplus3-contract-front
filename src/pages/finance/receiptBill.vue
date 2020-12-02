@@ -36,7 +36,7 @@
             </div>
             <moneyTypePop v-if="!isentrust||$route.query.collect" ref="moneyType" :data="moneyType"
               :init="moneyTypeName" @checkCell="getCell" @clear="clearMoneyType"></moneyTypePop>
-            <el-input v-else type="text" size="small" class="w200" disabled placeholder="交易服务费"></el-input>
+            <el-input v-else type="text" size="small" class="w200" disabled :placeholder="entrustMoneyName"></el-input>
           </div>
           <!-- 分割线 收款开始 -->
           <div class="input-group col active-400 address-label" v-if="collect">
@@ -422,6 +422,7 @@ export default {
       moneyType: [],
       moneyTypeName: "", //款类初始化值
       moneyTypeActiveName: "", //款类当前选中name
+      entrustMoneyName: "", //委托合同收款类名
       isentrust: false, //是否为委托合同创建收款
       moneyTypeOther: [],
       payList: [
@@ -1019,6 +1020,7 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.moneyType = this.moneyType.concat(res.data);
+          this.getEntrustMoneyType(this.moneyType); //判断委托合同款类
           /*res.data.forEach((item, index) => {
                           if (item.name === '代收代付') {
                             // this.moneyType.splice(index, 1)
@@ -1036,6 +1038,34 @@ export default {
                         })*/
         }
       });
+    },
+    //判断委托合同款类
+    getEntrustMoneyType(moneyType) {
+      if (this.isentrust && moneyType && moneyType.length > 0) {
+        moneyType.forEach((item1, index) => {
+          if (
+            item1.name.trim() === "二手房佣金" &&
+            item1.moneyTypes &&
+            item1.moneyTypes.length > 0
+          ) {
+            item1.moneyTypes.forEach((item2, index) => {
+              if (
+                item2.name.trim() === "交易服务费" &&
+                item2.accountType.value === 1
+              ) {
+                this.form.moneyTypePid = item1.id;
+                this.form.moneyType = item2.key;
+                this.entrustMoneyName = item2.name.trim();
+              }
+            });
+          }
+        });
+        if (this.form.moneyType === "" || this.form.moneyTypePid === "") {
+          this.$message({
+            message: "二手房佣金款类下未设置交易服务费款类",
+          });
+        }
+      }
     },
     /**
      * 获取上传文件
@@ -1073,7 +1103,6 @@ export default {
         .catch(() => {});
     },
     goResult: function () {
-      console.log(`www${this.billStatus}`);
       let param = Object.assign({ admin: this.activeAdmin }, this.form);
       param.payAccountType = this.billStatus ? 4 : 3;
       //支付信息列表更新
@@ -1114,8 +1143,8 @@ export default {
           });
         } else {
           Object.assign(param, {
-            moneyType: -1,
-            moneyTypePid: -1,
+            moneyType: this.form.moneyType,
+            moneyTypePid: this.form.moneyTypePid,
             type: 8,
           });
         }

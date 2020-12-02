@@ -47,151 +47,152 @@
             </template>
           </el-table-column>
           <!--<el-table-column min-width="160" align="center" label="订单条码">-->
-            <!--<template slot-scope="scope">-->
-              <!--<img :src="result.RQcode" alt="">-->
-            <!--</template>-->
+          <!--<template slot-scope="scope">-->
+          <!--<img :src="result.RQcode" alt="">-->
+          <!--</template>-->
           <!--</el-table-column>-->
         </el-table>
       </div>
       <p class="tool-bar" :class="[type!==1?'tool-bar-other':'']">
-        <el-button round class="make-bill" type="primary" v-if="type===1&&power['sign-cw-bill-invoice'].state" @click="toBill">开票</el-button>
+        <el-button round class="make-bill" type="primary" v-if="type===1&&power['sign-cw-bill-invoice'].state"
+          @click="toBill">开票</el-button>
         <!--<el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>-->
         <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
         <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span>
       </p>
     </div>
-    <el-dialog
-      :closeOnClickModal="$tool.closeOnClickModal"
-      title="提示"
-      :visible.sync="confirm"
-      width="460px"
+    <el-dialog :closeOnClickModal="$tool.closeOnClickModal" title="提示" :visible.sync="confirm" width="460px"
       class="dialog-answer">
       <p>支付遇到问题？您可以拨打以下客服电话处理咨询：</p>
       <h4>400 112 5883</h4>
     </el-dialog>
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
-    <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
+    <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType"
+      @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
-  import {MIXINS} from "@/assets/js/mixins";
-  import LayerInvoice from '@/components/LayerInvoice'
-  import checkPerson from '@/components/checkPerson'
-  export default {
-    name: "receipt-result",
-    mixins: [MIXINS],
-    components:{
-      LayerInvoice,
-      checkPerson
-    },
-    data() {
-      return {
-        list: [{}],
-        type: 1,//1=创建 2=录入
-        edit:false,//是否为修改结果页
-        result: {},
-        confirm: false,
-        checkPerson: {
-          state:false,
-          type:'set',
-          current:false,
-          code:'',
-          flowType:1
+import { MIXINS } from "@/assets/js/mixins";
+import LayerInvoice from "@/components/LayerInvoice";
+import checkPerson from "@/components/checkPerson";
+export default {
+  name: "receipt-result",
+  mixins: [MIXINS],
+  components: {
+    LayerInvoice,
+    checkPerson,
+  },
+  data() {
+    return {
+      list: [{}],
+      type: 1, //1=创建 2=录入
+      edit: false, //是否为修改结果页
+      result: {},
+      confirm: false,
+      checkPerson: {
+        state: false,
+        type: "set",
+        current: false,
+        code: "",
+        flowType: 1,
+      },
+      power: {
+        "sign-cw-bill-invoice": {
+          state: false,
+          name: "开票",
         },
-        power:{
-          'sign-cw-bill-invoice': {
-            state: false,
-            name: '开票'
-          },
-          /*'sign-cw-bill-print':{
+        /*'sign-cw-bill-print':{
             state: false,
             name: '打印'
           },*/
-          'sign-ht-info-query':{
-            state: false,
-            name: '合同列表'
-          },
-          'sign-cw-debt-query':{
-            state: false,
-            name: '收付款单列表'
-          },
+        "sign-ht-info-query": {
+          state: false,
+          name: "合同列表",
         },
-        socket:null,
-      }
-    },
-    created() {
-      this.type = parseInt(this.$route.query.type)
-      this.edit = parseInt(this.$route.query.edit)===1?true:false
-      this.result = JSON.parse(this.$route.query.content)
-      /*if(this.result.payCode&&this.result.payCode.length>0){
+        "sign-cw-debt-query": {
+          state: false,
+          name: "收付款单列表",
+        },
+      },
+      socket: null,
+    };
+  },
+  created() {
+    this.type = parseInt(this.$route.query.type);
+    this.edit = parseInt(this.$route.query.edit) === 1 ? true : false;
+    this.result = JSON.parse(this.$route.query.content);
+    /*if(this.result.payCode&&this.result.payCode.length>0){
         this.checkPerson.state=true
         this.checkPerson.code=this.result.payCode
       }*/
-    },
-    mounted(){
-      this.$nextTick(()=>{
-        if(this.type===1){
-          this.getMsg()
-        }
-      })
-    },
-    beforeRouteEnter (to, from, next) {
-      next(vm => {
-        if(from.path==='/receiptBill'&&to.query.errorCode==='dialog'){
-          let param={
-            state:true,
-            code:vm.result.payCode,
-            current:parseInt(vm.result.type)===1?false:true
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.type === 1) {
+        this.getMsg();
+      }
+    });
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      if (from.path === "/receiptBill" && to.query.errorCode === "dialog") {
+        let param = {
+          state: true,
+          code: vm.result.payCode,
+          current: parseInt(vm.result.type) === 1 ? false : true,
+        };
+        vm.checkPerson = Object.assign(vm.checkPerson, param);
+      }
+    });
+  },
+  methods: {
+    getMsg: function () {
+      this.$ajax
+        .get("/api/socket/generateCode", { payCode: this.result.payCode })
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            this.getWebSocket(res.data);
           }
-          vm.checkPerson=Object.assign(vm.checkPerson,param)
-        }
-      })
-    },
-    methods: {
-      getMsg:function () {
-        this.$ajax.get('/api/socket/generateCode',{payCode:this.result.payCode}).then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.getWebSocket(res.data)
-          }
-        }).catch(error=>{
+        })
+        .catch((error) => {
           this.$message({
-            message:error
-          })
-        })
-      },
-      getWebSocket:function (uid) {
-        let host=window.location.host
-        let url=''
-        switch (host){
-          case "localhost:8080":
-            url="http://192.168.1.224:28800"
-                break
-          case "sign2.jjw.com:28879":
-            url="http://120.76.202.91:28800"
-                break
-          case "sign2.jjw.com":
-            url="https://sign2.jjw.com"
-                break
-          default:
-            url="http://192.168.1.96:28800"
-        }
-        this.socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`)
-        let that=this
-        this.socket.on('connect',function () {
-          that.socket.on('messageevent', function(data) {
-            if(data){
-              that.goBack('Bill')
-            }
-          })
-        })
-      },
-      goBack: function (page) {
-        let param={
-          path: page
-        }
-        /*if(page==='details'){
+            message: error,
+          });
+        });
+    },
+    getWebSocket: function (uid) {
+      let host = window.location.host;
+      let url = "";
+      switch (host) {
+        case "localhost:8080":
+          url = "http://192.168.1.224:28800";
+          break;
+        case "sign2.jjw.com:28879":
+          url = "http://120.76.202.91:28800";
+          break;
+        case "sign2.jjw.com":
+          url = "https://sign2.jjw.com";
+          break;
+        default:
+          url = "http://192.168.1.96:28800";
+      }
+      this.socket = io.connect(`${url}?mac=${this.result.payCode}&auth=${uid}`);
+      let that = this;
+      this.socket.on("connect", function () {
+        that.socket.on("messageevent", function (data) {
+          if (data) {
+            that.goBack("Bill");
+          }
+        });
+      });
+    },
+    goBack: function (page) {
+      let param = {
+        path: page,
+      };
+      /*if(page==='details'){
           param.query={
             id: this.result.id,
             tab: '收款信息',
@@ -199,124 +200,124 @@
             bill: this.power['sign-cw-bill-invoice'].state
           }
         }*/
-        this.$router.push(param)
-      },
-      answer: function () {
-        this.confirm = true
-      },
-      toBill:function () {
-        this.$ajax.get('/api/payInfo/checkBill',{payCode:this.result.payCode}).then(res=>{
-          res=res.data
-          if(res.status===200&&res.data.value===1){
-            this.$refs.layerInvoice.show(this.result.id,true)
-          }else {
-            this.$message({
-              message:'未付款还不能开票'
-            })
-          }
-        })
-      },
-      emitPaperSetFn:function () {
-
-      }
+      this.$router.push(param);
     },
-    destroyed(){
-      // debugger
-      // this.socket.emit('close',{payCode:this.result.payCode})
-      this.socket.disconnect()
-    }
-  }
+    answer: function () {
+      this.confirm = true;
+    },
+    toBill: function () {
+      this.$ajax
+        .get("/api/payInfo/checkBill", { payCode: this.result.payCode })
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200 && res.data.value === 1) {
+            this.$refs.layerInvoice.show(this.result.id, true);
+          } else {
+            this.$message({
+              message: "未付款还不能开票",
+            });
+          }
+        });
+    },
+    emitPaperSetFn: function () {},
+  },
+  destroyed() {
+    // debugger
+    // this.socket.emit('close',{payCode:this.result.payCode})
+    if (this.socket) this.socket.disconnect();
+  },
+};
 </script>
 
 <style scoped lang="less">
-  @import "~@/assets/common.less";
+@import "~@/assets/common.less";
 
-  .view {
-    background-color: @bg-white;
-    position: relative;
-    /*height: 100%;*/
-    &-context {
-      width: 60%;
-      margin: 0 auto;
-      /*position: absolute;
+.view {
+  background-color: @bg-white;
+  position: relative;
+  /*height: 100%;*/
+  &-context {
+    width: 60%;
+    margin: 0 auto;
+    /*position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);*/
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      >h1{
-        margin-top: 20px;
-        /*margin-bottom: 41px;*/
-        .iconfont{
-          color: @color-58b;
-          font-size: 89px;
-        }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    > h1 {
+      margin-top: 20px;
+      /*margin-bottom: 41px;*/
+      .iconfont {
+        color: @color-58b;
+        font-size: 89px;
       }
-      >p{
-        margin-bottom: 41px;
-        .iconfont{
-          color: @color-58b;
-          /*font-size: 89px;*/
-        }
+    }
+    > p {
+      margin-bottom: 41px;
+      .iconfont {
+        color: @color-58b;
+        /*font-size: 89px;*/
       }
-      > h3 {
-        color: @color-324;
-        font-size: 28px;
+    }
+    > h3 {
+      color: @color-324;
+      font-size: 28px;
+    }
+    > p {
+      color: @color-99A;
+      margin: 20px 0;
+      font-size: 18px;
+      &.other {
+        color: red;
       }
-      > p {
-        color: @color-99A;
-        margin: 20px 0;
-        font-size: 18px;
-        &.other{
+    }
+    .bill-result-table {
+      width: 100%;
+      margin: 30px 0 70px 0;
+      text-align: center;
+      .warning-text {
+        text-align: left;
+        margin-bottom: 20px;
+        > p {
           color: red;
-        }
-      }
-      .bill-result-table {
-        width: 100%;
-        margin: 30px 0 70px 0;
-        text-align: center;
-        .warning-text{
-          text-align: left;
-          margin-bottom: 20px;
-          >p{
-            color: red;
-            font-size: 20px;
-          }
+          font-size: 20px;
         }
       }
     }
   }
+}
 
-  .make-bill {
-    min-width: 150px;
-  }
+.make-bill {
+  min-width: 150px;
+}
 
-  .tool-bar {
-    position: relative;
-    padding-right: 130px;
-    white-space: nowrap;
-    &-other{
-      padding: 0;
-    }
-    .btn-question {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      color: @color-blue;
-      font-size: @size-base;
-      cursor: pointer;
-    }
+.tool-bar {
+  position: relative;
+  padding-right: 130px;
+  white-space: nowrap;
+  &-other {
+    padding: 0;
   }
-  .dialog-answer{
-    p{
-      text-align: center;
-    }
-    h4{
-      padding: 28px 0;
-      text-align: center;
-      font-weight: bold;
-    }
+  .btn-question {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: @color-blue;
+    font-size: @size-base;
+    cursor: pointer;
   }
+}
+.dialog-answer {
+  p {
+    text-align: center;
+  }
+  h4 {
+    padding: 28px 0;
+    text-align: center;
+    font-weight: bold;
+  }
+}
 </style>
