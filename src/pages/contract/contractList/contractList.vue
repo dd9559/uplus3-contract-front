@@ -2762,11 +2762,11 @@ export default {
                 : "已签约";
           }
           // 签约方式使用委托合同自己的
-          if (combineItem.recordType !== "") {
+          if (combineItem.contractEntrust.recordType && combineItem.contractEntrust.recordType !== "") {
             let recordTypeCopy = this.dictionary['64'].filter(item => {
-              return item.value === combineItem.recordType
+              return item.key === combineItem.contractEntrust.recordType
             })
-            combineItem.recordType = recordTypeCopy.length > 0 ? recordTypeCopy[0] : null
+            combineItem.recordType = recordTypeCopy.length > 0 ? {label:recordTypeCopy[0].value,value:recordTypeCopy[0].key} : combineItem.recordType
           }
           //签后审核状态
           if (combineItem.signingEntrustState) {
