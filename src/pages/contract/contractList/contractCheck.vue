@@ -861,6 +861,13 @@ export default {
                             : combineItem.contractEntrust.examineState === 1
                             ? "已通过"
                             : "已驳回";
+                    // 签约方式使用委托合同自己的
+                    if (combineItem.contractEntrust.recordType && combineItem.contractEntrust.recordType !== "") {
+                        let recordTypeCopy = this.dictionary['76'].filter(item => {
+                        return item.key === combineItem.contractEntrust.recordType
+                        })
+                        combineItem.recordType = recordTypeCopy.length > 0 ? {label:recordTypeCopy[0].value,value:recordTypeCopy[0].key} : combineItem.recordType
+                    }
                     combineItem.uploadTime = combineItem.contractEntrust
                         .uploadTime
                         ? combineItem.contractEntrust.uploadTime

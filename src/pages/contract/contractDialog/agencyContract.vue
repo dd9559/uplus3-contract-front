@@ -15,6 +15,24 @@
                         <span v-if="defaultInfo.contType.value===2&&defaultInfo.loanType">{{defaultInfo.loanType===7?"全款买卖":"贷款买卖"}}</span>
                         <span v-if="defaultInfo.contType.value===3">代办</span>
                     </p>
+                    <p>
+                        <span><i>*</i>签约方式：</span>
+                        <el-select
+                            class="record-type"
+                            v-model="recordType"
+                            placeholder="请选择"
+                            :clearable="true"
+                            :disabled="defaultInfo.contractEntrust&&!!defaultInfo.contractEntrust.recordType"
+                            style="width: 150px;height:32px"
+                        >
+                            <el-option
+                            v-for="item in dictionary['64']"
+                            :key="item.key"
+                            :label="item.value"
+                            :value="item.key"
+                            ></el-option>
+                        </el-select>
+                    </p>
                 </div>
                 <div class="one_ input-val">
                     <p>
@@ -38,7 +56,7 @@
                     </p>
                     <p>
                         <span><i>*</i>交易服务费佣金(元)：</span>
-                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFeeCommission" @input="cutNumber('tradeFeeCommission')" :disabled="entrustBtn"></el-input>  
+                        <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFeeCommission" disabled></el-input>  
                     </p>
                 </div>
             </div>
@@ -136,7 +154,9 @@
 </template>
 
 <script>
+import { MIXINS } from "@/assets/js/mixins";
 export default {
+    mixins: [MIXINS],
     props: {
         defaultInfo: {
             type: Object,
@@ -163,10 +183,17 @@ export default {
             fullscreenLoading: false,
             singleCompany: false,
             singleCompanyName: "",
-            entrustBtn: false
+            entrustBtn: false,
+            recordType:"",// 签约方式
+            dictionary: {
+                //数据字典
+                64: "", //签约方式  线上线下
+            },
         }
     },
     created() {
+        this.getDictionary(); //字典
+        this.recordType = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.recordType ? this.defaultInfo.contractEntrust.recordType : ""
         this.clientHei= document.documentElement.clientHeight -190 + 'px'
         // 判断有无录过委托合同
         let _date = this.defaultInfo.contractEntrust ? this.defaultInfo.contractEntrust.signDate : ''
@@ -185,6 +212,12 @@ export default {
         this.entrustBtn = this.defaultInfo.contractEntrust&&this.defaultInfo.contractEntrust.entrustState===3
         this.houseArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 1)
         this.guestArr = this.defaultInfo.contPersons.filter(item => item.personType.value === 2)
+    },
+    watch: {
+        tradeFee(val) {
+            let flowQZfee = this.defaultInfo.flowQZfee?Number.parseFloat(this.defaultInfo.flowQZfee):0
+            this.tradeFeeCommission = (Number.parseFloat(val) - flowQZfee) > 0 ? Number.parseFloat((Number.parseFloat(val) - flowQZfee).toFixed(2)) : 0
+        }
     },
     methods: {
         getCardLabel(val) {
@@ -224,18 +257,18 @@ export default {
                 this.$message("交易服务费不能为空")
                 return
             }
-            if(this.tradeFeeCommission == ''){
-                this.$message("交易服务费佣金不能为空")
+            if(this.recordType == ''){
+                this.$message("签约方式不能为空")
                 return
             }
-            if(this.defaultInfo.recordType.value == 2) {
+            if(this.recordType == 2) {
                 // 线下合同直接保存
                 this.saveCon(2)
             } else {
                 // 线上合同保存前先验证是否有委托合同模板
                this.$ajax.get('/api/contract/checkContTemplate',{
                     type: 6, //委托合同类型
-                    recordType: 1 //线上合同
+                    recordType: this.recordType //合同签约方式
                 }).then(res => {
                     if(res.data.status === 200) {
                         this.saveCon()
@@ -256,7 +289,8 @@ export default {
                 tradeFeeCommission: this.tradeFeeCommission,
                 entrustRemark: this.entrustRemark,
                 id: this.defaultInfo.id,
-                code: this.defaultInfo.code
+                code: this.defaultInfo.code,
+                recordType: this.recordType //合同签约方式
             }).then(res => {
                 res = res.data
                 if(res.status === 200){
@@ -340,6 +374,16 @@ export default {
                 }
                 i {
                     color: red;
+                }
+                .record-type {
+                    /deep/&.el-select {
+                        .el-input__inner {
+                            height: 32px;
+                        }
+                        .el-input__icon {
+                            line-height: 32px;
+                        }
+                    }
                 }
             }
             &.remark-box {
