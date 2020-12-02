@@ -2761,6 +2761,13 @@ export default {
                 ? "已签章"
                 : "已签约";
           }
+          // 签约方式使用委托合同自己的
+          if (combineItem.recordType !== "") {
+            let recordTypeCopy = this.dictionary['64'].filter(item => {
+              return item.value === combineItem.recordType
+            })
+            combineItem.recordType = recordTypeCopy.length > 0 ? recordTypeCopy[0] : null
+          }
           //签后审核状态
           if (combineItem.signingEntrustState) {
             combineItem.signingState = {};
