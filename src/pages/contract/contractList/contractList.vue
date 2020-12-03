@@ -584,13 +584,13 @@
               </div>
             </div>
             <!-- 2020年11月24日修改合同列表，委托合同，不显示收款 -->
-            <!-- <div
+            <div
               class="btn"
               v-else-if="!scope.row.isTransaction"
               @click="gathering(scope.row)"
             >
               收款
-            </div> -->
+            </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
@@ -1016,6 +1016,20 @@
                 @click="toSignAudit(scope.row, 'sign')"
               >
                 签后提审
+              </div>
+              <!-- 2.5.6添加委托合同无纸化流程 -->
+              <div
+                v-if="
+                  power['sign-ht-info-fqqs'].state &&
+                  (scope.row.contState.value === 1 ||
+                    scope.row.contState.value === 2) &&
+                  scope.row.toExamineState.value === 1 &&
+                  scope.row.recordType.value === 10
+                "
+                class="btn"
+                @click="toSign(scope.row,1)"
+              >
+                {{ scope.row.ssqId ? "签署中" : "发起签署" }}
               </div>
             </template>
             <template v-if="scope.row.contState.value === -1">
@@ -2524,7 +2538,7 @@ export default {
       }
     },
     //发起签署
-    toSign(val) {
+    toSign(val,isentrust=0) {
       this.choseQuery = {
         id: val.id,
         isHaveData: val.isHaveData,
@@ -2532,6 +2546,7 @@ export default {
         code: val.code,
         contType: val.contType.value,
         contTypeLabel: val.contType.label,
+        isentrust
       };
       let owner = [];
       let guest = [];
@@ -2762,7 +2777,7 @@ export default {
                 : "已签约";
           }
           // 签约方式使用委托合同自己的
-          if (combineItem.contractEntrust.recordType && combineItem.contractEntrust.recordType !== "") {
+          if (combineItem.contractEntrust.recordType) {
             let recordTypeCopy = this.dictionary['64'].filter(item => {
               return item.key === combineItem.contractEntrust.recordType
             })

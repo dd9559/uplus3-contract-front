@@ -924,7 +924,7 @@ export default {
           let param = {
             contId: this.getChoseQuery.id,
             type: 1, //签章
-            isentrust: 0, //非委托
+            isentrust: this.getChoseQuery.isentrust, //非委托
             storeId: this.getChoseQuery.storeId //门店id
           };
           let owner = [],

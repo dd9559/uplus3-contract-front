@@ -862,7 +862,7 @@ export default {
                             ? "已通过"
                             : "已驳回";
                     // 签约方式使用委托合同自己的
-                    if (combineItem.contractEntrust.recordType && combineItem.contractEntrust.recordType !== "") {
+                    if (combineItem.contractEntrust.recordType) {
                         let recordTypeCopy = this.dictionary['76'].filter(item => {
                         return item.key === combineItem.contractEntrust.recordType
                         })
