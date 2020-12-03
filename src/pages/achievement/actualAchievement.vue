@@ -584,19 +584,19 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-fs'].state&&userInfo"
                   >反审核</span>
-                  <span
+                  <!-- <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
+                  >申诉</span> -->
                 </div>
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
                   <span
-                    @click.stop="editAch(scope.row,scope.$index)"
+                    @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-edit'].state"
-                  >确认业绩</span>
+                  >反审核</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -610,11 +610,11 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
-                  <span
+                  <!-- <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span>
+                  >申诉</span> -->
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -627,7 +627,14 @@
                 </div>
               </div>
               <div v-else>
-                <p>--</p>
+                <div v-if="scope.row.achievementState==1" class="check-btn">
+                  <span
+                    @click.stop="againCheck(scope.row,scope.$index)"
+                    style="cursor:pointer;"
+                    v-if="power['sign-yj-rev-fs'].state&&userInfo"
+                  >反审核</span>
+                </div>
+                <p v-else>--</p>
               </div>
             </template>
           </el-table-column>

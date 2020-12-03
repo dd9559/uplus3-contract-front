@@ -166,6 +166,7 @@
         },
         created() {
             let res = this.getDataList
+            this.searchForm.systemId = this.userInfo.deptSystemtag
             if(res&&(res.route === this.$route.path)){
                 let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
                 let query = session.query

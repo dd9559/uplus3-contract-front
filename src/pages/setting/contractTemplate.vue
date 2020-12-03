@@ -211,7 +211,10 @@
                         <template slot-scope="scope">
                             <el-button type="text"
                                 size="small"
-                                @click="enable(scope.row)">启用</el-button>
+                                @click="enable(scope.row)" v-if="templateUsing == scope.row.version">启用中</el-button>
+                            <el-button type="text"
+                                size="small"
+                                @click="enable(scope.row)" v-else>未启用</el-button>
                             <el-button @click="rowOperation(scope.row,2,2)"
                                 type="text"
                                 size="small">预览</el-button>
@@ -256,6 +259,7 @@ export default {
             dkAddress: "",
             towFlag: 0,
             id: "",
+            templateUsing:"",// 启用中的合同id
             power: {
                 "sign-set-ht-query": {
                     state: false,
@@ -414,6 +418,13 @@ export default {
          * 启用
          */
         enable(row) {
+            if(row.version == this.templateUsing){
+                this.$message({
+                    type: "warning",
+                    message: "该模板正在使用中！"
+                });
+                return;
+            }
             let param = {
                 id: this.bigId,
                 enableTemplateId: row.id,
@@ -443,6 +454,7 @@ export default {
         getRowDetails: function(row, column, cell, event) {
             this.rowenableId = row.enableTemplateId;
             this.bigId = row.id;
+            this.templateUsing = row.version
             this.$ajax
                 .get("/api/setting/contractTemplate/listByType", {
                     id: row.id,
