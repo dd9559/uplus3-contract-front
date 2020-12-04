@@ -341,6 +341,7 @@ export default {
       // let param = {
       //   contCode: this.contCode,
       //   signerType: Number(val.key)
+      //   isEntrust: 0, // 是否是委托合同，是1，不是0
       // };
       if (this.checkPersonList.includes(val.key)) {
         let isSelectFlag = false;
@@ -704,7 +705,8 @@ export default {
           // } else {
           //   let param = {
           //     contCode: this.contCode,
-          //     signerType: 1
+          //     signerType: 1,
+          //     isEntrust: 0, // 是否是委托合同，是1，不是0
           //   };
           //   this.$ajax
           //   .get("/api/app/contract/checkSignPosition", param)

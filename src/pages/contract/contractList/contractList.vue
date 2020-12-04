@@ -2570,16 +2570,16 @@ export default {
       if (val.ssqId) {
         this.reissueDialog = true;
       } else {
-        this.getSignPosition(this.contCode);
+        this.getSignPosition(this.contCode,isentrust);
         this.closeTitle = "发起签署";
         this.chosePersonDialog = true;
       }
     },
     // 获取合同模板的所有角色签章位置存在情况
-    getSignPosition(contCode) {
+    getSignPosition(contCode,isEntrust) {
       // this.checkPersonList = []
       this.$ajax
-        .get("/api/app/contract/GetSignPosition", { contCode })
+        .get("/api/app/contract/GetSignPosition", { contCode, isEntrust })// isEntrust是否是委托合同， 1是，0不是
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
@@ -2596,7 +2596,7 @@ export default {
       } else if (val.type === "reissueChosePerson") {
         this.reissueDialog = val.status;
       } else if (val.type === "openChosePersonDialog") {
-        this.getSignPosition(this.contCode);
+        this.getSignPosition(this.contCode,this.choseQuery.isentrust);
         this.chosePersonDialog = true;
         this.closeTitle = "重新发起签署";
       } else if (val.type === "closeChose") {
