@@ -170,7 +170,7 @@ export default {
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
-            this.$message('补发签署短信成功');
+            this.$message({type:'success',message:'补发签署短信成功'});
             this.getCode(val.index)
           }
         })
