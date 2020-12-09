@@ -2778,12 +2778,8 @@ export default {
           }
           // 签约方式使用委托合同自己的
           if (combineItem.contractEntrust.recordType) {
-            this.$nextTick(() => {
-              let recordTypeCopy = this.dictionary['64'].filter(item => {
-                return item.key === combineItem.contractEntrust.recordType
-              })
-              combineItem.recordType = recordTypeCopy.length > 0 ? {label:recordTypeCopy[0].value,value:recordTypeCopy[0].key} : combineItem.recordType
-            })
+            combineItem.recordType.value = combineItem.contractEntrust.recordType
+            combineItem.recordType.label = combineItem.contractEntrust.recordType == 1 ? '线上' : combineItem.contractEntrust.recordType == 2 ? '线下' : '无纸化'
           }
           // 签署中上上签id
           combineItem.ssqId = combineItem.contractEntrust.contractId ? combineItem.contractEntrust.contractId : null

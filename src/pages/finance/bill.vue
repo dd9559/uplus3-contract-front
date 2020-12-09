@@ -24,7 +24,7 @@
               <el-option v-for="item in $tool.dropdown.dateType_money" :key="item.value" :label="item.label"
                 :value="item.value"></el-option>
             </el-select>
-            <el-date-picker v-model="searchForm.timeRange" type="daterange" size="small" class="margin-left"
+            <el-date-picker v-model="searchForm.timeRange" :disabled="!searchForm.timeType" type="daterange" size="small" class="margin-left"
               value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </div>
@@ -735,6 +735,13 @@ export default {
     chooseContShow(val) {
       this.contKeyWord = "";
     },
+    'searchForm.timeType': {
+      handler (val) {
+        if (!val) {
+          this.searchForm.timeRange = []
+        }
+      }
+    }
   },
   /*watch:{
           getCollapse:function (val) {
