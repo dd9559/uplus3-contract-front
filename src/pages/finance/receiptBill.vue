@@ -1,5 +1,5 @@
 <template>
-  <div class="view">
+  <div class="view" v-if="power['sign-ht-info-collect'].state">
     <div class="view-context">
       <p class="f14 txt-title">收款信息</p>
       <ul class="bill-form">
@@ -508,6 +508,13 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now();
+        },
+      },
+      //权限配置
+      power: {
+        "sign-ht-info-collect": {
+          state: false,
+          name: "收款",
         },
       },
     };

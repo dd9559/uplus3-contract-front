@@ -172,8 +172,8 @@
           </ul>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
-          <el-button class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
+          <el-button v-if="power['sign-ht-info-pay'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
+          <el-button v-if="power['sign-ht-info-collect'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
             v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
@@ -595,6 +595,14 @@ export default {
                       state: false,
                       name: '查询'
                     },*/
+        "sign-ht-info-pay": {
+          state: false,
+          name: "付款",
+        },
+        "sign-ht-info-collect": {
+          state: false,
+          name: "收款",
+        },
         "sign-cw-debt-export": {
           state: false,
           name: "导出",
