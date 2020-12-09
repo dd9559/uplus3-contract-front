@@ -24,8 +24,9 @@
                 :value="item.Value"></el-option>
             </el-select>
           </el-form-item>
-          <select-tree size="small" width="266" show ref="selectTreeRef" :data="searchDepList" :obj="obj" clearable
-            collapseTags multiple expand-click-node checkStrictly @getValue="setTreeMenu"></select-tree>
+          <el-form-item>
+            <select-tree size="small" width="266" show ref="selectTreeRef" :data="searchDepList" :obj="obj" clearable
+              collapseTags multiple expand-click-node checkStrictly @getValue="setTreeMenu"></select-tree>
           </el-form-item>
           <el-form-item>
             <el-select v-model="searchForm.timeType" placeholder="请选择" :clearable="true" style="width:150px">
@@ -72,7 +73,8 @@
             </el-table-column>
             <el-table-column label="合同类型" prop="tradeType" min-width="120">
               <template slot-scope="scope">
-                <span>{{scope.row.tradeType === 1 ? '租赁':scope.row.tradeType === 2 ?'买卖/代办':'新房'}}</span>
+                <p v-for="(item,index) in scope.row.tradeType.toString().split(',')" :key="index">{{item == 1 ? '租赁':item == 2 ?'买卖/代办':'新房'}}</p>
+                <!-- <span>{{scope.row.tradeType === 1 ? '租赁':scope.row.tradeType === 2 ?'买卖/代办':'新房'}}</span> -->
               </template>
             </el-table-column>
             <el-table-column label="提成规则名称" prop="bonusName" min-width="120"></el-table-column>
@@ -160,7 +162,7 @@
             </div>-->
             <div class="dialog-item">
               <p class="form-label system">合同类型：</p>
-              <el-select size="small" v-model="deductData.tradeType" placeholder="请选择" style="width:240px">
+              <el-select size="small" v-model="deductData.tradeType" multiple collapse-tags placeholder="请选择" style="width:240px">
                 <el-option label="租赁" value="1"></el-option>
                 <el-option label="买卖/代办" value="2"></el-option>
                 <el-option label="新房" value="3"></el-option>
@@ -233,7 +235,10 @@
         <div class="warning-box">
           <p>确认保存该提成设置？</p>
           <div class="warning-content">
-            <p>合同类型：{{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p>
+            <p>
+              <span>合同类型：</span>
+              <span v-for="(item,index) in deductData.tradeType.toString().split(',')" :key="index">{{index>=1? ',':''}}{{item == 1 ? '租赁':item == 2 ?'买卖/代办':'新房'}}</span>
+            <!-- {{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p> -->
             <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
             <p>执行时间：{{deductData.executionStartTime}}</p>
           </div>
@@ -306,7 +311,7 @@ export default {
         depId: "", //部门id
         position: "", //职务
         // levels: "", //等级
-        tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
+        tradeType: [], //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
         executionStartTime: "", //执行开始时间
       },
@@ -814,7 +819,7 @@ export default {
         this.deductData.bonusName === "" ||
         this.defaultCheckedKeys.length === 0 ||
         this.deductData.position.length === 0 ||
-        this.deductData.tradeType === "" ||
+        this.deductData.tradeType.length === 0 ||
         this.deductData.commissionCalculation === "" ||
         !this.deductData.executionStartTime
       ) {
@@ -827,7 +832,7 @@ export default {
         systemTag: this.deductData.system.key,
         systemName: this.deductData.system.value,
         positionName: this.positionName.join(","),
-        tradeType: this.deductData.tradeType,
+        tradeType: this.deductData.tradeType.join(","),
         commissionCalculation: this.deductData.commissionCalculation,
         executionStartTime: this.deductData.executionStartTime + "-01",
         bonusName: this.deductData.bonusName,
@@ -957,7 +962,7 @@ export default {
         )[0], // 体系
         depId: [], //部门id
         position: [], //职务
-        tradeType: "", //合同类型 1、租赁  2、买卖/居间 3. 新房
+        tradeType: [], //合同类型 1、租赁  2、买卖/居间 3. 新房
         commissionCalculation: "", //提成计算方法 1.分级累进 2.分级累进回溯
         executionStartTime: tYear + "-" + m, //执行开始时间
       }),
