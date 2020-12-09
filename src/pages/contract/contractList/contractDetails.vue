@@ -779,7 +779,7 @@
           </div>
           <div
             class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1&&contractDetail.contState.value>1||contractDetail.recordType.value===2&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
+            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2) || (contractDetail.contState.value>1||contractDetail.recordType.value===2))&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
           >
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
@@ -2568,9 +2568,11 @@ export default {
         this.getAchievement(); //业绩分成
       } else if (tab.name === "second") {
         if (
-          this.contractDetail.contState.value < 2 &&
+          (this.contractDetail.contState.value < 2 &&
           this.contractDetail.recordType.value != 2 &&
-          this.contractDetail.recordType.value != 10
+          this.contractDetail.recordType.value != 10) &&
+          (this.contractDetail.contractEntrust.entrustState>1 ||
+          this.contractDetail.contractEntrust.recordType !== 2)
         ) {
           this.$message({
             message: "合同未签章,不允许上传合同主体",
