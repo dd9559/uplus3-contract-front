@@ -462,6 +462,12 @@ export default {
                 })
                 .then(res => {
                     res = res.data;
+                    res.data.forEach((ele,index) => {
+                        if(ele.version == this.templateUsing){
+                            res.data.splice(index,1)
+                            res.data.unshift(ele)
+                        }
+                    });
                     if (res.status === 200) {
                         this.rowData = res.data;
                         this.modal = true;
