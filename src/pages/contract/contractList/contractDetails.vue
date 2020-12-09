@@ -827,7 +827,7 @@
               round
               class="search_btn"
               @click="saveFile('WT')"
-              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2)"
+              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2||contractDetail.contractEntrust.recordType === 2)"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
