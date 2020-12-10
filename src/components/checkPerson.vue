@@ -10,7 +10,7 @@
     <div class="dialog-container">
       <p v-if="showLabel">下一审核节点无审核人，请先设置下一节点审核人</p>
       <div class="chose-box">
-        <span>{{page==='detail'?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
+        <span>{{(page==='detail')&&!achAppealNextType?'设置':(type===1||type===3)?'设置':'转交'}}审核人</span>
         <div class="box-content">
           <div class="box-content-input">
             <el-select :clearable="true" filterable remote :remote-method="searchDep" size="small" v-model="depsFlag" v-if="getUser.version===3" placeholder="部门" @change="getOption('dep')" @visible-change="initDep" @clear="clearDep">
@@ -67,7 +67,7 @@
         type:[String,Number],
         default:''
       },
-      flowType:{//流程类型，付款传0；收款传1
+      flowType:{//流程类型，付款传0；收款传1 ; 应收审核传6
         type:Number,
       },
       showLabel:{//是否显示label文本
@@ -77,6 +77,10 @@
       page:{
         type:String,
         default:'detail'
+      },
+      achAppealNextType:{ //应收业绩审核  0设置当前审核人  1设置下一个审核人
+        type:Number,
+        default:0
       }
     },
     data(){
@@ -117,7 +121,7 @@
           })
           console.log(param,'param');
           if(param.userId!==''){
-            this.$ajax.post(this.type===3?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
+            this.$ajax.post((this.type===3 || this.achAppealNextType ===1)?'/api/machine/changeAuditorNext':'/api/machine/changeAuditorNow',param).then(res=>{
               res=res.data
               if(res.status===200){
                 this.$message({

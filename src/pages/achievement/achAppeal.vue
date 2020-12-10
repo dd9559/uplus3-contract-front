@@ -198,14 +198,6 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="审核人" min-width="120">
-            <template slot-scope="scope">
-              <div v-for="item in scope.row.achievementAppeals">
-                <p>{{item.auditDepName}}-{{item.auditName}}</p>
-              </div>
-            </template>
-          </el-table-column>
-
           <el-table-column label="审核状态(时间)" min-width="200">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals">
@@ -232,7 +224,26 @@
               </div>
             </template>
           </el-table-column>
-
+          <el-table-column label="当前审核人" min-width="100">
+            <template slot-scope="scope">
+              <div v-for="item in scope.row.achievementAppeals" v-if="item.auditName">
+                  <p>{{item.auditName}}</p>
+              </div> 
+              <div v-else>-</div>           
+              <el-button type="text"
+                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId||scope.row.preAuditId===userInfo.user.empId))"
+                            @click="choseCheckPerson(scope.row,scope.row.achievementAppeals[0].auditId===userInfo.user.empId?2:1)">{{userInfo.user&&userInfo.user.empId===scope.row.achievementAppeals[0].auditId?'转交审核人':'设置审核人'}}</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="下一个审核人" min-width="100">
+            <template slot-scope="scope">
+              <p v-if="scope.row.nextAuditName">{{scope.row.nextAuditName}}</p>
+              <p v-else>-</p>
+              <el-button type="text"
+                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId ||scope.row.achievementAppeals[0].nextAuditId===userInfo.user.empId))"
+                            @click="choseCheckPerson(scope.row,scope.row.preAuditId===userInfo.user.empId?2:1,3)">{{userInfo.user&&userInfo.user.empId===scope.row.achievementAppeals[0].nextAuditId?'转交审核人':'设置审核人'}}</el-button>
+            </template>
+          </el-table-column>
           <el-table-column label="上传业绩分成协议时间" min-width="90">
             <template slot-scope="scope">
               <p v-if="scope.row.agreementUploadTime">{{scope.row.agreementUploadTime|formatTime(false)}}</p>
@@ -247,12 +258,12 @@
             </template>
           </el-table-column>
 
-
+            <!-- scope.row.auditIds==1&&scope.row.appealStatus.value!=0  v-if="scope.row.achievementAppeals[0].display"-->
           <el-table-column label="操作" min-width="70" fixed="right">
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
                 <span @click.stop="checkAch(scope.row,scope.$index)"
-                      v-if="scope.row.auditIds==1&&scope.row.appealStatus.value!=0"
+                     v-if="(scope.row.achievementAppeals[0].auditId == -1 && scope.row.validateGrabAuth) || userInfo.user.empId===scope.row.achievementAppeals[0].auditId"
                       style="cursor:pointer;">审核</span>
               </div>
               <span v-else>--</span>
@@ -271,13 +282,24 @@
       </div>
     </div>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
+    <!-- 设置/转交审核人 -->
+    <checkPerson :show="checkPerson.state"
+        page="list"
+        :type="checkPerson.type"
+        :showLabel="checkPerson.label"
+        :bizCode="checkPerson.code"
+        :flowType="checkPerson.flowType"
+        :achAppealNextType ="checkPerson.achAppealNextType"
+        @close="closeCheckPerson"
+        @submit="closeCheckPerson"
+        v-if="checkPerson.state"></checkPerson>
   </div>
 </template>
 
 <script>
     import {MIXINS} from "@/assets/js/mixins";
     import ScreeningTop from "@/components/ScreeningTop";
-
+    import checkPerson from "@/components/checkPerson";
     export default {
         mixins: [MIXINS],
         data() {
@@ -385,9 +407,19 @@
                         name: "导出"
                     }
                 },
+                checkPerson: {
+                  state: false,
+                  type: 1,
+                  code: "",
+                  flowType: 3,
+                  label: false,
+                  current: false,
+                  achAppealNextType:0
+                },
             };
         },
         created() {
+          console.log(this.userInfo);
         },
         mounted() {
             this.ajaxParam = {
@@ -456,6 +488,7 @@
         components: {
             MIXINS,
             ScreeningTop,
+            checkPerson
         },
         filters: {
             rounding(value) {
@@ -609,20 +642,49 @@
                 this.EmployeList = [];
             },
             checkAch(value, index) {
+              console.log(value);
+              if(this.userInfo.user.empId === value.auditId){
                 let newPage = this.$router.resolve({
-                    path: "/aplPage",
-                    query: {
-                        aId: value.aId,
-                        contractCode: value.code,
-                        dialogType: 0,
-                        achIndex: index,
-                        achObj: JSON.stringify({contractId: value.id}),
-                        contractId: value.id,
-                        version: this.selectAchList[0].version,
-                        contType: value.contType.value
-                    }
+                  path: "/aplPage",
+                  query: {
+                      aId: value.aId,
+                      contractCode: value.code,
+                      dialogType: 0,
+                      achIndex: index,
+                      achObj: JSON.stringify({contractId: value.id}),
+                      contractId: value.id,
+                      version: this.selectAchList[0].version,
+                      contType: value.contType.value
+                  }
                 });
                 window.open(newPage.href, "_blank");
+              }else{
+                this.$ajax.get('/api/machine/getAuditAuth',{bizCode:scope.row.achievementAppeals[0].id,flowType: 6}).then(res=>{
+                  if(res.status === 200){
+                    let newPage = this.$router.resolve({
+                      path: "/aplPage",
+                      query: {
+                          aId: value.aId,
+                          contractCode: value.code,
+                          dialogType: 0,
+                          achIndex: index,
+                          achObj: JSON.stringify({contractId: value.id}),
+                          contractId: value.id,
+                          version: this.selectAchList[0].version,
+                          contType: value.contType.value
+                      }
+                    });
+                    window.open(newPage.href, "_blank");
+                  }
+                })
+                .catch(error => {
+                    this.$message({
+                        message: error,
+                        type: "error"
+                    });
+                });
+              }
+              
             },
             handleCurrentChange(val) {
                 // console.log(`当前页: ${val}`);
@@ -657,6 +719,24 @@
                 });
             })
             },
+             // 选择审核人
+            choseCheckPerson: function(row, type, nextType) {
+                this.checkPerson.code = row.achievementAppeals[0].id;
+                this.checkPerson.type = type
+                this.checkPerson.page = ''
+                if(nextType === 3){
+                  this.checkPerson.achAppealNextType = 1
+                }else{
+                  this.checkPerson.achAppealNextType = 0
+                }
+                this.checkPerson.flowType = 6;
+                this.checkPerson.state = true;
+            },
+            //关闭设置审核人弹窗
+            closeCheckPerson() {
+                this.checkPerson.state = false;
+                this.getData(this.ajaxParam);
+            }
         }
     };
 </script>

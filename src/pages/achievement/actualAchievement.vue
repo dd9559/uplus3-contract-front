@@ -582,7 +582,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-fs'].state&&userInfo"
+                    v-if="(power['sign-yj-rev-fs'].state&&userInfo) && scope.row.throughSettlement ==0"
                   >反审核</span>
                   <!-- <span
                     @click.stop="shenSu(scope.row,scope.$index)"
@@ -595,7 +595,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state"
+                    v-if="power['sign-yj-rev-edit'].state  && scope.row.throughSettlement ==0"
                   >反审核</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
@@ -631,7 +631,7 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-fs'].state&&userInfo"
+                    v-if="power['sign-yj-rev-fs'].state&&userInfo  && scope.row.throughSettlement ==0"
                   >反审核</span>
                 </div>
                 <p v-else>--</p>
@@ -706,7 +706,7 @@
           ></el-option>
         </el-select>
       </div>
-      <div class="role">
+      <!-- <div class="role">
         <span class="point jianju" style="margin-right:25px;">审核人：</span>
         {{depName}}
         <el-select
@@ -723,7 +723,7 @@
             :value="item.empId"
           ></el-option>
         </el-select>
-      </div>
+      </div> -->
       <div class="input-group" style="align-items: normal;position:relative">
         <span class="point jianju" style="min-width:78px">申诉内容：</span>
         <el-input
@@ -1124,10 +1124,10 @@ export default {
         this.$message("申诉内容不能为空！");
         return;
       }
-      if (this.auditName == "") {
-        this.$message("审核人不能为空！");
-        return;
-      }
+      // if (this.auditName == "") {
+      //   this.$message("审核人不能为空！");
+      //   return;
+      // }
       let arr2 = [];
       let arr = JSON.parse(JSON.stringify(this.SSuForm.pinzheng));
       for (let i = 0; i < arr.length; i++) {
@@ -1138,9 +1138,9 @@ export default {
         appealRole: this.SSuForm.role.join(","),
         appealContent: this.SSuForm.remark,
         voucherUrl: arr2,
-        auditDepName: this.depName,
-        auditId: this.SSuForm.empNames,
-        auditName: this.auditName,
+        //auditDepName: this.depName,
+        //auditId: this.SSuForm.empNames,
+        //auditName: this.auditName,
         auditPostionName: this.roleName
       };
       if (this.power["sign-yj-rev-appeal"].state) {
@@ -1181,12 +1181,20 @@ export default {
     },
     //申诉弹窗显示前的校验方法
     shenSu(row, index) {
+      console.log(row);
       if (
         (!row.dealName || row.dealName == "-") &&
         (!row.dealStorefront || row.dealStorefront == "-")
       ) {
         this.$message({
           message: "无成交经纪人不能发起申诉",
+          type: "error"
+        });
+        return;
+      }
+      if(row.appealStatus.value == 1){
+        this.$message({
+          message: "当前合同正在申诉中",
           type: "error"
         });
         return;
