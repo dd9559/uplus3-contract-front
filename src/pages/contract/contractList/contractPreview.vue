@@ -649,7 +649,8 @@ export default {
           })
       }else{
         let param_ = {
-          id:this.id
+          id:this.id,
+          isEntrust:this.isentrust
         }
         //验证此合同是否正在编辑
         this.$ajax.get("/api/contract/audit",param_).then(res=>{
