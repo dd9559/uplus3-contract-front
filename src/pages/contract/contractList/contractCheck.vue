@@ -243,7 +243,7 @@
                         </el-tooltip>
                     </template>
                     <template slot-scope="scope">
-                        <span v-if="scope.row.contType.value<4">{{scope.row.distributableAchievement}}</span>
+                        <span v-if="scope.row.contType.value<4&&!scope.row.isCombine">{{scope.row.distributableAchievement}}</span>
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
@@ -870,6 +870,14 @@ export default {
                         .uploadTime
                         ? combineItem.contractEntrust.uploadTime
                         : "-"; //合同主体上传时间
+                    combineItem.preAuditId = combineItem.contractEntrust
+                        .preAuditId
+                        ? combineItem.contractEntrust.preAuditId
+                        : 0; 
+                    combineItem.preAuditName = combineItem.contractEntrust
+                        .preAuditName
+                        ? combineItem.contractEntrust.preAuditName
+                        : "-";
                     combineItem.achievementState.value =
                         combineItem.contractEntrust.achievementState; //业绩状态
                     combineItem.achievementState.label =

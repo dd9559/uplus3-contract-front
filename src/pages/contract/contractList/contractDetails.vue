@@ -779,7 +779,7 @@
           </div>
           <div
             class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2) || (contractDetail.contState.value>1||contractDetail.recordType.value===2))&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
+            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2))&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
           >
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">

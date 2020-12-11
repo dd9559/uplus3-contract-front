@@ -58,6 +58,10 @@
                         <span><i>*</i>交易服务费佣金(元)：</span>
                         <el-input placeholder="请输入" size="small" class="w140" v-model="tradeFeeCommission" disabled></el-input>  
                     </p>
+                    <p>
+                        <span><i>*</i>权证费用：</span>
+                        <el-input placeholder="请输入" size="small" class="w140" v-model="defaultInfo.flowQZfee" disabled></el-input>  
+                    </p>
                 </div>
             </div>
         </div>
