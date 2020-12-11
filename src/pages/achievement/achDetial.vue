@@ -445,7 +445,7 @@
 
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
+              <div v-if="(scope.row.auditStatus&&scope.row.auditStatus.value==0)&&((scope.row.auditId == -1 && scope.row.display)|| userInfo.user.empId===scope.row.auditId) ">
                 <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
               </div>
               <div v-else>-</div>
@@ -544,7 +544,7 @@
       </div>
       <div class="input-group" style="position:relative">
         <label>申诉内容：</label>
-        <span>{{aplcontent}}</span>
+        <span style="display:block;width:650px;word-break: break-all;">{{aplcontent}}</span>
       </div>
       <div class="input-group" style="position:relative">
         <label>附件信息：</label>
@@ -572,7 +572,7 @@
         <span class="text-absolute">{{validInput}}/{{inputMax}}</span>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="pass('no')" type="primary" class="confirmBtn color-red" v-dbClick>驳回</el-button>
+        <el-button @click="pass('no')" type="primary" class="confirmBtn" v-dbClick>驳回</el-button>
         <el-button @click="pass()" type="primary" class="confirmBtn" v-dbClick>通过</el-button>
       </div>
     </el-dialog>
@@ -792,6 +792,9 @@ export default {
     }
   },
   computed: {
+    userInfo() {
+        return this.getUser
+    },
     validInput() {
       return this.aplremark.length;
     }
