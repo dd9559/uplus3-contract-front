@@ -227,7 +227,7 @@
           </template>
           <template
             slot-scope="scope"
-          >{{scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}</template>
+          >{{scope.row.entrustCont&&!scope.row.entrustCont.id&&scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}</template>
         </el-table-column>
         <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="100">
           <template slot-scope="scope">

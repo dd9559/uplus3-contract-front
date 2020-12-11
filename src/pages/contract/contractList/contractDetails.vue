@@ -590,7 +590,7 @@
                       <template slot-scope="scope">{{scope.row.ratio?scope.row.ratio:'0'}}</template>
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
-                      <template slot-scope="scope">{{tradeFee * scope.row.ratio / 100 || 0}}</template>
+                      <template slot-scope="scope">{{(Math.round((employeeData.tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2) || 0}}</template>
                     </el-table-column>
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">{{scope.row.assignor?scope.row.assignor:'-'}}</template>
@@ -784,7 +784,7 @@
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li
-                v-show="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState"
+                v-show="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2"
               >
                 <file-up
                   class="uploadSubject"
@@ -815,7 +815,7 @@
                   </div>
                 </el-tooltip>
                 <i
-                  v-if="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState"
+                  v-if="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2"
                   class="iconfont icon-tubiao-6"
                   @click="ZTdelectData(index,item.path,'WT')"
                   :class="{'deleteShow':isDelete===item.index+item.path}"
@@ -1299,7 +1299,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div class="receiptModule" v-if="contractDetail.contractEntrust.recordType!=2&&contType!='1'">
+            <div class="receiptModule" v-if="contractDetail.contractEntrust&&contractDetail.contractEntrust.recordType&&contractDetail.contractEntrust.recordType!=2&&contType!='1'">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
