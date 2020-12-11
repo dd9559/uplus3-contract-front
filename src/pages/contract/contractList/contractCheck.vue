@@ -281,7 +281,7 @@
                 <el-table-column label="审核时间"
                     min-width="120">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.auditTime&&scope.row.auditTime!='-'">{{Number(scope.row.auditTime)|timeFormat_}}</span>
+                        <span v-if="scope.row.auditTime&&scope.row.auditTime!='-' &&scope.row.toExamineState.value!==0">{{Number(scope.row.auditTime)|timeFormat_}}</span>
                         <span v-else>-</span>
                     </template>
                 </el-table-column>
