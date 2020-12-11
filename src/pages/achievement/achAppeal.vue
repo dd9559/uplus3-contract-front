@@ -642,7 +642,6 @@
                 this.EmployeList = [];
             },
             checkAch(value, index) {
-              console.log(value);
               if(this.userInfo.user.empId === value.auditId){
                 let newPage = this.$router.resolve({
                   path: "/aplPage",
@@ -659,7 +658,7 @@
                 });
                 window.open(newPage.href, "_blank");
               }else{
-                this.$ajax.get('/api/machine/getAuditAuth',{bizCode:scope.row.achievementAppeals[0].id,flowType: 6}).then(res=>{
+                this.$ajax.get('/api/machine/getAuditAuth',{bizCode:value.achievementAppeals[0].id,flowType: 6}).then(res=>{
                   if(res.status === 200){
                     let newPage = this.$router.resolve({
                       path: "/aplPage",
