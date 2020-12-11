@@ -642,7 +642,7 @@
                 this.EmployeList = [];
             },
             checkAch(value, index) {
-              if(this.userInfo.user.empId === value.auditId){
+              if(this.userInfo.user.empId === value.achievementAppeals[0].auditId){
                 let newPage = this.$router.resolve({
                   path: "/aplPage",
                   query: {

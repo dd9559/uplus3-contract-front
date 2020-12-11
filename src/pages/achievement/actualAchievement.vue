@@ -584,11 +584,11 @@
                     style="cursor:pointer;"
                     v-if="(power['sign-yj-rev-fs'].state&&userInfo) && scope.row.throughSettlement ==0"
                   >反审核</span>
-                  <!-- <span
+                  <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span> -->
+                    v-if="power['sign-yj-rev-appeal'].state  && scope.row.throughSettlement ==0"
+                  >申诉</span>
                 </div>
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
