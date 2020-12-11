@@ -231,7 +231,7 @@
               </div> 
               <div v-else>-</div>           
               <el-button type="text"
-                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId||scope.row.preAuditId===userInfo.user.empId))"
+                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId||scope.row.achievementAppeals[0].preAuditId===userInfo.user.empId))"
                             @click="choseCheckPerson(scope.row,scope.row.achievementAppeals[0].auditId===userInfo.user.empId?2:1)">{{userInfo.user&&userInfo.user.empId===scope.row.achievementAppeals[0].auditId?'转交审核人':'设置审核人'}}</el-button>
             </template>
           </el-table-column>
@@ -263,7 +263,7 @@
             <template slot-scope="scope">
               <div v-if="scope.row.type==0" class="check-btn">
                 <span @click.stop="checkAch(scope.row,scope.$index)"
-                     v-if="(scope.row.achievementAppeals[0].auditId == -1 && scope.row.validateGrabAuth) || userInfo.user.empId===scope.row.achievementAppeals[0].auditId"
+                     v-if="(scope.row.achievementAppeals[0].auditId == -1 && scope.row.achievementAppeals[0].display) || userInfo.user.empId===scope.row.achievementAppeals[0].auditId"
                       style="cursor:pointer;">审核</span>
               </div>
               <span v-else>--</span>

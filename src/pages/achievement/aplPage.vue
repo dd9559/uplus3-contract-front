@@ -1504,7 +1504,7 @@
       </div>
       <div class="input-group" style="position:relative">
         <label>申诉内容：</label>
-        <span>{{aplcontent}}</span>
+        <span style="display:block;width:620px;word-break: break-all;">{{aplcontent}}</span>
       </div>
       <div class="input-group" style="position:relative">
         <label>附件信息：</label>
