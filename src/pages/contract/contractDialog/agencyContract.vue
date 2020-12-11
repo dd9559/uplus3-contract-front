@@ -28,7 +28,7 @@
                             <el-option
                             v-for="item in dictionary['64']"
                             :key="item.key"
-                            :label="item.value"
+                            :label="item.key == 1 ? item.value+ '(签章打印)':item.value"
                             :value="item.key"
                             ></el-option>
                         </el-select>
