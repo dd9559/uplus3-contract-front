@@ -574,7 +574,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
+                    v-if="power['sign-yj-rev-appeal'].state  && scope.row.throughSettlement ==0  && scope.row.appealStatus.value != 1"
                   >申诉</span>
                 </div>
 
@@ -582,12 +582,12 @@
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="(power['sign-yj-rev-fs'].state&&userInfo) && scope.row.throughSettlement ==0"
+                    v-if="(power['sign-yj-rev-fs'].state&&userInfo) && scope.row.throughSettlement ==0 "
                   >反审核</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state  && scope.row.throughSettlement ==0"
+                    v-if="power['sign-yj-rev-appeal'].state  && scope.row.throughSettlement ==0 && scope.row.appealStatus.value != 1"
                   >申诉</span>
                 </div>
 
@@ -600,7 +600,7 @@
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
+                    v-if="power['sign-yj-rev-appeal'].state && scope.row.throughSettlement ==0  && scope.row.appealStatus.value != 1"
                   >申诉</span>
                 </div>
 
