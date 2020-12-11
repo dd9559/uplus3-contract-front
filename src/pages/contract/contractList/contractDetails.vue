@@ -1299,7 +1299,7 @@
               </div>
             </div>
             <!-- 委托合同审核记录 -->
-            <div class="receiptModule" v-if="contractDetail.recordType.value!=2&&contType!='1'">
+            <div class="receiptModule" v-if="contractDetail.contractEntrust.recordType!=2&&contType!='1'">
               <div class="moduleTitle">
                 <span>委托合同审核</span>
               </div>
