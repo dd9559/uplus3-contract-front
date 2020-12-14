@@ -316,7 +316,7 @@
             // 重置
             resetFormFn() {
                 this.searchForm.keyword = ''
-                this.searchForm.systemId = ''
+                this.searchForm.systemId = this.userInfo.deptSystemtag
                 this.addTime = []
             },
             handleSizeChange(val) {

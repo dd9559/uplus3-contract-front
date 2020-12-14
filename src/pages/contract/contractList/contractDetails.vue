@@ -718,7 +718,7 @@
         <el-tab-pane
           label="合同主体"
           name="second"
-          v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
+          v-if="(contType==='2'||contType==='3'||contType==='6')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
         >
           <div
             class="contractSubject"
@@ -779,12 +779,12 @@
           </div>
           <div
             class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.id&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2)))"
+            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.id&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.entrustState!=0&&contractDetail.contractEntrust.recordType === 2)))"
           >
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
               <li
-                v-show="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2"
+                v-show="((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&contractDetail.contractEntrust.recordType != 10"
               >
                 <file-up
                   class="uploadSubject"
@@ -815,7 +815,7 @@
                   </div>
                 </el-tooltip>
                 <i
-                  v-if="(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2"
+                  v-if="((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&contractDetail.contractEntrust.recordType != 10"
                   class="iconfont icon-tubiao-6"
                   @click="ZTdelectData(index,item.path,'WT')"
                   :class="{'deleteShow':isDelete===item.index+item.path}"
@@ -827,7 +827,7 @@
               round
               class="search_btn"
               @click="saveFile('WT')"
-              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2)"
+              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2)&&contractDetail.contractEntrust.recordType != 10"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
