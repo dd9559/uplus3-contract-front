@@ -224,10 +224,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="当前审核人" min-width="100">
+          <el-table-column label="当前审核人" min-width="160">
             <template slot-scope="scope">
               <div v-for="item in scope.row.achievementAppeals" v-if="item.auditName">
-                  <p>{{item.auditName}}</p>
+                  <p>{{item.auditDepName&&item.auditDepName!='-'?item.auditDepName+'-':''}}{{item.auditName}}</p>
               </div> 
               <div v-else>-</div>           
               <el-button type="text"
@@ -265,12 +265,10 @@
                 <span @click.stop="checkAch(scope.row,scope.$index)"
                      v-if="(scope.row.achievementAppeals[0].auditId == -1 && scope.row.achievementAppeals[0].display) || userInfo.user.empId===scope.row.achievementAppeals[0].auditId"
                       style="cursor:pointer;">审核</span>
+                <div style="color:red" v-else-if="scope.row.achievementAppeals[0].auditId>0 && userInfo&&scope.row.achievementAppeals[0].auditId!== userInfo.user.empId" >
+                  {{scope.row.achievementAppeals[0].auditName}}正在审核</div>
               </div>
-              <div
-                    style="color:red"
-                    v-if="scope.row.achievementAppeals[0].auditId>0 && userInfo&&scope.row.achievementAppeals[0].auditId!== userInfo.user.empId"
-                  >{{scope.row.achievementAppeals[0].auditName}}正在审核</div>
-              <span v-else>--</span>
+              
             </template>
           </el-table-column>
         </el-table>
@@ -757,7 +755,7 @@
       position: relative;
 
       &:before {
-        content: '--';
+        content: '-';
         display: inline-block;
       }
     }

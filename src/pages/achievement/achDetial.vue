@@ -361,8 +361,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="申诉时间">
-            <template slot-scope="scope">{{scope.row.appealTime|formatTime(false)}}</template>
+          <el-table-column label="申诉时间" width="120">
+            <template slot-scope="scope" >
+              <div>
+                {{scope.row.appealTime|formatTime(false)}}
+              </div>
+            </template>
           </el-table-column>
 
           <el-table-column label="申诉角色">
@@ -409,34 +413,32 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="审核人">
+          <el-table-column label="审核人" width="260">
             <template slot-scope="scope">
-              <div
-                v-if="scope.row.auditName&&scope.row.auditName.length>0"
-              >{{scope.row.auditName}}</div>
+              <div  v-for="item in scope.row.approvalDetailsList" :key="item.appealTime"
+                v-if="item.userName&&item.userName.length>0"
+              >{{item.userName}}</div>
               <div v-else>-</div>
             </template>
           </el-table-column>
 
           <el-table-column min-width="120" label="审核状态(时间)">
             <template slot-scope="scope">
-              <div
-                v-if="scope.row.auditStatus"
-              >{{scope.row.auditStatus.label}} ({{scope.row.auditTime|formatTime(false)}})</div>
-              <div v-else>-</div>
+              <div  v-for="item in scope.row.approvalDetailsList" :key="item.appealTime"
+              >{{item.operate}} ({{item.auditTime|formatTime(false)}})</div>
             </template>
           </el-table-column>
 
           <el-table-column label="审核备注">
             <template slot-scope="scope">
-              <div v-if="scope.row.auditRemarks">
+              <div v-if="item.auditInfo"  v-for="item in scope.row.approvalDetailsList" :key="item.auditInfo">
                 <el-popover
                   trigger="hover"
                   width="200"
-                  :content="scope.row.auditRemarks"
+                  :content="item.auditInfo"
                   placement="top"
                 >
-                  <p class="dot" slot="reference">{{scope.row.auditRemarks}}</p>
+                  <p class="dot" slot="reference">{{item.auditInfo}}</p>
                 </el-popover>
               </div>
               <div v-else>-</div>
