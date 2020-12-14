@@ -237,10 +237,10 @@
           </el-table-column>
           <el-table-column label="下一个审核人" min-width="100">
             <template slot-scope="scope">
-              <p v-if="scope.row.nextAuditName">{{scope.row.nextAuditName}}</p>
+              <p v-if="scope.row.achievementAppeals[0]">{{scope.row.achievementAppeals[0].nextAuditName}}</p>
               <p v-else>-</p>
               <el-button type="text"
-                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId ||scope.row.achievementAppeals[0].nextAuditId===userInfo.user.empId))  && scope.row.achievementAppeals[0].auditStatus.value ==0 &&  scope.row.achievementAppeals[0].nextAuditId != 0"
+                            v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId ))  && scope.row.achievementAppeals[0].auditStatus.value ==0 &&  scope.row.achievementAppeals[0].nextAuditId != 0"
                             @click="choseCheckPerson(scope.row,scope.row.preAuditId===userInfo.user.empId?2:1,3)">{{userInfo.user&&userInfo.user.empId===scope.row.achievementAppeals[0].nextAuditId?'转交审核人':'设置审核人'}}</el-button>
             </template>
           </el-table-column>
@@ -266,6 +266,10 @@
                      v-if="(scope.row.achievementAppeals[0].auditId == -1 && scope.row.achievementAppeals[0].display) || userInfo.user.empId===scope.row.achievementAppeals[0].auditId"
                       style="cursor:pointer;">审核</span>
               </div>
+              <div
+                    style="color:red"
+                    v-if="scope.row.achievementAppeals[0].auditId>0 && userInfo&&scope.row.achievementAppeals[0].auditId!== userInfo.user.empId"
+                  >{{scope.row.achievementAppeals[0].auditName}}正在审核</div>
               <span v-else>--</span>
             </template>
           </el-table-column>

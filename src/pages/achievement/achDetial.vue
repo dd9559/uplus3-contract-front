@@ -413,7 +413,7 @@
             <template slot-scope="scope">
               <div
                 v-if="scope.row.auditName&&scope.row.auditName.length>0"
-              >{{scope.row.auditDepName}}-{{scope.row.auditName}}</div>
+              >{{scope.row.auditName}}</div>
               <div v-else>-</div>
             </template>
           </el-table-column>

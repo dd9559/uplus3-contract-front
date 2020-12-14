@@ -1318,7 +1318,7 @@
 
               <el-table-column label="操作">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1">
+                  <div v-if="scope.row.auditStatus&&scope.row.auditStatus.value==0&&auditIds==1&&false">
                     <el-button @click="itemht(scope.row,1)" type="text" size="small">审核</el-button>
                   </div>
                   <div v-else>-</div>

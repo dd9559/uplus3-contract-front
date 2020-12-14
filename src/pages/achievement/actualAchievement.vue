@@ -622,7 +622,7 @@
                   >审核</span>
                   <div
                     style="color:red"
-                    v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId && scope.row.appealStatus.value == 1"
+                    v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId"
                   >{{scope.row.auditName}}正在审核</div>
                 </div>
               </div>
