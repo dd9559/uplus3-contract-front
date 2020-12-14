@@ -779,7 +779,7 @@
           </div>
           <div
             class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2))&&contractDetail.contractEntrust&&contractDetail.contractEntrust.id)"
+            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.id&&((contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2)))"
           >
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
@@ -827,7 +827,7 @@
               round
               class="search_btn"
               @click="saveFile('WT')"
-              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.recordType.value===2||contractDetail.contractEntrust.recordType === 2)"
+              v-if="power['sign-ht-xq-main-upload'].state&&((contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState||contractDetail.contractEntrust.recordType === 2)&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.entrustState>1||contractDetail.contractEntrust.recordType === 2)"
             >确认上传</el-button>
             <!-- 合同主体上传 -->
           </div>
@@ -1505,9 +1505,9 @@
         round
         class="search_btn"
         @click="uploading('上传成功')"
-        v-if="power['sign-ht-xq-data'].state&&name==='third'&&((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)"
+        v-if="power['sign-ht-xq-data'].state&&name==='third'&&(((contractDetail.signingState&&contractDetail.signingState.value!==1&&contractDetail.signingState.value!==0)||!contractDetail.signingState)||(contractDetail.signingEntrustState&&contractDetail.signingEntrustState.value!==1&&contractDetail.signingEntrustState.value!==0)||!contractDetail.signingEntrustState)"
       >{{contractDetail.laterStageState.value===4?'提交审核':'确认上传'}}</el-button>
-      <!-- 合同资料库上传 -->
+      <!-- 合同资料库上传  -->
     </div>
 
     <!-- 拨号弹出框 -->
