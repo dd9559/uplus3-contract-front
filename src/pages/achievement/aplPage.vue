@@ -878,7 +878,7 @@
                 </el-table-column>
 
                 <el-table-column label="分成金额（元）" width="110">
-                   <template slot-scope="scope">{{tradeFee * scope.row.ratio / 100 || 0}}</template>
+                   <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100,2)/100).toFixed(2) || 0}}</template>
                     <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </el-table-column>
 

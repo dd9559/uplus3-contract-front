@@ -593,10 +593,10 @@
 
                 <div v-if="scope.row.achievementState==2" class="check-btn">
                   <span
-                    @click.stop="againCheck(scope.row,scope.$index)"
+                    @click.stop="editAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-edit'].state  && scope.row.throughSettlement ==0"
-                  >反审核</span>
+                    v-if="power['sign-yj-rev-edit'].state"
+                  >确认业绩</span>
                   <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -610,11 +610,11 @@
                     style="cursor:pointer;"
                     v-if="power['sign-yj-rev-retreat'].state"
                   >撤回</span>
-                  <!-- <span
+                  <span
                     @click.stop="shenSu(scope.row,scope.$index)"
                     style="cursor:pointer;"
-                    v-if="power['sign-yj-rev-appeal'].state"
-                  >申诉</span> -->
+                    v-if="power['sign-yj-rev-appeal'].state && scope.row.throughSettlement ==0  && scope.row.appealStatus.value != 1"
+                  >申诉</span>
                   <span
                     @click.stop="checkAch(scope.row,scope.$index)"
                     style="cursor:pointer;"
@@ -622,7 +622,7 @@
                   >审核</span>
                   <div
                     style="color:red"
-                    v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId"
+                    v-if="scope.row.auditId>0&&userInfo&&scope.row.auditId!==userInfo.empId && scope.row.appealStatus.value == 1"
                   >{{scope.row.auditName}}正在审核</div>
                 </div>
               </div>
