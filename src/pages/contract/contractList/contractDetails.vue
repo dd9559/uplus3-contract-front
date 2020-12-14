@@ -718,7 +718,7 @@
         <el-tab-pane
           label="合同主体"
           name="second"
-          v-if="(contType==='2'||contType==='3')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
+          v-if="(contType==='2'||contType==='3'||contType==='6')&&(power['sign-ht-xq-main-add'].state||power['sign-ht-xq-main-upload'].state)||(contType==='1'&&power['sign-ht-xq-main-add'].state)"
         >
           <div
             class="contractSubject"
