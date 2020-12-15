@@ -865,7 +865,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            <span v-if="scope.row.contType.value < 4">{{
+            <span v-if="scope.row.contType.value < 4&&!scope.row.isCombine">{{
               scope.row.distributableAchievement
                 ? scope.row.distributableAchievement
                 : 0

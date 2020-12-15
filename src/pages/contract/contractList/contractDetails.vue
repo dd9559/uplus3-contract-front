@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="mainContent">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'" name="deal-report">
+        <el-tab-pane label="成交报告" v-if="contType==='2'||contType==='3'||contType==='6'" name="deal-report">
           <dealReport
             v-if="isHaveDetail"
             :defaultInfo="contractDetail"
@@ -779,7 +779,7 @@
           </div>
           <div
             class="contractSubject"
-            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.id&&(((contractDetail.contractEntrust.entrustState>1&&contractDetail.contractEntrust.recordType === 1)||(contractDetail.contractEntrust.entrustState!=0&&contractDetail.contractEntrust.recordType === 2))))"
+            v-if="power['sign-ht-xq-main-upload'].state&&(contractDetail.contractEntrust&&contractDetail.contractEntrust.id&&((contractDetail.contractEntrust.entrustState>1&&contractDetail.contractEntrust.recordType === 1)||(contractDetail.contractEntrust.entrustState!=0&&contractDetail.contractEntrust.recordType === 2)||(contractDetail.contractEntrust.entrustState===3&&contractDetail.contractEntrust.recordType === 10)))"
           >
             <p class="mainTitle">委托合同主体</p>
             <ul class="ulData" style="margin-bottom:10px">
@@ -1039,7 +1039,7 @@
 
         <el-tab-pane
           label="委托合同"
-          v-if="(contType==='2'||contType==='3')&&power['sign-ht-xq-entrust-edit'].state"
+          v-if="(contType==='2'||contType==='3'||contType==='6')&&power['sign-ht-xq-entrust-edit'].state"
           name="agency"
         >
           <agency-contract

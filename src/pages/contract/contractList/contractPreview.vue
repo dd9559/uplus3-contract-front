@@ -48,7 +48,7 @@
       <!-- 委托合同按钮组 -->
       <div class="btn" v-else-if="isentrust">
         <el-button type="primary" round v-if="power['sign-ht-xq-entrust-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
-        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1&&detailPower" @mouseover="showList" @mouseout="closeList">
+        <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&companySigns.length!=1&&detailPower&&recordType!=10" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">签章选择</span>
           <div class="signList">
             <ul>
@@ -60,14 +60,14 @@
           </div>
         </div>
         <el-popover
-          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&storeId&&detailPower"
+          v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&storeId&&detailPower&&recordType!=10"
           placement="top-start"
           width="140"
           trigger="hover">
           <img class="signImg" :src="signImg" alt="">
           <el-button slot="reference" round @click="signature(1)" v-loading.fullscreen.lock="fullscreenLoading">签章打印</el-button>
         </el-popover>
-        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower" @click="dayin">签章打印</el-button>
+        <el-button round v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===2&&detailPower&&recordType!=10" @click="dayin">签章打印</el-button>
         <el-button type="primary" round @click="toCheck" v-if="examineState===0&&userMsg.empId===auditId">审核</el-button>
         <el-button round type="primary" v-if="power['sign-ht-xq-entrust-edit'].state&&examineState<0&&isCanAudit===1&&detailPower" @click="isSubmitAudit=true">提交审核</el-button>
         <el-button round v-if="examineState===0&&userMsg.empId!==auditId">审核中</el-button>
@@ -880,6 +880,7 @@ export default {
           if(this.isentrust){//委托合同
             this.examineState=res.data.examineState
             this.contState=res.data.entrustState
+            this.recordType=res.data.recordType.value;
           }else{
             this.examineState=res.data.examineState.value
             this.resultState=res.data.resultState.value
