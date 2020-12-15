@@ -1011,7 +1011,7 @@
               <div
                 class="btn"
                 v-if="
-                  power['sign-ht-qhsh-toverify'].state && scope.row.signAudit
+                  power['sign-ht-qhsh-toverify'].state && scope.row.signAudit && scope.row.recordType.value !== 10
                 "
                 @click="toSignAudit(scope.row, 'sign')"
               >
