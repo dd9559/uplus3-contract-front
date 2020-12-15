@@ -706,24 +706,6 @@
           ></el-option>
         </el-select>
       </div>
-      <!-- <div class="role">
-        <span class="point jianju" style="margin-right:25px;">审核人：</span>
-        {{depName}}
-        <el-select
-          v-model="SSuForm.empNames"
-          style="margin-left:22px;width:210px"
-          filterable
-          placeholder="请选择"
-          @change="getName"
-        >
-          <el-option
-            v-for="item in this.empNames"
-            :key="item.empId"
-            :label="item.name"
-            :value="item.empId"
-          ></el-option>
-        </el-select>
-      </div> -->
       <div class="input-group" style="align-items: normal;position:relative">
         <span class="point jianju" style="min-width:78px">申诉内容：</span>
         <el-input
@@ -1094,16 +1076,6 @@ export default {
     cutfile(index) {
       this.SSuForm.pinzheng.splice(index, 1);
     },
-    //申诉弹窗中获取审核人下拉框选中项
-    getName(val) {
-      for (let i = 0; i < this.empNames.length; i++) {
-        if (val == this.empNames[i].empId) {
-          this.auditName = this.empNames[i].name;
-          this.depName = this.empNames[i].depName;
-          this.roleName = this.empNames[i].roleName;
-        }
-      }
-    },
     trim(str) {
       return str.replace(/(^\s*)|(\s*$)/g, "");
     },
@@ -1124,10 +1096,6 @@ export default {
         this.$message("申诉内容不能为空！");
         return;
       }
-      // if (this.auditName == "") {
-      //   this.$message("审核人不能为空！");
-      //   return;
-      // }
       let arr2 = [];
       let arr = JSON.parse(JSON.stringify(this.SSuForm.pinzheng));
       for (let i = 0; i < arr.length; i++) {
@@ -1137,11 +1105,7 @@ export default {
         achievementId: this.yjId,
         appealRole: this.SSuForm.role.join(","),
         appealContent: this.SSuForm.remark,
-        voucherUrl: arr2,
-        //auditDepName: this.depName,
-        //auditId: this.SSuForm.empNames,
-        //auditName: this.auditName,
-        auditPostionName: this.roleName
+        voucherUrl: arr2
       };
       if (this.power["sign-yj-rev-appeal"].state) {
         this.$ajax
@@ -1153,9 +1117,6 @@ export default {
               this.SSuForm.role = [];
               this.SSuForm.remark = "";
               this.SSuForm.pinzheng = [];
-              this.SSuForm.empNames = "";
-              this.auditName = "";
-              this.roleName = "";
               this.$message({ message: "提交成功！" });
               this.getData(this.ajaxParam);
             }
@@ -1209,11 +1170,11 @@ export default {
           if (res.data.status == 200) {
             this.isSS = true;
             this.people = res.data.data.allRole;
-            this.depName = res.data.data.empNames[0].depName;
-            this.empNames = res.data.data.empNames;
+            // this.depName = res.data.data.empNames[0].depName;
+            // this.empNames = res.data.data.empNames;
 
-            this.SSuForm.empNames = res.data.data.empNames[0].empId;
-            this.auditName = res.data.data.empNames[0].name;
+            // this.SSuForm.empNames = res.data.data.empNames[0].empId;
+            // this.auditName = res.data.data.empNames[0].name;
           }
         })
         .catch(err => {
