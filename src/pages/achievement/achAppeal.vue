@@ -237,7 +237,7 @@
           </el-table-column>
           <el-table-column label="下一步审核人" min-width="100">
             <template slot-scope="scope">
-              <p v-if="scope.row.achievementAppeals[0]">{{scope.row.achievementAppeals[0].nextAuditName}}</p>
+              <p v-if="scope.row.achievementAppeals[0]">{{scope.row.achievementAppeals[0].nextAuditDepName+"-"+scope.row.achievementAppeals[0].nextAuditName}}</p>
               <p v-else>-</p>
               <el-button type="text"
                             v-if="(userInfo.user&&(scope.row.achievementAppeals[0].auditId===userInfo.user.empId ))  && scope.row.achievementAppeals[0].auditStatus.value ==0 &&  scope.row.achievementAppeals[0].nextAuditId != 0"
