@@ -173,7 +173,7 @@
         console.log(val,'111');
         let param={
           keyword:!val?'':val,
-          type:this.type===3?1:0,
+          type:this.type===3 || this.achAppealNextType ===1?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType,
