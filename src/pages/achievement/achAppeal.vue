@@ -426,7 +426,8 @@
         mounted() {
             this.ajaxParam = {
                 pageNum: this.currentPage,
-                pageSize: this.pageSize
+                pageSize: this.pageSize,
+                appealStatus: this.propForm.appealType
             };
             this.$nextTick(() => {
                 let res = this.getDataList;
