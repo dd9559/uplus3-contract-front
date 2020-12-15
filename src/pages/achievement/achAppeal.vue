@@ -235,7 +235,7 @@
                             @click="choseCheckPerson(scope.row,scope.row.achievementAppeals[0].auditId===userInfo.user.empId?2:1)">{{userInfo.user&&userInfo.user.empId===scope.row.achievementAppeals[0].auditId?'转交审核人':'设置审核人'}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="下一个审核人" min-width="100">
+          <el-table-column label="下一步审核人" min-width="100">
             <template slot-scope="scope">
               <p v-if="scope.row.achievementAppeals[0]">{{scope.row.achievementAppeals[0].nextAuditName}}</p>
               <p v-else>-</p>
