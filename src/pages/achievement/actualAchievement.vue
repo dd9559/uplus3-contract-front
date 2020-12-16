@@ -1123,10 +1123,10 @@ export default {
           })
           .catch(error => {
             if (error.message === "下一节点审批人不存在") {
-              this.checkPerson.flowType = 2;
-              this.checkPerson.code = this.yjId;
+              this.checkPerson.flowType = 6;
+              this.checkPerson.code = error.data.bizCode;
               this.checkPerson.state = true;
-              this.checkPerson.type = error.data.type;
+              this.checkPerson.type = 3;
             } else {
               this.$message({
                 message: error,
