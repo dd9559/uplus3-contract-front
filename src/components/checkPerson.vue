@@ -154,7 +154,7 @@
         this.inputEmp=false
         let param={
           keyword:!val?'':val, //部门名称关键字
-          type:this.type===3?1:0, //设置下一节点（或审核）为1，设置当前节点（或创建后提审）为0
+          type:this.type===3|| this.achAppealNextType ===1?1:0, //设置下一节点（或审核）为1，设置当前节点（或创建后提审）为0
           bizCode:this.bizCode, //业务编码
           flowType:this.flowType  //流程类型
         }
@@ -173,7 +173,7 @@
         console.log(val,'111');
         let param={
           keyword:!val?'':val,
-          type:this.type===3?1:0,
+          type:this.type===3 || this.achAppealNextType ===1?1:0,
           depId:this.choseItem.depId,
           bizCode:this.bizCode,
           flowType:this.flowType,
