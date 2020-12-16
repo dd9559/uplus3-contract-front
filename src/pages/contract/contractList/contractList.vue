@@ -432,6 +432,14 @@
           </div>
           <el-button
             class="btn-info"
+            round
+            type="primary"
+            size="small"
+            @click="testEvent"
+            >前端胡安阳测试，不用管，稍后删除</el-button
+          >
+          <el-button
+            class="btn-info"
             v-if="power['sign-ht-info-export'].state"
             round
             type="primary"
@@ -1129,6 +1137,16 @@
       </div>
       <span slot="footer" class="dialog-footer"></span>
     </el-dialog>
+    <!-- 测试 -->
+    <el-dialog title="打印详情" :visible.sync="testFlag" width="540px">
+      <el-button @click="tab('pdf')">pdf</el-button>
+      <el-button @click="tab('word')">word</el-button>
+      <el-button @click="tab('html')">html</el-button>
+      <div>
+        <div style="width:500px;height:600px" id="print-object"></div>
+      </div>
+      <span slot="footer" class="dialog-footer"></span>
+    </el-dialog>
     <!-- 打印 -->
     <PdfPrint
       :url="pdfUrl"
@@ -1294,6 +1312,7 @@ import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import PdfPrint from "@/components/PdfPrint";
 import checkPerson from "@/components/checkPerson";
+const { PDFObject } =require('@/assets/js/pdfobject.min.js')
 
 let rows = {};
 
@@ -1313,6 +1332,7 @@ export default {
   },
   data() {
     return {
+      testFlag: false,// 记得回来删除
       tableBox: null,
       contractForm: {
         dealAgentId: "",
@@ -1611,6 +1631,23 @@ export default {
     this.getList(); //获取创建线上合同列表
   },
   methods: {
+    testEvent() {
+      this.testFlag = !this.testFlag
+      console.log(PDFObject,"PDFObject")
+      PDFObject.embed("http://sign2.jjw.com:28879/api/setting/contractTemplate/getBlankPdf?type=2&dayRandomTime=1608086290085", "#print-object");
+    },
+    tab(type) {
+      console.log(PDFObject,"PDFObject");
+      let url;
+      if (type === 'pdf') {
+        url = 'http://sign2.jjw.com:28879/api/setting/contractTemplate/getBlankPdf?type=2&dayRandomTime=1608086290085'
+      } else if (type === 'word' ) {
+        url = 'http://sign2.jjw.com:28879/api/attachment/download?isSign=0&storeId=50630&attacId=91'
+      } else if (type === 'html' ) {
+        url = 'http://sign2.jjw.com:28879/api/contract/showHtml?id=8141&type=address'
+      }
+      PDFObject.embed(url, "#print-object");
+    },
     moveIn(type) {
       if (type === "online") {
         this.showOnLine = true;
