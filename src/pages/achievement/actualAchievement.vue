@@ -1126,7 +1126,7 @@ export default {
               this.checkPerson.flowType = 6;
               this.checkPerson.code = error.data.bizCode;
               this.checkPerson.state = true;
-              this.checkPerson.type = 3;
+              this.checkPerson.type = 1;
             } else {
               this.$message({
                 message: error,
