@@ -369,6 +369,7 @@ export default {
           // debugger
           // 如果为选择确定
           if (action === "confirm") {
+            this.copySearchData = { ...this.searchData };
             let data = this.getParamFn();
             // 加载中
             this.$tool.layerAlert.call(this, {
