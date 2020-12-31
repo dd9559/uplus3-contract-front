@@ -113,7 +113,7 @@
                     <div class="input">
                         <p>
                             <span class="mark">付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="loadType||!saveBtnShow" class="bank fukuan">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="loadType||!saveBtnShow" class="bank fukuan" @change="changeBuyerPaymentMethod">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -131,7 +131,7 @@
                         <p style="margin-left:5px;">
                             <span>按揭银行：</span>
                             <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable clearable class="bank">
-                                <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                                <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.bankName"></el-option>
                             </el-select>
                         </p>
                         <p style="margin:0 15px;">
@@ -344,9 +344,22 @@ export default {
            this.getContractDetail()
            this.getFlowList()
            this.getDictionary()
+           this.changeBuyerPaymentMethod(this.report.buyerPaymentMethod)
         }
     },
     methods: {
+        changeBuyerPaymentMethod(val) {
+            if (val === 2 && this.bankList.length === 0) {
+                this.$ajax.get('/api/system/selectBankName').then(res=>{
+                    res=res.data
+                if(res.status===200){
+                    this.bankList=res.data
+                }
+                }).catch(error=>{
+                    this.$message({message:error})
+                })
+            }
+        },
         inputLimit(val,type,index){
             if(index == 1){
                 this[type].buyerAgentCard = val.replace(/\s+/g,'')
