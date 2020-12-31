@@ -113,7 +113,7 @@
                     <div class="input">
                         <p>
                             <span class="mark">付款方式：</span>
-                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="loadType||!saveBtnShow" class="bank fukuan">
+                            <el-select size="small" v-model="report.buyerPaymentMethod" :disabled="loadType||!saveBtnShow" class="bank fukuan" @change="changeBuyerPaymentMethod">
                                 <el-option v-for="item in dictionary['621']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                             </el-select>
                         </p>
@@ -131,7 +131,7 @@
                         <p style="margin-left:5px;">
                             <span>按揭银行：</span>
                             <el-select size="small" v-model="report.stagesBankName" :disabled="noStageBank||!saveBtnShow" filterable clearable class="bank">
-                                <el-option v-for="item in bankList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                                <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.bankName"></el-option>
                             </el-select>
                         </p>
                         <p style="margin:0 15px;">
@@ -316,20 +316,20 @@ export default {
             },
             //银行列表
             bankList: [
-                { id: 1, name: "中国工商银行" },
-                { id: 2, name: "中国建设银行" },
-                { id: 3, name: "中国银行" },
-                { id: 4, name: "中国农业银行" },
-                { id: 5, name: "交通银行" },
-                { id: 6, name: "招商银行" },
-                { id: 7, name: "中信银行" },
-                { id: 8, name: "中国民生银行" },
-                { id: 9, name: "兴业银行" },
-                { id: 10, name: "上海浦东发展银行" },
-                { id: 11, name: "中国邮政储蓄银行" },
-                { id: 12, name: "中国光大银行" },
-                { id: 13, name: "平安银行" },
-                { id: 14, name: "华夏银行" }
+                // { id: 1, name: "中国工商银行" },
+                // { id: 2, name: "中国建设银行" },
+                // { id: 3, name: "中国银行" },
+                // { id: 4, name: "中国农业银行" },
+                // { id: 5, name: "交通银行" },
+                // { id: 6, name: "招商银行" },
+                // { id: 7, name: "中信银行" },
+                // { id: 8, name: "中国民生银行" },
+                // { id: 9, name: "兴业银行" },
+                // { id: 10, name: "上海浦东发展银行" },
+                // { id: 11, name: "中国邮政储蓄银行" },
+                // { id: 12, name: "中国光大银行" },
+                // { id: 13, name: "平安银行" },
+                // { id: 14, name: "华夏银行" }
             ],
             buyerArr: [],
             sellerArr: [],
@@ -347,6 +347,18 @@ export default {
         }
     },
     methods: {
+        changeBuyerPaymentMethod(val) {
+            if (val === 2 && this.bankList.length === 0) {
+                this.$ajax.get('/api/system/selectBankName').then(res=>{
+                    res=res.data
+                if(res.status===200){
+                    this.bankList=res.data
+                }
+                }).catch(error=>{
+                    this.$message({message:error})
+                })
+            }
+        },
         inputLimit(val,type,index){
             if(index == 1){
                 this[type].buyerAgentCard = val.replace(/\s+/g,'')
