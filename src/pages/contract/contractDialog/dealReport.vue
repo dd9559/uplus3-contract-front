@@ -345,6 +345,7 @@ export default {
            this.getFlowList()
            this.getDictionary()
         }
+        this.changeBuyerPaymentMethod(this.report.buyerPaymentMethod)
     },
     methods: {
         changeBuyerPaymentMethod(val) {
