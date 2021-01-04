@@ -368,13 +368,13 @@
         <div class="cw_agreement">
             <p id="one" class="navTitle">一、委托事项：</p>
             <div>居间人兹为委托人提供居间服务，房屋座落于甘肃省兰州市<span systemparam="propertyAddr" tag="input-auto"></span>室，证载建筑面积
-            <span tag="input-auto" listen="number" class="input-before" extendparam="val1"></span>㎡，
+            <span tag="input-auto" listen="number" max="12" class="input-before" extendparam="val1"></span>㎡，
             居间人现已提供该房屋资料予委托人详阅并实地查看了上述房屋，委托人已知晓并认可该房屋的建筑年代、结构、属性、装修情况、水电暖等所有房屋相关信息。在此基础之上，因委托人承购条件与卖方出售条件尚有差距，委托人愿意向居间人支付（小写）¥
             <span
-               max="12" systemparam="dealPrice" tag="input-auto" ></span>元整(大写：<span tag="input-auto" systemparam="dealPriceUpper" ></span>)斡旋金，由居间人代为斡旋，斡旋金在签订本《买卖斡旋金协议》时同时支付。
+               max="16" systemparam="dealPrice" tag="input-auto" ></span>元整(大写：<span tag="input-auto" systemparam="dealPriceUpper" ></span>)斡旋金，由居间人代为斡旋，斡旋金在签订本《买卖斡旋金协议》时同时支付。
             </div>
             <p class="son_title">二、委托人的承购条件：</p>
-            <p>1.委托人对该房产认购金额为人民币（小写）¥<span   max="12" systemparam="subscriptionPrice" tag="input-auto"></span>元整(大写：<span tag="input-auto" systemParam="subscriptionPriceUpper" class="input-readonly"></span>圆整)</p>
+            <p>1.委托人对该房产认购金额为人民币（小写）¥<span   max="16" systemparam="subscriptionPrice" tag="input-auto"></span>元整(大写：<span tag="input-auto" systemParam="subscriptionPriceUpper" class="input-readonly"></span>圆整)</p>
             <p>委托人确认上述价格为：</p>
             <div>
               <div class="info-checkbox" name="guaranty"><p type="check"></p><span>含买卖双方过户税、费的价格 。</span></div><br/>
@@ -444,7 +444,7 @@
             <div class="mf">
               <p>卖方承诺出售条件:</p>
               <div>
-                1.该房产出售价格为人民币（小写）¥<span class="input-before" listen="number" max="12" extendParam="val7" tag="input-auto" noline="true"></span>元整(大写：<span tag="input-auto" extendparam="val7_add" systemParam="true" class="input-readonly" noline="true" style="min-width: 150px;"></span>圆整)。此价格包括卖方自买入该房产后至本次山精色声出售的格为人用包结组不限于物业维好基金 有级电破初摄费，天然气初稳费神》。
+                1.该房产出售价格为人民币（小写）¥<span class="input-before" listen="number" max="16" extendParam="val7" tag="input-auto" noline="true"></span>元整(大写：<span tag="input-auto" extendparam="val7_add" systemParam="true" class="input-readonly" noline="true" style="min-width: 150px;"></span>圆整)。此价格包括卖方自买入该房产后至本次山精色声出售的格为人用包结组不限于物业维好基金 有级电破初摄费，天然气初稳费神》。
                 <p>卖方确认上述价格为: </p> 
                 <div>
                 <div class="info-checkbox" name="pp"><p type="check" nocheck="true"></p><span>含买卖双方过户税、费的价格 。</span></div><br/>
@@ -471,7 +471,7 @@
             </div>
             <div>
               卖方需在斡旋成功且收取定金后<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val13" noline="true"></span>日内与委托人及居间方签订 《房屋买卖(居间)合同》，若因卖方原因导致《房屋买卖(居间)合同》无法签订的，卖方需双倍返还委托人已经支付定金，包括同意居间方托管的定金部分，并向居间方支付违约金
-              （小写）¥<span class="input-before" listen="number" max="12" extendParam="val14" tag="input-auto" noline="true"></span>元整(大写：<span tag="input-auto" extendparam="val14_add" systemParam="true" class="input-readonly" noline="true" style="min-width: 150px;"></span>圆整)
+              （小写）¥<span class="input-before" listen="number" max="16" extendParam="val14" tag="input-auto" noline="true"></span>元整(大写：<span tag="input-auto" extendparam="val14_add" systemParam="true" class="input-readonly" noline="true" style="min-width: 150px;"></span>圆整)
             </div>
             <div class="xx">
               <p>时间： <span systemparam="signDate" tag="input-auto"></span></p>
@@ -493,12 +493,12 @@
     </div>
     </div>
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_WXJ_MY20200827c.js"></script> -->
-<script>
+<script type="text/javascript" src="/js/bundle_WXJ_MY20200827c.js"></script>
+<!-- <script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
     console.log(scriptList)
@@ -507,7 +507,7 @@
       var host_other="http://sign2.jjw.com:28879"
       var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_wt_lz20200703.js","datepicker.css"]
       for (let i = 0; i < addrList.length; i++) {
-        if(window.location.host==='192.168.13.7:8080'){
+        if(window.location.host==='localhost:8080'){
           if(addrList[i].indexOf('bundle')>-1){
             // addrList[i]=host_other+'/'+addrList[i]
             addrList[i]='./MY-WXJ.js'
@@ -534,5 +534,5 @@
       }
     }
   })();
-</script>
+</script> -->
 </html>

@@ -1,4 +1,4 @@
-import {contractConfig,toChineseNumber} from "./base.js"
+import {contractConfig,toChineseNumber,formatMoney} from "./base.js"
 
 let Obj={
     cn_arr:['val7','val14']
@@ -216,12 +216,31 @@ contractConfig.inputListener(function(ev,tip){
     //监听listen属性，判断是否有输入类型限制
     let spanAttr=tip.target.getAttribute('listen')
     if(spanAttr==='number'){
-      ev.target.value=ev.target.value.replace(/[^\d]/g, "")
-      tip.target.innerHTML = ev.target.value
       let cn_str = tip.target.getAttribute('extendparam')
+      if (Obj['cn_arr'].includes(cn_str) || cn_str === 'val1') {
+        ev.target.value = ev.target.value.replace(/[^\d.]/g,"");
+        ev.target.value = ev.target.value.replace(/^\./g,"");
+        ev.target.value = ev.target.value.replace(/\.{2,}/g,".");
+        ev.target.value = ev.target.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        ev.target.value = ev.target.value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/,'$1$2.$3');
+      } else {
+        ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+      }
+      tip.target.innerHTML = ev.target.value
       if(Obj['cn_arr'].includes(cn_str)){
+
+        if (ev.target.value.indexOf(",") != -1) {
+          ev.target.value = ev.target.value.replace(/,/g, '')
+        }
         let index = toChineseNumber(ev.target.value).indexOf('元')
-        document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0,index)
+        document.querySelector(`*[extendParam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)+toChineseNumber(ev.target.value).substr(index)
+        if (ev.target.value.indexOf(",") == -1) {
+          document.querySelector(`*[extendParam=${cn_str}]`).innerHTML = formatMoney(ev.target.value)
+        }
+
+
+        // let index = toChineseNumber(ev.target.value).indexOf('元')
+        // document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0,index)
       }
     }
   },function(tip){
@@ -230,8 +249,18 @@ contractConfig.inputListener(function(ev,tip){
     let strCn = tip.target.getAttribute('extendparam')
     if(Obj['cn_arr'].includes(strCn)){
       if(initVal.length>0){
+
+        if (initVal.indexOf(",") != -1) {
+          initVal = initVal.replace(/,/g, '');
+        }
         let index = toChineseNumber(initVal).indexOf('元')
-        document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0,index)
+        document.querySelector(`*[extendParam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)+toChineseNumber(ev.target.value).substr(index)
+        if (initVal.indexOf(",") == -1) {
+          document.querySelector(`*[extendParam=${strCn}]`).innerHTML = formatMoney(initVal)
+        }
+
+        // let index = toChineseNumber(initVal).indexOf('元')
+        // document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0,index)
       }else{
         document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
       }

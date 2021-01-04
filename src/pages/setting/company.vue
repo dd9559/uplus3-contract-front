@@ -39,6 +39,20 @@
         <el-form-item label="银行卡号">
           <el-input v-model="searchForm.bankCard" maxlength="20" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
+
+        <!-- 2.5.7新加筛选项 -->
+        <el-form-item label="认证状态">
+          <el-select v-model="searchForm.verifyState" :clearable="true" class="w180">
+            <el-option label="全部" value=""></el-option>
+            <el-option v-for="item in verifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="授权状态">
+         <el-select v-model="searchForm.warrantState" :clearable="true">
+            <el-option label="全部" value=""></el-option>
+            <el-option v-for="item in warrantList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- table表格 -->
@@ -414,8 +428,46 @@
           cooperationMode: "",
           bankCard: "",
           keyword: "",
-          type: ""
+          type: "",
+          verifyState: "",
+          warrantState: ""
         },
+        verifyList: [ // 认证状态
+          {
+            id:0,
+            name:"未认证"
+          },
+          {
+            id:1,
+            name:"认证中"
+          },
+          {
+            id:2,
+            name:"认证失败"
+          },
+          {
+            id:3,
+            name:"认证成功"
+          },
+        ],
+        warrantList: [ // 授权状态
+          {
+            id:0,
+            name:"未授权"
+          },
+          {
+            id:1,
+            name:"授权中"
+          },
+          {
+            id:2,
+            name:"授权失败"
+          },
+          {
+            id:3,
+            name:"授权成功"
+          },
+        ],
         cityList: [],
         homeStoreList: [],
         storeList: [],
@@ -1087,6 +1139,8 @@
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
         this.searchForm.type = ""
+        this.searchForm.verifyState = ""
+        this.searchForm.warrantState = ""
         this.searchTime = []
         this.pageNum = 1
       },
