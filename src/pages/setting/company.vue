@@ -113,7 +113,7 @@
         <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2)">认证</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2)">认证</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
             <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2) && scope.row.verifyState == 3">授权</el-button>
           </template>
@@ -174,7 +174,7 @@
             </div>
             <div class="item item-display">
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="fourthStoreNoEdit" @change="idTypeChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="true" @change="idTypeChange">
                   <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
@@ -809,6 +809,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = this.cityInfo.cityName
+        this.companyForm.lepDocumentType = 1
         // this.clearStore('init')
         this.preConFile = []
         this.preFinFile = []
@@ -821,7 +822,7 @@
         this.companyForm.franchiseRatio = ""
         this.companyForm.name = ""
         this.companyForm.lepName = ""
-        this.companyForm.lepDocumentType = ""
+        this.companyForm.lepDocumentType = 1
         this.companyForm.lepDocumentCard = ""
         this.companyForm.lepPhone = ""
         this.companyForm.documentType = ""
@@ -913,7 +914,7 @@
           this.$ajax.put('/api/setting/company/update',param).then(res => {
             res = res.data
             if(res.status === 200) {
-              this.$message(res.message)
+              this.$message("授权短信已发送，请及时授权！")
               this.getCompanyList()
               this.delIds = []
             }
@@ -1087,7 +1088,7 @@
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
-                  this.$message(res.message)
+                  this.$message("认证短信已发送，请及时认证！")
                   this.getCompanyList()
                   this.delIds = []
                 }
