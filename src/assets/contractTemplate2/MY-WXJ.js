@@ -254,7 +254,7 @@ contractConfig.inputListener(function(ev,tip){
           initVal = initVal.replace(/,/g, '');
         }
         let index = toChineseNumber(initVal).indexOf('元')
-        document.querySelector(`*[extendParam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)+toChineseNumber(ev.target.value).substr(index)
+        document.querySelector(`*[extendParam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)+toChineseNumber(initVal).substr(index)
         if (initVal.indexOf(",") == -1) {
           document.querySelector(`*[extendParam=${strCn}]`).innerHTML = formatMoney(initVal)
         }
