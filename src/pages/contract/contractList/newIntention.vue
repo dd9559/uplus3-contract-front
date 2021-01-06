@@ -121,7 +121,7 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
@@ -160,7 +160,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
@@ -230,7 +230,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
+                  <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
@@ -515,6 +515,8 @@ export default {
       // this.getShopList();
       this.contractForm.type = this.$route.query.contType //区分合同类型
       this.recordType = parseInt(this.$route.query.recordType)
+      this.contractForm.contPersons[0].cardType = this.recordType === 10 ? 1 : ""
+      this.contractForm.contPersons[1].cardType = this.recordType === 10 ? 1 : ""
       //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
       if (this.$route.query.operateType) {
           this.type = parseInt(this.$route.query.operateType)

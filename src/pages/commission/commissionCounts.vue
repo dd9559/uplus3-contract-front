@@ -103,11 +103,19 @@
             {{isCalculation[scope.row.isCalculation].label}}
           </template>
         </el-table-column>
-        <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
-        <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式"></el-table-column>
+        <el-table-column prop="bonusMoney" min-width="85" label="提成金额">
+          <template slot-scope="scope">
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney  }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式">
+          <template slot-scope="scope">
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusFormula  }}
+          </template>
+        </el-table-column>
         <el-table-column min-width="130" label="提成生成时间">
           <template slot-scope="scope">
-            {{ dateFormat(scope.row.bonusDate) }}
+            {{ scope.row.isCalculation === 0 ? "-" : dateFormat(scope.row.bonusDate) }}
           </template>
         </el-table-column>
       </el-table>

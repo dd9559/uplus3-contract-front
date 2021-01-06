@@ -123,6 +123,7 @@
                     v-model="item.cardType"
                     placeholder="请选择"
                     @change="changeCadrType($event,index)"
+                    disabled
                   >
                     <template v-for="item in dictionary['633']">
                       <el-option
@@ -787,7 +788,7 @@ export default {
           name: "",
           mobile: "",
           roleName: "",
-          cardType: "",
+          cardType: 1,
           encryptionCode: "",
           email: "-",
           companyName: "",

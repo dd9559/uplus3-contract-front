@@ -391,13 +391,7 @@ let toChineseNumber = function(money) {
 }
 
 function formatMoney(num) {
-    var list = new String(num).split('').reverse();
-    for (var i = 0; i < list.length; i++) {
-        if (i % 4 == 3) {
-            list.splice(i, 0, ',');
-        }
-    }
-    return list.reverse().join('');
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 export {
     contractConfig,
