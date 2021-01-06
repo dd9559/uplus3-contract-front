@@ -594,7 +594,7 @@ export default {
       }
       else if(val == "name"||val=="lepName"||val=="companyName") {
         this.$nextTick(() => {
-         this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
+         this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
         //  this.contractForm.contPersons[index].name = this.$tool.textInput(this.contractForm.contPersons[index].name)
         })
       }
