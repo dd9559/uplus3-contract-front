@@ -346,7 +346,7 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType"
-                                            :disabled="canInput||recordType===10"
+                                            :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)"
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
@@ -473,7 +473,7 @@
                                                 placeholder="产权比"
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
-                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                                             <template v-for="item in dictionary['633']">
                                                 <el-option
                                                     v-if="recordType===10&&item.key!=4||recordType!=10"
