@@ -3204,17 +3204,20 @@ export default {
         },
         inputOnly(index, type) {
             if (type === "owner") {
-                this.ownerList[index].name = this.$tool.textInput(
-                    this.ownerList[index].name
-                );
+                // this.ownerList[index].name = this.$tool.textInput(
+                //     this.ownerList[index].name
+                // );
+                this.ownerList[index].name = this.ownerList[index].name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             } else if (type === "guest") {
-                this.guestList[index].name = this.$tool.textInput(
-                    this.guestList[index].name
-                );
+                // this.guestList[index].name = this.$tool.textInput(
+                //     this.guestList[index].name
+                // );
+                this.guestList[index].name = this.guestList[index].name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             } else if (type === "other") {
-                this.contractForm.otherCooperationInfo.name = this.$tool.textInput(
-                    this.contractForm.otherCooperationInfo.name
-                );
+                // this.contractForm.otherCooperationInfo.name = this.$tool.textInput(
+                //     this.contractForm.otherCooperationInfo.name
+                // );
+                this.contractForm.otherCooperationInfo.name = this.contractForm.otherCooperationInfo.name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             }
         },
         inputCode(type) {
