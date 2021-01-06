@@ -76,7 +76,17 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
         </el-table-column>
-        <el-table-column label="银行卡号">
+        <el-table-column label="认证状态" min-width="50">
+          <template slot-scope="scope">
+            <p>{{verifyList.filter(item=>item.id == scope.row.verifyState).length>0?verifyList.filter(item=>item.id == scope.row.verifyState)[0].name:'-'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="授权状态" min-width="50">
+          <template slot-scope="scope">
+            <p>{{warrantList.filter(item=>item.id == scope.row.warrantState).length>0?warrantList.filter(item=>item.id == scope.row.warrantState)[0].name:'-'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="银行卡号" min-width="100">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
@@ -100,10 +110,12 @@
         </el-table-column>
         <el-table-column label="添加人" prop="createByName">
         </el-table-column>
-        <el-table-column label="操作" min-width="60">
+        <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&editBtnShow(scope.row)">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2)">认证</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2) && scope.row.verifyState == 3">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -302,7 +314,7 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm">确 定</el-button>
+        <el-button type="primary" @click="submitConfirm">认 证</el-button>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -867,6 +879,54 @@
       delStamp(type) {
         type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
+      listConfirm(item){
+        console.log(item);
+        let param = {
+          cityId: item.cityId,
+          cityName: item.cityName,
+          companyBankList: item.companyBankList,
+          contractSign: item.contractSign,
+          cooperationMode: item.cooperationMode.value,
+          documentCard: item.documentCard,
+          documentType: item.documentType.value,
+          financialSign: item.financialSign,
+          id: item.id,
+          lepDocumentCard: item.lepDocumentCard,
+          lepDocumentType: item.lepDocumentType.value,
+          lepName: item.lepName,
+          lepPhone: item.lepPhone,
+          name: item.name,
+          storeId: item.storeId,
+          storeName: item.storeName,
+          level: item.level ? item.level : "",
+          delIds: this.delIds,
+          verifyState:item.verifyState,
+          warrantState: item.warrantState
+        }
+        this.$ajax.get('/api/setting/company/updateShowFee',
+          {storeId:item.storeId}
+        ).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            param.franchiseRatio = res.data.franchiseRatio.toString()
+          }
+          this.$ajax.put('/api/setting/company/update',param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.$message(res.message)
+              this.getCompanyList()
+              this.delIds = []
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        }).catch(error => {
+          this.$message({
+            message: error,
+            type: "error"
+          })
+        })
+      },
       submitConfirm() {
         if(this.version === 3) {
           delete rule['cooperationMode']
@@ -1081,7 +1141,9 @@
           contractSign: currentRow.contractSign,
           financialSign: currentRow.financialSign,
           level: currentRow.level ? currentRow.level : "",
-          franchiseRatio: ""
+          franchiseRatio: "",
+          verifyState:currentRow.verifyState,
+          warrantState:currentRow.warrantState
         }
         this.companyForm = newForm
         this.getStoreRadio(type,currentRow.storeId)
