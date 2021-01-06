@@ -1034,6 +1034,8 @@ export default {
                 this.loanType = Number(this.$route.query.loanType);
             }
             this.recordType = parseInt(this.$route.query.recordType);
+            this.ownerList[0].cardType = this.recordType === 10 ? 1 : ""
+            this.guestList[0].cardType = this.recordType === 10 ? 1 : ""
             if (this.$route.query.operateType) {
                 this.type = parseInt(this.$route.query.operateType);
                 if (this.type == 2) {
