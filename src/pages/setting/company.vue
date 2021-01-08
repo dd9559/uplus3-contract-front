@@ -186,12 +186,7 @@
               </el-form-item>
             </div>
             <div class="item">
-              <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="fourthStoreNoEdit">
-                  <el-option v-for="item in dictionary['38']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="统一社会信用代码: " v-if="creditCodeShow" class="tongyi">
+              <el-form-item label="统一社会信用代码: " v-if="true" >
                 <el-input size="mini" v-model.trim="documentCard.creditCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
@@ -536,6 +531,7 @@
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
         pd:'',
+        rowdata: null,
       }
     },
     mounted() {
@@ -825,7 +821,6 @@
         this.companyForm.lepDocumentType = 1
         this.companyForm.lepDocumentCard = ""
         this.companyForm.lepPhone = ""
-        this.companyForm.documentType = ""
         this.companyForm.contractSign = ""
         this.companyForm.financialSign = ""
         this.icRegisterShow = false
@@ -1062,6 +1057,18 @@
             let param = {
               documentCard: this.documentCard
             }
+            let change = false;
+            if(this.rowdata.name == this.companyForm.name &&
+              this.rowdata.lepName == this.companyForm.lepName &&
+              this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
+              this.rowdata.lepPhone == this.companyForm.lepPhone &&
+              this.rowdata.documentType == this.companyForm.documentType &&
+              this.rowdata.creditCode == this.companyForm.creditCode
+            ){
+              change = false
+            }else{
+              change = true
+            }
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
             if(this.companyFormTitle === "添加企业信息") {
@@ -1069,6 +1076,7 @@
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
+                  this.rowdata = null
                   this.$message(res.message)
                   this.getCompanyList()
                 }
@@ -1088,7 +1096,13 @@
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
-                  this.$message("认证短信已发送，请及时认证！")
+                  this.rowdata = null
+                  if(change){
+                    this.$message("认证短信已发送，请及时认证！")
+                  }else{
+                    this.$message("更新成功")
+                  }
+                  
                   this.getCompanyList()
                   this.delIds = []
                 }
@@ -1107,6 +1121,7 @@
           this.dialogViewVisible = true
         } else {
           this.AddEditVisible = true
+          this.rowdata = JSON.parse(JSON.stringify(row))
           this.companyFormTitle = "编辑企业信息"
           this.storeNoChange = true
         }
