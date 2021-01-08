@@ -1062,8 +1062,8 @@
               this.rowdata.lepName == this.companyForm.lepName &&
               this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
               this.rowdata.lepPhone == this.companyForm.lepPhone &&
-              this.rowdata.documentType == this.companyForm.documentType &&
-              this.rowdata.creditCode == this.companyForm.creditCode
+              this.rowdata.documentType.value == this.companyForm.documentType &&
+              this.rowdata.documentCard.creditCode == this.documentCard.creditCode
             ){
               change = false
             }else{
