@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>授权成功</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fdffff;
+            box-sizing: border-box;
+        }
+
+        .content .icon-box {
+            position: relative;
+            width: 165px;
+            height: 115px;
+            margin: 18vh 0 3vh 0;
+            background-color: #fff;
+        }
+
+        .content .icon-box .icon {
+            display: inline-block;
+            position: absolute;
+            font-size: 22px;
+            color: #6dd55a;
+        }
+
+        .content .icon-box .icon-add {
+            top: 2%;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .content .icon-box .icon-solid {
+            top: 22%;
+            left: 22%;
+            border-radius: 50%;
+            width: 5px;
+            height: 5px;
+            background-color: #6dd55a;
+        }
+
+        .content .icon-box .icon-hollow {
+            top: 43%;
+            border-radius: 50%;
+            width: 7px;
+            height: 7px;
+            border: 2px solid #6dd55a;
+        }
+
+        .content .icon-box .icon-quadrangle {
+            top: 5%;
+            right: 10%;
+            width: 37%;
+            height: 42%;
+            background-color: #d1d6e3;
+        }
+
+        .content .icon-box .icon-quadrangle::before {
+            content: "";
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 20%;
+            height: 15%;
+            background-color: #fff;
+        }
+
+        .content .icon-box .icon-quadrangle::after {
+            content: "";
+            position: absolute;
+            bottom: 15%;
+            left: 15%;
+            width: 65%;
+            height: 15%;
+            background-color: #fff;
+        }
+
+        .content .icon-box .icon-Kou {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            bottom: 7%;
+            left: 46%;
+            transform: translate(-50%);
+            width: 36%;
+            height: 50%;
+            border-radius: 50%;
+            border: 8px solid #fff;
+            background-color: #66d852;
+        }
+
+        .content .icon-box .icon-Kou::before {
+            content: "";
+            width: 63%;
+            height: 30%;
+            margin-top: -15px;
+            border: 3px solid #fff;
+            border-top: none;
+            transform: rotate(-45deg);
+            border-right: none;
+        }
+
+        .content .text {
+            font-weight: bold;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="icon-box">
+            <span class="icon-add icon">+</span>
+            <span class="icon-solid icon"></span>
+            <span class="icon-hollow icon"></span>
+            <span class="icon-quadrangle icon"></span>
+            <span class="icon-Kou icon"></span>
+        </div>
+        <p class="text">授权成功</p>
+    </div>
+</body>
+</html>
