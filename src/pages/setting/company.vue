@@ -945,10 +945,10 @@
               this.$message({message:'手机号码不正确',type:'warning'})
               return false
             } else {
-              if(!this.companyForm.documentType) {
-                this.$message({message:"企业证件不能为空"})
-                return false
-              }
+              // if(!this.companyForm.documentType) {
+              //   this.$message({message:"企业证件不能为空"})
+              //   return false
+              // }
             }
           } else {
             this.$message({message:"法人手机号码不能为空"})
