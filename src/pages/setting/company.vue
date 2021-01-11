@@ -1017,7 +1017,7 @@
               }
             }
           }
-          if(this.companyForm.documentType === 1) {
+          if(true) {
             if(this.documentCard.creditCode) {
               this.documentCard.icRegisterCode = ""
               this.documentCard.organizationCode = ""
