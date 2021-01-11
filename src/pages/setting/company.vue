@@ -113,7 +113,7 @@
         <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2)">认证</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
             <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2) && scope.row.verifyState == 3">授权</el-button>
           </template>
@@ -944,12 +944,7 @@
             if(!checkPhone(val)) {
               this.$message({message:'手机号码不正确',type:'warning'})
               return false
-            } else {
-              // if(!this.companyForm.documentType) {
-              //   this.$message({message:"企业证件不能为空"})
-              //   return false
-              // }
-            }
+            } 
           } else {
             this.$message({message:"法人手机号码不能为空"})
             return false
@@ -1049,27 +1044,34 @@
             let param = {
               documentCard: this.documentCard
             }
-            let change = false;
-            if(this.rowdata.name == this.companyForm.name &&
-              this.rowdata.lepName == this.companyForm.lepName &&
-              this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
-              this.rowdata.lepPhone == this.companyForm.lepPhone &&
-              this.rowdata.documentType.value == this.companyForm.documentType &&
-              this.rowdata.documentCard.creditCode == this.documentCard.creditCode
-            ){
-              change = false
-            }else{
-              change = true
+            if(this.companyFormTitle != "添加企业信息"){
+              let change = false;
+              if(this.rowdata.name == this.companyForm.name &&
+                this.rowdata.lepName == this.companyForm.lepName &&
+                this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
+                this.rowdata.lepPhone == this.companyForm.lepPhone &&
+                this.rowdata.documentType.value == this.companyForm.documentType &&
+                this.rowdata.documentCard.creditCode == this.documentCard.creditCode
+              ){
+                change = false
+              }else{
+                change = true
+              }
             }
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
+            param.documentType = 1
             if(this.companyFormTitle === "添加企业信息") {
               this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
                   this.rowdata = null
-                  this.$message(res.message)
+                  if(res.data == 200){
+                    this.$message("认证成功")
+                  }else{
+                    this.$message("认证短信已发送，请及时认证！")
+                  }
                   this.getCompanyList()
                 }
               }).catch(error => {
@@ -1145,7 +1147,6 @@
           lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
-          documentType: currentRow.documentType.value,
           contractSign: currentRow.contractSign,
           financialSign: currentRow.financialSign,
           level: currentRow.level ? currentRow.level : "",
