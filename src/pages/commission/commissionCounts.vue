@@ -103,11 +103,20 @@
             {{isCalculation[scope.row.isCalculation].label}}
           </template>
         </el-table-column>
-        <el-table-column prop="bonusMoney" min-width="85" label="提成金额"></el-table-column>
-        <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式"></el-table-column>
+         <el-table-column prop="bonusMoney" min-width="85" label="提成金额">
+          <template slot-scope="scope">
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney  }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式">
+          <template slot-scope="scope">
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusFormula  }}
+          </template>
+        </el-table-column>
+
         <el-table-column min-width="130" label="提成生成时间">
           <template slot-scope="scope">
-            {{ dateFormat(scope.row.bonusDate) }}
+            {{ scope.row.isCalculation === 0 ? "-" : dateFormat(scope.row.bonusDate) }}
           </template>
         </el-table-column>
       </el-table>
@@ -356,6 +365,7 @@ export default {
       let d = this.dateFormat(new Date()).split("-");
       let t = d[1] - 1;
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
+      d[0] = t > 0 ? d[0] : d[0] - 1;// 提成优化01/12
       d.splice(2, 1);
       this.defSettleDate = d.join("-");
       this.searchData.settleDate = d.join("-");
@@ -369,6 +379,7 @@ export default {
           // debugger
           // 如果为选择确定
           if (action === "confirm") {
+            this.copySearchData = { ...this.searchData }; // 提成优化01/12
             let data = this.getParamFn();
             // 加载中
             this.$tool.layerAlert.call(this, {

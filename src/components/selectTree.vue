@@ -2,7 +2,7 @@
   <el-popover @show="initList('show')" @hide="initList('hide')" ref="popover" trigger="manual" placement="bottom"
     v-model="visible">
     <div class="select-tree">
-      <el-tree accordion :data="list" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+      <el-tree accordion :data="list" node-key="depId" :default-expanded-keys="expandedArr" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
     <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear"
       @mouseleave="clearVal=false">
@@ -20,6 +20,17 @@
 <script>
 let _list = [];
 let _inputVal = "";
+function findDep (item,arr = []) {
+  if (item.subs.length === 0) {
+    arr.push(item)
+  } else {
+    arr.push(item)
+    item.subs.map(itemChild => {
+      findDep(itemChild,arr)
+    })
+  }
+  return arr
+}
 export default {
   name: "select-tree",
   props: {
@@ -67,6 +78,7 @@ export default {
       cellClick: false, //是否选择
       operaTime: null, //键盘输入时间
       operaStatus: false,
+      expandedArr: [], //搜索展开项
     };
   },
   mounted() {
@@ -86,6 +98,16 @@ export default {
     systemKey: function (val) {
       this.getList();
     },
+    list: function (val) {
+      if (val.length > 0 && this.inputVal) {
+        this.expandedArr = []
+        val.map(item => {
+          this.expandedArr.push(findDep(item)[findDep(item).length -1].depId)
+        })
+      } else {
+        this.expandedArr = []
+      }
+    }
   },
   methods: {
     bodyClick: function (e) {

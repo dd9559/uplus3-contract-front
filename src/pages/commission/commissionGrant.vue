@@ -379,6 +379,7 @@ export default {
       let d = this.dateFormat(new Date()).split("-");
       let t = d[1] - 1;
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
+      d[0] = t > 0 ? d[0] : d[0] - 1;// 提成优化01/12
       d.splice(2, 1);
       this.defSettleDate = d.join("-");
       this.searchData.settleDate = d.join("-");
