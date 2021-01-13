@@ -1044,13 +1044,13 @@
             let param = {
               documentCard: this.documentCard
             }
+            let change = false;
             if(this.companyFormTitle != "添加企业信息"){
-              let change = false;
               if(this.rowdata.name == this.companyForm.name &&
                 this.rowdata.lepName == this.companyForm.lepName &&
                 this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
                 this.rowdata.lepPhone == this.companyForm.lepPhone &&
-                this.rowdata.documentType.value == this.companyForm.documentType &&
+                //this.rowdata.documentType.value == this.companyForm.documentType &&
                 this.rowdata.documentCard.creditCode == this.documentCard.creditCode
               ){
                 change = false
