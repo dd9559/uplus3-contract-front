@@ -115,7 +115,7 @@
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
-            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2) && scope.row.verifyState == 3">授权</el-button>
+            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
