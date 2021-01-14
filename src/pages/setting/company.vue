@@ -1092,7 +1092,11 @@
                   this.AddEditVisible = false
                   this.rowdata = null
                   if(change){
-                    this.$message("认证短信已发送，请及时认证！")
+                    if(res.data == 200){
+                      this.$message("更新成功")
+                    }else{
+                      this.$message("认证短信已发送，请及时认证！")
+                    }
                   }else{
                     this.$message("更新成功")
                   }
