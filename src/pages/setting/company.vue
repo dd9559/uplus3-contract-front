@@ -1091,16 +1091,11 @@
                 if(res.status === 200) {
                   this.AddEditVisible = false
                   this.rowdata = null
-                  if(change){
-                    if(res.data == 200){
-                      this.$message("更新成功")
-                    }else{
-                      this.$message("认证短信已发送，请及时认证！")
-                    }
-                  }else{
+                  if(res.data == 200){
                     this.$message("更新成功")
+                  }else{
+                    this.$message("认证短信已发送，请及时认证！")
                   }
-                  
                   this.getCompanyList()
                   this.delIds = []
                 }
