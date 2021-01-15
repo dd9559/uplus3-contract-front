@@ -346,13 +346,13 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType"
-                                            :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)"
+                                            :disabled="canInput"
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
                                             <template v-for="item in dictionary['633']">
                                                 <el-option
-                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    v-if="(recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10))&&item.key==1||recordType!=10"
                                                     :key="item.key"
                                                     :label="item.value"
                                                     :value="item.key">
@@ -473,10 +473,10 @@
                                                 placeholder="产权比"
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
-                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                                        <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                                             <template v-for="item in dictionary['633']">
                                                 <el-option
-                                                    v-if="recordType===10&&item.key!=4||recordType!=10"
+                                                    v-if="(recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10))&&item.key==1||recordType!=10"
                                                     :key="item.key"
                                                     :label="item.value"
                                                     :value="item.key">
@@ -1173,7 +1173,7 @@ export default {
                     mobile: "",
                     encryptionMobile: "",
                     relation: "",
-                    cardType: this.recordType === 10 ? 1 : "",
+                    cardType: "",
                     name: "",
                     propertyRightRatio: ""
                 });
@@ -1192,7 +1192,7 @@ export default {
                     mobile: "",
                     encryptionMobile: "",
                     relation: "",
-                    cardType: this.recordType === 10 ? 1 : "",
+                    cardType: "",
                     name: "",
                     propertyRightRatio: ""
                 });
@@ -2571,7 +2571,7 @@ export default {
                                     element.name = "";
                                     element.mobile = element.OwnerMobile;
                                     element.relation = element.Relation;
-                                    element.cardType = this.recordType === 10 ? 1 : "";
+                                    element.cardType = "";
                                     element.isEncryption = true;
                                     delete element.OwnerName;
                                     delete element.OwnerMobile;
@@ -2665,7 +2665,7 @@ export default {
                                     element.name = "";
                                     element.mobile = element.CustMobile;
                                     element.relation = element.CustRelation;
-                                    element.cardType = this.recordType === 10 ? 1 : "";
+                                    element.cardType = "";
                                     element.isEncryption = true;
                                     delete element.CustName;
                                     delete element.CustMobile;
