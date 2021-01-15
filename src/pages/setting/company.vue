@@ -115,7 +115,7 @@
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
             <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
-            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2) && scope.row.verifyState == 3">授权</el-button>
+            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -1044,13 +1044,13 @@
             let param = {
               documentCard: this.documentCard
             }
+            let change = false;
             if(this.companyFormTitle != "添加企业信息"){
-              let change = false;
               if(this.rowdata.name == this.companyForm.name &&
                 this.rowdata.lepName == this.companyForm.lepName &&
                 this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
                 this.rowdata.lepPhone == this.companyForm.lepPhone &&
-                this.rowdata.documentType.value == this.companyForm.documentType &&
+                //this.rowdata.documentType.value == this.companyForm.documentType &&
                 this.rowdata.documentCard.creditCode == this.documentCard.creditCode
               ){
                 change = false
@@ -1091,12 +1091,11 @@
                 if(res.status === 200) {
                   this.AddEditVisible = false
                   this.rowdata = null
-                  if(change){
-                    this.$message("认证短信已发送，请及时认证！")
-                  }else{
+                  if(res.data == 200){
                     this.$message("更新成功")
+                  }else{
+                    this.$message("认证短信已发送，请及时认证！")
                   }
-                  
                   this.getCompanyList()
                   this.delIds = []
                 }
