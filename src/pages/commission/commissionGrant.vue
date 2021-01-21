@@ -7,10 +7,13 @@
         clearable>
       </el-input>
       <!-- 日期 -->
-      <div class="item-text">结算周期</div>
-      <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="month"
-        value-format="yyyy-MM">
-      </el-date-picker>
+      <div class="triple-select set-data-class">
+        <div class="item-text">结算周期</div>
+        <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="monthrange"
+          value-format="yyyy-MM">
+        </el-date-picker>
+      </div>
+      
       <!-- 三联下拉选择 -->
       <div class="triple-select">
 
@@ -381,8 +384,8 @@ export default {
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
       d[0] = t > 0 ? d[0] : d[0] - 1;
       d.splice(2, 1);
-      this.defSettleDate = d.join("-");
-      this.searchData.settleDate = d.join("-");
+      this.defSettleDate = new Array(d.join("-"),d.join("-"));
+      this.searchData.settleDate = new Array(d.join("-"),d.join("-"));
     },
     // 批量发放
     batchCalculationFn() {
@@ -463,6 +466,7 @@ export default {
         bonusDateEnd: "", //提成计算日期结束
       };
 
+      data.settleDate = data.settleDate.join();
       let signJ =
         data.signDateValue === 0
           ? {
@@ -481,7 +485,7 @@ export default {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
       });
-
+      
       return data;
     },
     // 导出
@@ -514,7 +518,18 @@ export default {
   },
 };
 </script>
-
+<style lang="less">
+  .set-data-class {
+    display: inline-flex;
+    .item-billing-date {
+      top: 3px;
+      i,input,span {
+        position: relative;
+        top: -3px !important;
+      }
+    }
+  }
+</style>
 <style scoped>
 .brand-nav {
   background-color: #f5f5f5;
