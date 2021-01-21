@@ -426,7 +426,7 @@ export default {
         bonusDateEnd: "", //提成计算日期结束
       };
 
-      data.settleDate = data.settleDate.join();
+      data.settleDate = data.settleDate ? data.settleDate.join() : '';
       let signJ =
         data.signDateValue === 0
           ? {
@@ -488,10 +488,7 @@ export default {
       val === ""
         ? (this.searchData.searchStatus = false)
         : (this.searchData.searchStatus = true);
-    },
-    // "searchData.settleDate"(val) {
-    //   this.searchData.settleDate = this.searchData.settleDate.join();
-    // },
+    }
   },
 };
 </script>

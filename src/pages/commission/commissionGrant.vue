@@ -466,7 +466,7 @@ export default {
         bonusDateEnd: "", //提成计算日期结束
       };
 
-      data.settleDate = data.settleDate.join();
+      data.settleDate = data.settleDate ? data.settleDate.join() : '';
       let signJ =
         data.signDateValue === 0
           ? {
