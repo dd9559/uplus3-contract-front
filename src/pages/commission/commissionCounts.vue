@@ -129,6 +129,46 @@
 </template>
 
 <script>
+function getYearAndMonth(start, end) {
+    var result = [];
+    var newResult=[];
+    var starts = start.split('-');
+    var ends = end.split('-');
+    var staYear = parseInt(starts[0]);
+    var staMon = parseInt(starts[1]);
+    var endYear = parseInt(ends[0]);
+    var endMon = parseInt(ends[1]);
+    while (staYear <= endYear) {
+      if (staYear === endYear) {
+        while (staMon <= endMon) {
+            result.push({year: staYear, month: staMon});
+            staMon++;
+        }
+        staYear++;
+      } else {
+        if (staMon > 12) {
+          staMon = 1;
+          staYear++;
+        }
+        result.push({year: staYear, month: staMon});
+        staMon++;
+      }
+    }
+
+  for(var i=0;i<result.length;i++){
+    var year=result[i].year;
+    var monthinit=result[i].month;
+    if(monthinit<10){
+      var month='0'+monthinit;
+    }else{
+      var month=monthinit;
+    }
+    var ym=year+'-'+month;
+    newResult.push(ym);
+  }
+
+  return newResult;
+}
 import myPagination from "./myPagination";
 
 import { MIXINS } from "@/assets/js/mixins";
@@ -233,7 +273,7 @@ export default {
       this.searchData = {
         keyword: "", //关键字
         // settleDate: "", //yyyy-mm 结算周期
-        settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        settleDate: "", //yyyy-mm 结算周期
         // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         systemTag: "",
         depId: "", //部门编号
@@ -426,7 +466,7 @@ export default {
         bonusDateEnd: "", //提成计算日期结束
       };
 
-      data.settleDate = data.settleDate ? data.settleDate.join() : '';
+      data.settleDate = data.settleDate ? getYearAndMonth(data.settleDate[0],data.settleDate[1]).join() : '';
       let signJ =
         data.signDateValue === 0
           ? {
