@@ -471,7 +471,7 @@
     <!-- 吴兴勇开始编辑 -->
     <div class="page_one">
       <!-- 封面 -->
-      <div class="cover-fm" style="display: block;">
+      <div class="cover-fm" style="display: none;">
         <div class="cover-style">
           <div class="top">
             <img
@@ -539,15 +539,15 @@
         <span tag="input-auto" class="text-limit input-before" systemparam="propertyAddr" company="true"
           extendParam="val3"></span>
           <span>。</span>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check1">
             <p type="check"></p>房屋产权证
           </div>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check1">
             <p type="check"></p>合同房备案确认单所载建筑面积为
           </div>
           <span tag="input-auto" class="text-limit input-before" extendParam="val4"></span>
           <span>平方米。</span>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check2">
             <p type="check"></p>该房屋已取得房屋所有权证
           </div>
           <span>/不动产权证书，证号为：</span>
@@ -559,15 +559,15 @@
           <span>，填发单位：</span>
           <span tag="input-auto" class="text-limit input-before" extendParam="val8"></span>
           <span>。</span>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check2">
             <p type="check"></p>该房屋未取得房屋所有权证，购房合同编号为:
           </div>
           <span tag="input-auto" class="text-limit input-before" extendParam="val9"></span>
           <span>，出卖人保证本合同项下房屋可以在所在区局规定的正常时间内办理出卖人名下不动产权证书，办证费用由</span>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check3">
             <p type="check"></p>出卖人承担
           </div>
-          <div class="info-checkbox" name="one">
+          <div class="info-checkbox" name="check3">
             <p type="check"></p>买受人承担。
           </div>
       </div>
@@ -579,13 +579,13 @@
       <p class="1h18 agreements navTitle">第二条、房屋权属情况</p>
       <div class="1h18 agreements">
         <span>（一）该房屋性质为：</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check4">
             <p type="check"></p>商品房；
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check4">
             <p type="check"></p>已购公有住房；
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check4">
             <p type="check"></p>购房合同满5年的经济适用房。
         </div>
       </div>
@@ -595,13 +595,13 @@
       </div>
 
       <div class="1h18 agreements">
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check5">
           <p type="check"></p>该房屋未设定抵押；出卖人承诺该房屋未在任何机构设定抵押，也未以该房屋向他人提供抵押担保。
         </div>
       </div>
 
       <div class="1h18 agreements">
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check5">
             <p type="check"></p>该房屋已经设定抵押，抵押权人为：
         </div>
         <span tag="input-auto" class="text-limit input-before" extendParam="val10"></span>
@@ -631,10 +631,10 @@
 
       <div class="1h18 agreements">
         <span>（三）该房屋的租赁情况为：</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check6">
             <p type="check"></p>出卖人未将该房屋出租。
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check6">
             <p type="check"></p>出卖人已将该房屋出租。
         </div>
         <span>出卖人承诺已经在出售前三个月书面通知了承租人，承租人已放弃优先购买权，如因此导致合同无法履行，由出卖人承担违约责任。</span>
@@ -650,7 +650,8 @@
       <p class="1h18 agreements navTitle">第三条、成交方式</p>
       <div class="1h18 agreements">
         <span>出卖人与买受人通过</span>
-        <span tag="input-auto" class="text-limit input-before" extendParam="val17"></span>
+        <span class="text-limit input-before" systemparam="companyNames" tag="input-auto" extendParam="val17"></span>
+        <!-- <span tag="input-auto" class="text-limit input-before" extendParam="val17"></span> -->
         <span>居间介绍成交。</span>
       </div>
 
@@ -668,12 +669,12 @@
 
       <div class="1h18 agreements">
         <span>1、</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check7">
             <p type="check"></p>包含该房屋家具、家电、装饰装
         </div>
         <span>修及配套设施设备（以列明的家私清单为准），出卖人应当保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</span>
         <div style="text-indent: 34px;padding-left: 30px;" class="1h18 agreements">
-            <div class="info-checkbox" name="one">
+            <div class="info-checkbox" name="check7">
                 <p type="check"></p>不包含该房屋家具、家电
             </div>
             <span>、装饰装修及配套设施设备。</span>
@@ -682,13 +683,13 @@
 
       <div class="1h18 agreements">
         <span>2、</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check8">
             <p type="check"></p>包含车位，
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check9">
             <p type="check"></p>使用权
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check9">
             <p type="check"></p>所有权
         </div>
         <span>车位号为：</span>
@@ -697,7 +698,7 @@
         <span tag="input-auto" class="text-limit input-before" extendParam="val20"></span>
         <span>方全部承担。</span>
         <div style="text-indent: 34px;padding-left: 30px;" class="1h18 agreements">
-            <div class="info-checkbox" name="one">
+            <div class="info-checkbox" name="check8">
                 <p type="check"></p>不包含车位。
             </div>
         </div>
@@ -774,13 +775,13 @@
       </div>
       <div class="1h18 agreements">
         <span>（2）出卖人同意买受人向银行申请</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check9">
             <p type="check"></p>商业贷款
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check9">
             <p type="check"></p>公积金贷款
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check9">
             <p type="check"></p>组合贷款方式支付；
         </div>
       </div>
@@ -821,10 +822,10 @@
 
       <div class="1h18 agreements">
         <span>（二）出卖人确认，该房屋在其持有期间，在房屋本体结构内</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check10">
             <p type="check"></p>是/
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check10">
             <p type="check"></p>否
         </div>
         <span>发生过非正常死亡事件（包括但不限于自杀、他杀、从该房屋内坠出死亡、意外死亡等）。如果出卖人在签署本合同前就前述事项隐瞒真实情况的，双方确认：因出卖人之欺诈行为，使得买受人在违背真实意思的基础上订立本合同，买受人有权依法要求撤销房屋买卖合同及相关协议。出卖人另应承担如下责任：</span>
@@ -840,10 +841,10 @@
 
       <div class="1h18 agreements">
         <span>（三）出卖人确认该房屋主体结构内（不含公共区域：如公共管道、外墙、屋顶等</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check11">
             <p type="check"></p>是/
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check11">
             <p type="check"></p>否
         </div>
         <span>存在漏水（“漏水”指房屋顶部、墙面、室内管道或地面发生的渗水或漏水现象）的情况。若该房屋主体结构内存在漏水情况，出卖人应当在交付房屋之前完成修复。如出卖人未予修复，买受人在房屋交付后自行维修的，出卖人应当承担全部维修费用；因维修房屋影响买受人使用的，出卖人另应当赔付买受人因此所受的实际损失。但买受人使用不当，导致该房屋主体结构内发生漏水的不在本条款所约定之范围内。</span>
@@ -886,23 +887,23 @@
 
       <div class="1h18 agreements">
         <span>（1）交易房屋：</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check12">
             <p type="check"></p>所有权证未满两年
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check12">
             <p type="check"></p>所有权证满二年未满五年
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check12">
             <p type="check"></p>所有权证满五年；
         </div>
       </div>
 
       <div class="1h18 agreements">
         <span>（2）交易房屋</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check13">
             <p type="check"></p>是/
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check13">
             <p type="check"></p>否
         </div>
         <span>为本市行政区域内出卖人家庭名下唯一住房；</span>
@@ -910,17 +911,17 @@
 
       <div class="1h18 agreements">
         <span>（3）交易房屋</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check14">
             <p type="check"></p>是/
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check14">
             <p type="check"></p>否
         </div>
         <span>为继承所得；交易房屋</span>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check15">
             <p type="check"></p>是/
         </div>
-        <div class="info-checkbox" name="one">
+        <div class="info-checkbox" name="check15">
             <p type="check"></p>否
         </div>
         <span>为赠与所得。</span>
@@ -929,7 +930,7 @@
       <div class="1h18 agreements">
         <span>2、房屋所有权转移登记时所涉及的税费，买卖双方同意按照以下第</span>
         <input type="text" class="text-limit dropdown-item" list="(1),(2),(3)" style="width:50px" extendParam="val41"
-          readonly="readonly" inputmethod="val22" />
+          readonly="readonly" inputmethod="val41" />
           <span>种方式承担，并由承担方直接向主管机关缴纳：</span>
       </div>
 
@@ -1091,9 +1092,12 @@
       
       <!-- 第十二条 -->
       <p class="1h18 agreements navTitle">第十二条、其他</p>
-
       <div class="1h18 agreements">
         <span>1、如单方违约导致本合同不能履行的，由违约方赔偿守约方支付的居间服务费。</span>
+      </div>
+
+      <div class="1h18 agreements">
+        <span tag="input-auto" class="text-limit input-before" extendParam="val50"></span>
       </div>
 
       <div class="1h18 agreements">
@@ -1106,7 +1110,7 @@
 
       <div class="1h18 agreements">
         <span>本合同发生争议，由买卖双方协商解决，协商不成的，按下列第</span>
-        <input type="text" class="text-limit dropdown-item" list="(1),(2),(3)" style="width:50px" extendParam="val49"
+        <input type="text" class="text-limit dropdown-item" list="(1),(2)" style="width:50px" extendParam="val49"
           readonly="readonly" inputmethod="val49" />
           <span>种方式解决：</span>
       </div>
