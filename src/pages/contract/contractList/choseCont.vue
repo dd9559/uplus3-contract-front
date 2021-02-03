@@ -91,7 +91,7 @@ export default {
     //获取U+房源详情
     getUplusHouseDetail(id) {
       let param = {
-        houseId: 120270
+        houseId: id
       };
       this.$ajax
         .get("/api/resource/houses/one", param)
