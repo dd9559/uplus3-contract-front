@@ -40,7 +40,7 @@ let sub = {
   "val30": null,
   "drapdown_val31":{
     stateful: function (i) {
-      return i === "(1)" ? {"val32": null} : {"'checkbox_check9'": null,"val33": null,"drapdown_val34":{
+      return i === "(1)" ? {"val32": null} : {"checkbox_check20": null,"val33": null,"drapdown_val34":{
         stateful: function (i) {
           return i === "(2)" ? {"val35": null} : null
         }
@@ -62,8 +62,13 @@ let sub = {
   "checkbox_check14": null,
   "checkbox_check15": null,
   "drapdown_val41": null,
-  "drapdown_val42": null,
+  "drapdown_val42": {
+    stateful: function (i) {
+      return i === "(1)" ? {"val43": null} : i === "(2)" ? {"val44": null} : {"val45": null}
+    }
+  },
   "val46": null,
+  "checkbox_check22": null,
   "drapdown_val49":{
     stateful: function (i) {
       return i === "(1)" ? {"val50": null} : null
@@ -80,10 +85,13 @@ let checkArr = {
     1 : ["val9","checkbox_check3"]
   },
   check5: {
-    1 : ["val10","drapdown_val11"]
+    1 : ["val10","val11","val12","val13","val14","val15"]
   },
   check8: {
     0 : ["checkbox_check9","val19","val20"]
+  },
+  check30: {
+    0 : ["val80"]
   }
 }
 
@@ -133,12 +141,12 @@ Dropdown.create({
         },
         'val31': {
           '(1)': {
-            'write': ['val32','checkbox_check9','val33','drapdown_val34'],
-            'disabled': []
+            'write': ['val32'],
+            'disabled': ['checkbox_check20','val33','val34','val35']
           },
           '(2)': {
-            'write': [],
-            'disabled': ['val32','checkbox_check9','val33','drapdown_val34']
+            'write': ['checkbox_check20','val33','val34','val35'],
+            'disabled': ['val32']
           }
         },
         'val34': {
@@ -161,7 +169,21 @@ Dropdown.create({
             'disabled': []
           }
         },
-        'val39': {
+        'val42': {
+          '(1)': {
+            'write': ['val43'],
+            'disabled': ['val44','val45']
+          },
+          '(2)': {
+            'write': ["val44"],
+            'disabled': ['val43','val45']
+          },
+          '(3)': {
+            'write': ['val45'],
+            'disabled': ['val43','val44']
+          }
+        },
+        'val49': {
           '(1)': {
             'write': ['val50'],
             'disabled': []
@@ -212,16 +234,20 @@ contractConfig.inputListener(
       let spanAttr = tip.target.getAttribute("listen");
       if (spanAttr === "number") {
           let cn_str = tip.target.getAttribute('extendparam')
-          if (Obj['cn_arr'].includes(cn_str)) {
+          if (Obj['cn_arr'].includes(cn_str) || max == 17) {
             ev.target.value = ev.target.value.replace(/[^\d.]/g,"");
             ev.target.value = ev.target.value.replace(/^\./g,"");
             ev.target.value = ev.target.value.replace(/\.{2,}/g,".");
             ev.target.value = ev.target.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
             ev.target.value = ev.target.value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/,'$1$2.$3');
-          } else {
+          } else  {
             ev.target.value=ev.target.value.replace(/[^\d]/g, "")
           }
-          tip.target.innerHTML = ev.target.value
+          if (max == 17) {
+            tip.target.innerHTML = formatMoney(ev.target.value)
+          } else {
+            tip.target.innerHTML = ev.target.value
+          }
           if(Obj['cn_arr'].includes(cn_str)){
     
             if (ev.target.value.indexOf(",") != -1) {
@@ -239,6 +265,10 @@ contractConfig.inputListener(
       //获取输入框的默认值
       let initVal = tip.target.innerHTML;
       let strCn = tip.target.getAttribute("extendparam");
+      let max = tip.target.getAttribute("max");
+      if (max == 17) {
+        document.querySelector(`*[extendParam=${strCn}]`).innerHTML = formatMoney(initVal)
+      }
       if(Obj['cn_arr'].includes(strCn)){
           if(initVal.length>0){
               if (initVal.indexOf(",") != -1) {
@@ -275,15 +305,21 @@ contractConfig.checkboxListener(function(obj, i) {
             }
         }
         if (name === 'check2') {
-            console.log(checkArr[name][i], bool ? 0 : 1)
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
         }
-        if (name === 'check8') {
+        if (name === 'check8' && indexChcek === 0) {
           if (i === 0) {
               contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          } else {
-              contractConfig.initForm(checkArr[name][0], 0);
           }
+        } else if (name === 'check8' && indexChcek === 1 && i === 1) {
+            contractConfig.initForm(checkArr[name][0], 1);
+        }
+        if (name === 'check30' && indexChcek === 0) {
+          if (i === 0) {
+              contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
+          }
+        } else if (name === 'check30' && indexChcek === 1 && i === 1) {
+            contractConfig.initForm(checkArr[name][0], 1);
         }
     });
 });
@@ -307,32 +343,32 @@ if (mainBtn) {
 }
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "",
-  guestName: "然爱迪生",
-  guestNames: "",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "",
-  ownerName: "熊先",
-  ownerNames: "",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  signDate: 1592465819508,
-  propertyAddr: "a市b区c",
-  singleCompany: "",
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "",
+//   guestName: "然爱迪生",
+//   guestNames: "",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "",
+//   ownerName: "熊先",
+//   ownerNames: "",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   signDate: 1592465819508,
+//   propertyAddr: "a市b区c",
+//   singleCompany: "",
+// }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   if (onlyReadDom.length > 0) {

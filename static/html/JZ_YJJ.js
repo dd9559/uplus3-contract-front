@@ -5,7 +5,7 @@ import {contractConfig,toChineseNumber,formatMoney} from "./base.js"
 //   }
 
   let sub = {
-
+    val1: null
   }
 
   //给按钮添加点击事件

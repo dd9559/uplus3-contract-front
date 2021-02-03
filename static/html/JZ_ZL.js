@@ -45,6 +45,9 @@ let checkArr = {
     check15: {
         0: ['val165'],
         1: []
+    },
+    check16: {
+        1: ['val175'],
     }
 }
 
@@ -96,7 +99,6 @@ let sub = {
     val31: null,
     val32: null,
     val33: null,
-    val36: null,
     val37: null
 };
 
@@ -233,10 +235,13 @@ contractConfig.checkboxListener(function(obj, i) {
         if (name === 'check7' && i === indexChcek) {
             contractConfig.initForm(checkArr[name][indexChcek], bool ? 0 : 1);
         }
-        if ((name === 'check7' && i === 3) || (name === 'check8' && i === 3) || (name === 'check10' && i === 3) || (name === 'check1' && i === 3)) {
+        if ((name === 'check7' && i === 3) || (name === 'check8' && i === 3) || (name === 'check10' && i === 3) || (name === 'check1' && i === 3) ) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
         }
         if ((name === 'check9' && i === 4)) {
+            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
+        }
+        if ((name === 'check16' && i === 1)) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
         }
         if (name === 'check14' || name === 'check15') {
