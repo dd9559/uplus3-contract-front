@@ -28,27 +28,27 @@
             {{uPlusHouseDetail&&(uPlusHouseDetail.EstateName.replace(/\s/g,"")+' '+uPlusHouseDetail.BuildingName.replace(/\s/g,"")+uPlusHouseDetail.Unit.replace(/\s/g,"")+uPlusHouseDetail.RoomNo.replace(/\s/g,""))}}
           </li> -->
         </ul>
-        <p style="margin-bottom:20px;margin-left:20px;">选择合同类型：</p>
-        <el-select v-model="uPlusContType" placeholder="合同类型" :clearable="true" style="width:600px;margin-left:20px;">
-          <el-option
-            v-for="item in uPlusDictionary71"
-            :key="item.key"
-            :label="item.value"
-            :value="item.key"
-          ></el-option>
-        </el-select>
         <p style="margin-bottom:20px;overflow: hidden;margin-top:20px;margin-left:20px;">选择签约方式：</p>
         <el-select
           v-model="uPlusQianyueType"
           placeholder="签约方式"
           :clearable="true"
-          style="width:600px;margin-left:20px;"
+          style="width:600px;margin-left:20px;margin-bottom:20px;"
         >
           <el-option
             v-for="item in dictionary['64']"
             :key="item.key"
             :label="item.value"
             :value="item.key"
+          ></el-option>
+        </el-select>
+        <p style="margin-bottom:20px;margin-left:20px;">选择合同类型：</p>
+        <el-select v-model="uPlusContType" :disabled="uPlusQianyueType==''" :placeholder="uPlusQianyueType=='' ? '请先选择签约方式' : '合同类型'" :clearable="true" style="width:600px;margin-left:20px;">
+          <el-option
+            v-for="item in uPlusQianyueType == 2 ? offlineContractList : onlineContractList"
+            :key="item.type.value"
+            :label="item.type.label"
+            :value="item.type.value"
           ></el-option>
         </el-select>
         <p class="dialog-footer">
@@ -74,7 +74,9 @@ export default {
         "71": "", //合同类型（筛选条件）
         "64": "" //签约方式  线上线下,无纸化
       },
-      uPlusDictionary71: [],
+      // uPlusDictionary71: [],
+      onlineContractList: [],
+      offlineContractList: [],
       uPlusHouseDetail: null,
       uPlusIsShow:false
     };
@@ -106,28 +108,68 @@ export default {
                 ? 1
                 : 2;
             // this.uPlusDictionary71 = this.dictionary["71"];
-            if (this.isDealType == 1) {
-              //房源编号为租赁
-              this.dictionary["71"].map((item, index) => {
-                if (item.key == 2 || item.key == 3) {
-                  return;
-                } else {
-                  this.uPlusDictionary71.push(item);
+            this.$ajax
+              .get("/api/setting/contractTemplate/list", {
+                cityId: this.getUser.user.cityId,
+                systemTag: this.getUser.user.deptSystemtag,
+              })
+              .then((res) => {
+                res = res.data;
+                if (res.status === 200) {
+                  res.data.map((item) => {
+                    if (this.isDealType == 1) {
+                      //房源编号为租赁
+                      if (item.onLine === 0 && item.enableTemplateId != 0 && ![2,3,6].includes(item.type.value)) {
+                        this.onlineContractList.push(item);// 线上/打印空白模板 判断 onLine === 0 
+                      }
+                      if (item.unLine === 0 && ![2,3,6].includes(item.type.value)) {
+                        this.offlineContractList.push(item) // 线下 判断 unLine === 0
+                      }
+                    } else if (this.isDealType == 2) {
+                      //房源编号为买卖
+                      if (item.onLine === 0 && item.enableTemplateId != 0 && ![1,6].includes(item.type.value)) {
+                        this.onlineContractList.push(item);// 线上/打印空白模板 判断 onLine === 0 
+                      }
+                      if (item.unLine === 0 && ![1,6].includes(item.type.value)) {
+                        this.offlineContractList.push(item) // 线下 判断 unLine === 0
+                      }
+                    }
+
+
+                    // if (item.onLine === 0 && item.enableTemplateId != 0 && item.type.value != 6) {
+                    //   this.onlineContractList.push(item);// 线上/打印空白模板 判断 onLine === 0 
+                    // }
+                    // if (item.unLine === 0 && item.type.value != 6) {
+                    //   this.offlineContractList.push(item) // 线下 判断 unLine === 0
+                    // }
+                  });
                 }
+              })
+              .catch((error) => {
+                console.log(error);
               });
-            } else if (this.isDealType == 2) {
-              //房源编号为买卖
-              this.dictionary["71"] &&
-                this.dictionary["71"].map((item, index) => {
-                  if (item.key == 1) {
-                    return;
-                  } else {
-                    this.uPlusDictionary71.push(item);
-                  }
-                });
-            }
+            // if (this.isDealType == 1) {
+            //   //房源编号为租赁
+            //   this.dictionary["71"].map((item, index) => {
+            //     if (item.key == 2 || item.key == 3) {
+            //       return;
+            //     } else {
+            //       this.uPlusDictionary71.push(item);
+            //     }
+            //   });
+            // } else if (this.isDealType == 2) {
+            //   //房源编号为买卖
+            //   this.dictionary["71"] &&
+            //     this.dictionary["71"].map((item, index) => {
+            //       if (item.key == 1) {
+            //         return;
+            //       } else {
+            //         this.uPlusDictionary71.push(item);
+            //       }
+            //     });
+            // }
             console.log("========");
-            console.log(this.uPlusDictionary71);
+            // console.log(this.uPlusDictionary71);
           }
         })
         .catch(error => {
@@ -152,33 +194,84 @@ export default {
         });
         return;
       }
-      if (
-        this.uPlusContType === 1 ||
-        this.uPlusContType === 2 ||
-        this.uPlusContType === 3
-      ) {
-        this.$router.push({
-          path: "/addContract",
-          query: {
-            type: this.uPlusContType,
-            operateType: 1,
-            recordType: this.uPlusQianyueType,
-            houseId: this.$route.query.houseId,
-            turnDeal: 1
+
+
+      let param = {
+          recordType: this.uPlusQianyueType,
+          type: this.uPlusContType,
+        };
+      this.$ajax
+        .get("/api/contract/checkContTemplate", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            if ([1,2,3].includes(this.uPlusContType)) {
+              this.$router.push({
+                path: "/addContract",
+                query: {
+                  type: this.uPlusContType,
+                  operateType: 1,
+                  recordType: this.uPlusQianyueType,
+                  houseId: this.$route.query.houseId,
+                  turnDeal: 1
+                }
+              });
+            } else if ([4,5].includes(this.uPlusContType)) {
+              this.$router.push({
+                path: "/newIntention",
+                query: {
+                  contType: this.uPlusContType,
+                  operateType: 1,
+                  recordType: this.uPlusQianyueType,
+                  houseId: this.$route.query.houseId,
+                  turnDeal: 1
+                }
+              });
+            }
+          } else {
+            this.$message({
+              message: "该类型合同模板未上传,请上传后再创建",
+              type: "warning",
+            });
           }
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
+          });
         });
-      } else if (this.uPlusContType === 4 || this.uPlusContType === 5) {
-        this.$router.push({
-          path: "/newIntention",
-          query: {
-            contType: this.uPlusContType,
-            operateType: 1,
-            recordType: this.uPlusQianyueType,
-            houseId: this.$route.query.houseId,
-            turnDeal: 1
-          }
-        });
-      }
+
+
+
+
+      // if (
+      //   this.uPlusContType === 1 ||
+      //   this.uPlusContType === 2 ||
+      //   this.uPlusContType === 3
+      // ) {
+      //   this.$router.push({
+      //     path: "/addContract",
+      //     query: {
+      //       type: this.uPlusContType,
+      //       operateType: 1,
+      //       recordType: this.uPlusQianyueType,
+      //       houseId: this.$route.query.houseId,
+      //       turnDeal: 1
+      //     }
+      //   });
+      // } else if (this.uPlusContType === 4 || this.uPlusContType === 5) {
+      //   this.$router.push({
+      //     path: "/newIntention",
+      //     query: {
+      //       contType: this.uPlusContType,
+      //       operateType: 1,
+      //       recordType: this.uPlusQianyueType,
+      //       houseId: this.$route.query.houseId,
+      //       turnDeal: 1
+      //     }
+      //   });
+      // }
     }
   }
 };

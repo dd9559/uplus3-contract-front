@@ -123,6 +123,7 @@
                     v-model="item.cardType"
                     placeholder="请选择"
                     @change="changeCadrType($event,index)"
+                    disabled
                   >
                     <template v-for="item in dictionary['633']">
                       <el-option
@@ -665,10 +666,11 @@ export default {
     // },
     inputOnly(index, type) {
       if (type === "name" || type === "companyName" || type === "lepName") {
-        this.brokerList[index][type] = this.$tool.textInput(
-          this.brokerList[index][type],
-          3
-        );
+        // this.brokerList[index][type] = this.$tool.textInput(
+        //   this.brokerList[index][type],
+        //   3
+        // );
+        this.brokerList[index][type] = this.brokerList[index][type].replace(/[^\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
       } else if (type === "guest") {
         this.guestList[index].name = this.$tool.textInput(
           this.guestList[index].name
@@ -787,7 +789,7 @@ export default {
           name: "",
           mobile: "",
           roleName: "",
-          cardType: "",
+          cardType: 1,
           encryptionCode: "",
           email: "-",
           companyName: "",

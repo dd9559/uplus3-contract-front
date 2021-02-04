@@ -24,6 +24,7 @@
                             :clearable="true"
                             :disabled="defaultInfo.contractEntrust&&!!defaultInfo.contractEntrust.recordType"
                             style="width: 150px;height:32px"
+                            @change="recordChange"
                         >
                             <el-option
                             v-for="item in dictionary['64']"
@@ -223,7 +224,24 @@ export default {
             this.tradeFeeCommission = (Number.parseFloat(val) - flowQZfee) > 0 ? Number.parseFloat((Number.parseFloat(val) - flowQZfee).toFixed(2)) : 0
         }
     },
+    computed: {
+        isIdCard () {
+            let houseState = this.houseArr.some(item => {
+                return item.cardType !== 1
+            })
+            let guestState = this.guestArr.some(item => {
+                return item.cardType !== 1
+            })
+            return houseState || guestState
+        }
+    },
     methods: {
+        recordChange(type) {
+            if (type === 10 && this.isIdCard) {
+                this.recordType = ""
+                return this.$message("无纸化签约只支持身份证签约")
+            }
+        },
         getCardLabel(val) {
             if(val==1){
                 return '身份证'

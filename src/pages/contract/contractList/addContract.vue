@@ -346,7 +346,7 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType"
-                                            :disabled="canInput"
+                                            :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)"
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
@@ -473,7 +473,7 @@
                                                 placeholder="产权比"
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
-                                        <el-select v-model="item.cardType" :disabled="canInput" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                                             <template v-for="item in dictionary['633']">
                                                 <el-option
                                                     v-if="recordType===10&&item.key!=4||recordType!=10"
@@ -1034,6 +1034,8 @@ export default {
                 this.loanType = Number(this.$route.query.loanType);
             }
             this.recordType = parseInt(this.$route.query.recordType);
+            this.ownerList[0].cardType = this.recordType === 10 ? 1 : ""
+            this.guestList[0].cardType = this.recordType === 10 ? 1 : ""
             if (this.$route.query.operateType) {
                 this.type = parseInt(this.$route.query.operateType);
                 if (this.type == 2) {
@@ -1171,7 +1173,7 @@ export default {
                     mobile: "",
                     encryptionMobile: "",
                     relation: "",
-                    cardType: "",
+                    cardType: this.recordType === 10 ? 1 : "",
                     name: "",
                     propertyRightRatio: ""
                 });
@@ -1190,7 +1192,7 @@ export default {
                     mobile: "",
                     encryptionMobile: "",
                     relation: "",
-                    cardType: "",
+                    cardType: this.recordType === 10 ? 1 : "",
                     name: "",
                     propertyRightRatio: ""
                 });
@@ -2569,7 +2571,7 @@ export default {
                                     element.name = "";
                                     element.mobile = element.OwnerMobile;
                                     element.relation = element.Relation;
-                                    element.cardType = "";
+                                    element.cardType = this.recordType === 10 ? 1 : "";
                                     element.isEncryption = true;
                                     delete element.OwnerName;
                                     delete element.OwnerMobile;
@@ -2663,7 +2665,7 @@ export default {
                                     element.name = "";
                                     element.mobile = element.CustMobile;
                                     element.relation = element.CustRelation;
-                                    element.cardType = "";
+                                    element.cardType = this.recordType === 10 ? 1 : "";
                                     element.isEncryption = true;
                                     delete element.CustName;
                                     delete element.CustMobile;
@@ -3202,17 +3204,20 @@ export default {
         },
         inputOnly(index, type) {
             if (type === "owner") {
-                this.ownerList[index].name = this.$tool.textInput(
-                    this.ownerList[index].name
-                );
+                // this.ownerList[index].name = this.$tool.textInput(
+                //     this.ownerList[index].name
+                // );
+                this.ownerList[index].name = this.ownerList[index].name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             } else if (type === "guest") {
-                this.guestList[index].name = this.$tool.textInput(
-                    this.guestList[index].name
-                );
+                // this.guestList[index].name = this.$tool.textInput(
+                //     this.guestList[index].name
+                // );
+                this.guestList[index].name = this.guestList[index].name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             } else if (type === "other") {
-                this.contractForm.otherCooperationInfo.name = this.$tool.textInput(
-                    this.contractForm.otherCooperationInfo.name
-                );
+                // this.contractForm.otherCooperationInfo.name = this.$tool.textInput(
+                //     this.contractForm.otherCooperationInfo.name
+                // );
+                this.contractForm.otherCooperationInfo.name = this.contractForm.otherCooperationInfo.name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
             }
         },
         inputCode(type) {

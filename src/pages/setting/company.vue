@@ -39,6 +39,20 @@
         <el-form-item label="银行卡号">
           <el-input v-model="searchForm.bankCard" maxlength="20" :clearable="true" @keyup.native="getInt(1)"></el-input>
         </el-form-item>
+
+        <!-- 2.5.7新加筛选项 -->
+        <el-form-item label="认证状态">
+          <el-select v-model="searchForm.verifyState" :clearable="true" class="w180">
+            <el-option label="全部" value=""></el-option>
+            <el-option v-for="item in verifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="授权状态">
+         <el-select v-model="searchForm.warrantState" :clearable="true">
+            <el-option label="全部" value=""></el-option>
+            <el-option v-for="item in warrantList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- table表格 -->
@@ -62,7 +76,17 @@
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
           </template>
         </el-table-column>
-        <el-table-column label="银行卡号">
+        <el-table-column label="认证状态" min-width="50">
+          <template slot-scope="scope">
+            <p>{{verifyList.filter(item=>item.id == scope.row.verifyState).length>0?verifyList.filter(item=>item.id == scope.row.verifyState)[0].name:'-'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="授权状态" min-width="50">
+          <template slot-scope="scope">
+            <p>{{warrantList.filter(item=>item.id == scope.row.warrantState).length>0?warrantList.filter(item=>item.id == scope.row.warrantState)[0].name:'-'}}</p>
+          </template>
+        </el-table-column>
+        <el-table-column label="银行卡号" min-width="100">
           <template slot-scope="scope">
             <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
           </template>
@@ -86,10 +110,12 @@
         </el-table-column>
         <el-table-column label="添加人" prop="createByName">
         </el-table-column>
-        <el-table-column label="操作" min-width="60">
+        <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
             <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state&&editBtnShow(scope.row)">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
+            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
+            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -148,7 +174,7 @@
             </div>
             <div class="item item-display">
               <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="fourthStoreNoEdit" @change="idTypeChange">
+                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="true" @change="idTypeChange">
                   <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
                 </el-select>
               </el-form-item>
@@ -160,12 +186,7 @@
               </el-form-item>
             </div>
             <div class="item">
-              <el-form-item label="企业证件: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.documentType" @change="documentTypeChange" :disabled="fourthStoreNoEdit">
-                  <el-option v-for="item in dictionary['38']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="统一社会信用代码: " v-if="creditCodeShow" class="tongyi">
+              <el-form-item label="统一社会信用代码: " v-if="true" >
                 <el-input size="mini" v-model.trim="documentCard.creditCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
               </el-form-item>
               <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
@@ -185,8 +206,7 @@
               <div style="color: #CD6D6D;">
                 <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
                 <p>2. 如个体工商户在营业执照上无企业名称的，请填“经营者”名字；</p>
-                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；老三证，请分别填写工商注册号、组织机构代码、税务登记证；</p>
-                <p>4. 只支持设置三级门店公司信息</p>
+                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；</p>
               </div>
             </div>
           </div>
@@ -288,7 +308,7 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm">确 定</el-button>
+        <el-button type="primary" @click="submitConfirm">认 证</el-button>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
     </el-dialog>
@@ -414,8 +434,38 @@
           cooperationMode: "",
           bankCard: "",
           keyword: "",
-          type: ""
+          type: "",
+          verifyState: "",
+          warrantState: ""
         },
+        verifyList: [ // 认证状态
+          {
+            id:0,
+            name:"未认证"
+          },
+          {
+            id:1,
+            name:"认证中"
+          },
+          {
+            id:3,
+            name:"认证成功"
+          },
+        ],
+        warrantList: [ // 授权状态
+          {
+            id:0,
+            name:"未授权"
+          },
+          {
+            id:1,
+            name:"授权中"
+          },
+          {
+            id:3,
+            name:"授权成功"
+          },
+        ],
         cityList: [],
         homeStoreList: [],
         storeList: [],
@@ -472,6 +522,7 @@
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
         pd:'',
+        rowdata: null,
       }
     },
     mounted() {
@@ -745,6 +796,7 @@
         this.fourthStoreNoEdit = false
         this.companyForm.cityId = this.searchForm.cityId
         this.companyForm.cityName = this.cityInfo.cityName
+        this.companyForm.lepDocumentType = 1
         // this.clearStore('init')
         this.preConFile = []
         this.preFinFile = []
@@ -757,10 +809,9 @@
         this.companyForm.franchiseRatio = ""
         this.companyForm.name = ""
         this.companyForm.lepName = ""
-        this.companyForm.lepDocumentType = ""
+        this.companyForm.lepDocumentType = 1
         this.companyForm.lepDocumentCard = ""
         this.companyForm.lepPhone = ""
-        this.companyForm.documentType = ""
         this.companyForm.contractSign = ""
         this.companyForm.financialSign = ""
         this.icRegisterShow = false
@@ -815,6 +866,54 @@
       delStamp(type) {
         type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
+      listConfirm(item){
+        console.log(item);
+        let param = {
+          cityId: item.cityId,
+          cityName: item.cityName,
+          companyBankList: item.companyBankList,
+          contractSign: item.contractSign,
+          cooperationMode: item.cooperationMode.value,
+          documentCard: item.documentCard,
+          documentType: item.documentType.value,
+          financialSign: item.financialSign,
+          id: item.id,
+          lepDocumentCard: item.lepDocumentCard,
+          lepDocumentType: item.lepDocumentType.value,
+          lepName: item.lepName,
+          lepPhone: item.lepPhone,
+          name: item.name,
+          storeId: item.storeId,
+          storeName: item.storeName,
+          level: item.level ? item.level : "",
+          delIds: this.delIds,
+          verifyState:item.verifyState,
+          warrantState: item.warrantState
+        }
+        this.$ajax.get('/api/setting/company/updateShowFee',
+          {storeId:item.storeId}
+        ).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            param.franchiseRatio = res.data.franchiseRatio.toString()
+          }
+          this.$ajax.put('/api/setting/company/update',param).then(res => {
+            res = res.data
+            if(res.status === 200) {
+              this.$message("授权短信已发送，请及时授权！")
+              this.getCompanyList()
+              this.delIds = []
+            }
+          }).catch(error => {
+              this.$message({message:error})
+          })
+        }).catch(error => {
+          this.$message({
+            message: error,
+            type: "error"
+          })
+        })
+      },
       submitConfirm() {
         if(this.version === 3) {
           delete rule['cooperationMode']
@@ -844,12 +943,7 @@
             if(!checkPhone(val)) {
               this.$message({message:'手机号码不正确',type:'warning'})
               return false
-            } else {
-              if(!this.companyForm.documentType) {
-                this.$message({message:"企业证件不能为空"})
-                return false
-              }
-            }
+            } 
           } else {
             this.$message({message:"法人手机号码不能为空"})
             return false
@@ -917,7 +1011,7 @@
               }
             }
           }
-          if(this.companyForm.documentType === 1) {
+          if(true) {
             if(this.documentCard.creditCode) {
               this.documentCard.icRegisterCode = ""
               this.documentCard.organizationCode = ""
@@ -949,14 +1043,34 @@
             let param = {
               documentCard: this.documentCard
             }
+            let change = false;
+            if(this.companyFormTitle != "添加企业信息"){
+              if(this.rowdata.name == this.companyForm.name &&
+                this.rowdata.lepName == this.companyForm.lepName &&
+                this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
+                this.rowdata.lepPhone == this.companyForm.lepPhone &&
+                //this.rowdata.documentType.value == this.companyForm.documentType &&
+                this.rowdata.documentCard.creditCode == this.documentCard.creditCode
+              ){
+                change = false
+              }else{
+                change = true
+              }
+            }
             param = Object.assign({},this.companyForm,obj,param)
             param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
+            param.documentType = 1
             if(this.companyFormTitle === "添加企业信息") {
               this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
-                  this.$message(res.message)
+                  this.rowdata = null
+                  if(res.data == 200){
+                    this.$message("认证成功")
+                  }else{
+                    this.$message("认证短信已发送，请及时认证！")
+                  }
                   this.getCompanyList()
                 }
               }).catch(error => {
@@ -975,7 +1089,12 @@
                 res = res.data
                 if(res.status === 200) {
                   this.AddEditVisible = false
-                  this.$message(res.message)
+                  this.rowdata = null
+                  if(res.data == 200){
+                    this.$message("更新成功")
+                  }else{
+                    this.$message("认证短信已发送，请及时认证！")
+                  }
                   this.getCompanyList()
                   this.delIds = []
                 }
@@ -994,6 +1113,7 @@
           this.dialogViewVisible = true
         } else {
           this.AddEditVisible = true
+          this.rowdata = JSON.parse(JSON.stringify(row))
           this.companyFormTitle = "编辑企业信息"
           this.storeNoChange = true
         }
@@ -1025,11 +1145,12 @@
           lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
-          documentType: currentRow.documentType.value,
           contractSign: currentRow.contractSign,
           financialSign: currentRow.financialSign,
           level: currentRow.level ? currentRow.level : "",
-          franchiseRatio: ""
+          franchiseRatio: "",
+          verifyState:currentRow.verifyState,
+          warrantState:currentRow.warrantState
         }
         this.companyForm = newForm
         this.getStoreRadio(type,currentRow.storeId)
@@ -1087,6 +1208,8 @@
         this.searchForm.bankCard = ""
         this.searchForm.keyword = ""
         this.searchForm.type = ""
+        this.searchForm.verifyState = ""
+        this.searchForm.warrantState = ""
         this.searchTime = []
         this.pageNum = 1
       },

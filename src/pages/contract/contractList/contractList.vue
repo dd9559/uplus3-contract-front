@@ -619,8 +619,9 @@
         </el-table-column>
         <el-table-column label="合同状态" min-width="70">
           <template slot-scope="scope">
-            <span>{{ scope.row.contState.label }}</span>
+            <span>{{ scope.row.isCombine && scope.row.contState.value == -1 ? scope.row.contStateCopy.label : scope.row.contState.label}}</span>
           </template>
+          
         </el-table-column>
         <el-table-column label="合同审核状态" min-width="100">
           <template slot-scope="scope">
@@ -2771,6 +2772,19 @@ export default {
             combineItem.contState.value =
               combineItem.contractEntrust.entrustState; //合同状态
             combineItem.contState.label =
+              combineItem.contractEntrust.entrustState === 1
+                ? "起草中"
+                : combineItem.contractEntrust.entrustState === 2
+                ? "已签章"
+                : "已签约";
+          } else {
+            combineItem.contStateCopy = {
+              value: null,
+              label: null,
+            }
+            combineItem.contStateCopy.value =
+              combineItem.contractEntrust.entrustState; //合同状态
+            combineItem.contStateCopy.label =
               combineItem.contractEntrust.entrustState === 1
                 ? "起草中"
                 : combineItem.contractEntrust.entrustState === 2

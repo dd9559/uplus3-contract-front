@@ -7,10 +7,13 @@
         clearable>
       </el-input>
       <!-- 日期 -->
-      <div class="item-text">结算周期</div>
-      <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="month"
-        value-format="yyyy-MM">
-      </el-date-picker>
+      <div class="triple-select set-data-class">
+        <div class="item-text">结算周期</div>
+        <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="monthrange"
+          value-format="yyyy-MM">
+        </el-date-picker>
+      </div>
+      
       <!-- 三联下拉选择 -->
       <div class="triple-select">
 
@@ -95,7 +98,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{scope.row.settleMoney|fomatFloat}}
+            {{ scope.row.settleMoney == null ? "-" : scope.row.settleMoney|roundFilters}}
           </template>
         </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
@@ -103,9 +106,9 @@
             {{isCalculation[scope.row.isCalculation].label}}
           </template>
         </el-table-column>
-         <el-table-column prop="bonusMoney" min-width="85" label="提成金额">
+        <el-table-column prop="bonusMoney" min-width="85" label="提成金额">
           <template slot-scope="scope">
-            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney  }}
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney|roundFilters}}
           </template>
         </el-table-column>
         <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式">
@@ -113,7 +116,6 @@
             {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusFormula  }}
           </template>
         </el-table-column>
-
         <el-table-column min-width="130" label="提成生成时间">
           <template slot-scope="scope">
             {{ scope.row.isCalculation === 0 ? "-" : dateFormat(scope.row.bonusDate) }}
@@ -127,6 +129,46 @@
 </template>
 
 <script>
+function getYearAndMonth(start, end) {
+    var result = [];
+    var newResult=[];
+    var starts = start.split('-');
+    var ends = end.split('-');
+    var staYear = parseInt(starts[0]);
+    var staMon = parseInt(starts[1]);
+    var endYear = parseInt(ends[0]);
+    var endMon = parseInt(ends[1]);
+    while (staYear <= endYear) {
+      if (staYear === endYear) {
+        while (staMon <= endMon) {
+            result.push({year: staYear, month: staMon});
+            staMon++;
+        }
+        staYear++;
+      } else {
+        if (staMon > 12) {
+          staMon = 1;
+          staYear++;
+        }
+        result.push({year: staYear, month: staMon});
+        staMon++;
+      }
+    }
+
+  for(var i=0;i<result.length;i++){
+    var year=result[i].year;
+    var monthinit=result[i].month;
+    if(monthinit<10){
+      var month='0'+monthinit;
+    }else{
+      var month=monthinit;
+    }
+    var ym=year+'-'+month;
+    newResult.push(ym);
+  }
+
+  return newResult;
+}
 import myPagination from "./myPagination";
 
 import { MIXINS } from "@/assets/js/mixins";
@@ -231,7 +273,7 @@ export default {
       this.searchData = {
         keyword: "", //关键字
         // settleDate: "", //yyyy-mm 结算周期
-        settleDate: this.defSettleDate, //yyyy-mm 结算周期
+        settleDate: "", //yyyy-mm 结算周期
         // systemTag: this.$store.state.user.user.deptSystemtag || 0, //体系id
         systemTag: "",
         depId: "", //部门编号
@@ -365,10 +407,10 @@ export default {
       let d = this.dateFormat(new Date()).split("-");
       let t = d[1] - 1;
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
-      d[0] = t > 0 ? d[0] : d[0] - 1;// 提成优化01/12
+      d[0] = t > 0 ? d[0] : d[0] - 1;
       d.splice(2, 1);
-      this.defSettleDate = d.join("-");
-      this.searchData.settleDate = d.join("-");
+      this.defSettleDate = new Array(d.join("-"),d.join("-"));
+      this.searchData.settleDate = new Array(d.join("-"),d.join("-"));
     },
     // 批量计算
     batchCalculationFn() {
@@ -379,7 +421,7 @@ export default {
           // debugger
           // 如果为选择确定
           if (action === "confirm") {
-            this.copySearchData = { ...this.searchData }; // 提成优化01/12
+            this.copySearchData = { ...this.searchData };
             let data = this.getParamFn();
             // 加载中
             this.$tool.layerAlert.call(this, {
@@ -424,6 +466,7 @@ export default {
         bonusDateEnd: "", //提成计算日期结束
       };
 
+      data.settleDate = data.settleDate ? getYearAndMonth(data.settleDate[0],data.settleDate[1]).join() : '';
       let signJ =
         data.signDateValue === 0
           ? {
@@ -480,16 +523,44 @@ export default {
     // 获取数据
     this.queryFn();
   },
+  filters: {
+    roundFilters: function (num, decimal = 2) {
+      console.log(num,777)
+      if (num == '-') {
+        return "-"
+      }
+      let str = num.toString()
+      var index = str.indexOf(".");
+      if (index !== -1) {
+        num = Math.round(parseFloat(num) *100) /100
+      } else {
+        num = parseFloat(num).toFixed(decimal);
+      }
+      return parseFloat(num).toFixed(decimal);
+    }
+  },
   watch: {
     "searchData.systemTag"(val) {
       val === ""
         ? (this.searchData.searchStatus = false)
         : (this.searchData.searchStatus = true);
-    },
+    }
   },
 };
 </script>
 
+<style lang="less">
+  .set-data-class {
+    display: inline-flex;
+    .item-billing-date {
+      top: 3px;
+      i,input,span {
+        position: relative;
+        top: -3px !important;
+      }
+    }
+  }
+</style>
 <style scoped lang="less">
 .icon-prompt {
   width: 14px;

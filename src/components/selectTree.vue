@@ -2,7 +2,7 @@
   <el-popover @show="initList('show')" @hide="initList('hide')" ref="popover" trigger="manual" placement="bottom"
     v-model="visible">
     <div class="select-tree">
-      <el-tree accordion :data="list" node-key="depId" :default-expanded-keys="expandedArr" :props="defaultProps" @node-click="depHandleClick"></el-tree>
+      <el-tree accordion node-key="depId" :default-expanded-keys="expandedArr" :data="list" :props="defaultProps" @node-click="depHandleClick"></el-tree>
     </div>
     <p class="tree-box" slot="reference" @click="opera('init',$event)" @mouseenter="showClear"
       @mouseleave="clearVal=false">
@@ -78,7 +78,7 @@ export default {
       cellClick: false, //是否选择
       operaTime: null, //键盘输入时间
       operaStatus: false,
-      expandedArr: [], //搜索展开项
+      expandedArr: []
     };
   },
   mounted() {

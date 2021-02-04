@@ -120,7 +120,8 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   ownerCardTypes: "",
 //   ownerID: "123",
 //   signDate:'5345436456457568',
-//   subscriptionPrice:100,
+//   subscriptionPrice:10044.55,
+//   subscriptionPriceUpper:'壹佰',
 //   ownerIDs: "ee2353-344，ii397-4839",
 //   ownerName: "熊先",
 //   ownerNames: "胜多少，发士夫",
@@ -128,7 +129,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   ownerTels: "",
 //   propertyAddr: "a市b区c",
 //   singleCompany: "是的噶几开会说",
-//   dealPrice:1000,
+//   dealPrice:10055.20,
 //   dealPriceUpper:'壹仟',
 //   square:160
 // }
@@ -148,6 +149,8 @@ for (let readonlyItem in msg) {
           let D = time.getDate();
           let signDate = `${y}年${M}月${D}日`
           element.innerHTML = signDate
+        }else if((readonlyItem === 'dealPrice' && msg["dealPrice"]) || (readonlyItem === 'subscriptionPrice' && msg["subscriptionPrice"])){
+          element.innerHTML=formatMoney(msg[readonlyItem])
         }else {
           element.innerHTML=msg[readonlyItem]
         }

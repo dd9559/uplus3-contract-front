@@ -121,14 +121,14 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(0,0)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
                   </el-select>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item :prop="'contPersons[' + 0 + '].identifyCode'" :rules="{required: true,validator: idCard2, trigger:'change'}">
                   <el-input v-model="contractForm.contPersons[0].identifyCode" :disabled="canInput" clearable placeholder="证件号" class="custwidth" :maxlength="contractForm.contPersons[0].cardType===1?18:contractForm.contPersons[0].cardType===2?30:contractForm.contPersons[0].cardType===3?20:10" @clear="clearIdentify(0,'identifyCode')" @input="cutInfo('card',0)"></el-input>
                 </el-form-item>
 
@@ -160,7 +160,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 0 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
+                  <el-select v-model="contractForm.contPersons[0].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(0)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
@@ -230,7 +230,7 @@
                 </el-form-item>
 
                 <el-form-item :prop="'contPersons[' + 1 + '].cardType'" :rules="{required: true, message: '请选择证件类型', trigger: 'change'}">
-                  <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
+                  <el-select v-model="contractForm.contPersons[1].cardType" :disabled="canInput||recordType===10" placeholder="证件类型" style="width:120px;" @change="changeCardType(1)">
                     <template v-for="item in dictionary['633']">
                       <el-option :key="item.key" v-if="recordType===10&&item.key!=4||recordType!=10" :label="item.value" :value="item.key"></el-option>
                     </template>
@@ -515,6 +515,8 @@ export default {
       // this.getShopList();
       this.contractForm.type = this.$route.query.contType //区分合同类型
       this.recordType = parseInt(this.$route.query.recordType)
+      this.contractForm.contPersons[0].cardType = this.recordType === 10 ? 1 : ""
+      this.contractForm.contPersons[1].cardType = this.recordType === 10 ? 1 : ""
       //编辑页面刷新时，页面数据会清空，这时获取不了this.$route.query.operateType
       if (this.$route.query.operateType) {
           this.type = parseInt(this.$route.query.operateType)
@@ -562,10 +564,12 @@ export default {
      })
     },
 
-    changeCardType(val){
+    changeCardType(val,flag=1){
       this.$nextTick(() => {
         this.clearIdentify(val,"all")
-        this.$refs.contractForm.validateField('contPersons[' + val + '].identifyCode');
+        if (flag) {
+          this.$refs.contractForm.validateField('contPersons[' + val + '].identifyCode');
+        }
       })
     },
 
@@ -592,7 +596,7 @@ export default {
       }
       else if(val == "name"||val=="lepName"||val=="companyName") {
         this.$nextTick(() => {
-         this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/\s/g,"")
+         this.contractForm.contPersons[index].name = this.contractForm.contPersons[index].name.toString().replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
         //  this.contractForm.contPersons[index].name = this.$tool.textInput(this.contractForm.contPersons[index].name)
         })
       }
@@ -639,6 +643,34 @@ export default {
         if (!value || value == '') {
 
            return callback(new Error("请输入证件号"));
+        } else if (!this.isIdCardNo(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        } else {
+          callback();
+        }
+      }else if(this.contractForm.contPersons[0].cardType == 2 || this.contractForm.contPersons[0].cardType == 3 || this.contractForm.contPersons[0].cardType == 4){
+        if (!value || value == '') {
+           return callback(new Error("请输入证件号"));
+        }
+        else if (!passport.test(value)) {
+          // debugger
+          callback(new Error("请输入正确格式的证件号"));
+        }
+        else{
+          callback()
+        }
+      }
+    },
+
+    idCard2 (rule, value, callback) {
+      let passport = /[^\s*]/
+      if(!this.contractForm.contPersons[0].cardType){
+          return callback();
+          // callback(new Error("请先选择证件类型"));
+      }else if(this.contractForm.contPersons[0].cardType == 1){
+        if (!value || value == '') {
+          return callback();
         } else if (!this.isIdCardNo(value)) {
           // debugger
           callback(new Error("请输入正确格式的证件号"));
@@ -1025,7 +1057,7 @@ export default {
     },
 
     checkRule(contractForm) {
-
+      
       this.$refs[contractForm].validate(valid => {
         if (valid) {
           if(this.contractForm.houseinfoCode){

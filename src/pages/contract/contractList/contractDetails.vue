@@ -2571,7 +2571,8 @@ export default {
           (this.contractDetail.contState.value < 2 &&
           this.contractDetail.recordType.value != 2 &&
           this.contractDetail.recordType.value != 10) &&
-          this.contractDetail.contractEntrust.recordType !== 2
+          (this.contractDetail.contractEntrust &&
+          this.contractDetail.contractEntrust.recordType !== 2)
         ) {
           this.$message({
             message: "合同未签章,不允许上传合同主体",
