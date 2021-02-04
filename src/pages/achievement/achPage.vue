@@ -1715,7 +1715,6 @@ export default {
       },
       hasServiceAgent: false, //是否勾选交易服务费佣金分成,20191220新加
       contRemarks: "", //合同备注栏,
-      beforeData:null //编辑前数据
     };
   },
   components: {
@@ -2926,7 +2925,6 @@ export default {
             status: status,
             contractId: this.achObj.contractId,
             distributionAgreement: this.filesList,
-            data:this.beforeData
           };
         }
         this.$ajax
@@ -3217,9 +3215,6 @@ export default {
 
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
         if (res.status === 200) {
-          if ( infoType == "getEditInfo") {
-            this.beforeData = res.data.data
-          }
           //2.4.6新需求 增加合同备注栏
           // contRemarks
           if (
