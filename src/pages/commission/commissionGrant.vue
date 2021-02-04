@@ -549,6 +549,18 @@ export default {
     // 获取数据
     this.queryFn();
   },
+  filters: {
+    roundFilters: function (num, decimal = 2) {
+      let str = num.toString()
+      var index = str.indexOf(".");
+      if (index !== -1) {
+        num = Math.round(parseFloat(num) *100) /100
+      } else {
+        num = parseFloat(num).toFixed(decimal);
+      }
+      return parseFloat(num).toFixed(decimal);
+    }
+  },
   watch: {
     "searchData.systemTag"(val) {
       val === ""

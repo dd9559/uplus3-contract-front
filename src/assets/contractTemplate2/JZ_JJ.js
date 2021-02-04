@@ -13,7 +13,7 @@ let sub = {
 let mainBtn = document.querySelector("#submit");
 if (mainBtn) {
   mainBtn.addEventListener("click", function(e) {
-    contractConfig.submit(e, sub, "templateError1");
+    contractConfig.submit(e, sub, "templateError");
   });
 } else {
   let btn = document.createElement("span");
@@ -22,7 +22,7 @@ if (mainBtn) {
   btn.innerHTML = "click";
   document.body.appendChild(btn);
   btn.addEventListener("click", function(e) {
-    contractConfig.submit(e, sub, "templateError1");
+    contractConfig.submit(e, sub, "templateError");
   });
 }
 
@@ -53,38 +53,38 @@ textLong.forEach(function(item) {
 
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "ee2353-344，ii397-4839",
-  guestName: "然迪生",
-  guestNames: "胜负少，发士夫",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "ee2353-344，ii397-4839",
-  ownerName: "熊先",
-  ownerNames: "胜多少，发士夫",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "是的噶几开会说",
-  dealPrice: 1000,
-  dealPriceUpper: '壹仟',
-  square: 160,
-  guestStoreRegisterCode: '213',
-  signDate: 1592465819508,
-  wtSignDate: 1592465819508,
-  organizationCode:"8888888888"
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "ee2353-344，ii397-4839",
+//   guestName: "然迪生",
+//   guestNames: "胜负少，发士夫",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "ee2353-344，ii397-4839",
+//   ownerName: "熊先",
+//   ownerNames: "胜多少，发士夫",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "是的噶几开会说",
+//   dealPrice: 1000,
+//   dealPriceUpper: '壹仟',
+//   square: 160,
+//   guestStoreRegisterCode: '213',
+//   signDate: 1592465819508,
+//   wtSignDate: 1592465819508,
+//   organizationCode:"8888888888"
+// }
 for (let readonlyItem in msg) {
   //得到readonly的值
   let onlyReadDom = Array.from(
@@ -121,7 +121,7 @@ for (let readonlyItem in msg) {
   if (onlyReadDom.length > 0) {
     onlyReadDom.forEach((element, index) => {
         if (readonlyArr.includes(readonlyItem)) {
-          if (readonlyItem === 'companyNames') {
+          if (readonlyItem === 'companyNames'&&msg[readonlyItem].length>0) {
             element.innerHTML = msg[readonlyItem][0]
           } else if (readonlyItem === 'signDate' && msg["signDate"]) {
             let time = new Date(Number(msg["signDate"]));

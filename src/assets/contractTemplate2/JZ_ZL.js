@@ -46,9 +46,9 @@ let checkArr = {
         0: ['val165'],
         1: []
     },
-    check16: {
-        1: ['val175'],
-    }
+    // check16: {
+    //     1: ['val175'],
+    // }
 }
 
 // 必填校验对象
@@ -162,6 +162,8 @@ for (let readonlyItem in msg) {
             let D = time.getDate();
             let signDate = `${y}年${M}月${D}日`
             e.innerHTML = signDate
+        } else if(readonlyItem==='companyNames'&&msg[readonlyItem].length>0){
+            e.innerHTML=msg[readonlyItem][0]
         } else {
             e.innerHTML = msg[readonlyItem]
         }
@@ -241,9 +243,9 @@ contractConfig.checkboxListener(function(obj, i) {
         if ((name === 'check9' && i === 4)) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
         }
-        if ((name === 'check16' && i === 1)) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-        }
+        // if ((name === 'check16' && i === 1)) {
+        //     contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
+        // }
         if (name === 'check14' || name === 'check15') {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
         }

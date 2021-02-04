@@ -89,7 +89,7 @@ for (let readonlyItem in msg) {
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
       if(readonlyArr.includes(readonlyItem)){
-        if(readonlyItem==='companyNames') {
+        if(readonlyItem==='companyNames'&&msg[readonlyItem].length>0) {
           element.innerHTML=msg[readonlyItem][0]
         }else if(readonlyItem==='signDate'){
           let time = new Date(Number(msg["signDate"]));
@@ -106,7 +106,6 @@ for (let readonlyItem in msg) {
     })
   }
 }
-
 
 //输入自适应
 contractConfig.inputListener(function(ev,tip){
