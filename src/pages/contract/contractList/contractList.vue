@@ -2433,16 +2433,51 @@ export default {
     },
     //意向/定金转成交
     toDeal(row) {
-      this.$router.push({
-        path: "/addContract",
-        query: {
-          id: row.id,
-          operateType: 1, //1新增 2编辑
-          type: row.contType.value,
+      let param = {
           recordType: row.recordType.value,
-          isDeal: 1,
-        },
-      });
+          type: row.houseinfoCode ? row.houseinfoCode.search("Z") === 0 ? 1 : 2 : row.contType.value,
+        };
+      this.$ajax
+        .get("/api/contract/checkContTemplate", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            this.$router.push({
+              path: "/addContract",
+              query: {
+                id: row.id,
+                operateType: 1, //1新增 2编辑
+                type: row.contType.value,
+                recordType: row.recordType.value,
+                isDeal: 1,
+              },
+            });
+          } else {
+            this.$message({
+              message: "该类型合同模板未上传,请上传后再创建",
+              type: "warning",
+            });
+          }
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
+          });
+        });
+
+
+
+      // this.$router.push({
+      //   path: "/addContract",
+      //   query: {
+      //     id: row.id,
+      //     operateType: 1, //1新增 2编辑
+      //     type: row.contType.value,
+      //     recordType: row.recordType.value,
+      //     isDeal: 1,
+      //   },
+      // });
     },
     //获取U+房源详情
     getUplusHouseDetail(id) {
