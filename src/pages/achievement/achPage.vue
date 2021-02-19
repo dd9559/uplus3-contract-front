@@ -3218,7 +3218,7 @@ export default {
       this.$ajax.get("/api/achievement/" + infoType, param).then(res => {
         if (res.status === 200) {
           if ( infoType == "getEditInfo") {
-            this.beforeData = res.data.data
+            this.beforeData = JSON.parse(JSON.stringify(res.data.data)) 
           }
           //2.4.6新需求 增加合同备注栏
           // contRemarks
