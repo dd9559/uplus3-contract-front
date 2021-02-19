@@ -376,7 +376,7 @@ for (let readonlyItem in msg) {
       if (readonlyItem === 'code') {
         element.value = msg[readonlyItem]
         element.setAttribute('value', msg[readonlyItem])
-      } else if (readonlyItem === "companyNames") {
+      } else if (readonlyItem === "companyNames"&&msg[readonlyItem].length>0) {
         element.innerHTML = msg[readonlyItem][0]
         element.classList.remove('input-before')
       } else if (readonlyItem === "signDate") {

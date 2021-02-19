@@ -98,7 +98,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{scope.row.settleMoney|fomatFloat}}
+            {{ scope.row.settleMoney == null ? "-" : scope.row.settleMoney|roundFilters}}
           </template>
         </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
@@ -108,7 +108,7 @@
         </el-table-column>
         <el-table-column prop="bonusMoney" min-width="85" label="提成金额">
           <template slot-scope="scope">
-            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney  }}
+            {{ scope.row.isCalculation === 0 ? "-" : scope.row.bonusMoney|roundFilters}}
           </template>
         </el-table-column>
         <el-table-column prop="bonusFormula" min-width="265" label="提成计算公式">
@@ -522,6 +522,22 @@ export default {
     this.getSystemTagSelect();
     // 获取数据
     this.queryFn();
+  },
+  filters: {
+    roundFilters: function (num, decimal = 2) {
+      console.log(num,777)
+      if (num == '-') {
+        return "-"
+      }
+      let str = num.toString()
+      var index = str.indexOf(".");
+      if (index !== -1) {
+        num = Math.round(parseFloat(num) *100) /100
+      } else {
+        num = parseFloat(num).toFixed(decimal);
+      }
+      return parseFloat(num).toFixed(decimal);
+    }
   },
   watch: {
     "searchData.systemTag"(val) {

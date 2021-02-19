@@ -33,7 +33,7 @@
           v-model="uPlusQianyueType"
           placeholder="签约方式"
           :clearable="true"
-          style="width:600px;margin-left:20px;"
+          style="width:600px;margin-left:20px;margin-bottom:20px;"
         >
           <el-option
             v-for="item in dictionary['64']"
