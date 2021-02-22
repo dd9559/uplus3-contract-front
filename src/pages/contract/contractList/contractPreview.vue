@@ -880,7 +880,7 @@ export default {
           if(this.isentrust){//委托合同
             this.examineState=res.data.examineState
             this.contState=res.data.entrustState
-            this.recordType=res.data.recordType.value;
+            this.recordType=res.data.recordType;
           }else{
             this.examineState=res.data.examineState.value
             this.resultState=res.data.resultState.value
