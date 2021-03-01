@@ -2993,7 +2993,7 @@ export default {
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
                     let rightAddress = res.data.propertyRightAddr;
                     let index1 = rightAddress.indexOf("市");
-                    let index2 = rightAddress.indexOf("区");
+                    let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
                     if (index1 > 0) {
                         this.rightAddrCity = rightAddress.substring(0, index1);
                     }
@@ -3188,11 +3188,13 @@ export default {
                 this.rightAddrCity = this.rightAddrCity
                     .replace(/\s+/g, "")
                     .replace(addrReg, "")
+                    .replace("市", "")
                     .replace(/\//g, "");
             } else if (type === "area") {
                 this.rightAddrArea = this.rightAddrArea
                     .replace(/\s+/g, "")
                     .replace(addrReg, "")
+                    .replace("区", "")
                     .replace(/\//g, "");
             } else {
                 this.rightAddrDetail = this.rightAddrDetail
