@@ -3188,13 +3188,11 @@ export default {
                 this.rightAddrCity = this.rightAddrCity
                     .replace(/\s+/g, "")
                     .replace(addrReg, "")
-                    .replace("市", "")
                     .replace(/\//g, "");
             } else if (type === "area") {
                 this.rightAddrArea = this.rightAddrArea
                     .replace(/\s+/g, "")
                     .replace(addrReg, "")
-                    .replace("区", "")
                     .replace(/\//g, "");
             } else {
                 this.rightAddrDetail = this.rightAddrDetail
