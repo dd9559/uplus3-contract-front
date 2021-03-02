@@ -978,7 +978,7 @@ export default {
           // this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
-          let index2 = rightAddress.indexOf('区')
+          let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
           if(index1>0){
             this.$set(this.contractForm,'rightAddrCity',rightAddress.substring(0,index1))
           }

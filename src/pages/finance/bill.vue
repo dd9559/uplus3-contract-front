@@ -1303,7 +1303,7 @@ export default {
         outPayInfoId: this.selectPayInfo.id, //转出的款项id
         outType: this.selectPayInfo.moneyTypeId, //转出的款类key
         outTypeId: this.selectPayInfo.moneyTypePid, //转出的款类id
-        outMoney: this.selectPayInfo.amount, //转出时款类金额
+        outMoney: this.zkEdit && this.transterInfoPerson ? this.transterInfoPerson.outMoney : this.selectPayInfo.amount, //转出时款类金额
         inId: this.transterInfoPerson.inId
           ? this.transterInfoPerson.inId
           : this.transterInfoPerson.inContractId, //转入的合同ID
