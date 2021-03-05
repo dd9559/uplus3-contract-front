@@ -339,6 +339,9 @@ export default {
         // pageNum: this.pageNum,
         // pageSize: this.pageSize,
       };
+      if (param.empId) {
+        param.empId = param.empId.split("/")[0];
+      }
       this.excelCreate("/input/AchievementContractExcel", param);
     },
     searchDep: function (payload) {
