@@ -172,8 +172,8 @@
           </ul>
         </div>
         <p>
-          <el-button v-if="power['sign-ht-info-pay'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
-          <el-button v-if="power['sign-ht-info-collect'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
+          <el-button v-if="power['sign-cw-debt-whtfk'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
+          <el-button v-if="power['sign-cw-debt-whtsk'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
             v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
