@@ -101,6 +101,13 @@
             {{ scope.row.settleMoney == null ? "-" : scope.row.settleMoney|roundFilters}}
           </template>
         </el-table-column>
+        <el-table-column prop="settleMoney" min-width="105">
+          <template slot="header">分账金额
+          </template>
+          <template slot-scope="scope">
+            {{ scope.row.agentReceipts == null ? "-" : scope.row.agentReceipts|roundFilters}}
+          </template>
+        </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
           <template slot-scope="scope">
             {{isCalculation[scope.row.isCalculation].label}}
@@ -405,7 +412,7 @@ export default {
     // 初始时间
     initialTimeFn() {
       let d = this.dateFormat(new Date()).split("-");
-      let t = d[1] - 1;
+      let t = d[1];
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
       d[0] = t > 0 ? d[0] : d[0] - 1;
       d.splice(2, 1);
