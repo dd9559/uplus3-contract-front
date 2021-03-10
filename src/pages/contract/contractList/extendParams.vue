@@ -567,7 +567,7 @@ export default {
 					}
 				}
 				this.param = param;
-				if(this.Msg.type==2){
+				if(this.Msg.type==2 || this.Msg.type==1){
 					this.dialogSub=true
 				}else{
 					this.otherDialogSub=true
