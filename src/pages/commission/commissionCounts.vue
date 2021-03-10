@@ -92,6 +92,13 @@
         <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
         <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
+          <template slot="header">分账金额
+          </template>
+          <template slot-scope="scope">
+            {{ scope.row.agentReceipts == null ? "-" : scope.row.agentReceipts|roundFilters}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="settleMoney" min-width="105">
           <template slot="header">结算金额
             <el-tooltip content="结算金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
               <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
@@ -99,13 +106,6 @@
           </template>
           <template slot-scope="scope">
             {{ scope.row.settleMoney == null ? "-" : scope.row.settleMoney|roundFilters}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="settleMoney" min-width="105">
-          <template slot="header">分账金额
-          </template>
-          <template slot-scope="scope">
-            {{ scope.row.agentReceipts == null ? "-" : scope.row.agentReceipts|roundFilters}}
           </template>
         </el-table-column>
         <el-table-column prop="calculationStatus" min-width="85" label="计算状态">
