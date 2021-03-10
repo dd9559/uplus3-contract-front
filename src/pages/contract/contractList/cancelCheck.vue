@@ -161,7 +161,7 @@ export default {
       contractForm: {
         dealAgentId: "",
       },
-      dataType: '0',
+      dataType: '0',// 添加解约时间
       data: [],
       list: [],
       total: 0,

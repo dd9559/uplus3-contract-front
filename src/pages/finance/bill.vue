@@ -595,11 +595,11 @@ export default {
                       state: false,
                       name: '查询'
                     },*/
-        "sign-ht-info-pay": {
+        "sign-cw-debt-whtfk": {
           state: false,
           name: "付款",
         },
-        "sign-ht-info-collect": {
+        "sign-cw-debt-whtsk": {
           state: false,
           name: "收款",
         },
