@@ -1,5 +1,5 @@
 <template>
-  <div class="view" v-if="power['sign-cw-debt-whtfk'].state">
+  <div class="view" v-if="power['sign-cw-debt-whtfk'].state || power['sign-ht-info-pay'].state">
     <p class="f14 txt-title">付款信息</p>
     <ul class="bill-form">
       <li>
@@ -457,6 +457,10 @@ export default {
       //权限配置
       power: {
         "sign-cw-debt-whtfk": {
+          state: false,
+          name: "付款",
+        },
+        "sign-ht-info-pay": {
           state: false,
           name: "付款",
         },
