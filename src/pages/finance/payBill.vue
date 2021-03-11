@@ -1,5 +1,5 @@
 <template>
-  <div class="view" v-if="power['sign-ht-info-pay'].state">
+  <div class="view" v-if="power['sign-cw-debt-whtfk'].state">
     <p class="f14 txt-title">付款信息</p>
     <ul class="bill-form">
       <li>
@@ -456,7 +456,7 @@ export default {
       noContAmountShow: false,
       //权限配置
       power: {
-        "sign-ht-info-pay": {
+        "sign-cw-debt-whtfk": {
           state: false,
           name: "付款",
         },
