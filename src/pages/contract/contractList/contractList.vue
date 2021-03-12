@@ -1768,7 +1768,16 @@ export default {
       } else {
         param.contTypes = "";
       }
-
+      if(param.isCall ==''){
+        delete param.isCall
+      }
+      // console.log(param)
+      // for (const ele of param) {
+      //   if(ele == ''){
+      //     delete param.ele
+      //   }
+      // }
+      // console.log(param)
       if (type === "search" || type === "page") {
         sessionStorage.setItem(
           "sessionQuery",
