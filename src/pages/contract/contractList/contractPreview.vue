@@ -880,13 +880,15 @@ export default {
           if(this.isentrust){//委托合同
             this.examineState=res.data.examineState
             this.contState=res.data.entrustState
-            this.recordType=res.data.recordType.value;
+            this.recordType=res.data.recordType;
+            this.contType=res.data.contType;
           }else{
             this.examineState=res.data.examineState.value
             this.resultState=res.data.resultState.value
             this.laterStageState=res.data.laterStageState.value
             this.contState=res.data.contState.value;
             this.recordType=res.data.recordType.value;
+            this.contType=res.data.contType.value
             this.contChangeState=res.data.contChangeState.value
             this.isSign=res.data.isRisk
             this.isHaveData=res.data.isHaveData;
@@ -911,7 +913,7 @@ export default {
           this.isCanAudit=res.data.isCanAudit;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
-          this.contType=res.data.contType.value
+         
           //咸宁买卖无签章
           if(res.data.cityId==8&&res.data.contType.value==2&&this.isentrust!=1){
             //若为咸宁买卖 需要隐藏选择签章的按钮
