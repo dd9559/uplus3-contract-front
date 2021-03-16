@@ -314,7 +314,7 @@
         <img :src="billMsg.RQcode" alt />
       </li>
       <!-- 转款信息(转款信息) -->
-      <li>
+      <li v-if="activeItem!=='付款信息'">
         <h4 class="f14">转款信息</h4>
         <el-table border :data="transferInfo" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">

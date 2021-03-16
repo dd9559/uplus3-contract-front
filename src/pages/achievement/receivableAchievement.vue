@@ -225,7 +225,11 @@
 
           <el-table-column prop="agentPlatformFee" label="平台费（元）" min-width="80"></el-table-column>
 
-          <el-table-column prop="receivableComm" label="实收金额（元）" min-width="80"></el-table-column>
+          <el-table-column label="实收金额（元）" min-width="80">
+            <template slot-scope="scope">
+              <p>{{scope.row.receivableComm|fomatFloat}}</p>
+            </template>
+          </el-table-column>
 
           <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80"></el-table-column>
         </el-table>
@@ -377,6 +381,19 @@
             this.remoteMethod();
         },
         components: {},
+        filters: {
+          //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
+          fomatFloat: function (num, decimal = 2) {
+            num = num.toString();
+            var index = num.indexOf(".");
+            if (index !== -1) {
+              num = num.substring(0, decimal + index + 1);
+            } else {
+              num = num.substring(0);
+            }
+            return parseFloat(num).toFixed(decimal);
+          }
+        },
         methods: {
             // 导出功能
             getExcel() {
