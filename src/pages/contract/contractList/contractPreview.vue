@@ -881,11 +881,13 @@ export default {
             this.examineState=res.data.examineState
             this.contState=res.data.entrustState
             this.recordType=res.data.recordType;
+            this.contType=res.data.contType
           }else{
             this.examineState=res.data.examineState.value
             this.resultState=res.data.resultState.value
             this.laterStageState=res.data.laterStageState.value
             this.contState=res.data.contState.value;
+            this.contType=res.data.contType.value
             this.recordType=res.data.recordType.value;
             this.contChangeState=res.data.contChangeState.value
             this.isSign=res.data.isRisk
@@ -911,7 +913,6 @@ export default {
           this.isCanAudit=res.data.isCanAudit;
           this.cityId=res.data.cityId;
           this.auditId=res.data.auditId;
-          this.contType=res.data.contType.value
           //咸宁买卖无签章
           if(res.data.cityId==8&&res.data.contType.value==2&&this.isentrust!=1){
             //若为咸宁买卖 需要隐藏选择签章的按钮
@@ -975,6 +976,7 @@ export default {
     //编辑
     toEdit(){
       if(this.isentrust){
+        console.log(this.contType)
         this.$router.replace({
           path: "/contractDetails",
           query: {
