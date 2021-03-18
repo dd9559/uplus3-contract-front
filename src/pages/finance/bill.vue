@@ -314,8 +314,8 @@
               <el-button type="text" @click="btnOpera(scope.row,3)" v-else-if="(
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
-                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)//转入收款+已开票+收付状态不等于(失败和审核中)
+                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11)||//收付状态不等于(收款-未付款&&收款-收款失败)
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11)//转入收款+已开票+收付状态不等于(失败)
                        ">开票
               </el-button>
             </template>
