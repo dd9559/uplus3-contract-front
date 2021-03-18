@@ -27,7 +27,15 @@
             ></el-input>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="签约日期">
+        <el-form-item>
+          <el-select
+            v-model="dataType"
+            placeholder="签约日期"
+            style="width:100px"
+          >
+            <el-option key="0" label="签约日期" value="0"></el-option>
+            <el-option key="1" label="录入日期" value="1"></el-option>
+          </el-select>
           <el-date-picker
             v-model="signDate"
             type="daterange"
@@ -38,7 +46,7 @@
             value-format="yyyy/MM/dd"
             style="width: 330px"
           ></el-date-picker>
-        </el-form-item>
+        </el-form-item>       
         <el-form-item label="合同类型">
           <el-select
             v-model="contractForm.contTypes"
@@ -295,6 +303,17 @@
             placeholder="请输入"
             :clearable="true"
           ></el-input>
+        </el-form-item>
+        <el-form-item label="回访录音">
+          <el-select
+            v-model="contractForm.isCall"
+            placeholder="全部"
+            :clearable="true"
+            style="width: 150px"
+          >
+            <el-option label="已回访" value="1"></el-option>
+            <el-option label="未回访" value="0"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -848,7 +867,7 @@
           <template slot-scope="scope">
             <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>-->
-            <span>{{ (scope.row.contType.label=='定金'||scope.row.contType.label=='意向')?'-':scope.row.isCall === 0?'未回访':'已回访' }}</span>
+            <span>{{scope.row.isCall === 0?'未回访':scope.row.isCall === 1?'已回访':'-'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="录入人" min-width="90">
@@ -1321,6 +1340,7 @@ export default {
   },
   data() {
     return {
+      dataType:'0', // 筛选日期类型
       tableBox: null,
       contractForm: {
         dealAgentId: "",
@@ -1597,6 +1617,13 @@ export default {
       delete this.contractForm.endDate;
       this.keyword = session.query.keyword;
       this.currentPage = session.query.pageNum;
+      if (session.query.dataType) {
+        this.dataType = session.dataType  
+      }
+      if (session.query.lrBeginDate) {
+        this.signDate[0] = session.query.lrBeginDate;
+        this.signDate[1] = session.query.lrEndDate;
+      }
       if (session.query.beginDate) {
         this.signDate[0] = session.query.beginDate;
         this.signDate[1] = session.query.endDate;
@@ -1717,12 +1744,21 @@ export default {
         type !== "ChosePersonEditor"
           ? Object.assign({}, param, this.contractForm)
           : param;
-      if (this.signDate) {
-        if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+      if(this.dataType == '0'){
+        if (this.signDate) {
+          if (this.signDate.length > 0) {
+            param.beginDate = this.signDate[0];
+            param.endDate = this.signDate[1];
+          }
         }
-      }
+      }else if(this.dataType == '1'){
+        if (this.signDate) {
+          if (this.signDate.length > 0) {
+            param.lrBeginDate = this.signDate[0];
+            param.lrEndDate = this.signDate[1];
+          }
+        }
+      }
       if (
         this.contractForm.contTypes &&
         this.contractForm.contTypes.length > 0
@@ -1731,7 +1767,16 @@ export default {
       } else {
         param.contTypes = "";
       }
-
+      if(param.isCall ==''){
+        delete param.isCall
+      }
+      // console.log(param)
+      // for (const ele of param) {
+      //   if(ele == ''){
+      //     delete param.ele
+      //   }
+      // }
+      // console.log(param)
       if (type === "search" || type === "page") {
         sessionStorage.setItem(
           "sessionQuery",
@@ -1741,6 +1786,7 @@ export default {
             query: Object.assign({}, param, {
               empName: this.dep.empName,
             }),
+            dataType:this.dataType,
             methods: "postJSON",
           })
         );
@@ -2893,6 +2939,14 @@ export default {
       console.log(arr);
       return arr;
     },
+  },
+  watch: {
+    dataType: {
+      handler(val) {
+        this.signDate = []
+      },
+      immediate: true
+    }
   },
   filters: {
     timeFormat_: function (val) {
