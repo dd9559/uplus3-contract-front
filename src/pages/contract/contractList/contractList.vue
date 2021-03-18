@@ -868,7 +868,7 @@
           <template slot-scope="scope">
             <!-- <span v-if="scope.row.isCombine">{{scope.row.signDate.substr(0, 16)}}</span>
             <span v-else>{{Number(scope.row.signDate)|timeFormat_}}</span>-->
-            <span>{{ scope.row.isCall === 0?'未回访':'已回访' }}</span>
+            <span>{{ (scope.row.contType.label=='定金'||scope.row.contType.label=='意向')?'-':scope.row.isCall === 0?'未回访':'已回访' }}</span>
           </template>
         </el-table-column>
         <el-table-column label="录入人" min-width="90">
