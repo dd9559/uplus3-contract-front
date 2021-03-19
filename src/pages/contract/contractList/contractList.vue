@@ -1820,6 +1820,7 @@ export default {
       TOOL.clearForm(this.contractForm);
       this.keyword = "";
       this.signDate = [];
+      this.dataType = "0"
       this.EmployeList = [];
     },
     // 查询
