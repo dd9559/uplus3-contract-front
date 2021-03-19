@@ -2385,12 +2385,21 @@ export default {
         keyword: this.keyword,
       };
       param = Object.assign({}, param, this.contractForm);
-      if (this.signDate) {
-        if (this.signDate.length > 0) {
-          param.beginDate = this.signDate[0];
-          param.endDate = this.signDate[1];
+      if(this.dataType == '0'){
+        if (this.signDate) {
+          if (this.signDate.length > 0) {
+            param.beginDate = this.signDate[0];
+            param.endDate = this.signDate[1];
+          }
         }
-      }
+      }else if(this.dataType == '1'){
+        if (this.signDate) {
+          if (this.signDate.length > 0) {
+            param.lrBeginDate = this.signDate[0];
+            param.lrEndDate = this.signDate[1];
+          }
+        }
+      }
       if (
         this.contractForm.contTypes &&
         this.contractForm.contTypes.length > 0
@@ -2398,6 +2407,9 @@ export default {
         param.contTypes = this.contractForm.contTypes.join(",");
       } else {
         param.contTypes = "";
+      }
+      if(param.isCall ==''){
+        delete param.isCall
       }
 
       delete param.depName;
