@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="/datepicker.css" />
-    <title>定约定金协议</title>
+    <title>房屋交易按揭过户服务合同</title>
     <style>
         /* 默认样式 */
         body {
@@ -291,7 +291,7 @@
         <p class="code fb">编号：<span class="text-limit span-time" systemParam="code" tag="input-auto"></span></p>
         <p class="title2">房屋交易按揭过户服务合同</p>
         <ul class="ulbox">
-            <li>甲方（出售人）：<span class="text-limit input-before" systemparam="ownerName" tag="input-auto"></span></li>
+            <li>甲方（出售方）：<span class="text-limit input-before" systemparam="ownerName" tag="input-auto"></span></li>
             <li>证件类型：<span class="text-limit input-before" systemparam="ownerID" tag="input-auto"></span></li>
             <li>证件号码： <span class="text-limit input-before" systemparam="ownerNames" tag="input-auto"></span></li>
             <li>代理人： <span class="text-limit input-before" systemparam="ownerIDs" tag="input-auto"></span></li>
@@ -307,7 +307,11 @@
             <li>证件号码： <span class="text-limit input-before" extendParam="val8" tag="input-auto"></span></li>
         </ul>
         <p class="mt-10 lh18">丙方（服务方）: <span class="text-limit input-before" extendParam="val8" tag="input-auto"></span></p>
-        <p class="lh18 agreements interval">鉴于甲、乙双方已就座落于<span class="text-limit input-before" systemparam="propertyAddr" tag="input-auto"></span>之房屋的交易签署了《武汉市存量房买卖合同》(以下简称“《买卖合同》”)，现甲乙双方就委托丙方办理后续交易事宜订立本合同，共同信守。</p>
+        <p class="lh18 agreements interval">
+            <span>鉴于甲、乙双方已就座落于</span>
+            <span class="text-limit input-before" systemparam="propertyAddr" tag="input-auto"></span>
+            <span>之房屋的交易签署了《武汉市存量房买卖合同》(以下简称“《买卖合同》”)，现甲乙双方就委托丙方办理后续交易事宜订立本合同，共同信守。</span>
+        </p>
         <div class="lh18 mt-10 agreements fb">第一条 服务内容</div>
         <div class="lh18 agreements">(一)甲乙双方同意丙方为乙方提供向银行申请办理按揭贷款手续的服务，具体服务事项包括协助收集并提交办理贷款所需资料、协助办理贷款申请、协助办理房屋评估手续以及抵押登记手续等，及时跟进贷款审批进度，跟进贷款发放进度，代为领取他项权证服务。</div>
         <div class="lh18 agreements">(二)甲乙双方同意丙方为其提供交易房屋权属过户手续的服务，具体服务事项包括协助收集并提交相关资料、协助办理过户手续等，代为领取《不动产权证书》。</div>
@@ -316,13 +320,44 @@
         <div class="lh18 agreements">(五)协助甲、乙双方办理资金监管。</div>
         
         <div class="lh18 mt-10 agreements fb">第二条 收费标准</div>
-
-
-        <div class="lh18 agreements">1、丙方收取按揭服务费的收费标准为：乙方根据贷款金额应向丙方支付按揭服务费人民币(小写) <span class="text-limit input-before" extendParam="val11" tag="input-auto"></span>（大写：<span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>圆整）。</div>
-        <div class="lh18 agreements">2、乙方同意丙方代收评估费，评估费的标准为：交易房产评估价值的千分之一。评估费暂定为人民币(小写)<span class="text-limit input-before" extendParam="val11" tag="input-auto"></span>（大写：<span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>圆整），具体金额以评估机构的收据为准，多退少补。贷款期间如遇评估机构调整收费标准，须按调整后的收费标准支付。乙方不同意丙方代收评估费且乙方需办理抵押按揭贷款手续的，乙方应于办理贷款申请手续时向贷款银行提交其认可的评估机构出具的评估报告，如不能提供，由乙方承担全部责任。</div>
-        <div class="lh18 agreements">3、乙方应向丙方支付过户服务费人民币(小写)<span class="text-limit input-before" extendParam="val11" tag="input-auto"></span>（大写：<span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>圆整）</div>
+        <div class="lh18 agreements">
+            <div class="info-checkbox" name="two">
+                <p type="check"></p><span>乙方以全款方式购买的</span>
+            </div>
+            <span>，乙方应向丙方支付过户服务费人民币(小写)</span>
+            <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val3"></span>
+            <span>元整（大写：</span>
+            <span tag="input-auto" extendparam="val3_add" systemParam="true" class="input-readonly"></span>
+            <span>元整）。</span>
+        </div>
+        <div class="lh18 agreements">
+            <div class="info-checkbox" name="two">
+                <p type="check"></p><span>乙方以贷款方式购买的</span>
+            </div>
+            <span>，丙方按以下标准收费：</span>
+        </div>
+        <div class="lh18 agreements">
+            <span>1、丙方收取按揭服务费的收费标准为：乙方根据贷款金额应向丙方支付按揭服务费人民币(小写)</span>
+            <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val3"></span>
+            <span>元整（大写：</span>
+            <span tag="input-auto" extendparam="val3_add" systemParam="true" class="input-readonly"></span>
+            <span>元整）。</span>
+        </div>
+        <div class="lh18 agreements">
+            <span>2、乙方同意丙方代收评估费，评估费的标准为：交易房产评估价值的千分之一。评估费暂定为人民币(小写)</span>
+            <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val3"></span>
+            <span>元整（大写：</span>
+            <span tag="input-auto" extendparam="val3_add" systemParam="true" class="input-readonly"></span>
+            <span>元整），具体金额以评估机构的收据为准，多退少补。贷款期间如遇评估机构调整收费标准，须按调整后的收费标准支付。乙方不同意丙方代收评估费且乙方需办理抵押按揭贷款手续的，乙方应于办理贷款申请手续时向贷款银行提交其认可的评估机构出具的评估报告，如不能提供，由乙方承担全部责任。</span>
+        </div>
+        <div class="lh18 agreements">
+            <span>3、乙方应向丙方支付过户服务费人民币(小写)</span>
+            <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val3"></span>
+            <span>元整（大写：</span>
+            <span tag="input-auto" extendparam="val3_add" systemParam="true" class="input-readonly"></span>
+            <span>元整）。</span>
+        </div>
         <div class="lh18 agreements">4、乙方应于签订本合同当日，一次性向丙方支付按揭服务费和评估费(如有)和过户服务费。丙方代收的评估费在评估公司出具评估报告后将不再退还。</div>
-        
         <div class="lh18 mt-10 agreements fb">第三条 权利义务</div>
         <div class="lh18 agreements">(一)甲、乙双方应遵守本合同的约定以及评估机构、贷款机构、税务、产权登记机关等政府部门的相关规定，积极到场办理相关手续，及时向丙方提交办理贷款、过户手续所需的全部资料，且甲、乙双方保证所提交的上述全部材料合法、真实、有效。乙方通过丙方办理贷款手续的，过户完成后，在甲方收到全部购房款前，甲乙双方均同意由丙方保管过户至乙方名下的不动产收件单、银行批准贷款文件(若有)、《不动产权证书》、他项权利证等相关资料原件，并同意丙方留存复印件，且甲乙双方均应积极配合完成。在甲方收到全部购房款十日内，甲乙双方应领取其名下所属的材料原件，如未及时领取的则由未领取方承担相关责任。</div>
         <div class="lh18 agreements">(二)下列情况造成丙方不能履行此合同，丙方不承担任何责任，丙方收取的费用不予退还。</div>
@@ -337,7 +372,11 @@
         <div class="lh18 agreements">(一)甲、乙双方如未按照本合同约定履行义务导致合同迟延履行或无法履行的，违约方应承担违约责任，并赔偿守约方的损失，包括守约方依据本合同已向丙方支付的费用(如有)。</div>
         <div class="lh18 agreements">(二)乙方未按本合同约定向丙方支付费用的，除应足额向丙方支付其欠缴的费用外，还需对未支付部分，按照每日千分之一的标准向丙方支付违约金。</div>
         <div class="lh18 mt-10 fb  agreements">第五条 争议解决</div>
-        <div class="lh18 agreements">与本合同相关的任何争议，三方应协商解决；协商不成的按照下列第_【    】_种方式解决：</div>
+        <div class="lh18 agreements">
+            <span>与本合同相关的任何争议，三方应协商解决；协商不成的按照下列第【</span>
+            <input type="text" class="text-limit dropdown-item" list="1,2" style="width:50px" readonly="readonly" extendParam="val70" inputmethod=val70 />
+            <span>】种方式解决：</span>
+        </div>
         <div class="lh18 agreements">1、依法向丙方所在地人民法院起诉。</div>
         <div class="lh18 agreements">2、提交武汉仲裁委员会仲裁。</div>
         <div class="lh18 mt-10 fb agreements">第六条 其他</div>

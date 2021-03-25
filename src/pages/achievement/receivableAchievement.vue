@@ -231,7 +231,13 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80"></el-table-column>
+          <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80">
+            <template slot="header">分账金额（元）
+              <el-tooltip content="结算金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
+                <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+              </el-tooltip>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           @current-change="handleCurrentChange"
@@ -748,4 +754,13 @@
   .w430 {
     width: 430px;
   }
+  .icon-prompt {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
 </style>

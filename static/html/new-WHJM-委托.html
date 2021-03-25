@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="/datepicker.css" />
-    <title>定金</title>
+    <title>存量房委托合同（代办）</title>
     <style>
         body {
             font-family: SimHei;
@@ -338,16 +338,42 @@
             </li>
         </ul>
         <div class="paragraph">
-            <p>乙方购买甲方位于<span tag="input-auto" class="input-before" extendParam="val69"></span>的房屋，房屋所有权证/不动产权证书编号：<span tag="input-auto" class="input-before" extendParam="val62"></span>双方自行成交需办理房产交易相关手续，现委托丙方协助办理后续交易事宜，协议如下：</p>
-            <p>第一条、甲乙双方委托丙方办理 房屋产权过户手续 住房按揭贷款手续。（请在对应选项勾选“√”）</p>
+            <p>乙方购买甲方位于<span tag="input-auto" class="input-before" extendParam="val69"></span>的房屋，房屋所有权证/不动产权证书编号：<span tag="input-auto" class="input-before" extendParam="val62"></span>，双方自行成交需办理房产交易相关手续，现委托丙方协助办理后续交易事宜，协议如下：</p>
+            <p>
+                <span>第一条、甲乙双方委托丙方办理</span>
+                <div class="info-checkbox" name="one">
+                    <p type="check"></p><span>房屋产权过户手续</span>
+                </div>
+                <div class="info-checkbox" name="one">
+                    <p type="check"></p><span>住房按揭贷款手续。</span>
+                </div>
+                <span>（请在对应选项勾选“√”）</span>    
+            </p>
             <p>第二条、房产交易所涉及产权、房款及付款、房屋交接等相关交易事项，甲乙双方需另行签订房屋买卖合同，如双方怠于签署或未签署造成损失的由双方自行承担。三方明确，丙方对《房屋买卖合同》所产生的风险不负任何责任。</p>
-            <p>第三条、甲乙双方应按照丙方要求及时提供办理后期手续所需的真实、完整的证件与资料，并在手续办理过程中积极配合丙方的工作。具体时间为甲乙双方在本合同签订之日起     日内提供所需资料（资料清单附后）给丙方，丙方在双方资料提供完整后     日内陪同双方到相关机构办理手续。</p>
+            <p>
+                <span>第三条、甲乙双方应按照丙方要求及时提供办理后期手续所需的真实、完整的证件与资料，并在手续办理过程中积极配合丙方的工作。具体时间为甲乙双方在本合同签订之日起</span>
+                <span tag="input-auto" listen="number" max="12" class="text-limit input-before"
+                    extendParam="val1"></span>
+                <span>日内提供所需资料（资料清单附后）给丙方，丙方在双方资料提供完整后</span>
+                <span tag="input-auto" listen="number" max="12" class="text-limit input-before"
+                    extendParam="val2"></span>
+                <span>日内陪同双方到相关机构办理手续。</span>
+            </p>
             <p>第四条、如因甲、乙双方自身原因导致相关手续不能完成或不能按时完成，丙方对此不负任何责任，且对受委托的事项已发生的费用不予退还。</p>
-            <p>第五条、经三方协商，在签订本协议时，由<span class="info-checkbox" name="two"><p type="check"></p>甲方
-            </span>
-            <span class="info-checkbox" name="two">
-                <p type="check"></p>乙方
-            </span>支付丙方服务费人民币（小写）<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>元整（大写：<span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>元整）。（请在对应选项勾选“√”）</p>        
+            <p>
+                <span>第五条、经三方协商，在签订本协议时，由</span>
+                <div class="info-checkbox" name="two">
+                    <p type="check"></p><span>甲方</span>
+                </div>
+                <div class="info-checkbox" name="two">
+                    <p type="check"></p><span>乙方</span>
+                </div>
+                <span>支付丙方服务费人民币（小写）</span>
+                <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val3"></span>
+                <span>元整（大写：</span>
+                <span tag="input-auto" extendparam="val3_add" systemParam="true" class="input-readonly"></span>
+                <span>元整）。（请在对应选项勾选“√”）</span>
+            </p>        
             <p>第六条、本合同一式叁份，甲、乙、丙三方各执壹份，各份均具同等法律效力。</p>
         </div>
         <ul class="signature" name="footer">
@@ -370,13 +396,13 @@
             </li>
             <li>
                 <p style="width: 30%;position:relative;float: right;">
-                    <span>年  月  日</span>
+                    <span systemparam="signDate" tag="input-auto"></span>
                 </p>
                 <p style="width: 30%;position:relative;float: right;">
-                    <span>年  月  日</span>
+                    <span systemparam="signDate" tag="input-auto"></span>
                 </p>
                 <p style="width: 30%;position:relative;float: right;">
-                    <span>年  月  日</span>
+                    <span systemparam="signDate" tag="input-auto"></span>
                 </p>
             </li>
         </ul>
@@ -386,12 +412,12 @@
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>夫妻双方身份证复印件 
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val4"></span>份）</span>
             </br>
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>夫妻双方户本复印件
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val5"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three" >
                 <p type="check"></p>结婚证复印件 
@@ -401,63 +427,63 @@
             <div class="info-checkbox agreements" name="three" >
                 <p type="check"></p>配偶或产权共有人同意转让证明 
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val7"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>房屋产权证
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val8"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>国有土地使用证
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val9"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>承租人同意转让证明 
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val10"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three" >
                 <p type="check"></p>离婚复印件或婚姻状况证明
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val11"></span>份）</span>
         </br>
             <div class="info-checkbox agreements" name="three">
                 <p type="check"></p>其他
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val12"></span>份）</span>
         </br>
             <p>乙方需提供资料：</p>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>身份证复印件
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val13"></span>份）</span>
         </br>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>户口本复印件
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val14"></span>份）</span>
         </br>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>经济收入证明 
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val15"></span>份）</span>
         </br>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>流动人口婚姻证明复印件 
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val16"></span>份）</span>
         </br>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>计划生育许可证复印件
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val17"></span>份）</span>
         </br>
-            <div class="info-checkbox agreements" name="three">
+            <div class="info-checkbox agreements" name="four">
                 <p type="check"></p>其他
             </div>
-            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val6"></span>份）</span>
+            <span>（<span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val18"></span>份）</span>
         </br>
         </div>
         <!-- <span onclick="submit();">click</span> -->

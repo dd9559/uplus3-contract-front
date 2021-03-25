@@ -1,6 +1,7 @@
 import {
   contractConfig,
-  toChineseNumber
+  toChineseNumber,
+  formatMoney
 } from "./base.js"
 
 let Obj = {
@@ -9,11 +10,29 @@ let Obj = {
 
 let sub = {
   'val1': null,
-  'val2': null,
+  'info_val222': {
+      stateful: function () {
+          return document.querySelector('*[extendparam=val222]').innerHTML !== '' ? {'val2': null,'val2221': null,'val2222': null} : null
+      }
+  },
+  'info_val3': {
+      stateful: function () {
+          return document.querySelector('*[extendparam=val3]').innerHTML !== '' ? {'val4': null,'val5': null,'val6': null} : null
+      }
+  },
   'val7': null,
-  'val8': null,
+  'info_val888': {
+      stateful: function () {
+          return document.querySelector('*[extendparam=val888]').innerHTML !== '' ? {'val8': null,'val8881': null,'val8882': null} : null
+      }
+  },
+  'info_val9': {
+      stateful: function () {
+          return document.querySelector('*[extendparam=val9]').innerHTML !== '' ? {'val10': null,'val11': null,'val12': null} : null
+      }
+  },
   'checkbox_one': null,
-  'val100': null,
+  'val102': null,
   'checkbox_two': {
     state: true,
     stateful: function (index) {
@@ -36,12 +55,13 @@ let sub = {
     stateful: function (index) {
       return index === 0 ? {
         'val15': null,
-        'val100': null,
-        'val16': null,
         'val17': null,
       } : index === 1 ? {
-        'val18': null,
-        'val19': null,
+        'info_val18': {
+          stateful: function () {
+            return document.querySelector('*[extendparam=val18]').innerHTML === '' && document.querySelector('*[extendparam=val19]').innerHTML === '' ? {'val18': null,'val19':null} : null
+          }
+        },
         'val20': null,
         'checkbox_six': null,
         'val21': null
@@ -185,20 +205,35 @@ let sub = {
   'val42': null,
   'val43': null,
   'checkbox_twenty-four': null,
-  'checkbox_twenty-five': null,
-  'val44': null,
-  'checkbox_twenty-six': {
-    stateful: function (index) {
-      return index === 0 ? {
-        'val45': null,
-      } : index === 1 ? {
-        'val46': null,
-      } : index === 2 ? {
-        'val47': null,
-      } : null
+  'info_val444': {
+    stateful: function () {
+      return document.querySelectorAll('*[name=twenty]')[1].querySelector('p').getAttribute('checked') ? {'checkbox_twenty-five': null,'val44':null,'checkbox_twenty-six': {
+        stateful: function (index) {
+          return index === 0 ? {
+            'val45': null,
+          } : index === 1 ? {
+            'val46': null,
+          } : index === 2 ? {
+            'val47': null,
+          } : null
+        }
+      },'val48': null} : null
     }
   },
-  'val48': null,
+  // 'checkbox_twenty-five': null,
+  // 'val44': null,
+  // 'checkbox_twenty-six': {
+  //   stateful: function (index) {
+  //     return index === 0 ? {
+  //       'val45': null,
+  //     } : index === 1 ? {
+  //       'val46': null,
+  //     } : index === 2 ? {
+  //       'val47': null,
+  //     } : null
+  //   }
+  // },
+  // 'val48': null,
   'checkbox_twenty-seven': {
     stateful: function (index) {
       return index === 1 ? {
@@ -562,6 +597,22 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
       }
     })
   }
+  if (attr === 'twenty') {
+    let checkIO = {
+      1: ['checkbox_twenty-five','val44','checkbox_twenty-six','val45','val46','val47','val48']
+    }
+    boxArray.forEach((item, i) => {
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 1) {
+            contractConfig.initForm(checkIO[1], 0)
+          } else {
+            contractConfig.initForm(checkIO[1], 1)
+          }
+        }
+      }
+    })
+  }
   if (attr === 'twenty-six') {
     let checkIO = {
       0: ['val45'],
@@ -688,36 +739,80 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
   }
 })
 
-//输入自适应
-contractConfig.inputListener(function (ev, tip) {
-  let max = tip.target.getAttribute('max')
-  let textArea = document.getElementById('inputArea')
-  if (max) { //监听max属性，判断文本框是有有输入长度限制
-    textArea.setAttribute('maxLength', parseInt(max))
-  } else {
-    textArea.removeAttribute('maxLength')
+
+// 输入自适应
+contractConfig.inputListener(
+  function(ev, tip) {
+      let max = tip.target.getAttribute("max");
+      let textArea = document.getElementById("inputArea");
+      if (tip.target.getAttribute('extendparam') === 'val18' && ev.target.value === '' && document.querySelector('*[extendparam=val19]').innerHTML === '') {
+        contractConfig.initForm(['val18','val19'], 0)
+      } else if (tip.target.getAttribute('extendparam') === 'val18' && ev.target.value !== '' && document.querySelector('*[extendparam=val19]').innerHTML === ''){
+        contractConfig.initForm(['val19'], 1)
+      }
+      if (tip.target.getAttribute('extendparam') === 'val19' && ev.target.value === '' && document.querySelector('*[extendparam=val18]').innerHTML === '') {
+        contractConfig.initForm(['val18','val19'], 0)
+      } else if (tip.target.getAttribute('extendparam') === 'val19' && ev.target.value !== '' && document.querySelector('*[extendparam=val18]').innerHTML === ''){
+        contractConfig.initForm(['val18'], 1)
+      }
+      if (max) {
+          //监听max属性，判断文本框是有有输入长度限制
+          textArea.setAttribute("maxLength", parseInt(max));
+      } else {
+          textArea.removeAttribute("maxLength");
+      }
+      //监听listen属性，判断是否有输入类型限制
+      let spanAttr = tip.target.getAttribute("listen");
+      if (spanAttr === "number") {
+          let cn_str = tip.target.getAttribute('extendparam')
+          if (Obj['cn_arr'].includes(cn_str) || max == 17) {
+            ev.target.value = ev.target.value.replace(/[^\d.]/g,"");
+            ev.target.value = ev.target.value.replace(/^\./g,"");
+            ev.target.value = ev.target.value.replace(/\.{2,}/g,".");
+            ev.target.value = ev.target.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+            ev.target.value = ev.target.value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/,'$1$2.$3');
+          } else  {
+            ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+          }
+          if (max == 17) {
+            tip.target.innerHTML = formatMoney(ev.target.value)
+          } else {
+            tip.target.innerHTML = ev.target.value
+          }
+          if(Obj['cn_arr'].includes(cn_str)){
+    
+            if (ev.target.value.indexOf(",") != -1) {
+              ev.target.value = ev.target.value.replace(/,/g, '')
+            }
+            let index = toChineseNumber(ev.target.value).indexOf('元')
+            document.querySelector(`*[extendParam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)+toChineseNumber(ev.target.value).substr(index)
+            if (ev.target.value.indexOf(",") == -1) {
+              document.querySelector(`*[extendParam=${cn_str}]`).innerHTML = formatMoney(ev.target.value)
+            }
+          }
+      }
+  },
+  function(tip) {
+      //获取输入框的默认值
+      let initVal = tip.target.innerHTML;
+      let strCn = tip.target.getAttribute("extendparam");
+      let max = tip.target.getAttribute("max");
+      if (max == 17) {
+        document.querySelector(`*[extendParam=${strCn}]`).innerHTML = formatMoney(initVal)
+      }
+      if(Obj['cn_arr'].includes(strCn)){
+          if(initVal.length>0){
+              if (initVal.indexOf(",") != -1) {
+              initVal = initVal.replace(/,/g, '');
+              }
+              let index = toChineseNumber(initVal).indexOf('元')
+              document.querySelector(`*[extendParam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)+toChineseNumber(initVal).substr(index)
+              if (initVal.indexOf(",") == -1) {
+              document.querySelector(`*[extendParam=${strCn}]`).innerHTML = formatMoney(initVal)
+              }
+          }else{
+              document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
+          }
+      }
   }
-  //监听listen属性，判断是否有输入类型限制
-  let spanAttr = tip.target.getAttribute('listen')
-  if (spanAttr === 'number') {
-    ev.target.value = ev.target.value.replace(/[^\d]/g, "")
-    tip.target.innerHTML = ev.target.value
-    let cn_str = tip.target.getAttribute('extendparam')
-    if (Obj['cn_arr'].includes(cn_str)) {
-      let index = toChineseNumber(ev.target.value).indexOf('元')
-      document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)
-    }
-  }
-}, function (tip) {
-  //获取输入框的默认值
-  let initVal = tip.target.innerHTML
-  let strCn = tip.target.getAttribute('extendparam')
-  if (Obj['cn_arr'].includes(strCn)) {
-    if (initVal.length > 0) {
-      let index = toChineseNumber(initVal).indexOf('元')
-      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = toChineseNumber(initVal).substring(0, index)
-    } else {
-      document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
-    }
-  }
-})
+)
