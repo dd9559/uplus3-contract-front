@@ -179,6 +179,16 @@ let sub = {
       } : null
     }
   },
+  'info_val333': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val333]') ? {'val333': null} : null
+    }
+  },
+  'info_val444': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val444]') ? {'val444': null} : null
+    }
+  },
   //   val314: null,
   //   val315: null,
 }

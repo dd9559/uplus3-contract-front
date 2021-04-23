@@ -184,9 +184,9 @@ export default {
                 let host = window.location.host;
                 if (
                   item.id === 8 &&
-                  ((["localhost:8080", "sign2.jjw.com:28879"].includes(host) &&
+                  ((["localhost:8080", "sign2.ujakn.com:28879"].includes(host) &&
                     (val.user.empId === 15349 || val.user.empId === 100778)) ||
-                    (host === "sign2.jjw.com" && val.user.empId === 37109))
+                    (host === "sign2.ujakn.com" && val.user.empId === 37109))
                 ) {
                   this.$set(item, "can", true);
                 }

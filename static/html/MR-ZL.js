@@ -63,7 +63,16 @@ let sub = {
   'val103': null,
   'val104': null,
   'val105': null,
-  // 'val333': null
+  'info_val333': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val333]') ? {'val333': null} : null
+    }
+  },
+  'info_val444': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val444]') ? {'val444': null} : null
+    }
+  },
   // old
 }
 let Obj = {

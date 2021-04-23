@@ -187,13 +187,13 @@
 
         .ulbox {
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .ulbox li {
             float: left;
             width: 50%;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             position: relative;
         }
 
@@ -211,11 +211,11 @@
         }
 
         .lh18 {
-            line-height: 2;
+            line-height: 2.3;
         }
 
         .agreements {
-            margin-top: 15px;
+            margin-top: 10px;
             text-indent: 30px;
         }
 
@@ -276,6 +276,15 @@
             font-weight: bold;
         }
 
+        .page1 {
+            break-before: page;
+            page-break-before: always;
+        }
+
+        @page {
+            size: 955px 1350px;
+        }
+
         /* 封面样式结束 */
     </style>
 </head>
@@ -291,10 +300,9 @@
             </p>
         </div>
         <!-- 封面 -->
-        <div class="cover-fm">
+        <div class="cover-fm" style="display: none;">
             <div class="cover-style">
-                <p class="code">合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text"
-                  class="text-limit" style="width:150px" /></p>
+                <p class="code">合同编号：<span class="text-limit" systemParam="code" tag="input-auto"></span></p>
                 <p class="head_title">
                     <span>定</span>
                     <br/>
@@ -320,10 +328,10 @@
             <li style="width: 100%;">乙方（买方）： <span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
             <li style="width: 100%;">证件号码： <span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
         </ul>
-        <p class="mt-10 pr">见证方: <span systemParam="companyNames" company="true" class="text-limit" tag="input-auto"></span></p>
+        <p class="mt-10 pr" style="margin-top: 20px; margin-bottom: 30px;">见证方: <span systemParam="companyNames" company="true" class="text-limit" tag="input-auto"></span></p>
         <p class="lh18 agreements interval">
             <span>经丙方居间，甲方代表全体所有人出售位于</span>
-            <span tag="input-auto" class="text-limit input-before" extendParam="val5"></span>
+            <span tag="input-auto" class="text-limit input-before" systemParam="propertyAddr"></span>
             <span>的房屋给乙方。乙方对房屋位置、面积、户型、配套设施等现状均已了解清楚且无异议。为保证能顺利订立《武汉市存量房(买卖)合同》（双方已知晓样本合同的内容），经甲、乙双方友好商定，丙方见证，特约定本协议。</span>
         </p>
         <div class="lh18 mt-10">
@@ -336,22 +344,22 @@
                 <p type="check"></p>自行保管
             </div>
             <div class="info-checkbox" name="one">
-                <p type="check"></p>委托丙方代为保管
+                <p type="check"></p>委托丙方代为保管，
             </div>
             <span>甲乙双方完全明确定金的法律意义。甲方在签署本协议时将“两证”/不动产权证交予丙方保管，直至交易完毕（如产证是购房合同甲方须在</span>
-            <input tag="input-auto"  class="text-limit input-before" extendParam="val7" />
+            <span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val7"></span>
             <span>日内办理两证或不动产证）。</span>
         </div>
         <div class="lh18 mt-10">
             <span>二、乙方交付定金后，甲、乙双方应于</span>
-            <input type="text" class="text-limit calendar-item" readonly="readonly" extendParam="val8" />
+            <input type="text" style="width: 112px;" class="text-limit calendar-item" readonly="readonly" extendParam="val8" />
             <span>时之前，至丙方所在公司签约点（地址为</span>
             <span class="text-limit input-before" tag="input-auto" extendParam="val9"></span>
             <span>）与丙方签订正式的《武汉市存量房居间（买卖）合同》。如因甲方个人原因未能按时签约则按定金金额双倍赔付给乙方，如因乙方个人原因未能按时签约则甲方有权没收定金，并作废此协议。</span>
         </div>
         <div class="lh18 agreements">甲方系全体所有人代表，保证已获得所有共有人一致同意并到场签署《武汉市存量房居间（买卖）合同》。如有任何一位房屋共有人手续不全不能签署或房屋有碍出售情形的（如查封、债权人占有等），由甲方承担定金赔付责任。</div>
         <div class="lh18 mt-10">
-            <span>甲、乙双方一致同意，签订正式的《武汉市存量房(买卖)合同》中的房屋价款（甲方净得价）为人民币（小写）</span>
+            <span>三、甲、乙双方一致同意，签订正式的《武汉市存量房(买卖)合同》中的房屋价款（甲方净得价）为人民币（小写）</span>
             <span class="input-before" listen="number" max="16" extendParam="val10" tag="input-auto"></span>
             <span>元整（大写</span>
             <span tag="input-auto" extendparam="val10_add" systemParam="true" class="input-readonly"></span>
@@ -370,8 +378,8 @@
         </div>
         <div class="lh18 agreements">如违反本条第一条，导致协议未能如期签署的，按定金罚则处理。</div>
         <div class="lh18 mt-10">
-            <span>四、丙方所在公司经纪代理费</span>
-            <span tag="input-auto" listen="number" max="12" class="text-limit input-before" extendParam="val12"></span>
+            <span>四、丙方经纪代理费</span>
+            <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val12"></span>
             <span>元整（大写：</span>
             <span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>
             <span>元整）在签订《武汉市存量房(买卖)合同》时向</span>
@@ -399,12 +407,12 @@
 </body>
 
 </html>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_mr_djxy_20200928.js"></script> -->
-<script>
+<script type="text/javascript" src="/js/bundle_DJXY_WHJM20210325.js"></script>
+<!-- <script>
     (function() {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -440,4 +448,4 @@
             }
         }
     })();
-</script>
+</script> -->

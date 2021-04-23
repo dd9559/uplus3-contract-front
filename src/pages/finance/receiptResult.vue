@@ -169,11 +169,11 @@ export default {
         case "localhost:8080":
           url = "http://192.168.1.224:28800";
           break;
-        case "sign2.jjw.com:28879":
+        case "sign2.ujakn.com:28879":
           url = "http://120.76.202.91:28800";
           break;
-        case "sign2.jjw.com":
-          url = "https://sign2.jjw.com";
+        case "sign2.ujakn.com":
+          url = "https://sign2.ujakn.com";
           break;
         default:
           url = "http://192.168.1.96:28800";

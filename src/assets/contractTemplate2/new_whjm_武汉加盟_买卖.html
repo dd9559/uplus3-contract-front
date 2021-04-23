@@ -13,6 +13,10 @@
             line-height: 1.8;
         }
 
+        div {
+            line-height: 2.2;
+        }
+
         p {
             margin: 0px;
             padding: 0px;
@@ -65,7 +69,8 @@
 
         .title2 {
             text-indent: 20px;
-            font-weight: bold
+            font-weight: bold;
+            line-height: 2.6;
         }
 
         input[type="number"] {
@@ -118,7 +123,7 @@
             display: inline-block;
             /* min-width: 260px; */
             width: 45%;
-            line-height: 2;
+            line-height: 2.5;
         }
 
         .user_agreement {
@@ -322,7 +327,7 @@
 
         .ulbox {
             overflow: hidden;
-            margin-top: 30px;
+            margin-top: 46px;
         }
 
         .ulbox ul {
@@ -333,7 +338,7 @@
         .ulbox li {
             float: left;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .ulbox li input {
@@ -820,8 +825,8 @@
                 <div class="info-checkbox" name="eightteen">
                     <p type="check"></p>所有权
                 </div>，车位号/车库产权证号为：<span tag="input-auto" extendParam="val101"
-                    class="text-limit input-before"></span>车位/车库座落于<span tag="input-auto" extendParam="val33"
-                    class="text-limit input-before"></span>买卖双方协商一致该车位/车库转让价为：人民币（小写）
+                    class="text-limit input-before"></span>，车位/车库座落于<span tag="input-auto" extendParam="val33"
+                    class="text-limit input-before"></span>。买卖双方协商一致该车位/车库转让价为：人民币（小写）
                 <span type="text" tag="input-auto" class="text-limit input-before" extendParam="val34" listen="number"
                     max="16"></span> 元（大写）<span type="text" tag="input-auto" extendParam="val34_add"
                     systemparam="true"></span>。买卖双方应在<span tag="input-auto" class="text-limit input-before"
@@ -860,7 +865,26 @@
             </div>
             <p class="title2">本条所约定的定金如部分或全部通过银行资金存管支付的，购买方将定金支付至资金存管账户后，视为购买方已经完成定金支付义务并视为出售方收讫，发生定金效力。</p>
             <p class="title2">（三） 关于首付款</p>
+
+
             <div class="lh-18" style="text-indent: 20px;">
+                购买方应于<span tag="input-auto" extendParam="val38"
+                    class="text-limit input-before"></span>（请约定具体时间或条件）将首付款人民币（小写）<span type="text" tag="input-auto"
+                    class="text-limit input-before" extendParam="val39" listen="number" max="16"></span> 元（大写）（<span
+                    type="text" tag="input-auto" class="text-limit" extendParam="val39_add"
+                    systemparam="true"></span>）以
+                <div class="info-checkbox" name="twenty-two">
+                    <p type="check"></p>银行资金存管
+                </div>
+                <div class="info-checkbox" name="twenty-two">
+                    <p type="check"></p>自行支付
+                </div>）的方式支付给出售方。
+            </div>
+
+
+
+
+            <!-- <div class="lh-18" style="text-indent: 20px;">
                 购买方应于<span tag="input-auto" extendParam="val38"
                     class="text-limit input-before"></span>（请约定具体时间或条件）将第一笔首付款人民币（小写）<span type="text" tag="input-auto"
                     class="text-limit input-before" extendParam="val39" listen="number" max="16"></span> 元（大写）（<span
@@ -897,7 +921,7 @@
                 <div class="info-checkbox" name="twenty-four">
                     <p type="check"></p>自行支付
                 </div>）的方式支付给出售方。
-            </div>
+            </div> -->
         </div>
         <!-- 合同主体部分 5-->
         <div>
@@ -1094,9 +1118,9 @@
             </div>
             <div style="text-indent: 20px;">
                 <div class="info-checkbox" name="thirty-five">
-                    <p type="check"></p><span>其他，</span>
-                </div><span tag="input-auto" listen="number" max="12" class="text-limit input-before"
-                    extendParam="val61"></span>
+                    <p type="check"></p><span>其他：</span>
+                </div><span tag="input-auto" class="text-limit input-before"
+                    extendParam="val61"></span>。
             </div>
             <div class="lh-18" style="text-indent: 20px;">
                 买卖双方应共同到房屋登记机构申请办理房屋权属转移登记手续，若房屋登记机构要求预约的则以预约时间为准，若本合同第六条第四款约定的解封截止时间超过本条款的权属转移登记截止时间，则买卖双方应于卖方按期解封后十个工作日内办理权属转移登记手续。如购买方为贷款的，其应在办理出不动产权证书且银行出具抵押资料后<span

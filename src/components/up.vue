@@ -67,8 +67,8 @@
           browse_button: that.getId, //选择文件按钮
           multi_selection: that.more,
           drop_element: document.getElementById(that.getParentId),
-          // flash_swf_url: 'http://sign2.jjw.com:28879/js/Moxie.swf',
-          // silverlight_xap_url: 'http://sign2.jjw.com:28879/js/Moxie.xap',
+          // flash_swf_url: 'http://sign2.ujakn.com:28879/js/Moxie.swf',
+          // silverlight_xap_url: 'http://sign2.ujakn.com:28879/js/Moxie.xap',
           // url: 'http://oss.aliyuncs.com',
           filters: {
             mime_types: that.rules.length > 0 ? [{extensions: that.rules.join(',')}] : [],

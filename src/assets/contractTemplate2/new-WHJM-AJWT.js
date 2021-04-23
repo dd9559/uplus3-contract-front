@@ -5,22 +5,22 @@ import {
   } from "./base.js"
   
   let sub = {
-    'val6': null,
-    'checkbox_one': null,
-    'info_val14': {
+    'info_val1': {
         stateful: function () {
-            return document.querySelector('*[extendparam=val14]').innerHTML !== '' ? {'val15': null,'val16': null} : null
+            return document.querySelector('*[extendparam=val1]').innerHTML !== '' ? {'val2': null,'val3': null} : null
         }
     },
-    'val8': null,
-    'val10': null,
+    'info_val4': {
+        stateful: function () {
+            return document.querySelector('*[extendparam=val4]').innerHTML !== '' ? {'val5': null,'val6': null} : null
+        }
+    },
     'checkbox_two': {
         stateful: function (index) {
-            return index === 2 ? {'val11': null} : null
+            return index == 0 ? {'val7': null} : {'val8': null,'val9': null,'val10': null}
         }
     },
-    'val12': null,
-    'checkbox_three': null
+    'drapdown_val11': null,
   }
   
   //给按钮添加点击事件
@@ -40,14 +40,18 @@ import {
     })
   }
   
-  //初始化时间控件
-  Calendar.create({
-    classN: 'calendar-item',
+  //初始化下拉控件
+Dropdown.create({
+    classN: 'dropdown-item',
     callBack: function (bindElem, dateObj) {
       if (bindElem.tagName.toLowerCase() === 'input') {
-        bindElem.value = `${dateObj.year}年${dateObj.month}月${dateObj.date}日`
+        // debugger
+        bindElem.value = dateObj.value
         bindElem.setAttribute('value', bindElem.value)
-        bindElem.setAttribute('random', dateObj.random)
+      } else {
+        bindElem.innerHTML = dateObj.value
+        bindElem.classList.remove('input-select')
+        bindElem.classList.remove('input-before')
       }
     }
   })
@@ -94,28 +98,25 @@ import {
     dealPriceUpper: '壹仟',
     square: 160,
     guestStoreRegisterCode: '213',
-    signDate: 1592465819508,
+    wtSignDate: 1592465819508,
     organizationCode:"8888888888"
   }
   for (let readonlyItem in msg) {
     let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
     let arr = []
-    if (readonlyItem === 'signDate') {
-      let time = new Date(msg.signDate)
+    if (readonlyItem === 'wtSignDate') {
+      let time = new Date(msg.wtSignDate)
       arr.push(time.getFullYear())
       arr.push(time.getMonth() + 1)
       arr.push(time.getDate())
     }
     if (onlyReadDom.length > 0) {
       onlyReadDom.forEach((element, index) => {
-        if (readonlyItem === 'code') {
-          element.value = msg[readonlyItem]
-          element.setAttribute('value', msg[readonlyItem])
-        } else if (readonlyItem === "companyNames") {
+        if (readonlyItem === "companyNames") {
           element.innerHTML = msg[readonlyItem][0]
           element.classList.remove('input-before')
-        } else if (readonlyItem === "signDate") {
-          let time = new Date(Number(msg["signDate"]));
+        } else if (readonlyItem === "wtSignDate") {
+          let time = new Date(Number(msg["wtSignDate"]));
           let y = time.getFullYear();
           let M = time.getMonth() + 1;
           let D = time.getDate();
@@ -138,18 +139,19 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
     let boxArray = document.getElementsByName(attr);
     if (attr === 'two') {
       let checkIO = {
-        2: ['val11'],
+        0: ['val7'],
+        1: ['val8','val9','val10'],
       }
       boxArray.forEach((item, i) => {
         if (item === obj.currentTarget) {
           if (item.querySelector('p').getAttribute('checked')) {
-            if (i === 2) {
-              contractConfig.initForm(checkIO[2], 0)
-            } else {
-              contractConfig.initForm(checkIO[2], 1)
+            if (i === 0) {
+              contractConfig.initForm(checkIO[0], 0)
+              contractConfig.initForm(checkIO[1], 1)
+            } else if (i === 1) {
+                contractConfig.initForm(checkIO[1], 0)
+                contractConfig.initForm(checkIO[0], 1)
             }
-          } else {
-            contractConfig.initForm(checkIO[2], 1)
           }
         }
       })
@@ -158,7 +160,7 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
 
 
   let Obj = {
-    cn_arr: ['val6', 'val10']
+    cn_arr: ['val7', 'val8', 'val9', 'val10']
   }
   // 输入自适应
   contractConfig.inputListener(

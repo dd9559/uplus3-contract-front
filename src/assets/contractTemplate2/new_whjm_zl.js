@@ -73,7 +73,6 @@ let sub = {
   'val18': null,
   'val19': null,
   'val20': null,
-  'val21': null,
   'checkbox_payment': null,
   'val22': null,
   'val23': null,
@@ -92,6 +91,16 @@ let sub = {
   'val27': null,
   'val28': null,
   'val32': null,
+  'info_val111': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val111]') ? {'val111': null} : null
+    }
+  },
+  'info_val222': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val222]') ? {'val222': null} : null
+    }
+  },
 }
 let Obj = {
   cn_arr: ['val20', 'val21', 'val23', 'val27', 'val28', ]
@@ -200,7 +209,18 @@ contractConfig.inputListener(
 )
 
 // 勾选框逻辑
-contractConfig.checkboxListener(function () {}, function (obj, index) {
+contractConfig.checkboxListener(function (obj,i) {
+  if (obj.currentTarget.getAttribute('name') === 'facility') {
+    let checkIO = {
+      5: ['val12'],
+    }
+    if (obj.currentTarget.querySelector('p').getAttribute('checked')) {
+      if (i === 5) {
+        contractConfig.initForm(checkIO[5], 1)
+      }
+    }
+  } 
+}, function (obj, index) {
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
   if (attr === 'houseType') {
@@ -243,19 +263,50 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
     })
   } else if (attr === 'prove') {
     let checkIO = {
-      0: ['val8', 'val9', 'val10', 'val11'],
-      1: ['val7', 'val9', 'val10', 'val11'],
-      2: ['val7', 'val8', 'val10', 'val11'],
-      3: ['val7', 'val8', 'val9', 'val11'],
-      4: ['val7', 'val8', 'val9', 'val10'],
+      0: {
+        write: ['val7'],
+        disable: ['val8', 'val9', 'val10', 'val11']
+      },
+      1: {
+        write: ['val8'],
+        disable: ['val7', 'val9', 'val10', 'val11']
+      },
+      2: {
+        write: ['val9'],
+        disable: ['val7', 'val8', 'val10', 'val11']
+      },
+      3: {
+        write: ['val10'],
+        disable: ['val7', 'val8', 'val9', 'val11']
+      },
+      4: {
+        write: ['val11'],
+        disable: ['val7', 'val8', 'val9', 'val10']
+      }
     }
     boxArray.forEach((item, i) => {
       // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
       if (item === obj.currentTarget) {
         if (!item.querySelector('p').getAttribute('checked')) {
-          contractConfig.initForm(checkIO[i], 1)
+          contractConfig.initForm(checkIO[i].write, 1)
+          contractConfig.initForm(checkIO[i].disable, 1)
         } else {
-          contractConfig.initForm(checkIO[i], 0)
+          contractConfig.initForm(checkIO[i].write, 0)
+          contractConfig.initForm(checkIO[i].disable, 1)
+        }
+      }
+    })
+  } else if (attr === 'facility') {
+    let checkIO = {
+      5: ['val12'],
+    }
+    boxArray.forEach((item, i) => {
+      // contractConfig.initForm(checkIO[0].concat(checkIO[1]),0)
+      if (item === obj.currentTarget) {
+        if (item.querySelector('p').getAttribute('checked')) {
+          if (i === 5) {
+            contractConfig.initForm(checkIO[5], 0)
+          }
         }
       }
     })

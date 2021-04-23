@@ -48,7 +48,7 @@ export default {
                 this.$store.commit("setUser", res.data);
                 let host = window.location.host;
                 if (
-                  host === "sign2.jjw.com" &&
+                  host === "sign2.ujakn.com" &&
                   res.data.user &&
                   res.data.user.empId === 37109
                 ) {

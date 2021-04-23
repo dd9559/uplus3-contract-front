@@ -375,7 +375,7 @@
     }
 
     .sign ul {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .sign ul li+li {
@@ -395,7 +395,6 @@
     }
 
     .sign p span {
-      width: 20%;
       border-bottom: 1px solid gray;
     }
 
@@ -537,7 +536,7 @@
             </div>
             <div class="info-checkbox" name="houseType">
               <p type="check"></p><span>其他 </span>
-            </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+            </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
               extendParam="val1"></span>
           </div>
         </div>
@@ -558,9 +557,9 @@
             <div class="info-checkbox" name="lessee">
               <p type="check"></p><span>不承租</span>
             </div>)该出租房屋附属的机动车停车位，该停车位的具体位置是
-            <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+            <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
               extendParam="val5"></span>，车位编号是
-            <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+            <span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
               extendParam="val6"></span>
           </div>
         </div>
@@ -571,31 +570,31 @@
             <div>
               <div class="info-checkbox" name="prove">
                 <p type="check"></p><span>房屋所有权证，编号为 </span>
-              </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+              </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
                 extendParam="val7"></span>
             </div>
             <div>
               <div class="info-checkbox" name="prove">
                 <p type="check"></p><span>公有住房租赁合同，</span>
-              </div><span>房屋所有权人（公有住房承租人、购房人）姓名或名称是</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+              </div><span>房屋所有权人（公有住房承租人、购房人）姓名或名称是</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
                 extendParam="val8"></span>
             </div>
             <div>
               <div class="info-checkbox" name="prove">
                 <p type="check"></p><span>房屋买卖合同，</span>
-              </div><span>编号为</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+              </div><span>编号为</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
                 extendParam="val9"></span>
             </div>
             <div>
               <div class="info-checkbox" name="prove">
                 <p type="check"></p><span>停车位权属证明文件，</span>
-              </div><span>编号为</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+              </div><span>编号为</span><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
                 extendParam="val10"></span>
             </div>
             <div>
               <div class="info-checkbox" name="prove">
                 <p type="check"></p><span>其他房屋来源证明文件是 </span>
-              </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+              </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
                 extendParam="val11"></span>
             </div>
           </div>
@@ -620,7 +619,7 @@
             </div>
             <div class="info-checkbox" more="true" name="facility">
               <p type="check"></p><span>其他 </span>
-            </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly"
+            </div><span tag="input-auto" class="text-limit input-before" disabled="disabled" readonly="readonly" systemparam="true"
               extendParam="val12"></span>
           </div>
         </div>
@@ -696,7 +695,7 @@
               <p type="check"></p><span>按半年支付;</span>
             </div>
             <div class="info-checkbox" name="payment">
-              <p type="check"></p><span>按年支付;</span>
+              <p type="check"></p><span>按年支付</span>
             </div>。后续每期租金乙方应提前
             <span class="input-before" listen="number" max="12" extendParam="val22" tag="input-auto"></span>天支付给甲方。
           </div>
@@ -768,7 +767,6 @@
         </div>
         <p id="four" class="navTitle fontBold">第七条 转租</p>
         <div>
-          <span class="title">1.</span>
           <div class="content">除甲乙双方另有约定外，乙方需事先征得甲方书面同意，方可在租赁期内将房屋部分或全部转租给他人，并就受转租人的行为向甲方承担责任。</div>
         </div>
         <p id="four" class="navTitle fontBold">第八条 合同解除 </p>
@@ -877,512 +875,28 @@
                     style="position: absolute;left:122px;top:-20px;"></span> -->
             </li>
             <li>
-              <span>联系电话：<span systemparam="ownerTel" tag="input-auto"></span></span>
-              <span>联系电话：<span systemparam="guestTel" tag="input-auto"></span></span>
+              <span>联系电话：<span tag="input-auto" class="text-limit input-before" extendParam="tel1"></span></span>
+              <span>联系电话：<span tag="input-auto" class="text-limit input-before" extendParam="tel2"></span></span>
+              <!-- <span>联系电话：<span systemparam="ownerTel" tag="input-auto"></span></span>
+              <span>联系电话：<span systemparam="guestTel" tag="input-auto"></span></span> -->
             </li>
           </ul>
-          <p style="position: relative;">丙方（居间人）（盖章）：<img
+          <p style="position: relative;">丙方（居间人）（盖章）：<span systemParam="companyNames" company="true"
+            extendParam="val1" class="text-limit" tag="input-auto" style="border: none;"></span><img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII="
               style="position: absolute;left:217px;top:-21px;"></p>
           <p>联系电话：<span tag="input-auto" class="text-limit input-before" extendParam="parties1"></p>
-          <p style="position: relative;">经纪人签字：<img style="position: absolute;left:118px;top:-20px;"
+          <p style="position: relative; margin-top: 30px;">经办人一签字：<span style="display:inline-block; border-bottom: solid 1px gray;"></span><img style="position: absolute;left:118px;top:-20px;"
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0VpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6Q0VBMzQ0RjNDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Q0VBMzQ0RjJDMEMxMTFFQTlGRkU5QkNGMDY2OTYxMzEiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+lbs2SQAAABxJREFUeNpi/P//PwM5gImBTDCqcVTjUNEIEGAAefUDGVrh0BsAAAAASUVORK5CYII=">
           </p>
-          <!-- <p style="position: relative;">丙方（居间人）（盖章）：<img
-            src="../img/yz.png"
-            style="position: absolute;left:217px;top:-58px;"></p>
-        <p>联系电话：<span tag="input-auto" class="text-limit input-before" extendParam="parties1"></p>
-        <p style="position: relative;">经纪人签字：<img style="position: absolute;left:118px;top:-20px;"
-            src="../img/yz.png">
-        </p> -->
+          <p>资格注册证书编号：<span tag="input-auto" class="text-limit input-before" extendParam="val111"></p>
+          <p style="position: relative; margin-top: 30px;">经办人二签字：<span style="display:inline-block; border-bottom: solid 1px gray;"></span><img style="position: absolute;left:118px;top:-20px;"
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0VpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQyIDc5LjE2MDkyNCwgMjAxNy8wNy8xMy0wMTowNjozOSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDc4QUMxRjRDMEMxMTFFQThBMDBGMjQ0OUIxMTUwODQiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDc4QUMxRjNDMEMxMTFFQThBMDBGMjQ0OUIxMTUwODQiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YzVkOGQ3MmEtY2U1Yi0wMDRiLTkxMTQtYjVmMjYxN2I2Y2ZjIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+CiK10gAAABpJREFUeNpi/P//PwMpgImBRDCqYaRoAAgwAPVYAxVdM6CGAAAAAElFTkSuQmCC">
+          </p>
+          <p>资格注册证书编号：<span tag="input-auto" class="text-limit input-before" extendParam="val222"></p>
         </div>
         <p class="signDate">本合同签署日期：<span style="border: none;" systemParam="signDate"></span></p>
       </div>
-      <!-- <div class="cw_agreement accessory">
-        <p class="fontBold accessory_title">附件：公用服务和家电家具设施设备交付清单</p>
-        <p class="fontBold">
-          甲乙双方一致同意在房屋交付前发生的以下应缴未缴的费用（若有）由甲方承担，房屋交付后发生的下列费用由乙方承担缴费责任。现将房屋交付当日的缴费（底数）记录如下。若甲方向乙方交付的IC卡内有余额的，则乙方同意在向甲方交还该IC卡时，卡内余额应不低于甲方交付时的余额。
-        </p>
-        <div>
-          <span class="title">1.</span>
-          <div class="content">
-            自来水：水表起计底数<span tag="input-auto" class="text-limit input-before" extendParam="val35"></span>
-            ；IC卡余额<span tag="input-auto" class="text-limit input-before" extendParam="val36"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">2.</span>
-          <div class="content">
-            供电： 电表起计底数<span tag="input-auto" class="text-limit input-before" extendParam="val37"></span>
-            ；IC卡余额<span tag="input-auto" class="text-limit input-before" extendParam="val38"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">3.</span>
-          <div class="content">
-            燃气： 气表起计底数<span tag="input-auto" class="text-limit input-before" extendParam="val39"></span>
-            ；IC卡余额<span tag="input-auto" class="text-limit input-before" extendParam="val40"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">4.</span>
-          <div class="content">
-            网络： 用户名<span tag="input-auto" class="text-limit input-before" extendParam="val41"></span>
-            ；密码<span tag="input-auto" class="text-limit input-before" extendParam="val42"></span>
-            ；已缴费至<span tag="input-auto" class="text-limit input-before" extendParam="val43"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">5.</span>
-          <div class="content">
-            固话： 用户名<span tag="input-auto" class="text-limit input-before" extendParam="val44"></span>
-            ；缴费号<span tag="input-auto" class="text-limit input-before" extendParam="val45"></span>
-            ；已缴费至<span tag="input-auto" class="text-limit input-before" extendParam="val46"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">6.</span>
-          <div class="content">
-            有线电视：用户名<span tag="input-auto" class="text-limit input-before" extendParam="val47"></span>
-            ；IC卡余额<span tag="input-auto" class="text-limit input-before" extendParam="val48"></span>
-            ；已缴费至<span tag="input-auto" class="text-limit input-before" extendParam="val49"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">7.</span>
-          <div class="content">
-            物业费已缴费至<span tag="input-auto" class="text-limit input-before" extendParam="val50"></span>
-            ；物业费的月缴费额是<span tag="input-auto" class="text-limit input-before" extendParam="val51"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">8.</span>
-          <div class="content">
-            供暖费已缴费至<span tag="input-auto" class="text-limit input-before" extendParam="val52"></span>
-            ，供暖费的月缴费额是<span tag="input-auto" class="text-limit input-before" extendParam="val53"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">9.</span>
-          <div class="content">其他：<span tag="input-auto" class="text-limit input-before" extendParam="val54"></span>
-          </div>
-        </div>
-        <p class="fontBold">二、家具家电及附属设施设备交付清单</p>
-        <div>
-          <span class="title">1.</span>
-          <div class="content">
-            钥匙： 入户门<span tag="input-auto" class="text-limit input-before" extendParam="val55"></span>
-            把；室内房屋门<span tag="input-auto" class="text-limit input-before" extendParam="val56"></span>
-            把；其他房间<span tag="input-auto" class="text-limit input-before" extendParam="val57"></span>把。
-          </div>
-        </div>
-        <div>
-          <span class="title">2.</span>
-          <div class="content">
-            门禁卡：<div class="info-checkbox" name="accessCard">
-              <p type="check"></p><span>已交付张</span>
-            </div>
-            <span tag="input-auto" class="text-limit input-before" extendParam="val58"></span>；
-            <div class="info-checkbox" name="accessCard">
-              <p type="check"></p><span>无门禁卡。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">3.</span>
-          <div class="content">
-            冰箱：<span tag="input-auto" class="text-limit input-before" extendParam="val59"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val60"></span>；
-            <div class="info-checkbox" name="refrigerator">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="refrigerator">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">4.</span>
-          <div class="content">
-            微波炉：<span tag="input-auto" class="text-limit input-before" extendParam="val61"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val62"></span>；
-            <div class="info-checkbox" name="microwaveOven">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="microwaveOven">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">5.</span>
-          <div class="content">
-            洗衣机：<span tag="input-auto" class="text-limit input-before" extendParam="val63"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val64"></span>；
-            <div class="info-checkbox" name="washer">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="washer">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">6.</span>
-          <div class="content">
-            热水器：<span tag="input-auto" class="text-limit input-before" extendParam="val65"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val66"></span>；
-            <div class="info-checkbox" name="calorifier">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="calorifier">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">7.</span>
-          <div class="content">
-            空调：<span tag="input-auto" class="text-limit input-before" extendParam="val67"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val68"></span>；
-            <div class="info-checkbox" name="airConditioner">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="airConditioner">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">8.</span>
-          <div class="content">
-            电视：<span tag="input-auto" class="text-limit input-before" extendParam="val69"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val70"></span>；
-            <div class="info-checkbox" name="television">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="television">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">9.</span>
-          <div class="content">
-            遥控器：电视<span tag="input-auto" class="text-limit input-before" extendParam="val71"></span>
-            个；空调<span tag="input-auto" class="text-limit input-before" extendParam="val72"></span>
-            个；机顶盒<span tag="input-auto" class="text-limit input-before" extendParam="val73"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">10.</span>
-          <div class="content">
-            油烟机：<span tag="input-auto" class="text-limit input-before" extendParam="val74"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val75"></span>；
-            <div class="info-checkbox" name="kitchen">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="kitchen">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">11.</span>
-          <div class="content">
-            燃气灶：<span tag="input-auto" class="text-limit input-before" extendParam="val76"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val77"></span>；
-            <div class="info-checkbox" name="stove">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="stove">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">12.</span>
-          <div class="content">
-            固定电话：<span tag="input-auto" class="text-limit input-before" extendParam="val78"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val79"></span>；
-            <div class="info-checkbox" name="phone">
-              <p type="check"></p><span>可正常工作；</span>
-            </div>
-            <div class="info-checkbox" name="phone">
-              <p type="check"></p><span>无法工作。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">13.</span>
-          <div class="content">
-            坐便器：<span tag="input-auto" class="text-limit input-before" extendParam="val80"></span>
-            台，品牌/型号<span tag="input-auto" class="text-limit input-before" extendParam="val81"></span>；
-            <div class="info-checkbox" name="toilet">
-              <p type="check"></p><span>完好；</span>
-            </div>
-            <div class="info-checkbox" name="toilet">
-              <p type="check"></p><span>轻微损坏。</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">14.</span>
-          <div class="content">
-            床：单人床<span tag="input-auto" class="text-limit input-before" extendParam="val82"></span>
-            张，附<span tag="input-auto" class="text-limit input-before" extendParam="val83"></span>
-            张床垫；双人床<span tag="input-auto" class="text-limit input-before" extendParam="val84"></span>
-            张，附<span tag="input-auto" class="text-limit input-before" extendParam="val85"></span>张床垫。
-          </div>
-        </div>
-        <div>
-          <span class="title">15.</span>
-          <div class="content">
-            沙发：单人<span tag="input-auto" class="text-limit input-before" extendParam="val86"></span>
-            张，双人<span tag="input-auto" class="text-limit input-before" extendParam="val87"></span>
-            张，三人<span tag="input-auto" class="text-limit input-before" extendParam="val88"></span>
-            张。<div class="info-checkbox" name="sofa">
-              <p type="check"></p><span>木质；</span>
-            </div>
-            <div class="info-checkbox" name="sofa">
-              <p type="check"></p><span>皮质；</span>
-            </div>
-            <div class="info-checkbox" name="sofa">
-              <p type="check"></p><span>布艺；</span>
-            </div>
-            <div class="info-checkbox" name="sofa">
-              <p type="check"></p><span>其他</span>
-            </div>
-            <span tag="input-auto" class="text-limit input-before" extendParam="other1"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">16.</span>
-          <div class="content">
-            衣柜：<span tag="input-auto" class="text-limit input-before" extendParam="val89"></span>
-            开门衣柜<span tag="input-auto" class="text-limit input-before" extendParam="val90"></span>
-            个，<span tag="input-auto" class="text-limit input-before" extendParam="val91"></span>
-            开门衣柜<span tag="input-auto" class="text-limit input-before" extendParam="val92"></span>
-            个，<span tag="input-auto" class="text-limit input-before" extendParam="val93"></span>
-            开门衣柜<span tag="input-auto" class="text-limit input-before" extendParam="val94"></span>个。
-          </div>
-        </div>
-        <div>
-          <span class="title">17.</span>
-          <div class="content">
-            茶几：<span tag="input-auto" class="text-limit input-before" extendParam="val95"></span>
-            张，规格<span tag="input-auto" class="text-limit input-before" extendParam="val96"></span>
-            ；材质：<div class="info-checkbox" name="teaTable">
-              <p type="check"></p><span>玻璃；</span>
-            </div>
-            <div class="info-checkbox" name="teaTable">
-              <p type="check"></p><span>木质；</span>
-            </div>
-            <div class="info-checkbox" name="teaTable">
-              <p type="check"></p><span>石材；</span>
-            </div>
-            <div class="info-checkbox" name="teaTable">
-              <p type="check"></p><span>其他</span>
-            </div>
-            <span tag="input-auto" class="text-limit input-before" extendParam="other2"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">18.</span>
-          <div class="content">
-            餐桌：<span tag="input-auto" class="text-limit input-before" extendParam="val97"></span>
-            张，规格<span tag="input-auto" class="text-limit input-before" extendParam="val98"></span>
-            ；材质：<div class="info-checkbox" name="diningTable">
-              <p type="check"></p><span>玻璃；</span>
-            </div>
-            <div class="info-checkbox" name="diningTable">
-              <p type="check"></p><span>木质；</span>
-            </div>
-            <div class="info-checkbox" name="diningTable">
-              <p type="check"></p><span>石材；</span>
-            </div>
-            <div class="info-checkbox" name="diningTable">
-              <p type="check"></p><span>其他</span>
-            </div>
-            <span tag="input-auto" class="text-limit input-before" extendParam="other3"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">19.</span>
-          <div class="content">
-            椅子：<span tag="input-auto" class="text-limit input-before" extendParam="val99"></span>
-            把，材质是：<div class="info-checkbox" name="chair">
-              <p type="check"></p><span>钢质；</span>
-            </div>
-            <div class="info-checkbox" name="chair">
-              <p type="check"></p><span>木质；</span>
-            </div>
-            <div class="info-checkbox" name="chair">
-              <p type="check"></p><span>工程塑料；</span>
-            </div>
-            <div class="info-checkbox" name="chair">
-              <p type="check"></p><span>其他</span>
-            </div>
-            <span tag="input-auto" class="text-limit input-before" extendParam="other4"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">20.</span>
-          <div class="content">
-            卧室地板：<div class="info-checkbox" name="bedroomFloor">
-              <p type="check"></p><span>地砖；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomFloor">
-              <p type="check"></p><span>木地板；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomFloor">
-              <p type="check"></p><span>水泥地；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomFloor">
-              <p type="check"></p><span>地毯；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomFloor">
-              <p type="check"></p><span>其他</span>
-            </div><span tag="input-auto" class="text-limit input-before" extendParam="val100"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">21.</span>
-          <div class="content">
-            客厅地板：<div class="info-checkbox" name="drawingFloor">
-              <p type="check"></p><span>地砖；</span>
-            </div>
-            <div class="info-checkbox" name="drawingFloor">
-              <p type="check"></p><span>木地板；</span>
-            </div>
-            <div class="info-checkbox" name="drawingFloor">
-              <p type="check"></p><span>水泥地；</span>
-            </div>
-            <div class="info-checkbox" name="drawingFloor">
-              <p type="check"></p><span>地毯；</span>
-            </div>
-            <div class="info-checkbox" name="drawingFloor">
-              <p type="check"></p><span>其他</span>
-            </div><span tag="input-auto" class="text-limit input-before" extendParam="val101"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">22.</span>
-          <div class="content">
-            厨房墙面：<div class="info-checkbox" name="kitchenWall">
-              <p type="check"></p><span>瓷砖；</span>
-            </div>
-            <div class="info-checkbox" name="kitchenWall">
-              <p type="check"></p><span>未贴砖；</span>
-            </div>
-            <div class="info-checkbox" name="kitchenWall">
-              <p type="check"></p><span>马赛克；</span>
-            </div>
-            <div class="info-checkbox" name="kitchenWall">
-              <p type="check"></p><span>其他</span>
-            </div><span tag="input-auto" class="text-limit input-before" extendParam="val102"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">23.</span>
-          <div class="content">
-            客厅墙面：<div class="info-checkbox" name="drawingWall">
-              <p type="check"></p><span>壁纸；</span>
-            </div>
-            <div class="info-checkbox" name="drawingWall">
-              <p type="check"></p><span>瓷砖；</span>
-            </div>
-            <div class="info-checkbox" name="drawingWall">
-              <p type="check"></p><span>墙面漆；</span>
-            </div>
-            <div class="info-checkbox" name="drawingWall">
-              <p type="check"></p><span>其他</span>
-            </div><span tag="input-auto" class="text-limit input-before" extendParam="val103"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">24.</span>
-          <div class="content">
-            卧室墙面：<div class="info-checkbox" name="bedroomWall">
-              <p type="check"></p><span>壁纸；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomWall">
-              <p type="check"></p><span>瓷砖；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomWall">
-              <p type="check"></p><span>墙面漆；</span>
-            </div>
-            <div class="info-checkbox" name="bedroomWall">
-              <p type="check"></p><span>其他</span>
-            </div><span tag="input-auto" class="text-limit input-before" extendParam="val104"></span>。
-          </div>
-        </div>
-        <div>
-          <span class="title">25.</span>
-          <div class="content">
-            室内门及锁具：<div class="info-checkbox" name="lockset">
-              <p type="check"></p><span>完好；</span>
-            </div>
-            <div class="info-checkbox" name="lockset">
-              <p type="check"></p><span>有部分损坏；</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">26.</span>
-          <div class="content">
-            灯具灯饰：<div class="info-checkbox" name="lamps">
-              <p type="check"></p><span>完好；</span>
-            </div>
-            <div class="info-checkbox" name="lamps">
-              <p type="check"></p><span>有部分损坏；</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">27.</span>
-          <div class="content">
-            窗户：<div class="info-checkbox" name="window">
-              <p type="check"></p><span>完好；</span>
-            </div>
-            <div class="info-checkbox" name="window">
-              <p type="check"></p><span>有部分损坏；</span>
-            </div>
-          </div>
-        </div>
-        <div>
-          <span class="title">28.</span>
-          <div class="content">
-            其他设施设备<span tag="input-auto" class="text-limit input-before" extendParam="val105"></span>
-          </div>
-        </div>
-        <div>
-          <span class="title">29.</span>
-          <div class="content">
-            <p>其他需要备注的内容</p>
-            <p><span tag="input-auto" class="text-limit input-before" extendParam="val106"></span></p>
-          </div>
-        </div>
-        <div class="sign">
-          <ul>
-            <li>
-              <span style="position: relative;">甲方（签章）：<img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg=="
-                  style="position: absolute;left:122px;top:-25px;"></span>
-              <span style="position: relative;">乙方（签章）：<img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
-                  style="position: absolute;left:122px;top:-25px;"></span>
-            </li>
-            <li>
-              <span>联系电话：<span systemparam="ownerTel" tag="input-auto"></span></span>
-              <span>联系电话：<span systemparam="guestTel" tag="input-auto"></span></span>
-            </li>
-            <li>
-              <span>签订日期：<span style="border: none;" systemParam="signDate"></span><span>
-            </li>
-          </ul>
-        </div>
-      </div> -->
     </div>
   </div>
 </body>

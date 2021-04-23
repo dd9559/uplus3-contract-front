@@ -233,7 +233,7 @@
 
           <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80">
             <template slot="header">分账金额（元）
-              <el-tooltip content="结算金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
+              <el-tooltip content="分账金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
                 <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
               </el-tooltip>
             </template>

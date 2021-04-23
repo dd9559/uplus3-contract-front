@@ -14,8 +14,12 @@ const store = new Vuex.Store({
     bodyScollShow:0,
     searchQuery:null,//筛选条件
     dataList:null,//列表渲染对象
+    companyData: null,
   },
   mutations: {
+    setCompanyData (state,payload) {
+      state.companyData=payload
+    },
     //设置面包屑索引
     setPath (state,payload) {
       localStorage.setItem('router',JSON.stringify(payload))
@@ -62,6 +66,9 @@ const store = new Vuex.Store({
     }
   },
   getters:{
+    getCompanyData:state => {
+      return state.companyData
+    },
     getPath:state=>{
       return state.path
     },

@@ -448,6 +448,7 @@ export default {
         644: [],
       },
       activeAdmin: "",
+      copyActiveAdmin: "",
       account: [],
       dropdown: [],
       receiptMan: [],
@@ -719,7 +720,8 @@ export default {
             console.log("=====");
             console.log(res);
             if (res.data.account) {
-              this.activeAdmin = res.data.account[0].accountId;
+              // this.activeAdmin = res.data.account[0].accountId;
+              this.copyActiveAdmin = res.data.account[0].accountId;
             }
           }
         });
@@ -864,6 +866,9 @@ export default {
           console.log("获取getCompanyBanks");
           console.log(res);
           this.account = [].concat(res.data);
+          this.activeAdmin = this.account.some(item => {
+            return item.id == this.copyActiveAdmin
+          }) ? this.copyActiveAdmin : ""
         }
       });
     },
@@ -977,7 +982,8 @@ export default {
             this.payList = [].concat(arr);
             if (res.data.inAccount && res.data.inAccount.length > 0) {
               //收账账户
-              this.activeAdmin = res.data.inAccount[0].accountId;
+              // this.activeAdmin = res.data.inAccount[0].accountId;
+              this.copyActiveAdmin = res.data.inAccount[0].accountId;
             }
           } else {
             //线上收款初始化时间控件
@@ -990,7 +996,8 @@ export default {
           } else {
             this.getCompanyBanks(this.dep.id);
           }
-          this.activeAdmin = res.data.inAccount[0].accountId;
+          // this.activeAdmin = res.data.inAccount[0].accountId;
+          this.copyActiveAdmin = res.data.inAccount[0].accountId;
           // this.hideCardList()
           if (this.$route.query.collect && this.$route.query.contId == 0) {
             if (res.data.houseinfoJson) {
@@ -1480,6 +1487,9 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.account = [].concat(res.data);
+            this.activeAdmin = this.account.some(item => {
+              return item.id == this.copyActiveAdmin
+            }) ? this.copyActiveAdmin : ""
           }
         });
     },

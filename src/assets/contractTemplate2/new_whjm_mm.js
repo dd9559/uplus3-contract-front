@@ -4,9 +4,21 @@ import {
   formatMoney
 } from "./base.js"
 
-let Obj = {
-  cn_arr: ['val23', 'val32', 'val31', 'val34', 'val37', 'val39', 'val41', 'val43', 'val44', 'val49', 'val52']
-}
+let Obj;
+(function() {
+    let t = document.querySelectorAll(`[extendParam]`);
+    let arr = [];
+
+    t.forEach(e => {
+        let name = e.getAttribute("extendParam")
+        if (name.indexOf("_add") > 0) {
+            let name2 = name.slice(0, -4);
+            arr.push(name2);
+        }
+    });
+    Obj = Obj || {};
+    Obj.cn_arr = arr;
+})()
 
 let sub = {
   'val1': null,
@@ -199,12 +211,18 @@ let sub = {
   'val38': null,
   'val39': null,
   'checkbox_twenty-two': null,
-  'val40': null,
-  'val41': null,
-  'checkbox_twenty-three': null,
-  'val42': null,
-  'val43': null,
-  'checkbox_twenty-four': null,
+
+
+  'info_val40': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val40]') ? {'val40': null,'val41': null,'checkbox_twenty-three': null} : null
+    }
+  },
+  'info_val42': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val42]') ? {'val42': null,'val43': null,'checkbox_twenty-four': null} : null
+    }
+  },
   'info_val444': {
     stateful: function () {
       return document.querySelectorAll('*[name=twenty]')[1].querySelector('p').getAttribute('checked') ? {'checkbox_twenty-five': null,'val44':null,'checkbox_twenty-six': {
@@ -279,7 +297,11 @@ let sub = {
       } : null
     }
   },
-  'val62': null,
+  'info_val62': {
+    stateful() {
+      return document.querySelectorAll('*[name=twenty]')[1].querySelector('p').getAttribute('checked') ? {'val62': null} : null
+    }
+  },
   'checkbox_thirty-six': null,
   'checkbox_thirty-seven': null,
   'checkbox_thirty-eight': null,
@@ -409,58 +431,55 @@ textLong.forEach(function (item) {
 })
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg = {
-//   code: "S0001191107007",
-//   companyNames: ["金银湖三级门店哦"],
-//   guestCardType: "军官证",
-//   guestCardTypes: "",
-//   guestID: "132",
-//   guestIDs: "ee2353-344，ii397-4839",
-//   guestName: "然迪生",
-//   guestNames: "胜负少，发士夫",
-//   guestTel: "13011111111",
-//   guestTels: "",
-//   id: 3354,
-//   isentrust: 1,
-//   ownerCardType: "营业执照",
-//   ownerCardTypes: "",
-//   ownerID: "123",
-//   ownerIDs: "ee2353-344，ii397-4839",
-//   ownerName: "熊先",
-//   ownerNames: "胜多少，发士夫",
-//   ownerTel: "18888888888",
-//   ownerTels: "",
-//   propertyAddr: "a市b区c",
-//   singleCompany: "是的噶几开会说",
-//   dealPrice: 1000,
-//   dealPriceUpper: '壹仟',
-//   square: 160,
-//   guestStoreRegisterCode: '213',
-//   signDate: 1592465819508,
-//   organizationCode: "8888888888"
-// }
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg = {
+  code: "S0001191107007",
+  companyNames: ["金银湖三级门店哦"],
+  guestCardType: "军官证",
+  guestCardTypes: "",
+  guestID: "132",
+  guestIDs: "ee2353-344，ii397-4839",
+  guestName: "然迪生",
+  guestNames: "胜负少，发士夫",
+  guestTel: "13011111111",
+  guestTels: "",
+  id: 3354,
+  isentrust: 1,
+  ownerCardType: "营业执照",
+  ownerCardTypes: "",
+  ownerID: "123",
+  ownerIDs: "ee2353-344，ii397-4839",
+  ownerName: "熊先",
+  ownerNames: "胜多少，发士夫",
+  ownerTel: "18888888888",
+  ownerTels: "",
+  propertyAddr: "a市b区c",
+  singleCompany: "是的噶几开会说",
+  dealPrice: 1000,
+  dealPriceUpper: '壹仟',
+  square: 160,
+  guestStoreRegisterCode: '213',
+  signDate: 1592465819508,
+  organizationCode: "8888888888"
+}
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code', 'ownerTel', 'organizationCode', 'guestTel', 'ownerName', 'ownerID', 'ownerNames', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper', 'companyNames', 'guestStoreRegisterCode', 'signDate']
   if (onlyReadDom.length > 0) {
     onlyReadDom.forEach((element, index) => {
-      if (readonlyArr.includes(readonlyItem)) {
-        if (readonlyItem === 'companyNames') {
-          element.innerHTML = msg[readonlyItem][0]
-        } else if (readonlyItem === 'signDate' && msg["signDate"]) {
-          let time = new Date(Number(msg["signDate"]));
-          let y = time.getFullYear();
-          let M = time.getMonth() + 1;
-          let D = time.getDate();
-          let signDate = `${y}年${M}月${D}日`
-          element.innerHTML = signDate
-        } else {
-          element.innerHTML = msg[readonlyItem]
-        }
-        element.classList.remove('input-before')
+      if (readonlyItem === 'companyNames') {
+        element.innerHTML = msg[readonlyItem][0]
+      } else if (readonlyItem === 'signDate' && msg["signDate"]) {
+        let time = new Date(Number(msg["signDate"]));
+        let y = time.getFullYear();
+        let M = time.getMonth() + 1;
+        let D = time.getDate();
+        let signDate = `${y}年${M}月${D}日`
+        element.innerHTML = signDate
+      } else {
+        element.innerHTML = msg[readonlyItem]
       }
+      element.classList.remove('input-before')
     })
   }
 }
@@ -599,7 +618,7 @@ contractConfig.checkboxListener(function () {}, function (obj, index) {
   }
   if (attr === 'twenty') {
     let checkIO = {
-      1: ['checkbox_twenty-five','val44','checkbox_twenty-six','val45','val46','val47','val48']
+      1: ['checkbox_twenty-five','val44','checkbox_twenty-six','val45','val46','val47','val48','val62']
     }
     boxArray.forEach((item, i) => {
       if (item === obj.currentTarget) {
