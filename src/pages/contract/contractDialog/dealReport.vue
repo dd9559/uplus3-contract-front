@@ -340,7 +340,7 @@ export default {
         }
     },
     created() {
-        if(this.contType === '2' || this.contType === '3') {
+        if(this.contType === '2' || this.contType === '3' ||this.contType === '6') {
            this.getContractDetail()
            this.getFlowList()
            this.getDictionary()

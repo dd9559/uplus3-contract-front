@@ -225,9 +225,19 @@
 
           <el-table-column prop="agentPlatformFee" label="平台费（元）" min-width="80"></el-table-column>
 
-          <el-table-column prop="receivableComm" label="实收金额（元）" min-width="80"></el-table-column>
+          <el-table-column label="实收金额（元）" min-width="80">
+            <template slot-scope="scope">
+              <p>{{scope.row.receivableComm|fomatFloat}}</p>
+            </template>
+          </el-table-column>
 
-          <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80"></el-table-column>
+          <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80">
+            <template slot="header">分账金额（元）
+              <el-tooltip content="分账金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
+                <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+              </el-tooltip>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           @current-change="handleCurrentChange"
@@ -377,6 +387,19 @@
             this.remoteMethod();
         },
         components: {},
+        filters: {
+          //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
+          fomatFloat: function (num, decimal = 2) {
+            num = num.toString();
+            var index = num.indexOf(".");
+            if (index !== -1) {
+              num = num.substring(0, decimal + index + 1);
+            } else {
+              num = num.substring(0);
+            }
+            return parseFloat(num).toFixed(decimal);
+          }
+        },
         methods: {
             // 导出功能
             getExcel() {
@@ -731,4 +754,13 @@
   .w430 {
     width: 430px;
   }
+  .icon-prompt {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
 </style>

@@ -172,8 +172,8 @@
           </ul>
         </div>
         <p>
-          <el-button v-if="power['sign-ht-info-pay'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
-          <el-button v-if="power['sign-ht-info-collect'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
+          <el-button v-if="power['sign-cw-debt-whtfk'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
+          <el-button v-if="power['sign-cw-debt-whtsk'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
             v-if="power['sign-cw-debt-export'].state">导出</el-button>
         </p>
@@ -307,15 +307,15 @@
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
                        scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payway&&scope.row.payway.value===4)||//收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payway&&scope.row.payway.value===4)//转入收款+未开票+线下转款
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatusValue!==11&&scope.row.payway&&scope.row.payway.value===4&&scope.row.payStatus.value!==11)//转入收款+未开票+线下转款
               ">开票
               </el-button>
               <!-- 线上收款,需判断收付+支付状态或转入收款+未开票 -->
               <el-button type="text" @click="btnOpera(scope.row,3)" v-else-if="(
                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
-                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
-                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11&&scope.row.payStatus.value!==3)//转入收款+已开票+收付状态不等于(失败和审核中)
+                       scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==11)||//收付状态不等于(收款-未付款&&收款-收款失败)
+                       (scope.row.isDeal==3&&scope.row.billStatus.value!=2&&scope.row.payStatus.value!==11)//转入收款+已开票+收付状态不等于(失败)
                        ">开票
               </el-button>
             </template>
@@ -595,11 +595,11 @@ export default {
                       state: false,
                       name: '查询'
                     },*/
-        "sign-ht-info-pay": {
+        "sign-cw-debt-whtfk": {
           state: false,
           name: "付款",
         },
-        "sign-ht-info-collect": {
+        "sign-cw-debt-whtsk": {
           state: false,
           name: "收款",
         },
@@ -1303,7 +1303,7 @@ export default {
         outPayInfoId: this.selectPayInfo.id, //转出的款项id
         outType: this.selectPayInfo.moneyTypeId, //转出的款类key
         outTypeId: this.selectPayInfo.moneyTypePid, //转出的款类id
-        outMoney: this.selectPayInfo.amount, //转出时款类金额
+        outMoney: this.zkEdit && this.transterInfoPerson ? this.transterInfoPerson.outMoney : this.selectPayInfo.amount, //转出时款类金额
         inId: this.transterInfoPerson.inId
           ? this.transterInfoPerson.inId
           : this.transterInfoPerson.inContractId, //转入的合同ID

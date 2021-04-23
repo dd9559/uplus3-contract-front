@@ -19,9 +19,17 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="签约时间">
+        <el-form-item>
+          <el-select
+            v-model="dataType"
+            placeholder="签约时间"
+            style="width:100px"
+          >
+            <el-option key="0" label="签约时间" value="0"></el-option>
+            <el-option key="1" label="解约时间" value="1"></el-option>
+          </el-select>
           <el-date-picker
-            v-model="signData"
+            v-model="data"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -31,7 +39,6 @@
             style="width:330px"
           ></el-date-picker>
         </el-form-item>
-
         <el-form-item label="合同类型">
           <el-select
             v-model="contractForm.contTypes"
@@ -154,7 +161,8 @@ export default {
       contractForm: {
         dealAgentId: "",
       },
-      signData: [],
+      dataType: '0',// 添加解约时间
+      data: [],
       list: [],
       total: 0,
       currentPage: 1,
@@ -182,6 +190,14 @@ export default {
     this.remoteMethod(); //部门
     this.getCancelList();
   },
+  watch: {
+    dataType: {
+      handler(val) {
+        this.data = []
+      },
+      immediate: true
+    }
+  },
   methods: {
     //查询
     queryFn() {
@@ -191,7 +207,7 @@ export default {
     //重置
     resetFormFn() {
       TOOL.clearForm(this.contractForm);
-      this.signData = [];
+      this.data = [];
       this.EmployeList = [];
     },
     //审核列表
@@ -204,10 +220,12 @@ export default {
         deptId: this.contractForm.deptId,
         empId: this.contractForm.dealAgentId,
       };
-      if (this.signData) {
-        if (this.signData.length > 0) {
-          param.signStart = this.signData[0];
-          param.signEnd = this.signData[1];
+      if (this.data) {
+        if (this.data.length > 0) {
+          let dataStartName = this.dataType === '1' ? 'examineStartTime' : 'signStart';
+          let dataEndtName = this.dataType === '1' ? 'examineEndTime' : 'signEnd';
+          param[dataStartName] = this.data[0];
+          param[dataEndtName] = this.data[1];
         }
       }
       if (
@@ -272,20 +290,22 @@ export default {
         deptId: this.contractForm.deptId,
         empId: this.contractForm.dealAgentId,
       };
-      if (this.signData) {
-        if (this.signData.length > 0) {
-          param.signStart = this.signData[0];
-          param.signEnd = this.signData[1];
+      if (this.data) {
+        let dataStartName = this.dataType === '1' ? 'examineStartTime' : 'signStart';
+        let dataEndtName = this.dataType === '1' ? 'examineEndTime' : 'signEnd';
+        if (this.data.length > 0) {
+          param[dataStartName] = this.data[0];
+          param[dataEndtName] = this.data[1];
         }
-        if (param.signEnd) {
-          param.signEnd = param.signEnd.replace(/\//g, "-");
+        if (param[dataEndtName]) {
+          param[dataEndtName] = param[dataEndtName].replace(/\//g, "-");
         } else {
-          param.signEnd = "";
+          // param[dataEndtName] = "";
         }
-        if (param.signStart) {
-          param.signStart = param.signStart.replace(/\//g, "-");
+        if (param[dataStartName]) {
+          param[dataStartName] = param[dataStartName].replace(/\//g, "-");
         } else {
-          param.signStart = "";
+          // param[dataStartName] = "";
         }
       }
       if (

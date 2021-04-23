@@ -307,7 +307,38 @@ const MIXINS = {
             a.click();
             document.body.removeChild(a)
           } else if (type === 'preload') { //图片缩略图使用
-            return res.data
+            // 判断图片是否存在
+            var xmlhttp;   
+            if(window.XMLHttpRequest)   
+            {   
+                xmlhttp = new XMLHttpRequest();//其他浏览器   
+            }   
+            else if (window.ActiveXObject)
+            {   
+                try {   
+                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");//旧版IE   
+                }   
+                catch (e) { }   
+                try {   
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");//新版IE   
+                }   
+                catch (e) { }   
+                if (!xmlhttp) {   
+                    return   
+                }   
+            }   
+            var yourFileURL=res.data[0] 
+            xmlhttp.open("GET",yourFileURL,false); 
+            xmlhttp.send(); 
+            if(xmlhttp.readyState==4){    
+                if(xmlhttp.status==200)  {
+                  return res.data
+                }else {
+                  return []
+                }
+            }
+            // 改前版本
+            // return res.data
           } else if (type === 2) { //合同主体
             this.previewFiles = res.data
             this.preview = true

@@ -92,6 +92,16 @@
         <el-table-column prop="contCode" min-width="125" label="合同编号"></el-table-column>
         <el-table-column prop="proAddr" min-width="145" label="物业地址"></el-table-column>
         <el-table-column prop="settleMoney" min-width="105">
+          <template slot="header">分账金额
+            <el-tooltip content="分账金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
+              <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+            </el-tooltip>
+          </template>
+          <template slot-scope="scope">
+            {{ scope.row.agentReceipts == null ? "-" : scope.row.agentReceipts|roundFilters}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="settleMoney" min-width="105">
           <template slot="header">结算金额
             <el-tooltip content="结算金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
               <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
@@ -405,7 +415,7 @@ export default {
     // 初始时间
     initialTimeFn() {
       let d = this.dateFormat(new Date()).split("-");
-      let t = d[1] - 1;
+      let t = d[1];
       d[1] = t > 0 ? t.toString().padStart(2, "0") : 12;
       d[0] = t > 0 ? d[0] : d[0] - 1;
       d.splice(2, 1);

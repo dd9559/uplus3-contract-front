@@ -25,7 +25,7 @@
 		<el-dialog title="" :visible.sync="dialogSub" class="signDialog" width="460px" :closeOnClickModal="$tool.closeOnClickModal" center>
 			<div class="submitBox">
 				<p>是否需要打印草签合同？</p>
-				<p>温馨提示：草签合同无公章，仅供买卖双方确认合同条款使用</p>
+				<p>温馨提示：草签合同无公章，仅供{{Msg.type==1 ? '租赁' : '买卖' }}双方确认合同条款使用</p>
 			</div>
       <span slot="footer" class="">
         <el-button @click="toPrint">打印合同，稍后提审</el-button>
@@ -567,7 +567,7 @@ export default {
 					}
 				}
 				this.param = param;
-				if(this.Msg.type==2){
+				if(this.Msg.type==2 || this.Msg.type==1){
 					this.dialogSub=true
 				}else{
 					this.otherDialogSub=true

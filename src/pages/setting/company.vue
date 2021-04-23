@@ -1,359 +1,260 @@
 <template>
   <div class="view-container" ref="tableComView">
-    <!-- 头部表单 -->
-    <ScreeningTop
-    @propQueryFn="queryFn"
-    @propResetFormFn="resetFormFn">
-      <el-form :inline="true" :model="searchForm" class="form-head" size="small">
-        <el-form-item label="关键字">
-          <el-input v-model="searchForm.keyword" maxlength="50" placeholder="添加人/开户行/开户名" :clearable="true"></el-input>
-        </el-form-item>
-        <el-form-item label="添加时间">
-          <el-date-picker
-          v-model="searchTime"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          value-format="yyyy-MM-dd">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="门店选择">
-          <el-select v-model="searchForm.storeId" multiple filterable collapse-tags remote  @change="depChange"  :clearable="true" class="headerDep"  style="width:230px" :remote-method="remoteMethod1" v-loadmore="moreStore1" @visible-change="showView1">
-            <el-option v-for="item in homeStoreList" :key="item.id" :label="item.name" :value="item.id">
-              <!-- <span style="float: left">{{ item.name.slice(0,8) }}</span> -->
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="账户类型">
-          <el-select v-model="searchForm.type" :clearable="true">
-            <el-option label="全部" value=""></el-option>
-            <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="合作方式">
-          <el-select v-model="searchForm.cooperationMode" :clearable="true" class="w140">
-            <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="银行卡号">
-          <el-input v-model="searchForm.bankCard" maxlength="20" :clearable="true" @keyup.native="getInt(1)"></el-input>
-        </el-form-item>
+    <div>
+      <!-- 头部表单 -->
+      <ScreeningTop
+      @propQueryFn="queryFn"
+      @propResetFormFn="resetFormFn">
+        <el-form :inline="true" :model="searchForm" class="form-head" size="small">
+          <el-form-item label="关键字">
+            <el-input v-model="searchForm.keyword" style="width:220px" maxlength="50" placeholder="支持输入企业名称/银行卡号" :clearable="true"></el-input>
+          </el-form-item>
+          <el-form-item label="账户类型">
+            <el-select v-model="searchForm.type" :clearable="true">
+              <el-option label="全部" value=""></el-option>
+              <el-option v-for="item in bankType" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="认证状态">
+            <el-select v-model="searchForm.verifyState" :clearable="true" class="w180">
+              <el-option label="全部" value=""></el-option>
+              <el-option v-for="item in verifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="授权状态">
+          <el-select v-model="searchForm.warrantState" :clearable="true">
+              <el-option label="全部" value=""></el-option>
+              <el-option v-for="item in warrantList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="门店选择">
+            <el-select v-model="searchForm.dept" filterable collapse-tags remote placeholder="请输入" :clearable="true" @clear="homeStoreList = []" class="headerDep"  style="width:230px" :remote-method="remoteMethod1">
+              <el-option v-for="item in homeStoreList" :key="item.id" :title="item.name" :label="item.name" :value="item.name">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </ScreeningTop>
+      <!-- table表格 -->
+      <div class="company-list">
+        <p v-if="power['sign-set-gs'].state">
+            <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
+            <span>
+              <el-button @click="addDep" type="primary">绑定门店</el-button>
+              <el-button @click="addCompany" icon="el-icon-plus" type="primary">公司信息</el-button>
+            </span>
+        </p>
+        <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
+          <el-table-column label="企业名称" prop="name" min-width="90">
+          </el-table-column>
+          <el-table-column label="认证状态" min-width="50">
+            <template slot-scope="scope">
+              <p>{{verifyList.filter(item=>item.id == scope.row.verifyState).length>0?verifyList.filter(item=>item.id == scope.row.verifyState)[0].name:'-'}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="授权状态" min-width="50">
+            <template slot-scope="scope">
+              <p>{{warrantList.filter(item=>item.id == scope.row.warrantState).length>0?warrantList.filter(item=>item.id == scope.row.warrantState)[0].name:'-'}}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="录入时间" prop="createTime" min-width="60">
+            <template slot-scope="scope">
+              <span>{{(scope.row.updateTime ? scope.row.updateTime : scope.row.createTime)|formatDate(2)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="录入人">
+            <template slot-scope="scope">
+              <span>{{scope.row.deptName + ' ' + scope.row.createByName}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" min-width="80">
+            <template slot-scope="scope">
+              <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
+              <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
+              <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
+              <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          v-show="tableData.length"
+          class="pagination-info"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="count">
+        </el-pagination>
+      </div>
+      <!-- 查看 弹出框 -->
+      <el-dialog
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :close-on-press-escape="$tool.closeOnClickModal"
+      :visible.sync="dialogViewVisible"
+      width="740px"
+      :before-close="handleClose"
+      :destroy-on-close="true"
+      class="dialog-info lock-dialog">
+      <div slot="title" class="title-class-box">
+        <span :class="tabTitleIndex ===1 ? 'current' : ''" @click="clickTitle(1)">公司信息</span>
+        <span :class="tabTitleIndex ===2 ? 'current' : ''" @click="clickTitle(2)">门店信息</span>
+      </div>
+      <div v-show="tabTitleIndex ===1">
+        <div class="view-content">
+          <p class="title">企业信息</p>
+          <ul class="content-box">
+            <li class="content-item">
+              <span>企业名称：</span>
+              <span>{{companyForm.name}}</span>
+            </li>
+            <li class="content-item">
+              <span>企业地址：</span>
+              <span>{{companyForm.address}}</span>
+            </li>
+            <li class="content-item">
+              <span>统一社会信用代码：</span>
+              <span>{{companyForm.documentCard}}</span>
+            </li>
+          </ul>
+          
+          <p class="title">法人信息</p>
+          <ul class="content-box">
+            <li class="content-item">
+              <span>法人姓名：</span>
+              <span>{{companyForm.lepName}}</span>
+            </li>
+            <li class="content-item">
+              <span>法人证件号码：</span>
+              <span>{{companyForm.lepDocumentCard}}</span>
+            </li>
+            <li class="content-item">
+              <span>法人手机号码：</span>
+              <span>{{companyForm.lepPhone}}</span>
+            </li>
+          </ul>
 
-        <!-- 2.5.7新加筛选项 -->
-        <el-form-item label="认证状态">
-          <el-select v-model="searchForm.verifyState" :clearable="true" class="w180">
-            <el-option label="全部" value=""></el-option>
-            <el-option v-for="item in verifyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="授权状态">
-         <el-select v-model="searchForm.warrantState" :clearable="true">
-            <el-option label="全部" value=""></el-option>
-            <el-option v-for="item in warrantList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-    </ScreeningTop>
-    <!-- table表格 -->
-    <div class="company-list">
-      <p v-if="power['sign-set-gs'].state">
-        <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
-        <el-button @click="addCompany" icon="el-icon-plus" type="primary">公司信息</el-button>
-      </p>
-      <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
-        <el-table-column label="城市" prop="cityName" width="90">
-        </el-table-column>
-        <el-table-column label="门店" prop="storeName">
-        </el-table-column>
-        <el-table-column label="账户类型" min-width="50">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.type===0?'个人账户':'企业账户' }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="开户名" min-width="180">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankAccountName }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="认证状态" min-width="50">
-          <template slot-scope="scope">
-            <p>{{verifyList.filter(item=>item.id == scope.row.verifyState).length>0?verifyList.filter(item=>item.id == scope.row.verifyState)[0].name:'-'}}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="授权状态" min-width="50">
-          <template slot-scope="scope">
-            <p>{{warrantList.filter(item=>item.id == scope.row.warrantState).length>0?warrantList.filter(item=>item.id == scope.row.warrantState)[0].name:'-'}}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="银行卡号" min-width="100">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankCard|formatBankCard }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="银行">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankName }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="支行">
-          <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.companyBankList" :key="index">{{ item.bankBranchName==='—'?'--':item.bankBranchName }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column label="合作方式" prop="cooperationMode.label" min-width="50">
-        </el-table-column>
-        <el-table-column label="添加时间" prop="createTime" min-width="60">
-          <template slot-scope="scope">
-            <span>{{scope.row.createTime|formatDate(2)}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="添加人" prop="createByName">
-        </el-table-column>
-        <el-table-column label="操作" min-width="80">
-          <template slot-scope="scope">
-            <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
-            <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
-            <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination
-        v-show="tableData.length"
-        class="pagination-info"
-        @current-change="handleCurrentChange"
-        :current-page="pageNum"
-        :page-size="pageSize"
-        layout="total, prev, pager, next, jumper"
-        :total="count">
-      </el-pagination>
-    </div>
-    <!-- 添加和编辑公司信息 弹出框 -->
-    <el-dialog
-    :closeOnClickModal="$tool.closeOnClickModal"
-    :close-on-press-escape="$tool.closeOnClickModal"
-    :title="companyFormTitle"
-    :visible.sync="AddEditVisible"
-    width="1000px"
-    :before-close="handleClose"
-    class="dialog-info">
-      <el-form :model="companyForm" label-position='right'>
-        <div class="company-info">
-          <p>添加企业信息</p>
-          <div class="info-content">
-            <div class="item item-display">
-              <el-form-item label="当前城市: ">
-                <!-- <el-select placeholder="请选择" size="mini" v-model="companyForm.cityId" filterable @change="getStoreList">
-                  <el-option v-for="item in cityList" :key="item.id" :label="item.name" :value="item.cityId"></el-option>
-                </el-select> -->
-                <el-input v-model="companyForm.cityName" size="mini" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="合作方式: ">
-                <el-select v-model="companyForm.cooperationMode" :disabled="storeNoChange" size="mini" @change="cooModeChange">
-                  <el-option v-for="item in dictionary['39']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select>
-              </el-form-item>
-                <!-- <el-input v-model="companyForm.cooperationMode" size="mini" disabled></el-input> -->
-              <el-form-item label="门店选择: ">
-                <el-select placeholder="请选择"  size="mini"  collapse-tags v-model="companyForm.storeId" filterable remote multiple clearable @focus="isNull" @change="storeSelect" :disabled="storeNoChange"  v-loadmore="moreStore2" @visible-change="showView2" :remote-method="remoteMethod2">
-                  <el-option  v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                </el-select>
-              </el-form-item>
-            </div>
-            <div class="item item-display">
-              <el-form-item label="平台费比例: " class="allow">
-                <el-input v-model="companyForm.franchiseRatio" size="mini" :clearable="true" :disabled="fourthStoreNoEdit" @input="cutNumber('franchiseRatio')"></el-input>%
-              </el-form-item>
-              <el-form-item label="门店名称: " class="store-name">
-                <el-input size="mini" v-model.trim="companyForm.name" placeholder="营业执照上的名字" maxlength="50" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(100,'name')"></el-input>
-              </el-form-item>
-              <el-form-item label="法人姓名: ">
-                <el-input size="mini" maxlength="15" v-model.trim="companyForm.lepName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(999,'lepName')"></el-input>
-              </el-form-item>
-            </div>
-            <div class="item item-display">
-              <el-form-item label="证件类型: ">
-                <el-select placeholder="请选择" size="mini" v-model="companyForm.lepDocumentType" :disabled="true" @change="idTypeChange">
-                  <el-option v-for="item in dictionary['40']" :key="item.key" :label="item.value" :value="item.key"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="证件号: " class="id-card">
-                <el-input size="mini" :maxlength="companyForm.lepDocumentType===1?18:companyForm.lepDocumentType===2?9:companyForm.lepDocumentType===3?11:18" v-model.trim="companyForm.lepDocumentCard" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1000,'lepDocumentCard')"></el-input>
-              </el-form-item>
-              <el-form-item label="法人手机号码: " class="mobile">
-                <el-input size="mini" maxlength="11" v-model="companyForm.lepPhone" :clearable="true" :disabled="fourthStoreNoEdit" @keyup.native="getInt(2)"></el-input>
-              </el-form-item>
-            </div>
-            <div class="item">
-              <el-form-item label="统一社会信用代码: " v-if="true" >
-                <el-input size="mini" v-model.trim="documentCard.creditCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(1,'creditCode')"></el-input>
-              </el-form-item>
-              <el-form-item label="工商注册号: " v-if="icRegisterShow" class="gongshang">
-                <el-input size="mini" v-model.trim="documentCard.icRegisterCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(2,'icRegisterCode')"></el-input>
-              </el-form-item>
-              <el-form-item label="组织机构代码: " v-if="icRegisterShow" class="zuzhi">
-                <el-input size="mini" v-model.trim="documentCard.organizationCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(3,'organizationCode')"></el-input>
-              </el-form-item>
-            </div>
-            <div class="item shuiwu">
-              <el-form-item label="税务登记证: " v-if="icRegisterShow">
-                <el-input size="mini" v-model.trim="documentCard.taxRegisterCode" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(4,'taxRegisterCode')"></el-input>
-              </el-form-item>
-            </div>
-            <div class="tip tip-top">
-              <span>温馨提示: </span>
-              <div style="color: #CD6D6D;">
-                <p>1. 门店名称必须和营业执照证件上登记的名称一致；</p>
-                <p>2. 如个体工商户在营业执照上无企业名称的，请填“经营者”名字；</p>
-                <p>3. 三证合一企业证件，只需要填写“统一社会信用代码”；</p>
+          <p class="title">银行信息</p>
+          <ul class="content-box">
+            <li class="content-item margin" v-for="(item,index) of companyForm.entBankList" :key="index">
+              <div class="bank-item">
+                <span>账户类型:</span>
+                <span>{{item.type == 0 ? '个人账户' : '企业账户'}}</span>
               </div>
-            </div>
-          </div>
-          <div class="notice" v-show="noticeShow"><i class="el-icon-info notice-icon"></i>门店信息已经录入，请选择其他门店</div>
-        </div>
-        <div class="company-info">
-          <p>添加企业银行账户</p>
-          <ul class="info-content">
-            <li v-for="(item,index) in companyBankList" :key="index" class="addBankRow">
-              <div class="row-item">
-                <div>
-                  <label>账户类型: </label>
-                  <el-select size="small" v-model="item.type" class="property" :disabled="fourthStoreNoEdit">
-                    <el-option v-for="m in bankType" :key="m.value" :label="m.label" :value="m.value"></el-option>
-                  </el-select>
-                </div>
-                <div>
-                  <label>开户名: </label>
-                  <el-input size="small" class="card-owner" maxlength="30" v-model.trim="item.bankAccountName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(index,'bankAccountName')"></el-input>
-                </div>
-                <div>
-                  <label>银行卡号: </label>
-                  <el-input size="small" maxlength="20" v-model="item.bankCard" :clearable="true" :disabled="fourthStoreNoEdit" @keyup.native="getInt(3,index)"></el-input>
-                </div>
+              <div class="bank-item">
+                <span>开户银行名称：</span>
+                <span>{{item.bankName}}</span>
               </div>
-              <div class="row-item">
-                <div>
-                  <label>银行: </label>
-                  <el-select size="small" v-model="item.bankId" filterable :disabled="fourthStoreNoEdit" class="bank-item" @change="addBankCode($event,index)">
-                    <el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="m.id"></el-option>
-                  </el-select>
-                </div>
-                <div v-if="item.type===1" class="zhi-hang">
-                  <label>支行: </label>
-                  <el-input size="small" class="bank-branch" v-model.trim="item.bankBranchName" :clearable="true" :disabled="fourthStoreNoEdit" @input="inputOnly(index,'bankBranchName')"></el-input>
-                </div>
+              <div class="bank-item" v-if="item.type == 1">
+                <span>支行名称：</span>
+                <span>{{item.bankBranchName ? item.bankBranchName : '-'}}</span>
               </div>
-              <div class="button-box">
-                <span @click="addRow" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-plus"></i></span>
-                <span @click="removeRow(index)" class="button" :class="{'direct-sale':fourthStoreNoEdit}"><i class="icon el-icon-minus"></i></span>
+              <div class="bank-item" v-if="item.type == 1">
+                <span>支付行号：</span>
+                <span>{{item.bankBranchCode ? item.bankBranchCode : '-'}}</span>
+              </div>
+              <div class="bank-item" v-if="item.type == 0">
+                <span>开户名：</span>
+                <span>{{item.bankAccountName ? item.bankAccountName : '-'}}</span>
+              </div>
+              <div class="bank-item">
+                <span>银行卡号：</span>
+                <span>{{item.bankCard}}</span>
               </div>
             </li>
           </ul>
-        </div>
-        <div class="company-info">
-          <p>添加电子签章</p>
+
+          
+          <p>{{companyForm.storeName}}</p>
           <div>
+            <p class="title">其它信息</p>
             <div class="stamp">
-              <span>合同章上传</span>
-              <div class="upload">
-                <span class="point">上传电子签章图片：</span>
-                <ul>
-                  <li>
-                    <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
-                    <p class="text">点击上传</p>
-                  </li>
-                  <el-tooltip effect="dark" :content="contractName" placement="bottom">
-                    <li v-show="companyForm.contractSign">
-                      <div @click="getPicture(1)">
-                        <img :src="preConFile[0]" width="90px" height="80px">
-                      </div>
-                      <p class="pic-name">{{contractName}}</p>
-                      <span class="del" @click="delStamp(1)"><i class="el-icon-close"></i></span>
-                    </li>
-                  </el-tooltip>
-                </ul>
-              </div>
+              <span>合同章: </span>
+              <div @click="getPicture(1)"><img :src="preConFile[0]" alt="" width="120px" height="120px"></div>
             </div>
             <div class="stamp">
-              <span>财务章上传</span>
-              <div class="upload">
-                <span class="point">上传电子签章图片：</span>
-                <ul>
-                  <li>
-                    <fileUp id="imgfinance" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true"><i>+</i></fileUp>
-                    <p class="text">点击上传</p>
-                  </li>
-                  <el-tooltip effect="dark" :content="financialName" placement="bottom">
-                    <li v-show="companyForm.financialSign">
-                      <div @click="getPicture(2)">
-                        <img :src="preFinFile[0]" width="90px" height="80px">
-                      </div>
-                      <p class="pic-name">{{financialName}}</p>
-                      <span class="del" @click="delStamp(2)"><i class="el-icon-close"></i></span>
-                    </li>
-                  </el-tooltip>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="tip">
-            <span>温馨提示: </span>
-            <div class="message">
-              <p>如何上传印章图片？</p>
-              <p>将您的印章盖到白纸上，然后拍照或者用扫描仪扫到电脑后再上传；</p>
-              <p>注意：盖在白纸上时请加深印泥的浓度，上传透明背景或白色背景的<i>png、jpg</i>格式的图片效果最佳，大小不超过<i>5M</i></p>
+              <span>财务章: </span>
+              <div @click="getPicture(2)"><img :src="preFinFile[0]" alt="" width="120px" height="120px"></div>
             </div>
           </div>
         </div>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitConfirm">认 证</el-button>
+      </div>
+      <div class="dep-container" v-show="tabTitleIndex ===2">
+        <div class="dep-search">
+          <span>门店搜索</span>
+           <el-input v-model="deptName" style="width:220px" placeholder="请输入" :clearable="true" @clear="deptName = ''"></el-input>
+           <el-button @click="getSearchDepTableData('search')" type="primary">查询</el-button>
+        </div>
+        <div class="dep-content">
+          <div class="title">
+            <span>企业名称：</span>
+            <span>{{companyForm.name}}</span>
+          </div>
+          <el-table :data="searchDepTableData" v-loadmore="lazyLoad" style="width: 100%" border :max-height="445">
+          <el-table-column label="企业管理费" prop="platformFeeRatio" width="90">
+            <template slot-scope="scope">
+              <span>{{scope.row.platformFeeRatio}}%</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="门店名称" prop="name" width="300">
+          </el-table-column>
+          <el-table-column label="操作" width="300">
+            <template slot-scope="scope">
+              <el-button type="text" @click="clickOpen(scope.row)" size="medium" v-if="power['sign-set-gs'].state">解绑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        </div>
       </div>
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
-    </el-dialog>
-    <!-- 查看 弹出框 -->
-    <el-dialog
-    :closeOnClickModal="$tool.closeOnClickModal"
-    :close-on-press-escape="$tool.closeOnClickModal"
-    title="详情信息"
-    :visible.sync="dialogViewVisible"
-    width="740px"
-    :before-close="handleClose"
-    class="dialog-info">
-    <div class="view-content">
-      <p>{{companyForm.storeName}}</p>
-      <div>
-        <span>法人信息</span>
-        <p><span>法人姓名: {{ companyForm.lepName }}</span><span>法人手机号码: {{ companyForm.lepPhone }}</span></p>
-        <p><span>证件类型: {{ companyForm.lepDocumentType }}</span><span class="card-no">证件号: {{ companyForm.lepDocumentCard }}</span></p>
-        <p><span>平台费比例: {{companyForm.franchiseRatio}}%</span></p>
+      </el-dialog>
+      <el-dialog
+      title="解除绑定"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :visible.sync="dialogRelieveVisible"
+      width="460px"
+      class="relieve-dialog">
+      <div>确定是否解除与<span class="text">{{companyForm.name}}</span>的关系</div>
+      <div slot="footer">
+        <el-button type="primary" round @click="submitRelieve">确认</el-button>
       </div>
-      <div>
-        <span>营业执照信息</span>
-        <p v-if="creditCodeShow">统一社会信用代码: {{ documentCard.creditCode }}</p>
-        <p v-if="icRegisterShow"><span>工商注册号: {{ documentCard.icRegisterCode }}</span><span>组织机构代码: {{ documentCard.organizationCode }}</span></p>
-        <p v-if="icRegisterShow">税务登记证: {{ documentCard.taxRegisterCode }}</p>
-      </div>
-      <div>
-        <span>电子签章信息</span>
-        <div class="stamp">
-          <span>合同章: </span>
-          <div @click="getPicture(1)"><img :src="preConFile[0]" alt="" width="120px" height="120px"></div>
+      </el-dialog>
+      <el-dialog
+      title="绑定门店"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :visible.sync="dialogRDepisible"
+      width="740px"
+      class="dep-dialog">
+      <div class="dep-content">
+        <div class="item">
+          <span class="required">企业名称</span>
+           <el-select v-model="bindForm.companyId" filterable remote :clearable="true" placeholder="请输入" @clear="companyList = []" loading-text="正在根据当前关键字搜索..." no-data-text="暂无匹配企业名称！" popper-class="hover-tip" class="headerDep" style="width:300px" :remote-method="filterMethod">
+            <el-option v-for="item in companyList" :key="item.id" :title="item.name" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </div>
-        <div class="stamp">
-          <span>财务章: </span>
-          <div @click="getPicture(2)"><img :src="preFinFile[0]" alt="" width="120px" height="120px"></div>
+        <div class="item">
+          <span class="required">企业管理费</span>
+          <el-input style="width:120px;" type="number" size="mini" maxlength="15" v-model.trim="bindForm.platformFeeRatio" @input="inputOnly(100,'platformFeeRatio')"></el-input>
+        </div>
+        <div class="item">
+          <span class="required">选择门店</span>
+          <el-select v-model="bindDeptName" multiple filterable remote :clearable="true" @change="bindChange" placeholder="请输入" @clear="bdHomeStoreList = []" class="overflow headerDep" popper-class="select-popper"  style="width:300px" :remote-method="selectRemoteMethodDep">
+            <el-option v-for="item in bdHomeStoreList" :key="item.depId" :title="item.name" :label="item.name" :value="JSON.stringify(item)">
+            </el-option>
+          </el-select>
         </div>
       </div>
+      <div slot="footer">
+        <el-button @click="clickBind" type="primary" round>确认</el-button>
+      </div>
+      </el-dialog>
     </div>
-    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
-    </el-dialog>
   </div>
 </template>
 
 <script>
   import {MIXINS} from "@/assets/js/mixins";
+  import { mapMutations } from "vuex";
   let checkPhone = function (str) {
     return /^1[3456789]\d{9}$/.test(str)
   }
@@ -366,73 +267,29 @@
   let isHaveChinese = function (str) {
     return /[\u4E00-\u9FA5]/g.test(str)
   }
-  const rule = {
-    cityId: {
-      name: "城市选择"
-    },
-    storeId: {
-      name: "门店选择"
-    },
-    cooperationMode: {
-      name: "合作方式"
-    },
-    franchiseRatio: {
-      name: "平台费比例"
-    },
-    name: {
-      name: "门店名称"
-    },
-    lepName: {
-      name: "法人姓名"
-    },
-    lepDocumentType: {
-      name: "证件类型"
-    }
-  }
-  let obj1 = {
-    cityId: "",
-    cityName: "",
-    storeId: [],
-    storeName: [],
-    cooperationMode: "",
-    franchiseRatio: "",
-    name: "",
-    lepName: "",
-    lepDocumentType: "",
-    lepDocumentCard: "",
-    lepPhone: "",
-    documentType: "",
-    contractSign: "",
-    financialSign: "",
-    level: ""
-  }
-  let obj2 = {
-    creditCode: "",
-    icRegisterCode: "",
-    organizationCode: "",
-    taxRegisterCode: ""
-  }
-  let arr = [
-    {
-      bankBranchName: '',
-      bankAccountName: '',
-      bankCard: '',
-      type: 1,
-      bankId: '',
-      bankCode: ''
-    }
-  ]
   export default {
     name: "company",
     mixins: [MIXINS],
     data() {
       return {
+        cityId: "",
+        cityName: "",
+        deptName: '',
+        bindDeptName: [],
+        searchDepTableData: [],
+        copySearchDepTableData: [],
+        end: true,
+        page: 1,
+        relieveData: {},
+        bindForm: {
+          companyId: null,
+          platformFeeRatio: null,
+        },
+        dialogRelieveVisible: false,
+        dialogRDepisible: false,
         // 搜索表单中的数据
         searchForm: {
-          cityId: "",
-          storeId: [],
-          cooperationMode: "",
-          bankCard: "",
+          dept: "",
           keyword: "",
           type: "",
           verifyState: "",
@@ -466,25 +323,16 @@
             name:"授权成功"
           },
         ],
-        cityList: [],
         homeStoreList: [],
-        storeList: [],
-        searchTime: [],
+        companyList: [],
         tableData: [], //公司设置列表
-        pageSize: 10,
+        pageSize: 50,
         pageNum: 1,
         count: 0,
-        AddEditVisible: false, //新增编辑公司信息 弹出框
-        companyFormTitle: "", //新增编辑弹出框 标题
         companyForm: {}, //新增和编辑表单
-        documentCard: {}, //营业执照信息
-        companyBankList: [], //银行账户集合
         delIds: [],
-        fourthStoreNoEdit: false,
         dialogViewVisible: false, //查看弹出框
-        creditCodeShow: false,
-        icRegisterShow: false,
-        noticeShow: false,
+        tabTitleIndex: 1,
         dictionary: {
           '38':'企业证件',
           '39':'合作方式',
@@ -495,11 +343,11 @@
         bankType:[
           {
             label:'个人账户',
-            value:0
+            value:'0'
           },
           {
             label:'企业账户',
-            value:1
+            value:'1'
           }
         ],
         //权限配置
@@ -509,43 +357,20 @@
             name: '添加公司信息'
           }
         },
-        storeNoChange: false, //门店选择不可编辑
-        adminBanks:[],
-        // 筛选条件的门店
-        homeStorePage:1,
-        homeStoreTotal:0,
-        homeStoreName:[],
-        // 添加公司信息的门店
-        storePage:1,
-        storeTotal:0,
-        temKey: "", //门店搜索值
+        bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
-        pd:'',
-        rowdata: null,
       }
     },
     mounted() {
-      this.searchForm.cityId = this.cityInfo.cityId
+      this.cityId = this.cityInfo.cityId
+      this.cityName = this.cityInfo.cityName
       let res=this.getDataList
       if(res&&(res.route===this.$route.path)){
         this.tableData = res.data.list
         this.count = res.data.total
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.searchForm = session.query
-        this.searchTime = this.searchForm.startTime?[this.searchForm.startTime,this.searchForm.endTime]:[]
-        if(session.query.storeId){
-          this.homeStoreList.forEach((v,i)=>{
-            this.homeStoreList.unshift({
-              id:session.query.homeStoreName[i].id,
-              name:session.query.homeStoreName[i].name
-            })
-          })
-        }
-        console.log(this.homeStoreList);
-        delete this.searchForm.homeStoreName
-        delete this.searchForm.startTime
-        delete this.searchForm.endTime
         delete this.searchForm.pageNum
         delete this.searchForm.pageSize
         this.pageNum = session.query.pageNum
@@ -555,11 +380,80 @@
       }
       // 枚举数据
       this.getDictionary()
-      this.getStoreList(1)
-      // 银行列表
-      this.getBanks()
+    },
+    directives: {
+      loadmore: {
+        bind(el, binding) {
+          const selectWrap = el.querySelector('.el-table__body-wrapper')
+          selectWrap.addEventListener('scroll', function() {
+            let sign = 0
+            const scrollDistance = this.scrollHeight - this.scrollTop - this.clientHeight
+            if (scrollDistance <= sign) {
+              binding.value()
+            }
+          })
+        }
+      }
+    },
+    watch: {
+      deptName(val) {
+        if (val === '') {
+          this.page = 1
+          this.end = true
+          this.getSearchDepTableData()
+        }
+      }
     },
     methods: {
+      filterMethod(val) {
+        if(!val) return
+        this.$ajax.get('/api/enterprise/all',{keyword: val}).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.companyList = res.data.list
+          }
+        }).catch(error =>{
+          this.$message(res.message)
+        })
+      },
+      // 绑定门店
+      clickBind() {
+        if (!this.bindForm.companyId || !this.bindForm.platformFeeRatio || this.bindDeptName.length === 0) {
+          return this.$message({type:'warning',message:'请填写完整！'})
+        }
+        let param = {
+          departmentList: this.bindDeptName.map(item => JSON.parse(item)),
+          cityId:this.cityId.toString(),
+          cityName:this.cityName
+        }
+        param = Object.assign(param,JSON.parse(JSON.stringify(this.bindForm)))
+        
+        this.$ajax.postJSON('/api/enterprise/dept_bind',param).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.$message({type:'success',message:res.message})
+            this.dialogRDepisible = false
+          }
+        }).catch(error =>{
+          this.$message(error)
+        })
+      },
+      // 获取部门列表
+      getDepList(keyword = '',type='bd') {
+        if (!keyword) return
+        let param = {keyword}
+        this.$ajax.get('/api/enterprise/dept_all',param).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            if (type === 'search') {
+              this.homeStoreList = res.data.list
+            }
+            this.bdHomeStoreList = res.data.list
+          }
+        }).catch(error => {
+          this.$message(error)
+        })
+      },
       // 编辑按钮 显示隐藏
       editBtnShow(row) {
         if(row.version === 1) {
@@ -574,104 +468,30 @@
           return true
         }
       },
-      // 重置门店列表数据
-      clearStore(type) {
-        this.storeList = []
-        this.storePage = 1
-        this.getStoreList2(2,this.storePage,'',this.companyForm.cooperationMode)
-        if(!type){
-          this.clearFn()
+      bindChange(data) {
+        let copyData = JSON.parse(data[data.length-1])
+        if (copyData.companyId) {
+          this.$message(`${copyData.name}已被绑定`)
+          this.bindDeptName.pop()
         }
       },
-      // 门店下拉框出现/隐藏时触发
-      showView1(bol) {
-        // if(!bol&&this.searchForm.storeId){
-        //   this.homeStoreList.forEach((v,i)=>{
-        //     for(let i=0;i<this.searchForm.storeId.length;i++){
-        //       if(v.id==this.searchForm.storeId[i]){
-        //         this.homeStoreName.push({id:v.id,name:v.name})
-        //       }
-        //     }
-        //   })
-        //   console.log(this.homeStoreName,'name');
-        //   // this.homeStoreList.find(item=>{
-        //   //   if(this.searchForm.storeId===item.id){
-        //   //     this.homeStoreName=item.name
-        //   //   }
-        //   // })
-        // }
-        // if(!bol&&this.temKey){
-        //   this.homeStoreList = []
-        //   this.homeStorePage = 1
-        //   this.getStoreList(1)
-        // }
-      },
-      showView2(bol) {
-        if(!bol&&this.temKey){
-          if(this.companyForm.storeId.length==0){
-            return
-          }
-          this.clearStore()
-        }
+      selectRemoteMethodDep(query) {
+        this.getDepList(query)
       },
       // 远程搜索
       remoteMethod1(query) {
-        setTimeout(() => {
-          this.homeStoreList = []
-          this.homeStorePage = 1
-          this.getStoreList(1,this.homeStorePage,query)
-        },200)
-      },
-      remoteMethod2(query) {
-        setTimeout(() => {
-          this.storeList = []
-          this.storePage = 1
-          // this.getStoreList(2,this.storePage,query)
-          this.getStoreList2(2,this.storePage,query,this.companyForm.cooperationMode)
-        },200)
-      },
-      //门店滚动加载更多
-      moreStore1:function () {
-        if(this.homeStoreList.length>=this.homeStoreTotal){
-          return
-        }else {
-          this.getStoreList(1,++this.homeStorePage,this.temKey)
-        }
-      },
-      isNull(){
-        if(![1,2].includes(this.companyForm.cooperationMode)) this.$message('请先选择合作方式')
-      },
-      moreStore2:function () {
-        if(this.storeList.length>=this.storeTotal){
-          return
-        }else {
-          this.getStoreList2(2,++this.storePage,this.temKey,this.companyForm.cooperationMode)
-        }
-      },
-      // 获取银行列表
-      getBanks:function () {
-        this.$ajax.get('/api/system/selectBankName').then(res=>{
-          res=res.data
-          if(res.status===200){
-            this.adminBanks=res.data
-          }
-        }).catch(error=>{
-          this.$message({message:error})
-        })
+        this.getDepList(query,'search')
       },
       // 初始化表单 数组集合
       initFormList() {
         this.companyForm = JSON.parse(JSON.stringify(obj1))
-        this.documentCard = JSON.parse(JSON.stringify(obj2))
-        this.companyBankList = JSON.parse(JSON.stringify(arr))
+        this.companyForm.entBankList = new Array(JSON.parse(JSON.stringify(arr)))
       },
       // 获取公司设置列表
       getCompanyList: function (type="init") {
         let param = {
           pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          startTime: this.searchTime == null ? "" : this.searchTime[0],
-          endTime: this.searchTime == null ? "" : this.searchTime[1]
+          pageNum: this.pageNum
         }
         param = Object.assign({},this.searchForm,param)
 
@@ -679,14 +499,13 @@
         if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
             path:'/company',
-            url:'/setting/company/list',
-            query:Object.assign({},param,{homeStoreName:this.homeStoreName}),
-            methods:"postJSON"
+            url:'/enterprise',
+            query:Object.assign({},param),
+            methods:"get"
           }))
         }
-      
-        param.storeId.length===0?param.storeId='':param.storeId;
-        this.$ajax.postJSON('/api/setting/company/list', param).then(res => {
+
+        this.$ajax.get('/api/enterprise', param).then(res => {
           res = res.data
           if(res.status === 200) {
             this.tableData = res.data.list
@@ -696,501 +515,182 @@
             this.$message({message:error})
         })
       },
-      // 获取列表门店
-      getStoreList(val,page=1,keyword='') {
-        this.temKey = keyword
-        if(val==1){
-          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,keyword: keyword,cooperationMode:''}).then(res => {
-            res = res.data
-            if(res.status === 200) {
-                this.homeStoreList = this.homeStoreList.concat(res.data.list)
-                this.homeStoreTotal = res.data.total
-              }
-                
-              }).catch(error => {
-            this.$message({message:error})
-          })
-          }
-      },
-      // 新增门店
-      getStoreList2(val,page=1,keyword='',cooperationMode='') {
-        this.temKey = keyword
-        if(val==2){
-          this.$ajax.get('/api/setting/company/queryAllStore', {type: val,pageNum: page,pageSize:1000,keyword: keyword,cooperationMode:cooperationMode}).then(res => {
-            res = res.data
-            if(res.status === 200) {
-                this.storeList = this.storeList.concat(res.data.list)
-                this.storeTotal = res.data.total
-              }
-                
-              }).catch(error => {
-            this.$message({message:error})
-          })
-          }
-      },
-      depChange(val){
-        this.homeStoreList.forEach(v=>{
-          console.log(v);
-          // if()
-          
-        })
-      },
-      // 门店选择
-      storeSelect(val) {
-        if(!val) {
-          this.clearFn()
-          return
-        }
-        let obj
-        this.storeList.find((item,i) => {
-          if(val[val.length-1] === item.id) {
-            obj = item
-          }
-        }) 
-        if(obj.check==2){
-          this.fourthStoreNoEdit = false
-          val.pop()
-          this.companyForm.storeId=val
-          this.$message({message:"门店信息已经录入，请选择其他门店",type:"warning"})
-          return
-        }else if(obj.check==3){
-          this.fourthStoreNoEdit = true
-          val.pop()
-          this.companyForm.storeId=val
-          this.$message({message:"四级门店不能录入公司信息",type:"warning"})
-          return
-        }
-        val.forEach(v=>{
-            this.storeList.forEach((v2,i2)=>{
-              if(v==v2.id) {
-                this.companyForm.storeName.push(v2.name)
-                }
-            })
-        })
-      },
       //关闭模态窗
       handleClose(done) {
-        this.creditCodeShow = false
-        this.icRegisterShow = false
-        this.storeList=[]
         this.delIds = []
+        this.searchDepTableData = []
+        this.end = true
+        this.page = 1
         done()
       },
-      // 选合作方式
-      cooModeChange(val,page=1){
-        this.companyForm.storeId=[]
-        this.$ajax.get('/api/setting/company/queryAllStore',{cooperationMode:this.companyForm.cooperationMode,pageNum: page,type:2}).then(res=>{
-          res=res.data
-          if(res.status==200){
-              this.storeList = res.data.list
-              this.storeTotal = res.data.total
-          }
-
-        })
+      addDep() {
+        this.bdHomeStoreList = []
+        this.companyList = []
+        this.dialogRDepisible = true
+        this.bindForm.companyId = null 
+        this.bindForm.platformFeeRatio = null 
+        this.bindDeptName = []
       },
       addCompany() {
-        this.AddEditVisible = true
-        this.companyFormTitle = "添加企业信息"
-        this.storeNoChange = false
-        this.initFormList()
-        this.fourthStoreNoEdit = false
-        this.companyForm.cityId = this.searchForm.cityId
-        this.companyForm.cityName = this.cityInfo.cityName
-        this.companyForm.lepDocumentType = 1
-        // this.clearStore('init')
-        this.preConFile = []
-        this.preFinFile = []
-      },
-      // 重置表单
-      clearFn(type) {
-        if(!type){
-          this.companyForm.cooperationMode = ""
-        }
-        this.companyForm.franchiseRatio = ""
-        this.companyForm.name = ""
-        this.companyForm.lepName = ""
-        this.companyForm.lepDocumentType = 1
-        this.companyForm.lepDocumentCard = ""
-        this.companyForm.lepPhone = ""
-        this.companyForm.contractSign = ""
-        this.companyForm.financialSign = ""
-        this.icRegisterShow = false
-        this.creditCodeShow = false
-        this.documentCard = JSON.parse(JSON.stringify(obj2))
-        this.companyBankList = JSON.parse(JSON.stringify(arr))
-      },
-      //企业证件选择
-      documentTypeChange(val) {
-        if(val === 2) {
-          this.creditCodeShow = false
-          this.icRegisterShow = true
-        } else {
-          this.icRegisterShow = false
-          this.creditCodeShow = true
-        }
-      },
-      // 添加银行账户
-      addRow() {
-        let row = {
-          bankName: '',
-          bankAccountName: '',
-          bankCard: '',
-          type: 1,
-          bankId: '',
-          bankCode: ''
-        }
-        this.companyBankList.push(row)
-      },
-      // 删除银行账户
-      removeRow(index) {
-        if(this.companyBankList[index].id) {
-          this.delIds.push(JSON.stringify(this.companyBankList[index].id))
-        }
-        this.companyBankList.splice(index,1)
-      },
-      // 电子签章上传成功 获取存储路径和文件名称
-      upload(obj) {
-        if(obj.btnId === "imgcontract") {
-          this.companyForm.contractSign = obj.param[0].path+`?${obj.param[0].name}`
-          this.contractName = obj.param[0].name
-        } else {
-          this.companyForm.financialSign = obj.param[0].path+`?${obj.param[0].name}`
-          this.financialName = obj.param[0].name
-        }
-        let preloadList = [obj.param[0].path]
-        this.fileSign(preloadList, 'preload').then(res => {
-            obj.btnId === 'imgcontract' ? this.preConFile = res : this.preFinFile = res
+        this.$router.push({
+          path: '/addCompany',
+          query: {
+            type: true
+          }
         })
-      },
-      // 删除电子签章
-      delStamp(type) {
-        type === 1 ? this.companyForm.contractSign = "" : this.companyForm.financialSign = ""
       },
       listConfirm(item){
         console.log(item);
         let param = {
+          id: item.id,
           cityId: item.cityId,
           cityName: item.cityName,
-          companyBankList: item.companyBankList,
-          contractSign: item.contractSign,
-          cooperationMode: item.cooperationMode.value,
-          documentCard: item.documentCard,
-          documentType: item.documentType.value,
-          financialSign: item.financialSign,
-          id: item.id,
-          lepDocumentCard: item.lepDocumentCard,
-          lepDocumentType: item.lepDocumentType.value,
-          lepName: item.lepName,
-          lepPhone: item.lepPhone,
           name: item.name,
-          storeId: item.storeId,
-          storeName: item.storeName,
-          level: item.level ? item.level : "",
-          delIds: this.delIds,
+          address: item.address,
+          documentCard: item.documentCard,
+          lepName: item.lepName,
+          lepDocumentCard: item.lepDocumentCard,
+          lepPhone: item.lepPhone,
+          contractSign: item.contractSign,
+          financialSign: item.financialSign,
+          entBankList: item.entBankList,
+          franchiseRatio: "",
           verifyState:item.verifyState,
-          warrantState: item.warrantState
+          warrantState:item.warrantState
         }
-        this.$ajax.get('/api/setting/company/updateShowFee',
-          {storeId:item.storeId}
-        ).then(res => {
+        this.$ajax.put(`/api/enterprise`,param).then(res => {
           res = res.data
           if(res.status === 200) {
-            param.franchiseRatio = res.data.franchiseRatio.toString()
+            this.$message("授权短信已发送，请及时授权！")
+            this.getCompanyList()
+            this.delIds = []
           }
-          this.$ajax.put('/api/setting/company/update',param).then(res => {
-            res = res.data
-            if(res.status === 200) {
-              this.$message("授权短信已发送，请及时授权！")
-              this.getCompanyList()
-              this.delIds = []
-            }
-          }).catch(error => {
-              this.$message({message:error})
-          })
         }).catch(error => {
-          this.$message({
-            message: error,
-            type: "error"
-          })
+            this.$message({message:error})
         })
       },
-      submitConfirm() {
-        if(this.version === 3) {
-          delete rule['cooperationMode']
+      clickOpen(data) {
+        this.dialogRelieveVisible = true
+        this.relieveData = data
+      },
+      submitRelieve () {
+        this.$ajax.put(`/api/enterprise/dept_unbind`,{
+          companyId: this.relieveData.entId,
+          storeId: this.relieveData.depId
+        }).then(res => {
+          res = res.data
+          if(res.status === 200) {
+            this.searchDepTableData = this.searchDepTableData.filter(item => {
+              return item.depId !== this.relieveData.depId
+            })
+            this.dialogRelieveVisible = false
+            if (this.searchDepTableData.length === 0) {
+              this.deptName = ''
+            }
+            this.$message({type:'success',message: res.message})
+          }
+        }).catch(error =>{
+          this.$message(res.message)
+        })
+      },
+      clickTitle(index) {
+        this.tabTitleIndex = index
+        if (index === 2) {
+          this.end = true
         }
-        this.$tool.checkForm(this.companyForm,rule).then(() => {
-          if(this.companyForm.lepDocumentCard) {
-            let val = this.companyForm.lepDocumentCard
-            let type = this.companyForm.lepDocumentType
-            if(val&&type===1) {
-              if(!checkId(val)) {
-                this.$message({message:'身份证号格式不正确',type:'warning'})
-                return false
-              }
-            }
-            else if(val&&type===3) {
-              if(!/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(val)) {
-                this.$message({message:'港澳通行证格式不正确',type:'warning'})
-                return false
-              }
-            }
-          } else {
-            this.$message({message:"证件号不能为空"})
-            return false
-          }
-          if(this.companyForm.lepPhone) {
-            let val = this.companyForm.lepPhone
-            if(!checkPhone(val)) {
-              this.$message({message:'手机号码不正确',type:'warning'})
-              return false
-            } 
-          } else {
-            this.$message({message:"法人手机号码不能为空"})
-            return false
-          }
-          let isOk
-          let that_ = this
-          function checkBank() {
-            let bankList = that_.companyBankList
-            for(let i = 0; i < bankList.length; i++) {
-              isOk = false
-              if(bankList[i].bankAccountName) {
-                if(bankList[i].bankCard) {
-                  if(bankList[i].bankCard.length >= 12) {
-                    if(bankList[i].bankId) {
-                      if(bankList[i].type === 1 && !bankList[i].bankBranchName) {
-                        that_.$message({message:"支行不能为空"})
-                        break
-                      } else if(bankList[i].type === 0) {
-                        bankList[i].bankBranchName = ""
-                      } else if(bankList[i].type === 1 && bankList[i].bankBranchName) {
-                        if(!isHaveChinese(bankList[i].bankBranchName)) {
-                          that_.$message({message:"支行名称必须带有中文",type:"warning"})
-                          break
-                        }
-                      }
-                      if(that_.companyForm.contractSign) {
-                        if(that_.companyForm.financialSign) {
-                          if(bankList.length === 1) {
-                            isOk = true
-                          } else if(bankList.length === 2) {
-                            if(bankList[0].bankCard === bankList[1].bankCard) {
-                              that_.$message({message:"银行卡号不能相同",type:"warning"})
-                            } else {
-                              isOk = true
-                            }
-                          } else if(bankList.length > 2) {
-                            let ar1 = []
-                            bankList.forEach(item => {
-                              ar1.push(item.bankCard)
-                            })
-                            let ar2 = Array.from(new Set(ar1))
-                            if(ar1.length !== ar2.length) {
-                              that_.$message({message:"银行卡号不能相同",type:"warning"})
-                            } else {
-                              isOk = true
-                            }
-                          }
-                        } else {
-                          that_.$message({message:"财务章上传不能为空"})
-                        }
-                      } else {
-                        that_.$message({message:"合同章上传不能为空"})
-                      }
-                    } else {
-                      that_.$message({message: "银行不能为空"})
-                    }
-                  } else {
-                    that_.$message({message: "请输入正确的银行卡号",type:'warning'})
-                  }
-                } else {
-                  that_.$message({message: "银行卡号不能为空"})
-                }
-              } else {
-                that_.$message({message: "开户名不能为空"})
-              }
-            }
-          }
-          if(true) {
-            if(this.documentCard.creditCode) {
-              this.documentCard.icRegisterCode = ""
-              this.documentCard.organizationCode = ""
-              this.documentCard.taxRegisterCode = ""
-              checkBank()
+      },
+      lazyLoad() {
+        if(!this.end){
+            return
+        }
+        if(this.page == 1){
+            this.page++
+        }
+        this.$ajax.get('/api/enterprise/dept',{company_id: this.companyForm.id,keyword:this.deptName,pageNum:this.page}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            if ((this.searchDepTableData.length + res.data.size) <= res.data.total) {
+              this.page++
+              this.searchDepTableData = this.searchDepTableData.concat(res.data.list)
             } else {
-              this.$message({message:"统一社会信用代码不能为空"})
-            }
-          } else {
-            if(this.documentCard.icRegisterCode) {
-              if(this.documentCard.organizationCode) {
-                if(this.documentCard.taxRegisterCode) {
-                  this.documentCard.creditCode = ""
-                  checkBank()
-                } else {
-                  this.$message({message:"税务登记证不能为空"})
-                }
-              } else {
-                this.$message({message:"组织机构代码不能为空"})
-              }
-            } else {
-              this.$message({message:"工商注册号不能为空"})
+              this.end = false
             }
           }
-          if(isOk) {
-            let obj = {
-              companyBankList: this.companyBankList
-            }
-            let param = {
-              documentCard: this.documentCard
-            }
-            let change = false;
-            if(this.companyFormTitle != "添加企业信息"){
-              if(this.rowdata.name == this.companyForm.name &&
-                this.rowdata.lepName == this.companyForm.lepName &&
-                this.rowdata.lepDocumentCard == this.companyForm.lepDocumentCard &&
-                this.rowdata.lepPhone == this.companyForm.lepPhone &&
-                //this.rowdata.documentType.value == this.companyForm.documentType &&
-                this.rowdata.documentCard.creditCode == this.documentCard.creditCode
-              ){
-                change = false
-              }else{
-                change = true
-              }
-            }
-            param = Object.assign({},this.companyForm,obj,param)
-            param.cooperationMode = param.cooperationMode == "直营" ? 1 : 2
-            param.documentType = 1
-            if(this.companyFormTitle === "添加企业信息") {
-              this.$ajax.postJSON('/api/setting/company/insert',param).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.AddEditVisible = false
-                  this.rowdata = null
-                  if(res.data == 200){
-                    this.$message("认证成功")
-                  }else{
-                    this.$message("认证短信已发送，请及时认证！")
-                  }
-                  this.getCompanyList()
-                }
-              }).catch(error => {
-                  this.$message({message:error})
-              })
-            } else {
-              let obj = {
-                delIds: this.delIds
-              }
-              param = Object.assign({},param,obj)
-              let tmp = param.storeId
-              param.storeId = param.storeName
-              param.storeName = tmp
-              param.storeId=this.pd
-              this.$ajax.put('/api/setting/company/update',param).then(res => {
-                res = res.data
-                if(res.status === 200) {
-                  this.AddEditVisible = false
-                  this.rowdata = null
-                  if(res.data == 200){
-                    this.$message("更新成功")
-                  }else{
-                    this.$message("认证短信已发送，请及时认证！")
-                  }
-                  this.getCompanyList()
-                  this.delIds = []
-                }
-              }).catch(error => {
-                  this.$message({message:error})
-              })
-            }
+        })
+      },
+      getSearchDepTableData(type = '') {
+        if (type === 'search') {
+          this.page = 1
+          this.end = true
+        }
+        this.$ajax.get('/api/enterprise/dept',{company_id: this.companyForm.id,keyword:this.deptName,pageNum:this.page}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.searchDepTableData = res.data.list
+            this.dialogViewVisible = true
           }
-        }).catch(error => {
-          this.$message({message:`${error.title}${error.msg}`})
         })
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
         if(type === 'init') {
-          this.dialogViewVisible = true
-        } else {
-          this.AddEditVisible = true
-          this.rowdata = JSON.parse(JSON.stringify(row))
-          this.companyFormTitle = "编辑企业信息"
-          this.storeNoChange = true
+          this.searchDepTableData = []
+          this.deptName = ''
+          this.end = true
+          this.page = 1
+          this.tabTitleIndex = 1
         }
-        if(row.documentType.value === 2) {
-          this.icRegisterShow = true
-          this.creditCodeShow = false
-        } else {
-          this.icRegisterShow = false
-          this.creditCodeShow = true
-        }
-        this.documentCard = JSON.parse(JSON.stringify(row.documentCard))
-        this.companyBankList = JSON.parse(JSON.stringify(row.companyBankList))
-        this.companyBankList.forEach(item=>{
-          if(item.type === 0) {
-            item.bankBranchName = ""
-          }
-        })
         let currentRow = JSON.parse(JSON.stringify(row))
-        this.pd=currentRow.storeId
         let newForm = {
           id: currentRow.id,
           cityId: currentRow.cityId,
           cityName: currentRow.cityName,
-          storeId: type === 'init' ? currentRow.storeId : [currentRow.storeName],
-          storeName: type === 'init' ? currentRow.storeName : currentRow.storeName,
-          cooperationMode: currentRow.cooperationMode.label,
           name: currentRow.name,
+          address: currentRow.address,
+          documentCard: currentRow.documentCard,
           lepName: currentRow.lepName,
-          lepDocumentType: type === 'init' ? currentRow.lepDocumentType.label :currentRow.lepDocumentType.value,
           lepDocumentCard: currentRow.lepDocumentCard,
           lepPhone: currentRow.lepPhone,
           contractSign: currentRow.contractSign,
           financialSign: currentRow.financialSign,
-          level: currentRow.level ? currentRow.level : "",
+          entBankList: currentRow.entBankList,
           franchiseRatio: "",
           verifyState:currentRow.verifyState,
           warrantState:currentRow.warrantState
         }
         this.companyForm = newForm
-        this.getStoreRadio(type,currentRow.storeId)
         //获取电子章文件名和签名展示缩略图
-        this.contractName = currentRow.contractSign.split('?')[1]
-        this.financialName = currentRow.financialSign.split('?')[1]
-        let arr1 = [currentRow.contractSign.split('?')[0]]
-        let arr2 = [currentRow.financialSign.split('?')[0]]
+        this.contractName = newForm.contractSign.split('?')[1]
+        this.financialName = newForm.financialSign.split('?')[1]
+        let arr1 = [newForm.contractSign.split('?')[0]]
+        let arr2 = [newForm.financialSign.split('?')[0]]
         this.fileSign(arr1, 'preload').then(res => {
             this.preConFile = res
         })
         this.fileSign(arr2, 'preload').then(res => {
             this.preFinFile = res
         })
-      },
-      // 获取平台费比例值
-      getStoreRadio(type,storeId) {
-        this.$ajax.get('/api/setting/company/updateShowFee',
-          {storeId:type==='init'?storeId:storeId}
-        ).then(res => {
-          res = res.data
-          if(res.status === 200) {
-            this.companyForm.franchiseRatio = res.data.franchiseRatio.toString()
-          }
-        }).catch(error => {
-          this.$message({
-            message: error,
-            type: "error"
+        if (type !== 'init') {
+          this.setCompanyData(newForm)
+          this.$router.push({
+            path: '/addCompany',
+            query: {
+              type: false
+            }
           })
-        })
+        } else {
+          this.getSearchDepTableData()
+        }
       },
       // 合同章 财务章 点击预览
       getPicture(type) {
         let img_arr = []
         if(type === 1) {
-          img_arr.push(this.companyForm.contractSign.split('?')[0])
+          img_arr.push({path:this.companyForm.contractSign.split('?')[0],name:this.companyForm.contractSign.split('?')[1]})
         } else {
-          img_arr.push(this.companyForm.financialSign.split('?')[0])
+          img_arr.push({path:this.companyForm.financialSign.split('?')[0],name:this.companyForm.financialSign.split('?')[1]})
         }
-        this.fileSign(img_arr)
+        this.previewPhoto(img_arr,0)
       },
       handleCurrentChange(val) {
         this.pageNum = val
@@ -1203,23 +703,12 @@
       },
       // 筛选条件重置
       resetFormFn() {
-        this.searchForm.storeId = []
-        this.searchForm.cooperationMode = ""
-        this.searchForm.bankCard = ""
-        this.searchForm.keyword = ""
         this.searchForm.type = ""
+        this.searchForm.keyword = ""
+        this.searchForm.dept = ""
         this.searchForm.verifyState = ""
         this.searchForm.warrantState = ""
-        this.searchTime = []
         this.pageNum = 1
-      },
-      // 获取银行缩写code 如:ICBC
-      addBankCode(e,i) {
-        this.adminBanks.find(item => {
-          if(e === item.id) {
-            this.companyBankList[i].bankCode = item.bankId
-          }
-        })
       },
       getInt(num,index) {
         if(num===1) {
@@ -1227,17 +716,21 @@
         } else if(num===2) {
           this.companyForm.lepPhone = this.$tool.numberInput(this.companyForm.lepPhone)
         } else if(num===3) {
-          this.companyBankList[index].bankCard = this.$tool.numberInput(this.companyBankList[index].bankCard)
+          this.companyForm.entBankList[index].bankCard = this.$tool.numberInput(this.companyForm.entBankList[index].bankCard)
         }
       },
       inputOnly(index,type){
         if(type==='bankAccountName') {
           this.$nextTick(()=>{
-            this.companyBankList[index].bankAccountName=this.$tool.textInput(this.companyBankList[index].bankAccountName,3)
+            this.companyForm.entBankList[index].bankAccountName=this.$tool.textInput(this.companyForm.entBankList[index].bankAccountName,3)
           })
         }else if(type==='bankBranchName') {
           this.$nextTick(()=>{
-            this.companyBankList[index].bankBranchName=this.$tool.textInput(this.companyBankList[index].bankBranchName,4)            
+            this.companyForm.entBankList[index].bankBranchName=this.$tool.textInput(this.companyForm.entBankList[index].bankBranchName,4)            
+          })
+        }else if(type==='bankBranchCode') {
+          this.$nextTick(()=>{
+            this.companyForm.entBankList[index].bankBranchCode=this.$tool.numberInput(this.companyForm.entBankList[index].bankBranchCode)            
           })
         } else if(type==='lepName') {
           this.$nextTick(()=>{
@@ -1251,22 +744,13 @@
           this.$nextTick(()=>{
             this.companyForm.name=this.$tool.textInput(this.companyForm.name)            
           })
-        } else if(type==='creditCode') {
-          this.$nextTick(()=>{
-            this.documentCard.creditCode=this.$tool.textInput(this.documentCard.creditCode,2)            
-          })
-        } else if(type==='icRegisterCode') {
-          this.$nextTick(()=>{
-            this.documentCard.icRegisterCode=this.$tool.textInput(this.documentCard.icRegisterCode,2)            
-          })
-        } else if(type==='organizationCode') {
-          this.$nextTick(()=>{
-            this.documentCard.organizationCode=this.$tool.textInput(this.documentCard.organizationCode,2)            
-          })
-        } else if(type==='taxRegisterCode') {
-          this.$nextTick(()=>{
-            this.documentCard.taxRegisterCode=this.$tool.textInput(this.documentCard.taxRegisterCode,2)            
-          })
+        } else if (type === 'platformFeeRatio') {
+          this.bindForm.platformFeeRatio = this.$tool.cutFloat({
+              val: this.bindForm.platformFeeRatio,
+              max: 100
+          });
+        } else if (type === 'companyId') {
+          this.bindForm.companyId = this.$tool.textInput(this.bindForm.companyId)  
         }
       },
       cutNumber(val) {
@@ -1277,7 +761,8 @@
       // 证件类型改变 清除证件号信息
       idTypeChange() {
         this.companyForm.lepDocumentCard = ""
-      }
+      },
+      ...mapMutations(["setCompanyData"]),
     },
     filters: {
       formatBankCard(val) {
@@ -1294,9 +779,45 @@
     }
 }
 </script>
-
+<style lang="less">
+.lock-dialog {
+  .el-dialog__body {
+    height: 600px;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+.hover-tip {
+  width: 300px;
+}
+.select-popper {
+  width: 300px;
+  .el-select-dropdown__item.selected::after {
+    right: 12px!important;
+  }
+  // .selected {
+  //   span::after {
+  //     right: 12px;
+  //   }
+  // }
+}
+</style>
 <style lang="less" scoped>
 @import "~@/assets/common.less";
+.required {
+  &::before {
+    content: "*";
+    color: red;
+    position: relative;
+    top: 3px;
+    margin-right: 1px;
+  }
+  &::after {
+    display: none!important;
+  }
+}
 .form-head {
   background-color: #fff;
   border-radius:2px;
@@ -1348,13 +869,22 @@
     .mr-8 {
       margin-right: 8px;
     }
-    > .el-button {
+    > span .el-button {
       width:100px;
       padding: 9px 15px;
       border-radius:20px;
-      display: flex;
+      display: inline-flex;
       justify-content: center;
       color: #fff;
+    }
+    > span .el-button:first-of-type {
+      width:90px;
+      padding: 9px 15px;
+      border-radius:20px;
+      display: inline-flex;
+      justify-content: center;
+      color: rgba(71,141,227,1);
+      background-color: rgba(255,255,255,1);
     }
   }
   .edit-btn{
@@ -1362,6 +892,21 @@
   }
 }
 .dialog-info {
+  /deep/ .el-dialog__header {
+    padding-left: 0!important;
+    .title-class-box {
+      .current {
+        color: #478de3;
+        border-bottom: 4px solid #478de3;
+      }
+      span {
+        padding: 8px 22px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+    }
+  }
   .company-info {
     padding: 5px 20px 10px;
     /deep/ .el-form-item__label::before {
@@ -1564,7 +1109,7 @@
                 .pic-name {
                   position: absolute;
                   font-size: @size-base;
-                  bottom: -25px;
+                  bottom: -30px;
                   color: #233241;
                   width: 120px;
                   height: 48px;
@@ -1626,10 +1171,49 @@
     }
   }
   .view-content {
-    padding: 20px 20px 50px;
-    > p {
-      text-align: center;
-      font-size: 20px;
+    padding: 30px;
+    .title {
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .content-box {
+      .content-item {
+        margin-bottom: 20px;
+        &.margin {
+          margin-bottom: 40px;
+        }
+        span {
+          display: inline-block;
+          max-width: 500px;
+          vertical-align: text-top;
+          font-size: 14px;
+          font-weight: bold;
+          color: #233241;
+        }
+        > span:first-of-type {
+          display: inline-block;
+          width: 140px;
+          text-align: right;
+          font-weight: 300;
+          color: #8492A6;
+        }
+        .bank-item {
+          margin-bottom: 20px;
+          span {
+            font-size: 14px;
+            font-weight: bold;
+            color: #233241;
+          }
+          > span:first-of-type {
+            display: inline-block;
+            width: 140px;
+            text-align: right;
+            font-weight: 300;
+            color: #8492A6;
+          }
+        }
+      }
     }
     > div {
       overflow: hidden;
@@ -1677,11 +1261,112 @@
       }
     }
   }
+  .dep-container {
+    padding: 30px 20px;
+    .dep-search {
+      margin-bottom: 30px;
+      span {
+        padding-right: 8px;
+        font-size: 14px;
+        color: #233241;
+      }
+      .el-select {
+        width: 300px;
+      }
+    }
+    .dep-content {
+      .title {
+        margin-bottom: 6px;
+        font-size: 14px;
+        > span:first-of-type {
+          color: #8492A6;
+        }
+      }
+      td {
+        border: none!important;
+      }
+    }
+  }
+  
   .dialog-footer {
     .el-button {
       width:100px;
       border-radius:20px;
     }
+  }
+}
+.relieve-dialog {
+  border-radius: 8px;
+  .text {
+    display: inline-block;
+    padding: 0 3px;
+    color: #478DE3;
+  }
+  /deep/ .el-dialog__header {
+    border-radius: 8px 8px 0 0;
+    font-weight: bold;
+  }
+  /deep/ .el-dialog__body {
+    height: 164px;
+    line-height: 164px;
+    text-align: center;
+    border-radius: 0 0 8px 8px;
+
+  }
+  /deep/ .el-dialog__close {
+    font-weight: bold;
+  }
+  /deep/ .el-dialog__footer {
+    text-align: center;
+  }
+}
+.dep-dialog {
+  .item {
+    padding-bottom: 20px;
+    .overflow {
+      /deep/ .el-select__tags {
+        max-height: 120px;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
+    >span {
+      display: inline-block;
+      width: 78px;
+      padding-right: 12px;
+      text-align: right;
+      color: #233241;
+    }
+    &:nth-of-type(2) {
+      /deep/input {
+        height: 40px;
+      }
+      /deep/::after{
+        content: "%";
+        display: inline-block;
+        color: #ccc;
+        position: absolute;
+        top: 14px;
+        right: 6px;
+      }
+    }
+  }
+  /deep/ .el-input {
+    width: 300px;
+  }
+  /deep/ .el-dialog__header {
+    border-radius: 8px 8px 0 0;
+    font-weight: bold;
+  }
+  /deep/ .el-dialog__body {
+    padding: 20px 30px 30px 70px;
+    border-radius: 0 0 8px 8px;
+
+  }
+  /deep/ .el-dialog__close {
+    font-weight: bold;
   }
 }
 /deep/ .el-dialog__header {

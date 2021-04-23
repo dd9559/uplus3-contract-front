@@ -8,11 +8,11 @@
       <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
       <p><i class="iconfont icon-chenggong" v-if="type===1"></i><span>{{edit?'收款单修改成功':'已成功生成收款单'}}</span></p>
       <div class="bill-result-table">
-        <div class="warning-text" v-if="type===1">
+        <!-- <div class="warning-text" v-if="type===1">
           <p>温馨提示：</p>
           <p>1.操作说明：pos开机状态下，请按快捷键F1，其次按数字键1，最后按功能键后，用红外线对准上图二维码进行收款。</p>
           <p>2.pos机上提示收款成功后，有1-2分钟的延迟才能开票，请耐心等待。</p>
-        </div>
+        </div> -->
         <el-table border :data="list" style="width: 100%" header-row-class-name="theader-bg" v-if="type===2">
           <el-table-column align="center" label="现金">
             <template slot-scope="scope">
@@ -169,11 +169,11 @@ export default {
         case "localhost:8080":
           url = "http://192.168.1.224:28800";
           break;
-        case "sign2.jjw.com:28879":
+        case "sign2.ujakn.com:28879":
           url = "http://120.76.202.91:28800";
           break;
-        case "sign2.jjw.com":
-          url = "https://sign2.jjw.com";
+        case "sign2.ujakn.com":
+          url = "https://sign2.ujakn.com";
           break;
         default:
           url = "http://192.168.1.96:28800";

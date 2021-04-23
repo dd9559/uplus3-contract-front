@@ -134,6 +134,7 @@ let sub = {
   'checkbox_twe': null,
   'checkbox_thirteen': null,
   'val18': null,
+  'checkbox_other11': null,
   'checkbox_fourteen': null,
   'checkbox_fiveteen': null,
   'checkbox_sixteen': null,
@@ -176,6 +177,16 @@ let sub = {
       return document.querySelector('*[extendParam=val311]').innerHTML !== '' ? {
         val312: null
       } : null
+    }
+  },
+  'info_val333': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val333]') ? {'val333': null} : null
+    }
+  },
+  'info_val444': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val444]') ? {'val444': null} : null
     }
   },
   //   val314: null,
@@ -484,10 +495,22 @@ setTimeout(() => {
     }
     //监听listen属性，判断是否有输入类型限制
     let spanAttr = tip.target.getAttribute('listen')
+    let cn_str = tip.target.getAttribute('extendParam')
     if (spanAttr === 'number') {
-      ev.target.value = ev.target.value.replace(/[^\d]/g, "")
-      tip.target.innerHTML = ev.target.value
-      let cn_str = tip.target.getAttribute('extendParam')
+      if (Obj['cn_arr'].includes(cn_str) || max == 17) {
+        ev.target.value = ev.target.value.replace(/[^\d.]/g,"");
+        ev.target.value = ev.target.value.replace(/^\./g,"");
+        ev.target.value = ev.target.value.replace(/\.{2,}/g,".");
+        ev.target.value = ev.target.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        ev.target.value = ev.target.value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/,'$1$2.$3');
+      } else  {
+        ev.target.value=ev.target.value.replace(/[^\d]/g, "")
+      }
+      if (max == 17) {
+        tip.target.innerHTML = formatMoney(ev.target.value)
+      } else {
+        tip.target.innerHTML = ev.target.value
+      }
       if (Obj['cn_arr'].includes(cn_str)) {
         if (ev.target.value.indexOf(",") != -1) {
           ev.target.value = ev.target.value.replace(/,/g, '')

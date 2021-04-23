@@ -10,6 +10,7 @@ const contraPreview = () => import('@/pages/setting/contraPreview')
 
 const postProcess = () => import('@/pages/setting/postProcess')
 const Company = () => import('@/pages/setting/company')
+const addCompany = () => import('@/pages/setting/addCompany')
 const moneyType = () => import('@/pages/setting/moneyType')
 const ruleSetting = () => import('@/pages/setting/ruleSetting')
 const operationLog = () => import('@/pages/setting/operationLog')
@@ -117,6 +118,14 @@ export default new Router({
         meta: {
           root: true,
           list: ["设置", "业务设置", "公司设置"]
+        },
+      },
+      {
+        path: "addCompany",
+        component: addCompany,
+        meta: {
+          root: true,
+          list: ["设置", "公司设置", "新增公司设置"]
         }
       },
       {

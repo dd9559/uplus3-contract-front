@@ -715,10 +715,10 @@ export default {
       let url = false;
       switch (host) {
         case "localhost:8080":
-        case "sign2.jjw.com:28879":
+        case "sign2.ujakn.com:28879":
           url = this.getUserMsg.depId === 594 || this.getUserMsg.depId === 838;
           break;
-        case "sign2.jjw.com":
+        case "sign2.ujakn.com":
           url = this.getUserMsg.depId === 900 || this.getUserMsg.depId === 2257;
           break;
       }

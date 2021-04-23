@@ -314,7 +314,7 @@
         <img :src="billMsg.RQcode" alt />
       </li>
       <!-- 转款信息(转款信息) -->
-      <li>
+      <li v-if="activeItem!=='付款信息'">
         <h4 class="f14">转款信息</h4>
         <el-table border :data="transferInfo" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -657,18 +657,53 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.billMsg = Object.assign({}, res.data);
-          if (res.data.filePath) {
-            this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
+          if (res.data.filePath&&JSON.parse(res.data.filePath).length>0) {
+            // 新版
+            let copyFiles = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
             let preloadList = [];
-            this.files.forEach((item, index) => {
+            copyFiles.forEach((item, index) => {
               //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
               if (this.isPictureFile(item.type)) {
                 preloadList.push(item.path);
               }
             });
-            this.fileSign(preloadList, "preload").then((res) => {
-              this.preloadFiles = res;
+            this.fileSign(preloadList, "preload").then((data) => {
+              if (data.length > 0) {
+                this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
+                this.preloadFiles = data;
+              } else {
+                let param = {
+                  filePath: JSON.parse(res.data.filePath).join(""),
+                  code: res.data.payCode,
+                  id: res.data.id
+                }
+                this.$ajax.get('/api/payInfo/uploadTip', param).then((upData) => {
+                  this.files = this.$tool.cutFilePath(new Array(upData.data.data.filePath));
+                  let preloadList = [];
+                  this.files.forEach((item, index) => {
+                    //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                    if (this.isPictureFile(item.type)) {
+                      preloadList.push(item.path);
+                    }
+                  });
+                  this.fileSign(preloadList, "preload").then((data) => {
+                     this.preloadFiles = data;
+                  })
+                })
+              }
             });
+            // 原版
+            // this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
+            // let preloadList = [];
+            // this.files.forEach((item, index) => {
+            //   //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+            //   if (this.isPictureFile(item.type)) {
+            //     preloadList.push(item.path);
+            //   }
+            // });
+            // this.fileSign(preloadList, "preload").then((res) => {
+            //   this.preloadFiles = res;
+            // });
           }
           if (
             res.data.inAccountType &&
