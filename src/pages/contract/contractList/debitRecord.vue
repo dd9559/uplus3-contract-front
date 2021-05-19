@@ -169,7 +169,7 @@
      </el-pagination>
     </div>
 
-    <!-- 确认收款 -->
+    <!-- 确认收款2.6.2 -->
     <el-dialog :title="title" :visible.sync="payVisiable" width="622px">
       <div class="receipt_one">
         <span class="tag">分账周期：<span class="text">{{payData.transRange}}</span></span>
