@@ -72,6 +72,12 @@
             <span>{{ scope.row.conditions | chooseRule(scope.row.way) }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="交易保证金比例">
+          <template slot-scope="scope">
+            <span v-if="scope.row.ratio">{{scope.row.ratio}}%</span>
+            <span v-else>0%</span>
+          </template>
+        </el-table-column>
         <el-table-column label="设置时间" prop="createTime">
           <template slot-scope="scope">{{
             scope.row.createTime | formatTime(false)
@@ -151,6 +157,10 @@
           </el-radio-group>
         </div>
       </div>
+      <div class="margin" v-if="type === 'add' || (type === 'edit' && tradeType === 1)">
+        <span class="form-label">当发起结算，未达到佣金收齐，扣交易保证金：</span>
+        <el-input style="width:120px;" type="number" size="mini" maxlength="15" v-model.trim="chooseData.detainZL" @input="inputOnly('detainZL')"></el-input>
+      </div>
       <div
         class="dialog-item flex-item"
         v-if="type === 'add' || (type === 'edit' && tradeType === 2)"
@@ -178,6 +188,10 @@
             <el-radio :label="'2,4'">结案且佣金收齐</el-radio>
           </el-radio-group>
         </div>
+      </div>
+      <div class="margin" v-if="type === 'add' || (type === 'edit' && tradeType === 2)">
+        <span class="form-label">当发起结算，未达到结案且佣金未收齐，扣交易保证金：</span>
+        <el-input style="width:120px;" type="number" size="mini" maxlength="15" v-model.trim="chooseData.detainMM" @input="inputOnly('detainMM')"></el-input>
       </div>
       <p style="color: red">
         注：设置新的结算设置成功后，原来的结算设置被替换。
@@ -280,6 +294,8 @@ export default {
         leaseConditions: "", // 租赁结算条件
         dealWay: -1, // 买卖/代办结算方式
         dealConditions: "", // 买卖/代办结算条件
+        detainZL:"",
+        detainMM:"",
       },
       settlementFrom: {},
       type: "add",
@@ -342,6 +358,12 @@ export default {
     }
   },
   methods: {
+    inputOnly(type){
+      this.chooseData[type] = this.$tool.cutFloat({
+          val: this.chooseData[type],
+          max: 100
+      });
+    },
     queryFn() {
       this.getData("search");
     },
@@ -402,9 +424,11 @@ export default {
         if (item.tradeType === 1) {
           this.chooseData.leaseWay = item.way.toString();
           this.chooseData.leaseConditions = item.conditions;
+          this.chooseData.detainZL = item.ratio;
         } else {
           this.chooseData.dealWay = item.way.toString();
           this.chooseData.dealConditions = item.conditions;
+          this.chooseData.detainMM = item.ratio;
         }
       }
       this.dialogAddChoose = true;
@@ -420,6 +444,8 @@ export default {
           this.chooseData.leaseWay === "" ||
           this.chooseData.leaseConditions === "" ||
           this.chooseData.dealWay === "" ||
+          this.chooseData.detainZL === "" ||
+          this.chooseData.detainMM === "" ||
           this.chooseData.dealConditions === ""
         ) {
           return this.$message({
@@ -431,7 +457,8 @@ export default {
         if (
           this.tradeType === 1 &&
           (this.chooseData.leaseWay === "" ||
-            this.chooseData.leaseConditions === "")
+            this.chooseData.leaseConditions === ""||
+            this.chooseData.detainZL === "")
         ) {
           return this.$message({
             type: "warning",
@@ -440,7 +467,8 @@ export default {
         } else if (
           this.tradeType === 2 &&
           (this.chooseData.dealWay === "" ||
-            this.chooseData.dealConditions === "")
+            this.chooseData.dealConditions === ""||
+            this.chooseData.detainMM === "")
         ) {
           return this.$message({
             type: "warning",
@@ -461,18 +489,22 @@ export default {
             this.chooseData.leaseWay
           );
           this.settlementFrom["conditions"] = this.chooseData.leaseConditions;
+          this.settlementFrom["ratio"] = Number.parseFloat(this.chooseData.detainZL);
         } else {
           this.settlementFrom["way"] = Number.parseInt(this.chooseData.dealWay);
           this.settlementFrom["conditions"] = this.chooseData.dealConditions;
+          this.settlementFrom["ratio"] = Number.parseFloat(this.chooseData.detainMM);
         }
       } else {
         leaseData["tradeType"] = 1;
         leaseData["way"] = Number.parseInt(this.chooseData.leaseWay);
         leaseData["conditions"] = this.chooseData.leaseConditions;
+        leaseData["ratio"] = Number.parseFloat(this.chooseData.detainZL);
 
         dealData["tradeType"] = 2;
         dealData["way"] = Number.parseInt(this.chooseData.dealWay);
         dealData["conditions"] = this.chooseData.dealConditions;
+        dealData["ratio"] = Number.parseFloat(this.chooseData.detainMM);
         settlementSetTypes.push(leaseData, dealData);
         this.settlementFrom["settlementSetTypes"] = settlementSetTypes;
       }
@@ -505,6 +537,16 @@ export default {
 <style scoped lang="less">
 @import "~@/assets/common.less";
 .choose {
+  .margin {
+    margin: 20px 0;
+    /deep/.el-input::before {
+      content: "%";
+      position: relative;
+      top: 22px;
+      left: 100px;
+      margin-right: 1px;
+    }
+  }
   .contract-list {
     background-color: #fff;
     padding: 0 10px;

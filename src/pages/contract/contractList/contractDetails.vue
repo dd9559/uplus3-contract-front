@@ -426,7 +426,7 @@
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
                       <template slot-scope="scope">
-                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
+                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2) }}
                         <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                       </template>
                     </el-table-column>
@@ -506,7 +506,7 @@
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
                       <template slot-scope="scope">
-                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
+                        {{fomatFloat((employeeData.comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2) }}
                         <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                       </template>
                     </el-table-column>
@@ -590,7 +590,8 @@
                       <template slot-scope="scope">{{scope.row.ratio?scope.row.ratio:'0'}}</template>
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
-                      <template slot-scope="scope">{{(Math.round((employeeData.tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2) || 0}}</template>
+                      <!-- <template slot-scope="scope">{{(Math.round((employeeData.tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2) || 0}}</template> -->
+                      <template slot-scope="scope">{{fomatFloat((employeeData.tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2)}}</template>
                     </el-table-column>
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">{{scope.row.assignor?scope.row.assignor:'-'}}</template>

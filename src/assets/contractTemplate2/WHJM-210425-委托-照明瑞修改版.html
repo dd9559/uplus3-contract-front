@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="/datepicker.css" />
-    <title>租赁合同</title>
+    <title>过户、按揭委托合同</title>
     <style>
         body {
             font-family: SimHei;
@@ -265,8 +265,8 @@
             padding: 5px 30px;
         }
 
-        .cw_message>ul:nth-child(-n+5) {
-            margin-bottom: 5px;
+        .cw_message>ul:nth-child(n) {
+            margin-bottom: 15px;
         }
 
         .cw_message>ul>li {
@@ -489,18 +489,16 @@
                 </ul>
                 <ul>
                     <!-- <li><span>丙方（居间人）：</span><span class="text-limit " systemparam="companyNames" company="true"></span></span></li> -->
-                    <li><span>丙方（居间人）：</span><span>武汉吉家正念房地产经纪服务有限公司</span></span></li>
+                    <li><span>丙方（居间人）：</span><span systemparam="companyNames" tag="input-auto"></span></span></li>
                 </ul>
                 <ul>
-                    <li><span>法定代表人/委托代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val9"></span></li>
+                    <li><span>法定代表人/委托代理人：</span><span tag="input-auto" class="text-limit" extendParam="val9" systemparam="guestStoreLepName"></span></li>
                 </ul>
                 <ul>
-                    <li><span>电话：</span><span class="text-limit input-before" tag="input-auto" extendParam="val10"></span></li>
-                    <!-- <li><span>丙方（居间人）：</span><span>武汉吉家正念房地产经纪服务有限公司</span></span></li> -->
+                    <li><span>电话：</span><span class="text-limit input-before" tag="input-auto" systemparam="companyLepPhone" extendParam="val10"></span></li>
                 </ul>
                 <ul>
-                    <!-- <li><span>地址：</span><span class="text-limit input-before" extendParam="val11"></span></li> -->
-                    <li><span>地址：</span><span>武汉东湖新技术开发区关南园一路20号当代科技园商业街1层5、6号铺（自贸区武汉片区）</span></span></li>
+                    <li><span>地址：</span><span class="text-limit input-before" tag="input-auto" systemparam="companyAddress" extendParam="val11"></span></li>
                 </ul>
             </div>
             <p class="1h18 agreements">
@@ -510,8 +508,6 @@
             <!-- 第一条 -->
             <p class="1h18 agreements navTitle"><strong>第一条、居间服务事项</strong></p>
             <div class="1h18 agreements">
-                <!-- 甲、乙双方委托丙方协助办理下列第<input type="text" class="text-limit dropdown-item" list="1,2" style="width:50px"
-                    extendParam="val13" readonly="readonly" inputmethod="val13" />项服务： -->
                 <p>甲、乙双方委托丙方协助办理下列选中项服务：</p>
                 <div>
                     <div class="info-checkbox" name="other" more="true">
@@ -523,10 +519,7 @@
                         <p type="check"></p>2.协助甲、乙方办理产权过户手续。
                     </div>
                 </div>
-                <!-- <p>1.协助乙方办理按揭贷款手续。</p>
-                <p>2.协助甲、乙方办理产权过户手续。</p> -->
             </div>
-            <!-- <div class="1h18 agreements"> -->
             <!-- 第二条 -->
             <p class="1h18 agreements navTitle"><strong>第二条、服务费支付时间及标准</strong></p>
             <p class="1h18 agreements">1、按揭服务费</p>
@@ -576,17 +569,6 @@
                     <p type="check"></p>甲、乙方承担
                 </div>。
             </div>
-            <p class="1h18 agreements">3、丙方信息</p>
-            <p class="1h18 agreements"><span>开户名：</span><span>武汉吉家正念房地产经纪服务有限公司</span></p>
-            <p class="1h18 agreements"><span>开户行：</span><span>招商银行武汉徐东支行</span></p>
-            <p class="1h18 agreements"><span>账号：</span><span>127913250310701</span></p>
-            <p class="1h18 agreements">
-                丙方服务费标准为：贷款金额小于或等于150万的，贷款服务费为1800元加评估房价的千分之一；贷款金额高于150万的，贷款服务费为2500元加评估房价的千分之一。甲、乙方同意，甲、乙方支付丙方服务费后，由丙方选任房屋评估、贷款担保服务机构和结算（丙方盈亏自担）。服务费发票由丙方开具给甲乙方，评估、担保服务机构不对甲、乙方开票，三方对此不持异议。
-            </p>
-
-
-
-
             <!-- 第三条 -->
             <p class="1h18 agreements navTitle"><strong>第三条、权利义务</strong></p>
             <p class="1h18 agreements">1、甲方权利与义务</p>
@@ -607,7 +589,12 @@
             <p class="1h18 agreements">（3）如乙方与贷款方签订借款合同的，由乙方依据借款合同履行合同义务，享受合同权利，乙方因借款合同与贷款方发生的法律责任及经济纠纷乙方自行承担，与甲、丙方无关。
             </p>
             <p class="1h18 agreements">
-                （4）乙方承诺用于购买本合同项下房产的购房资金不存在挪用银行信贷资金等问题，乙方应严格按与贷款方签订的借款合同约定的用途使用借款,不得挪作他用(包括但不限于有价证券或特定有价证券投资，期货投资，股权投资、房地产投资等)，并不得用于任何违法用途。</p>
+                <span>（4）乙方承诺用于购买地址为</span>
+                <span systemparam="propertyAddr" tag="input-auto"></span>
+                <span>、产权证号为</span>
+                <span tag="input-auto" class="text-limit input-before" extendParam="val555"></span>
+                <span>房产的资金购房资金不存在挪用银行信贷资金等问题，乙方应严格按与贷款方签订的借款合同约定的用途使用借款,不得挪作他用(包括但不限于有价证券或特定有价证券投资，期货投资，股权投资、房地产投资等)，并不得用于任何违法用途。</span>    
+            </p>
             <p class="1h18 agreements">（5）按照本合同约定向丙方支付服务费。</p>
             <p class="1h18 agreements">3、丙方权利与义务</p>
             <p class="1h18 agreements">（1）丙方有权向甲方及/或乙方收取本合同约定服务费。</p>
@@ -700,9 +687,9 @@
                 <span class="w50">委托代理人（签章）： <span class="text-border"></span></span>
             </div>
             <div class="1h18 agreements" style="margin-bottom: 20px;">
-                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
+                <span class="w50">签署日期：<span style="border: none;" systemParam="wtSignDate"
                         extendParam="val23"></span></span>
-                <span class="w50">签署日期：<span style="border: none;" systemParam="signDate"
+                <span class="w50">签署日期：<span style="border: none;" systemParam="wtSignDate"
                         extendParam="val24"></span></span>
                 <!-- <span class="w50">签署日期：<span class="text-border"></span></span>
                     <span class="w50">签署日期：<span class="text-border"></span></span> -->
@@ -715,7 +702,7 @@
             <p class="1h18 agreements">法定代表人或</p>
             <p class="1h18 agreements" style="margin-top:-8px">委托代理人（签章）：<span class="text-border"></span></p>
             <p class="1h18 agreements">签署日期：<span style="border: none;"
-                    systemParam="signDate" extendParam="val23"></span></p>
+                    systemParam="wtSignDate" extendParam="val23"></span></p>
             <!-- 附件一 -->
             <p class="page1" style="margin-top: 30px;"><strong>附件</strong></p>
             <p class="1h18 agreements" style="text-align: center;">出卖人提交资料清单</p>
@@ -887,7 +874,7 @@
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_WT_MR_20201027.js"></script>
+<script type="text/javascript" src="/js/bundle_whjm_wt_20210425.js"></script>
 <!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
@@ -900,7 +887,7 @@
                 if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
-                        addrList[i] = './MR-WT.js'
+                        addrList[i] = './WHJM-210425-WT.js'
                     } else {
                         addrList[i] = host_other + '/' + addrList[i]
                     }
@@ -916,7 +903,7 @@
                     document.head.appendChild(hm);
                 } else {
                     var hm = document.createElement("script");
-                    addrList[i].includes('MR-WT') && (hm.type = 'module');
+                    addrList[i].includes('WHJM-210425-WT') && (hm.type = 'module');
                     hm.src = addrList[i];
                     var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
                     s.parentNode.insertBefore(hm, s);

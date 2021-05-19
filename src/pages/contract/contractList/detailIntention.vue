@@ -52,7 +52,7 @@
                                         v-if="detailData.houseInfo.Square"><span>建筑面积：</span>{{detailData.houseInfo.Square | nullData}}㎡</div>
                                     <div class="div2"
                                         v-else><span>建筑面积：</span>--</div>
-                                    <div class="div2"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
+                                    <div class="div2 auto"><span>朝向：</span>{{detailData.houseInfo.Orientation | nullData}}</div>
                                     <div><span>用途：</span>{{detailData.houseInfo.HousePurpose | nullData}}</div>
                                 </li>
                                 <li>
@@ -68,10 +68,11 @@
                                         <span class="ellipsisStyle" :title="ownerInfo[0].name">{{ownerInfo[0].name | nullData}}</span>
                                     </div>
                                     <div class="div2"><span>手机：</span>{{ownerInfo[0].mobile | nullData}}</div>
-                                    <div class="div2"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="ownerInfo[0].identifyCode">{{ownerInfo[0].identifyCode | nullData}}</span></div>
+                                    <div class="div2 auto"><span v-if="ownerInfo[0].cardType == 1">身份证号：</span><span v-if="ownerInfo[0].cardType == 2">护照：</span><span v-if="ownerInfo[0].cardType == 3">营业执照：</span><span v-if="ownerInfo[0].cardType == 4">军官证：</span><span>{{ownerInfo[0].identifyCode | nullData}}</span></div>
                                     <div v-if="detailData.recordType&&detailData.recordType.value===10"><span>邮箱：</span>{{ownerInfo[0].email}}</div> 
                                 </li>
-                                <li v-if="detailData.recordType&&detailData.recordType.value===10">
+                                <!-- 意向定金无纸化合同只允许选身份证，注释营业执照相关字段 -->
+                                <!-- <li v-if="detailData.recordType&&detailData.recordType.value===10">
                                     <div class="div1" style="position:relative">
                                         <span>企业名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{ownerInfo[0].companyName | nullData}}</span>
@@ -84,7 +85,7 @@
                                         <span>法人身份证号：</span>
                                         <span :title="ownerInfo[0].lepIdentity">{{ownerInfo[0].lepIdentity | nullData}}</span>
                                     </div>
-                                </li>
+                                </li> -->
                             </ul>
                         </ul>
                         <ul class="ul2">
@@ -101,10 +102,11 @@
                                         <span class="ellipsisStyle" :title="custInfo[0].name">{{custInfo[0].name | nullData}}</span>
                                     </div>
                                     <div class="div2"><span>手机：</span>{{custInfo[0].mobile | nullData}}</div>
-                                    <div class="div2"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span><span class="ellipsisStyle" :title="custInfo[0].identifyCode">{{custInfo[0].identifyCode | nullData}}</span></div>
+                                    <div class="div2 auto"><span v-if="custInfo[0].cardType == 1">身份证号：</span><span v-if="custInfo[0].cardType == 2">护照：</span><span v-if="custInfo[0].cardType == 3">营业执照：</span><span v-if="custInfo[0].cardType == 4">军官证：</span><span>{{custInfo[0].identifyCode | nullData}}</span></div>
 									<div v-if="detailData.recordType&&detailData.recordType.value===10"><span>邮箱：</span>{{custInfo[0].email}}</div>
                                 </li>
-                                <li v-if="detailData.recordType&&detailData.recordType.value===10">
+                                <!-- 意向定金无纸化合同只允许选身份证，注释营业执照相关字段 -->
+                                <!-- <li v-if="detailData.recordType&&detailData.recordType.value===10">
                                     <div class="div1" style="position:relative">
                                         <span>企业名称：</span>
                                         <span class="ellipsisStyle" :title="ownerInfo[0].companyName">{{custInfo[0].companyName | nullData}}</span>
@@ -117,7 +119,7 @@
                                         <span>法人身份证号：</span>
                                         <span :title="ownerInfo[0].lepIdentity">{{custInfo[0].lepIdentity | nullData}}</span>
                                     </div>
-                                </li>
+                                </li> -->
                             </ul>
                         </ul>
                         <div class="textbox"
@@ -1612,6 +1614,10 @@ export default {
                             }
                             .div2 {
                                 width: 200px;
+                                &.auto {
+                                    min-width: 230px;
+                                    padding-right: 20px;
+                                }
                             }
                             .div3 {
                                 width: 200px;

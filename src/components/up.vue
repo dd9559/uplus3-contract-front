@@ -37,6 +37,24 @@
         type: Boolean,
         default: false
       },
+      maxSize: {
+        type: Number,
+        default() {
+          return 5
+        }
+      },
+      getNum: {
+        type: Number,
+        default() {
+          return 0
+        }
+      },
+      maxNum: {
+        type: Number,
+        default() {
+          return 20
+        }
+      },
       scane: {
         type: Object,
         default: function () {
@@ -56,11 +74,13 @@
         currentNum: 0,//执行上传的次数
         canvasBlobState:false,//图片转成透明背景色是否已经执行过
         fileLeng:0,
+        flag: false,
       }
     },
     mounted() {
       let that = this
       this.filePath = []
+      this.flag = false
       this.$nextTick(() => {
         this.uploader = new plupload.Uploader({
           runtimes: 'html5',
@@ -79,9 +99,23 @@
           },
           init: {
             FilesAdded: function (up, files) {
+              that.flag = false
+              files.map((item,index) => {
+                if (that.getNum + index + 1 > that.maxNum) {
+                  that.uploader.removeFile(item)
+                  that.flag = true
+                }
+                if (item.size > that.maxSize * 1024 *1024) {
+                  that.uploader.removeFile(item)
+                  that.flag = true
+                }
+              });
               this.fileLeng=up.files.length
               // 选择文件后执行
               if(up.files.length===0){
+                if (that.flag) {
+                  return that.$message(`上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张`);
+                }
                 return
               }
               loading = that.$loading({
@@ -211,6 +245,9 @@
                 if (that.currentNum === up.files.length) {
                   // 向父组件传递监听函数，并初始化上传配置
                   loading.close()
+                  if (that.flag) {
+                    that.$message(`上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张`)
+                  }
                   that.$emit('getUrl', {param: that.filePath, btnId: that.getId})
                   that.uploader.splice(0, up.files.length)
                   that.canvas&&(that.canvasBlobState=false)
@@ -346,15 +383,15 @@
         }
         let maxSize = 1024
         if (this.uploader.files.length !== 0) {
-          let type = get_suffix(this.uploader.files[0].name)
+          let type = get_suffix(this.uploader.files[0].name).toLowerCase()
           if (this.fileType.includes(type)) {
             // maxSize=10
             if (this.picSize) {
               if (this.uploader.files[0].size > 5 * 1024 * 1024) {
                 this.$message({
                   message: '上传图片不能超过5M'
-                })
-                loading.close()
+              })
+              loading.close()
                 this.uploader.splice(0, this.uploader.files.length)
                 this.currentNum = 0
                 this.filePath = []

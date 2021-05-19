@@ -145,6 +145,9 @@
         <el-table-column label="权证费用（元）">
           <template slot-scope="scope">{{scope.row.warrantFee}}</template>
         </el-table-column>
+        <el-table-column label="建筑面积">
+          <template slot-scope="scope">{{scope.row.builtArea?scope.row.builtArea:'-'}}</template>
+        </el-table-column>
         <el-table-column label="签约方式">
           <template slot-scope="scope">
             <span>{{scope.row.recordType&&scope.row.recordType.label?scope.row.recordType.label:'-'}}</span>

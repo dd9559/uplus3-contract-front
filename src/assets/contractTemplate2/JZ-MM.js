@@ -1,16 +1,21 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
-  "checkbox_check1": {
+  // "checkbox_check1": {
+  //   stateful: function (index) {
+  //     return [0,1].includes(index) ? {"val4": null}:''
+  //   }
+  // },
+  // "checkbox_check2": {
+  //   stateful: function (index) {
+  //     return index === 0 ? {"val5":null,"val6":null,"val7":null,"val8":null,} : {"val9":null,"checkbox_check3":null}
+  //   }
+  // },
+  // "checkbox_check4": null, // 新添加
+  "checkbox_check4": {
     stateful: function (index) {
-      return index === 1 ? {"val4": null} : null
+      return index === 3 ? {"val555":null} : null
     }
   },
-  "checkbox_check2": {
-    stateful: function (index) {
-      return index === 0 ? {"val5":null,"val6":null,"val7":null,"val8":null,} : {"val9":null,"checkbox_check3":null}
-    }
-  },
-  "checkbox_check4": null,
   "checkbox_check5": {
     stateful: function (index) {
       return index === 1 ? {"val10":null,"drapdown_val11":{
@@ -34,7 +39,7 @@ let sub = {
   "val23": null,
   "drapdown_val24":{
     stateful: function (i) {
-      return i === "(1)" ? {"val25": null} : {"val26": null,"val27": null,"val28": null,"val29": null}
+      return i === "(1)" ? {"val25": null} : i === "(2)" ? {"val26": null,"val27": null,"val28": null,"val29": null} : {"val333": null}
     }
   },
   "val30": null,
@@ -78,6 +83,7 @@ let sub = {
 
 let checkArr = {
   check1: {
+    0 : ["val4"],
     1 : ["val4"],
   },
   check2: {
@@ -137,6 +143,10 @@ Dropdown.create({
           '(2)': {
             'write': ['val26','val27','val28','val29'],
             'disabled': ['val25']
+          },
+          '(3)': {
+            'write': ['val333'],
+            'disabled': ['val25','val26','val27','val28','val29']
           }
         },
         'val31': {
@@ -297,7 +307,17 @@ contractConfig.checkboxListener(function(obj, i) {
         let bool = e.querySelector('p').getAttribute('checked');
         let name = e.getAttribute('name');
         // 如果是选中状态
-        if (name === 'check1' || name === 'check5') {
+        if(name === 'check1'){
+          contractConfig.initForm(checkArr[name][i], 0);
+        }
+        if(name === 'check4' && document.querySelector("[extendparam=val555]")){
+          if (indexChcek === 3) {
+            contractConfig.initForm(["val555"], 0);
+          } else {
+            contractConfig.initForm(["val555"], 1);
+          }
+        }
+        if (name === 'check5') {
             if (i === 1) {
                 contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
             } else {
@@ -350,7 +370,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   guestCardType: "军官证",
 //   guestCardTypes: "",
 //   guestID: "132",
-//   guestIDs: "",
+//   guestIDs: "1212121212",
 //   guestName: "然爱迪生",
 //   guestNames: "",
 //   guestTel: "13011111111",
@@ -360,7 +380,7 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   ownerCardType: "营业执照",
 //   ownerCardTypes: "",
 //   ownerID: "123",
-//   ownerIDs: "",
+//   ownerIDs: "12121212121",
 //   ownerName: "熊先",
 //   ownerNames: "",
 //   ownerTel: "18888888888",

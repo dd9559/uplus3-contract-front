@@ -3,7 +3,7 @@
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" :min="45">
       <el-form :inline="true" :model="searchForm" class="prop-form" size="small">
         <el-form-item label="结算日期">
-          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy/MM/dd" :picker-options="pickerBeginDateBefore" :default-value="timeDefaultShow" style="width:330px">
+          <el-date-picker v-model="signDate" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="yyyy/MM/dd" :clearable="false" :picker-options="pickerBeginDateBefore" :default-value="timeDefaultShow" style="width:330px">
           </el-date-picker>
 
         </el-form-item>
@@ -34,7 +34,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="收账门店">
+        <el-form-item label="收款门店">
           <el-select v-model="searchForm.inStoreAttr" placeholder="全部" :clearable="true" style="width:150px" @change="changeStoreAttr_in">
             <el-option v-for="item in dictionary['53']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
@@ -61,9 +61,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="签约方式">
-          <el-select v-model="searchForm.recordType" placeholder="全部" :clearable="true" style="width:150px">
-            <el-option v-for="item in dictionary['64']" :key="item.key" :label="item.value" :value="item.key">
+        <!-- 2.6.2新增需求 打款状态 -->
+        <el-form-item label="打款状态">
+          <el-select v-model="searchForm.status" placeholder="全部" :clearable="true" style="width:150px">
+            <el-option v-for="item in statusList" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -73,47 +74,51 @@
     <div class="routing-list">
       <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
       <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
-        <el-table-column label="签约方式">
-          <template slot-scope="scope">
-            <span>{{scope.row.recordType|recordFormatter}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="分账门店" prop="outStoreName">
-        </el-table-column>
-        <el-table-column label="分账门店账户" prop="outBankCard">
-        </el-table-column>
-        <el-table-column label="收款门店" prop="inStoreName">
-        </el-table-column>
-        <el-table-column label="收款门店账户">
-          <template slot-scope="scope">
-            <!-- <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p> -->
-            <el-tooltip placement="top">
-              <div slot="content">
-                <div v-for="item in scope.row.inBank" :key="item.bankCard">
-                  <p>银行账户：{{item.bankCard}}</p>
-                  <p>开户名：{{item.bankAccountName}}</p>
-                  <p>开户行：{{item.bankName}}{{item.bankBranchName==="—"?"":item.bankBranchName}}</p>
-                </div>
-              </div>
-              <div>
-                <p v-for="item in scope.row.inBank" :key="item.bankCard">{{item.bankCard}}</p>
-              </div>
+        <el-table-column prop="currDeptName">
+          <template slot="header">分账门店
+            <el-tooltip content="指收款门店" placement="top">
+              <img class="icon-prompt" src="../../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="分账周期">
-          <template slot-scope="scope">
-            <span>{{scope.row.startTime|timeFormat_}}</span> ~
-            <span>{{scope.row.endTime|timeFormat_}}</span>
+        <el-table-column label="分账门店账户">
+          <span>伏尔甘账户</span>
+        </el-table-column>
+        <el-table-column prop="toDeptName">
+          <template slot="header">收款门店
+            <el-tooltip content="指分账收款门店" placement="top">
+              <img class="icon-prompt" src="../../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+            </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="分账金额(元)" prop="accountAmount">
+        <el-table-column label="收款门店账户">
+          <span>通联虚拟账户</span>
+        </el-table-column>
+        <el-table-column label="分账周期">
+          <template>
+            <span>{{copySignDate[0]|timeFormat_}}</span> ~
+            <span>{{copySignDate[1]|timeFormat_}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="分账金额" prop="currCost">
+          <template slot-scope="scope">
+            {{scope.row.currCost|fomatFloat}}
+          </template>
+        </el-table-column>
+        <el-table-column label="企业管理费" prop="currCost">
+          <template slot-scope="scope">
+            {{scope.row.managerFee|fomatFloat}}
+          </template>
+        </el-table-column>
+        <el-table-column label="打款状态">
+          <template slot-scope="scope">
+            <span>{{scope.row.isPay == 1 ? '已打款' : '未打款'}}</span>
+          </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state&&scope.row.flag!=1" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
+            <el-button type="text" size="medium" v-if="power['sign-ht-fz-pay'].state&&scope.row.isPay!=1" @click="toReceipt(scope.row,scope.$index)">确认打款</el-button>
             <span v-else>-</span>
-             <!-- v-if="power['sign-ht-fz-pay'].state" -->
           </template>
         </el-table-column>
       </el-table>
@@ -133,21 +138,37 @@
     <!-- 确认收款 -->
     <el-dialog title="确认打款" :visible.sync="dialogReceipt" width="600px" :closeOnClickModal="$tool.closeOnClickModal" @close="closeReceipt">
       <div class="receipt_one">
-        <span class="tag">分账周期：<span class="text">{{receiptData.startTime|timeFormat_}} ~ {{receiptData.endTime|timeFormat_}}</span></span><span>收款门店：<span class="text">{{receiptData.inStoreName}}</span></span>
+        <span class="tag">分账周期：<span class="text">{{copySignDate[0]|timeFormat_}} ~ {{copySignDate[1]|timeFormat_}}</span></span>
+        <p class="tag_block">收款门店：<span class="text">{{receiptData.toDeptName}}</span></p>
       </div>
       <div class="receipt_two">
-        <p class="tag">收款门店账户选择：</p>
-        <ul>
-          <li v-for="(item,index) in receiptData.inBank" :key="index">
-            <el-radio v-model="radio" :label="item">
-              <span class="accountType">账户类型：{{item.type===1?'企业账户':'个人账户'}}</span>
-              <span>银行：{{item.bankName}}</span><br>
-              <span class="bankAccountName">开户名：{{item.bankAccountName}}</span><br>
-              <span class="bankName">银行账户：{{item.bankCard}}</span><br>
-              <span class="bankBranchName" v-if="item.type===1">支行：{{item.bankBranchName}}</span>
-            </el-radio>
-          </li>
-        </ul>
+        <p class="tag">收款门店账户：<span class="text">公司对应通联虚拟账户</span></p>
+      </div>
+      <div class="receipt_two">
+        <p class="tag">打款金额：<span class="text">{{(parseFloat(receiptData.currCost)+parseFloat(receiptData.managerFee))|fomatFloat}}(分账金额+企业管理费)</span></p>
+      </div>
+      <div class="stamp">
+        <span class="label">上传凭证：</span>
+        <div class="upload">
+          <ul>
+            <li v-show="uploadData.length >= 5" class="mask" @click="maxUpLoad"></li>
+            <li class="up-content">
+              <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="5" :getNum="uploadData.length" :maxSize="2" :scane="{path:'other'}"><i>+</i></fileUp>
+              <p class="text">点击上传</p>
+            </li>
+            <template v-for="(item,index) in uploadData">
+              <el-tooltip effect="dark" :content="item.contractName" placement="bottom" :key="index">
+                <li>
+                  <div @click="previewPhoto(uploadList,index,2)">
+                    <img :src="item.preConFile" width="90px" height="80px">
+                  </div>
+                  <p class="pic-name">{{item.contractName}}</p>
+                  <span class="del" @click="delStamp(index)"><i class="el-icon-close"></i></span>
+                </li>
+              </el-tooltip>
+            </template>
+          </ul>
+        </div>
       </div>
       <div class="receipt_three">
         <span class="receiptReason">打款备注：</span>
@@ -155,19 +176,21 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>
-        <el-button round type="primary" :disabled="canClick" @click="commit">确定</el-button>
+        <el-button round type="primary" v-dbClick @click="commit">确定</el-button>
       </span>
     </el-dialog>
+    <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
 <script>
 import ScreeningTop from "@/components/ScreeningTop";
 import { MIXINS } from "@/assets/js/mixins";
+import { FILTER } from "@/assets/js/filter";
 import { TOOL } from "@/assets/js/common";
 
 export default {
-  mixins: [MIXINS],
+  mixins: [FILTER,MIXINS],
   components: {
     ScreeningTop
   },
@@ -180,12 +203,17 @@ export default {
 
           }
       },
+      statusList: [
+        {value: '全部',key: ''},
+        {value: '未打款',key: 0},
+        {value: '已打款',key: 1},
+      ],
       searchForm: {
         outStoreId:'',//分账门店id
         outStoreAttr:'',//分账门店属性
         inStoreId:'',//收款门店id
         inStoreAttr:'',//收款门店属性
-        recordType:'',//分账类型
+        status:'',//分账类型
       },
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
@@ -198,9 +226,12 @@ export default {
         name:''
       },
       currentPage_out:1,//分账
+      keyword_out: "",
       pageSize_:10,
       currentPage_in:1,//收款
+      keyword_in: "",
       signDate: [],
+      copySignDate: [],
       tableData:[],
       currentPage:1,
       pageSize:50,
@@ -218,10 +249,12 @@ export default {
       },
       dialogReceipt:false,
       receiptData:{},
+      uploadData: [],
+      //上传的凭证
+      uploadList: [],
       receiptReason:'',//备注
       radio:'',
       index:'',
-      canClick:false,
       power: {
         'sign-ht-fz-pay': {
           state: false,
@@ -232,6 +265,7 @@ export default {
   },
   created() {
     this.getDictionary();//字典
+    this.initialTimeFn()
     // this.getDepList({
     //   // type:'G',
     //   pageNum:this.currentPage_,
@@ -297,8 +331,52 @@ export default {
     //结算日期的默认范围改为前月和当月
     let date = new Date();
     this.timeDefaultShow=new Date(date.getFullYear(),date.getMonth(),0)
+    this.getProateNotes()
   },
   methods: {
+    // 删除电子签章
+    delStamp(index) {
+      this.$delete(this.uploadData,index)
+      this.$delete(this.uploadList,index)
+    },
+    maxUpLoad() {
+      if (this.uploadData.length >= 5) {
+        return this.$message({
+          message: '最多上传5张图片',
+          type: 'warning'
+        })
+      }
+    },
+    // 电子签章上传成功 获取存储路径和文件名称
+    upload(obj) {
+      obj.param.map(item => {
+        let addData = {}
+        addData.contractSign = item.path+`?${item.name}`
+        addData.contractName = item.name
+        let preloadList = [item.path]
+        this.fileSign(preloadList, 'preload').then(res => {
+          addData.preConFile = res[0]
+          this.uploadList.push({
+            fileType: this.$tool.get_suffix(item.path),
+            name: item.name,
+            path: item.path
+          })
+          this.uploadData.push(addData)
+        })
+      })
+    },
+    // 初始时间
+    initialTimeFn() {
+      let now = new Date(); //当前日期 
+      let nowMonth = now.getMonth(); //当前月 
+      let nowYear = now.getFullYear(); //当前年 
+      //本月的开始时间
+      let data = [];
+      data.push(new Date(nowYear, nowMonth, 1).toLocaleDateString()); 
+      //本月的结束时间
+      data.push(now.toLocaleDateString());
+      this.$set(this,'signDate',data)
+    },
     //获取分账记录列表
     getProateNotes(type="init"){
       let param = {
@@ -307,22 +385,26 @@ export default {
       }
       param = Object.assign({}, param, this.searchForm);
       if (this.signDate&&this.signDate.length > 0) {
-        param.startTime = this.signDate[0];
-        param.endTime = this.signDate[1];
+        param.startTime = this.signDate[0].replace(/\//g,'-');
+        param.endTime = this.signDate[1].replace(/\//g,'-');
       };
+      if (param.status === '') {
+        delete param.status
+      }
       if(type==="search"||type==="page"){
         sessionStorage.setItem('sessionQuery',JSON.stringify({
           path:'/routingRecord',
-          url:'/separate/account/list',
+          url:'/separate/currency_list',
           query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
           methods:"get"
         }))
       }
-      this.$ajax.get('/api/separate/account/list',param).then(res=>{
+      this.$ajax.get('/api/separate/currency_list',param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.tableData=res.data.list;
           this.total=res.data.total;
+          this.copySignDate = this.signDate
         }
       }).catch(error=>{
         this.$message({
@@ -377,7 +459,7 @@ export default {
       this.currentPage_in=1//收款
       // this.total_out=this.firstTotal
       // this.total_in=this.firstTotal
-      this.signDate=[]
+      this.initialTimeFn()
       this.outStoreList=[]
       this.inStoreList=[]
       this.getDepList({
@@ -396,7 +478,7 @@ export default {
       this.getProateNotes("page");
     },
     getDepList(param,first=true,type='other'){
-      this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+      this.$ajax.get('/api/organize/deps/pages',param,'nocode').then(res=>{
         res=res.data;
         if(res.status===200){
           let outList = [].concat(res.data.list)
@@ -446,6 +528,7 @@ export default {
     remoteMethod_out(keyword){
       if(keyword!==''){
         this.currentPage_out=1;
+        this.keyword_out = keyword
         let param = {
           // type:'G',
           keyword:keyword,
@@ -459,10 +542,13 @@ export default {
           param.depAttr='JOIN'
         }
         this.getDepList(param,false,'out')
+      }else {
+        this.keyword_out = ''
       }
     },
     remoteMethod_in(keyword){
       if(keyword!==''){
+        this.keyword_in = keyword
         this.currentPage_in=1;
         let param = {
           // type:'G',
@@ -477,6 +563,8 @@ export default {
           param.depAttr='JOIN'
         }
         this.getDepList(param,false,'in')
+      } else {
+        this.keyword_in = ''
       }
     },
     //门店下拉加载更多
@@ -489,7 +577,10 @@ export default {
             pageNum:this.currentPage_out,
             pageSize:this.pageSize_
           }
-          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+          if (this.keyword_out !== '') {
+            param.keyword = this.keyword_out
+          }
+          this.$ajax.get('/api/organize/deps/pages',param,'nocode').then(res=>{
             res=res.data;
             if(res.status===200){
               this.outStoreList=this.outStoreList.concat(res.data.list);
@@ -504,7 +595,10 @@ export default {
             pageNum:this.currentPage_in,
             pageSize:this.pageSize_
           }
-          this.$ajax.get('/api/organize/deps/pages',param).then(res=>{
+          if (this.keyword_in !== '') {
+            param.keyword = this.keyword_in
+          }
+          this.$ajax.get('/api/organize/deps/pages',param,'nocode').then(res=>{
             res=res.data;
             if(res.status===200){
               this.inStoreList=this.inStoreList.concat(res.data.list);
@@ -584,85 +678,55 @@ export default {
       },
     //确认收款
     toReceipt(item,index){
-      if(item.inBank&&item.inBank.length>0){
-        this.dialogReceipt=true
-        this.receiptData=item;
-        this.index = index
-      }else{
-        this.$message({
-          message:'没有收款门店账户',
-          type:'warning'
-        });
-      }
+      this.dialogReceipt=true;
+      this.receiptData=item;
+      this.index = index;
     },
     commit(){
-      if(this.radio){
-        // this.receiptData.remark=this.receiptReason;
-        // this.receiptData.inBankCard=this.radio.bankCard;
-        // this.receiptData.inBankAccountName=this.radio.bankAccountName;
-        // this.receiptData
-        // param.startTime = this.signDate[0];
-        // param.endTime = this.signDate[1];
-        let search_ = JSON.parse(JSON.stringify(this.searchForm))
-        search_.startTime=this.signDate[0]
-        search_.endTime=this.signDate[1]
-        let param = {
-          plateType:0,
-          queryForm:search_,
-          pageNum:this.currentPage,
-          pageSize:this.pageSize,
-          index:this.index,
-          inBankCard:this.radio.bankCard,
-          inBankAccountName:this.radio.bankAccountName,
-          remark:this.receiptReason
-        };
-        this.canClick=true
-        this.$ajax.postJSON('/api/separate/account/allotted',param).then(res=>{
-          res=res.data;
-          if(res.status===200){
-            this.canClick=false
-            this.$message({
-              message:'打款成功',
-              type:'success'
-            });
-            this.getProateNotes();
-            this.receiptReason='';
-            this.radio='';
-            this.dialogReceipt=false;
-          }
-        }).catch(error=>{
-          this.canClick=false
-          if(error.status===2001){
-            this.dialogReceipt=false
-            this.getProateNotes();
-            this.$message({
-              message:error.message,
-              type:"error"
-            })
-          }else{
-            this.$message({
-              message:error,
-              type:"error"
-            })
-          }
-        })
-      }else{
-        this.$message({
-          message:'请选择收款账户',
-          type:'warning'
-        })
+      let param = {
+        storeId: Number.parseInt(this.receiptData.currDeptId),
+        fromId: this.receiptData.ids,
+        toStoreId: Number.parseInt(this.receiptData.toDeptId),
+        transRange: `${this.copySignDate[0].replace(/\//g,'-')}~${this.copySignDate[1].replace(/\//g,'-')}`,
+        amount: Number.parseFloat(this.receiptData.amount),
+        remark: this.receiptReason,
+        depName: this.receiptData.currDeptName,
+        toDepName: this.receiptData.toDeptName,
       }
+      if (this.uploadData.length > 0) {
+        param.signImg = this.uploadData.map(item => item.contractSign)
+      }
+      this.$ajax.postJSON("/api/separate/currency_pay", param)
+      .then(res => {
+        let data = res.data;
+        if (res.data.status === 200) {
+          this.dialogReceipt = false
+            // 数据刷新
+          this.queryFn();
+          this.$message({
+            message: data.message,
+            type: 'success'
+          });
+        }
+      }).catch(error => {
+        this.dialogReceipt = false
+        this.$message({
+          message: error
+        })
+      });
     },
     closeReceipt(){
       this.receiptReason='';
       this.radio='';
+      this.uploadData = [];
+      this.uploadList = []
     },
     //分账详情
     toDetail(value){
       let newPage = this.$router.resolve({
         path: '/routingRemitDetail',
         query:{
-          ids:value.settleDetailsIds,
+          ids:value.relationId,
           type:1
         }
       });
@@ -683,15 +747,6 @@ export default {
         let s = time.getSeconds()
         let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
         return time_.substr(0, 10)
-      }
-    },
-    recordFormatter:function (val) {
-      if(val===1){
-        return '线上'
-      }else if(val===2){
-        return '线下'
-      }else {
-        return '--'
       }
     }
   }
@@ -776,14 +831,128 @@ export default {
 }
 .receipt_one{
   padding-top: 10px;
+  .tag_block {
+    display: block;
+    padding-top: 18px;
+    padding-left: 20px;
+  }
 }
 .receipt_two{
-  padding: 5px 0;
+  padding-top: 18px;
+  .tag {
+    padding-left: 20px;
+    width: auto;
+  }
   >ul{
     padding-left: 40px;
     >li{
       padding: 5px 0;
       color: @color-blank;
+    }
+  }
+}
+.stamp {
+  display: flex;
+  margin: 20px 0;
+  .label {
+    display: inline-block;
+    width: 70px;
+    padding-left: 20px;
+    padding-right: 12px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .upload {
+    display: inline-block;
+    width: 430px;
+    vertical-align: text-top;
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      .mask {
+        position: absolute;
+        opacity: 0;
+        z-index: 99;
+      }
+      li {
+        width: 120px;
+        height: 120px;
+        border-radius: 7px;
+        box-sizing: border-box;
+        color: #8492a6;
+        background-color: #f2f3f8;
+        border: 1px dashed #dedde2;
+        margin: 0 10px;
+        margin-bottom: 10px;
+        position: relative;
+        cursor: pointer;
+        text-align: center;
+        div {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%,-50%);
+        }
+        p {
+          position: absolute;
+          font-size: 12px;
+          bottom: -30px;
+          color: #233241;
+          width: 120px;
+          height: 48px;
+          text-align: center;
+          z-index: 10;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          word-wrap: break-word;
+        }
+        .del {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #f56c6c;
+            border-radius: 50%;
+            right: 8px;
+            top: 8px;
+            text-align: center;
+            line-height: 20px;
+            color: #fff;
+            display: none;
+        }
+        &:hover {
+          .del {
+            display: block;
+          }
+        }
+      }
+      .up-content {
+        width: 120px;
+        height: 120px;
+        padding: 28px 34px 20px 34px;
+        border: 1px dashed #dedde2;
+        background-color: #fff;
+        border-radius: 7px;
+        box-sizing: border-box;
+        color: #8492a6;
+        .up {
+          width: 50px;
+          height: 50px;
+          line-height: 50px;
+          margin-bottom: 10px;
+          background: #eef2fb;
+          border-radius: 4px;
+          color: #fff;
+          font-size: 40px;
+          font-weight: bold;
+          text-align: center;
+        }
+      }
+      .text {
+        color: #8492a6;
+        font-size: 12px;
+        text-align: left;
+      }
     }
   }
 }
@@ -795,5 +964,14 @@ export default {
   /deep/.is-round{
     padding: 9px 15px;
   }
+}
+.icon-prompt {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  margin-left: 4px;
 }
 </style>

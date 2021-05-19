@@ -133,7 +133,7 @@
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10">
-                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="30" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3" :rules="{validator: nameInput, trigger: 'change'}">
@@ -172,7 +172,7 @@
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10">
-                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[0].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="30" @clear="clearIdentify(0,'email')" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item v-if="recordType===10&&contractForm.contPersons[0].cardType==3">
@@ -242,7 +242,7 @@
                 </el-form-item>
 
                 <el-form-item v-if="recordType===10">
-                  <el-input v-model="contractForm.contPersons[1].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="20" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
+                  <el-input v-model="contractForm.contPersons[1].email" :disabled="canInput" clearable placeholder="邮箱" class="custwidth" :maxlength="30" @clear="clearIdentify(0)" @input="cutInfo('email',0)"></el-input>
                 </el-form-item>
                 <br>
                 <el-form-item v-show="recordType===10&&contractForm.contPersons[1].cardType==3" :prop="'contPersons[' + 1 + '].companyName'" :rules="{validator: lepNameExp, trigger:'change'}">

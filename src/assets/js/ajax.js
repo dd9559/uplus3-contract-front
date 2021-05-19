@@ -68,7 +68,7 @@ let api = {
       return res
     })
   },
-  get: function(url, param) {
+  get: function(url, param,type="encode") {
     param = Object.assign({},param,{
       dayRandomTime:new Date().getTime()
     })
@@ -79,7 +79,7 @@ let api = {
           param.keyword=param.keyword.replace(new RegExp(`\\${item}`,'g'),encodeURIComponent(item))
         }
       })*/
-      param.keyword=encodeURIComponent(param.keyword)
+      param.keyword= type === 'encode' ? encodeURIComponent(param.keyword) : param.keyword
     }
     return axios.get(url,{params:param}).then(res => {
       return res

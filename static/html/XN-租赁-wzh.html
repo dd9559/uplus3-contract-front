@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-   <link rel="stylesheet" href="/datepicker.css"/>
+  <link rel="stylesheet" href="/datepicker.css"/>
   <title>租赁</title>
   <style>
     h1{
@@ -243,37 +243,18 @@
         min-width: 300px;
         line-height: 1.5;
     }
-    /* 封面样式 */
-    .cover-fm {
-      text-align: center;
+    span.no-border[tag="input-auto"]{
+      border: 0;
     }
-    .cover-fm div {
-      /* -webkit-writing-mode: vertical-rl;
-      writing-mode: vertical-rl; */
-      font-size: 80px;
-      margin-top: 20px;
-      /* margin: 0 auto;
-      letter-spacing:20px; */
-    }
-    .cover-fm .first {
-      margin-top: 200px;
-    }
-    .cover-fm p {
-      margin-top: 100px;
-      font-size: 20px;
+    td>span.no-border[tag="input-auto"]{
+      /* width: 100%!important; */
+      box-sizing: border-box;
+      padding: 2px 36px;
     }
   </style>
 </head>
 <body>
-<!-- 封面 -->
-<div class="cover-fm" style="display: none;">
-  <div class="first">租</div>
-  <div>赁</div>
-  <div>合</div>
-  <div>同</div>
-  <p class="fontBold">合同编号：<input systemParam="code" extendParam="val1" class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:200px" /></p>
-</div>
-<div class="zulin container page1">
+<div class="zulin container">
   <p class="title">房屋租赁合同</p>
   <p class="hetong-no">合同编号：<input systemParam="code" extendParam="val1" class="text-limit" type="text" unselectable="on" readonly="readonly" tag="input" value="" style="width:200px" /></p>
   <ul class="jiafang">
@@ -315,7 +296,7 @@
   </ul>
   <div class="zulin-body">
     <div class="text-indent">
-      依据《中华人民共和国合同法》及有关法律、法规的规定，甲方与乙方在丙方的居间服务下，在平等、自愿的基础上，就房屋租赁的有关事宜达成协议如下：
+      依据《中华人民共和国民法典》及有关法律、法规的规定，甲方与乙方在丙方的居间服务下，在平等、自愿的基础上，就房屋租赁的有关事宜达成协议如下：
     </div>
   </div>
   <div>
@@ -443,8 +424,16 @@
   <div class="sign" style="font-weight:bold;">
     <ul>
       <li>
-        <p>甲方（出租人）：<input extendParam="val99" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
-        <p>乙方（承租人）：<input extendParam="val100" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
+        <p style="position: relative;">
+          甲方（出租人）：
+          <input extendParam="val99" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>
+          <img style="position: absolute;left:130px;top:-10px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" />
+        </p>
+        <p style="position: relative;">
+          乙方（承租人）：
+          <input extendParam="val100" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>
+          <img style="position: absolute;left:130px;top:0px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" />
+        </p>
       </li>
       <li>
         <p>联系电话：<input extendParam="val101" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
@@ -454,15 +443,17 @@
     <ul>
       <li>
         <p style="position:relative;">丙方（居间人）（章）：<img class="SignatureLocation" style="position:absolute;left:160px;top:-20px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" /><input extendParam="val103" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
-        <p>联系电话：<input extendParam="val104" type="text" noline="true" unselectable="on" readonly="readonly" class="text-limit" tag="input"/></p>
+        <!-- <p>联系电话：<input extendParam="val104" type="text" noline="true" unselectable="on" readonly="readonly" class="text-limit" tag="input"/></p> -->
       </li>
-      <li>
+      <!-- <li>
         <p>经纪执业人员签字：<input extendParam="val105" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
         <p>资格注册证书编号：<input extendParam="val106" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/></p>
-      </li>
+      </li> -->
     </ul>
     <div>
-      本合同签署日期：<input extendParam="val107" type="text" noline="true" unselectable="on" readonly="readonly" class="text-limit" tag="input"/>年<input extendParam="val108" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>月<input extendParam="val109" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>日
+      本合同签署日期：
+      <span style="border-bottom: none;" systemparam="signDate" tag="input-auto"></span>
+      <!-- <input extendParam="val107" type="text" noline="true" unselectable="on" readonly="readonly" class="text-limit" tag="input"/>年<input extendParam="val108" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>月<input extendParam="val109" noline="true" unselectable="on" readonly="readonly" type="text" class="text-limit" tag="input"/>日 -->
     </div>
   </div>
   <ul class="attachment page1">
@@ -485,53 +476,53 @@
       </tr>
       <tr>
         <td>水  费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
         <td>物业费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>电  费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
         <td>燃气费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>电话费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
         <td>上网费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>收视费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
         <td>车位费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>供暖费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
         <td>租赁税费</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
     </table>
     <p class="p-title">附件二：房屋交割清单</p>
@@ -545,143 +536,143 @@
       </tr>
       <tr>
         <td>冰箱</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto" extendParam="val107"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>微波炉</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>燃气灶</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>抽油烟机</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>洗衣机</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>热水器</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>坐便</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>防盗门</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>电话机</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>电视机</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>空调</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>床</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>床垫</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>书桌</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>衣柜</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>沙发</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>茶几</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>餐桌</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>椅子</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>整体橱柜</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
     </table>
     <table border="1" class="table2 page1">
@@ -701,8 +692,8 @@
           <div class="info-checkbox" name="zhizhao9"><p type="check" nocheck="true"></p><span>其他</span></div>
           <span extendParam="val114" type="text" tag="input-auto" class="input-before" noline="true"></span>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>客厅地板</td>
@@ -713,8 +704,8 @@
           <div class="info-checkbox" name="zhizhao10"><p type="check" nocheck="true"></p><span>其他</span></div>
           <span extendParam="val119" type="text" tag="input-auto" class="input-before" noline="true"></span>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>厨卫</td>
@@ -726,8 +717,8 @@
           <div class="info-checkbox" name="zhizhao11"><p type="check" nocheck="true"></p><span>其他</span></div>
           <span extendParam="val125" type="text" tag="input-auto" class="input-before" noline="true"></span>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>墙面</td>
@@ -738,8 +729,8 @@
           <div class="info-checkbox" name="zhizhao12"><p type="check" nocheck="true"></p><span>其他</span></div>
           <span extendParam="val130" type="text" tag="input-auto" class="input-before" noline="true"></span>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>窗户</td>
@@ -748,8 +739,8 @@
           <div class="info-checkbox" name="zhizhao13"><p type="check" nocheck="true"></p><span>铝合金</span></div>
           <div class="info-checkbox" name="zhizhao13"><p type="check" nocheck="true"></p><span>塑钢</span></div>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>阳台</td>
@@ -758,8 +749,8 @@
           <div class="info-checkbox" name="zhizhao14"><p type="check" nocheck="true"></p><span>铝合金</span></div>
           <div class="info-checkbox" name="zhizhao14"><p type="check" nocheck="true"></p><span>塑钢</span></div>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>门</td>
@@ -768,8 +759,8 @@
           <div class="info-checkbox" name="zhizhao15"><p type="check" nocheck="true"></p><span>品牌</span></div>
           <span extendParam="val139" type="text" tag="input-auto" class="input-before" noline="true"></span>
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>遥控器</td>
@@ -781,8 +772,8 @@
           <div class="info-checkbox" name="remote" more="true"><p type="check" nocheck="true"></p><span>机顶盒</span></div>
           <span extendParam="val145" type="text" tag="input-auto" class="input-before" noline="true"></span>个
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>门禁卡</td>
@@ -791,20 +782,20 @@
           <div class="info-checkbox" name="zhizhao16" ><p type="check" nocheck="true"></p><span>无</span></div>   已交付
           <span extendParam="val148" type="text" tag="input-auto" class="input-before" noline="true"></span>张
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>钥匙</td>
         <td colspan="2">
           防盗门<sapn extendParam="val149" type="text" tag="input-auto" class="input-before" noline="true"></sapn>把  房屋<span extendParam="val150" type="text" tag="input-auto" class="input-before" noline="true"></span>把  其他<span extendParam="val151" type="text" tag="input-auto" class="input-before" noline="true"></span>把
         </td>
-        <td></td>
-        <td></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
+        <td><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
       <tr>
         <td>备注</td>
-        <td colspan="4"></td>
+        <td colspan="4"><span class="text-limit no-border" tag="input-auto"></span></td>
       </tr>
     </table>
     <table border="1" style="position:relative">
@@ -813,11 +804,17 @@
         <td colspan="2">对上述情况，乙方经验收，认为符合房屋交验条件，并且双方已对水、电、燃气等费用结算完结，同意接收。</td>
       </tr>
       <tr>
-        <td colspan="2">交房日期：<input extendParam="val152" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>年<input extendParam="val153" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>月<input extendParam="val154" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>日</td>
+        <td colspan="2">交房日期：<input type="text" readonly="readonly" class="text-limit calendar-item"/></td>
       </tr>
       <tr>
-        <td>甲方（出租人）签章： <input type="text" class="no-border" noline="true" readonly="readonly"></td>
-        <td>乙方（承租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly"></td>
+        <td style="position: relative;">
+          甲方（出租人）签章： <input type="text" class="no-border" noline="true" readonly="readonly">
+           <img style="position: absolute;left:160px;top:0px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" />
+        </td>
+        <td style="position: relative;">
+          乙方（承租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly">
+          <img style="position: absolute;left:160px;top:0px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" />
+        </td>
       </tr>
       <tr>
         <td rowspan="3" style="text-align: center">退房确认</td>
@@ -828,11 +825,17 @@
         </td>
       </tr>
       <tr>
-        <td colspan="2">退房日期：<input extendParam="val159" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>年<input extendParam="val160" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>月<input extendParam="val161" noline="true" readonly="readonly" type="text" class="text-limit" tag="input"/>日</td>
+        <td colspan="2">退房日期：<input type="text" readonly="readonly" class="text-limit calendar-item"/></td>
       </tr>
       <tr>
-        <td>甲方（出租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly"> </td>
-        <td>乙方（承租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly"></td>
+        <td style="position: relative;">
+          甲方（出租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly">
+          <img style="position: absolute;left:160px;top:0px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg==" />
+         </td>
+        <td style="position: relative;">
+          乙方（承租人）签章：<input type="text" class="no-border" noline="true" readonly="readonly">
+          <img style="position: absolute;left:160px;top:0px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII=" />
+        </td>
       </tr>
     </table>
     <span id="submit" style="display: none;">click</span>
@@ -850,7 +853,7 @@
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_zl_xn20191128.js"></script>
+<script type="text/javascript" src="/js/bundle_zl_xn20191128_wzh.js"></script>
 <!-- <script>
   (function () {
     var scriptList = document.getElementsByTagName("script")
@@ -860,10 +863,10 @@
       var host_other="http://sign2.jjw.com:28879"
       var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_mm20190402.js","datepicker.css"]
       for (let i = 0; i < addrList.length; i++) {
-        if(window.location.host==='localhost:8080'){
+        if(window.location.host==='192.168.13.7:8080'){
           if(addrList[i].indexOf('bundle')>-1){
             // addrList[i]=host_other+'/'+addrList[i]
-            addrList[i]='./XN-ZL.js'
+            addrList[i]='./XN-ZL-wzh.js'
           }else{
             addrList[i]=host_other+'/'+addrList[i]
           }
