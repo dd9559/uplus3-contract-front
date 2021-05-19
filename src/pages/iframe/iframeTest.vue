@@ -21,7 +21,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
       return{
         // src:'KF-租赁合同.html'
         // src:'KF-意向.html'
-        src:'new-WHJM-定金协议.html'
+        src:'xt_仙桃_租赁.html'
         // src:'MR-委托.html'
       }
     },

@@ -27,9 +27,21 @@
                     <div class="col-li">
                         <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>                  
                     </div>
-                    <div class="col-li">
+                    <div class="col-li col-li2">
                         <!-- <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p> -->
                         <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement}}元</span></p>    
+                        <p>
+                            <span>本次结算留存：</span>
+                            <span v-if="layerAudit.depositMoney">{{(layerAudit.depositMoney < 0 ? 0 : layerAudit.depositMoney)|fomatFloat}}</span>
+                            <span v-else>0.00</span>
+                            <span>元(扣{{layerAudit.depositRatio ? layerAudit.depositRatio : 0}}%)</span>  
+                        </p>
+                        <p>
+                            <span>历史总结算留存：</span>
+                            <span v-if="layerAudit.depositMoneyAmount">{{layerAudit.depositMoneyAmount|fomatFloat}}</span>
+                            <span v-else>0.00</span>
+                            <span>元</span>
+                        </p>
                     </div>
 
                 </div>
@@ -110,7 +122,7 @@
   import {TOOL} from "@/assets/js/common";
   import checkPerson from '@/components/checkPerson'
 export default {
-    mixins: [MIXINS],
+    mixins: [FILTER,MIXINS],
     components: {
        checkPerson
     },

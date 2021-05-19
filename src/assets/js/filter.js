@@ -48,14 +48,22 @@ let FILTER = {
     },
     //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
     fomatFloat: function (num, decimal = 2) {
-      num = num.toString();
-      var index = num.indexOf(".");
+      num = num ? num : 0
+      let multiples = Number('1'.padEnd(decimal+1,0)),
+          multiplesNum = Math.round(parseFloat(num) * multiples) / multiples,
+          strNum = multiplesNum.toString(),
+          index = strNum.indexOf("."),
+          decimalPoint,
+          integer;
+
       if (index !== -1) {
-        num = num.substring(0, decimal + index + 1);
+        integer = strNum.substring(0,index)
+        decimalPoint = strNum.substring(index+1).padEnd(decimal,0);
       } else {
-        num = num.substring(0);
+        integer = strNum.substring(0);
+        decimalPoint = '0'.padEnd(decimal,0)
       }
-      return parseFloat(num).toFixed(decimal);
+      return `${integer}.${decimalPoint}`;
     }
   },
 }

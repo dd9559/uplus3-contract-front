@@ -29,7 +29,7 @@
           </el-form-item>
           <el-form-item label="门店选择">
             <el-select v-model="searchForm.dept" filterable collapse-tags remote placeholder="请输入" :clearable="true" @clear="homeStoreList = []" class="headerDep"  style="width:230px" :remote-method="remoteMethod1">
-              <el-option v-for="item in homeStoreList" :key="item.id" :title="item.name" :label="item.name" :value="item.name">
+              <el-option v-for="item in homeStoreList" :key="item.depId" :title="item.name" :label="item.name" :value="JSON.stringify(item)">
               </el-option>
             </el-select>
           </el-form-item>
@@ -73,6 +73,8 @@
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
               <el-button type="text" class="edit-btn" @click="listConfirm(scope.row)" size="medium" v-if="power['sign-set-gs'].state && (scope.row.warrantState == 0 ||scope.row.warrantState == 2 ||scope.row.warrantState == 1) && scope.row.verifyState == 3">授权</el-button>
+              <el-button type="text" @click="withdraw(scope.row)" size="medium" v-if="power['sign-set-bl-tx-tix'].state">提现</el-button>
+              <el-button type="text" @click="withdrawRecord(scope.row)" size="medium" v-if="power['sign-set-bl-tx-info'].state">提现记录</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -248,6 +250,77 @@
         <el-button @click="clickBind" type="primary" round>确认</el-button>
       </div>
       </el-dialog>
+      <!-- 提现 -->
+      <el-dialog
+      title="余额提现"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :visible.sync="dialogwithdraw"
+      width="400px"
+      class="withdraw-dialog">
+        <ul class="withdraw-content">
+          <li>
+            <span>到账银行卡：{{withdrawData.bankName}}</span>
+            <span>(******{{withdrawData.toBank ? withdrawData.toBank.substr(-4) : ''}})</span>
+          </li>
+          <li>
+            <span>提现金额：</span>
+            <el-input style="width:120px;" size="mini" maxlength="15" v-model.trim="money" @input="inputOnly(1,'money')"></el-input>
+            <p class="tip" v-show="parseFloat(money) > parseFloat(withdrawData.allAmount)">输入金额超过余额</p>
+          </li>
+          <li>
+            <span>当前可提现到账金额{{withdrawData.allAmount}}元，<span class="all" @click="allMoney">全部提现</span></span>
+          </li>
+          <li>
+            <span>温馨提示：提现手续费：每笔{{withdrawData.fee}}元</span>
+          </li>
+        </ul>
+        <div slot="footer">
+          <el-button @click="clickWithdraw" type="primary">确认</el-button>
+        </div>
+      </el-dialog>
+      <!-- 提现 -->
+      <el-dialog
+      title="余额提现"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :visible.sync="dialogSubmitWithdraw"
+      width="400px"
+      class="submit-dialog">
+        <div class="submit-content">
+          <p class="one">￥{{money}}</p>
+          <p class="two">
+            <span>手续费</span>
+            <span>￥{{withdrawData.fee}}</span>
+          </p>
+        </div>
+        <div slot="footer">
+          <el-button @click="submitWithdraw" type="primary" :disabled="submitWithdrawFlag">确认</el-button>
+        </div>
+      </el-dialog>
+      <!-- 提现记录 -->
+      <el-dialog
+      title="提现记录"
+      :closeOnClickModal="$tool.closeOnClickModal"
+      :visible.sync="dialogwithdrawRecord"
+      :destroy-on-close="true"
+      width="740px"
+      class="log-dialog">
+        <el-table :data="withdrawRecordData" v-loadmore="withdrawLazyLoad" style="width: 100%" border :max-height="445">
+          <el-table-column label="操作人">
+            <template slot-scope="scope">
+              <span>{{scope.row.createdByDep}}-{{scope.row.createdByName}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作时间" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.createdAt|formatDate(2)}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="提现金额" prop="amount">
+          </el-table-column>
+          <el-table-column label="手续费（元）" prop="fee">
+          </el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -267,6 +340,31 @@
   let isHaveChinese = function (str) {
     return /[\u4E00-\u9FA5]/g.test(str)
   }
+  function accMul(arg1,arg2) {
+    let m=0,s1=arg1.toString(),s2=arg2.toString(); 
+    try{m+=s1.split(".")[1].length}catch(e){} 
+    try{m+=s2.split(".")[1].length}catch(e){} 
+    return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m) 
+  }
+
+  function accSub(arg1,arg2){
+    var r1,r2,m,n;
+    try{
+      r1=arg1.toString().split(".")[1].length;
+    }catch(e){
+      r1=0;
+    }
+    try{
+      r2=arg2.toString().split(".")[1].length;
+    }catch(e){
+      r2=0;
+    }
+    m=Math.pow(10,Math.max(r1,r2));
+    n=(r1>=r2)?r1:r2;
+    return ((arg2*m-arg1*m)/m).toFixed(n);
+  }
+
+
   export default {
     name: "company",
     mixins: [MIXINS],
@@ -280,6 +378,10 @@
         copySearchDepTableData: [],
         end: true,
         page: 1,
+        withdrawEnd: true,
+        withdrawPage: 1,
+        withdrawTotal: 0,
+        companyId: '',
         relieveData: {},
         bindForm: {
           companyId: null,
@@ -287,6 +389,13 @@
         },
         dialogRelieveVisible: false,
         dialogRDepisible: false,
+        dialogwithdraw: false,
+        dialogSubmitWithdraw: false,
+        submitWithdrawFlag: false,
+        withdrawData: {},
+        money: '',
+        dialogwithdrawRecord: false,
+        withdrawRecordData: null,
         // 搜索表单中的数据
         searchForm: {
           dept: "",
@@ -355,6 +464,14 @@
           'sign-set-gs': {
             state: false,
             name: '添加公司信息'
+          },
+          'sign-set-bl-tx-tix': {
+            state: false,
+            name: '提现'
+          },
+          'sign-set-bl-tx-info': {
+            state: false,
+            name: '提现记录'
           }
         },
         bdHomeStoreList:[],
@@ -371,6 +488,12 @@
         this.count = res.data.total
         let session = JSON.parse(sessionStorage.getItem('sessionQuery'))
         this.searchForm = session.query
+        if (this.searchForm.dept) {
+          this.homeStoreList = new Array(JSON.parse(this.searchForm.dept))
+          this.searchForm.dept = JSON.parse(this.searchForm.dept)
+        } else {
+          this.searchForm.dept = ''
+        }
         delete this.searchForm.pageNum
         delete this.searchForm.pageSize
         this.pageNum = session.query.pageNum
@@ -405,6 +528,24 @@
       }
     },
     methods: {
+      fomatFloat (num, decimal = 2) {
+        num = num ? num : 0
+        let multiples = Number('1'.padEnd(decimal+1,0)),
+            multiplesNum = Math.round(parseFloat(num) * multiples) / multiples,
+            strNum = multiplesNum.toString(),
+            index = strNum.indexOf("."),
+            decimalPoint,
+            integer;
+
+        if (index !== -1) {
+          integer = strNum.substring(0,index)
+          decimalPoint = strNum.substring(index+1).padEnd(decimal,0);
+        } else {
+          integer = strNum.substring(0);
+          decimalPoint = '0'.padEnd(decimal,0)
+        }
+        return `${integer}.${decimalPoint}`;
+      },
       filterMethod(val) {
         if(!val) return
         this.$ajax.get('/api/enterprise/all',{keyword: val}).then(res => {
@@ -494,7 +635,7 @@
           pageNum: this.pageNum
         }
         param = Object.assign({},this.searchForm,param)
-
+        param.deptId = param.dept ? JSON.parse(param.dept).depId : ''
         //点击查询时，缓存筛选条件
         if(type==='search'||type==='pagination'){
           sessionStorage.setItem('sessionQuery',JSON.stringify({
@@ -504,7 +645,7 @@
             methods:"get"
           }))
         }
-
+        delete param.dept
         this.$ajax.get('/api/enterprise', param).then(res => {
           res = res.data
           if(res.status === 200) {
@@ -618,6 +759,25 @@
           }
         })
       },
+      withdrawLazyLoad() {
+        if(!this.withdrawEnd){
+            return
+        }
+        if(this.withdrawPage == 1){
+            this.withdrawPage++
+        }
+        this.$ajax.get('/api/enterprise/record_log',{companyId: this.companyId,pageNum:this.withdrawPage}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            if ((this.withdrawRecordData.length + res.data.size) <= res.data.total) {
+              this.withdrawPage++
+              this.withdrawRecordData = this.withdrawRecordData.concat(res.data.list)
+            } else {
+              this.withdrawEnd = false
+            }
+          }
+        })
+      },
       getSearchDepTableData(type = '') {
         if (type === 'search') {
           this.page = 1
@@ -629,6 +789,120 @@
             this.searchDepTableData = res.data.list
             this.dialogViewVisible = true
           }
+        })
+      },
+      withdrawRecord (row) {
+        this.companyId = row.id
+        this.withdrawPage = 1
+        this.withdrawEnd = true
+        this.$ajax.get('/api/enterprise/record_log',{companyId: row.id,pageNum:this.withdrawPage}).then(res => {
+          res = res.data
+          if (res.status === 200) {
+            this.withdrawRecordData = res.data.list
+            this.dialogwithdrawRecord = true
+          }
+        }).catch(error => {
+          this.$message(error)
+        })
+      },
+      // 提现
+      withdraw(row,type) {
+        let all = new Array(this.$ajax.get('/api/enterprise/bankCard',{companyId: row.id}),
+        this.$ajax.get('/api/enterprise/funds',{companyId: row.id}))
+        Promise.all(all).then((result) => {
+          let bankCard = result[0],
+              balance = result[1];
+          if (bankCard.status === 200) {
+            if (bankCard.data.status === 200) {
+              let bindCardList = JSON.parse(bankCard.data.data).bindCardList.filter(item => {
+                    return item.bindState == 1
+                  });
+              let card = {};
+              console.log(bindCardList[0].bankCardNo);
+              if (!bindCardList.length) {
+                return this.$message('未绑定银行卡')
+              } else if (bindCardList.length == 1) {
+                card = bindCardList[0]
+              } else {
+                card = bindCardList.filter(item => {
+                  return item.bankCardPro == 1
+                })[0]
+              }
+              this.withdrawData.toBank = card.bankCardNo
+              this.withdrawData.bankType = card.bankCardPro
+              this.withdrawData.bindState = card.bindState
+              this.withdrawData.bankName = card.bankName
+            } else {
+              return this.$message(bankCard.data.message)
+            }
+          }
+          if (balance.status === 200) {
+            if (balance.data.status === 200) {
+              let allAmount = accSub(JSON.parse(balance.data.data).freezenAmount,JSON.parse(balance.data.data).allAmount)/100
+              this.withdrawData.allAmount = accSub(row.fee,allAmount) <= 0 ? 0 : accSub(row.fee,allAmount)
+              this.withdrawData.freezenAmount = JSON.parse(balance.data.data).freezenAmount
+            } else {
+              return this.$message(balance.data.message)
+            }
+          }
+          this.withdrawData.fee = row.fee
+          this.withdrawData.companyId = row.id
+          this.withdrawData.companyName = row.name
+          this.money = ''
+          this.dialogwithdraw = true
+        }).catch((error) => {
+          this.$message(error)
+        })
+      },
+      allMoney() {
+        if (!Number(this.withdrawData.allAmount)){
+          return this.$message('余额不足')
+        }
+        this.money = this.withdrawData.allAmount
+      },
+      clickWithdraw() {
+        if (!parseFloat(this.money)) {
+          return this.$message('请输入正常提现金额')
+        }
+        if (Number(this.withdrawData.allAmount) < Number(this.money)){
+          return this.$message('余额不足')
+        }
+        if (Number(this.withdrawData.fee) > Number(this.money)){
+          return this.$message('提现金额不得低于提现手续费')
+        }
+        this.dialogSubmitWithdraw = true
+        this.submitWithdrawFlag = false
+      },
+      submitWithdraw() {
+        this.submitWithdrawFlag = true
+        let param = {
+          companyId: this.withdrawData.companyId,
+          companyName: this.withdrawData.companyName,
+          toBank: this.withdrawData.toBank.toString(),
+          bankType: this.withdrawData.bankType,
+          fee: accMul(this.withdrawData.fee,100),
+          amount: accMul(this.money,100),
+        }
+        this.$ajax.postJSON('/api/enterprise/cash',param).then(res => {
+          res = res.data
+          console.log(res,3353434);
+          if (res.status === 200) {
+            this.dialogSubmitWithdraw = false
+            this.dialogwithdraw = false
+            this.submitWithdrawFlag = false
+            this.money = ''
+            this.withdrawData = {}
+            this.$message({
+              message: res.message,
+              type: 'success'
+            })
+          }
+        }).catch(error => {
+          this.dialogSubmitWithdraw = false
+          this.dialogwithdraw = false
+          this.money = ''
+          this.withdrawData = {}
+          this.$message(error)
         })
       },
       //点击查看和编辑
@@ -751,6 +1025,12 @@
           });
         } else if (type === 'companyId') {
           this.bindForm.companyId = this.$tool.textInput(this.bindForm.companyId)  
+        } else if (type === 'money') {
+          console.log(this.money);
+          this.money = this.$tool.cutFloat({
+              val: this.money,
+              num: 2
+          });
         }
       },
       cutNumber(val) {
@@ -1367,6 +1647,67 @@
   }
   /deep/ .el-dialog__close {
     font-weight: bold;
+  }
+}
+.withdraw-dialog {
+  /deep/.el-dialog__title {
+    color: #606266;
+  }
+  .withdraw-content {
+    padding: 20px;
+    li {
+      margin: 15px auto;
+      /deep/.el-input {
+        input {
+          border: none;
+          border-bottom: 1px solid #ccc;
+          border-radius: 0;
+          height: 17px;
+          line-height: 17px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+        &::before {
+          content: "￥";
+          position: absolute;
+        }
+      }
+      .all {
+        color: skyblue;
+        cursor: pointer;
+      }
+      .tip {
+        padding-left: 75px;
+        color: red;
+      }
+    }
+  }
+}
+.submit-dialog {
+  /deep/.el-dialog__title {
+    color: #606266;
+  }
+  .submit-content {
+    padding: 20px 80px;
+    p {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 20px;
+    }
+    .one {
+      font-size: 36px;
+      font-weight: bold;
+    }
+    .two {
+      justify-content: space-between;
+      font-size: 16px;
+      color: skyblue;
+    }
+  }
+}
+.log-dialog {
+  /deep/.el-dialog__title {
+    color: #606266;
   }
 }
 /deep/ .el-dialog__header {

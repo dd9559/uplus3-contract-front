@@ -129,11 +129,11 @@
         </el-table-column>
         <el-table-column label="合同类型" prop="contractTypeName" :formatter="nullFormatter"></el-table-column>
         <el-table-column label="签约方式" prop="recordType.label" :formatter="nullFormatter"></el-table-column>
-        <!--<el-table-column label="款类" prop="collectionType">
+        <el-table-column label="建筑面积">
           <template slot-scope="scope">
-            佣金
+            <span>{{scope.row.houseInfo && scope.row.houseInfo.Square ? scope.row.houseInfo.Square : '-'}}</span>
           </template>
-        </el-table-column>-->
+        </el-table-column>
         <el-table-column min-width="160" label="物业地址">
           <template slot-scope="scope">
             <span v-if="scope.row.propertyAddr.length===0">--</span>

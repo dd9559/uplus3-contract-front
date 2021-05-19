@@ -208,9 +208,21 @@
           <div class="col-li">
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
-          <div class="col-li">
+          <div class="col-li col-li2">
             <!-- <p style="color: red;">当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p> -->
-            <p style="color: red;">本次结算金额：<span><em>{{layerAudit.actualsettlement}}元</em></span></p>
+            <p style="color: red;">本次结算金额：<span><em>{{layerAudit.actualsettlement|fomatFloat}}元</em></span></p>
+            <p>
+              <span>本次结算留存：</span>
+              <span v-if="layerAudit.depositMoney">{{(layerAudit.depositMoney < 0 ? 0 : layerAudit.depositMoney)|fomatFloat}}</span>
+              <span v-else>0.00</span>
+              <span>元(扣{{layerAudit.depositRatio ? layerAudit.depositRatio : 0}}%)</span>
+            </p>
+            <p>
+              <span>历史总结算留存：</span>
+              <span v-if="layerAudit.depositMoneyAmount">{{layerAudit.depositMoneyAmount|fomatFloat}}</span>
+              <span v-else>0.00</span>
+              <span>元</span>
+            </p>
           </div>
         </div>
 
@@ -307,9 +319,21 @@
           <div class="col-li">
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
-          <div class="col-li">
+          <div class="col-li col-li2">
             <!-- <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p> -->
-            <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement}}元</span></p>
+            <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement|fomatFloat}}元</span></p>
+            <p>
+              <span>本次结算留存：</span>
+              <span v-if="layerAudit.depositMoney">{{(layerAudit.depositMoney < 0 ? 0 : layerAudit.depositMoney)|fomatFloat}}</span>
+              <span v-else>0.00</span>
+              <span>元(扣{{layerAudit.depositRatio ? layerAudit.depositRatio : 0}}%)</span>
+            </p>
+            <p>
+              <span>历史总结算留存：</span>
+              <span v-if="layerAudit.depositMoneyAmount">{{layerAudit.depositMoneyAmount|fomatFloat}}</span>
+              <span v-else>0.00</span>
+              <span>元</span>
+            </p>
           </div>
         </div>
 
@@ -613,7 +637,7 @@
           this.$ajax.get("/api/settlement/applyExamineById", param)
           .then(res => {
             if (res.data.status === 200) {
-              this.layerAudit = res.data.data.contractResult;
+              this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
               this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
               this.myCheckId = res.data.data.contractResult.id; //结算id
               this.uploadList = res.data.data.contractResult.vouchers;
@@ -665,7 +689,7 @@
       getCheckData(param){
         this.$ajax.get("/api/settlement/applyExamineById", param).then(res => {
           if (res.data.status === 200) {
-           this.layerAudit = res.data.data.contractResult;
+           this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
            this.myCheckId = res.data.data.contractResult.id; //结算id
            this.uploadList = res.data.data.contractResult.vouchers;

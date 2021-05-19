@@ -3,8 +3,12 @@
     <el-table :data="tableData" border>
       <el-table-column align="left" label="合同编号" width="140">
         <template slot-scope="scope">
-          <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <span class="contractCode" @click="toDetail(scope.row)">{{scope.row.code}}</span>
+          <span>{{scope.row.contractCode}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="结算日期">
+        <template slot-scope="scope">
+          {{scope.row.settleDate|timeFormat_}}
         </template>
       </el-table-column>
       <el-table-column align="left" label="合同类型">
@@ -13,123 +17,39 @@
           <span v-else>{{scope.row.contType.label}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="left" prop="address" label="物业地址">
+      <el-table-column align="left" prop="addres" label="物业地址">
       </el-table-column>
-      <el-table-column align="left" label="成交总价">
+      <el-table-column align="left" prop="platformFee" label="平台费（元）">
         <template slot-scope="scope">
-          <!-- <span v-if="scope.row.contType.value!==1">{{scope.row.dealPrice}} 元</span>
-          <span v-else>{{scope.row.dealPrice}} 元 / {{scope.row.timeUnit}}</span> -->
-          <span>{{scope.row.dealPrice}} 元</span>
-          <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+          {{scope.row.platformFee|fomatFloat}}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="成交经纪人" min-width="120">
+      <el-table-column align="left" prop="enterpriseFee" label="企业管理费">
         <template slot-scope="scope">
-          {{scope.row.dealAgentStoreName+' - '+scope.row.dealAgentName}}
+          {{scope.row.enterpriseFee|fomatFloat}}
         </template>
-      </el-table-column>
-      <el-table-column align="left" label="当期实收(元)" prop="thisSettlement" min-width="90">
-      </el-table-column>
-      <el-table-column align="left" label="结算比率" prop="ratioSettlementStr">
-      </el-table-column>
-      <el-table-column min-width="110">
-        <template slot="header" slot-scope="scope">
-          <span class="openAll" @click="openAll">当期成本(元)<i class="iconfont icon-wenhao" style="padding-left: 5px;color: orange;"></i></span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.thisCost}}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isOpen">
-        <template slot="header" slot-scope="scope">
-          <span>金融服务费(元)</span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.serviceFee}}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isOpen">
-        <template slot="header" slot-scope="scope">
-          <span>按揭手续费(元)</span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.mortgageFee}}
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column align="left" label="当期成本(元)" prop="serviceFee">
-        <template slot-scope="scope">
-          {{scope.row.serviceFee+scope.row.mortgageFee}}
-        </template>
-      </el-table-column> -->
-      <!-- <el-table-column align="left" label="金融服务费(元)" prop="serviceFee" v-if="!isOpen">
-      </el-table-column>
-      <el-table-column align="left" label="按揭手续费(元)" prop="mortgageFee" v-if="!isOpen">
-      </el-table-column> -->
-      <el-table-column align="left" label="实际结算(元)" prop="actualSettlement">
       </el-table-column>
       <el-table-column align="left" label="分成人" min-width="120">
         <template slot-scope="scope">
-          <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.disDeptName}} - {{item.disName}}</p>
+          {{scope.row.distributionStoreName+' - '+scope.row.distributionName}}
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="业绩分成比例">
+        <template slot-scope="scope">
+          {{scope.row.distributionRatio}}%
         </template>
       </el-table-column>
       <el-table-column align="left" label="分成角色">
         <template slot-scope="scope">
-          <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.roleType}}</p>
+          {{scope.row.roleType.label}}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="分成比率">
+      <el-table-column align="left" prop="settleMoney" label="分账金额">
         <template slot-scope="scope">
-          <!-- <span>{{scope.row.startTime|timeFormat_}}</span> ~ -->
-          <p v-for="(item,index) in scope.row.resultDetailsList" :key="index">{{item.disRatio}} %</p>
+          {{scope.row.settleMoney|fomatFloat}}
         </template>
-      </el-table-column>
-      <el-table-column  min-width="140">
-        <template slot="header" slot-scope="scope">
-          <span class="openAll" @click="openAll_">门店承担成本(元)<i class="iconfont icon-wenhao" style="padding-left: 5px;color: orange;"></i></span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.storeCost}}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isOpen_">
-        <template slot="header" slot-scope="scope">
-          <span>特许服务费(元)</span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.platformFee}}
-        </template>
-      </el-table-column>
-      <el-table-column v-if="!isOpen_" width="140">
-        <template slot="header" slot-scope="scope">
-          <span>当期刷卡手续费(元)</span>
-        </template>
-        <template slot-scope="scope">
-          {{scope.row.payCardFee}}
-        </template>
-      </el-table-column>
-
-
-      <!-- <el-table-column align="left" label="特许服务费(元)" prop="platformFee">
-      </el-table-column>
-      <el-table-column align="left" label="当期刷卡手续费(元)" prop="payCardFee" width="140">
-      </el-table-column> -->
-      <el-table-column align="left" label="当期实收分成(元)" prop="disAmount" width="130">
       </el-table-column>
     </el-table>
-    <!-- 固定滚动条 -->
-    <!-- <div class="pagination" v-if="tableData.length>0">
-      <el-pagination
-        class="pagination-info"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-    </div> -->
-
   </div>
 </template>
 
@@ -141,9 +61,6 @@ export default {
   data(){
     return{
       tableData:[],
-      // currentPage:1,
-      // pageSize:10,
-      // total:0,
       ids:'',
       type:'',
       isOpen:true,
@@ -182,44 +99,50 @@ export default {
       }
     })
   },
-  methods:{
-    //合同详情页
-    toDetail(value) {
-      if(this.power['sign-com-htdetail'].state){
-        // this.setPath(this.$tool.getRouter(['合同','分账记录','合同详情'],'routingRecord'));
-        if(value.contType.value===1||value.contType.value===2||value.contType.value===3){
-          this.$router.push({
-            path: "/contractDetails",
-            query: {
-              id: value.contId,//合同id
-              code: value.code,//合同编号
-              contType: value.contType.value//合同类型
-            }
-          });
-        }else{
-          this.$router.push({
-            path: "/detailIntention",
-            query: {
-              id: value.id,
-              contType: value.contType.value
-            }
-          });
-        }
-      }else{
-        this.$message({
-          message:'没有合同详情查看权限',
-          type:'warning'
-        })
+  filters: {
+    //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
+    fomatFloat: function (num, decimal = 2) {
+      decimal = Number('1'.padEnd(decimal+1,0))
+      num = Math.round(parseFloat(num) * decimal) / decimal
+      num = num.toString();
+      let i = 0;
+      let index = num.indexOf(".");
+      let decimal2,
+          num2;
+      if (index !== -1) {
+        decimal2 = num.substring(index+1).padEnd(2,0);
+        num2 = num.substring(0,index)
+      } else {
+        num2 = num.substring(0);
+        decimal2 = '0'.padEnd(2,0)
       }
+      return `${num2}.${decimal2}`;
     },
+    timeFormat_: function (val) {
+      if (!val) {
+        return '--'
+      } else {
+        let time = new Date(val)
+        let y = time.getFullYear()
+        let M = time.getMonth() + 1
+        let D = time.getDate()
+        let h = time.getHours()
+        let m = time.getMinutes()
+        let s = time.getSeconds()
+        let time_ = `${y}-${M > 9 ? M : '0' + M}-${D > 9 ? D : '0' + D} ${h > 9 ? h : '0' + h}:${m > 9 ? m : '0' + m}:${s > 9 ? s : '0' + s}`;
+        return time_.substr(0, 10)
+      }
+    }
+  },
+  methods:{
     //分账明细列表
     getAccountList(ids){
       let param = {
-        settleDetailsIds:ids
+        relationId:ids
       };
       let url;
       if(this.type===1){
-        url='/api/separate/account/details';
+        url='/api/settlement/getProateNotes';
       }else if(this.type===2){
         url='/api/separate/money/out/details'
       }

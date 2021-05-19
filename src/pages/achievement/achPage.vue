@@ -86,7 +86,7 @@
 
               <el-table-column label="应收分成金额（元）" width="110">
                 <template slot-scope="scope">
-                  {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
+                  {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2) }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -498,7 +498,7 @@
               <el-table-column label="应收分成金额（元）" width="110">
                 <template slot-scope="scope">
                   <!-- {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100}} -->
-                  {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2 )}}
+                  {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -880,7 +880,9 @@
                 </el-table-column>
 
                 <el-table-column label="应收分成金额（元）" width="110">
-                  <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2)}}</template>
+                  <!-- fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 ) -->
+                  <!-- <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2)}}</template> -->
+                  <template slot-scope="scope">{{fomatFloat((tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</template>
                 </el-table-column>
 
                 <el-table-column label="经纪人">
@@ -1968,6 +1970,7 @@ export default {
               managerId,
               amaldarId,
               shopkeeperId,
+              feeRatio,
               platformFeeRatio,
               assignorNum,
               assignorLevel,
@@ -1989,6 +1992,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -2010,6 +2014,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -2031,6 +2036,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -2053,6 +2059,7 @@ export default {
           managerId: "",
           amaldarId: "",
           shopkeeperId: "",
+          feeRatio: "",
           platformFeeRatio: "",
           assignorNum: "",
           assignorLevel: "",
@@ -2307,6 +2314,7 @@ export default {
         amaldarId: "",
         managerId: "",
         shopkeeperId: "",
+        feeRatio: "",
         platformFeeRatio: "",
         contractId: this.achObj.contractId,
         contractCode: this.contractCode
@@ -2334,6 +2342,7 @@ export default {
         amaldarId: "",
         managerId: "",
         shopkeeperId: "",
+        feeRatio: "",
         platformFeeRatio: "",
         storefront3Id: "",
         contractId: this.achObj.contractId,
@@ -2363,6 +2372,7 @@ export default {
         amaldarId: "",
         managerId: "",
         shopkeeperId: "",
+        feeRatio: "",
         platformFeeRatio: "",
         contractId: this.achObj.contractId,
         contractCode: this.contractCode
@@ -3468,6 +3478,24 @@ export default {
       baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
       return Math.round(num1 * baseNum + num2 * baseNum) / baseNum;
     },
+    // fomatFloat: function (num, decimal = 2) {
+    //   num = num ? num : 0
+    //   let multiples = Number('1'.padEnd(decimal+1,0)),
+    //       multiplesNum = Math.round(parseFloat(num) * multiples) / multiples,
+    //       strNum = multiplesNum.toString(),
+    //       index = strNum.indexOf("."),
+    //       decimalPoint,
+    //       integer;
+
+    //   if (index !== -1) {
+    //     integer = strNum.substring(0,index)
+    //     decimalPoint = strNum.substring(index+1).padEnd(decimal,0);
+    //   } else {
+    //     integer = strNum.substring(0);
+    //     decimalPoint = '0'.padEnd(decimal,0)
+    //   }
+    //   return `${integer}.${decimalPoint}`;
+    // },
     //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
     fomatFloat: function(num, decimal) {
       num = num.toString();

@@ -498,7 +498,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="平台费比例（%）" min-width="60">
+          <el-table-column label="企业管理费比例（%）" min-width="60">
             <template slot-scope="scope">
               <div v-if="scope.row.distributions.length==0">
                 <div>--</div>

@@ -225,15 +225,29 @@
 
           <el-table-column prop="agentPlatformFee" label="平台费（元）" min-width="80"></el-table-column>
 
+          <el-table-column label="企业管理费" min-width="80">
+            <template slot-scope="scope">
+              <p v-if="scope.row.enterpriseFee">{{scope.row.enterpriseFee|fomatFloat}}</p>
+              <p v-else>0.00</p>
+            </template>
+          </el-table-column>
+
           <el-table-column label="实收金额（元）" min-width="80">
             <template slot-scope="scope">
               <p>{{scope.row.receivableComm|fomatFloat}}</p>
             </template>
           </el-table-column>
 
+          <el-table-column label="结算留存" min-width="80">
+            <template slot-scope="scope">
+              <p v-if="scope.row.depositMoney">{{(scope.row.depositMoney < 0 ? 0 : scope.row.depositMoney)|fomatFloat}}</p>
+              <p v-else>0.00</p>
+            </template>
+          </el-table-column>
+
           <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80">
             <template slot="header">分账金额（元）
-              <el-tooltip content="分账金额=合同总实收-第三方-佣金支付费-权证费" placement="top">
+              <el-tooltip content="分账金额=合同总实收-第三方合作费-佣金支付费-权证费-平台费-企业管理费-手续费" placement="top">
                 <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
               </el-tooltip>
             </template>
@@ -390,14 +404,38 @@
         filters: {
           //运算时四舍五入保留两位小数 num为传入的值，n为保留的小数位
           fomatFloat: function (num, decimal = 2) {
-            num = num.toString();
-            var index = num.indexOf(".");
+            num = num ? num : 0
+            let multiples = Number('1'.padEnd(decimal+1,0)),
+                multiplesNum = Math.round(parseFloat(num) * multiples) / multiples,
+                strNum = multiplesNum.toString(),
+                index = strNum.indexOf("."),
+                decimalPoint,
+                integer;
+
             if (index !== -1) {
-              num = num.substring(0, decimal + index + 1);
+              integer = strNum.substring(0,index)
+              decimalPoint = strNum.substring(index+1).padEnd(decimal,0);
             } else {
-              num = num.substring(0);
+              integer = strNum.substring(0);
+              decimalPoint = '0'.padEnd(decimal,0)
             }
-            return parseFloat(num).toFixed(decimal);
+            return `${integer}.${decimalPoint}`;
+
+            // decimal = Number('1'.padEnd(decimal+1,0))
+            // num = Math.round(parseFloat(num) * decimal) / decimal
+            // num = num.toString();
+            // let i = 0;
+            // let index = num.indexOf(".");
+            // let decimal2,
+            //     num2;
+            // if (index !== -1) {
+            //   decimal2 = num.substring(index+1).padEnd(2,0);
+            //   num2 = num.substring(0,index)
+            // } else {
+            //   num2 = num.substring(0);
+            //   decimal2 = '0'.padEnd(2,0)
+            // }
+            // return `${num2}.${decimal2}`;
           }
         },
         methods: {

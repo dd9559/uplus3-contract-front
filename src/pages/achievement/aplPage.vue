@@ -78,7 +78,7 @@
 
               <el-table-column label="分成金额（元）" width="110">
                 <template slot-scope="scope">
-                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100) | fixedFilter }}
+                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -492,7 +492,7 @@
 
               <el-table-column label="分成金额（元）" width="110">
                 <template slot-scope="scope">
-                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100) | fixedFilter }}
+                  {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
@@ -878,7 +878,7 @@
                 </el-table-column>
 
                 <el-table-column label="分成金额（元）" width="110">
-                   <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100,2)/100).toFixed(2) || 0}}</template>
+                   <template slot-scope="scope">{{((tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}</template>
                     <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </el-table-column>
 
@@ -1912,6 +1912,7 @@ export default {
               managerId,
               amaldarId,
               shopkeeperId,
+              feeRatio,
               platformFeeRatio,
               assignorNum,
               assignorLevel,
@@ -1933,6 +1934,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -1954,6 +1956,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -1975,6 +1978,7 @@ export default {
                 managerId,
                 amaldarId,
                 shopkeeperId,
+                feeRatio,
                 platformFeeRatio,
                 assignorNum,
                 assignorLevel,
@@ -1997,6 +2001,7 @@ export default {
           managerId: "",
           amaldarId: "",
           shopkeeperId: "",
+          feeRatio: "",
           platformFeeRatio: "",
           assignorNum: "",
           assignorLevel: "",
@@ -2262,6 +2267,7 @@ export default {
         amaldarId: "",
         managerId: "",
         shopkeeperId: "",
+        feeRatio: "",
         platformFeeRatio: "",
         contractId: this.achObj.contractId,
         contractCode: this.contractCode
@@ -2585,7 +2591,25 @@ export default {
       }
       baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
       return Math.round(num1 * baseNum + num2 * baseNum) / baseNum;
-    }
+    },
+    fomatFloat: function (num, decimal = 2) {
+      num = num ? num : 0
+      let multiples = Number('1'.padEnd(decimal+1,0)),
+          multiplesNum = Math.round(parseFloat(num) * multiples) / multiples,
+          strNum = multiplesNum.toString(),
+          index = strNum.indexOf("."),
+          decimalPoint,
+          integer;
+
+      if (index !== -1) {
+        integer = strNum.substring(0,index)
+        decimalPoint = strNum.substring(index+1).padEnd(decimal,0);
+      } else {
+        integer = strNum.substring(0);
+        decimalPoint = '0'.padEnd(decimal,0)
+      }
+      return `${integer}.${decimalPoint}`;
+    },
   },
   filters: {
     fixedFilter(val){

@@ -34,7 +34,7 @@
 
           <el-table-column label="分成金额（元）" width="110">
             <template slot-scope="scope">
-              {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2) }}
+              {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2) }}
               <!-- {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }} -->
               <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
             </template>
@@ -137,7 +137,7 @@
 
           <el-table-column label="分成金额（元）" width="110">
             <template slot-scope="scope">
-                {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100,2 )}}
+                {{fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}
               <!-- {{(comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0)) / 100 }} -->
               <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
             </template>
@@ -237,7 +237,7 @@
             <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
 
             <el-table-column label="分成金额（元）" width="110">
-              <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2)}}</template>
+              <template slot-scope="scope">{{fomatFloat((tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</template>
             </el-table-column>
 
             <!-- assignor -->
