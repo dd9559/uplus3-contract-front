@@ -50,50 +50,24 @@
         </ul>
         <div class="title">
           <span v-if="brokerList.length>0">居间方签署人：</span>
-          <span class="add" @click="addBroker">
+          <!-- <span class="add" @click="addBroker">
             添加
             <i class="el-icon-circle-plus"></i>
-          </span>
+          </span> -->
         </div>
         <ul class="list" v-show="brokerList.length>0">
           <li v-for="(item,index) in brokerList" :key="index">
             <div class="personType">
               签署人{{index+1}}
-              <span @click="chose('broker',item)">
+              <!-- <span @click="chose('broker',item)">
                 <span v-if="choseBrokerId.includes(item.id)"></span>
-              </span>
+              </span> -->
             </div>
             <div class="addPerson">
               <ul>
-                <li class="nameStyle">
-                  <span class="form-label">姓名：</span>
-                  <input
-                    type="text"
-                    class="inputStyle"
-                    placeholder="请输入"
-                    v-model="item.name"
-                    maxlength="10"
-                    @input="inputOnly(index,'name')"
-                  />
-                  <!-- <i
-                    :class="item.showSelectName?'el-icon-arrow-up':'el-icon-arrow-down'"
-                    @click="showSelect(item,index)"
-                  ></i>
-                  <ul
-                    class="selectList"
-                    v-if="item.showSelectName && selectNameList && selectNameList.length > 0"
-                  >
-                    <li
-                      v-for="(childItem,childIndex) in selectNameList"
-                      :class="item.name===childItem.name && item.mobile===childItem.mobile?'selected':''"
-                      @click="selectName(childItem,index)"
-                      :key="childIndex"
-                    >{{childItem.name}}</li>
-                  </ul> -->
-                </li>
                 <li>
                   <span class="form-label">角色：</span>
-                  <el-select size="small" v-model="item.roleName" placeholder="请选择">
+                  <el-select size="small" v-model="item.roleName" disabled placeholder="请选择">
                     <template v-for="childItem in dictionary['781']">
                       <el-option
                         v-if="childItem.key>2"
@@ -104,6 +78,17 @@
                       ></el-option>
                     </template>
                   </el-select>
+                </li>
+                <li class="nameStyle">
+                  <span class="form-label">姓名：</span>
+                  <input
+                    type="text"
+                    class="inputStyle"
+                    placeholder="请输入"
+                    v-model="item.name"
+                    maxlength="10"
+                    @input="inputOnly(index,'name')"
+                  />
                 </li>
                 <li>
                   <span class="form-label">电话：</span>
@@ -179,7 +164,7 @@
                   />
                 </li>
               </ul>
-              <span class="delBtn" @click="del(index,item.id)">删除</span>
+              <!-- <span class="delBtn" @click="del(index,item.id)">删除</span> -->
             </div>
           </li>
         </ul>
@@ -209,6 +194,9 @@
 </template>
 
 <script>
+function ID2(prefix) {
+  return (prefix || '') + new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
+};
 import { MIXINS } from "@/assets/js/mixins";
 export default {
   name: 'chosePerson',
@@ -295,21 +283,6 @@ export default {
     this.getDictionary(); //字典
   },
   methods: {
-    // 获取合同模板的所有角色签章位置存在情况
-    // getSignPosition() {
-    //   this.checkPersonList = []
-    //   this.$ajax
-    //   .get("/api/app/contract/GetSignPosition", {contCode:this.contCode})
-    //   .then(res => {
-    //     res = res.data
-    //     if (res.status === 200) {
-    //       this.checkPersonData = res.data
-    //     }
-    //   })
-    //   .catch(error => {
-    //     this.$message(error);
-    //   });
-    // },
     // 选择角色
     selectRole(val,index,parent) {
       let isSelectFlag = false;
@@ -339,11 +312,6 @@ export default {
         return
       }
       this.brokerList[index].roleName = "";
-      // let param = {
-      //   contCode: this.contCode,
-      //   signerType: Number(val.key)
-      //   isEntrust: 0, // 是否是委托合同，是1，不是0
-      // };
       if (this.checkPersonList.includes(val.key)) {
         let isSelectFlag = false;
         isSelectFlag = this.brokerList.some(signItem => {
@@ -361,31 +329,6 @@ export default {
       } else {
         this.$message("本合同不支持该角色签署");
       }
-      // this.$ajax
-      //   .get("/api/app/contract/checkSignPosition", param)
-      //   .then(res => {
-      //     res = res.data;
-      //     if (res.data) {
-      //       let isSelectFlag = false;
-      //       isSelectFlag = this.brokerList.some(signItem => {
-      //         if (parent.id !== signItem.id) {
-      //           return signItem.roleName === val.key;
-      //         }
-      //         // return signItem.roleName === val.key;
-      //       });
-      //       if (isSelectFlag) {
-      //         this.brokerList[index].roleName = "";
-      //         this.$message("已选择过该角色，请重新选择");
-      //       } else {
-      //         this.brokerList[index].roleName = val.key;
-      //       }
-      //     } else {
-      //       this.$message("本合同不支持该角色签署");
-      //     }
-      //   })
-      //   .catch(error => {
-      //     this.$message(error);
-      //   });
     },
     //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
     isIdCardNo(num) {
@@ -498,8 +441,6 @@ export default {
     },
     //身份证验证
     verifyIdcard(value, type,index) {
-      // let reg = /^[1-9]\d{5}((((19|[2-9][0-9])\d{2})(0?[13578]|1[02])(0?[1-9]|[12][0-9]|3[01]))|(((19|[2-9][0-9])\d{2})(0?[13456789]|1[012])(0?[1-9]|[12][0-9]|30))|(((19|[2-9][0-9])\d{2})0?2(0?[1-9]|1[0-9]|2[0-8]))|(((1[6-9]|[2-9][0-9])(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))0?229))\d{3}[0-9Xx]$/;
-      // let reg = /^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/
       if (type == 2) {
         if (value.encryptionCode.length === 18) {
           if (!this.isIdCardNo(value.encryptionCode) && value.cardType === 1) {
@@ -587,10 +528,6 @@ export default {
             }
           }))
           if (this.ownerMobileList.includes(value) || this.guestMobileList.includes(value) || checkBrokerMobole.includes(value)) {
-            // this.$message({
-            //   message: this.ownerMobileList.includes(value) ? "手机号不能与业主手机号相同":this.guestMobileList.includes(value)?"手机号不能与客户手机号相同":"手机号不能与已添加签署人手机号相同",
-            //   type: "warning"
-            // });
             this.$set(this.brokerList[index],'checkMobile',{
               flag: true,
               key: 'mobile',
@@ -602,7 +539,6 @@ export default {
               this.$set(this.brokerList[index],'checkMobile',{
                 flag: false
               })
-              // this.brokerMobileList.push(value)
               this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
                 return item.index !== index
               }))
@@ -611,7 +547,6 @@ export default {
               this.brokerMobileList && (this.brokerMobileList = this.brokerMobileList.filter((item,i) => {
                 return item.index !== index
               }))
-              // this.brokerMobileList.push(value)
               this.brokerMobileList.push({mobile:value,index:index})
             }
           }
@@ -625,51 +560,8 @@ export default {
         })
       }
     },
-    // 打开根据名字选择缓存下拉框
-    // showSelect(item, index) {
-    //   item.showSelectName = !item.showSelectName;
-    //   this.selectNameList =
-    //     localStorage.getItem("brokerList") &&
-    //     JSON.parse(localStorage.getItem("brokerList"));
-    // },
-    // 根据名字选择缓存
-    // selectName(item, index) {
-    //   if (item.contCode === this.contCode) {
-    //     this.$set(
-    //       this.brokerList,
-    //       index,
-    //       JSON.parse(
-    //         JSON.stringify(
-    //           Object.assign({}, item, {
-    //             id: Date.parse(new Date()),
-    //             contCode: this.contCode
-    //           })
-    //         )
-    //       )
-    //     );
-    //   } else {
-    //     this.$set(
-    //       this.brokerList,
-    //       index,
-    //       JSON.parse(
-    //         JSON.stringify(
-    //           Object.assign({}, item, {
-    //             id: Date.parse(new Date()),
-    //             contCode: this.contCode
-    //           })
-    //         )
-    //       )
-    //     );
-    //     this.brokerList[index].roleName = "";
-    //   }
-    //   this.brokerList[index].showSelectName = false;
-    // },
     inputOnly(index, type) {
       if (type === "name" || type === "companyName" || type === "lepName") {
-        // this.brokerList[index][type] = this.$tool.textInput(
-        //   this.brokerList[index][type],
-        //   3
-        // );
         this.brokerList[index][type] = this.brokerList[index][type].replace(/[^\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
       } else if (type === "guest") {
         this.guestList[index].name = this.$tool.textInput(
@@ -699,35 +591,8 @@ export default {
           this.choseGuestM.splice(index, 1);
           this.choseGuest.splice(index, 1);
         } else {
-          // this.isOverCheckSign = false
-          // if (this.isCheckGuestSign) {
-          //   this.isOverCheckSign = true
             this.choseGuestM.push(val.mobile);
             this.choseGuest.push(val);
-          // } else {
-          //   let param = {
-          //     contCode: this.contCode,
-          //     signerType: 1,
-          //     isEntrust: 0, // 是否是委托合同，是1，不是0
-          //   };
-          //   this.$ajax
-          //   .get("/api/app/contract/checkSignPosition", param)
-          //   .then(res => {
-          //     res = res.data;
-          //     this.isOverCheckSign = true
-          //     if (res.data) {
-          //       this.isCheckGuestSign = true
-          //       this.choseGuestM.push(val.mobile);
-          //       this.choseGuest.push(val);
-          //     } else {
-          //       this.$message("本合同不支持该角色签署");
-          //     }
-          //   })
-          //   .catch(error => {
-          //     this.isOverCheckSign = true
-          //     this.$message(error);
-          //   });
-          // }
         }
       } else  if (type === "broker" && this.checkPersonList.includes(val.roleName)){
         let index = this.choseBrokerId.indexOf(val.id);
@@ -758,14 +623,6 @@ export default {
           this.choseBrokerId.push(val.id);
           this.choseBroker.push(val);
         }
-        // let index = this.choseBroker.indexOf(val.mobile)
-        // if(index>-1){
-        //   this.choseBrokerM.splice(index,1)
-        //   this.choseBroker.splice(index,1)
-        // }else{
-        //   this.choseBrokerM.push(val.mobile)
-        //   this.choseBroker.push(val)
-        // }
       } else {
         this.$message("本合同不支持该角色签署");
       }
@@ -780,15 +637,15 @@ export default {
       }
     },
     //添加居间签署人
-    addBroker() {
+    addBroker(roleName) {
       if (this.brokerList.length < 5) {
         let item = {
-          id: Date.parse(new Date()),
-          time: Date.parse(new Date()),
+          id: ID2(new Date().getTime()),
+          time: ID2(new Date().getTime()),
           contCode: this.contCode,
           name: "",
           mobile: "",
-          roleName: "",
+          roleName,
           cardType: 1,
           encryptionCode: "",
           email: "-",
@@ -873,18 +730,14 @@ export default {
             }
           }
         }
-        // for(let prop in element){
-        //   if((prop !== 'companyName' && prop !== 'lepName' && prop !== 'lepIdentity' && prop !== 'showSelectName')&&!element[prop]){
-        //     state=true
-        //     this.$message('居间签署人信息未填写完整')
-        //     break circulation
-        //   }
-        // }
       }
       let localBrokerList = []
       this.brokerList.forEach(item => {
         if (this.choseBrokerId.includes(item.id)) {
           localBrokerList.push(item)
+        } else {
+          this.choseBrokerId.push(item.id);
+          this.choseBroker.push(item);
         }
       });
       let oldLocal = []
@@ -893,10 +746,6 @@ export default {
           return item !== null && !this.choseBrokerId.includes(item.id)
         })
       }
-      // oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
-      // oldLocal = oldLocal.filter((item,index) => {
-      //   return !this.choseBrokerId.includes(item.id)
-      // })
       localBrokerList = localBrokerList.concat(oldLocal);
       if (localBrokerList.length > 5) {
         localBrokerList.splice(5, localBrokerList.length - 1);
@@ -907,23 +756,7 @@ export default {
     //确认/取消
     submit(type) {
       if (type === "confirm") {
-        // let checkBrokerMobole = []
-        // this.brokerMobileList.map(item => {
-        //   if (item.index !== -1) {
-        //     checkBrokerMobole.push(item.mobile)
-        //   }
-        // })
-        // console.log(checkBrokerMobole,888888);
-        // for(let i = 0; i< checkBrokerMobole.length;i++) {
-        //   if (checkBrokerMobole[i] === checkBrokerMobole[i+1]) {
-        //     this.$message({
-        //       message: "手机号不能与已添加签署人手机号相同",
-        //       type: "warning"
-        //     });
-        //     return
-        //   }
-        // }
-        // if (this.choseOwner.length > 0 || this.choseGuest.length > 0) {
+          if (this.verify()) return;
           let selectRoleList = []
           let param = {
             contId: this.getChoseQuery.id,
@@ -1020,8 +853,7 @@ export default {
             customer.push(item);
             !selectRoleList.includes(1) && selectRoleList.push(1)
           });
-          console.log(selectRoleList,6565464565);
-          if (this.verify()) return;
+          // if (this.verify()) return;
           for (let index = 0; index < this.checkPersonList.length; index++) {
             const item = this.checkPersonList[index];
             if (!selectRoleList.includes(item)) {
@@ -1070,12 +902,6 @@ export default {
                 type:"error"
               })
             });
-        // } else {
-        //   this.$message({
-        //     message: "请选择客户或业主",
-        //     type: "warning"
-        //   });
-        // }
       } else {
         this.$emit("closeChose", false);
       }
@@ -1083,10 +909,12 @@ export default {
   },
   watch: {
     checkPersonData(val) {
+      let brokerCheckPersonList = []
       this.checkPersonList = []
       for (const key in val) {
         if (val.hasOwnProperty(key)) {
           val[key] && this.checkPersonList.push(Number(key))
+          val[key] && key > 1 && brokerCheckPersonList.push(Number(key))
         }
       }
       this.choseBrokerId = []
@@ -1102,32 +930,37 @@ export default {
               this.choseBroker.push(item);
               includeRoleList.push(item.id)
               this.brokerMobileList.push({mobile:item.mobile,index:-1})
+              brokerCheckPersonList = brokerCheckPersonList.filter(Fitem => Fitem != item.roleName)
               return true
             }
           }
         })
       }
+      
+      brokerCheckPersonList.forEach(item => {
+        this.addBroker(item)
+      })
     },
-    localChoseList(val) {
-      this.choseBrokerId = []
-      this.choseBroker = []
-      let includeRoleList = []
-      if (val&&val.length > 0) {
-        this.brokerList = val.filter(item => {
-          if (includeRoleList.includes(item.id)) {
-            return false
-          } else {
-            if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
-              this.choseBrokerId.push(item.id);
-              this.choseBroker.push(item);
-              includeRoleList.push(item.id)
-              this.brokerMobileList.push({mobile:item.mobile,index:-1})
-              return true
-            }
-          }
-        })
-      }
-    },
+    // localChoseList(val) {
+    //   this.choseBrokerId = []
+    //   this.choseBroker = []
+    //   let includeRoleList = []
+    //   if (val&&val.length > 0) {
+    //     this.brokerList = val.filter(item => {
+    //       if (includeRoleList.includes(item.id)) {
+    //         return false
+    //       } else {
+    //         if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
+    //           this.choseBrokerId.push(item.id);
+    //           this.choseBroker.push(item);
+    //           includeRoleList.push(item.id)
+    //           this.brokerMobileList.push({mobile:item.mobile,index:-1})
+    //           return true
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
     ownerList(val) {
       this.choseOwnerM = []
       this.choseOwner = []

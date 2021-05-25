@@ -830,6 +830,9 @@
           <div class="paper-table step-report-table" v-if="stepReportData.length>0&&activeItem===2">
             <!-- <div class="title">跟进记录：</div> -->
             <el-table border :data="stepReportData">
+              <el-table-column align="center" label="创建时间">
+                <template slot-scope="scope">{{scope.row.createTime ? dateFormat(scope.row.createTime) : '-'}}</template>
+              </el-table-column>
               <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
               <el-table-column align="center" label="跟进时间">
                 <template slot-scope="scope">{{dateFormat(scope.row.reportingDate)}}</template>
