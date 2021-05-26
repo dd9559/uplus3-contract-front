@@ -2824,14 +2824,14 @@ export default {
             this.changeCancel_ = true;
           } else {
             this.$message({
-              message: '该合同存在有效结算，不支持变更！',
+              message: '存在审核中的结算，不能发起变更',
               type: 'warning'
             });
           }
         })
         .catch((error) => {
           this.$message({
-            message: '该合同存在有效结算，不支持变更！',
+            message: '存在审核中的结算，不能发起变更',
             type: 'warning'
           });
         });

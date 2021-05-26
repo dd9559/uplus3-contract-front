@@ -50,31 +50,23 @@
         </ul>
         <div class="title">
           <span v-if="brokerList.length>0">居间方签署人：</span>
-          <!-- <span class="add" @click="addBroker">
-            添加
-            <i class="el-icon-circle-plus"></i>
-          </span> -->
         </div>
         <ul class="list" v-show="brokerList.length>0">
           <li v-for="(item,index) in brokerList" :key="index">
             <div class="personType">
               签署人{{index+1}}
-              <!-- <span @click="chose('broker',item)">
-                <span v-if="choseBrokerId.includes(item.id)"></span>
-              </span> -->
             </div>
             <div class="addPerson">
               <ul>
                 <li>
                   <span class="form-label">角色：</span>
-                  <el-select size="small" v-model="item.roleName" disabled placeholder="请选择">
+                  <el-select class="disabled" size="small" v-model="item.roleName" disabled placeholder="请选择">
                     <template v-for="childItem in dictionary['781']">
                       <el-option
                         v-if="childItem.key>2"
                         :key="childItem.key"
                         :label="childItem.value"
                         :value="childItem.key"
-                        @click.native="selectRole(childItem,index,item)"
                       ></el-option>
                     </template>
                   </el-select>
@@ -104,6 +96,7 @@
                 <li>
                   <span class="form-label">证件类型：</span>
                   <el-select
+                    class="disabled"
                     size="small"
                     v-model="item.cardType"
                     placeholder="请选择"
@@ -164,7 +157,6 @@
                   />
                 </li>
               </ul>
-              <!-- <span class="delBtn" @click="del(index,item.id)">删除</span> -->
             </div>
           </li>
         </ul>
@@ -173,22 +165,6 @@
         <el-button round class="search_btn" @click="submit('close')">取消</el-button>
         <el-button type="primary" round class="search_btn" @click="submit('confirm')">确认</el-button>
       </div>
-    </el-dialog>
-    <!-- 删除人员确认框 -->
-    <el-dialog
-      title="确认删除"
-      :visible.sync="dialogDel"
-      width="460px"
-      :closeOnClickModal="$tool.closeOnClickModal"
-    >
-      <div class="delHint">
-        <p>确定删除？</p>
-        <p>该居间方签署人信息将会被删除</p>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button round @click="dialogDel = false">取 消</el-button>
-        <el-button type="primary" round @click="delPerson">确 定</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
@@ -253,16 +229,10 @@ export default {
       choseOwner: [],
       choseGuestM: [],
       choseGuest: [],
-
       brokerList: [],
       selectNameList: [],
-      choseBrokerId: [],
-      choseBroker: [],
-      dialogDel: false,
       delId: "",
       delIndex: "",
-
-      //   showSelect:false,
       dictionary: {
         //数据字典
         "633": "", //证件类型(护照,身份证,营业执照)
@@ -283,53 +253,6 @@ export default {
     this.getDictionary(); //字典
   },
   methods: {
-    // 选择角色
-    selectRole(val,index,parent) {
-      let isSelectFlag = false;
-      isSelectFlag = this.brokerList.some((signItem,index) => {
-        if (parent.id !== signItem.id) {
-          console.log(signItem.roleName,val.key,"brokerList");
-          return signItem.roleName === val.key;
-        }
-      });
-      if (!isSelectFlag && localStorage.getItem("brokerList")) {
-        let arr = JSON.parse(localStorage.getItem("brokerList")).filter(item => {
-            return item !== null
-        })
-        for(let i = 0; i< arr.length;i++) {
-          if ((
-            arr[i].roleName === val.key &&
-            arr[i].contCode === this.contCode
-          )) {
-            this.brokerList[index].roleName = val.key;
-            return
-          }
-        }
-      }
-      if (isSelectFlag) {
-        this.brokerList[index].roleName = "";
-        this.$message("已选择过该角色，请重新选择");
-        return
-      }
-      this.brokerList[index].roleName = "";
-      if (this.checkPersonList.includes(val.key)) {
-        let isSelectFlag = false;
-        isSelectFlag = this.brokerList.some(signItem => {
-          if (parent.id !== signItem.id) {
-            return signItem.roleName === val.key;
-          }
-          // return signItem.roleName === val.key;
-        });
-        if (isSelectFlag) {
-          this.brokerList[index].roleName = "";
-          this.$message("已选择过该角色，请重新选择");
-        } else {
-          this.brokerList[index].roleName = val.key;
-        }
-      } else {
-        this.$message("本合同不支持该角色签署");
-      }
-    },
     //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
     isIdCardNo(num) {
       num = num.toUpperCase();
@@ -415,25 +338,8 @@ export default {
           dtmBirth.getMonth() + 1 == Number(arrSplit[3]) &&
           dtmBirth.getDate() == Number(arrSplit[4]);
         if (!bGoodDay) {
-          // alert(dtmBirth.getYear());
-          // alert(arrSplit[2]);
-          // alert('输入的身份证号里出生日期不对！');
           return false;
         } else {
-          //检验18位身份证的校验码是否正确。
-          //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
-          // var valnum;
-          // var arrInt = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
-          // var arrCh = new Array('1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2');
-          // var nTemp = 0, i;
-          // for (i = 0; i < 17; i++) {
-          //     nTemp += num.substr(i, 1) * arrInt[i];
-          // }
-          // valnum = arrCh[nTemp % 11];
-          // if (valnum != num.substr(17, 1)) {
-          //     // alert('18位身份证的校验码不正确！应该为：' + valnum);
-          //     return false;
-          // }
           return true;
         }
       }
@@ -575,7 +481,6 @@ export default {
     },
     //选择
     chose(type, val) {
-      console.log(val,88888);
       if (type === "owner" && this.checkPersonList.includes(0)) {
         let index = this.choseOwnerM.indexOf(val.mobile);
         if (index > -1) {
@@ -593,35 +498,6 @@ export default {
         } else {
             this.choseGuestM.push(val.mobile);
             this.choseGuest.push(val);
-        }
-      } else  if (type === "broker" && this.checkPersonList.includes(val.roleName)){
-        let index = this.choseBrokerId.indexOf(val.id);
-        if (index > -1) {
-          this.choseBrokerId.splice(index, 1);
-          this.choseBroker.splice(index, 1);
-        } else {
-          // 选择时判断是否填写完整
-          if (val.cardType === 3) {
-            for (let prop in val) {
-              if (prop !== "showSelectName" && !val[prop]) {
-                return this.$message("居间签署人信息未填写完整");
-              }
-            }
-          } else {
-            for (let prop in val) {
-              if (
-                prop !== "companyName" &&
-                prop !== "lepName" &&
-                prop !== "lepIdentity" &&
-                prop !== "showSelectName" &&
-                !val[prop]
-              ) {
-                return this.$message("居间签署人信息未填写完整");
-              }
-            }
-          }
-          this.choseBrokerId.push(val.id);
-          this.choseBroker.push(val);
         }
       } else {
         this.$message("本合同不支持该角色签署");
@@ -655,8 +531,6 @@ export default {
           showSelectName: false
         };
         this.brokerList.push(item);
-        // this.choseBrokerId.push(item.id)
-        // this.choseBroker.push(item)
       } else {
         this.$message({
           message: "已达上限",
@@ -664,57 +538,37 @@ export default {
         });
       }
     },
-    // 删除居间签署人
-    del(index, id) {
-      this.delIndex = index;
-      this.delId = id;
-      this.dialogDel = true;
-    },
-    delPerson() {
-      let that = this;
-      console.log(this.delIndex,this.choseBrokerId.indexOf(this.delId),this.choseBrokerId,this.delId,77777);
-      let i = this.choseBrokerId.indexOf(this.delId);
-      if (i > -1) {
-        this.choseBrokerId.splice(i, 1);
-        this.choseBroker.splice(i, 1);
-        this.brokerList.splice(this.delIndex,1)
-        let oldLocal = (localStorage.getItem("brokerList") && (JSON.parse(localStorage.getItem("brokerList")) || []))
-        oldLocal = oldLocal.filter((item,index) => {
-          return item.id !== this.delId
-        })
-        localStorage.setItem("brokerList", JSON.stringify(oldLocal));
-      } else {
-        this.brokerList.splice(this.delIndex,1)
-      }
-      this.dialogDel = false;
-    },
     //验证居间签署人信息是否填写完整
     verify() {
-      let state = false;
-      circulation: for (let i = 0; i < this.choseBroker.length; i++) {
-        const element = this.choseBroker[i];
+      let state = false,
+          msg = null;
+      circulation: for (let i = 0; i < this.brokerList.length; i++) {
+        const element = this.brokerList[i];
         if (element.checkMobile && element.checkMobile.flag) {
-          return this.$message({
+          return msg = {
             message: element.checkMobile.msg,
             type: element.checkMobile.type
-          });
+          };
         }
         if (element.cardType === 1 && element.checkEncryptionCode && element.checkEncryptionCode.flag) {
-          return this.$message({
+          return msg = {
             message: element.checkEncryptionCode.msg,
             type: element.checkEncryptionCode.type
-          });
+          };
         }
         if (element.cardType === 3 && element.checkLepIdentity && element.checkLepIdentity.flag) {
-          return this.$message({
+          return msg = {
             message: element.checkLepIdentity.msg,
             type: element.checkLepIdentity.type
-          });
+          };
         }
         if (element.cardType === 3) {
           for (let prop in element) {
             if (prop !== "showSelectName" && !element[prop]) {
-              return this.$message("居间签署人信息未填写完整");
+              return msg = {
+                message: "居间签署人信息未填写完整",
+                type: 'warning'
+              };
             }
           }
         } else {
@@ -726,24 +580,24 @@ export default {
               prop !== "showSelectName" &&
               !element[prop]
             ) {
-              return this.$message("居间签署人信息未填写完整");
+              return msg = {
+                message: "居间签署人信息未填写完整",
+                type: 'warning'
+              };
             }
           }
         }
       }
-      let localBrokerList = []
+      let localBrokerList = [],
+          choseBrokerId = [];
       this.brokerList.forEach(item => {
-        if (this.choseBrokerId.includes(item.id)) {
-          localBrokerList.push(item)
-        } else {
-          this.choseBrokerId.push(item.id);
-          this.choseBroker.push(item);
-        }
+        localBrokerList.push(item)
+        choseBrokerId.push(item.id)
       });
       let oldLocal = []
       if (localStorage.getItem("brokerList")) {
         oldLocal = JSON.parse(localStorage.getItem("brokerList")).filter((item,index) => {
-          return item !== null && !this.choseBrokerId.includes(item.id)
+          return item !== null && !choseBrokerId.includes(item.id)
         })
       }
       localBrokerList = localBrokerList.concat(oldLocal);
@@ -756,7 +610,11 @@ export default {
     //确认/取消
     submit(type) {
       if (type === "confirm") {
-          if (this.verify()) return;
+          if(this.brokerList.length > 0){
+            if (this.verify()) {
+              return this.$message(this.verify())
+            }
+          }
           let selectRoleList = []
           let param = {
             contId: this.getChoseQuery.id,
@@ -767,14 +625,7 @@ export default {
           let owner = [],
             customer = [],
             signer = [];
-          let localBrokerList = []
-          this.brokerList.length>0 && this.brokerList.forEach(item => {
-            if (this.choseBrokerId.includes(item.id)) {
-              localBrokerList.push(item)
-            }
-          })
-          console.log(localBrokerList,88888888);
-          localBrokerList.forEach(element => {
+          this.brokerList.forEach(element => {
             let item = {}
             if (element.cardType == 3) {
               item = {
@@ -853,7 +704,6 @@ export default {
             customer.push(item);
             !selectRoleList.includes(1) && selectRoleList.push(1)
           });
-          // if (this.verify()) return;
           for (let index = 0; index < this.checkPersonList.length; index++) {
             const item = this.checkPersonList[index];
             if (!selectRoleList.includes(item)) {
@@ -887,21 +737,22 @@ export default {
           param.owner = owner.length>0?owner:null;
           param.customer = customer.length>0?customer:null;
           param.signer = signer.length>0?signer:null;
-          this.$ajax
-            .postJSON("/api/app/contract/sendCont", param)
-            .then(res => {
-              res = res.data;
-              if (res.status === 200) {
-                this.$emit("closeChose", { type: "closeChose" });
-              }
-            })
-            .catch(error => {
-              this.$emit("closeChose",false)
-              this.$message({
-                message:error,
-                type:"error"
-              })
-            });
+          this.$emit("closeChose", { type: "closeChose" });
+          // this.$ajax
+          //   .postJSON("/api/app/contract/sendCont", param)
+          //   .then(res => {
+          //     res = res.data;
+          //     if (res.status === 200) {
+          //       this.$emit("closeChose", { type: "closeChose" });
+          //     }
+          //   })
+          //   .catch(error => {
+          //     this.$emit("closeChose",false)
+          //     this.$message({
+          //       message:error,
+          //       type:"error"
+          //     })
+          //   });
       } else {
         this.$emit("closeChose", false);
       }
@@ -917,8 +768,6 @@ export default {
           val[key] && key > 1 && brokerCheckPersonList.push(Number(key))
         }
       }
-      this.choseBrokerId = []
-      this.choseBroker = []
       let includeRoleList = []
       if (this.localChoseList&&this.localChoseList.length > 0) {
         this.brokerList = this.localChoseList.filter(item => {
@@ -926,8 +775,6 @@ export default {
             return false
           } else {
             if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
-              this.choseBrokerId.push(item.id);
-              this.choseBroker.push(item);
               includeRoleList.push(item.id)
               this.brokerMobileList.push({mobile:item.mobile,index:-1})
               brokerCheckPersonList = brokerCheckPersonList.filter(Fitem => Fitem != item.roleName)
@@ -941,33 +788,11 @@ export default {
         this.addBroker(item)
       })
     },
-    // localChoseList(val) {
-    //   this.choseBrokerId = []
-    //   this.choseBroker = []
-    //   let includeRoleList = []
-    //   if (val&&val.length > 0) {
-    //     this.brokerList = val.filter(item => {
-    //       if (includeRoleList.includes(item.id)) {
-    //         return false
-    //       } else {
-    //         if (item.contCode === this.contCode && this.checkPersonList.includes(item.roleName)) {
-    //           this.choseBrokerId.push(item.id);
-    //           this.choseBroker.push(item);
-    //           includeRoleList.push(item.id)
-    //           this.brokerMobileList.push({mobile:item.mobile,index:-1})
-    //           return true
-    //         }
-    //       }
-    //     })
-    //   }
-    // },
     ownerList(val) {
       this.choseOwnerM = []
       this.choseOwner = []
       this.isCheckOwnerSign = false
       if (this.ownerList.length == 1) {
-        // this.choseOwnerM.push(this.ownerList[0].mobile);
-        // this.choseOwner.push(this.ownerList[0]);
       }
       this.ownerMobileList = val.map(item => {
         if (item.mobile) {
@@ -982,9 +807,6 @@ export default {
       this.choseGuest = []
       this.isCheckGuestSign = false
       if (this.guestList.length == 1) {
-        // this.choseGuestM.push(this.guestList[0].mobile);
-        // this.choseGuest.push(this.guestList[0]);
-        // this.chose("guest", this.guestList[0]);
       }
       this.guestMobileList = val.map(item => {
         if (item.mobile) {
@@ -998,7 +820,6 @@ export default {
   computed: {
     getDialogVisible() {
       if (this.dialogVisible) {
-        // this.getSignPosition()
       }
       return this.dialogVisible;
     },
@@ -1120,6 +941,12 @@ export default {
       transform: translateY(-50%);
     }
     ul {
+      .disabled {
+        /deep/input {
+          background-color: #fff;
+          color: black;
+        }
+      }
       .nameStyle {
         position: relative;
         .selectList {

@@ -271,7 +271,7 @@
             <span>当前账户余额{{withdrawData.allAmount}}元，<span class="all" @click="allMoney">全部提现</span></span>
           </li>
           <li>
-            <span>温馨提示：到账金额为{{accSub(withdrawData.fee,money)}}元</span>
+            <span>温馨提示：到账金额为{{parseFloat(accSub(withdrawData.fee,money)) < 0 ? 0 : accSub(withdrawData.fee,money)}}元</span>
           </li>
         </ul>
         <div slot="footer">
