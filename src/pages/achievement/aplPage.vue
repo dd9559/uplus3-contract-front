@@ -292,6 +292,40 @@
                 </template>
               </el-table-column>
 
+              <!-- 经理，可输入，可下拉 -->
+              <el-table-column label="经理">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :disabled="scope.row.mName?false:true"
+                    :content="scope.row.mName+''"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-select
+                      v-model="scope.row.mName"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :remote-method="getShopInfo(3)"
+                      :loading="loading1"
+                      v-loadmore="moreAssignors"
+                      @change="changeDirectors(scope.row.mName,scope.$index,0)"
+                    >
+                      <el-option
+                        v-for="item in directors"
+                        :key="item.empId"
+                        :label="item.name+'-'+item.depName"
+                        :value="item.empId+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
               <!-- 单组，可输入，可下拉 -->
               <el-table-column label="单组" v-if="$route.query.version=='0'">
                 <template slot-scope="scope">
@@ -703,6 +737,40 @@
                 </template>
               </el-table-column>
 
+              <!-- 经理，可输入，可下拉 -->
+              <el-table-column label="经理">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :disabled="scope.row.mName?false:true"
+                    :content="scope.row.mName+''"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-select
+                      v-model="scope.row.mName"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :remote-method="getShopInfo(3)"
+                      :loading="loading1"
+                      v-loadmore="moreAssignors"
+                      @change="changeDirectors(scope.row.mName,scope.$index,1)"
+                    >
+                      <el-option
+                        v-for="item in directors"
+                        :key="item.empId"
+                        :label="item.name+'-'+item.depName"
+                        :value="item.empId+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
               <!-- 单组，可输入，可下拉 -->
               <el-table-column label="单组" v-if="$route.query.version=='0'">
                 <template slot-scope="scope">
@@ -1079,6 +1147,40 @@
                       >
                         <el-option
                           v-for="item in shopkeepers"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.empId+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+
+                <!-- 经理，可输入，可下拉 -->
+                <el-table-column label="经理">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :disabled="scope.row.mName?false:true"
+                      :content="scope.row.mName+''"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.mName"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :remote-method="getShopInfo(3)"
+                        :loading="loading1"
+                        v-loadmore="moreAssignors"
+                        @change="changeDirectors(scope.row.mName,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in directors"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
                           :value="item.empId+'-'+item.name"
@@ -1588,6 +1690,7 @@ export default {
       shopkeepers: [], //模糊搜索店长
       amaldars: [], //模糊搜索区经
       managers: [], //模糊搜索区总
+      directors:[],//模糊搜索经理
       loading1: false,
       loading: false,
       radioFlag: 3,
@@ -1917,7 +2020,9 @@ export default {
               assignorNum,
               assignorLevel,
               salesManagerLevel,
-              loginAccount
+              loginAccount,
+              jingLiId:mId,
+              jingLiName:mName
             } = res.data.data;
             if (type == 0) {
               Object.assign(this.houseArr[index], {
@@ -1939,7 +2044,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             } else if (type == 1) {
               Object.assign(this.clientArr[index], {
@@ -1961,7 +2068,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             } else {
               Object.assign(this.serviceAgents[index], {
@@ -1983,7 +2092,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             }
           });
@@ -2006,7 +2117,9 @@ export default {
           assignorNum: "",
           assignorLevel: "",
           salesManagerLevel: "",
-          loginAccount: ""
+          loginAccount: "",
+          mId:"",
+          mName:""
         };
         if (type == 0) {
           Object.assign(this.houseArr[index], initObj);
@@ -2108,7 +2221,9 @@ export default {
               this.amaldars = res.data.data.list;
             } else if (roleId == 0) {
               this.managers = res.data.data.list;
-            }
+            } else if(roleId == 3) {
+              this.directors = res.data.data.list
+            } 
             this.loading1 = false;
             this.shopTotal = res.data.data.total;
             this.shopIndex = 1;
@@ -2162,6 +2277,23 @@ export default {
       } else {
         this.shopIndex++;
         this.getMoreShopInfo(this.shopStr, this.shopIndex, 0);
+      }
+    },
+    //改变经理
+    changeDirectors(val, index, type1) {
+      // debugger
+      if (val) {
+        let idName = val.split("-");
+        if (type1 == 0) {
+          this.houseArr[index].mId = idName[0];
+          this.houseArr[index].mName = idName[1];
+        } else if (type1 == 1) {
+         this.clientArr[index].mId = idName[0];
+          this.clientArr[index].mName = idName[1];
+        } else if (type1 == 2) {
+          this.serviceAgents[index].mId = idName[0];
+          this.serviceAgents[index].mName = idName[1];
+        }
       }
     },
     // 改变店长

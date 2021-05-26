@@ -90,6 +90,9 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
+          <el-table-column label="经理">
+            <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+          </el-table-column>
           <!-- level4 -->
           <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>
           <!-- level3 -->
@@ -193,6 +196,9 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
+          <el-table-column label="经理">
+            <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+          </el-table-column>
           <!-- level4 -->
           <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>
           <!-- level3 -->
@@ -289,6 +295,9 @@
                 <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
                 <span v-else>-</span>
               </template>
+            </el-table-column>
+            <el-table-column label="经理">
+              <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
             </el-table-column>
             <!-- level4 -->
             <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>

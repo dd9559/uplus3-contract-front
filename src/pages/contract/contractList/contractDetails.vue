@@ -459,6 +459,9 @@
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
                     </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+                    </el-table-column>
                     <!-- employeeData.version 1是3.0系统  0不是3.0系统 -->
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
@@ -538,6 +541,9 @@
                     </el-table-column>
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
+                    </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
                     </el-table-column>
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
@@ -621,6 +627,9 @@
                     </el-table-column>
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
+                    </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
                     </el-table-column>
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
