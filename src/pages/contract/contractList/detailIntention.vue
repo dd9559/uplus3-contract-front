@@ -1303,8 +1303,26 @@ export default {
         goChangeCancel(value) {
             this.changeCancelId = Number(this.detailData.id);
             if (value === 1) {
-                this.canceldialogType = "bg";
-                this.changeCancel_ = true;
+                this.$ajax
+                .get("/api/contract/ischangeAudit", {contCode:this.detailData.code})
+                .then((res) => {
+                res = res.data;
+                if (res.status === 200 && res.data) {
+                    this.canceldialogType = "bg";
+                    this.changeCancel_ = true;
+                } else {
+                    this.$message({
+                    message: '该合同存在有效结算，不支持变更！',
+                    type: 'warning'
+                    });
+                }
+                })
+                .catch((error) => {
+                    this.$message({
+                        message: '该合同存在有效结算，不支持变更！',
+                        type: 'warning'
+                    });
+                });
             } else if (value === 2) {
                 this.canceldialogType = "jy";
                 this.changeCancel_ = true;

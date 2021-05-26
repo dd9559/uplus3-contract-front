@@ -121,6 +121,12 @@
           </template>
         </el-table-column>
 
+        <el-table-column label="收款公司名称" min-width="100">
+          <template slot-scope="scope">
+            {{scope.row.companyName||'-'}}
+          </template>
+        </el-table-column>
+
         <el-table-column label="打款人" :formatter="nullFormatter" min-width="120">
           <template slot-scope="scope">
             <p>{{scope.row.createdByDep}}-{{scope.row.createdByName}}</p>

@@ -110,6 +110,16 @@
             {{scope.row.managerFee|fomatFloat}}
           </template>
         </el-table-column>
+        <el-table-column>
+          <template slot="header">收款公司名称
+            <el-tooltip content="此分账期间收款门店对应公司" placement="top">
+              <img class="icon-prompt" src="../../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+            </el-tooltip>
+          </template>
+          <template slot-scope="scope">
+            {{scope.row.companyName||'-'}}
+          </template>
+        </el-table-column>
         <el-table-column label="打款状态">
           <template slot-scope="scope">
             <span>{{scope.row.isPay == 1 ? '已打款' : '未打款'}}</span>
