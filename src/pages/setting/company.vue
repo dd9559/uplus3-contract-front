@@ -265,13 +265,13 @@
           <li>
             <span>提现金额：</span>
             <el-input style="width:120px;" size="mini" maxlength="15" v-model.trim="money" @input="inputOnly(1,'money')"></el-input>
-            <p class="tip" v-show="parseFloat(money) > parseFloat(withdrawData.allAmount)">输入金额超过余额</p>
+            <p class="tip" v-show="parseFloat(money) > parseFloat(withdrawData.allAmount)">输入金额超过可提现余额</p>
           </li>
           <li>
-            <span>当前可提现到账金额{{withdrawData.allAmount}}元，<span class="all" @click="allMoney">全部提现</span></span>
+            <span>当前账户余额{{withdrawData.allAmount}}元，<span class="all" @click="allMoney">全部提现</span></span>
           </li>
           <li>
-            <span>温馨提示：提现手续费：每笔{{withdrawData.fee}}元</span>
+            <span>温馨提示：到账金额为{{parseFloat(accSub(withdrawData.fee,money)) < 0 ? 0 : accSub(withdrawData.fee,money)}}元(扣除手续费{{withdrawData.fee}}元)</span>
           </li>
         </ul>
         <div slot="footer">
@@ -290,6 +290,9 @@
           <p class="two">
             <span>手续费</span>
             <span>￥{{withdrawData.fee}}</span>
+          </p>
+          <p class="two">
+            <span>温馨提示：到账金额为{{accSub(withdrawData.fee,money)}}</span>
           </p>
         </div>
         <div slot="footer">
@@ -316,6 +319,11 @@
             </template>
           </el-table-column>
           <el-table-column label="提现金额" prop="amount">
+          </el-table-column>
+           <el-table-column label="到账金额">
+             <template slot-scope="scope">
+              <span>{{accSub(scope.row.fee,scope.row.amount)}}</span>
+            </template>
           </el-table-column>
           <el-table-column label="手续费（元）" prop="fee">
           </el-table-column>
@@ -345,23 +353,6 @@
     try{m+=s1.split(".")[1].length}catch(e){} 
     try{m+=s2.split(".")[1].length}catch(e){} 
     return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m) 
-  }
-
-  function accSub(arg1,arg2){
-    var r1,r2,m,n;
-    try{
-      r1=arg1.toString().split(".")[1].length;
-    }catch(e){
-      r1=0;
-    }
-    try{
-      r2=arg2.toString().split(".")[1].length;
-    }catch(e){
-      r2=0;
-    }
-    m=Math.pow(10,Math.max(r1,r2));
-    n=(r1>=r2)?r1:r2;
-    return ((arg2*m-arg1*m)/m).toFixed(n);
   }
 
 
@@ -528,6 +519,22 @@
       }
     },
     methods: {
+      accSub(arg1,arg2){
+        var r1,r2,m,n;
+        try{
+          r1=arg1.toString().split(".")[1].length;
+        }catch(e){
+          r1=0;
+        }
+        try{
+          r2=arg2.toString().split(".")[1].length;
+        }catch(e){
+          r2=0;
+        }
+        m=Math.pow(10,Math.max(r1,r2));
+        n=(r1>=r2)?r1:r2;
+        return ((arg2*m-arg1*m)/m).toFixed(n);
+      },
       fomatFloat (num, decimal = 2) {
         num = num ? num : 0
         let multiples = Number('1'.padEnd(decimal+1,0)),
@@ -838,8 +845,8 @@
           }
           if (balance.status === 200) {
             if (balance.data.status === 200) {
-              let allAmount = accSub(JSON.parse(balance.data.data).freezenAmount,JSON.parse(balance.data.data).allAmount)/100
-              this.withdrawData.allAmount = accSub(row.fee,allAmount) <= 0 ? 0 : accSub(row.fee,allAmount)
+              let allAmount = this.accSub(JSON.parse(balance.data.data).freezenAmount,JSON.parse(balance.data.data).allAmount)/100
+              this.withdrawData.allAmount = allAmount <= 0 ? 0 : allAmount
               this.withdrawData.freezenAmount = JSON.parse(balance.data.data).freezenAmount
             } else {
               return this.$message(balance.data.message)

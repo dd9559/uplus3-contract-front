@@ -359,6 +359,7 @@
             >
               <el-option
                 v-for="item in conditionList"
+                v-if="aduitForm.type!==10||(aduitForm.type===10&&item.key!==0)"
                 :key="item.key"
                 :label="item.value"
                 :value="item.key"
@@ -1271,6 +1272,7 @@ export default {
       this.getJobName(this.searchForm.cityId,this.isCrossSystem?"":this.aduitForm.systemTag)
     },
     setConditionList(val, type = 1) {
+      console.log(val,2323232);
       for (let key in this.branchObj) {
         if (val == key) {
           this[type == 1 ? 'homeConditionList' : 'conditionList'] = this.branchObj[key]

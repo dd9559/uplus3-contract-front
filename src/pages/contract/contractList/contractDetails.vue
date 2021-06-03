@@ -459,6 +459,9 @@
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
                     </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+                    </el-table-column>
                     <!-- employeeData.version 1是3.0系统  0不是3.0系统 -->
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
@@ -539,6 +542,9 @@
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
                     </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+                    </el-table-column>
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
                     </el-table-column>
@@ -591,7 +597,7 @@
                     </el-table-column>
                     <el-table-column label="分成金额（元）" width="110">
                       <!-- <template slot-scope="scope">{{(Math.round((employeeData.tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2) || 0}}</template> -->
-                      <template slot-scope="scope">{{fomatFloat((employeeData.tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2)}}</template>
+                      <template slot-scope="scope">{{fomatFloat((accSub((employeeData.other3|| 0),(employeeData.tradeFee|| 0))) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2)}}</template>
                     </el-table-column>
                     <el-table-column label="经纪人" min-width="100">
                       <template slot-scope="scope">{{scope.row.assignor?scope.row.assignor:'-'}}</template>
@@ -621,6 +627,9 @@
                     </el-table-column>
                     <el-table-column label="店长">
                       <template slot-scope="scope">{{scope.row.shopkeeper?scope.row.shopkeeper:'-'}}</template>
+                    </el-table-column>
+                    <el-table-column label="经理">
+                      <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
                     </el-table-column>
                     <el-table-column label="单组" v-if="!employeeData.version">
                       <template slot-scope="scope">{{scope.row.level4?scope.row.level4:'-'}}</template>
@@ -2815,8 +2824,28 @@ export default {
     goChangeCancel(value) {
       this.changeCancelId = Number(this.id);
       if (value === 1) {
-        this.canceldialogType = "bg";
-        this.changeCancel_ = true;
+        this.$ajax
+        .get("/api/contract/ischangeAudit", {contCode:this.contractDetail.code})
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200 && res.data) {
+            this.canceldialogType = "bg";
+            this.changeCancel_ = true;
+          } else {
+            this.$message({
+              message: '存在审核中的结算，不能发起变更',
+              type: 'warning'
+            });
+          }
+        })
+        .catch((error) => {
+          this.$message({
+            message: '存在审核中的结算，不能发起变更',
+            type: 'warning'
+          });
+        });
+        // this.canceldialogType = "bg";
+        // this.changeCancel_ = true;
       } else if (value === 2) {
         this.canceldialogType = "jy";
         this.changeCancel_ = true;
@@ -2958,6 +2987,7 @@ export default {
         let id = "audio" + index;
         let myAudios = document.getElementsByTagName("audio");
         let myAudio = document.getElementById(id);
+        console.log(id,'stripe',myAudio,'myAudio');
         // myAudio.onloadedmetadata=function(){
         //   debugger
         //   console.log(myAudio)
@@ -3900,6 +3930,22 @@ export default {
         num = num.substring(0);
       }
       return parseFloat(num).toFixed(decimal);
+    },
+    accSub(arg1,arg2){
+      var r1,r2,m,n;
+      try{
+        r1=arg1.toString().split(".")[1].length;
+      }catch(e){
+        r1=0;
+      }
+      try{
+        r2=arg2.toString().split(".")[1].length;
+      }catch(e){
+        r2=0;
+      }
+      m=Math.pow(10,Math.max(r1,r2));
+      n=(r1>=r2)?r1:r2;
+      return ((arg2*m-arg1*m)/m).toFixed(n);
     },
   },
   mounted() {

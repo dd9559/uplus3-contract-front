@@ -105,7 +105,6 @@ export default {
     },
     // 新增 编辑 删除 操作
     conOperation(tit, type, row) {
-      debugger
       if(type === 2) {
         this.$confirm('是否删除此条合同资料?', '删除合同资料', {
           distinguishCancelAndClose: true,

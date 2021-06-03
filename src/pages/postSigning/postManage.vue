@@ -830,6 +830,9 @@
           <div class="paper-table step-report-table" v-if="stepReportData.length>0&&activeItem===2">
             <!-- <div class="title">跟进记录：</div> -->
             <el-table border :data="stepReportData">
+              <el-table-column align="center" label="创建时间">
+                <template slot-scope="scope">{{scope.row.createTime ? timeFormat(scope.row.createTime) : '-'}}</template>
+              </el-table-column>
               <el-table-column align="center" label="跟进人" prop="reportingtor"></el-table-column>
               <el-table-column align="center" label="跟进时间">
                 <template slot-scope="scope">{{dateFormat(scope.row.reportingDate)}}</template>
@@ -1280,6 +1283,28 @@ export default {
     }
   },
   methods: {
+    timeFormat(val, second = true) {
+      if (!val) {
+        return "--";
+      } else {
+        let time = new Date(val);
+        let y = time.getFullYear();
+        let M = time.getMonth() + 1;
+        let D = time.getDate();
+        let h = time.getHours();
+        let m = time.getMinutes();
+        let s = time.getSeconds();
+        if (second) {
+          return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+            h > 9 ? h : "0" + h
+          }:${m > 9 ? m : "0" + m}:${s > 9 ? s : "0" + s}`;
+        } else {
+          return `${y}-${M > 9 ? M : "0" + M}-${D > 9 ? D : "0" + D} ${
+            h > 9 ? h : "0" + h
+          }:${m > 9 ? m : "0" + m}`;
+        }
+      }
+    },
     // 产权地址下拉数据
     getAreaList: function() {
       this.$ajax
@@ -1994,7 +2019,7 @@ export default {
       this.$refs["stepReportFrom"].validate(valid => {
         if (valid) {
           let arr = [...this.stepReportData];
-          arr.unshift(this.stepReportFrom);
+          arr.unshift(Object.assign(this.stepReportFrom,{createTime:new Date().getTime()}));
           let param = {
             id: this.CurrentStepId,
             stepReportings: arr
