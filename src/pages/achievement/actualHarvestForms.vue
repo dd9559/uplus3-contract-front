@@ -66,10 +66,6 @@
             <span :class="tabCurrent == index ? 'curent' : ''" v-for="(item,index) of ['人员','分组','分店','片区','大区','事业部']" :key="index" @click="toggleForms(index,'tabCurrent')">{{item}}</span>
         </div>
       </div>
-      <div v-for="item in tableTitle" :key="item.id" >
-        <div class="title" :style="item.id == 1 ?'width:894px':
-        item.id == 2 ?'width:498px':item.id == 3 ?'width:198px':'width:110px'">{{item.name}}</div>
-      </div>
       <el-table
         :data="achList"
         ref="tableCom"
@@ -77,12 +73,7 @@
         border
         :max-height="tableNumberCom"
       >
-
-				<!-- <el-table-column label="佣金支付费（元）" v-for="(item,index) in tableList" :key="index">
-          <template slot-scope="scope">{{userInfo.cityId != 1 ? scope.row.commissionPayment:0}}</template>
-        </el-table-column> -->
-
-
+        <el-table-column label="买卖">
         <el-table-column label="合同编号" width="128">
           <template slot-scope="scope">
             <p>
@@ -111,34 +102,36 @@
           </template>
         </el-table-column>
         <el-table-column label="合同类型" prop="contType.label" width="128"></el-table-column>
-        <!-- <el-table-column label="合同状态" prop="contState.label"></el-table-column> -->
+
+        </el-table-column>
+
+        <el-table-column label="租赁">
+
         <el-table-column label="变更/解约" prop="contChangeState.label" width="128"></el-table-column>
         <el-table-column label="签约日期" width="100">
           <template slot-scope="scope">{{scope.row.signDate | formatTime}}</template>
         </el-table-column>
         <el-table-column label="物业地址" prop="propertyAddr" width="100"></el-table-column>
         <el-table-column label="签约单数" prop="amount" width="100"></el-table-column>
+
+
+        </el-table-column>
+
+        <el-table-column label="代办">
+
+
         <el-table-column label="分成人" prop="assignor" width="100"></el-table-column>
         <el-table-column label="在职状态" prop="jobStatus.label" width="100"></el-table-column>
         <el-table-column label="分成门店" prop="level4" width="150"></el-table-column>
+
+        </el-table-column>
+
+        <el-table-column label="总业绩">
+
         <el-table-column label="角色类型" prop="roleType.label" width="50"></el-table-column>
         <el-table-column label="分成比例(%)" prop="ratio"></el-table-column>
-        <!-- <el-table-column prop="contractAchievement">
-          <template slot="header" slot-scope="scope">
-            合同业绩（元）
-            <el-tooltip content="（总佣金-佣金支付费-第三方合作费-权证费用）×分成比例" placement="top">
-              <i class="el-icon-info"></i>
-            </el-tooltip>
-          </template>
         </el-table-column>
-        <el-table-column prop="achievementActual">
-          <template slot="header" slot-scope="scope">
-            实收业绩（元）
-            <el-tooltip content="（合同实收-佣金支付费-第三方合作费-权证费用）×分成比例" placement="top">
-              <i class="el-icon-info"></i>
-            </el-tooltip>
-          </template>
-        </el-table-column> -->
+        
       </el-table>
       <div class="pagination">
         <el-pagination
@@ -165,12 +158,6 @@ export default {
     return {
         formsCurrent: 0,
         tabCurrent: 0,
-        tableTitle:[
-          {name:"买卖",id:1},
-          {name:"租赁",id:2},
-          {name:"代办",id:3},
-          {name:"总业绩",id:4},
-        ],
 
 
 

@@ -47,13 +47,24 @@
         </el-form-item>
 
         <el-form-item>
-          <el-select :clearable="true" v-loadmore="moreEmploye" @change="handleEmpNodeClick" class="margin-left"
-                     size="small" v-model="propForm.dealAgentId" placeholder="请选择">
+          <el-select 
+          :clearable="true" 
+          filterable 
+          remote
+          :remote-method="test" 
+          v-loadmore="moreEmploye"
+          @visible-change="empHandle"
+          @change="empHandleAdd"
+          @clear="clearDep"
+          class="margin-left"
+          size="small" 
+          v-model="propForm.dealAgentId" 
+          placeholder="请选择">
             <el-option
               v-for="item in EmployeList"
               :key="item.empId"
               :label="item.name"
-              :value="item.empId">
+              :value="item.empId+'/'+item.depName+'/'+item.depId">
             </el-option>
           </el-select>
         </el-form-item>
@@ -453,6 +464,9 @@
                 this.loading = true;
                 // 实收列表
                 let _that = this;
+                if (ajaxParam.dealAgentId) {
+                  ajaxParam.dealAgentId = ajaxParam.dealAgentId.split("/")[0];
+                }
                 this.$ajax.get("/api/achievement/selectReceiptsList", ajaxParam).then(res => {
                     let data = res.data;
                     if (res.status === 200) {
@@ -476,6 +490,27 @@
                     })
                 });
                 ;
+            },
+            test: function(val) {
+              this.getEmployeByText(val);
+            },
+            empHandle: function(val) {
+              console.log(this.propForm.dealAgentId);
+              if (
+                val &&
+                this.EmployeInit !== this.employeTotal &&
+                this.propForm.dealAgentId
+              ) {
+                this.getEmployeByText();
+              }
+            },
+            empHandleAdd(val) {
+              console.log(val,'val');
+              let depVal = val.split("/");
+              this.propForm.dealAgentStoreId = depVal[2];
+              this.propForm.department = depVal[1];
+              this.EmployeList = [];
+              this.getEmploye(this.propForm.dealAgentStoreId);
             },
             clearDep: function () {
                 this.propForm.department = '';

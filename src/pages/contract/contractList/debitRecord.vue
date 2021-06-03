@@ -109,6 +109,12 @@
           <span>通联虚拟账户</span>
         </el-table-column>
 
+        <el-table-column label="收款公司名称" min-width="100">
+          <template slot-scope="scope">
+            {{scope.row.status === 3 ? (scope.row.newCompany || '-') : (scope.row.companyName||'-')}}
+          </template>
+        </el-table-column>
+
          <el-table-column label="分账金额（元）" :formatter="nullFormatter" min-width="80">
           <template slot-scope="scope">
             <p>{{scope.row.amount}} 元</p>
@@ -118,12 +124,6 @@
         <el-table-column label="分账周期" min-width="100">
           <template slot-scope="scope">
             <p>{{scope.row.transRange}}</p>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="收款公司名称" min-width="100">
-          <template slot-scope="scope">
-            {{scope.row.companyName||'-'}}
           </template>
         </el-table-column>
 

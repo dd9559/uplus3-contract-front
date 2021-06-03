@@ -265,13 +265,13 @@
           <li>
             <span>提现金额：</span>
             <el-input style="width:120px;" size="mini" maxlength="15" v-model.trim="money" @input="inputOnly(1,'money')"></el-input>
-            <p class="tip" v-show="parseFloat(money) > accSub(withdrawData.fee,parseFloat(withdrawData.allAmount))">输入金额超过可提现余额</p>
+            <p class="tip" v-show="parseFloat(money) > parseFloat(withdrawData.allAmount)">输入金额超过可提现余额</p>
           </li>
           <li>
             <span>当前账户余额{{withdrawData.allAmount}}元，<span class="all" @click="allMoney">全部提现</span></span>
           </li>
           <li>
-            <span>温馨提示：到账金额为{{accSub(withdrawData.fee,money)}}元</span>
+            <span>温馨提示：到账金额为{{parseFloat(accSub(withdrawData.fee,money)) < 0 ? 0 : accSub(withdrawData.fee,money)}}元(扣除手续费{{withdrawData.fee}}元)</span>
           </li>
         </ul>
         <div slot="footer">

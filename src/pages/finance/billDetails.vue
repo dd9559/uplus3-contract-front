@@ -62,7 +62,7 @@
               <span>{{billMsg.createTime|formatTime}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="收款时间">
+          <el-table-column align="center" label="收款时间" v-if="activeItem==='收款信息'">
             <template slot-scope="scope">
               <span>{{billMsg.payStartTime|formatTime}}</span>
             </template>
