@@ -90,6 +90,9 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
+          <el-table-column label="经理">
+            <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+          </el-table-column>
           <!-- level4 -->
           <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>
           <!-- level3 -->
@@ -193,6 +196,9 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
+          <el-table-column label="经理">
+            <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
+          </el-table-column>
           <!-- level4 -->
           <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>
           <!-- level3 -->
@@ -237,7 +243,7 @@
             <el-table-column prop="ratio" label="分成比例(%)"></el-table-column>
 
             <el-table-column label="分成金额（元）" width="110">
-              <template slot-scope="scope">{{fomatFloat((tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</template>
+              <template slot-scope="scope">{{fomatFloat((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</template>
             </el-table-column>
 
             <!-- assignor -->
@@ -289,6 +295,9 @@
                 <span v-if="scope.row.shopkeeper">{{scope.row.shopkeeper}}</span>
                 <span v-else>-</span>
               </template>
+            </el-table-column>
+            <el-table-column label="经理">
+              <template slot-scope="scope">{{scope.row.mName?scope.row.mName:'-'}}</template>
             </el-table-column>
             <!-- level4 -->
             <el-table-column prop="level4" label="单组" v-if="$route.query.version=='0'"></el-table-column>
@@ -624,6 +633,7 @@ export default {
       fujian: false,
       contType: "",
       tradeFee: 0,
+      currentTradeFee: 0,
       hasServiceAgent: false, //是否勾选交易服务费佣金分成
       contRemarks: "" //合同备注栏
     };
@@ -672,7 +682,9 @@ export default {
             this.houseArr = data.data.houseAgents;
             this.clientArr = data.data.customerAgents;
             this.serviceach = data.data.serviceAgents;
-            this.tradeFee = data.data.tradeFee;
+            this.tradeFee = res.data.data.tradeFee || 0;
+            let other3 = res.data.data.other3 || 0;
+            this.currentTradeFee = this.accSub(other3,this.tradeFee);
             this.hasServiceAgent =
               data.data.hasServiceAgent === 0 ? false : true;
             if (
@@ -780,7 +792,23 @@ export default {
         num = num.substring(0);
       }
       return parseFloat(num).toFixed(decimal);
-    }
+    },
+    accSub(arg1,arg2){
+      var r1,r2,m,n;
+      try{
+        r1=arg1.toString().split(".")[1].length;
+      }catch(e){
+        r1=0;
+      }
+      try{
+        r2=arg2.toString().split(".")[1].length;
+      }catch(e){
+        r2=0;
+      }
+      m=Math.pow(10,Math.max(r1,r2));
+      n=(r1>=r2)?r1:r2;
+      return ((arg2*m-arg1*m)/m).toFixed(n);
+    },
   },
   filters: {
     getSignImage(val, list) {

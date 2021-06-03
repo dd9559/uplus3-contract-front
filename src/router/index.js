@@ -35,6 +35,7 @@ const achDetial = () => import('@/pages/achievement/achDetial')
 const achAppeal = () => import('@/pages/achievement/achAppeal')
 const aplPage = () => import('@/pages/achievement/aplPage')
 const storePage = () => import('@/pages/achievement/storePage')
+const actualHarvestForms = () => import('@/pages/achievement/actualHarvestForms')
 
 const actualHarvest = () => import('@/pages/finance/actualHarvest')
 const moneyCheck = () => import('@/pages/finance/moneyCheck')
@@ -285,6 +286,14 @@ export default new Router({
         meta: {
           root: true,
           list: ["二手房", "业绩", "业绩报表"]
+        }
+      },
+      {
+        path: "actualHarvestForms",
+        component: actualHarvestForms,
+        meta: {
+          root: true,
+          list: ["二手房", "业绩", "应收实收报表"]
         }
       },
       // 业绩板块 end

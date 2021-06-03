@@ -66,7 +66,7 @@
               </el-table-column>
 
               <!-- 分成比例保留小数点后一位有效数字 可输入,不可下拉-->
-              <el-table-column label="分成比例(%)" width="95">
+              <el-table-column label="分成比例(%)" width="80">
                 <template slot-scope="scope">
                   <el-input
                     v-model.number="scope.row.ratio"
@@ -76,7 +76,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="分成金额（元）" width="110">
+              <el-table-column label="分成金额（元）" width="90">
                 <template slot-scope="scope">
                   {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
@@ -84,7 +84,7 @@
               </el-table-column>
 
               <!-- 经纪人,可输入,可下拉,搜索不到匹配项,失去焦点清空val -->
-              <el-table-column label="经纪人">
+              <el-table-column label="经纪人" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -192,7 +192,7 @@
               </el-table-column>-->
 
               <!-- 在职状况  可下拉,不可输入    0待入职,1在职,2离职 (通过枚举id=20查询)-->
-              <el-table-column label="在职状况" width="110">
+              <el-table-column label="在职状况" width="90">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.isJob" placeholder="请选择">
                     <el-option
@@ -206,7 +206,7 @@
               </el-table-column>
 
               <!-- 门店，可输入，可下拉 -->
-              <el-table-column label="门店">
+              <el-table-column label="门店" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     v-if="scope.row.level3"
@@ -259,7 +259,7 @@
               </el-table-column>
 
               <!-- 店长，可输入，可下拉 -->
-              <el-table-column label="店长">
+              <el-table-column label="店长" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -283,6 +283,40 @@
                     >
                       <el-option
                         v-for="item in shopkeepers"
+                        :key="item.empId"
+                        :label="item.name+'-'+item.depName"
+                        :value="item.empId+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <!-- 经理，可输入，可下拉 -->
+              <el-table-column label="经理" width="96">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :disabled="scope.row.mName?false:true"
+                    :content="scope.row.mName+''"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-select
+                      v-model="scope.row.mName"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :remote-method="getShopInfo(3)"
+                      :loading="loading1"
+                      v-loadmore="moreAssignors"
+                      @change="changeDirectors(scope.row.mName,scope.$index,0)"
+                    >
+                      <el-option
+                        v-for="item in directors"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
                         :value="item.empId+'-'+item.name"
@@ -326,7 +360,7 @@
               </el-table-column>
 
               <!-- 区经，可输入，可下拉   changeAmaldar-->
-              <el-table-column label="总监">
+              <el-table-column label="总监" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -360,7 +394,7 @@
               </el-table-column>
 
               <!-- 区总，可输入，可下拉 changeManager-->
-              <el-table-column label="副总">
+              <el-table-column label="副总" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -480,7 +514,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="分成比例(%)" width="95">
+              <el-table-column label="分成比例(%)" width="80">
                 <template slot-scope="scope">
                   <el-input
                     v-model="scope.row.ratio"
@@ -490,14 +524,14 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="分成金额（元）" width="110">
+              <el-table-column label="分成金额（元）" width="90">
                 <template slot-scope="scope">
                   {{((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}
                   <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </template>
               </el-table-column>
 
-              <el-table-column label="经纪人">
+              <el-table-column label="经纪人" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -604,7 +638,7 @@
                 </template>
               </el-table-column>-->
 
-              <el-table-column label="在职状况" width="110">
+              <el-table-column label="在职状况" width="96">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.isJob" placeholder="请选择">
                     <el-option
@@ -618,7 +652,7 @@
               </el-table-column>
 
               <!-- 门店，可输入，可下拉 -->
-              <el-table-column label="门店">
+              <el-table-column label="门店" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     v-if="scope.row.level3"
@@ -671,7 +705,7 @@
               </el-table-column>
 
               <!-- 店长，可输入，可下拉 -->
-              <el-table-column label="店长">
+              <el-table-column label="店长" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -694,6 +728,40 @@
                     >
                       <el-option
                         v-for="item in shopkeepers"
+                        :key="item.empId"
+                        :label="item.name+'-'+item.depName"
+                        :value="item.empId+'-'+item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+
+              <!-- 经理，可输入，可下拉 -->
+              <el-table-column label="经理" width="96">
+                <template slot-scope="scope">
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :disabled="scope.row.mName?false:true"
+                    :content="scope.row.mName+''"
+                    placement="top"
+                    :open-delay="300"
+                  >
+                    <el-select
+                      v-model="scope.row.mName"
+                      filterable
+                      remote
+                      reserve-keyword
+                      :clearable="true"
+                      placeholder="请输入内容"
+                      :remote-method="getShopInfo(3)"
+                      :loading="loading1"
+                      v-loadmore="moreAssignors"
+                      @change="changeDirectors(scope.row.mName,scope.$index,1)"
+                    >
+                      <el-option
+                        v-for="item in directors"
                         :key="item.empId"
                         :label="item.name+'-'+item.depName"
                         :value="item.empId+'-'+item.name"
@@ -737,7 +805,7 @@
               </el-table-column>
 
               <!-- 区经，可输入，可下拉 -->
-              <el-table-column label="总监">
+              <el-table-column label="总监" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -771,7 +839,7 @@
               </el-table-column>
 
               <!-- 区总，可输入，可下拉 -->
-              <el-table-column label="副总">
+              <el-table-column label="副总" width="96">
                 <template slot-scope="scope">
                   <el-tooltip
                     class="item"
@@ -867,7 +935,7 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="分成比例(%)" width="95">
+                <el-table-column label="分成比例(%)" width="80">
                   <template slot-scope="scope">
                     <el-input
                       v-model="scope.row.ratio"
@@ -877,12 +945,12 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column label="分成金额（元）" width="110">
-                   <template slot-scope="scope">{{((tradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}</template>
+                <el-table-column label="分成金额（元）" width="90">
+                   <template slot-scope="scope">{{((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}</template>
                     <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </el-table-column>
 
-                <el-table-column label="经纪人">
+                <el-table-column label="经纪人" width="96">
                   <template slot-scope="scope">
                     <el-tooltip
                       class="item"
@@ -989,7 +1057,7 @@
                   </template>
                 </el-table-column>-->
 
-                <el-table-column label="在职状况" width="110">
+                <el-table-column label="在职状况" width="90">
                   <template slot-scope="scope">
                     <el-select v-model="scope.row.isJob" placeholder="请选择">
                       <el-option
@@ -1003,7 +1071,7 @@
                 </el-table-column>
 
                 <!-- 门店，可输入，可下拉 -->
-                <el-table-column label="门店">
+                <el-table-column label="门店" width="96">
                   <template slot-scope="scope">
                     <el-tooltip
                       v-if="scope.row.level3"
@@ -1056,7 +1124,7 @@
                 </el-table-column>
 
                 <!-- 店长，可输入，可下拉 -->
-                <el-table-column label="店长">
+                <el-table-column label="店长" width="96">
                   <template slot-scope="scope">
                     <el-tooltip
                       class="item"
@@ -1079,6 +1147,40 @@
                       >
                         <el-option
                           v-for="item in shopkeepers"
+                          :key="item.empId"
+                          :label="item.name+'-'+item.depName"
+                          :value="item.empId+'-'+item.name"
+                        ></el-option>
+                      </el-select>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+
+                <!-- 经理，可输入，可下拉 -->
+                <el-table-column label="经理" width="96">
+                  <template slot-scope="scope">
+                    <el-tooltip
+                      class="item"
+                      effect="dark"
+                      :disabled="scope.row.mName?false:true"
+                      :content="scope.row.mName+''"
+                      placement="top"
+                      :open-delay="300"
+                    >
+                      <el-select
+                        v-model="scope.row.mName"
+                        filterable
+                        remote
+                        reserve-keyword
+                        :clearable="true"
+                        placeholder="请输入内容"
+                        :remote-method="getShopInfo(3)"
+                        :loading="loading1"
+                        v-loadmore="moreAssignors"
+                        @change="changeDirectors(scope.row.mName,scope.$index,2)"
+                      >
+                        <el-option
+                          v-for="item in directors"
                           :key="item.empId"
                           :label="item.name+'-'+item.depName"
                           :value="item.empId+'-'+item.name"
@@ -1122,7 +1224,7 @@
                 </el-table-column>
 
                 <!-- 区经，可输入，可下拉 -->
-                <el-table-column label="总监">
+                <el-table-column label="总监" width="96">
                   <template slot-scope="scope">
                     <el-tooltip
                       class="item"
@@ -1156,7 +1258,7 @@
                 </el-table-column>
 
                 <!-- 区总，可输入，可下拉 -->
-                <el-table-column label="副总">
+                <el-table-column label="副总" width="96">
                   <template slot-scope="scope">
                     <el-tooltip
                       class="item"
@@ -1572,6 +1674,7 @@ export default {
       roleType1: [], //客源角色类型
       comm: "", //可分配业绩
       tradeFee: 0,
+      currentTradeFee: 0,
       addManList: [],
       dictionary: {
         //数据字典
@@ -1588,6 +1691,7 @@ export default {
       shopkeepers: [], //模糊搜索店长
       amaldars: [], //模糊搜索区经
       managers: [], //模糊搜索区总
+      directors:[],//模糊搜索经理
       loading1: false,
       loading: false,
       radioFlag: 3,
@@ -1708,7 +1812,9 @@ export default {
               });
             }
             this.comm = res.data.data.comm;
-            this.tradeFee = res.data.data.tradeFee;
+            this.tradeFee = res.data.data.tradeFee || 0;
+            let other3 = res.data.data.other3 || 0;
+            this.currentTradeFee = this.accSub(other3,this.tradeFee);
             if (res.data.data.examineDate) {
               this.examineDate = res.data.data.examineDate;
             }
@@ -1917,7 +2023,9 @@ export default {
               assignorNum,
               assignorLevel,
               salesManagerLevel,
-              loginAccount
+              loginAccount,
+              jingLiId:mId,
+              jingLiName:mName
             } = res.data.data;
             if (type == 0) {
               Object.assign(this.houseArr[index], {
@@ -1939,7 +2047,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             } else if (type == 1) {
               Object.assign(this.clientArr[index], {
@@ -1961,7 +2071,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             } else {
               Object.assign(this.serviceAgents[index], {
@@ -1983,7 +2095,9 @@ export default {
                 assignorNum,
                 assignorLevel,
                 salesManagerLevel,
-                loginAccount
+                loginAccount,
+                mId,
+                mName
               });
             }
           });
@@ -2006,7 +2120,9 @@ export default {
           assignorNum: "",
           assignorLevel: "",
           salesManagerLevel: "",
-          loginAccount: ""
+          loginAccount: "",
+          mId:"",
+          mName:""
         };
         if (type == 0) {
           Object.assign(this.houseArr[index], initObj);
@@ -2108,7 +2224,9 @@ export default {
               this.amaldars = res.data.data.list;
             } else if (roleId == 0) {
               this.managers = res.data.data.list;
-            }
+            } else if(roleId == 3) {
+              this.directors = res.data.data.list
+            } 
             this.loading1 = false;
             this.shopTotal = res.data.data.total;
             this.shopIndex = 1;
@@ -2162,6 +2280,23 @@ export default {
       } else {
         this.shopIndex++;
         this.getMoreShopInfo(this.shopStr, this.shopIndex, 0);
+      }
+    },
+    //改变经理
+    changeDirectors(val, index, type1) {
+      // debugger
+      if (val) {
+        let idName = val.split("-");
+        if (type1 == 0) {
+          this.houseArr[index].mId = idName[0];
+          this.houseArr[index].mName = idName[1];
+        } else if (type1 == 1) {
+         this.clientArr[index].mId = idName[0];
+          this.clientArr[index].mName = idName[1];
+        } else if (type1 == 2) {
+          this.serviceAgents[index].mId = idName[0];
+          this.serviceAgents[index].mName = idName[1];
+        }
       }
     },
     // 改变店长
@@ -2591,6 +2726,22 @@ export default {
       }
       baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
       return Math.round(num1 * baseNum + num2 * baseNum) / baseNum;
+    },
+    accSub(arg1,arg2){
+      var r1,r2,m,n;
+      try{
+        r1=arg1.toString().split(".")[1].length;
+      }catch(e){
+        r1=0;
+      }
+      try{
+        r2=arg2.toString().split(".")[1].length;
+      }catch(e){
+        r2=0;
+      }
+      m=Math.pow(10,Math.max(r1,r2));
+      n=(r1>=r2)?r1:r2;
+      return ((arg2*m-arg1*m)/m).toFixed(n);
     },
     fomatFloat: function (num, decimal = 2) {
       num = num ? num : 0
@@ -3181,6 +3332,13 @@ export default {
     td:nth-child(3) {
       // background-color: red;
       border: solid 1px #dcdfe6;
+    }
+    .el-input__inner {
+      padding: 0 22px 0 3px;
+      font-size: 12px;
+    }
+    .el-icon-circle-close {
+      left: -3px;
     }
   }
 }

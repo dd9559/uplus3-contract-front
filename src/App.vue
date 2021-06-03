@@ -5,9 +5,9 @@
     </router-view>
     <div class="main" v-else>
       <div class="nav">
-        <img src="./assets/img/honghui.png" alt v-if="showTransferTime" />
-        <img src="./assets/img/ming-rui.png" alt v-else-if="isMingRui" />
-        <img src="./assets/img/logo.png" v-else />
+        <img :src="getUser.brandPath+'?x-oss-process=style/b_w330_h330'" alt v-if="getUser.brandPath !== '-'" />
+        <!-- <img :src="getUser.brandPath" alt v-else-if="isMingRui" /> -->
+        <!-- <img src="./assets/img/logo.png" v-else /> -->
         <ul class="navbar" v-if="getUser && getUser.user">
           <li>{{ getUser.user.cityName }}</li>
           <li>
@@ -375,6 +375,9 @@ export default {
 
     > img {
       margin-left: @margin-15;
+      width: 118px;
+      height: 30px;
+      vertical-align: middle;
     }
 
     .navbar {

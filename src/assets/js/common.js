@@ -162,7 +162,14 @@ let TOOL = {
               can: true, //是否可见
               path: "achForms",
               code: "sign-yj-report-query"
-            }
+            },
+            // {
+            //   name: "应收实收报表",
+            //   category: "1-3-5",
+            //   can: true, //是否可见
+            //   path: "actualHarvestForms",
+            //   code: "sign-yj-report-query"
+            // }
           ]
         },
         {

@@ -150,6 +150,10 @@
       dialogContType:{
         type:Number,
         default:1
+      },
+      isContractList:{
+        type: Boolean,
+        default: false
       }
     },
     data() {
@@ -371,8 +375,9 @@
       getChangeDetail(type) {
         let param = {
           type: type,
-          id: this.contId
+          // id: this.contId
         };
+        param[this.isContractList ? 'contId' : 'id'] = this.contId
         this.$ajax.get("/api/contract/changeDetail", param).then(res => {
           res = res.data;
           if (res.status === 200) {
