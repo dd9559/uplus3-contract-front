@@ -251,6 +251,7 @@ export default {
   },
   created() {
     this.getDictionary(); //字典
+    console.log(this.localChoseList,'localChoseList');
   },
   methods: {
     //这个可以验证15位和18位的身份证，并且包含生日和校验位的验证。
@@ -737,22 +738,21 @@ export default {
           param.owner = owner.length>0?owner:null;
           param.customer = customer.length>0?customer:null;
           param.signer = signer.length>0?signer:null;
-          this.$emit("closeChose", { type: "closeChose" });
-          // this.$ajax
-          //   .postJSON("/api/app/contract/sendCont", param)
-          //   .then(res => {
-          //     res = res.data;
-          //     if (res.status === 200) {
-          //       this.$emit("closeChose", { type: "closeChose" });
-          //     }
-          //   })
-          //   .catch(error => {
-          //     this.$emit("closeChose",false)
-          //     this.$message({
-          //       message:error,
-          //       type:"error"
-          //     })
-          //   });
+          this.$ajax
+            .postJSON("/api/app/contract/sendCont", param)
+            .then(res => {
+              res = res.data;
+              if (res.status === 200) {
+                this.$emit("closeChose", { type: "closeChose" });
+              }
+            })
+            .catch(error => {
+              this.$emit("closeChose",false)
+              this.$message({
+                message:error,
+                type:"error"
+              })
+            });
       } else {
         this.$emit("closeChose", false);
       }
@@ -762,6 +762,7 @@ export default {
     checkPersonData(val) {
       let brokerCheckPersonList = []
       this.checkPersonList = []
+      this.brokerList = []
       for (const key in val) {
         if (val.hasOwnProperty(key)) {
           val[key] && this.checkPersonList.push(Number(key))
@@ -819,8 +820,6 @@ export default {
   },
   computed: {
     getDialogVisible() {
-      if (this.dialogVisible) {
-      }
       return this.dialogVisible;
     },
     getOwnerList() {
@@ -945,6 +944,9 @@ export default {
         /deep/input {
           background-color: #fff;
           color: black;
+        }
+        /deep/.el-input__suffix {
+          display: none;
         }
       }
       .nameStyle {

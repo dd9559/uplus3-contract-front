@@ -366,6 +366,7 @@
               <li v-for="(item,index) in uploadList" :key="item.index">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(uploadList,index)">
+                    <!-- <img :src="item.preConFile" width="90px" height="80px"> -->
                     <upload-cell :type="item.fileType"></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
@@ -640,6 +641,23 @@
               this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
               this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
               this.myCheckId = res.data.data.contractResult.id; //结算id
+              // this.$nextTick(() => {
+              //   let preloadList = res.data.data.contractResult.vouchers.map(item => {
+              //     return item.path
+              //   })
+              //   this.fileSign(preloadList, 'preload').then(fileRes => {
+              //     this.uploadList = fileRes.map(element => {
+              //       console.log(res.data);
+              //       for (let index = 0; index < res.data.data.contractResult.vouchers.length; index++) {
+              //         let item = res.data.data.contractResult.vouchers[index];
+              //         if (item.path === element.split('?')[0]) return {
+              //           preConFile: element,
+              //           ...item
+              //         }
+              //       }
+              //     });
+              //   })
+              // })
               this.uploadList = res.data.data.contractResult.vouchers;
               this.checkInfo = res.data.data.examineDetails
             }

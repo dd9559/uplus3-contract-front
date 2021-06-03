@@ -365,6 +365,7 @@
             :dialogContType="dialogContType"
             :cancelDialog="changeCancel"
             operationType="look"
+            :isContractList="true"
             :dialogOperation="dialogOperation"
             :contId="contId"
             @close="ChangeCancelDialog"

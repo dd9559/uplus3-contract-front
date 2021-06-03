@@ -1114,6 +1114,7 @@
       :dialogType="dialogType"
       :dialogContType="dialogContType"
       :cancelDialog="changeCancel"
+      :isContractList="true"
       operationType="look"
       :dialogOperation="dialogOperation"
       :contId="contId"
@@ -2173,6 +2174,7 @@ export default {
     },
     //变更解约弹窗
     goChangeCancel(item) {
+      console.log(item,888888888888);
       if (item.contChangeState.value === 1) {
         this.changeCancel = true;
         this.dialogType = "bg";

@@ -94,6 +94,16 @@
         <el-table-column label="收款门店账户">
           <span>通联虚拟账户</span>
         </el-table-column>
+        <el-table-column>
+          <template slot="header">收款公司名称
+            <el-tooltip content="此分账期间收款门店对应公司" placement="top">
+              <img class="icon-prompt" src="../../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
+            </el-tooltip>
+          </template>
+          <template slot-scope="scope">
+            {{scope.row.companyName||'-'}}
+          </template>
+        </el-table-column>
         <el-table-column label="分账周期">
           <template>
             <span>{{copySignDate[0]|timeFormat_}}</span> ~
@@ -108,16 +118,6 @@
         <el-table-column label="企业管理费" prop="currCost">
           <template slot-scope="scope">
             {{scope.row.managerFee|fomatFloat}}
-          </template>
-        </el-table-column>
-        <el-table-column>
-          <template slot="header">收款公司名称
-            <el-tooltip content="此分账期间收款门店对应公司" placement="top">
-              <img class="icon-prompt" src="../../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
-            </el-tooltip>
-          </template>
-          <template slot-scope="scope">
-            {{scope.row.companyName||'-'}}
           </template>
         </el-table-column>
         <el-table-column label="打款状态">
