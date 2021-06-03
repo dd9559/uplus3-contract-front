@@ -635,7 +635,7 @@
             id: e.id,
           }
           this.$ajax.get("/api/settlement/applyExamineById", param)
-          .then(res => {
+          .then( res => {
             if (res.data.status === 200) {
               this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
               this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
