@@ -27,17 +27,29 @@
             ></el-input>
           </el-tooltip>
         </el-form-item>
-        <el-form-item>
-          <el-select
+        <el-form-item label="签约日期">
+          <!-- <el-select
             v-model="dataType"
             placeholder="签约日期"
             style="width:100px"
           >
             <el-option key="0" label="签约日期" value="0"></el-option>
             <el-option key="1" label="录入日期" value="1"></el-option>
-          </el-select>
+          </el-select> -->
           <el-date-picker
             v-model="signDate"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            format="yyyy-MM-dd"
+            value-format="yyyy/MM/dd"
+            style="width: 330px"
+          ></el-date-picker>
+        </el-form-item> 
+         <el-form-item label="录入日期">
+          <el-date-picker
+            v-model="inputDate"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -1348,6 +1360,7 @@ export default {
       },
       keyword: "",
       signDate: [],
+      inputDate:[],
       tableData: [],
       total: 0,
       currentPage: 1,
@@ -1618,9 +1631,9 @@ export default {
       delete this.contractForm.endDate;
       this.keyword = session.query.keyword;
       this.currentPage = session.query.pageNum;
-      if (session.query.dataType) {
-        this.dataType = session.dataType  
-      }
+      // if (session.query.dataType) {
+      //   this.dataType = session.dataType  
+      // }
       if (session.query.lrBeginDate) {
         this.signDate[0] = session.query.lrBeginDate;
         this.signDate[1] = session.query.lrEndDate;
@@ -1745,21 +1758,18 @@ export default {
         type !== "ChosePersonEditor"
           ? Object.assign({}, param, this.contractForm)
           : param;
-      if(this.dataType == '0'){
-        if (this.signDate) {
-          if (this.signDate.length > 0) {
-            param.beginDate = this.signDate[0];
-            param.endDate = this.signDate[1];
+          if (this.signDate) {
+            if (this.signDate.length > 0) {
+              param.beginDate = this.signDate[0];
+              param.endDate = this.signDate[1];
+            }
           }
-        }
-      }else if(this.dataType == '1'){
-        if (this.signDate) {
-          if (this.signDate.length > 0) {
-            param.lrBeginDate = this.signDate[0];
-            param.lrEndDate = this.signDate[1];
+          if (this.inputDate) {
+            if (this.inputDate.length > 0) {
+              param.lrBeginDate = this.inputDate[0];
+              param.lrEndDate = this.inputDate[1];
+            }
           }
-        }
-      }
       if (
         this.contractForm.contTypes &&
         this.contractForm.contTypes.length > 0
@@ -1821,6 +1831,7 @@ export default {
       TOOL.clearForm(this.contractForm);
       this.keyword = "";
       this.signDate = [];
+      this.inputDate = [];
       this.dataType = "0"
       this.EmployeList = [];
     },

@@ -69,6 +69,7 @@
           </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
+              <el-button type="text" @click="openPosCollection(scope.row)" size="medium" >开通POS收款</el-button>
               <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
@@ -329,6 +330,10 @@
           </el-table-column>
         </el-table>
       </el-dialog>
+      <!-- 开通pos收款 -->
+      <open-pos-dialog :posDialog='openpos'>
+        
+      </open-pos-dialog>
     </div>
   </div>
 </template>
@@ -336,6 +341,7 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import { mapMutations } from "vuex";
+  import openPosDialog from './conponent/openPosDialog';
   let checkPhone = function (str) {
     return /^1[3456789]\d{9}$/.test(str)
   }
@@ -359,6 +365,7 @@
   export default {
     name: "company",
     mixins: [MIXINS],
+    components:{openPosDialog},
     data() {
       return {
         cityId: "",
@@ -468,6 +475,7 @@
         bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
+        openpos:false
       }
     },
     mounted() {
@@ -911,6 +919,10 @@
           this.withdrawData = {}
           this.$message(error)
         })
+      },
+      //开通POS收款
+      openPosCollection() {
+        this.openpos = true
       },
       //点击查看和编辑
       viewEditCompany(row, type) {

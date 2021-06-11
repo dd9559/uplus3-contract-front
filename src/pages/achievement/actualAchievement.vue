@@ -14,7 +14,7 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="签约日期" prop="dateMo" class="mr">
+        <el-form-item label="签约日期" prop="dateMo" >
           <el-date-picker
             v-model="propForm.dateMo"
             class="w330"
@@ -26,8 +26,20 @@
           ></el-date-picker>
         </el-form-item>
 
+        <el-form-item label="录入日期" prop="inputData" >
+          <el-date-picker
+            v-model="propForm.inputData"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+        </el-form-item>
+
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-right:0px;">
+        <el-form-item label="部门">
           <select-tree
             :data="DepList"
             :init="propForm.department"
@@ -827,6 +839,7 @@ export default {
         achType: "", //业绩类型
         appealType: "", //申诉状态
         dateMo: "",
+        inputData:"",
         search: "",
         joinMethods: "", //合作方式
         recordType: "", //签约方式2.3.1新加
@@ -1262,7 +1275,9 @@ export default {
         {},
         this.ajaxParam,
         { strStartTime: this.ajaxParam.startTime },
-        { strEndTIme: this.ajaxParam.endTime }
+        { strEndTIme: this.ajaxParam.endTime },
+        { enterStartTime: this.ajaxParam.enterStartTime },
+        { enterEndTime: this.ajaxParam.enterEndTime },
       );
       this.excelCreate("/input/achievementExcel", param);
     },
@@ -1321,6 +1336,8 @@ export default {
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
           appealStatus: this.propForm.appealType,
+          enterStartTime:this.propForm.inputData[0],
+          enterEndTime:this.propForm.inputData[1],
           startTime: this.propForm.dateMo[0], //开始时间
           endTime: this.propForm.dateMo[1], //结束时间
           keyword: this.propForm.search, //关键字
@@ -1344,6 +1361,8 @@ export default {
           distributionType: this.propForm.divideType, //分成类型
           achievementStatus: this.propForm.achType, //业绩类型
           appealStatus: this.propForm.appealType,
+          enterStartTime:this.propForm.inputData[0],
+          enterEndTime:this.propForm.inputData[1],
           keyword: this.propForm.search, //关键字
           department: this.propForm.department,
           pageNum: this.currentPage,
@@ -1395,6 +1414,7 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
+        inputData:"",
         search: "",
         joinMethods: "",
         recordType: "",
