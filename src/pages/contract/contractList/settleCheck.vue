@@ -168,7 +168,7 @@
 
         <el-table-column label="操作" min-width="120" fixed="right" class-name="null-formatter">
           <template slot-scope="scope">
-            <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || ((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept !== 'false'))">审核</div>
+            <div class="btn" @click="auditApply(scope.row)">审核</div>
             <div style="color:red;" v-if="scope.row.examineState.value===0&&scope.row.auditorId>0&&getUserMsg&&scope.row.auditorId!==getUserMsg.empId">{{scope.row.examineName}}正在审核</div>
             <div v-if="scope.row.examineState.value!==0||scope.row.examineState.value===0&&((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept==='false')">--</div>
           </template>
@@ -255,7 +255,8 @@
                 <li v-for="(item,index) in uploadList" :key="item.index">
                   <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                     <div class="namePath" @click="previewPhoto(uploadList,index)">
-                      <upload-cell :type="item.fileType"></upload-cell>
+                      <img :src="item.preConFile" width="90px" height="62px" v-if="isPictureFile(item.fileType)">
+                      <upload-cell :type="item.fileType" v-else></upload-cell>
                       <p>{{item.name}}</p>
                     </div>
                   </el-tooltip>
@@ -366,8 +367,8 @@
               <li v-for="(item,index) in uploadList" :key="item.index">
                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                   <div class="namePath" @click="previewPhoto(uploadList,index)">
-                    <!-- <img :src="item.preConFile" width="90px" height="80px"> -->
-                    <upload-cell :type="item.fileType"></upload-cell>
+                    <img :src="item.preConFile" width="90px" height="62px" v-if="isPictureFile(item.fileType)">
+                    <upload-cell :type="item.fileType" v-else></upload-cell>
                     <p>{{item.name}}</p>
                   </div>
                 </el-tooltip>
@@ -636,33 +637,33 @@
             id: e.id,
           }
           this.$ajax.get("/api/settlement/applyExamineById", param)
-          .then(res => {
+          .then( res => {
             if (res.data.status === 200) {
               this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
               this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
               this.myCheckId = res.data.data.contractResult.id; //结算id
-              // this.$nextTick(() => {
-              //   if (res.data.data.contractResult.vouchers) {
-              //     let preloadList = res.data.data.contractResult.vouchers.map(item => {
-              //       return item.path
-              //     })
-              //     this.fileSign(preloadList, 'preload').then(fileRes => {
-              //       this.uploadList = fileRes.map(element => {
-              //         console.log(res.data);
-              //         for (let index = 0; index < res.data.data.contractResult.vouchers.length; index++) {
-              //           let item = res.data.data.contractResult.vouchers[index];
-              //           if (item.path === element.split('?')[0]) return {
-              //             preConFile: element,
-              //             ...item
-              //           }
-              //         }
-              //       });
-              //     })
-              //   } else {
-              //     this.uploadList = []
-              //   }
-              // })
-              this.uploadList = res.data.data.contractResult.vouchers;
+              this.$nextTick(() => {
+                if(res.data.data.contractResult.vouchers) {
+                  let preloadList = res.data.data.contractResult.vouchers.map(item => {
+                    return item.path
+                  })
+                  this.fileSign(preloadList, 'preload').then(fileRes => {
+                    this.uploadList = fileRes.map(element => {
+                      console.log(res.data);
+                      for (let index = 0; index < res.data.data.contractResult.vouchers.length; index++) {
+                        let item = res.data.data.contractResult.vouchers[index];
+                        if (item.path === element.split('?')[0]) return {
+                          preConFile: element,
+                          ...item
+                        }
+                      }
+                    });
+                  })
+                }else {
+                  this.uploadList =[]
+                }
+              })
+              // this. uploadList= res.data.data.contractResult.vouchers;
               this.checkInfo = res.data.data.examineDetails
             }
           }).catch(error => {
@@ -677,6 +678,7 @@
 
       // 点击审核事件
       auditApply(e){
+        console.log(e);
         if(e.auditorId === this.getUserMsg.empId){
           this.dialogVisible = true
           this.auditForm.textarea = ''
@@ -714,7 +716,8 @@
            this.layerAudit = Object.assign({depositMoneyAmount:res.data.data.depositMoneyAmount},res.data.data.contractResult);
            this.settleMarks = res.data.data.contractResult.settlementRemarks.length;
            this.myCheckId = res.data.data.contractResult.id; //结算id
-           this.uploadList = res.data.data.contractResult.vouchers;
+          //  this.uploadList = res.data.data.contractResult.vouchers;
+           this.showImg(res.data.data.contractResult.vouchers)
           }
         }).catch(error => {
           this.$message({
@@ -722,7 +725,26 @@
           })
         });
       },
-
+      showImg(data) {
+        if(data) {
+          let preloadList = data.map(item => {
+            return item.path
+          })
+          this.fileSign(preloadList, 'preload').then(fileRes => {
+            this.uploadList = fileRes.map(element => {
+              for (let index = 0; index < data.length; index++) {
+                let item = data[index];
+                if (item.path === element.split('?')[0]) return {
+                  preConFile: element,
+                  ...item
+                }
+              }
+            });
+          })
+        }else {
+          this.uploadList =[]
+        }
+      },
       // 驳回操作
       refuseFn() {
         if((this.auditForm.textarea).trim() !== ""){

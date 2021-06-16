@@ -282,6 +282,7 @@ const MIXINS = {
      * 获取签名
      */
     fileSign: async function (arr, type, mini = true) {
+      console.log(typeof(arr));
       let param = {
         urls: arr.join(',')
       }
