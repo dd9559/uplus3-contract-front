@@ -331,7 +331,7 @@
         </el-table>
       </el-dialog>
       <!-- 开通pos收款 -->
-      <open-pos-dialog :posDialog='openpos'>
+      <open-pos-dialog :posInfo='posInfo' :posDialog='posDialog' @handleDialogClose='handleCloses'>
         
       </open-pos-dialog>
     </div>
@@ -341,7 +341,7 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import { mapMutations } from "vuex";
-  import openPosDialog from './conponent/openPosDialog';
+  // import openPosDialog from './conponent/openPosDialog';
   let checkPhone = function (str) {
     return /^1[3456789]\d{9}$/.test(str)
   }
@@ -365,7 +365,9 @@
   export default {
     name: "company",
     mixins: [MIXINS],
-    components:{openPosDialog},
+    components:{
+      openPosDialog:() => import('./conponent/openPosDialog')
+    },
     data() {
       return {
         cityId: "",
@@ -475,7 +477,9 @@
         bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
-        openpos:false
+        openpos:false,
+        posInfo:{},
+        posDialog:false
       }
     },
     mounted() {
@@ -920,9 +924,14 @@
           this.$message(error)
         })
       },
+      handleCloses() {
+        this.posDialog = false
+      },
       //开通POS收款
-      openPosCollection() {
-        this.openpos = true
+      openPosCollection(data) {
+        console.log(data);
+        this.posInfo = data
+        this.posDialog = true
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
