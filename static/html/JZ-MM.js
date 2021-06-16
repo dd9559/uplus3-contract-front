@@ -388,6 +388,8 @@ let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 //   signDate: 1592465819508,
 //   propertyAddr: "a市b区c",
 //   singleCompany: "",
+//   dealPrice: 12121.12,
+//   dealPriceUpper: "壹万叁仟捌佰肆拾陆"
 // }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));

@@ -307,6 +307,9 @@
       :destroy-on-close="true"
       width="740px"
       class="log-dialog">
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel"
+                   style="padding:9px 15px;min-width: 80px;margin: 8px;">导出
+        </el-button>
         <el-table :data="withdrawRecordData" v-loadmore="withdrawLazyLoad" style="width: 100%" border :max-height="445">
           <el-table-column label="操作人">
             <template slot-scope="scope">
@@ -519,6 +522,11 @@
       }
     },
     methods: {
+      // 导出功能
+      getExcel() {
+          if (this.withdrawRecordData.length === 0) return this.$message('没有可导出的数据!')
+          this.excelCreate('/input/cashListExcel', {companyId:this.companyId})
+      },
       accSub(arg1,arg2){
         var r1,r2,m,n;
         try{

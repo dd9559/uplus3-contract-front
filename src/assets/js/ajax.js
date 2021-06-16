@@ -19,6 +19,9 @@ axios.interceptors.request.use((request)=>{
 })
 axios.interceptors.response.use((response)=>{
   let res=response.data
+  if (response.status === 200 && response.headers['content-type'] === 'application/octet-stream') {
+    return response
+  }
   if(res.status===200){
     times = 0
     return response

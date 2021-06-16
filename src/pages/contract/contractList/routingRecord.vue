@@ -72,7 +72,10 @@
     </ScreeningTop>
     <!-- 列表 -->
     <div class="routing-list">
-      <p><span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span></p>
+      <p>
+        <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
+        <!-- <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-pay'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button> -->
+      </p>
       <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
         <el-table-column prop="currDeptName">
           <template slot="header">分账门店
@@ -225,6 +228,7 @@ export default {
         inStoreAttr:'',//收款门店属性
         status:'',//分账类型
       },
+      ajaxParam: {},
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
       checkOutDep:{
@@ -344,6 +348,12 @@ export default {
     this.getProateNotes()
   },
   methods: {
+    // 导出功能
+    getExcel() {
+        // this.queryFn();
+        let param = Object.assign({}, this.ajaxParam)
+        this.excelCreate('/input/transferListExcel', param)
+    },
     // 删除电子签章
     delStamp(index) {
       this.$delete(this.uploadData,index)
@@ -415,6 +425,7 @@ export default {
           this.tableData=res.data.list;
           this.total=res.data.total;
           this.copySignDate = this.signDate
+          this.ajaxParam = param
         }
       }).catch(error=>{
         this.$message({
@@ -772,6 +783,8 @@ export default {
   border-radius: 2px;
   // box-shadow: 0px 1px 6px 0px rgba(7, 47, 116, 0.1);
   >p{
+    display: flex;
+    justify-content: space-between;
     padding: 10px 0 10px 0;
     .title{
       padding-left: 10px;

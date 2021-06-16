@@ -438,19 +438,26 @@ const MIXINS = {
     excelCreate: function (url, param) {
       this.HQloadingList = true
       this.$ajax.get(`/api${url}`, param).then(res => {
-        res = res.data
-        if (res.status === 200) {
+        if (res.headers['content-type'] === 'application/octet-stream') {
           this.HQloadingList = false
-          this.fileSign([res.data], 'download')
-          /*var a = document.createElement('a');
-          a.download = undefined;
-          a.href = res.data;
-          // a.innerText='test'
-          document.body.appendChild(a)
-          a.click();
-          document.body.removeChild(a)*/
+          let link = document.createElement('a')
+          link.style.display = 'none'
+          let query = Object.entries(param)
+          .reduce((result, entry) => {
+              result.push(entry.join('='))
+              return result
+          }, []).join('&')
+          link.href = `${window.location.origin}/api${url}?${query}`
+          link.download = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('=')[1]) //下载的文件名
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        } else if (res.data.status === 200) {
+          this.HQloadingList = false
+          this.fileSign([res.data.data], 'download')
         }
       }).catch(error => {
+        console.log(error,'error');
         this.$message({
           message: error
         })

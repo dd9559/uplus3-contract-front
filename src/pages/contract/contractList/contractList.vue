@@ -2902,13 +2902,13 @@ export default {
           // 签署中上上签id
           combineItem.ssqId = combineItem.contractEntrust.contractId ? combineItem.contractEntrust.contractId : null
           //签后审核状态
-          if (combineItem.signingEntrustState) {
+          if (combineItem.signingEntrustState && combineItem.contractEntrust.recordType !== 10) {
             combineItem.signingState = {};
             combineItem.signingState.value =
               combineItem.signingEntrustState.value;
             combineItem.signingState.label =
               combineItem.signingEntrustState.label;
-          } else {
+          } else if (combineItem.contractEntrust.recordType !== 10) {
             combineItem.signingState = "";
           }
           //签后审核驳回原因

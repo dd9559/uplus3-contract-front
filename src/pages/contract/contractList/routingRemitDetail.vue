@@ -1,5 +1,8 @@
 <template>
   <div class="view-container">
+    <div class="title-box">
+      <!-- <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-pay'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button> -->
+    </div>
     <el-table :data="tableData" border>
       <el-table-column align="left" label="合同编号" width="140">
         <template slot-scope="scope">
@@ -70,6 +73,10 @@ export default {
         "507": ""
       },
       power: {
+        'sign-ht-fz-pay': {
+          state: false,
+          name: '确认打款'
+        },
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
@@ -135,6 +142,12 @@ export default {
     }
   },
   methods:{
+    // 导出功能
+    getExcel() {
+        // this.queryFn();
+        let param = Object.assign({}, this.ajaxParam)
+        this.excelCreate('/input/transferListExcel', param)
+    },
     //分账明细列表
     getAccountList(ids){
       let param = {
@@ -167,6 +180,11 @@ export default {
 
 .view-container{
   padding: 10px;
+  .title-box {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+  }
 }
 .contractCode{
   cursor: pointer;

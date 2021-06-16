@@ -1109,7 +1109,7 @@ export default {
       };
       if (this.power["sign-yj-rev-appeal"].state) {
         this.$ajax
-          .postJSON("/api/appeal/saveAppealInfo", param, 2)
+          .postJSON("/api/appeal/saveAppealInfo", param)
           .then(res => {
             if (res.status == 200) {
               this.isSS = false;
