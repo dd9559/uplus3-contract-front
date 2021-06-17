@@ -8,7 +8,7 @@
       :before-close="handleClose"
       class="dep-dialog">
 			<div class="titleBox">
-				<div class="title" v-for="(item,index) in titleList" :key="index">
+				<div class="title" :class="{'titleTips':!index}" v-for="(item,index) in titleList" :key="index" >
 					{{item.item}}
 				</div>
 			</div>
@@ -57,12 +57,12 @@
 							<div style="margin-bottom: 15px;">法人身份证照片上传：</div>
 							<div style="display:flex;align-items: center;">
 								<fileUp id="idCard" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true">
-                  <img :src="idCard[0]" width="237px" height="152px" v-show="companyForm.idCard">
-                  <img src="@/assets/img/idcard.png" alt="" v-show="!companyForm.idCard">
+                  <img :src="idCard[0]" width="235px" height="150px" v-show="companyForm.idCard" style="border: 1px solid #8fb3fa;border-radius:10px">
+                  <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">
 								</fileUp>
 								<fileUp id="theotherside" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :canvas="true">
-                  <img :src="theotherside[0]" width="229px" height="147px" v-show="companyForm.theotherside" style="margin-left: 50px;">
-									<img src="@/assets/img/theotherside.png" alt="" style="margin-left: 50px;" v-show="!companyForm.theotherside">
+                  <img :src="theotherside[0]" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;margin-left: 50px;">
+									<img src="@/assets/img/theotherside.png" width="229px" height="147px" style="margin-left: 50px;" v-show="!companyForm.theotherside">
 								</fileUp>
 							</div>
 						</div>
@@ -117,7 +117,8 @@
         companyForm: {},
         idCard:[],
         theotherside:[],
-        businessLicense:[]
+        businessLicense:[],
+				titleIndex:'first'
 			}
 		},
 		created() {
@@ -154,7 +155,6 @@
         })
       },
       upload(data) {
-        console.log(data);
         if(data.btnId === "idCard") {
           this.companyForm.idCard = data.param[0].path+`?${data.param[0].name}`
           this.contractName = data.param[0].name
@@ -243,6 +243,11 @@
 			.title:nth-child(3){
 				margin-left: 15px;
 				margin-right: 30px;
+			}
+			.titleTips {
+				font-size: 16px;
+				color: #FFF;
+				background: #169bd5;
 			}
 			
 		}

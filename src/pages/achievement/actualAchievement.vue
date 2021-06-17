@@ -1331,54 +1331,33 @@ export default {
     },
     //查询操作
     queryFn(typeshow) {
-      if (this.propForm.dateMo) {
-        this.ajaxParam = {
-          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-          dealAgentId: this.propForm.dealAgentId, //员工
-          contractType:
-            this.propForm.contractType.length === 0
-              ? ""
-              : this.propForm.contractType.join(","), //合同类型
-          distributionType: this.propForm.divideType, //分成类型
-          achievementStatus: this.propForm.achType, //业绩类型
-          appealStatus: this.propForm.appealType,
-          enterStartTime:this.propForm.inputData[0],
-          enterEndTime:this.propForm.inputData[1],
-          startTime: this.propForm.dateMo[0], //开始时间
-          endTime: this.propForm.dateMo[1], //结束时间
-          keyword: this.propForm.search, //关键字
-          pageNum: this.currentPage,
-          department: this.propForm.department,
-          pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods,
-          recordType: this.propForm.recordType,
-          receiveAmountState: this.propForm.receiveAmountState,
-          uploadId: this.propForm.uploadId,
-          ...this.sortChange
-        };
-      } else {
-        this.ajaxParam = {
-          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-          dealAgentId: this.propForm.dealAgentId, //员工
-          contractType:
-            this.propForm.contractType.length === 0
-              ? ""
-              : this.propForm.contractType.join(","), //合同类型
-          distributionType: this.propForm.divideType, //分成类型
-          achievementStatus: this.propForm.achType, //业绩类型
-          appealStatus: this.propForm.appealType,
-          enterStartTime:this.propForm.inputData[0],
-          enterEndTime:this.propForm.inputData[1],
-          keyword: this.propForm.search, //关键字
-          department: this.propForm.department,
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods,
-          recordType: this.propForm.recordType,
-          receiveAmountState: this.propForm.receiveAmountState,
-          uploadId: this.propForm.uploadId,
-          ...this.sortChange
-        };
+      this.ajaxParam = {
+        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+        dealAgentId: this.propForm.dealAgentId, //员工
+        contractType:
+          this.propForm.contractType.length === 0
+            ? ""
+            : this.propForm.contractType.join(","), //合同类型
+        distributionType: this.propForm.divideType, //分成类型
+        achievementStatus: this.propForm.achType, //业绩类型
+        appealStatus: this.propForm.appealType,
+        keyword: this.propForm.search, //关键字
+        department: this.propForm.department,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        joinMethods: this.propForm.joinMethods,
+        recordType: this.propForm.recordType,
+        receiveAmountState: this.propForm.receiveAmountState,
+        uploadId: this.propForm.uploadId,
+        ...this.sortChange
+      };
+      if(this.propForm.inputData) {
+        this.ajaxParam.enterStartTime = this.propForm.inputData[0]
+        this.ajaxParam.enterEndTime = this.propForm.inputData[1]
+      }
+      if(this.propForm.dateMo) {
+        this.ajaxParam.startTime = this.propForm.dateMo[0]
+        this.ajaxParam.endTime = this.propForm.dateMo[1]
       }
       //新加
       Object.assign(this.ajaxParam, {
