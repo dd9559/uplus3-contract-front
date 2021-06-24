@@ -92,10 +92,9 @@
         <el-button @click="submitInfo" type="primary" round v-if="!next">提交信息</el-button>
 				<el-button @click="nexts" type="primary" round v-else>下一步</el-button>
       </div>
-			<!-- titleIndex == 'second' -->
-			<div style="height:300px" v-if="titleIndex == 1">
-				<span>当前状态：</span>
-				<!-- <el-button type="primary" @click="signUpSms">发送签约短信</el-button> -->
+			<div style="margin-top: 30px;color: #ff0000;height: 100px;" v-if="titleIndex == 1">
+				<span v-if="sms == 1">当前状态：签约中</span>
+				<span v-if="sms == 2">当前状态：签约完成</span>
 			</div>
 			<div slot="footer" v-if="titleIndex == 1">
         <el-button @click="signContract" type="primary" round v-if="sms == 1">补发签约短信</el-button>
@@ -104,10 +103,10 @@
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
 				<el-input v-model="input" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
-				<el-button size="mini" type="primary" :disabled="disable">{{getCode}}</el-button>
+				<el-button size="mini" type="primary" :disabled="disable" @click="countDown">{{getCode}}</el-button>
 			</div>
 			<div slot="footer" v-if="titleIndex == 2">
-
+				<el-button @click="smsNext" type="primary" round>确定</el-button>
 			</div>
     </el-dialog>
 	</div>
@@ -152,9 +151,10 @@
         idCard:[],
         theotherside:[],
         businessLicense:[],
-				titleIndex:0,
+				titleIndex:1,
+				sms:2,
 				input:'',
-				getCode:60,
+				getCode:'获取验证码',
 				disable:false,
 				next:false,
 				rulesForm: {
@@ -227,7 +227,9 @@
 				this.companyForm = {}
 			},
       handleClose() {
-				this.$refs.form.resetFields()
+				if(this.titleIndex == 0) {
+					this.$refs.form.resetFields()
+				}
 				this.dataInfo = {}
         this.$emit("handleDialogClose",this.clearList);
       },
@@ -295,19 +297,6 @@
             this.dataInfo.address=this.$tool.textInput(this.dataInfo.address)            
           })
         }
-				//  if(type==='bankAccountName') {
-        //   this.$nextTick(()=>{
-        //     this.companyForm.entBankList[index].bankAccountName=this.$tool.textInput(this.companyForm.entBankList[index].bankAccountName,3)
-        //   })
-        // }else if(type==='bankBranchName') {
-        //   this.$nextTick(()=>{
-        //     this.companyForm.entBankList[index].bankBranchName=this.$tool.textInput(this.companyForm.entBankList[index].bankBranchName,4)            
-        //   })
-        // }else if(type==='bankBranchCode') {
-        //   this.$nextTick(()=>{
-        //     this.companyForm.entBankList.bankBranchCode=this.$tool.numberInput(this.companyForm.entBankList.bankBranchCode)            
-        //   })
-        // } else 
       },
       upload(data) {
         if(data.btnId === "idCard") {
@@ -339,8 +328,11 @@
 				this.$ajax.get('/api/enterprise_pos/signContract',params).then(res => {
 					res = res.data
 					if(res.status == 200) {
+						clearInterval(this.timer);
 						this.$message.success(res.message)
-						this.enterprise()
+						this.timer = setInterval(() =>{
+							this.enterprise()
+						},5000)
 					}
 				}).catch(error=>{
           this.$message({message:error})
@@ -349,6 +341,7 @@
 			//倒计时
 			countDown() {
 				this.disable = true
+				this.getCode = 60
 				// this.getCode = this.getCode+'s'
 				this.countDown = setInterval(()=>{
 					this.getCode--
@@ -438,9 +431,9 @@
 									type:'success',
 									message:res.message
 								})
-							}else {
-								this.$message.error(res.message)
 							}
+						}).catch((e)=>{
+							this.$message.error(e)
 						})
 					}else {
 						return false;
@@ -457,36 +450,38 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data)
 						console.log(data);
-						if(data.status != 2 && this.titleList == 0) {
+						if(data.status != 2 && this.titleIndex == 0) {
 							this.$message.error('个人信息提交失败，请重新提交！')
 							clearInterval(this.timer);
 							return
 						}
-						if(!data.ocrRegnumComparisonResult && this.titleList == 0) {
+						if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
 							this.$message.error('上传营业执照失败，请重新上传！')
 							clearInterval(this.timer);
 							return
 						}
-						if(!data.ocrIdcardComparisonResult && this.titleList == 0) {
+						if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
 							this.$message.error('上传身份证照失败，请重新上传！')
 							clearInterval(this.timer);
 							return
 						}
-						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleList == 0) {
+						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0) {
 							this.$message.success('信息审核成功')
 							clearInterval(this.timer);
 							this.titleIndex = 1
 							this.signContract()
-						}else {
-							this.$message.error(res.message)
+							return
 						}
-						if(this.titleList == 1 && data.isSignContract == false) {
-							
+						if(this.titleIndex == 1 && data.isSignContract == true) {
+							this.sms = 2
+							clearInterval(this.timer);
+							return
 						}
 					}
 				}).catch((e)=>{
-					clearInterval(this.timer);
-					this.$message({message:error})
+					console.log(e);
+					// clearInterval(this.timer);
+					this.$message({message:e})
 				})
 			},
 			nexts() {
@@ -494,6 +489,9 @@
 				this.timer = setInterval(() =>{
 					this.enterprise()
 				},5000)
+			},
+			smsNext() {
+				this.titleIndex = 2
 			}
 		},
 		beforeDestroy() {
