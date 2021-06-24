@@ -103,7 +103,7 @@
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
 				<el-input v-model="input" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
-				<el-button size="mini" type="primary" :disabled="disable" @click="countDown">{{getCode}}</el-button>
+				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable" @click="countDown">{{getCode}}</el-button>
 			</div>
 			<div slot="footer" v-if="titleIndex == 2">
 				<el-button @click="smsNext" type="primary" round>确定</el-button>
@@ -564,6 +564,12 @@
 			margin-top: 40px;
 			text-align: center;
 			margin-right: 30px;
+			/deep/.after-class {
+				span::after {
+					content: '秒';
+					padding-left: 4px;
+				}
+			}
 		}
 	}
 </style>
