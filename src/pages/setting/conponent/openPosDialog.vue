@@ -1,5 +1,5 @@
 <template>
-	<div class="posDialog">
+	<div class="posDialog" v-loading.fullscreen.lock="fullscreenLoading">
 		<el-dialog
       title="开通POS收款"
       :closeOnClickModal="$tool.closeOnClickModal"
@@ -43,7 +43,7 @@
 						</el-form-item>
 						<el-form-item label="支行名称：" prop="bankBranchName">
 							<el-select  v-model="dataInfo.bankBranchName" filterable v-loadmore="moreAssignors" style="width:100%"
-							placeholder="选择支行名称" :filter-method="bankBranchList" @change="bankBranchs">
+							placeholder="选择支行名称" remote reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
 								<el-option v-for="m in bankBranch" :key="m.branchCode" :label="m.branchName" :title="m.branchName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
 							<!-- <el-input v-model="entBank.bankBranchName" maxlength="50" :clearable="true" @input="inputOnly('bankBranchName')"></el-input> -->
@@ -90,7 +90,7 @@
 			</div>
       <div slot="footer" v-if="titleIndex == 0">
         <el-button @click="submitInfo" type="primary" round v-if="!next">提交信息</el-button>
-				<el-button @click="nexts" type="primary" round v-else>下一步</el-button>
+				<el-button @click="nexts" type="primary" :disabled='firstDisable' v-dbClick round v-else>下一步</el-button>
       </div>
 			<div style="margin-top: 30px;color: #ff0000;height: 100px;" v-if="titleIndex == 1">
 				<span v-if="sms == 1">当前状态：签约中</span>
@@ -142,7 +142,10 @@
 				bankBranch:[],
 				branchPage: 1,
 				branchTotal: 0,
+				branchStr: '',
+				fullscreenLoading: false,
 				fourthStoreNoEdit:false,
+				firstDisable: false,
 				dataInfo:{},
         entBank:{},
         companyForm: {
@@ -153,8 +156,8 @@
         idCard:[],
         theotherside:[],
         businessLicense:[],
-				titleIndex:1,
-				sms:2,
+				titleIndex:0,
+				sms:1,
 				input:'',
 				getCode:'获取验证码',
 				disable:false,
@@ -247,6 +250,7 @@
         })
       },
 			bankList(val) {
+				this.branchStr = JSON.parse(val).bankName
 				this.getBankBranch(JSON.parse(val).bankName)
 			},
 			bankBranchs(val) {
@@ -255,13 +259,21 @@
 			bankBranchList(val) {
 				console.log(val.length);
 				if(val.length >= 2) {
+					this.branchStr = val
+					this.branchPage = 1
+					this.bankBranch = []
 					this.getBankBranch(val)
 				}else {
 					this.bankBranch = []
 				}
 			},
 			moreAssignors() {
-
+				if(this.bankBranch.length>= this.branchTotal){
+          return
+        }else {
+          this.branchPage++;
+          this.getBankBranch(this.branchStr);
+        }
 			},
 			//获取银行支行名称
 			getBankBranch(Keyword) {
@@ -274,7 +286,8 @@
 					res=res.data
 					console.log(res);
 					if(res.status===200){
-            this.bankBranch=res.data
+            this.bankBranch=this.bankBranch.concat(res.data)
+            this.branchTotal=res.data[0].total
           }
 				}).catch(error=>{
           this.$message({message:error})
@@ -430,9 +443,11 @@
 							lepCardBack:this.companyForm.theotherside,
 							licenseSign:this.companyForm.businessLicense
 						}
+						this.fullscreenLoading = true
 						this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
 							res= res.data
 							if(res.status == 200){
+								this.fullscreenLoading = false
 								this.next = true
 								this.$message({
 									type:'success',
@@ -440,6 +455,7 @@
 								})
 							}
 						}).catch((e)=>{
+							this.fullscreenLoading = false
 							this.$message.error(e)
 						})
 					}else {
@@ -459,21 +475,30 @@
 						console.log(data);
 						if(data.status != 2 && this.titleIndex == 0) {
 							this.$message.error('个人信息提交失败，请重新提交！')
+							this.firstDisable = false
 							clearInterval(this.timer);
 							return
 						}
 						if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
-							this.$message.error('上传营业执照失败，请重新上传！')
-							clearInterval(this.timer);
+							if (data.ocrRegnumComparisonResult === 0) {
+								this.$message.error('上传营业执照失败，请重新上传！')
+								this.firstDisable = false
+								clearInterval(this.timer);
+							}
 							return
 						}
 						if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
-							this.$message.error('上传身份证照失败，请重新上传！')
-							clearInterval(this.timer);
+							if (data.ocrIdcardComparisonResult === 0) {
+								this.$message.error('上传身份证照失败，请重新上传！')
+								this.firstDisable = false
+								clearInterval(this.timer);
+							}
+							// clearInterval(this.timer);
 							return
 						}
 						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0) {
-							this.$message.success('信息审核成功')
+							// this.$message.success('信息审核成功')
+							this.firstDisable = false
 							clearInterval(this.timer);
 							this.titleIndex = 1
 							this.signContract()
@@ -493,6 +518,7 @@
 			},
 			nexts() {
 				this.$message.success('信息审核中，请稍后！')
+				this.firstDisable = true
 				this.timer = setInterval(() =>{
 					this.enterprise()
 				},5000)
