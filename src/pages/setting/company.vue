@@ -69,7 +69,7 @@
           </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
-              <el-button type="text" @click="openPosCollection(scope.row)" size="medium" >开通POS收款</el-button>
+              <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state">开通POS收款</el-button>
               <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
@@ -475,6 +475,10 @@
           'sign-set-bl-tx-info': {
             state: false,
             name: '提现记录'
+          },
+          'sign-set-bl-openPos': {
+            state: false,
+            name: '开通pos收款'
           }
         },
         bdHomeStoreList:[],
