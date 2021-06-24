@@ -7,6 +7,7 @@
       width="1200px"
       :before-close="handleClose"
       class="dep-dialog"
+			@open="dialogOpen"
 			@click="handleClose">
 			<div class="titleBox">
 				<div class="title" :class="{'titleTips':index == titleIndex}" v-for="(item,index) in titleList" :key="index" >
@@ -102,11 +103,11 @@
       </div>
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
-				<el-input v-model="input" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
-				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable" @click="countDown">{{getCode}}</el-button>
+				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
+				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px">{{getCode}}</el-button>
 			</div>
 			<div slot="footer" v-if="titleIndex == 2">
-				<el-button @click="smsNext" type="primary" round>确定</el-button>
+				<el-button @click="codeConfirm" type="primary" round>确定</el-button>
 			</div>
     </el-dialog>
 	</div>
@@ -153,9 +154,9 @@
         idCard:[],
         theotherside:[],
         businessLicense:[],
-				titleIndex:1,
-				sms:2,
-				input:'',
+				titleIndex:0,
+				sms:1,
+				inputCode:'',
 				getCode:'获取验证码',
 				disable:false,
 				next:false,
@@ -190,6 +191,9 @@
 		mounted() {
 			// 银行列表
 			this.getBanks()
+			// this.$nextTick(()=>{
+			// 	this.enterprise()
+			// })
 			// this.getBankBranch()
 			// this.countDown()
 		},
@@ -215,7 +219,9 @@
 			titleIndex:{
 				handler(newName,oldName) {
 					console.log(newName);
-					if(newName == 1) {
+					if(newName == 0) {
+						// console.log(newName);
+						// this.enterprise()
 						// this.signContract()
 					}
           // this.entBank = this.dataInfo.entBankList[0]
@@ -225,6 +231,10 @@
 			}
 		},
 		methods:{
+			//打开dialog
+			dialogOpen() {
+				this.enterprise(1)
+			},
 			clearList() {
 				this.companyForm = {}
 			},
@@ -233,6 +243,9 @@
 					this.$refs.form.resetFields()
 				}
 				this.dataInfo = {}
+				this.inputCode = ''
+				this.titleIndex = 0
+				clearInterval(this.timer);
         this.$emit("handleDialogClose",this.clearList);
       },
 			// 获取银行列表
@@ -346,10 +359,12 @@
         })
 			},
 			//倒计时
-			countDown() {
+			countDowns() {
+				console.log(123);
 				this.disable = true
 				this.getCode = 60
 				// this.getCode = this.getCode+'s'
+				this.yzCode()
 				this.countDown = setInterval(()=>{
 					this.getCode--
 					if(this.getCode == 0) {
@@ -358,6 +373,38 @@
 						this.disable = false
 					}
 				},1000)
+			},
+			//验证码
+			yzCode() {
+				let params = {
+					companyId:this.dataInfo.id,
+					lepPhone:'15827846050',
+				}
+				this.$ajax.get('/api/enterprise_pos/checkCode',params).then(res => {
+					res = res.data
+					if(res.status == 200) {
+						this.$message.success(res.message)
+					}
+				}).catch((e)=>{
+					this.$message.error(e)
+				})
+			},
+			//确认短信
+			codeConfirm() {
+				let params = {
+					companyId:this.dataInfo.id,
+					lepPhone:'13986469852',
+					checkCode:this.inputCode
+				}
+				this.$ajax.postJSON('/api/enterprise_pos/bindPhone',params).then(res => {
+					res= res.data
+					if(res.status == 200) {
+						this.$message.success(res.message)
+						this.handleClose()
+					}
+				}).catch((e)=>{
+					this.$message.error(e)
+				})
 			},
       //提交信息
       submitInfo() {
@@ -390,7 +437,6 @@
 				
       },
 			sunmitData() {
-					console.log(this.companyForm);
 				this.$refs.form.validate((vaid) =>{
 					if(vaid) {
 						if(this.idCard.length == 0) {
@@ -448,7 +494,7 @@
 				})
 			},
 			//查询注册状态
-			enterprise() {
+			enterprise(index) {
 				let params = {
 					companyId:this.dataInfo.id
 				}
