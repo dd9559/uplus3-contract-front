@@ -42,7 +42,7 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="支行名称：" prop="bankBranchName">
-							<el-select  v-model="dataInfo.bankBranchName" filterable  style="width:100%"
+							<el-select  v-model="dataInfo.bankBranchName" filterable v-loadmore="moreAssignors" style="width:100%"
 							placeholder="选择支行名称" :filter-method="bankBranchList" @change="bankBranchs">
 								<el-option v-for="m in bankBranch" :key="m.branchCode" :label="m.branchName" :title="m.branchName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
@@ -141,6 +141,8 @@
 				],
 				adminBanks:[],
 				bankBranch:[],
+				branchPage: 1,
+				branchTotal: 0,
 				fourthStoreNoEdit:false,
 				dataInfo:{},
         entBank:{},
@@ -256,16 +258,21 @@
 					this.bankBranch = []
 				}
 			},
+			moreAssignors() {
+
+			},
 			//获取银行支行名称
 			getBankBranch(Keyword) {
 				let params = {
-					Keyword:Keyword
+					Keyword:Keyword,
+					pageNum:this.branchPage,
+					pageSize:100,
 				}
 				this.$ajax.get('/api/enterprise_pos/tlBank_branch',params).then(res=>{
 					res=res.data
 					console.log(res);
 					if(res.status===200){
-            this.bankBranch=res.data.splice(0,100)
+            this.bankBranch=res.data
           }
 				}).catch(error=>{
           this.$message({message:error})
