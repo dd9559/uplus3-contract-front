@@ -193,16 +193,27 @@
             <span>{{companyForm.name}}</span>
           </div>
           <el-table :data="searchDepTableData" v-loadmore="lazyLoad" style="width: 100%" border :max-height="445">
-          <el-table-column label="企业管理费" prop="platformFeeRatio" width="90">
+          <el-table-column label="企业管理费" prop="platformFeeRatio">
             <template slot-scope="scope">
               <span>{{scope.row.platformFeeRatio}}%</span>
             </template>
           </el-table-column>
-          <el-table-column label="门店名称" prop="name" width="300">
-          </el-table-column>
-          <el-table-column label="操作" width="300">
+          <el-table-column label="门店名称" prop="name"></el-table-column>
+          <el-table-column label="商户号" prop="name">
             <template slot-scope="scope">
-              <el-button type="text" @click="clickOpen(scope.row)" size="medium" v-if="power['sign-set-gs'].state">解绑</el-button>
+              <span>{{scope.row.vspCusid || '-'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="终端号" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.vspTermid || '-'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="170">
+            <template slot-scope="scope">
+              <el-button type="text" @click="clickOpen(scope.row,'company')" size="medium" v-if="power['sign-set-gs'].state">解绑公司</el-button>
+              <el-button type="text" @click="clickOpen(scope.row,'vsp')" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
+              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -211,15 +222,27 @@
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
       </el-dialog>
       <el-dialog
-      title="解除绑定"
+      :title="openSlot === 'company' ? '解除绑定' : '绑定POS'"
       :closeOnClickModal="$tool.closeOnClickModal"
       :visible.sync="dialogRelieveVisible"
       width="460px"
       class="relieve-dialog">
-      <div>确定是否解除与<span class="text">{{companyForm.name}}</span>的关系</div>
-      <div slot="footer">
-        <el-button type="primary" round @click="submitRelieve">确认</el-button>
-      </div>
+        <template v-if="openSlot === 'company'">
+          <div :class="openSlot">确定是否解除与<span class="text">{{companyForm.name}}</span>的关系</div>
+        </template>
+        <template v-if="openSlot === 'vsp'">
+          <div class="vsp-item">
+            <label>输入商户号: </label>
+            <el-input size="small" class="vsp-input" maxlength="50" v-model.trim="vspInfo.vspCusid"></el-input>
+          </div>
+          <div class="vsp-item">
+            <label>输入POS终端编号: </label>
+            <el-input size="small" class="vsp-input" maxlength="50" v-model.trim="vspInfo.vspTermid"></el-input>
+          </div>
+        </template>
+        <div slot="footer" :class="openSlot">
+          <el-button type="primary" round @click="submitRelieve">确认</el-button>
+        </div>
       </el-dialog>
       <el-dialog
       title="绑定门店"
@@ -308,7 +331,7 @@
       :destroy-on-close="true"
       width="740px"
       class="log-dialog">
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel"
+        <el-button class="f_r" round type="primary" size="medium" v-if="power['sign-set-bl-tx-info'].state" @click="getExcel"
                    style="padding:9px 15px;min-width: 80px;margin: 8px;">导出
         </el-button>
         <el-table :data="withdrawRecordData" v-loadmore="withdrawLazyLoad" style="width: 100%" border :max-height="445">
@@ -391,6 +414,11 @@
           platformFeeRatio: null,
         },
         dialogRelieveVisible: false,
+        openSlot: 'company',
+        vspInfo: {
+          vspCusid: '',
+          vspTermid: ''
+        },
         dialogRDepisible: false,
         dialogwithdraw: false,
         dialogSubmitWithdraw: false,
@@ -737,28 +765,46 @@
             this.$message({message:error})
         })
       },
-      clickOpen(data) {
+      clickOpen(data,slot) {
+        this.openSlot = slot
+        this.vspInfo.vspCusid = '' 
+        this.vspInfo.vspTermid = ''
         this.dialogRelieveVisible = true
         this.relieveData = data
       },
       submitRelieve () {
-        this.$ajax.put(`/api/enterprise/dept_unbind`,{
-          companyId: this.relieveData.entId,
-          storeId: this.relieveData.depId
-        }).then(res => {
+        if (this.openSlot === 'vsp' && (this.vspInfo.vspCusid === '' || this.vspInfo.vspTermid === '')) {
+          return this.$message('请填写完整！')
+        }
+        let params = this.openSlot === 'company' ? {
+              companyId: this.relieveData.entId,
+              storeId: this.relieveData.depId
+            } : {
+              depId: this.relieveData.depId,
+              vspCusid: this.vspInfo.vspCusid,
+              vspTermid: this.vspInfo.vspTermid
+            },
+            url = this.openSlot === 'company' ? '/api/enterprise/dept_unbind' : '/api/enterprise_pos/bind',
+            method = this.openSlot === 'company' ? 'put' : 'postJSON';
+        this.$ajax[method](url,params).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.searchDepTableData = this.searchDepTableData.filter(item => {
-              return item.depId !== this.relieveData.depId
-            })
-            this.dialogRelieveVisible = false
-            if (this.searchDepTableData.length === 0) {
-              this.deptName = ''
+            if (this.openSlot === 'company') {
+              this.searchDepTableData = this.searchDepTableData.filter(item => {
+                return item.depId !== this.relieveData.depId
+              })
+              if (this.searchDepTableData.length === 0) {
+                this.deptName = ''
+              }
             }
+            
+            this.dialogRelieveVisible = false
+            
             this.$message({type:'success',message: res.message})
           }
         }).catch(error =>{
-          this.$message(res.message)
+          this.dialogRelieveVisible = false
+          this.$message(error)
         })
       },
       clickTitle(index) {
@@ -1601,6 +1647,9 @@
       td {
         border: none!important;
       }
+      .is-bind {
+        color: rgb(114, 108, 108)
+      }
     }
   }
   
@@ -1618,22 +1667,41 @@
     padding: 0 3px;
     color: #478DE3;
   }
+  .vsp-item {
+    display: flex;
+    line-height: 20px;
+    .vsp-input {
+      width: 150px;
+    }
+    &:first-child {
+      margin: 20px 0;
+    }
+    label {
+      width: 150px;
+      padding-right: 8px;
+      line-height: 2.2;
+      text-align: right;
+    }
+  }
   /deep/ .el-dialog__header {
     border-radius: 8px 8px 0 0;
     font-weight: bold;
   }
   /deep/ .el-dialog__body {
-    height: 164px;
-    line-height: 164px;
-    text-align: center;
+    .company {
+      height: 164px;
+      line-height: 164px;
+      text-align: center;
+    }
     border-radius: 0 0 8px 8px;
-
   }
   /deep/ .el-dialog__close {
     font-weight: bold;
   }
   /deep/ .el-dialog__footer {
-    text-align: center;
+    .company {
+      text-align: center;
+    }
   }
 }
 .dep-dialog {

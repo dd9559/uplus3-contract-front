@@ -168,7 +168,10 @@ let TOOL = {
               category: "1-3-5",
               can: true, //是否可见
               path: "actualHarvestForms",
-              code: "sign-yj-report-query"
+              code: [
+                'sign-yj-ysjsreport-ys-query',
+                'sign-yj-ysjsreport-js-query'
+              ]
             }
           ]
         },

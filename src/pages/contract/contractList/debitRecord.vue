@@ -87,7 +87,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">
       <div class="title-box">
-        <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-pay'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-dk-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </div>
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" border>
 
@@ -327,6 +327,10 @@
               state:false,
           },
           'sign-ht-fz-pay':{
+              name:'重新打款',
+              state:false,
+          },
+          'sign-ht-dk-export':{
               name:'重新打款',
               state:false,
           }

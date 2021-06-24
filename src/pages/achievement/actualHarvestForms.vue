@@ -13,42 +13,13 @@
               end-placeholder="结束日期"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="合同类型">
-            <el-select v-model="contType" style="width:200px" clearable placeholder="请选择">
+          <el-form-item label="合同状态">
+            <el-select v-model="contType" style="width:200px" placeholder="请选择">
               <el-option
-                v-for="item in dictionary['10']"
+                v-for="item in dictionary['6']"
                 :key="item.value"
                 :label="item.value"
                 :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="部门" class="dep">
-            <select-tree
-              :data="DepList"
-              :init="departmentName"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-            ></select-tree>
-            <el-select
-              :clearable="true"
-              filterable
-              remote
-              :remote-method="test"
-              v-loadmore="moreEmploye"
-              @visible-change="empHandle"
-              class="margin-left"
-              size="small"
-              v-model="depUser"
-              placeholder="请选择"
-              @change="empHandleAdd"
-            >
-              <el-option
-                v-for="item in EmployeList"
-                :key="item.empId"
-                :label="item.name"
-                :value="item.empId+'/'+item.depName+'/'+item.depId"
-                @clear="clearDep"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -58,10 +29,13 @@
     <div class="table-list">
       <div class="tab">
         <div class="forms-tab">
-            <span :class="formsCurrent == index+1 ? 'curent' : ''" v-for="(item,index) of ['应收报表','结算报表']" :key="index" @click="toggleForms(index,'formsCurrent')">{{item}}</span>
+            <template v-for="(item) of formList">
+              <span :class="formsCurrent == item.id+1 && formList.length == 2 ? 'curent' : ''"  :key="item.id" @click="toggleForms(item.id,'formsCurrent')">{{item.name}}</span>
+            </template>
         </div>
         <div class="table-tab">
             <span :class="tabCurrent == index+1 ? 'curent' : ''" v-for="(item,index) of ['人员','分组','分店','片区','大区','事业部']" :key="index" @click="toggleForms(index,'tabCurrent')">{{item}}</span>
+            <el-button round type="primary" size="medium" @click="getExcel" v-if="(formsCurrent===1 && power['sign-yj-ysjsreport-ys-export'].state) || (formsCurrent===2 && power['sign-yj-ysjsreport-js-export'].state)" style="padding:9px 15px;min-width: 80px;float:right;">导出</el-button>
         </div>
       </div>
       <el-table
@@ -69,13 +43,18 @@
         ref="tableCom"
         style="width: 100%"
         border
+        v-loading="loadingList"
         :max-height="tableNumberCom"
       >
-        <el-table-column label="买卖">
-          <el-table-column :label="tabCurrent===1? '姓名' : '部门'" prop="name" width="128"></el-table-column>
-          <el-table-column label="部门层级" width="128">
-            <template>{{['人员','分组','分店','片区','大区','事业部'][tabCurrent-1]}}</template>
-          </el-table-column>
+        <el-table-column v-if="tabCurrent===1" label="姓名" align="center" prop="nams" width="128"></el-table-column>
+        <el-table-column label="部门" align="center" prop="dep" width="128"></el-table-column>
+        <el-table-column label="部门层级" align="center" width="128">
+          <template slot-scope="scope">
+            <span v-if="tabCurrent===1">{{['事业部','大区','片区','分店','分组'][scope.row.levels-1]}}</span>
+            <span v-else>{{['人员','分组','分店','片区','大区','事业部'][tabCurrent-1]}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="买卖" align="center">
           <el-table-column label="佣金支付费（元）" width="128">
             <template slot-scope="scope">{{scope.row.mm_commfee|fomatFloat}}</template>
           </el-table-column>
@@ -92,7 +71,7 @@
               <span>{{scope.row.mm_money|fomatFloat}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="合同值（总应收）" width="128">
+          <el-table-column :label="formsCurrent===1? '买卖合同值（总应收）' : '买卖合同值（分账金额）'" width="128">
             <template slot-scope="scope">
               <span>{{scope.row.mm_moneySum|fomatFloat}}</span>
             </template>
@@ -101,7 +80,7 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column label="租赁">
+        <el-table-column label="租赁" align="center">
 
           <el-table-column label="佣金支付费（元）" width="128">
             <template slot-scope="scope">{{scope.row.zl_commfee|fomatFloat}}</template>
@@ -116,7 +95,7 @@
               <span>{{scope.row.zl_money|fomatFloat}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="合同值（总应收）" width="128">
+          <el-table-column :label="formsCurrent===1? '租赁合同值（总应收）' : '租赁合同值（分账金额）'" width="128">
             <template slot-scope="scope">
               <span>{{scope.row.zl_moneySum|fomatFloat}}</span>
             </template>
@@ -125,8 +104,8 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column label="代办">
-          <el-table-column label="代办合同值（结算金额）" width="128">
+        <el-table-column label="代办" align="center">
+          <el-table-column :label="formsCurrent===1? '代办合同值（总应收）' : '代办合同值（分账金额）'" width="128">
             <template slot-scope="scope">
               <span>{{scope.row.db_moneySum|fomatFloat}}</span>
             </template>
@@ -135,7 +114,7 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column label="总业绩">
+        <el-table-column label="总业绩" align="center">
           <el-table-column label="买卖+租赁+代办" width="128">
             <template slot-scope="scope">
               <span>{{(scope.row.mm_moneySum+scope.row.db_moneySum+scope.row.zl_moneySum)|fomatFloat}}</span>
@@ -168,25 +147,41 @@ export default {
   data() {
     return {
       searForm: {},
+      loadingList: false,
       formsCurrent: 1,
       tabCurrent: 1,
-      departmentName: "",
-      department: [],
       searchTime: null,
-      contType: "",
+      contType: 3,
       pageSize: 50,
       empName: "",
       pageNum: 1,
       total: 0,
+      ajaxParam: {},
       dictionary: {
-        "10": "", //合同类型（筛选条件）
+        "6": "", //合同状态（筛选条件）
       },
-      depUser: "",
       achList: [],
+      copyAchList: [],
+      formList: [
+        {name: '应收报表',id: 0},
+        {name: '结算报表',id: 1}
+      ],
       power: {
-        "sign-set-log-query": {
+        "sign-yj-ysjsreport-ys-query": {
           state: false,
-          name: "查询",
+          name: "应收报表查询",
+        },
+        "sign-yj-ysjsreport-ys-export": {
+          state: false,
+          name: "应收报表导出",
+        },
+        "sign-yj-ysjsreport-js-query": {
+          state: false,
+          name: "结算报表查询",
+        },
+        "sign-yj-ysjsreport-js-export": {
+          state: false,
+          name: "结算报表导出",
         },
       },
     };
@@ -195,14 +190,33 @@ export default {
     this.getAdmin(); //获取当前登录人信息
     this.getDictionary();
     this.initTimePicker();
-    this.getAchList()
+    console.log(this.$router);
   },
   mounted() {
     this.remoteMethod("power");
+    this.formList = this.formList.filter(item => {
+      if (item.id === 0 && this.power['sign-yj-ysjsreport-ys-query'].state) return true
+      if (item.id === 1 && this.power['sign-yj-ysjsreport-js-query'].state) return true
+      return false
+    })
+    if (this.formList.length === 1) {
+      this.formsCurrent = this.formList[0].id + 1
+    }
+    this.getAchList()
   },
   methods: {
+    // 导出功能
+    getExcel() {
+        let url = this.formsCurrent === 1 ? '/input/YSachievementExcel' : '/input/JSachievementExcel'
+        this.excelCreate(url, this.ajaxParam)
+    },
     toggleForms(curent,key) {
+        if (key==='formsCurrent' && this.formList.length === 1) return
         this[key] = curent+1
+        if (key==='formsCurrent') {
+          this.tabCurrent = 1
+        }
+        this.pageNum = 1
         this.getAchList()
     },
     initTimePicker() {
@@ -210,9 +224,7 @@ export default {
       date = date.setDate(1);
       date = this.$tool.dateFormat(date);
       var date2 = this.$tool.dateFormat(Date.now());
-      this.$nextTick(() => {
-        this.searchTime = [date, date2];
-      });
+      this.searchTime = [date, date2];
     },
     getAchList() {
       let param = {
@@ -224,96 +236,114 @@ export default {
           this.searchTime && this.searchTime.length != 0
             ? this.searchTime[1]
             : "",
-        depId: this.department,
-        empId: this.depUser,
         contartType: this.contType,
         level: this.tabCurrent,
         pageNum: this.pageNum,
         pageSize: this.pageSize,
       };
-      if (param.empId) {
-        param.empId = param.empId.split("/")[0];
-      }
       let apiUrl = ''
       if(this.formsCurrent == 1) {
         apiUrl = '/api/achievement/AchievementList'
       }else {
         apiUrl = '/api/settlement/settleList'
       }
+      this.loadingList = true
       this.$ajax
         .get(apiUrl, param)
         .then((res) => {
           res = res.data;
           if (res.status == 200) {
-            this.achList = res.data.list;
-            this.total = res.data.total;
+            this.ajaxParam = param
+            this.$nextTick(() => { //在数据加载完，重新渲染表格
+              if (this.tabCurrent !== 1) {
+                this.copyAchList = res.data.map(item => {
+                  let dep = ''
+                  switch (this.tabCurrent) {
+                    case 1:
+                    case 2:
+                      dep = item.depName
+                      break;
+                    case 3:
+                      dep = item.r4name
+                      break;
+                    case 4:
+                      dep = item.r3name
+                      break;
+                    case 5:
+                      dep = item.r2name
+                      break;
+                    case 6:
+                      dep = item.r1name
+                      break;
+                  }
+                  return Object.assign({dep},item)
+                });
+                let start = this.pageNum === 1 ? 0 : (this.pageNum*this.pageSize),
+                    end = (this.pageNum+1)*this.pageSize;
+                console.log(start,end,res.data,'res.data');
+                this.achList = this.copyAchList.slice(start,end);
+                this.total = res.data.length;
+              } else {
+                this.achList = res.data.list.map(item => {
+                  let dep = ''
+                  switch (this.tabCurrent) {
+                    case 1:
+                    case 2:
+                      dep = item.depName
+                      break;
+                    case 3:
+                      dep = item.r4name
+                      break;
+                    case 4:
+                      dep = item.r3name
+                      break;
+                    case 5:
+                      dep = item.r2name
+                      break;
+                    case 6:
+                      dep = item.r1name
+                      break;
+                  }
+                  return Object.assign({dep},item)
+                });
+                // this.achList = res.data.list;
+                this.total = res.data.total;
+              }
+              // this.achList = res.data.list;
+              // this.total = res.data.total;
+            })
           }
+          this.loadingList = false
         })
         .catch((err) => {
+          this.achList = [];
+          this.total = 0;
+          this.loadingList = false
           this.$message.error(err);
         });
     },
-    getExcel() {
-      let param = {
-        startTime:
-          this.searchTime && this.searchTime.length != 0
-            ? this.searchTime[0]
-            : "",
-        endTime:
-          this.searchTime && this.searchTime.length != 0
-            ? this.searchTime[1]
-            : "",
-        depId: this.department,
-        empId: this.depUser,
-        tradeTypes: this.contType.join(","),
-        // pageNum: this.pageNum,
-        // pageSize: this.pageSize,
-      };
-      if (param.empId) {
-        param.empId = param.empId.split("/")[0];
-      }
-      this.excelCreate("/input/AchievementContractExcel", param);
-    },
-    depHandleClick(data) {
-      this.depUser = "";
-      this.department = data.depId;
-      this.departmentName = data.name;
-      this.handleNodeClick(data);
-    },
-    clearDep: function () {
-      this.depUser = "";
-      this.department = "";
-      this.departmentName = "";
-    },
-    test: function (val) {
-      this.getEmployeByText(val);
-    },
-    empHandle: function (val) {
-      if (val && this.EmployeInit !== this.employeTotal && this.depUser) {
-        this.getEmployeByText();
-      }
-    },
-    empHandleAdd(val) {
-      let depVal = val.split("/");
-      this.department = depVal[2];
-      this.departmentName = depVal[1];
-      this.EmployeList = [];
-      this.getEmploye(this.department);
-    },
     handleSizeChange(val) {},
     handleCurrentChange(val) {
-      this.pageNum = val;
-      this.getAchList();
+
+      if (this.tabCurrent !== 1) {
+        if (val === Math.ceil(this.total / this.pageSize)) {
+          this.getAchList();
+        } else {
+          this.achList = this.copyAchList.slice(val*this.pageSize,(val+1)*this.pageSize);
+        }
+        this.pageNum = val;
+      } else {
+        this.pageNum = val;
+        this.getAchList();
+      }
     },
 
     // 重置
     resetFormFn() {
       this.pageNum = 1;
       this.searchTime = null;
-      (this.depUser = ""), (this.department = "");
-      (this.contType = []),
-        (this.departmentName = "");
-      this.EmployeList = [];
+      (this.contType = 3);
+      this.initTimePicker();
     },
     // 查询
     queryFn() {
@@ -384,6 +414,7 @@ export default {
         span {
             display: inline-block;
             margin-right: 8px;
+            padding: 10px;
             cursor: pointer;
         }
         .curent {
@@ -394,15 +425,18 @@ export default {
 				margin-bottom: 8px;
           span {
               display: inline-block;
-              padding: 4px 22px;
-              background-color: #bcbcbc;
+              padding: 8px 22px;
+              margin-bottom: 8px;
+              background-color: #f4f4f5;
               border-radius: 6px;
               font-size: 14px;
               font-weight: bold;
               cursor: pointer;
+              color: #909399;
           }
           .curent {
-            background-color: #468de3;;
+            background-color: #409eff;
+            color: #fff;
 					}
           span + span {
               margin-left: 8px;
@@ -419,13 +453,13 @@ export default {
 		font-size: 14px;
 		font-weight: bold;
 	}
+  /deep/ .is-group th {
+    border-right: 1px solid #b7c4e4;
+  }
 }
 
 
 /deep/ .el-pagination {
   text-align: right;
-}
-/deep/ .dep .el-form-item__content {
-  display: flex;
 }
 </style>
