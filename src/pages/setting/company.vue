@@ -67,6 +67,16 @@
               <span>{{scope.row.deptName + ' ' + scope.row.createByName}}</span>
             </template>
           </el-table-column>
+          <el-table-column label="开通POS收款">
+            <template slot-scope="scope">
+              <span>{{scope.row.status || scope.row.status === 0 ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
+            </template>
+          </el-table-column>
+          <!-- <el-table-column label="开通时间">
+            <template slot-scope="scope">
+              <span>{{scope.row.status === 0 ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
+            </template>
+          </el-table-column> -->
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
               <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button>
