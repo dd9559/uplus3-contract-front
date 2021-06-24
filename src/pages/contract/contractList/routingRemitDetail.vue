@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <div class="title-box">
-      <!-- <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-pay'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button> -->
+      <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
     </div>
     <el-table :data="tableData" border>
       <el-table-column align="left" label="合同编号" width="140">
@@ -80,6 +80,10 @@ export default {
         'sign-com-htdetail': {
           state: false,
           name: '合同详情'
+        },
+        'sign-ht-fz-export': {
+          state: false,
+          name: '分账导出'
         }
       }
     }
@@ -144,9 +148,8 @@ export default {
   methods:{
     // 导出功能
     getExcel() {
-        // this.queryFn();
-        let param = Object.assign({}, this.ajaxParam)
-        this.excelCreate('/input/transferListExcel', param)
+        if (this.tableData.length === 0) return this.$message('没有可导出的数据!')
+        this.excelCreate('/input/proateNotesExcel', {relationId:this.ids})
     },
     //分账明细列表
     getAccountList(ids){
