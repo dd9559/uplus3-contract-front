@@ -69,14 +69,14 @@
           </el-table-column>
           <el-table-column label="开通POS收款">
             <template slot-scope="scope">
-              <span>{{scope.row.status || scope.row.status === 0 ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
+              <span>{{!scope.row.status ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="开通时间">
+          <el-table-column label="开通时间">
             <template slot-scope="scope">
-              <span>{{scope.row.status === 0 ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
+              <span>{{scope.row.posTime|formatDate(2)}}</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
               <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button>
@@ -243,11 +243,11 @@
         <template v-if="openSlot === 'vsp'">
           <div class="vsp-item">
             <label>输入商户号: </label>
-            <el-input size="small" class="vsp-input" maxlength="50" v-model.trim="vspInfo.vspCusid"></el-input>
+            <el-input size="small" class="vsp-input" maxlength="20" v-model.trim="vspInfo.vspCusid" @input="inputOnly(0,'vspCusid')"></el-input>
           </div>
           <div class="vsp-item">
             <label>输入POS终端编号: </label>
-            <el-input size="small" class="vsp-input" maxlength="50" v-model.trim="vspInfo.vspTermid"></el-input>
+            <el-input size="small" class="vsp-input" maxlength="20" v-model.trim="vspInfo.vspTermid" @input="inputOnly(0,'vspTermid')"></el-input>
           </div>
         </template>
         <div slot="footer" :class="openSlot">
@@ -1133,6 +1133,8 @@
               val: this.money,
               num: 2
           });
+        } else if (['vspCusid','vspTermid'].includes(type)) {
+          this.vspInfo[type] = this.$tool.textInput(this.vspInfo[type],2)
         }
       },
       cutNumber(val) {

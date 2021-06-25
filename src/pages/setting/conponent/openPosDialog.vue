@@ -529,7 +529,47 @@
 				this.$ajax.get('/api/enterprise_pos',params).then(res => {
 					res=res.data
 					if(res.status == 200) {
-						let data = JSON.parse(res.data.data)
+
+
+						let data = JSON.parse(res.data.data),
+								copyData = JSON.parse(JSON.stringify(res.data));
+
+						if (!this.dataInfo.status && copyData.status == 2 && copyData.ocrRegnumComparisonResult == 1 && copyData.ocrIdcardComparisonResult == 1) {
+							let imgList = new Array(copyData.lepCardFront,copyData.licenseSign,copyData.lepCardBack)
+							this.fileSign(imgList,'preload',false).then(res => {
+								for (const key in copyData) {
+									if (key !== 'data') {
+										let element = copyData[key];
+										res.some(item => {
+											let itemName = item.split('?')[0].split('/'),
+													elementName = elementName.split('?')[0].split('/');
+
+											if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.idCard = item
+												this.companyForm.idCard = item
+											}
+											if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.theotherside = item
+												this.companyForm.idCard = item
+											}
+											if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.businessLicense = item
+												this.companyForm.businessLicense = item
+											}
+										})
+									}
+								}
+							})
+							this.titleIndex = 0
+							return
+						}
+
+
+
+
+
+
+						// let data = JSON.parse(res.data.data)
 						let dataOBJ = Object.assign({},res.data)
 						delete dataOBJ.data
 						Object.keys(dataOBJ).forEach(keys =>{
