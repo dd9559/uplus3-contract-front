@@ -66,12 +66,13 @@
 							<div style="margin-bottom: 15px;">法人身份证照片上传：</div>
 							<div style="display:flex;align-items: center;">
 								<fileUp id="idCard" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
-                  <img :src="idCard[0]" width="235px" height="150px" v-show="companyForm.idCard" style="border: 1px solid #8fb3fa;border-radius:10px">
+                  <img :src="idCard" width="235px" height="150px" v-show="companyForm.idCard" style="border: 1px solid #8fb3fa;border-radius:10px">
                   <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">
 								</fileUp>
 								<div style="width:229px;height:147px;margin-left: 50px;">
 									<fileUp id="theotherside" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
-										<img :src="theotherside[0]" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;">
+										<!-- <img class="signImage" :src="getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)">  -->
+										<img :src="theotherside" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;">
 										<img src="@/assets/img/theotherside.png" width="229px" height="147px" v-show="!companyForm.theotherside">
 									</fileUp>
 								</div>
@@ -82,7 +83,8 @@
 						<div style="margin:20px 0;">企业营业执照上传：</div>
 						<div style="width:316px;height:174px">
 							<fileUp id="businessLicense" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
-                <img :src="businessLicense[0]" width="316px" height="174px" v-show="companyForm.businessLicense" style="border: 1px solid #8fb3fa;border-radius:10px">
+								<!-- <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)">  -->
+                <img :src="businessLicense" width="316px" height="174px" v-show="companyForm.businessLicense" style="border: 1px solid #8fb3fa;border-radius:10px">
 								<img src="@/assets/img/businessLicense.png" width="316px" height="174px" v-show="!companyForm.businessLicense">
 							</fileUp>
 						</div>
@@ -186,14 +188,24 @@
 						{ required: true, message: '请输入银行卡号', trigger: 'blur' }
 					]
 				},
-				loading:true
+				loading:true,
+				//权限配置
+        power: {
+          'sign-set-bl-openPos': {
+            state: false,
+            name: '开通pos收款'
+          }
+        },
 			}
 		},
 		created() {
 		},
 		mounted() {
 			// 银行列表
-			this.getBanks()
+			if(this.power['sign-set-bl-openPos'].state) {
+				this.getBanks()
+			}
+			
 			// this.$nextTick(()=>{
 			// 	this.enterprise()
 			// })
@@ -236,7 +248,7 @@
 		methods:{
 			//打开dialog
 			dialogOpen() {
-				this.enterprise(1)
+				this.enterprise()
 			},
 			clearList() {
 				this.companyForm = {}
@@ -345,11 +357,11 @@
         let preloadList = [data.param[0].path]
         this.fileSign(preloadList, 'preload',false).then(res => {
             if(data.btnId === 'idCard') {
-              this.idCard = res
+              this.idCard = res[0]
             }else if(data.btnId === "theotherside") {
-              this.theotherside = res
+              this.theotherside = res[0]
             }else if(data.btnId === "businessLicense") {
-              this.businessLicense = res
+              this.businessLicense = res[0]
             }
         })
       },
@@ -518,7 +530,35 @@
 					res=res.data
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data)
-						console.log(data);
+						let dataOBJ = Object.assign({},res.data)
+						delete dataOBJ.data
+						Object.keys(dataOBJ).forEach(keys =>{
+							console.log(keys);
+						})
+						// const lepCardFront = res.data.lepCardFront
+						// const licenseSign = res.data.licenseSign
+						// const lepCardBack = res.data.lepCardBack
+						// let imgList = []
+						// imgList.push(lepCardFront,licenseSign,lepCardBack)
+						// this.fileSign(imgList,'preload',false).then(res=>{
+						// 	// if(res[0].split('?')[0].split('/').length - 1 == lepCardFront.split('?')[0].split('/').length - 1){
+						// 	// 	this.idCard = res[0]
+						// 	// 	this.companyForm.idCard = res[0]
+						// 	// }
+						// 	// if(res[1].split('?')[0].split('/').length - 1 == lepCardBack.split('?')[0].split('/').length - 1){
+						// 	// 	this.theotherside = res[1]
+						// 	// 	this.companyForm.theotherside = res[1]
+						// 	// }
+						// 	// if(res[2].split('?')[0].split('/').length - 1 == licenseSign.split('?')[0].split('/').length - 1){
+						// 	// 	this.businessLicense = res[2]
+						// 	// 	this.companyForm.businessLicense = res[2]
+						// 	// }
+						// })
+						if(!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && data.isSignContract == true && data.isPhoneChecked == true) {
+							this.titleIndex = 0
+							
+							return
+						}
 						if(data.status != 2 && this.titleIndex == 0) {
 							this.$message.error('个人信息提交失败，请重新提交！')
 							this.firstDisable = false
@@ -542,7 +582,7 @@
 							// clearInterval(this.timer);
 							return
 						}
-						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0) {
+						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0 && this.dataInfo.status != 0) {
 							// this.$message.success('信息审核成功')
 							this.firstDisable = false
 							clearInterval(this.timer);
@@ -555,6 +595,7 @@
 							clearInterval(this.timer);
 							return
 						}
+						
 					}
 				}).catch((e)=>{
 					console.log(e);
