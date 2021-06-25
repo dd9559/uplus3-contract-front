@@ -257,7 +257,7 @@
 				if(this.titleIndex == 0) {
 					this.$refs.form.resetFields()
 				}
-				// this.dataInfo = {}
+				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
 				clearInterval(this.timer);
@@ -314,8 +314,14 @@
 					res=res.data
 					console.log(res);
 					if(res.status===200){
-            this.bankBranch=this.bankBranch.concat(res.data)
-            this.branchTotal=res.data[0].total
+            if (!res.data.length) {
+              this.bankBranch=[]
+              this.branchTotal=0
+							this.dataInfo.bankBranchName = ''
+            } else {
+              this.bankBranch=this.bankBranch.concat(res.data)
+              this.branchTotal=res.data[0].total
+            }
           }
 				}).catch(error=>{
           this.$message({message:error})
@@ -532,12 +538,9 @@
 				this.$ajax.get('/api/enterprise_pos',params).then(res => {
 					res=res.data
 					if(res.status == 200) {
-
-
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-
-						if (this.dataInfo.status === 1 && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+						if (!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
 							let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
 							this.fileSign(imgList,'preload',false).then(res => {
 								for (const key in copyData) {
@@ -566,40 +569,45 @@
 							this.titleIndex = 0
 							return
 						}
+						if(this.dataInfo.status == 2 && data.status == 2 && this.titleIndex == 0 && !data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
+							console.log(798);
+							let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
+							this.fileSign(imgList,'preload',false).then(res => {
+								for (const key in copyData) {
+									if (key !== 'data') {
+										let element = copyData[key],
+												elementName = element.split('?')[0].split('/');
+										res.some(item => {
+											let itemName = item.split('?')[0].split('/');
 
-
-
-
-
-
-						// let data = JSON.parse(res.data.data)
-						let dataOBJ = Object.assign({},res.data)
-						delete dataOBJ.data
-						Object.keys(dataOBJ).forEach(keys =>{
-							console.log(keys);
-						})
-						// const lepCardFront = res.data.lepCardFront
-						// const licenseSign = res.data.licenseSign
-						// const lepCardBack = res.data.lepCardBack
-						// let imgList = []
-						// imgList.push(lepCardFront,licenseSign,lepCardBack)
-						// this.fileSign(imgList,'preload',false).then(res=>{
-						// 	// if(res[0].split('?')[0].split('/').length - 1 == lepCardFront.split('?')[0].split('/').length - 1){
-						// 	// 	this.idCard = res[0]
-						// 	// 	this.companyForm.idCard = res[0]
-						// 	// }
-						// 	// if(res[1].split('?')[0].split('/').length - 1 == lepCardBack.split('?')[0].split('/').length - 1){
-						// 	// 	this.theotherside = res[1]
-						// 	// 	this.companyForm.theotherside = res[1]
-						// 	// }
-						// 	// if(res[2].split('?')[0].split('/').length - 1 == licenseSign.split('?')[0].split('/').length - 1){
-						// 	// 	this.businessLicense = res[2]
-						// 	// 	this.companyForm.businessLicense = res[2]
-						// 	// }
-						// })
-						if(!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && data.isSignContract == true && data.isPhoneChecked == true) {
-							this.titleIndex = 0
-							
+											if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.idCard = item
+												this.companyForm.idCard = item
+											}
+											if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.theotherside = item
+												this.companyForm.idCard = item
+											}
+											if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+												this.businessLicense = item
+												this.companyForm.businessLicense = item
+											}
+										})
+									}
+								}
+							})
+							// if(!copyData.lepCardFront) {
+							// 	this.idCard = copyData.lepCardFront
+							// 	this.companyForm.idCard = copyData.lepCardFront
+							// }
+							// if(!copyData.lepCardBack) {
+							// 	this.theotherside = copyData.lepCardBack
+							// 	this.companyForm.theotherside = copyData.lepCardBack
+							// }
+							// if(!copyData.licenseSign) {
+							// 	this.businessLicense = copyData.licenseSign
+							// 	this.companyForm.businessLicense = copyData.licenseSign
+							// }
 							return
 						}
 						if(data.status != 2 && this.titleIndex == 0) {
