@@ -257,7 +257,7 @@
 				if(this.titleIndex == 0) {
 					this.$refs.form.resetFields()
 				}
-				this.dataInfo = {}
+				// this.dataInfo = {}
 				this.inputCode = ''
 				this.titleIndex = 0
 				clearInterval(this.timer);
@@ -276,6 +276,9 @@
       },
 			bankList(val) {
 				this.branchStr = JSON.parse(val).bankName
+				this.branchPage = 1
+				this.bankBranch = []
+				this.branchStr = val
 				this.getBankBranch(JSON.parse(val).bankName)
 			},
 			bankBranchs(val) {
@@ -534,15 +537,15 @@
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
 
-						if (!this.dataInfo.status && copyData.status == 2 && copyData.ocrRegnumComparisonResult == 1 && copyData.ocrIdcardComparisonResult == 1) {
-							let imgList = new Array(copyData.lepCardFront,copyData.licenseSign,copyData.lepCardBack)
+						if (this.dataInfo.status === 1 && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+							let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
 							this.fileSign(imgList,'preload',false).then(res => {
 								for (const key in copyData) {
 									if (key !== 'data') {
-										let element = copyData[key];
+										let element = copyData[key],
+												elementName = element.split('?')[0].split('/');
 										res.some(item => {
-											let itemName = item.split('?')[0].split('/'),
-													elementName = elementName.split('?')[0].split('/');
+											let itemName = item.split('?')[0].split('/');
 
 											if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
 												this.idCard = item
