@@ -47,7 +47,6 @@
 							placeholder="选择支行名称" remote reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
 								<el-option v-for="m in bankBranch" :key="m.branchCode" :label="m.branchName" :title="m.branchName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
-							<!-- <el-input v-model="entBank.bankBranchName" maxlength="50" :clearable="true" @input="inputOnly('bankBranchName')"></el-input> -->
 						</el-form-item>
 						<el-form-item label="支行行号：">
 							<el-input v-model="dataInfo.bankBranchCode" maxlength="15" :disabled='true' :clearable="true"
@@ -71,7 +70,6 @@
 								</fileUp>
 								<div style="width:229px;height:147px;margin-left: 50px;">
 									<fileUp id="theotherside" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
-										<!-- <img class="signImage" :src="getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)">  -->
 										<img :src="theotherside" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;">
 										<img src="@/assets/img/theotherside.png" width="229px" height="147px" v-show="!companyForm.theotherside">
 									</fileUp>
@@ -83,7 +81,6 @@
 						<div style="margin:20px 0;">企业营业执照上传：</div>
 						<div style="width:316px;height:174px">
 							<fileUp id="businessLicense" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
-								<!-- <img class="signImage" :src="item.path|getSignImage(adjustCheckFiles)" alt="" v-if="isPictureFile(item.fileType)">  -->
                 <img :src="businessLicense" width="316px" height="174px" v-show="companyForm.businessLicense" style="border: 1px solid #8fb3fa;border-radius:10px">
 								<img src="@/assets/img/businessLicense.png" width="316px" height="174px" v-show="!companyForm.businessLicense">
 							</fileUp>
@@ -138,8 +135,7 @@
 				titleList:[
 					{item:'第一步：提交企业信息',},
 					{item:'第二步：签约'},
-					{item:'第三步：绑定手机号'},
-					// {item:'第四步：绑定银行卡'},
+					{item:'第三步：绑定手机号'}
 				],
 				adminBanks:[],
 				bankBranch:[],
@@ -150,6 +146,7 @@
 				fourthStoreNoEdit:false,
 				firstDisable: false,
 				dataInfo:{},
+				status: false,
         entBank:{},
         companyForm: {
 					idCard:'',
@@ -205,12 +202,6 @@
 			if(this.power['sign-set-bl-openPos'].state) {
 				this.getBanks()
 			}
-			
-			// this.$nextTick(()=>{
-			// 	this.enterprise()
-			// })
-			// this.getBankBranch()
-			// this.countDown()
 		},
     computed:{
     },
@@ -226,28 +217,23 @@
 			posInfo:{
 				handler(newName,oldName) {
 					this.dataInfo = newName
-          // this.entBank = this.dataInfo.entBankList[0]
+					this.status = Boolean(this.dataInfo.status)
 				},
-				// immediate: true,
 				deep: true
 			},
 			titleIndex:{
 				handler(newName,oldName) {
 					console.log(newName);
 					if(newName == 0) {
-						// console.log(newName);
-						// this.enterprise()
-						// this.signContract()
 					}
-          // this.entBank = this.dataInfo.entBankList[0]
 				},
-				// immediate: true,
 				deep: true
 			}
 		},
 		methods:{
 			//打开dialog
 			dialogOpen() {
+				this.status = false
 				this.enterprise()
 			},
 			clearList() {
@@ -397,7 +383,6 @@
 				console.log(123);
 				this.disable = true
 				this.getCode = 60
-				// this.getCode = this.getCode+'s'
 				this.yzCode()
 				this.countDown = setInterval(()=>{
 					this.getCode--
@@ -540,126 +525,171 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-						if (!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
-							let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-							this.fileSign(imgList,'preload',false).then(res => {
-								for (const key in copyData) {
-									if (key !== 'data') {
-										let element = copyData[key],
-												elementName = element.split('?')[0].split('/');
-										res.some(item => {
-											let itemName = item.split('?')[0].split('/');
 
-											if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.idCard = item
-												this.companyForm.idCard = item
+						if (!this.status || data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult) {
+							if (!this.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+								this.$nextTick(() => {
+									let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
+									this.fileSign(imgList,'preload',false).then(res => {
+										for (const key in copyData) {
+											if (key !== 'data') {
+												let element = copyData[key],
+														elementName = element.split('?')[0].split('/');
+												res.some(item => {
+													let itemName = item.split('?')[0].split('/');
+
+													if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.idCard = item
+														this.companyForm.idCard = item
+													}
+													if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.theotherside = item
+														this.companyForm.idCard = item
+													}
+													if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.businessLicense = item
+														this.companyForm.businessLicense = item
+													}
+												})
 											}
-											if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.theotherside = item
-												this.companyForm.idCard = item
-											}
-											if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.businessLicense = item
-												this.companyForm.businessLicense = item
-											}
-										})
-									}
-								}
-							})
+										}
+										this.status = true
+									})
+								})
+							} else if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
+								clearInterval(this.timer);
+								this.$message({
+									type: 'warning',
+									message: '证件信息审核失败！'
+								})
+								return
+							}
 							this.titleIndex = 0
 							return
-						}
-						if(this.dataInfo.status == 2 && data.status == 2 && this.titleIndex == 0 && !data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
-							console.log(798);
-							let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-							this.fileSign(imgList,'preload',false).then(res => {
-								for (const key in copyData) {
-									if (key !== 'data') {
-										let element = copyData[key],
-												elementName = element.split('?')[0].split('/');
-										res.some(item => {
-											let itemName = item.split('?')[0].split('/');
-
-											if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.idCard = item
-												this.companyForm.idCard = item
-											}
-											if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.theotherside = item
-												this.companyForm.idCard = item
-											}
-											if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-												this.businessLicense = item
-												this.companyForm.businessLicense = item
-											}
-										})
-									}
-								}
-							})
-							// if(!copyData.lepCardFront) {
-							// 	this.idCard = copyData.lepCardFront
-							// 	this.companyForm.idCard = copyData.lepCardFront
-							// }
-							// if(!copyData.lepCardBack) {
-							// 	this.theotherside = copyData.lepCardBack
-							// 	this.companyForm.theotherside = copyData.lepCardBack
-							// }
-							// if(!copyData.licenseSign) {
-							// 	this.businessLicense = copyData.licenseSign
-							// 	this.companyForm.businessLicense = copyData.licenseSign
-							// }
-							return
-						}
-						if(data.status != 2 && this.titleIndex == 0) {
-							this.$message.error('个人信息提交失败，请重新提交！')
-							this.firstDisable = false
-							clearInterval(this.timer);
-							return
-						}
-						if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
-							if (data.ocrRegnumComparisonResult === 0) {
-								this.$message.error('上传营业执照失败，请重新上传！')
-								this.firstDisable = false
-								clearInterval(this.timer);
-							}
-							return
-						}
-						if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
-							if (data.ocrIdcardComparisonResult === 0) {
-								this.$message.error('上传身份证照失败，请重新上传！')
-								this.firstDisable = false
-								clearInterval(this.timer);
-							}
-							// clearInterval(this.timer);
-							return
-						}
-						if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0 && this.dataInfo.status != 0) {
-							// this.$message.success('信息审核成功')
-							this.firstDisable = false
-							clearInterval(this.timer);
+						} else if (!data.isSignContract) {
 							this.titleIndex = 1
-							this.signContract()
+							this.firstDisable = false
+							if (!this.timer) {
+								this.timer = setInterval(() =>{
+									this.enterprise()
+								},5000)
+							}
 							return
-						}
-						if(this.titleIndex == 1 && data.isSignContract == true) {
+						} else if (!data.isPhoneChecked) {
+							this.titleIndex = 3
 							this.sms = 2
 							clearInterval(this.timer);
 							return
-						}
+						} 
+						
+						
+						// if (!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
+						// 	this.fileSign(imgList,'preload',false).then(res => {
+						// 		for (const key in copyData) {
+						// 			if (key !== 'data') {
+						// 				let element = copyData[key],
+						// 						elementName = element.split('?')[0].split('/');
+						// 				res.some(item => {
+						// 					let itemName = item.split('?')[0].split('/');
+
+						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.idCard = item
+						// 						this.companyForm.idCard = item
+						// 					}
+						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.theotherside = item
+						// 						this.companyForm.idCard = item
+						// 					}
+						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.businessLicense = item
+						// 						this.companyForm.businessLicense = item
+						// 					}
+						// 				})
+						// 			}
+						// 		}
+						// 	})
+						// 	this.titleIndex = 0
+						// 	return
+						// }
+						// if(this.dataInfo.status == 2 && data.status == 2 && this.titleIndex == 0 && !data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
+						// 	console.log(798);
+						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
+						// 	this.fileSign(imgList,'preload',false).then(res => {
+						// 		for (const key in copyData) {
+						// 			if (key !== 'data') {
+						// 				let element = copyData[key],
+						// 						elementName = element.split('?')[0].split('/');
+						// 				res.some(item => {
+						// 					let itemName = item.split('?')[0].split('/');
+
+						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.idCard = item
+						// 						this.companyForm.idCard = item
+						// 					}
+						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.theotherside = item
+						// 						this.companyForm.idCard = item
+						// 					}
+						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+						// 						this.businessLicense = item
+						// 						this.companyForm.businessLicense = item
+						// 					}
+						// 				})
+						// 			}
+						// 		}
+						// 	})
+						// 	return
+						// }
+						// if(data.status != 2 && this.titleIndex == 0) {
+						// 	this.$message.error('个人信息提交失败，请重新提交！')
+						// 	this.firstDisable = false
+						// 	clearInterval(this.timer);
+						// 	return
+						// }
+						// if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
+						// 	if (data.ocrRegnumComparisonResult === 0) {
+						// 		this.$message.error('上传营业执照失败，请重新上传！')
+						// 		this.firstDisable = false
+						// 		clearInterval(this.timer);
+						// 	}
+						// 	return
+						// }
+						// if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
+						// 	if (data.ocrIdcardComparisonResult === 0) {
+						// 		this.$message.error('上传身份证照失败，请重新上传！')
+						// 		this.firstDisable = false
+						// 		clearInterval(this.timer);
+						// 	}
+						// 	// clearInterval(this.timer);
+						// 	return
+						// }
+						// if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0 && this.dataInfo.status != 0) {
+						// 	// this.$message.success('信息审核成功')
+						// 	this.firstDisable = false
+						// 	clearInterval(this.timer);
+						// 	this.titleIndex = 1
+						// 	this.signContract()
+						// 	return
+						// }
+						// if(this.titleIndex == 1 && data.isSignContract == true) {
+						// 	this.sms = 2
+						// 	clearInterval(this.timer);
+						// 	return
+						// }
 						
 					}
 				}).catch((e)=>{
 					console.log(e);
 					// clearInterval(this.timer);
-					this.$message({message:e})
+					// this.$message({message:e})
 				})
 			},
 			nexts() {
 				this.$message.success('信息审核中，请稍后！')
+				this.status = true
 				this.firstDisable = true
-				this.timer = setInterval(() =>{
-					this.enterprise()
-				},5000)
+				this.signContract()
 			},
 			smsNext() {
 				this.titleIndex = 2
