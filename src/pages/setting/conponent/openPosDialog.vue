@@ -36,8 +36,8 @@
 						<el-form-item label="法人手机号：" prop="lepPhone">
 							<el-input v-model="dataInfo.lepPhone" maxlength="11" :clearable="true" @keyup.native="getInt(2)"></el-input>
 						</el-form-item>
-						<el-form-item label="开户银行名称: " prop="bankName">
-							<el-select  v-model="dataInfo.bankName" filterable style="width:100%"
+						<el-form-item label="开户银行名称: " prop="bankAccountName">
+							<el-select  v-model="dataInfo.bankAccountName" filterable style="width:100%"
 							placeholder="选择开户银行" @change="bankList">
 								<el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
@@ -179,7 +179,7 @@
 					lepPhone:[
 						{ required: true, message: '请输入法人手机号', trigger: 'blur' },
 					],
-					bankName:[
+					bankAccountName:[
 						{ required: true, message: '请选择开户银行名称', trigger: 'change' },
 					],
 					bankBranchName:[
@@ -555,7 +555,18 @@
 							}
 							
 							if (status == 2) {
-								
+								this.$nextTick(()=>{
+									this.dataInfo.name = data.companyName
+									this.dataInfo.address = data.companyAddress
+									// this.dataInfo.documentCard = data.companyAddress
+									this.dataInfo.lepName = data.legalName
+									this.dataInfo.lepDocumentCard = data.legalIds
+									this.dataInfo.lepPhone = data.legalPhone
+									this.dataInfo.bankAccountName = data.parentBankName
+									this.dataInfo.bankBranchName = data.bankName
+									this.dataInfo.bankBranchCode = data.unionBank
+									this.dataInfo.bankCard = data.accountNo
+								})
 							}
 
 							if (!this.status && imgList.length) {
