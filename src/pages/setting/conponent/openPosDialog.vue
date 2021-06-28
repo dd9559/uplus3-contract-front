@@ -542,7 +542,7 @@
 								copyData = JSON.parse(JSON.stringify(res.data));
 
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
-						(!this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
+						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = [];
@@ -601,15 +601,16 @@
 						} else if (!data.isSignContract) {
 							if (!this.status) {
 								this.titleIndex = 1
+								this.signContract()
 							} else {
 								this.currentState = '审核通过'
 								this.firstDisable = false
 								this.next = true
-								this.$message({
-									type:'success',
-									message:'信息审核通过！'
-								})
-								clearInterval(this.timer);
+								// this.$message({
+								// 	type:'success',
+								// 	message:'信息审核通过！'
+								// })
+								// clearInterval(this.timer);
 							}
 							
 							return
