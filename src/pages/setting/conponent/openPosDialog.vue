@@ -147,6 +147,8 @@
 				firstDisable: false,
 				dataInfo:{},
 				status: false,
+				timer: null,
+				signContractFlag: false,
         entBank:{},
         companyForm: {
 					idCard:'',
@@ -369,6 +371,7 @@
 					res = res.data
 					if(res.status == 200) {
 						clearInterval(this.timer);
+						this.signContractFlag = true
 						this.$message.success(res.message)
 						this.timer = setInterval(() =>{
 							this.enterprise()
@@ -544,7 +547,7 @@
 													}
 													if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
 														this.theotherside = item
-														this.companyForm.idCard = item
+														this.companyForm.theotherside = item
 													}
 													if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
 														this.businessLicense = item
@@ -562,6 +565,7 @@
 									type: 'warning',
 									message: '证件信息审核失败！'
 								})
+								this.firstDisable = false
 								return
 							}
 							this.titleIndex = 0
@@ -569,10 +573,8 @@
 						} else if (!data.isSignContract) {
 							this.titleIndex = 1
 							this.firstDisable = false
-							if (!this.timer) {
-								this.timer = setInterval(() =>{
-									this.enterprise()
-								},5000)
+							if (!this.signContractFlag) {
+								this.signContract()
 							}
 							return
 						} else if (!data.isPhoneChecked) {
@@ -689,7 +691,10 @@
 				this.$message.success('信息审核中，请稍后！')
 				this.status = true
 				this.firstDisable = true
-				this.signContract()
+				clearInterval(this.timer);
+				this.timer = setInterval(() =>{
+					this.enterprise()
+				},5000)
 			},
 			smsNext() {
 				this.titleIndex = 2
