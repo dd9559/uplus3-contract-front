@@ -222,7 +222,6 @@
 			posInfo:{
 				handler(newName,oldName) {
 					this.dataInfo = newName
-					this.status = Boolean(this.dataInfo.status)
 				},
 				deep: true
 			},
@@ -507,6 +506,7 @@
 							if(res.status == 200){
 								this.fullscreenLoading = false
 								this.subDisable= true
+								this.status= true
 								this.$message({
 									type:'success',
 									message:res.message
@@ -540,10 +540,26 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-						if ( data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult) {
-							if (data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+
+						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
+						(!this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
+							this.titleIndex = 0
+							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
+									imgList = [];
+
+							if (ocrIdcardComparisonResult) {
+								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
+							}
+							if (ocrRegnumComparisonResult) {
+								imgList.push(copyData.licenseSign)
+							}
+							
+							if (status == 2) {
+								
+							}
+
+							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
-									let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
 									this.fileSign(imgList,'preload',false).then(res => {
 										for (const key in copyData) {
 											if (key !== 'data') {
@@ -570,7 +586,9 @@
 										this.status = true
 									})
 								})
-							} else if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
+							}
+							console.log(imgList);
+							if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
 								clearInterval(this.timer);
 								this.$message({
 									type: 'warning',
@@ -579,23 +597,24 @@
 								this.firstDisable = false
 								return
 							}
-							this.titleIndex = 0
 							return
 						} else if (!data.isSignContract) {
-							this.currentState = '审核通过'
-							this.firstDisable = false
-							this.next = true
-							this.$message({
-								type:'success',
-								message:'信息审核通过！'
-							})
-							clearInterval(this.timer);
-							// if (!this.signContractFlag) {
-							// 	this.signContract()
-							// }
+							if (!this.status) {
+								this.titleIndex = 1
+							} else {
+								this.currentState = '审核通过'
+								this.firstDisable = false
+								this.next = true
+								this.$message({
+									type:'success',
+									message:'信息审核通过！'
+								})
+								clearInterval(this.timer);
+							}
+							
 							return
 						} else if (!data.isPhoneChecked) {
-							this.titleIndex = 3
+							this.titleIndex = 2
 							this.sms = 2
 							clearInterval(this.timer);
 							return
