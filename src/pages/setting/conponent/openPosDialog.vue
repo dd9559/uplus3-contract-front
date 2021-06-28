@@ -90,7 +90,7 @@
 				</div>
 			</div>
       <div slot="footer" v-if="titleIndex == 0">
-        <el-button @click="submitInfo" type="primary" round v-if="!next">提交信息</el-button>
+        <el-button @click="submitInfo" type="primary" :disabled='subDisable' round v-if="!next">提交信息</el-button>
 				<el-button @click="nexts" type="primary" :disabled='firstDisable' v-dbClick round v-else>下一步</el-button>
       </div>
 			<div style="margin-top: 30px;color: #ff0000;height: 100px;" v-if="titleIndex == 1">
@@ -146,8 +146,11 @@
 				fullscreenLoading: false,
 				fourthStoreNoEdit:false,
 				firstDisable: false,
+				subDisable:false,
 				dataInfo:{},
 				status: false,
+				timer: null,
+				// signContractFlag: false,
         entBank:{},
         companyForm: {
 					idCard:'',
@@ -371,6 +374,7 @@
 					res = res.data
 					if(res.status == 200) {
 						clearInterval(this.timer);
+						// this.signContractFlag = true
 						this.$message.success(res.message)
 						this.timer = setInterval(() =>{
 							this.enterprise()
@@ -502,11 +506,20 @@
 							res= res.data
 							if(res.status == 200){
 								this.fullscreenLoading = false
-								this.next = true
+								this.subDisable= true
 								this.$message({
 									type:'success',
 									message:res.message
 								})
+								this.timer = setInterval(() =>{
+									this.enterprise()
+								},5000)
+								setTimeout(()=>{
+									this.$message({
+										type:'success',
+										message:'信息审核中，请稍后！'
+									})
+								},2500)
 							}
 						}).catch((e)=>{
 							this.fullscreenLoading = false
@@ -527,9 +540,8 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-
-						if (!this.status || data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult) {
-							if (!this.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
+						if ( data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult) {
+							if (data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
 								this.$nextTick(() => {
 									let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
 									this.fileSign(imgList,'preload',false).then(res => {
@@ -546,7 +558,7 @@
 													}
 													if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
 														this.theotherside = item
-														this.companyForm.idCard = item
+														this.companyForm.theotherside = item
 													}
 													if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
 														this.businessLicense = item
@@ -571,13 +583,16 @@
 							return
 						} else if (!data.isSignContract) {
 							this.currentState = '审核通过'
-							this.titleIndex = 1
 							this.firstDisable = false
-							if (!this.timer) {
-								this.timer = setInterval(() =>{
-									this.enterprise()
-								},5000)
-							}
+							this.next = true
+							this.$message({
+								type:'success',
+								message:'信息审核通过！'
+							})
+							clearInterval(this.timer);
+							// if (!this.signContractFlag) {
+							// 	this.signContract()
+							// }
 							return
 						} else if (!data.isPhoneChecked) {
 							this.titleIndex = 3
@@ -690,14 +705,11 @@
 				})
 			},
 			nexts() {
-				// this.titleIndex = 1 
-				this.$message.success('信息审核中，请稍后！')
+				this.titleIndex = 1 
 				this.status = true
 				this.firstDisable = true
-				// this.signContract()
-				// this.timer = setInterval(() =>{
-				// 	this.enterprise()
-				// },5000)
+				clearInterval(this.timer);
+				this.signContract()
 			},
 			smsNext() {
 				this.titleIndex = 2
