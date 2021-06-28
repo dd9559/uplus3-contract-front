@@ -55,6 +55,7 @@
 						<el-form-item label="银行卡号：" prop="bankCard">
 							<el-input v-model="dataInfo.bankCard" :clearable="true" maxlength="20" @keyup.native="getInt(3)"></el-input>
 						</el-form-item>
+						<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;">当前状态：{{currentState}}</span>
 					</el-form>
 				</div>
 				<div style="margin-left: 115px;">
@@ -186,6 +187,7 @@
 					]
 				},
 				loading:true,
+				currentState:'未提交',
 				//权限配置
         power: {
           'sign-set-bl-openPos': {
@@ -562,11 +564,13 @@
 									type: 'warning',
 									message: '证件信息审核失败！'
 								})
+								this.firstDisable = false
 								return
 							}
 							this.titleIndex = 0
 							return
 						} else if (!data.isSignContract) {
+							this.currentState = '审核通过'
 							this.titleIndex = 1
 							this.firstDisable = false
 							if (!this.timer) {
@@ -686,10 +690,14 @@
 				})
 			},
 			nexts() {
+				// this.titleIndex = 1 
 				this.$message.success('信息审核中，请稍后！')
 				this.status = true
 				this.firstDisable = true
-				this.signContract()
+				// this.signContract()
+				// this.timer = setInterval(() =>{
+				// 	this.enterprise()
+				// },5000)
 			},
 			smsNext() {
 				this.titleIndex = 2
