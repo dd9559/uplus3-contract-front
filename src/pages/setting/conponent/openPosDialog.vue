@@ -180,10 +180,10 @@
 						{ required: true, message: '请输入法人手机号', trigger: 'blur' },
 					],
 					bankAccountName:[
-						{ required: true, message: '请选择开户银行名称', trigger: 'change' },
+						{ required: true, message: '请选择开户银行名称', trigger: 'blur' },
 					],
 					bankBranchName:[
-						{ required: true, message: '请选择支行名称', trigger: 'change' }
+						{ required: true, message: '请选择支行名称', trigger: 'blur' }
 					],
 					bankCard:[
 						{ required: true, message: '请输入银行卡号', trigger: 'blur' }
@@ -568,7 +568,7 @@
 									this.dataInfo.bankCard = data.accountNo
 								})
 							}
-
+							
 							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
 									this.fileSign(imgList,'preload',false).then(res => {
