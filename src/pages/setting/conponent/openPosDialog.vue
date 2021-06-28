@@ -106,6 +106,7 @@
 				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
 				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px">{{getCode}}</el-button>
 			</div>
+			<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;" v-if="titleIndex == 2">当前状态：绑定中</span>
 			<div slot="footer" v-if="titleIndex == 2">
 				<el-button @click="codeConfirm" type="primary" round>确定</el-button>
 			</div>
@@ -442,22 +443,7 @@
 				}).catch(()=>{
 
 				})
-        // let params = {
-        //   companyId:this.dataInfo.id,
-        //   name:this.dataInfo.name,
-        //   address:this.dataInfo.address,
-        //   documentCard:this.dataInfo.documentCard,
-        //   lepName:this.dataInfo.lepName,
-        //   lepDocumentCard:this.dataInfo.lepDocumentCard,
-        //   lepPhone:this.dataInfo.lepPhone,
-        //   bankAccountName:this.dataInfo.bankAccountName,
-        //   bankBranchName:this.dataInfo.bankBranchName,
-        //   bankBranchCode:this.dataInfo.bankBranchCode,
-        //   bankCard:this.dataInfo.bankCard,
-        //   lepCardFront:this.idCard[0],
-        //   lepCardBack:this.theotherside[0],
-        //   licenseSign:this.businessLicense[0]
-        // }
+        
 				
       },
 			sunmitData() {
@@ -484,22 +470,38 @@
 							})
 							return
 						}
-					let params = {
+						let params = {
 							companyId:this.dataInfo.id,
-							name: "武汉阿克涅网络科技有限公司",
-							address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
-							documentCard: "91420100MA49G98561",
-							lepName: "段枭宇",
-							lepDocumentCard: "420583199610180043",
-							lepPhone: "15827846050",
-							bankBranchName: "武汉农村商业银行光谷支行",
-							bankBranchCode: "402521009216",
-							bankCard: "210880551210017",
-							bankAccountName: "武汉农村商业银行",
-							lepCardFront:this.companyForm.idCard,
-							lepCardBack:this.companyForm.theotherside,
-							licenseSign:this.companyForm.businessLicense
+							name:this.dataInfo.name,
+							address:this.dataInfo.address,
+							documentCard:this.dataInfo.documentCard,
+							lepName:this.dataInfo.lepName,
+							lepDocumentCard:this.dataInfo.lepDocumentCard,
+							lepPhone:this.dataInfo.lepPhone,
+							bankAccountName:this.dataInfo.bankAccountName,
+							bankBranchName:this.dataInfo.bankBranchName,
+							bankBranchCode:this.dataInfo.bankBranchCode,
+							bankCard:this.dataInfo.bankCard,
+							lepCardFront:this.idCard,
+							lepCardBack:this.theotherside,
+							licenseSign:this.businessLicense
 						}
+					// let params = {
+					// 		companyId:this.dataInfo.id,
+					// 		name: "武汉阿克涅网络科技有限公司",
+					// 		address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
+					// 		documentCard: "91420100MA49G98561",
+					// 		lepName: "段枭宇",
+					// 		lepDocumentCard: "420583199610180043",
+					// 		lepPhone: "15827846050",
+					// 		bankBranchName: "武汉农村商业银行光谷支行",
+					// 		bankBranchCode: "402521009216",
+					// 		bankCard: "210880551210017",
+					// 		bankAccountName: "武汉农村商业银行",
+					// 		lepCardFront:this.companyForm.idCard,
+					// 		lepCardBack:this.companyForm.theotherside,
+					// 		licenseSign:this.companyForm.businessLicense
+					// 	}
 						this.fullscreenLoading = true
 						this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
 							res= res.data
@@ -542,7 +544,7 @@
 								copyData = JSON.parse(JSON.stringify(res.data));
 
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
-						(!this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
+						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = [];
@@ -612,15 +614,16 @@
 						} else if (!data.isSignContract) {
 							if (!this.status) {
 								this.titleIndex = 1
+								this.signContract()
 							} else {
 								this.currentState = '审核通过'
 								this.firstDisable = false
 								this.next = true
-								this.$message({
-									type:'success',
-									message:'信息审核通过！'
-								})
-								clearInterval(this.timer);
+								// this.$message({
+								// 	type:'success',
+								// 	message:'信息审核通过！'
+								// })
+								// clearInterval(this.timer);
 							}
 							
 							return
