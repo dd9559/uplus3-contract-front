@@ -39,15 +39,21 @@
 						<el-form-item label="开户银行名称: " prop="bankAccountName">
 							<el-select  v-model="dataInfo.bankAccountName" filterable style="width:100%"
 							placeholder="选择开户银行" @change="bankList">
-								<el-option v-for="m in adminBanks" :key="m.id" :label="m.bankName" :value="JSON.stringify(m)"></el-option>
+								<el-option v-for="m in adminBanks" :key="m.bankName" :label="m.bankName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item label="支行名称：" prop="bankBranchName">
 							<el-select  v-model="dataInfo.bankBranchName" filterable v-loadmore="moreAssignors" style="width:100%"
-							placeholder="选择支行名称" remote reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
+							placeholder="选择支行名称" reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
 								<el-option v-for="m in bankBranch" :key="m.branchCode" :label="m.branchName" :title="m.branchName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
 						</el-form-item>
+						<!-- <el-form-item label="支行名称：: " prop="bankBranchName">
+							<el-select  v-model="dataInfo.bankBranchName" filterable style="width:100%"
+							placeholder="选择支行名称" remote  :remote-method="bankBranchList" @change="bankBranchs">
+								<el-option v-for="m in adminBanks" :key="m.bankName" :label="m.bankName" :value="JSON.stringify(m)"></el-option>
+							</el-select>
+						</el-form-item> -->
 						<el-form-item label="支行行号：">
 							<el-input v-model="dataInfo.bankBranchCode" maxlength="15" :disabled='true' :clearable="true"
 							@input="inputOnly('bankBranchCode')"></el-input>
@@ -140,7 +146,8 @@
 					{item:'第三步：绑定手机号'}
 				],
 				adminBanks:[],
-				bankBranch:[],
+				bankBranch:[
+				],
 				branchPage: 1,
 				branchTotal: 0,
 				branchStr: '',
@@ -148,7 +155,8 @@
 				fourthStoreNoEdit:false,
 				firstDisable: false,
 				subDisable:false,
-				dataInfo:{},
+				dataInfo:{
+				},
 				status: false,
 				timer: null,
 				// signContractFlag: false,
@@ -180,14 +188,14 @@
 					lepPhone:[
 						{ required: true, message: '请输入法人手机号', trigger: 'blur' },
 					],
+					bankCard:[
+						{ required: true, message: '请输入银行卡号', trigger: 'blur' }
+					],
 					bankAccountName:[
-						{ required: true, message: '请选择开户银行名称', trigger: 'blur' },
+						{ required: true, message: '请选择开户银行名称', trigger: 'blur'},
 					],
 					bankBranchName:[
 						{ required: true, message: '请选择支行名称', trigger: 'blur' }
-					],
-					bankCard:[
-						{ required: true, message: '请输入银行卡号', trigger: 'blur' }
 					]
 				},
 				loading:true,
@@ -233,7 +241,7 @@
 					}
 				},
 				deep: true
-			}
+			},
 		},
 		methods:{
 			//打开dialog
@@ -251,6 +259,7 @@
 				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
+				this.currentState = '未提交'
 				clearInterval(this.timer);
         this.$emit("handleDialogClose",this.clearList);
       },
@@ -266,14 +275,24 @@
         })
       },
 			bankList(val) {
+				this.dataInfo.bankAccountName = JSON.parse(val).bankName
 				this.branchStr = JSON.parse(val).bankName
 				this.branchPage = 1
 				this.bankBranch = []
+				// this.dataInfo.bankBranchName = ''
+				this.$set(this.dataInfo,'bankBranchName','')
+				this.$set(this.dataInfo,'bankBranchCode','')
 				this.branchStr = val
 				this.getBankBranch(JSON.parse(val).bankName)
 			},
 			bankBranchs(val) {
+				this.$nextTick(()=>{
+					this.dataInfo.bankBranchName = JSON.parse(val).branchName
+				})
+				
+				// console.log(132132132,this.dataInfo);
 				this.dataInfo.bankBranchCode = JSON.parse(val).branchCode
+				console.log(123123123);
 			},
 			bankBranchList(val) {
 				console.log(val.length);
@@ -294,7 +313,7 @@
           this.getBankBranch(this.branchStr);
         }
 			},
-			//获取银行支行名称
+			// 获取银行支行名称
 			getBankBranch(Keyword) {
 				let params = {
 					Keyword:Keyword,
@@ -311,6 +330,7 @@
 							this.dataInfo.bankBranchName = ''
             } else {
               this.bankBranch=this.bankBranch.concat(res.data)
+							console.log(this.bankBranch);
               this.branchTotal=res.data[0].total
             }
           }
@@ -337,11 +357,7 @@
           this.$nextTick(()=>{
             this.dataInfo.lepDocumentCard=this.$tool.textInput(this.dataInfo.lepDocumentCard,2)            
           })
-        } else if(type==='name') {
-          this.$nextTick(()=>{
-            this.dataInfo.address=this.$tool.textInput(this.dataInfo.address)            
-          })
-        }
+        } 
       },
       upload(data) {
         if(data.btnId === "idCard") {
@@ -433,21 +449,8 @@
 			},
       //提交信息
       submitInfo() {
-				this.$confirm('请仔细核对注册信息，确保信息准确无误！','提示',{
-					confirmButtonText: '确认提交',
-					cancelButtonText: '核对信息',
-					type: 'warning'
-				}).then(()=>{
-					// this.next = true
-					this.sunmitData()
-				}).catch(()=>{
-
-				})
-        
-				
-      },
-			sunmitData() {
-				this.$refs.form.validate((vaid) =>{
+				this.$refs.form.validate((vaid,object) =>{
+					console.log(vaid,object);
 					if(vaid) {
 						if(this.idCard.length == 0) {
 							this.$message({
@@ -470,70 +473,80 @@
 							})
 							return
 						}
-						let params = {
-							companyId:this.dataInfo.id,
-							name:this.dataInfo.name,
-							address:this.dataInfo.address,
-							documentCard:this.dataInfo.documentCard,
-							lepName:this.dataInfo.lepName,
-							lepDocumentCard:this.dataInfo.lepDocumentCard,
-							lepPhone:this.dataInfo.lepPhone,
-							bankAccountName:this.dataInfo.bankAccountName,
-							bankBranchName:this.dataInfo.bankBranchName,
-							bankBranchCode:this.dataInfo.bankBranchCode,
-							bankCard:this.dataInfo.bankCard,
-							lepCardFront:this.idCard,
-							lepCardBack:this.theotherside,
-							licenseSign:this.businessLicense
-						}
-					// let params = {
-					// 		companyId:this.dataInfo.id,
-					// 		name: "武汉阿克涅网络科技有限公司",
-					// 		address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
-					// 		documentCard: "91420100MA49G98561",
-					// 		lepName: "段枭宇",
-					// 		lepDocumentCard: "420583199610180043",
-					// 		lepPhone: "15827846050",
-					// 		bankBranchName: "武汉农村商业银行光谷支行",
-					// 		bankBranchCode: "402521009216",
-					// 		bankCard: "210880551210017",
-					// 		bankAccountName: "武汉农村商业银行",
-					// 		lepCardFront:this.companyForm.idCard,
-					// 		lepCardBack:this.companyForm.theotherside,
-					// 		licenseSign:this.companyForm.businessLicense
-					// 	}
-						this.fullscreenLoading = true
-						this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
-							res= res.data
-							if(res.status == 200){
-								this.fullscreenLoading = false
-								this.subDisable= true
-								this.status= true
-								this.$message({
-									type:'success',
-									message:res.message
-								})
-								this.timer = setInterval(() =>{
-									this.enterprise()
-								},5000)
-								setTimeout(()=>{
-									this.$message({
-										type:'success',
-										message:'信息审核中，请稍后！'
-									})
-								},2500)
-							}
-						}).catch((e)=>{
-							this.fullscreenLoading = false
-							this.$message.error(e)
+						this.$confirm('请仔细核对注册信息，确保信息准确无误！','提示',{
+							confirmButtonText: '确认提交',
+							cancelButtonText: '核对信息',
+							type: 'warning'
+						}).then(()=>{
+							// this.next = true
+							this.sunmitData()
+						}).catch(()=>{
+
 						})
-					}else {
-						return false;
 					}
+				})
+      },
+			sunmitData() {
+				// let params = {
+				// 	companyId:this.dataInfo.id,
+				// 	name:this.dataInfo.name,
+				// 	address:this.dataInfo.address,
+				// 	documentCard:this.dataInfo.documentCard,
+				// 	lepName:this.dataInfo.lepName,
+				// 	lepDocumentCard:this.dataInfo.lepDocumentCard,
+				// 	lepPhone:this.dataInfo.lepPhone,
+				// 	bankAccountName:this.dataInfo.bankAccountName,
+				// 	bankBranchName:this.dataInfo.bankBranchName,
+				// 	bankBranchCode:this.dataInfo.bankBranchCode,
+				// 	bankCard:this.dataInfo.bankCard,
+				// 	lepCardFront:this.idCard,
+				// 	lepCardBack:this.theotherside,
+				// 	licenseSign:this.businessLicense
+				// }
+			let params = {
+					companyId:this.dataInfo.id,
+					name: "武汉阿克涅网络科技有限公司",
+					address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
+					documentCard: "91420100MA49G98561",
+					lepName: "段枭宇",
+					lepDocumentCard: "420583199610180043",
+					lepPhone: "15827846050",
+					bankBranchName: "武汉农村商业银行光谷支行",
+					bankBranchCode: "402521009216",
+					bankCard: "210880551210017",
+					bankAccountName: "武汉农村商业银行",
+					lepCardFront:this.companyForm.idCard,
+					lepCardBack:this.companyForm.theotherside,
+					licenseSign:this.companyForm.businessLicense
+				}
+				this.fullscreenLoading = true
+				this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
+					res= res.data
+					if(res.status == 200){
+						this.fullscreenLoading = false
+						this.subDisable= true
+						this.status= true
+						this.$message({
+							type:'success',
+							message:res.message
+						})
+						this.timer = setInterval(() =>{
+							this.enterprise()
+						},5000)
+						setTimeout(()=>{
+							this.$message({
+								type:'success',
+								message:'信息审核中，请稍后！'
+							})
+						},2500)
+					}
+				}).catch((e)=>{
+					this.fullscreenLoading = false
+					this.$message.error(e)
 				})
 			},
 			//查询注册状态
-			enterprise(index) {
+			enterprise() {
 				let params = {
 					companyId:this.dataInfo.id
 				}
@@ -555,20 +568,28 @@
 							if (ocrRegnumComparisonResult) {
 								imgList.push(copyData.licenseSign)
 							}
-							
+							if(data.resultInfo) {
+								this.currentState = '未审核通过,' + data.resultInfo
+							}
 							if (status == 2) {
-								this.$nextTick(()=>{
-									this.dataInfo.name = data.companyName
+								// this.$nextTick(()=>{
+								// 	console.log(data,9999999999999999999999);
+									
+								// })
+								this.dataInfo.name = data.companyName
 									this.dataInfo.address = data.companyAddress
 									// this.dataInfo.documentCard = data.companyAddress
 									this.dataInfo.lepName = data.legalName
 									this.dataInfo.lepDocumentCard = data.legalIds
 									this.dataInfo.lepPhone = data.legalPhone
-									this.dataInfo.bankAccountName = data.parentBankName
-									this.dataInfo.bankBranchName = data.bankName
-									this.dataInfo.bankBranchCode = data.unionBank
-									this.dataInfo.bankCard = data.accountNo
-								})
+									this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
+									this.$set(this.dataInfo,'bankBranchName',data.bankName)
+									this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
+									this.$set(this.dataInfo,'bankCard',data.accountNo)
+									// this.dataInfo.bankAccountName = data.parentBankName
+									// this.dataInfo.bankBranchName = data.bankName
+									// this.dataInfo.bankBranchCode = data.unionBank
+									// this.dataInfo.bankCard = data.accountNo
 							}
 							
 							if (!this.status && imgList.length) {
@@ -600,7 +621,6 @@
 									})
 								})
 							}
-							console.log(imgList);
 							if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
 								clearInterval(this.timer);
 								this.$message({
@@ -608,6 +628,7 @@
 									message: '证件信息审核失败！'
 								})
 								this.firstDisable = false
+								this.subDisable = false
 								return
 							}
 							return
@@ -615,6 +636,7 @@
 							if (!this.status) {
 								this.titleIndex = 1
 								this.signContract()
+								this.status = true
 							} else {
 								this.currentState = '审核通过'
 								this.firstDisable = false
