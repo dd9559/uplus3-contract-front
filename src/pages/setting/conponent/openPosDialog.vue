@@ -1,5 +1,5 @@
 <template>
-	<div class="posDialog" v-loading.fullscreen.lock="fullscreenLoading">
+	<div class="posDialog">
 		<el-dialog
       title="开通POS收款"
       :closeOnClickModal="$tool.closeOnClickModal"
@@ -9,7 +9,8 @@
       class="dep-dialog"
 			@open="dialogOpen"
 			@click="handleClose">
-			<div class="titleBox">
+			<div class="titleBox"
+			>
 				<div class="title" :class="{'titleTips':index == titleIndex}" v-for="(item,index) in titleList" :key="index" >
 					{{item.item}}
 				</div>
@@ -17,7 +18,11 @@
 			<!-- titleIndex == 'first' -->
       <div class="posDialogBox" v-if="titleIndex == 0">
 				<div class="formBox">
-					<el-form label-position="right" ref="form" size="mini" :rules="rulesForm" :model="dataInfo" label-width="140px">
+					<el-form label-position="right" ref="form" size="mini" :rules="rulesForm" :model="dataInfo" label-width="140px"
+					v-loading.fullscreen.lock="fullscreenLoading"
+					element-loading-text="信息审核中"
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)">
 						<el-form-item label="企业名称：">
 							<span>{{dataInfo.name}}</span>
 						</el-form-item>
@@ -44,16 +49,10 @@
 						</el-form-item>
 						<el-form-item label="支行名称：" prop="bankBranchName">
 							<el-select  v-model="dataInfo.bankBranchName" filterable v-loadmore="moreAssignors" style="width:100%"
-							placeholder="选择支行名称" reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
+							placeholder="选择支行名称" remote reserve-keyword :remote-method="bankBranchList" @change="bankBranchs">
 								<el-option v-for="m in bankBranch" :key="m.branchCode" :label="m.branchName" :title="m.branchName" :value="JSON.stringify(m)"></el-option>
 							</el-select>
 						</el-form-item>
-						<!-- <el-form-item label="支行名称：: " prop="bankBranchName">
-							<el-select  v-model="dataInfo.bankBranchName" filterable style="width:100%"
-							placeholder="选择支行名称" remote  :remote-method="bankBranchList" @change="bankBranchs">
-								<el-option v-for="m in adminBanks" :key="m.bankName" :label="m.bankName" :value="JSON.stringify(m)"></el-option>
-							</el-select>
-						</el-form-item> -->
 						<el-form-item label="支行行号：">
 							<el-input v-model="dataInfo.bankBranchCode" maxlength="15" :disabled='true' :clearable="true"
 							@input="inputOnly('bankBranchCode')"></el-input>
@@ -287,9 +286,9 @@
 			},
 			bankBranchs(val) {
 				this.$nextTick(()=>{
-					this.dataInfo.bankBranchName = JSON.parse(val).branchName
+					this.$set(this.dataInfo,'bankBranchName',JSON.parse(val).branchName)
 				})
-				this.dataInfo.bankBranchCode = JSON.parse(val).branchCode
+				this.$set(this.dataInfo,'bankBranchCode',JSON.parse(val).branchCode)
 			},
 			bankBranchList(val) {
 				console.log(val.length);
@@ -566,15 +565,21 @@
 							if (ocrRegnumComparisonResult) {
 								imgList.push(copyData.licenseSign)
 							}
-							if(data.resultInfo) {
-								this.currentState = '未审核通过,' + data.resultInfo
+							if(data.status !== 2) {
+								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
+							}
+							if(data.status == 2 && !data.ocrRegnumComparisonResult) {
+								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
+							}
+							if(data.status == 2 && data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
+								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
 							}
 							if (status == 2) {
 								// this.$nextTick(()=>{
 								// 	console.log(data,9999999999999999999999);
 									
 								// })
-								this.dataInfo.name = data.companyName
+									this.dataInfo.name = data.companyName
 									this.dataInfo.address = data.companyAddress
 									// this.dataInfo.documentCard = data.companyAddress
 									this.dataInfo.lepName = data.legalName
@@ -633,7 +638,7 @@
 						} else if (!data.isSignContract) {
 							if (!this.status) {
 								this.titleIndex = 1
-								this.signContract()
+								// this.signContract()
 								this.status = true
 							} else {
 								this.currentState = '审核通过'
