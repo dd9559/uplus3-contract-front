@@ -74,7 +74,7 @@
           </el-table-column>
           <el-table-column label="开通时间">
             <template slot-scope="scope">
-              <span>{{scope.row.posTime|formatDate(2)}}</span>
+              <span>{{(scope.row.status === 1 ? scope.row.posTime : '')|formatDate(2)}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" min-width="80">
