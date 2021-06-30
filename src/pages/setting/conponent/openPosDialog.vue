@@ -155,6 +155,16 @@
 				firstDisable: false,
 				subDisable:false,
 				dataInfo:{
+					bankAccountName:'',
+					bankBranchName:'',
+					bankBranchCode:'',
+					bankCard:'',
+					id:'',
+					name:'',
+					address:'',
+					documentCard:'',
+					lepName:'',
+					bankAccountName:'',
 				},
 				status: false,
 				timer: null,
@@ -229,7 +239,7 @@
 			},
 			posInfo:{
 				handler(newName,oldName) {
-					this.dataInfo = newName
+					this.dataInfo = JSON.parse(JSON.stringify(newName))
 				},
 				deep: true
 			},
@@ -255,6 +265,9 @@
 				if(this.titleIndex == 0) {
 					this.$refs.form.resetFields()
 				}
+				this.idCard = []
+				this.theotherside = []
+				this.businessLicense = []
 				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
@@ -281,17 +294,21 @@
 				this.branchStr = JSON.parse(val).bankName
 				this.branchPage = 1
 				this.bankBranch = []
-				// this.dataInfo.bankBranchName = ''
-				this.$set(this.dataInfo,'bankBranchName','')
-				this.$set(this.dataInfo,'bankBranchCode','')
+				this.dataInfo.bankBranchName = ''
+				this.dataInfo.bankBranchCode = ''
 				this.branchStr = val
 				this.getBankBranch(JSON.parse(val).bankName)
 			},
 			bankBranchs(val) {
+				console.log(val);
+				// console.log(val);
 				this.$nextTick(()=>{
 					this.$set(this.dataInfo,'bankBranchName',JSON.parse(val).branchName)
 				})
-				this.$set(this.dataInfo,'bankBranchCode',JSON.parse(val).branchCode)
+				
+				// this.dataInfo.bankBranchName = JSON.parse(val).branchName
+				this.dataInfo.bankBranchCode = JSON.parse(val).branchCode
+				console.log(this.dataInfo.bankBranchName);
 			},
 			bankBranchList(val) {
 				console.log(val.length);
@@ -502,6 +519,8 @@
 					lepCardBack:this.theotherside,
 					licenseSign:this.businessLicense
 				}
+				console.log(params);
+				return
 				// let params = {
 				// 	companyId:this.dataInfo.id,
 				// 	name: "武汉阿克涅网络科技有限公司",
@@ -587,14 +606,10 @@
 									this.dataInfo.lepName = data.legalName
 									this.dataInfo.lepDocumentCard = data.legalIds
 									this.dataInfo.lepPhone = data.legalPhone
-									this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
-									this.$set(this.dataInfo,'bankBranchName',data.bankName)
-									this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
-									this.$set(this.dataInfo,'bankCard',data.accountNo)
-									// this.dataInfo.bankAccountName = data.parentBankName
-									// this.dataInfo.bankBranchName = data.bankName
-									// this.dataInfo.bankBranchCode = data.unionBank
-									// this.dataInfo.bankCard = data.accountNo
+									this.dataInfo.bankAccountName = data.parentBankName
+									this.dataInfo.bankBranchName = data.bankName
+									this.dataInfo.bankBranchCode = data.unionBank
+									this.dataInfo.bankCard = data.accountNo
 							}
 							
 							if (!this.status && imgList.length) {
