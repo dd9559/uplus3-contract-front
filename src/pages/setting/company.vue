@@ -69,7 +69,13 @@
           </el-table-column>
           <el-table-column label="开通POS收款">
             <template slot-scope="scope">
-              <span>{{!scope.row.status ? '未开通' : scope.row.status === 1 ? '已开通' : '开通中'}}</span>
+              <el-popover trigger="hover" placement="top" v-if="scope.row.status == 2">
+                <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
+                  {{scope.row.reason}}
+                </div>
+                <div slot="reference" class="name-wrapper">开通待完成</div>
+              </el-popover>
+              <span v-else>{{!scope.row.status ? '未开通' : '已开通'}}</span>
             </template>
           </el-table-column>
           <el-table-column label="开通时间">

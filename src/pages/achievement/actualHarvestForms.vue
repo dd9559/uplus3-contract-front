@@ -152,7 +152,7 @@ export default {
       tabCurrent: 1,
       searchTime: null,
       contType: 3,
-      pageSize: 50,
+      pageSize: 6,
       empName: "",
       pageNum: 1,
       total: 0,
@@ -226,7 +226,7 @@ export default {
       var date2 = this.$tool.dateFormat(Date.now());
       this.searchTime = [date, date2];
     },
-    getAchList() {
+    getAchList(page) {
       let param = {
         signDateStar:
           this.searchTime && this.searchTime.length != 0
@@ -238,7 +238,7 @@ export default {
             : "",
         contartType: this.contType,
         level: this.tabCurrent,
-        pageNum: this.pageNum,
+        pageNum: page ? page : this.pageNum,
         pageSize: this.pageSize,
       };
       let apiUrl = ''
@@ -278,8 +278,8 @@ export default {
                   }
                   return Object.assign({dep},item)
                 });
-                let start = this.pageNum === 1 ? 0 : (this.pageNum*this.pageSize),
-                    end = (this.pageNum+1)*this.pageSize;
+                let start = (this.pageNum-1)*this.pageSize,
+                    end = this.pageNum*this.pageSize;
                 console.log(start,end,res.data,'res.data');
                 this.achList = this.copyAchList.slice(start,end);
                 this.total = res.data.length;
@@ -327,9 +327,11 @@ export default {
 
       if (this.tabCurrent !== 1) {
         if (val === Math.ceil(this.total / this.pageSize)) {
-          this.getAchList();
+          this.getAchList(1);
         } else {
-          this.achList = this.copyAchList.slice(val*this.pageSize,(val+1)*this.pageSize);
+          let start = (val-1)*this.pageSize,
+              end = val*this.pageSize;
+          this.achList = this.copyAchList.slice(start,end);
         }
         this.pageNum = val;
       } else {
