@@ -261,6 +261,7 @@
 				this.currentState = '未提交'
 				this.sms = 1
 				this.next = false
+				this.subDisable = false
 				clearInterval(this.timer);
         this.$emit("handleDialogClose",this.clearList);
       },
@@ -501,23 +502,22 @@
 					lepCardBack:this.theotherside,
 					licenseSign:this.businessLicense
 				}
-				console.log(params);
-			// let params = {
-			// 		companyId:this.dataInfo.id,
-			// 		name: "武汉阿克涅网络科技有限公司",
-			// 		address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
-			// 		documentCard: "91420100MA49G98561",
-			// 		lepName: "段枭宇",
-			// 		lepDocumentCard: "420583199610180043",
-			// 		lepPhone: "15827846050",
-			// 		bankBranchName: "武汉农村商业银行光谷支行",
-			// 		bankBranchCode: "402521009216",
-			// 		bankCard: "210880551210017",
-			// 		bankAccountName: "武汉农村商业银行",
-			// 		lepCardFront:this.companyForm.idCard,
-			// 		lepCardBack:this.companyForm.theotherside,
-			// 		licenseSign:this.companyForm.businessLicense
-			// 	}
+				// let params = {
+				// 	companyId:this.dataInfo.id,
+				// 	name: "武汉阿克涅网络科技有限公司",
+				// 	address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
+				// 	documentCard: "91420100MA49G98561",
+				// 	lepName: "段枭宇",
+				// 	lepDocumentCard: "420583199610180043",
+				// 	lepPhone: "15827846050",
+				// 	bankBranchName: "武汉农村商业银行光谷支行",
+				// 	bankBranchCode: "402521009216",
+				// 	bankCard: "210880551210017",
+				// 	bankAccountName: "武汉农村商业银行",
+				// 	lepCardFront:this.companyForm.idCard,
+				// 	lepCardBack:this.companyForm.theotherside,
+				// 	licenseSign:this.companyForm.businessLicense
+				// }
 				this.fullscreenLoading = true
 				this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
 					res= res.data
@@ -646,11 +646,14 @@
 								this.currentState = '审核通过'
 								this.firstDisable = false
 								this.next = true
+								if(this.titleIndex == 0 && this.nexts) {
+									clearInterval(this.next)
+								}
 								// this.$message({
 								// 	type:'success',
 								// 	message:'信息审核通过！'
 								// })
-								// clearInterval(this.timer);
+								
 							}
 							
 							return
