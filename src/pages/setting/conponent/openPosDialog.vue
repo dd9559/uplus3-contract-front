@@ -259,6 +259,7 @@
 				this.inputCode = ''
 				this.titleIndex = 0
 				this.currentState = '未提交'
+				this.next = false
 				clearInterval(this.timer);
         this.$emit("handleDialogClose",this.clearList);
       },
