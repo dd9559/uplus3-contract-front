@@ -980,7 +980,7 @@
           toBank: this.withdrawData.toBank.toString(),
           bankType: this.withdrawData.bankType,
           fee: accMul(this.withdrawData.fee,100),
-          amount: accMul(this.money,100),
+          amount: accMul(this.accSub(this.withdrawData.fee,this.money),100)
         }
         this.$ajax.postJSON('/api/enterprise/cash',param).then(res => {
           res = res.data
