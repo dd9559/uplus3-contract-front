@@ -114,7 +114,8 @@
               // 选择文件后执行
               if(up.files.length===0){
                 if (that.flag) {
-                  return that.$message(`上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张`);
+                  let msg = up.files.length > that.maxNum ? `上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张` : `上传文件大小不能超过${that.maxSize}M`
+                  return that.$message(msg);
                 }
                 return
               }
@@ -246,7 +247,8 @@
                   // 向父组件传递监听函数，并初始化上传配置
                   loading.close()
                   if (that.flag) {
-                    that.$message(`上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张`)
+                    let msg = up.files.length > that.maxNum ? `超过${that.maxSize}M,最多上传${that.maxNum}张` : `超过${that.maxSize}M`
+                    that.$message(msg)
                   }
                   that.$emit('getUrl', {param: that.filePath, btnId: that.getId})
                   that.uploader.splice(0, up.files.length)

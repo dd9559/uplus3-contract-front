@@ -19,6 +19,9 @@ axios.interceptors.request.use((request)=>{
 })
 axios.interceptors.response.use((response)=>{
   let res=response.data
+  if (response.status === 200 && response.headers['content-type'] === 'application/octet-stream') {
+    return response
+  }
   if(res.status===200){
     times = 0
     return response
@@ -85,13 +88,17 @@ let api = {
       return res
     })
   },
-  // getFile: function(url, param) {
-  //   let header = {}
-  //   header['Content-Type'] = 'video/mpeg'
-  //   return axios.get(url,{params:param}).then(res => {
-  //     return res
-  //   })
-  // },
+  getFile: function(url, param) {
+    let header = {}
+    return axios({
+      url,
+      params:param,
+      method: 'get',
+      responseType: 'blob',
+    }).then(res => {
+      return res
+    })
+  },
   delete: function(url, param) {
     return axios
       .delete(url, {

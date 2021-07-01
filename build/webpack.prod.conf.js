@@ -10,9 +10,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const TerserPlugin = require("terser-webpack-plugin")
 
 const env = require('../config/prod.env')
-
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -36,12 +36,34 @@ const webpackConfig = merge(baseWebpackConfig, {
       uglifyOptions: {
         compress: {
           warnings: false,
-          drop_console: true
-        }
-      },
-      sourceMap: config.build.productionSourceMap,
-      parallel: true
+          drop_console: true,
+          drop_debugger: true,
+          // pure_funcs: ['console.log']//移除console
+        },
+        warnings: false,
+        output: {
+          comments: false
+        },
+        sourceMap: config.build.productionSourceMap,
+        parallel: true
+      }
     }),
+    // new TerserPlugin({
+    //   cache: true,
+    //   sourceMap: false,
+    //   // 多进程
+    //   parallel: true,
+    //   terserOptions: {
+    //       ecma: undefined,
+    //       warnings: false,
+    //     parse: {},
+    //     compress: {
+    //       drop_console: true,
+    //       drop_debugger: false,
+    //       pure_funcs: ['console.log'], // 移除console
+    //     },
+    //   },
+    // }),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),

@@ -32,7 +32,8 @@ const MIXINS = {
       tableBoxCom: null,
       tableNumberCom: null,
       systemTagList: [],
-      systemTagSelect: []
+      systemTagSelect: [],
+      HQloadingList: false
     }
   },
   watch: {
@@ -282,6 +283,7 @@ const MIXINS = {
      * 获取签名
      */
     fileSign: async function (arr, type, mini = true) {
+      console.log(typeof(arr));
       let param = {
         urls: arr.join(',')
       }
@@ -436,23 +438,47 @@ const MIXINS = {
      * 导出excel
      */
     excelCreate: function (url, param) {
+      if (this.HQloadingList) {
+        this.$message.warning('资源下载中请勿重复点击！')
+        return
+      }
       this.HQloadingList = true
-      this.$ajax.get(`/api${url}`, param).then(res => {
-        res = res.data
-        if (res.status === 200) {
-          this.HQloadingList = false
-          this.fileSign([res.data], 'download')
-          /*var a = document.createElement('a');
-          a.download = undefined;
-          a.href = res.data;
-          // a.innerText='test'
-          document.body.appendChild(a)
-          a.click();
-          document.body.removeChild(a)*/
-        }
+      this.$message.success('开始导出报表！')
+      this.$ajax.getFile(`/api${url}`, param).then(res => {
+        this.HQloadingList = false
+        let link = document.createElement('a')
+        link.style.display = "none"
+        let fileName = decodeURI(res.headers["content-disposition"].split(";")[1].split("filename=")[1])
+        let blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })
+        link.href = URL.createObjectURL(blob)
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link) // 下载完成移除元素
+        window.URL.revokeObjectURL(blob)
+
+        // if (res.headers['content-type'] === 'application/octet-stream') {
+        //   this.HQloadingList = false
+        //   let link = document.createElement('a')
+        //   link.style.display = 'none'
+        //   let query = Object.entries(param)
+        //   .reduce((result, entry) => {
+        //       result.push(entry.join('='))
+        //       return result
+        //   }, []).join('&')
+        //   link.href = `${window.location.origin}/api${url}?${query}`
+        //   console.log(`${window.location.origin}/api${url}?${query}`,'`${window.location.origin}/api${url}?${query}`');
+        //   link.download = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('=')[1]) //下载的文件名
+        //   document.body.appendChild(link)
+        //   link.click()
+        //   document.body.removeChild(link)
+        // } else if (res.data.status === 200) {
+        //   this.HQloadingList = false
+        //   this.fileSign([res.data.data], 'download')
+        // }
       }).catch(error => {
         this.$message({
-          message: error
+          message: '暂无可导出数据！'
         })
         this.HQloadingList = false
       })

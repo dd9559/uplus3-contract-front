@@ -13,44 +13,13 @@
               end-placeholder="结束日期"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="合同类型">
-            <el-select v-model="contType" style="width:200px" multiple clearable placeholder="请选择">
+          <el-form-item label="合同状态">
+            <el-select v-model="contType" style="width:200px" placeholder="请选择">
               <el-option
-                v-for="item in dictionary['10']"
-                v-if="[1,2,3].includes(item.key)"
+                v-for="item in dictionary['6']"
                 :key="item.value"
                 :label="item.value"
                 :value="item.key"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="部门" class="dep">
-            <select-tree
-              :data="DepList"
-              :init="departmentName"
-              @checkCell="depHandleClick"
-              @clear="clearDep"
-              @search="searchDep"
-            ></select-tree>
-            <el-select
-              :clearable="true"
-              filterable
-              remote
-              :remote-method="test"
-              v-loadmore="moreEmploye"
-              @visible-change="empHandle"
-              class="margin-left"
-              size="small"
-              v-model="depUser"
-              placeholder="请选择"
-              @change="empHandleAdd"
-            >
-              <el-option
-                v-for="item in EmployeList"
-                :key="item.empId"
-                :label="item.name"
-                :value="item.empId+'/'+item.depName+'/'+item.depId"
-                @clear="clearDep"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -60,10 +29,13 @@
     <div class="table-list">
       <div class="tab">
         <div class="forms-tab">
-            <span :class="formsCurrent == index ? 'curent' : ''" v-for="(item,index) of ['应收报表','结算报表']" :key="index" @click="toggleForms(index,'formsCurrent')">{{item}}</span>
+            <template v-for="(item) of formList">
+              <span :class="formsCurrent == item.id+1 && formList.length == 2 ? 'curent' : ''"  :key="item.id" @click="toggleForms(item.id,'formsCurrent')">{{item.name}}</span>
+            </template>
         </div>
         <div class="table-tab">
-            <span :class="tabCurrent == index ? 'curent' : ''" v-for="(item,index) of ['人员','分组','分店','片区','大区','事业部']" :key="index" @click="toggleForms(index,'tabCurrent')">{{item}}</span>
+            <span :class="tabCurrent == index+1 ? 'curent' : ''" v-for="(item,index) of ['人员','分组','分店','片区','大区','事业部']" :key="index" @click="toggleForms(index,'tabCurrent')">{{item}}</span>
+            <el-button round type="primary" size="medium" @click="getExcel" v-if="(formsCurrent===1 && power['sign-yj-ysjsreport-ys-export'].state) || (formsCurrent===2 && power['sign-yj-ysjsreport-js-export'].state)" style="padding:9px 15px;min-width: 80px;float:right;">导出</el-button>
         </div>
       </div>
       <el-table
@@ -71,65 +43,83 @@
         ref="tableCom"
         style="width: 100%"
         border
+        v-loading="loadingList"
         :max-height="tableNumberCom"
       >
-        <el-table-column label="买卖">
-        <el-table-column label="合同编号" width="128">
+        <el-table-column v-if="tabCurrent===1" label="姓名" align="center" prop="nams" width="128"></el-table-column>
+        <el-table-column label="部门" align="center" prop="dep" width="128"></el-table-column>
+        <el-table-column label="部门层级" align="center" width="128">
           <template slot-scope="scope">
-            <p>
-              合同编号：
-              <span>{{scope.row.code}}</span>
-            </p>
-            <p v-show="scope.row.recordType&&scope.row.recordType.value==2">
-              纸质合同编号：
-              <span>{{scope.row.pCode}}</span>
-            </p>
-            <p></p>
+            <span v-if="tabCurrent===1">{{['事业部','大区','片区','分店','分组'][scope.row.levels-1]}}</span>
+            <span v-else>{{['人员','分组','分店','片区','大区','事业部'][tabCurrent-1]}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="佣金支付费（元）" width="128">
-          <template slot-scope="scope">{{userInfo.cityId != 1 ? scope.row.commissionPayment:0}}</template>
-        </el-table-column>
-        <el-table-column label="权证费用（元）" width="128">
-          <template slot-scope="scope">{{scope.row.warrantFee}}</template>
-        </el-table-column>
-        <el-table-column label="建筑面积" width="128">
-          <template slot-scope="scope">{{scope.row.builtArea?scope.row.builtArea:'-'}}</template>
-        </el-table-column>
-        <el-table-column label="签约方式" width="128">
-          <template slot-scope="scope">
-            <span>{{scope.row.recordType&&scope.row.recordType.label?scope.row.recordType.label:'-'}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="合同类型" prop="contType.label" width="128"></el-table-column>
-
-        </el-table-column>
-
-        <el-table-column label="租赁">
-
-        <el-table-column label="变更/解约" prop="contChangeState.label" width="128"></el-table-column>
-        <el-table-column label="签约日期" width="100">
-          <template slot-scope="scope">{{scope.row.signDate | formatTime}}</template>
-        </el-table-column>
-        <el-table-column label="物业地址" prop="propertyAddr" width="100"></el-table-column>
-        <el-table-column label="签约单数" prop="amount" width="100"></el-table-column>
-
-
+        <el-table-column label="买卖" align="center">
+          <el-table-column label="佣金支付费（元）" width="128">
+            <template slot-scope="scope">{{scope.row.mm_commfee|fomatFloat}}</template>
+          </el-table-column>
+          <el-table-column label="权证费（元）" width="128">
+            <template slot-scope="scope">{{scope.row.mm_qzfee|fomatFloat}}</template>
+          </el-table-column>
+          <el-table-column label="企业管理费（元）" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.mm_fee|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="可分配业绩" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.mm_money|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="formsCurrent===1? '买卖合同值（总应收）' : '买卖合同值（分账金额）'" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.mm_moneySum|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="签单数" prop="mm_stSum" width="128">
+          </el-table-column>
         </el-table-column>
 
-        <el-table-column label="代办">
+        <el-table-column label="租赁" align="center">
 
-
-        <el-table-column label="分成人" prop="assignor" width="100"></el-table-column>
-        <el-table-column label="在职状态" prop="jobStatus.label" width="100"></el-table-column>
-        <el-table-column label="分成门店" prop="level4" width="150"></el-table-column>
-
+          <el-table-column label="佣金支付费（元）" width="128">
+            <template slot-scope="scope">{{scope.row.zl_commfee|fomatFloat}}</template>
+          </el-table-column>
+          <el-table-column label="企业管理费（元）" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.zl_fee|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="可分配业绩" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.zl_money|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column :label="formsCurrent===1? '租赁合同值（总应收）' : '租赁合同值（分账金额）'" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.zl_moneySum|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="签单数" prop="zl_stSum" width="128">
+          </el-table-column>
         </el-table-column>
 
-        <el-table-column label="总业绩">
+        <el-table-column label="代办" align="center">
+          <el-table-column :label="formsCurrent===1? '代办合同值（总应收）' : '代办合同值（分账金额）'" width="128">
+            <template slot-scope="scope">
+              <span>{{scope.row.db_moneySum|fomatFloat}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="签单数" prop="db_stSum" width="128">
+          </el-table-column>
+        </el-table-column>
 
-        <el-table-column label="角色类型" prop="roleType.label" width="50"></el-table-column>
-        <el-table-column label="分成比例(%)" prop="ratio"></el-table-column>
+        <el-table-column label="总业绩" align="center">
+          <el-table-column label="买卖+租赁+代办" width="128">
+            <template slot-scope="scope">
+              <span>{{(scope.row.mm_moneySum+scope.row.db_moneySum+scope.row.zl_moneySum)|fomatFloat}}</span>
+            </template>
+          </el-table-column>
         </el-table-column>
         
       </el-table>
@@ -156,44 +146,42 @@ export default {
   mixins: [MIXINS, FILTER],
   data() {
     return {
-        formsCurrent: 0,
-        tabCurrent: 0,
-
-
-
-
-
-
-      Loading: false,
-      departmentName: "",
-      department: [],
-      keyword: "",
-      searchTime: [],
-      tableData: [],
-      contType: "",
-      contStatus: "",
-      signType: "",
-      jobStatus: "",
+      searForm: {},
+      loadingList: false,
+      formsCurrent: 1,
+      tabCurrent: 1,
+      searchTime: null,
+      contType: 3,
       pageSize: 50,
       empName: "",
       pageNum: 1,
       total: 0,
+      ajaxParam: {},
       dictionary: {
-        "10": "", //合同类型（筛选条件）
-        "9": "", //合同状态
-        "64": "", //签约方式  线上线下
-        "20": "", //在职状态
-        "6": "",
+        "6": "", //合同状态（筛选条件）
       },
-      users: [],
-      userMsg: {}, //当前登录人信息
-      type: [],
-      depUser: "",
       achList: [],
+      copyAchList: [],
+      formList: [
+        {name: '应收报表',id: 0},
+        {name: '结算报表',id: 1}
+      ],
       power: {
-        "sign-set-log-query": {
+        "sign-yj-ysjsreport-ys-query": {
           state: false,
-          name: "查询",
+          name: "应收报表查询",
+        },
+        "sign-yj-ysjsreport-ys-export": {
+          state: false,
+          name: "应收报表导出",
+        },
+        "sign-yj-ysjsreport-js-query": {
+          state: false,
+          name: "结算报表查询",
+        },
+        "sign-yj-ysjsreport-js-export": {
+          state: false,
+          name: "结算报表导出",
         },
       },
     };
@@ -201,168 +189,163 @@ export default {
   created() {
     this.getAdmin(); //获取当前登录人信息
     this.getDictionary();
-    this.getAchList2();
     this.initTimePicker();
+    console.log(this.$router);
   },
   mounted() {
     this.remoteMethod("power");
+    this.formList = this.formList.filter(item => {
+      if (item.id === 0 && this.power['sign-yj-ysjsreport-ys-query'].state) return true
+      if (item.id === 1 && this.power['sign-yj-ysjsreport-js-query'].state) return true
+      return false
+    })
+    if (this.formList.length === 1) {
+      this.formsCurrent = this.formList[0].id + 1
+    }
+    this.getAchList()
   },
   methods: {
-      toggleForms(curent,key) {
-          this[key] = curent
-      },
-
-
-
-
-
-
+    // 导出功能
+    getExcel() {
+        let url = this.formsCurrent === 1 ? '/input/YSachievementExcel' : '/input/JSachievementExcel'
+        this.excelCreate(url, this.ajaxParam)
+    },
+    toggleForms(curent,key) {
+        if (key==='formsCurrent' && this.formList.length === 1) return
+        this[key] = curent+1
+        if (key==='formsCurrent') {
+          this.tabCurrent = 1
+        }
+        this.pageNum = 1
+        this.getAchList()
+    },
     initTimePicker() {
       var date = new Date();
       date = date.setDate(1);
       date = this.$tool.dateFormat(date);
       var date2 = this.$tool.dateFormat(Date.now());
-      this.$nextTick(() => {
-        this.searchTime = [date, date2];
-      });
+      this.searchTime = [date, date2];
     },
-    getAchList() {
+    getAchList(page) {
       let param = {
-        keyword: this.keyword,
-        startTime:
+        signDateStar:
           this.searchTime && this.searchTime.length != 0
             ? this.searchTime[0]
             : "",
-        endTime:
+         signDateEnd:
           this.searchTime && this.searchTime.length != 0
             ? this.searchTime[1]
             : "",
-        depId: this.department,
-        empId: this.depUser,
-        tradeTypes: this.contType.length == 0 ? "" : this.contType.join(","),
-        status: this.contStatus,
-        recordType: this.signType,
-        isJob: this.jobStatus.value,
-        pageNum: this.pageNum,
+        contartType: this.contType,
+        level: this.tabCurrent,
+        pageNum: page ? page : this.pageNum,
         pageSize: this.pageSize,
       };
-      if (param.empId) {
-        param.empId = param.empId.split("/")[0];
+      let apiUrl = ''
+      if(this.formsCurrent == 1) {
+        apiUrl = '/api/achievement/AchievementList'
+      }else {
+        apiUrl = '/api/settlement/settleList'
       }
+      this.loadingList = true
       this.$ajax
-        .get("/api/achievementSheet/getAchievementContractSumList", param)
+        .get(apiUrl, param)
         .then((res) => {
           res = res.data;
           if (res.status == 200) {
-            this.achList = res.data.list;
-            this.total = res.data.total;
+            this.ajaxParam = param
+            this.$nextTick(() => { //在数据加载完，重新渲染表格
+              if (this.tabCurrent !== 1) {
+                this.copyAchList = res.data.map(item => {
+                  let dep = ''
+                  switch (this.tabCurrent) {
+                    case 1:
+                    case 2:
+                      dep = item.depName
+                      break;
+                    case 3:
+                      dep = item.r4name
+                      break;
+                    case 4:
+                      dep = item.r3name
+                      break;
+                    case 5:
+                      dep = item.r2name
+                      break;
+                    case 6:
+                      dep = item.r1name
+                      break;
+                  }
+                  return Object.assign({dep},item)
+                });
+                let start = (this.pageNum-1)*this.pageSize,
+                    end = this.pageNum*this.pageSize;
+                console.log(start,end,res.data,'res.data');
+                this.achList = this.copyAchList.slice(start,end);
+                this.total = res.data.length;
+              } else {
+                this.achList = res.data.list.map(item => {
+                  let dep = ''
+                  switch (this.tabCurrent) {
+                    case 1:
+                    case 2:
+                      dep = item.depName
+                      break;
+                    case 3:
+                      dep = item.r4name
+                      break;
+                    case 4:
+                      dep = item.r3name
+                      break;
+                    case 5:
+                      dep = item.r2name
+                      break;
+                    case 6:
+                      dep = item.r1name
+                      break;
+                  }
+                  return Object.assign({dep},item)
+                });
+                // this.achList = res.data.list;
+                this.total = res.data.total;
+              }
+              // this.achList = res.data.list;
+              // this.total = res.data.total;
+            })
           }
+          this.loadingList = false
         })
         .catch((err) => {
-          // debugger
+          this.achList = [];
+          this.total = 0;
+          this.loadingList = false
           this.$message.error(err);
         });
-    },
-    getAchList2() {
-      let param = {
-        keyword: this.keyword,
-        depId: this.department,
-        empId: this.depUser,
-        tradeTypes: this.contType,
-        status: this.contStatus,
-        recordType: this.signType,
-        isJob: this.jobStatus.value,
-        pageNum: this.pageNum,
-        pageSize: this.pageSize,
-      };
-      this.$ajax
-        .get("/api/achievementSheet/getAchievementContractSumList", param)
-        .then((res) => {
-          res = res.data;
-          if (res.status == 200) {
-            this.achList = res.data.list;
-            this.total = res.data.total;
-          }
-        })
-        .catch((err) => {
-          // debugger
-          this.$message.error(err);
-        });
-    },
-    getExcel() {
-      let param = {
-        keyword: this.keyword,
-        startTime:
-          this.searchTime && this.searchTime.length != 0
-            ? this.searchTime[0]
-            : "",
-        endTime:
-          this.searchTime && this.searchTime.length != 0
-            ? this.searchTime[1]
-            : "",
-        depId: this.department,
-        empId: this.depUser,
-        tradeTypes: this.contType.join(","),
-        status: this.contStatus,
-        recordType: this.signType,
-        isJob: this.jobStatus.value,
-        // pageNum: this.pageNum,
-        // pageSize: this.pageSize,
-      };
-      if (param.empId) {
-        param.empId = param.empId.split("/")[0];
-      }
-      this.excelCreate("/input/AchievementContractExcel", param);
-    },
-    searchDep: function (payload) {
-      /*this.DepList=payload.list
-                this.departmentName=payload.depName*/
-    },
-    depHandleClick(data) {
-      this.depUser = "";
-      this.department = data.depId;
-      this.departmentName = data.name;
-      this.handleNodeClick(data);
-    },
-    clearDep: function () {
-      this.depUser = "";
-      this.department = "";
-      this.departmentName = "";
-      // this.EmployeList=[]
-    },
-    test: function (val) {
-      this.getEmployeByText(val);
-    },
-    empHandle: function (val) {
-      console.log(this.depUser);
-      if (val && this.EmployeInit !== this.employeTotal && this.depUser) {
-        this.getEmployeByText();
-      }
-    },
-    empHandleAdd(val) {
-      let depVal = val.split("/");
-      this.department = depVal[2];
-      this.departmentName = depVal[1];
-      this.EmployeList = [];
-      this.getEmploye(this.department);
     },
     handleSizeChange(val) {},
     handleCurrentChange(val) {
-      this.pageNum = val;
-      this.getAchList();
+
+      if (this.tabCurrent !== 1) {
+        if (val === Math.ceil(this.total / this.pageSize)) {
+          this.getAchList(1);
+        } else {
+          let start = (val-1)*this.pageSize,
+              end = val*this.pageSize;
+          this.achList = this.copyAchList.slice(start,end);
+        }
+        this.pageNum = val;
+      } else {
+        this.pageNum = val;
+        this.getAchList();
+      }
     },
 
     // 重置
     resetFormFn() {
       this.pageNum = 1;
-      this.keyword = "";
-      (this.searchTime = ""), (this.depUser = ""), (this.department = "");
-      (this.contType = []),
-        (this.contStatus = ""),
-        (this.signType = ""),
-        (this.jobStatus = ""),
-        (this.departmentName = "");
-      this.EmployeList = [];
+      this.searchTime = null;
+      (this.contType = 3);
+      this.initTimePicker();
     },
     // 查询
     queryFn() {
@@ -385,6 +368,41 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  @import "~@/assets/less/lsx.less";
+  @import "~@/assets/common.less";
+.header {
+  background-color: #fff;
+  border-radius: 2px;
+  box-sizing: border-box;
+  .form-title {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    div {
+      > .el-button {
+        width: 100px;
+        height: 36px;
+        border-radius: 14px;
+      }
+    }
+  }
+  .content {
+    display: flex;
+    font-weight: normal;
+    flex-wrap: wrap;
+    > .el-form-item {
+      display: flex;
+      margin-right: 30px;
+      &:nth-child(2) /deep/ .el-form-item__content {
+        display: flex;
+        span {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}
+
 .table-list {
   background-color: #fff;
   margin: 0 10px;
@@ -398,6 +416,7 @@ export default {
         span {
             display: inline-block;
             margin-right: 8px;
+            padding: 10px;
             cursor: pointer;
         }
         .curent {
@@ -408,15 +427,18 @@ export default {
 				margin-bottom: 8px;
           span {
               display: inline-block;
-              padding: 4px 22px;
-              background-color: #bcbcbc;
+              padding: 8px 22px;
+              margin-bottom: 8px;
+              background-color: #f4f4f5;
               border-radius: 6px;
               font-size: 14px;
               font-weight: bold;
               cursor: pointer;
+              color: #909399;
           }
           .curent {
-            background-color: #468de3;;
+            background-color: #409eff;
+            color: #fff;
 					}
           span + span {
               margin-left: 8px;
@@ -433,6 +455,9 @@ export default {
 		font-size: 14px;
 		font-weight: bold;
 	}
+  /deep/ .is-group th {
+    border-right: 1px solid #b7c4e4;
+  }
 }
 
 

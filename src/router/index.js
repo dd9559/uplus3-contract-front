@@ -293,7 +293,7 @@ export default new Router({
         component: actualHarvestForms,
         meta: {
           root: true,
-          list: ["二手房", "业绩", "应收实收报表"]
+          list: ["二手房", "业绩", "应收结算报表"]
         }
       },
       // 业绩板块 end

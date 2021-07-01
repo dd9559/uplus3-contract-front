@@ -5,7 +5,7 @@
     </router-view>
     <div class="main" v-else>
       <div class="nav">
-        <img :src="getUser.brandPath+'?x-oss-process=style/b_w330_h330'" alt v-if="getUser.brandPath !== '-'" />
+        <img :src="getUser.brandPath+'?x-oss-process=style/b_w330_h330'" alt v-if="getUser && getUser.brandPath !== '-'" />
         <!-- <img :src="getUser.brandPath" alt v-else-if="isMingRui" /> -->
         <!-- <img src="./assets/img/logo.png" v-else /> -->
         <ul class="navbar" v-if="getUser && getUser.user">
