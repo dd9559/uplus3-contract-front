@@ -280,6 +280,7 @@
 				this.subDisable = false
 				this.getYzCode = false
 				clearInterval(this.timer);
+				clearInterval(this.countDown)
         this.$emit("handleDialogClose",this.clearList);
       },
 			// 获取银行列表
@@ -577,7 +578,8 @@
 								copyData = JSON.parse(JSON.stringify(res.data));
 
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
-						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
+						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
+						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = [];
@@ -643,7 +645,9 @@
 									})
 								})
 							}
+							
 							if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
+								console.log(data.status == 2, data.ocrRegnumComparisonResult == 1,data.ocrIdcardComparisonResult == 1,this.status == false);
 								clearInterval(this.timer);
 								this.$message({
 									type: 'warning',
@@ -655,6 +659,7 @@
 							}
 							return
 						} else if (!data.isSignContract) {
+							// console.log(data.status, data.ocrRegnumComparisonResult,data.ocrIdcardComparisonResult,this.status);
 							if (!this.status) {
 								this.titleIndex = 1
 								// this.signContract()
@@ -672,11 +677,10 @@
 							if(this.titleIndex == 1) {
 								this.sms = 2
 							}else {
-								console.log(this.getYzCode,99999996666);
-								// this.titleIndex = 2
-								// this.getYzCode = true
-								// return
+								this.titleIndex = 2
+								this.getYzCode = true
 							}
+							return
 						} 
 						
 						

@@ -1634,9 +1634,11 @@ export default {
       // if (session.query.dataType) {
       //   this.dataType = session.dataType  
       // }
+      // console.log(session.query.lrBeginDate);
+      // console.log(session.query.lrBeginDate);
       if (session.query.lrBeginDate) {
-        this.signDate[0] = session.query.lrBeginDate;
-        this.signDate[1] = session.query.lrEndDate;
+        this.inputDate[0] = session.query.lrBeginDate;
+        this.inputDate[1] = session.query.lrEndDate;
       }
       if (session.query.beginDate) {
         this.signDate[0] = session.query.beginDate;
@@ -2398,6 +2400,8 @@ export default {
         keyword: this.keyword,
       };
       param = Object.assign({}, param, this.contractForm);
+      console.log(this.dataType,9999);
+      return
       if(this.dataType == '0'){
         if (this.signDate) {
           if (this.signDate.length > 0) {
@@ -2406,8 +2410,8 @@ export default {
           }
         }
       }else if(this.dataType == '1'){
-        if (this.signDate) {
-          if (this.signDate.length > 0) {
+        if (this.inputDate) {
+          if (this.inputDate.length > 0) {
             param.lrBeginDate = this.signDate[0];
             param.lrEndDate = this.signDate[1];
           }
