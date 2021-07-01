@@ -86,7 +86,9 @@
 
     <!-- 数据列表 -->
     <div class="contract-list">
-      <!-- <p style="color:#666;margin-bottom:10px;">温馨提示：支付失败原因为“收款人户名和银行卡号信息不匹配”时，需要去公司设置里面重新修改此门店的银行账户信息</p> -->
+      <div class="title-box">
+        <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-dk-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+      </div>
       <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" border>
 
         <el-table-column label="分账门店" :formatter="nullFormatter" min-width="80">
@@ -262,6 +264,7 @@
             label: ''
           }, //支付状态
         },
+        ajaxParam: {},
         payData: {},
         isLook: false,
         title: '',
@@ -326,6 +329,10 @@
           'sign-ht-fz-pay':{
               name:'重新打款',
               state:false,
+          },
+          'sign-ht-dk-export':{
+              name:'重新打款',
+              state:false,
           }
         }
       }
@@ -343,6 +350,12 @@
     },
 
     methods:{
+      // 导出功能
+      getExcel() {
+          // this.queryFn();
+          let param = Object.assign({}, this.ajaxParam)
+          this.excelCreate('/input/transferListExcel', param)
+      },
       // 初始时间
       initialTimeFn() {
         let now = new Date(); //当前日期 
@@ -540,7 +553,7 @@
               let data = res.data;
               if (res.data.status === 200) {
                 this.tableData = data.data
-
+                this.ajaxParam = param
               }
 
 
@@ -954,6 +967,10 @@
   .contract-list {
       background-color: #fff;
       padding: 10px 12px 0;
+      .title-box {
+        display: flex;
+        justify-content: flex-end;
+      }
     .form-title-fl{
       font-size: 14px;
       color: #233241;
@@ -964,6 +981,7 @@
       }
     }
     .el-table{
+      margin-top: 10px;
       th{
         background-color: #EEF2FB;
         &:first-child{

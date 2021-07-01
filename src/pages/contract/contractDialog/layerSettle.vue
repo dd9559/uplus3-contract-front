@@ -84,7 +84,11 @@
                             <li v-for="(item,index) in uploadList" :key="item.index" @mouseover="moveIn(item.index+item.path)" @mouseout="moveOut(item.index+item.path)">
                                 <el-tooltip class="item" effect="dark" :content="item.name" placement="bottom">
                                     <div class="namePath" @click="previewPhoto(uploadList,index)">
-                                        <upload-cell :type="item.fileType"></upload-cell>
+                                        <img style="width:90px;height:62px"
+                                            :src="item.path|getSignImage(mainDataFiles)"
+                                            alt=""
+                                            v-if="isPictureFile(item.fileType)">
+                                        <upload-cell :type="item.fileType" v-else></upload-cell>
                                         <p>{{item.name}}</p>
                                     </div>
                                 </el-tooltip>
@@ -182,6 +186,7 @@ export default {
 
             //上传的协议
           uploadList: [],
+          mainDataFiles:[],
           isDelete:'',
         }
     },
@@ -198,7 +203,21 @@ export default {
     filters: {
        getDate(val) {
          return TOOL.timeFormat(val,false);
-       }
+       },
+       /**
+         * 过滤显示图片缩略图
+         * @param val后端返回的所有文件资源遍历的当前项
+         * @param list图片资源获取签名后的临时数组
+         */
+        getSignImage(val, list) {
+            if (list.length === 0) {
+                return "";
+            } else {
+                return list.find(item => {
+                    return item.includes(val);
+                });
+            }
+        }
     },
 
     methods: {
@@ -223,6 +242,16 @@ export default {
                 element.fileType = fileType;
             });
 			    this.uploadList=this.uploadList.concat(arr);
+                let preloadList = [];
+                arr.forEach((item, index) => {
+                    //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                    if (this.isPictureFile(item.fileType)) {
+                        preloadList.push(item.path);
+                    }
+                });
+                this.fileSign(preloadList, "preload").then(res => {
+                    this.mainDataFiles = this.mainDataFiles.concat(res);
+                });
        }, 
 
         //合同主体的删除
@@ -246,7 +275,6 @@ export default {
       },
 
       close(){
-        //   this.$emit('closeSettle')
           let param = {
               id: this.contId,
               direction: 2
@@ -256,7 +284,8 @@ export default {
             .then(res => {
                 if (res.data.status === 200) {
                 this.$message('已取消');
-                setTimeout(() => {                
+                setTimeout(() => {            
+                    this.uploadList = []    
                     this.$emit('closeSettle')
                 }, 1500); 
                 
@@ -269,6 +298,7 @@ export default {
       },
 
       closeDireact(){
+          this.uploadList = []
           this.$emit('closeSettle')
       },
 

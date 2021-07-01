@@ -14,7 +14,7 @@
           </el-tooltip>
         </el-form-item>
 
-        <el-form-item label="签约日期" prop="dateMo" class="mr">
+        <el-form-item label="签约日期" prop="dateMo" >
           <el-date-picker
             v-model="propForm.dateMo"
             class="w330"
@@ -26,8 +26,20 @@
           ></el-date-picker>
         </el-form-item>
 
+        <el-form-item label="录入日期" prop="inputData" >
+          <el-date-picker
+            v-model="propForm.inputData"
+            class="w330"
+            type="daterange"
+            range-separator="至"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          ></el-date-picker>
+        </el-form-item>
+
         <!-- 部门 -->
-        <el-form-item label="部门" style="margin-right:0px;">
+        <el-form-item label="部门">
           <select-tree
             :data="DepList"
             :init="propForm.department"
@@ -396,9 +408,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="signSort" label="签约时间" sortable="custom" min-width="90">
+          <el-table-column label="签约时间" min-width="90">
             <template slot-scope="scope">
               <p>{{scope.row.signDate|formatTime(false)}}</p>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="录入时间" min-width="90">
+            <template slot-scope="scope">
+              <p>{{scope.row.enterDate|formatTime(false)}}</p>
             </template>
           </el-table-column>
 
@@ -827,6 +845,7 @@ export default {
         achType: "", //业绩类型
         appealType: "", //申诉状态
         dateMo: "",
+        inputData:"",
         search: "",
         joinMethods: "", //合作方式
         recordType: "", //签约方式2.3.1新加
@@ -1109,7 +1128,7 @@ export default {
       };
       if (this.power["sign-yj-rev-appeal"].state) {
         this.$ajax
-          .postJSON("/api/appeal/saveAppealInfo", param, 2)
+          .postJSON("/api/appeal/saveAppealInfo", param)
           .then(res => {
             if (res.status == 200) {
               this.isSS = false;
@@ -1262,7 +1281,9 @@ export default {
         {},
         this.ajaxParam,
         { strStartTime: this.ajaxParam.startTime },
-        { strEndTIme: this.ajaxParam.endTime }
+        { strEndTIme: this.ajaxParam.endTime },
+        { enterStartTime: this.ajaxParam.enterStartTime },
+        { enterEndTime: this.ajaxParam.enterEndTime },
       );
       this.excelCreate("/input/achievementExcel", param);
     },
@@ -1310,50 +1331,33 @@ export default {
     },
     //查询操作
     queryFn(typeshow) {
-      if (this.propForm.dateMo) {
-        this.ajaxParam = {
-          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-          dealAgentId: this.propForm.dealAgentId, //员工
-          contractType:
-            this.propForm.contractType.length === 0
-              ? ""
-              : this.propForm.contractType.join(","), //合同类型
-          distributionType: this.propForm.divideType, //分成类型
-          achievementStatus: this.propForm.achType, //业绩类型
-          appealStatus: this.propForm.appealType,
-          startTime: this.propForm.dateMo[0], //开始时间
-          endTime: this.propForm.dateMo[1], //结束时间
-          keyword: this.propForm.search, //关键字
-          pageNum: this.currentPage,
-          department: this.propForm.department,
-          pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods,
-          recordType: this.propForm.recordType,
-          receiveAmountState: this.propForm.receiveAmountState,
-          uploadId: this.propForm.uploadId,
-          ...this.sortChange
-        };
-      } else {
-        this.ajaxParam = {
-          dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
-          dealAgentId: this.propForm.dealAgentId, //员工
-          contractType:
-            this.propForm.contractType.length === 0
-              ? ""
-              : this.propForm.contractType.join(","), //合同类型
-          distributionType: this.propForm.divideType, //分成类型
-          achievementStatus: this.propForm.achType, //业绩类型
-          appealStatus: this.propForm.appealType,
-          keyword: this.propForm.search, //关键字
-          department: this.propForm.department,
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
-          joinMethods: this.propForm.joinMethods,
-          recordType: this.propForm.recordType,
-          receiveAmountState: this.propForm.receiveAmountState,
-          uploadId: this.propForm.uploadId,
-          ...this.sortChange
-        };
+      this.ajaxParam = {
+        dealAgentStoreId: this.propForm.dealAgentStoreId, //部门
+        dealAgentId: this.propForm.dealAgentId, //员工
+        contractType:
+          this.propForm.contractType.length === 0
+            ? ""
+            : this.propForm.contractType.join(","), //合同类型
+        distributionType: this.propForm.divideType, //分成类型
+        achievementStatus: this.propForm.achType, //业绩类型
+        appealStatus: this.propForm.appealType,
+        keyword: this.propForm.search, //关键字
+        department: this.propForm.department,
+        pageNum: this.currentPage,
+        pageSize: this.pageSize,
+        joinMethods: this.propForm.joinMethods,
+        recordType: this.propForm.recordType,
+        receiveAmountState: this.propForm.receiveAmountState,
+        uploadId: this.propForm.uploadId,
+        ...this.sortChange
+      };
+      if(this.propForm.inputData) {
+        this.ajaxParam.enterStartTime = this.propForm.inputData[0]
+        this.ajaxParam.enterEndTime = this.propForm.inputData[1]
+      }
+      if(this.propForm.dateMo) {
+        this.ajaxParam.startTime = this.propForm.dateMo[0]
+        this.ajaxParam.endTime = this.propForm.dateMo[1]
       }
       //新加
       Object.assign(this.ajaxParam, {
@@ -1395,6 +1399,7 @@ export default {
         divideType: "", //分成类型
         achType: "", //业绩类型
         dateMo: "",
+        inputData:"",
         search: "",
         joinMethods: "",
         recordType: "",

@@ -67,8 +67,25 @@
               <span>{{scope.row.deptName + ' ' + scope.row.createByName}}</span>
             </template>
           </el-table-column>
+          <!-- <el-table-column label="开通POS收款">
+            <template slot-scope="scope">
+              <el-popover trigger="hover" placement="top" v-if="scope.row.status == 2">
+                <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
+                  {{scope.row.reason}}
+                </div>
+                <div slot="reference" class="name-wrapper">开通待完成</div>
+              </el-popover>
+              <span v-else>{{!scope.row.status ? '未开通' : '已开通'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="开通时间">
+            <template slot-scope="scope">
+              <span>{{(scope.row.status === 1 ? scope.row.posTime : '')|formatDate(2)}}</span>
+            </template>
+          </el-table-column> -->
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
+              <!-- <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button> -->
               <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
@@ -192,16 +209,27 @@
             <span>{{companyForm.name}}</span>
           </div>
           <el-table :data="searchDepTableData" v-loadmore="lazyLoad" style="width: 100%" border :max-height="445">
-          <el-table-column label="企业管理费" prop="platformFeeRatio" width="90">
+          <el-table-column label="企业管理费" prop="platformFeeRatio">
             <template slot-scope="scope">
               <span>{{scope.row.platformFeeRatio}}%</span>
             </template>
           </el-table-column>
-          <el-table-column label="门店名称" prop="name" width="300">
-          </el-table-column>
-          <el-table-column label="操作" width="300">
+          <el-table-column label="门店名称" prop="name"></el-table-column>
+          <!-- <el-table-column label="商户号" prop="name">
             <template slot-scope="scope">
-              <el-button type="text" @click="clickOpen(scope.row)" size="medium" v-if="power['sign-set-gs'].state">解绑</el-button>
+              <span>{{scope.row.vspCusid || '-'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="终端号" prop="name">
+            <template slot-scope="scope">
+              <span>{{scope.row.vspTermid || '-'}}</span>
+            </template>
+          </el-table-column> -->
+          <el-table-column label="操作" width="170">
+            <template slot-scope="scope">
+              <el-button type="text" @click="clickOpen(scope.row,'company',scope.$index)" size="medium" v-if="power['sign-set-gs'].state">解绑公司</el-button>
+              <!-- <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
+              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -210,15 +238,27 @@
       <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
       </el-dialog>
       <el-dialog
-      title="解除绑定"
+      :title="openSlot === 'company' ? '解除绑定' : '绑定POS'"
       :closeOnClickModal="$tool.closeOnClickModal"
       :visible.sync="dialogRelieveVisible"
       width="460px"
       class="relieve-dialog">
-      <div>确定是否解除与<span class="text">{{companyForm.name}}</span>的关系</div>
-      <div slot="footer">
-        <el-button type="primary" round @click="submitRelieve">确认</el-button>
-      </div>
+        <template v-if="openSlot === 'company'">
+          <div :class="openSlot">确定是否解除与<span class="text">{{companyForm.name}}</span>的关系</div>
+        </template>
+        <template v-if="openSlot === 'vsp'">
+          <div class="vsp-item">
+            <label>输入商户号: </label>
+            <el-input size="small" class="vsp-input" maxlength="20" v-model.trim="vspInfo.vspCusid" @input="inputOnly(0,'vspCusid')"></el-input>
+          </div>
+          <div class="vsp-item">
+            <label>输入POS终端编号: </label>
+            <el-input size="small" class="vsp-input" maxlength="20" v-model.trim="vspInfo.vspTermid" @input="inputOnly(0,'vspTermid')"></el-input>
+          </div>
+        </template>
+        <div slot="footer" :class="openSlot">
+          <el-button type="primary" round @click="submitRelieve">确认</el-button>
+        </div>
       </el-dialog>
       <el-dialog
       title="绑定门店"
@@ -307,6 +347,9 @@
       :destroy-on-close="true"
       width="740px"
       class="log-dialog">
+        <el-button class="f_r" round type="primary" size="medium" v-if="power['sign-set-bl-tx-info'].state" @click="getExcel"
+                   style="padding:9px 15px;min-width: 80px;margin: 8px;">导出
+        </el-button>
         <el-table :data="withdrawRecordData" v-loadmore="withdrawLazyLoad" style="width: 100%" border :max-height="445">
           <el-table-column label="操作人">
             <template slot-scope="scope">
@@ -329,6 +372,10 @@
           </el-table-column>
         </el-table>
       </el-dialog>
+      <!-- 开通pos收款 -->
+      <open-pos-dialog :posInfo='posInfo' :posDialog='posDialog' @handleDialogClose='handleCloses' @bindingComplete ='queryFn'>
+        
+      </open-pos-dialog>
     </div>
   </div>
 </template>
@@ -336,6 +383,7 @@
 <script>
   import {MIXINS} from "@/assets/js/mixins";
   import { mapMutations } from "vuex";
+  // import openPosDialog from './conponent/openPosDialog';
   let checkPhone = function (str) {
     return /^1[3456789]\d{9}$/.test(str)
   }
@@ -359,6 +407,9 @@
   export default {
     name: "company",
     mixins: [MIXINS],
+    components:{
+      openPosDialog:() => import('./conponent/openPosDialog')
+    },
     data() {
       return {
         cityId: "",
@@ -379,6 +430,12 @@
           platformFeeRatio: null,
         },
         dialogRelieveVisible: false,
+        openSlot: 'company',
+        vspInfo: {
+          vspCusid: '',
+          vspTermid: ''
+        },
+        vspIndex: '',
         dialogRDepisible: false,
         dialogwithdraw: false,
         dialogSubmitWithdraw: false,
@@ -463,11 +520,18 @@
           'sign-set-bl-tx-info': {
             state: false,
             name: '提现记录'
+          },
+          'sign-set-bl-openPos': {
+            state: false,
+            name: '开通pos收款'
           }
         },
         bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
+        openpos:false,
+        posInfo:{},
+        posDialog:false
       }
     },
     mounted() {
@@ -519,6 +583,11 @@
       }
     },
     methods: {
+      // 导出功能
+      getExcel() {
+          if (this.withdrawRecordData.length === 0) return this.$message('没有可导出的数据!')
+          this.excelCreate('/input/cashListExcel', {companyId:this.companyId})
+      },
       accSub(arg1,arg2){
         var r1,r2,m,n;
         try{
@@ -717,28 +786,51 @@
             this.$message({message:error})
         })
       },
-      clickOpen(data) {
+      clickOpen(data,slot,index) {
+        this.openSlot = slot
+        this.vspInfo.vspCusid = '' 
+        this.vspInfo.vspTermid = ''
+        this.vspIndex = index
         this.dialogRelieveVisible = true
         this.relieveData = data
       },
       submitRelieve () {
-        this.$ajax.put(`/api/enterprise/dept_unbind`,{
-          companyId: this.relieveData.entId,
-          storeId: this.relieveData.depId
-        }).then(res => {
+        if (this.openSlot === 'vsp' && (this.vspInfo.vspCusid === '' || this.vspInfo.vspTermid === '')) {
+          return this.$message('请填写完整！')
+        }
+        let params = this.openSlot === 'company' ? {
+              companyId: this.relieveData.entId,
+              storeId: this.relieveData.depId
+            } : {
+              depId: this.relieveData.depId,
+              vspCusid: this.vspInfo.vspCusid,
+              vspTermid: this.vspInfo.vspTermid
+            },
+            url = this.openSlot === 'company' ? '/api/enterprise/dept_unbind' : '/api/enterprise_pos/bind',
+            method = this.openSlot === 'company' ? 'put' : 'postJSON';
+        this.$ajax[method](url,params).then(res => {
           res = res.data
           if(res.status === 200) {
-            this.searchDepTableData = this.searchDepTableData.filter(item => {
-              return item.depId !== this.relieveData.depId
-            })
-            this.dialogRelieveVisible = false
-            if (this.searchDepTableData.length === 0) {
-              this.deptName = ''
+            if (this.openSlot === 'company') {
+              this.searchDepTableData = this.searchDepTableData.filter(item => {
+                return item.depId !== this.relieveData.depId
+              })
+              if (this.searchDepTableData.length === 0) {
+                this.deptName = ''
+              }
+            } else {
+              this.$set(this.searchDepTableData,this.vspIndex,Object.assign({},this.searchDepTableData[this.vspIndex],{
+                vspCusid: this.vspInfo.vspCusid,
+                vspTermid: this.vspInfo.vspTermid
+              }))
             }
+            this.dialogRelieveVisible = false
+            
             this.$message({type:'success',message: res.message})
           }
         }).catch(error =>{
-          this.$message(res.message)
+          this.dialogRelieveVisible = false
+          this.$message(error)
         })
       },
       clickTitle(index) {
@@ -912,6 +1004,15 @@
           this.$message(error)
         })
       },
+      handleCloses() {
+        this.posDialog = false
+      },
+      //开通POS收款
+      openPosCollection(data) {
+        console.log(data);
+        this.posInfo = data
+        this.posDialog = true
+      },
       //点击查看和编辑
       viewEditCompany(row, type) {
         if(type === 'init') {
@@ -1038,6 +1139,8 @@
               val: this.money,
               num: 2
           });
+        } else if (['vspCusid','vspTermid'].includes(type)) {
+          this.vspInfo[type] = this.$tool.textInput(this.vspInfo[type],2)
         }
       },
       cutNumber(val) {
@@ -1572,6 +1675,9 @@
       td {
         border: none!important;
       }
+      .is-bind {
+        color: rgb(114, 108, 108)
+      }
     }
   }
   
@@ -1589,22 +1695,41 @@
     padding: 0 3px;
     color: #478DE3;
   }
+  .vsp-item {
+    display: flex;
+    line-height: 20px;
+    .vsp-input {
+      width: 150px;
+    }
+    &:first-child {
+      margin: 20px 0;
+    }
+    label {
+      width: 150px;
+      padding-right: 8px;
+      line-height: 2.2;
+      text-align: right;
+    }
+  }
   /deep/ .el-dialog__header {
     border-radius: 8px 8px 0 0;
     font-weight: bold;
   }
   /deep/ .el-dialog__body {
-    height: 164px;
-    line-height: 164px;
-    text-align: center;
+    .company {
+      height: 164px;
+      line-height: 164px;
+      text-align: center;
+    }
     border-radius: 0 0 8px 8px;
-
   }
   /deep/ .el-dialog__close {
     font-weight: bold;
   }
   /deep/ .el-dialog__footer {
-    text-align: center;
+    .company {
+      text-align: center;
+    }
   }
 }
 .dep-dialog {

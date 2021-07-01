@@ -50,6 +50,10 @@
               >相关人员</el-button>
               <el-button type="primary" @click="addMansHouse">添加分配人</el-button>
               <el-button type="primary" @click="houseRecode">房源价格变更记录</el-button>
+              <el-button
+                type="primary"
+                @click="ammanger(1)"
+              >{{$route.query.version=='0'?'AM管理关系':'师徒管理关系'}}</el-button>
             </div>
           </div>
 
@@ -494,7 +498,7 @@
               <el-button type="primary" @click="addMansClient">添加分配人</el-button>
               <el-button
                 type="primary"
-                @click="ammanger"
+                @click="ammanger(2)"
               >{{$route.query.version=='0'?'AM管理关系':'师徒管理关系'}}</el-button>
             </div>
           </div>
@@ -1948,9 +1952,10 @@ export default {
         }
       }
     },
-    ammanger() {
+    ammanger(type) {
       let param = {
-        contId: this.contractId2
+        contId: this.contractId2,
+        type
       };
       this.AMShow = true;
       this.$ajax.get("/api/achievement/getEmpAMById", param).then(res => {
@@ -3923,6 +3928,11 @@ export default {
             border-radius: 5px;
           }
           button:nth-of-type(3) {
+            // width: 105px;
+            height: 36px;
+            border-radius: 5px;
+          }
+           button:nth-of-type(4) {
             // width: 105px;
             height: 36px;
             border-radius: 5px;

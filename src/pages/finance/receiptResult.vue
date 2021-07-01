@@ -58,14 +58,14 @@
           @click="toBill">开票</el-button>
         <!--<el-button round @click="goBack('contractList')" v-if="power['sign-ht-info-query'].state">返回合同列表</el-button>-->
         <el-button round @click="goBack('Bill')" v-if="power['sign-cw-debt-query'].state">返回收付款列表</el-button>
-        <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span>
+        <!-- <span class="btn-question" @click="answer" v-if="type===1">支付遇到问题？</span> 2.6.4版本去除 -->
       </p>
     </div>
-    <el-dialog :closeOnClickModal="$tool.closeOnClickModal" title="提示" :visible.sync="confirm" width="460px"
+    <!-- <el-dialog :closeOnClickModal="$tool.closeOnClickModal" title="提示" :visible.sync="confirm" width="460px"
       class="dialog-answer">
       <p>支付遇到问题？您可以拨打以下客服电话处理咨询：</p>
       <h4>400 112 5883</h4>
-    </el-dialog>
+    </el-dialog> -->
     <layer-invoice ref="layerInvoice" @emitPaperSet="emitPaperSetFn"></layer-invoice>
     <checkPerson :show="checkPerson.state" :bizCode="checkPerson.code" :flowType="checkPerson.flowType"
       @close="checkPerson.state=false" @submit="checkPerson.state=false" v-if="checkPerson.state"></checkPerson>
@@ -89,7 +89,7 @@ export default {
       type: 1, //1=创建 2=录入
       edit: false, //是否为修改结果页
       result: {},
-      confirm: false,
+      // confirm: false,
       checkPerson: {
         state: false,
         type: "set",
@@ -202,9 +202,9 @@ export default {
         }*/
       this.$router.push(param);
     },
-    answer: function () {
-      this.confirm = true;
-    },
+    // answer: function () {
+    //   this.confirm = true;
+    // },
     toBill: function () {
       this.$ajax
         .get("/api/payInfo/checkBill", { payCode: this.result.payCode })

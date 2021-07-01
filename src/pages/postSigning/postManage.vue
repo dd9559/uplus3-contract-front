@@ -2456,6 +2456,7 @@ export default {
           res = res.data;
           if (res.status === 200) {
             this.rules.steps = res.data;
+            this.rulesSteps = res.data;
           }
         })
         .catch(err => {
