@@ -225,9 +225,9 @@
 		},
 		mounted() {
 			// 银行列表
-			// if(this.power['sign-set-bl-openPos'].state) {
-			// 	this.getBanks()
-			// }
+			if(this.power['sign-set-bl-openPos'].state) {
+				this.getBanks()
+			}
 		},
     computed:{
     },
@@ -242,7 +242,10 @@
 			},
 			posInfo:{
 				handler(newName,oldName) {
+					// console.log(newName,888);
+					this.dataInfo = {}
 					this.dataInfo = Object.assign({},this.dataInfo,JSON.parse(JSON.stringify(newName)))
+					console.log(this.dataInfo,999999);
 				},
 				deep: true
 			},
@@ -259,7 +262,7 @@
 			dialogOpen() {
 				this.status = false
 				this.enterprise()
-				console.log(this.dataInfo);
+				// console.log(this.dataInfo);
 			},
 			clearList() {
 				this.companyForm = {}
@@ -268,6 +271,7 @@
 				if(this.titleIndex == 0) {
 					this.$refs.form.resetFields()
 				}
+				// this.dataInfo = {}
 				this.idCard = []
 				this.theotherside = []
 				this.businessLicense = []
