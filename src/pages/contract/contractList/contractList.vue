@@ -1634,6 +1634,8 @@ export default {
       // if (session.query.dataType) {
       //   this.dataType = session.dataType  
       // }
+      // console.log(session.query.lrBeginDate);
+      // console.log(session.query.lrBeginDate);
       if (session.query.lrBeginDate) {
         this.inputDate[0] = session.query.lrBeginDate;
         this.inputDate[1] = session.query.lrEndDate;
