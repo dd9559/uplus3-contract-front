@@ -222,9 +222,9 @@
 		},
 		mounted() {
 			// 银行列表
-			if(this.power['sign-set-bl-openPos'].state) {
-				this.getBanks()
-			}
+			// if(this.power['sign-set-bl-openPos'].state) {
+			// 	this.getBanks()
+			// }
 		},
     computed:{
     },

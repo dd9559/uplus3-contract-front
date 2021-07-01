@@ -21,7 +21,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
       return{
         // src:'KF-租赁合同.html'
         // src:'KF-意向.html'
-        src:'兰州-买卖居间--第八次修订后.html'
+        src:'JZ_荆州_居间.html'
         // src:'MR-委托.html'
       }
     },

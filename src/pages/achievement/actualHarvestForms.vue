@@ -152,7 +152,7 @@ export default {
       tabCurrent: 1,
       searchTime: null,
       contType: 3,
-      pageSize: 6,
+      pageSize: 50,
       empName: "",
       pageNum: 1,
       total: 0,

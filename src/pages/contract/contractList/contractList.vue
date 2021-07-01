@@ -1635,8 +1635,8 @@ export default {
       //   this.dataType = session.dataType  
       // }
       if (session.query.lrBeginDate) {
-        this.signDate[0] = session.query.lrBeginDate;
-        this.signDate[1] = session.query.lrEndDate;
+        this.inputDate[0] = session.query.lrBeginDate;
+        this.inputDate[1] = session.query.lrEndDate;
       }
       if (session.query.beginDate) {
         this.signDate[0] = session.query.beginDate;
@@ -2398,21 +2398,35 @@ export default {
         keyword: this.keyword,
       };
       param = Object.assign({}, param, this.contractForm);
-      if(this.dataType == '0'){
-        if (this.signDate) {
-          if (this.signDate.length > 0) {
-            param.beginDate = this.signDate[0];
-            param.endDate = this.signDate[1];
-          }
+//       if(this.dataType == '0'){
+//         if (this.signDate) {
+//           if (this.signDate.length > 0) {
+//             param.beginDate = this.signDate[0];
+//             param.endDate = this.signDate[1];
+//           }
+//         }
+//       }else if(this.dataType == '1'){
+//         if (this.signDate) {
+//           if (this.signDate.length > 0) {
+//             param.lrBeginDate = this.signDate[0];
+//             param.lrEndDate = this.signDate[1];
+//           }
+//         }
+//       }
+
+      if (this.signDate) {
+        if (this.signDate.length > 0) {
+          param.beginDate = this.signDate[0];
+          param.endDate = this.signDate[1];
         }
-      }else if(this.dataType == '1'){
-        if (this.signDate) {
-          if (this.signDate.length > 0) {
-            param.lrBeginDate = this.signDate[0];
-            param.lrEndDate = this.signDate[1];
-          }
+      }
+      if (this.inputDate) {
+        if (this.inputDate.length > 0) {
+          param.lrBeginDate = this.inputDate[0];
+          param.lrEndDate = this.inputDate[1];
         }
-      }
+      }
+
       if (
         this.contractForm.contTypes &&
         this.contractForm.contTypes.length > 0

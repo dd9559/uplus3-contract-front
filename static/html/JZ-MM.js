@@ -1,5 +1,35 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 let sub = {
+  'info_val104': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val104]') ? {'val104': null} : null
+    }
+  },
+  'info_val105': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val101]').innerHTML !== '' ? {'val105': null} : null
+    }
+  },
+  'info_val106': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val106]') ? {'val106': null} : null
+    }
+  },
+  'info_val115': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val115]') ? {'val115': null} : null
+    }
+  },
+  'info_val116': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val112]').innerHTML !== '' ? {'val116': null} : null
+    }
+  },
+  'info_val117': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val117]') ? {'val117': null} : null
+    }
+  },
   // "checkbox_check1": {
   //   stateful: function (index) {
   //     return [0,1].includes(index) ? {"val4": null}:''
@@ -13,7 +43,12 @@ let sub = {
   // "checkbox_check4": null, // 新添加
   "checkbox_check4": {
     stateful: function (index) {
-      return index === 3 ? {"val555":null} : null
+      console.log(document.querySelectorAll(`*[name=check4]`).length);
+      if (document.querySelectorAll(`*[name=check4]`).length > 2) {
+        return index === 3 ? {"val555":null} : null
+      } else {
+        return null
+      }
     }
   },
   "checkbox_check5": {
@@ -363,34 +398,34 @@ if (mainBtn) {
 }
 
 //基础数据赋值
-let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-// let msg = {
-//   code: "S0001191107007",
-//   companyNames: ["金银湖三级门店哦"],
-//   guestCardType: "军官证",
-//   guestCardTypes: "",
-//   guestID: "132",
-//   guestIDs: "1212121212",
-//   guestName: "然爱迪生",
-//   guestNames: "",
-//   guestTel: "13011111111",
-//   guestTels: "",
-//   id: 3354,
-//   isentrust: 1,
-//   ownerCardType: "营业执照",
-//   ownerCardTypes: "",
-//   ownerID: "123",
-//   ownerIDs: "12121212121",
-//   ownerName: "熊先",
-//   ownerNames: "",
-//   ownerTel: "18888888888",
-//   ownerTels: "",
-//   signDate: 1592465819508,
-//   propertyAddr: "a市b区c",
-//   singleCompany: "",
-//   dealPrice: 12121.12,
-//   dealPriceUpper: "壹万叁仟捌佰肆拾陆"
-// }
+// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+let msg = {
+  code: "S0001191107007",
+  companyNames: ["金银湖三级门店哦"],
+  guestCardType: "军官证",
+  guestCardTypes: "",
+  guestID: "132",
+  guestIDs: "1212121212",
+  guestName: "然爱迪生",
+  guestNames: "",
+  guestTel: "13011111111",
+  guestTels: "",
+  id: 3354,
+  isentrust: 1,
+  ownerCardType: "营业执照",
+  ownerCardTypes: "",
+  ownerID: "123",
+  ownerIDs: "12121212121",
+  ownerName: "熊先",
+  ownerNames: "",
+  ownerTel: "18888888888",
+  ownerTels: "",
+  signDate: 1592465819508,
+  propertyAddr: "a市b区c",
+  singleCompany: "",
+  dealPrice: 12121.12,
+  dealPriceUpper: "壹万叁仟捌佰肆拾陆"
+}
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   if (onlyReadDom.length > 0) {
