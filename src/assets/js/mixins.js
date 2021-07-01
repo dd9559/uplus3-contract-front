@@ -478,7 +478,7 @@ const MIXINS = {
         // }
       }).catch(error => {
         this.$message({
-          message: '导出失败！'
+          message: '暂无可导出数据！'
         })
         this.HQloadingList = false
       })

@@ -67,7 +67,7 @@
               <span>{{scope.row.deptName + ' ' + scope.row.createByName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="开通POS收款">
+          <!-- <el-table-column label="开通POS收款">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top" v-if="scope.row.status == 2">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
@@ -82,10 +82,10 @@
             <template slot-scope="scope">
               <span>{{(scope.row.status === 1 ? scope.row.posTime : '')|formatDate(2)}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
-              <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button>
+              <!-- <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button> -->
               <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
@@ -215,7 +215,7 @@
             </template>
           </el-table-column>
           <el-table-column label="门店名称" prop="name"></el-table-column>
-          <el-table-column label="商户号" prop="name">
+          <!-- <el-table-column label="商户号" prop="name">
             <template slot-scope="scope">
               <span>{{scope.row.vspCusid || '-'}}</span>
             </template>
@@ -224,12 +224,12 @@
             <template slot-scope="scope">
               <span>{{scope.row.vspTermid || '-'}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="操作" width="170">
             <template slot-scope="scope">
               <el-button type="text" @click="clickOpen(scope.row,'company',scope.$index)" size="medium" v-if="power['sign-set-gs'].state">解绑公司</el-button>
-              <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
-              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button>
+              <!-- <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
+              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -980,7 +980,7 @@
           toBank: this.withdrawData.toBank.toString(),
           bankType: this.withdrawData.bankType,
           fee: accMul(this.withdrawData.fee,100),
-          amount: accMul(this.money,100),
+          amount: accMul(this.accSub(this.withdrawData.fee,this.money),100)
         }
         this.$ajax.postJSON('/api/enterprise/cash',param).then(res => {
           res = res.data
