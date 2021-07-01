@@ -109,7 +109,9 @@
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
 				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
-				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px">{{getCode}}</el-button>
+				<el-button size="mini" type="primary" @click="yzCode" style="min-width:80px" v-if="getYzCode">获取验证码</el-button>
+				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px" v-else>{{getCode}}</el-button>
+				
 			</div>
 			<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;" v-if="titleIndex == 2">当前状态：绑定中</span>
 			<div slot="footer" v-if="titleIndex == 2">
@@ -154,6 +156,7 @@
 				fourthStoreNoEdit:false,
 				firstDisable: false,
 				subDisable:false,
+				getYzCode:false,
 				dataInfo:{
 					bankAccountName:'',
 					bankBranchName:'',
@@ -181,7 +184,7 @@
 				titleIndex:0,
 				sms:1,
 				inputCode:'',
-				getCode:'获取验证码',
+				getCode:'60秒',
 				disable:false,
 				next:false,
 				rulesForm: {
@@ -239,13 +242,12 @@
 			},
 			posInfo:{
 				handler(newName,oldName) {
-					this.dataInfo = JSON.parse(JSON.stringify(newName))
+					this.dataInfo = Object.assign({},this.dataInfo,JSON.parse(JSON.stringify(newName)))
 				},
 				deep: true
 			},
 			titleIndex:{
 				handler(newName,oldName) {
-					console.log(newName);
 					if(newName == 0) {
 					}
 				},
@@ -257,6 +259,7 @@
 			dialogOpen() {
 				this.status = false
 				this.enterprise()
+				console.log(this.dataInfo);
 			},
 			clearList() {
 				this.companyForm = {}
@@ -275,6 +278,7 @@
 				this.sms = 1
 				this.next = false
 				this.subDisable = false
+				this.getYzCode = false
 				clearInterval(this.timer);
         this.$emit("handleDialogClose",this.clearList);
       },
@@ -294,21 +298,16 @@
 				this.branchStr = JSON.parse(val).bankName
 				this.branchPage = 1
 				this.bankBranch = []
-				this.dataInfo.bankBranchName = ''
-				this.dataInfo.bankBranchCode = ''
+				this.$set(this.dataInfo,'bankBranchName','')
+				this.$set(this.dataInfo,'bankBranchCode','')
 				this.branchStr = val
 				this.getBankBranch(JSON.parse(val).bankName)
 			},
 			bankBranchs(val) {
-				console.log(val);
-				// console.log(val);
 				this.$nextTick(()=>{
 					this.$set(this.dataInfo,'bankBranchName',JSON.parse(val).branchName)
 				})
-				
-				// this.dataInfo.bankBranchName = JSON.parse(val).branchName
-				this.dataInfo.bankBranchCode = JSON.parse(val).branchCode
-				console.log(this.dataInfo.bankBranchName);
+				this.$set(this.dataInfo,'bankBranchCode',JSON.parse(val).branchCode)
 			},
 			bankBranchList(val) {
 				console.log(val.length);
@@ -418,15 +417,13 @@
 			},
 			//倒计时
 			countDowns() {
-				console.log(123);
 				this.disable = true
 				this.getCode = 60
-				this.yzCode()
 				this.countDown = setInterval(()=>{
 					this.getCode--
 					if(this.getCode == 0) {
+						this.getYzCode = true
 						clearInterval(this.countDown)
-						this.getCode = '获取验证码'
 						this.disable = false
 					}
 				},1000)
@@ -441,6 +438,8 @@
 					res = res.data
 					if(res.status == 200) {
 						this.$message.success(res.message)
+						this.getYzCode = false
+						this.countDowns()
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -448,16 +447,21 @@
 			},
 			//确认短信
 			codeConfirm() {
+				if(!this.inputCode) {
+					this.$message.error('验证码不能为空！')
+					return
+				}
 				let params = {
 					companyId:this.dataInfo.id,
-					lepPhone:'13986469852',
-					checkCode:this.inputCode
+					lepPhone:this.dataInfo.lepPhone,
+					checkCode:Number(this.inputCode)
 				}
 				this.$ajax.postJSON('/api/enterprise_pos/bindPhone',params).then(res => {
 					res= res.data
 					if(res.status == 200) {
 						this.$message.success(res.message)
 						this.handleClose()
+						this.$emit('bindingComplete',true)
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -519,8 +523,6 @@
 					lepCardBack:this.theotherside,
 					licenseSign:this.businessLicense
 				}
-				console.log(params);
-				return
 				// let params = {
 				// 	companyId:this.dataInfo.id,
 				// 	name: "武汉阿克涅网络科技有限公司",
@@ -664,19 +666,17 @@
 								if(this.titleIndex == 0 && this.nexts) {
 									clearInterval(this.next)
 								}
-								// this.$message({
-								// 	type:'success',
-								// 	message:'信息审核通过！'
-								// })
-								
 							}
-							
 							return
 						} else if (!data.isPhoneChecked) {
-							this.titleIndex = 2
-							this.sms = 2
-							clearInterval(this.timer);
-							return
+							if(this.titleIndex == 1) {
+								this.sms = 2
+							}else {
+								console.log(this.getYzCode,99999996666);
+								// this.titleIndex = 2
+								// this.getYzCode = true
+								// return
+							}
 						} 
 						
 						
@@ -791,6 +791,8 @@
 			},
 			smsNext() {
 				this.titleIndex = 2
+				this.yzCode()
+				clearInterval(this.timer);
 			}
 		},
 		beforeDestroy() {

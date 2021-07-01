@@ -373,7 +373,7 @@
         </el-table>
       </el-dialog>
       <!-- 开通pos收款 -->
-      <open-pos-dialog :posInfo='posInfo' :posDialog='posDialog' @handleDialogClose='handleCloses'>
+      <open-pos-dialog :posInfo='posInfo' :posDialog='posDialog' @handleDialogClose='handleCloses' @bindingComplete ='queryFn'>
         
       </open-pos-dialog>
     </div>
