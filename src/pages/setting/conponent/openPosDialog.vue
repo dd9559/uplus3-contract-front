@@ -102,8 +102,9 @@
 				<span v-if="sms == 1">当前状态：签约中</span>
 				<span v-if="sms == 2">当前状态：签约完成</span>
 			</div>
-			<div slot="footer" v-if="titleIndex == 1">
-        <el-button @click="signContract" type="primary" round v-if="sms == 1">补发签约短信</el-button>
+			<div class="contract" slot="footer" v-if="titleIndex == 1">
+        <el-button @click="signContract" type="primary" round v-if="sms == 1 && signContracts">补发签约短信</el-button>
+				<el-button type="primary" :class="disable ? 'contract-after-class' : ''" :disabled="disable"  @click="countDowns" round v-if="!signContracts && sms == 1">{{getCode}}</el-button>
 				<el-button @click="smsNext" type="primary" round v-if="sms == 2">下一步</el-button>
       </div>
 			<div class="inputCode" v-if="titleIndex == 2">
@@ -111,7 +112,6 @@
 				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
 				<el-button size="mini" type="primary" @click="yzCode" style="min-width:80px" v-if="getYzCode">获取验证码</el-button>
 				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px" v-else>{{getCode}}</el-button>
-				
 			</div>
 			<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;" v-if="titleIndex == 2">当前状态：绑定中</span>
 			<div slot="footer" v-if="titleIndex == 2">
@@ -157,6 +157,7 @@
 				firstDisable: false,
 				subDisable:false,
 				getYzCode:false,
+				signContracts:true,
 				dataInfo:{
 					bankAccountName:'',
 					bankBranchName:'',
@@ -280,6 +281,7 @@
 				this.titleIndex = 0
 				this.currentState = '未提交'
 				this.sms = 1
+				this.signContracts = true
 				this.next = false
 				this.subDisable = false
 				this.getYzCode = false
@@ -412,6 +414,7 @@
 						clearInterval(this.timer);
 						// this.signContractFlag = true
 						this.$message.success(res.message)
+						this.countDowns()
 						this.timer = setInterval(() =>{
 							this.enterprise()
 						},5000)
@@ -421,17 +424,31 @@
         })
 			},
 			//倒计时
-			countDowns() {
-				this.disable = true
-				this.getCode = 60
-				this.countDown = setInterval(()=>{
-					this.getCode--
-					if(this.getCode == 0) {
-						this.getYzCode = true
-						clearInterval(this.countDown)
-						this.disable = false
-					}
-				},1000)
+			countDowns(e) {
+				if(e == 'yzCode') {
+					this.disable = true
+					this.getCode = 60
+					this.countDown = setInterval(()=>{
+						this.getCode--
+						if(this.getCode == 0) {
+							this.getYzCode = true
+							clearInterval(this.countDown)
+							this.disable = false
+						}
+					},1000)
+				}else {
+					this.disable = true
+					this.getCode = 60
+					this.signContracts = false
+					this.countDown = setInterval(()=>{
+						this.getCode--
+						if(this.getCode == 0) {
+							this.signContracts = true
+							clearInterval(this.countDown)
+							this.disable = false
+						}
+					},1000)
+				}
 			},
 			//验证码
 			yzCode() {
@@ -444,7 +461,7 @@
 					if(res.status == 200) {
 						this.$message.success(res.message)
 						this.getYzCode = false
-						this.countDowns()
+						this.countDowns('yzCode')
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -474,6 +491,23 @@
 			},
       //提交信息
       submitInfo() {
+				let params = {
+					companyId:this.dataInfo.id,
+					name:this.dataInfo.name,
+					address:this.dataInfo.address,
+					documentCard:this.dataInfo.documentCard,
+					lepName:this.dataInfo.lepName,
+					lepDocumentCard:this.dataInfo.lepDocumentCard,
+					lepPhone:this.dataInfo.lepPhone,
+					bankAccountName:this.dataInfo.bankAccountName,
+					bankBranchName:this.dataInfo.bankBranchName,
+					bankBranchCode:this.dataInfo.bankBranchCode,
+					bankCard:this.dataInfo.bankCard,
+					lepCardFront:this.idCard,
+					lepCardBack:this.theotherside,
+					licenseSign:this.businessLicense
+				}
+				console.log(params);
 				this.$refs.form.validate((vaid,object) =>{
 					console.log(vaid,object);
 					if(vaid) {
@@ -604,20 +638,15 @@
 								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
 							}
 							if (status == 2) {
-								// this.$nextTick(()=>{
-								// 	console.log(data,9999999999999999999999);
-									
-								// })
 									this.dataInfo.name = data.companyName
 									this.dataInfo.address = data.companyAddress
-									// this.dataInfo.documentCard = data.companyAddress
 									this.dataInfo.lepName = data.legalName
 									this.dataInfo.lepDocumentCard = data.legalIds
 									this.dataInfo.lepPhone = data.legalPhone
-									this.dataInfo.bankAccountName = data.parentBankName
-									this.dataInfo.bankBranchName = data.bankName
-									this.dataInfo.bankBranchCode = data.unionBank
-									this.dataInfo.bankCard = data.accountNo
+									this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
+									this.$set(this.dataInfo,'bankBranchName',data.bankName)
+									this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
+									this.$set(this.dataInfo,'bankCard',data.accountNo)
 							}
 							
 							if (!this.status && imgList.length) {
@@ -679,6 +708,7 @@
 							return
 						} else if (!data.isPhoneChecked) {
 							if(this.titleIndex == 1) {
+								this.getCode = '60秒'
 								this.sms = 2
 							}else {
 								this.titleIndex = 2
@@ -785,9 +815,10 @@
 						
 					}
 				}).catch((e)=>{
-					console.log(e);
-					// clearInterval(this.timer);
-					// this.$message({message:e})
+					if(e == '服务端操作失败') {
+						clearInterval(this.timer);
+						this.$message({message:e})
+					}
 				})
 			},
 			nexts() {
@@ -798,9 +829,11 @@
 				this.signContract()
 			},
 			smsNext() {
+				this.getCode = '60秒'
+				clearInterval(this.timer);
+				clearInterval(this.countDown)
 				this.titleIndex = 2
 				this.yzCode()
-				clearInterval(this.timer);
 			}
 		},
 		beforeDestroy() {
@@ -861,6 +894,17 @@
 			margin-top: 20px;
 			display: flex;
 			align-items: center;
+		}
+		.contract {
+			/deep/.contract-after-class {
+				min-width: 132px;
+				span::after {
+					width: 132px;
+					text-align: center;
+					content: '秒';
+					padding-left: 4px;
+				}
+			}
 		}
 		.inputCode {
 			margin-top: 40px;
