@@ -420,7 +420,10 @@
             }
           }).catch(error => {
             reject()
+            loading.close()
             this.uploader.splice(0, this.uploader.files.length)
+            this.currentNum = 0
+            this.filePath = []
             this.$message({
               message: '网络异常，稍后再试'
             })

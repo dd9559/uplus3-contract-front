@@ -80,7 +80,7 @@
             <el-table-column label="提成规则名称" prop="bonusName" min-width="120"></el-table-column>
             <el-table-column label="提成计算方法" min-width="120">
               <template slot-scope="scope">
-                <span>{{scope.row.commissionCalculation === 1 ? '分级累进':'分级累进回溯'}}</span>
+                <span>{{scope.row.commissionCalculation === 1 ? '分级累进': scope.row.commissionCalculation === 2 ? '分级累进回溯' : '简单分级（通提）'}}</span>
               </template>
             </el-table-column>
             <el-table-column label="执行时间" min-width="120">
@@ -173,7 +173,7 @@
               <el-select size="small" v-model="deductData.commissionCalculation" style="width:240px">
                 <el-option label="分级累进" value="1"></el-option>
                 <el-option label="分级累进回溯" value="2"></el-option>
-                <el-option label="简单分级" value="3"></el-option>
+                <el-option label="简单分级（通提）" value="3"></el-option>
               </el-select>
             </div>
             <div class="dialog-item">
@@ -240,7 +240,7 @@
               <span>合同类型：</span>
               <span v-for="(item,index) in deductData.tradeType.toString().split(',')" :key="index">{{index>=1? ',':''}}{{item == 1 ? '租赁':item == 2 ?'买卖/代办':'新房'}}</span>
             <!-- {{deductData.tradeType === '1' ? '租赁':deductData.tradeType === '2' ?'买卖/代办':'新房'}}</p> -->
-            <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进':'分级累进回溯'}}</p>
+            <p>提成计算方法：{{deductData.commissionCalculation === '1' ? '分级累进': deductData.commissionCalculation === '2' ? '分级累进回溯' : '简单分级（通提）'}}</p>
             <p>执行时间：{{deductData.executionStartTime}}</p>
           </div>
         </div>

@@ -156,12 +156,12 @@ export default {
       let param = {
         relationId:ids
       };
-      let url;
-      if(this.type===1){
-        url='/api/settlement/getProateNotes';
-      }else if(this.type===2){
-        url='/api/separate/money/out/details'
-      }
+      let url = '/api/settlement/getProateNotes';
+      // if(this.type===1){
+      //   url='/api/settlement/getProateNotes';
+      // }else if(this.type===2){
+      //   url='/api/settlement/getProateNotes'
+      // }
       this.$ajax.get(url,param).then(res=>{
         res=res.data;
         if(res.status===200){
