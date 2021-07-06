@@ -407,9 +407,9 @@
     .tablestyle span[tag='input-auto'] {
       display: inline-block;
       padding: 0;
-      text-align: center;
-      width: 80%;
-      border: none;
+      /* text-align: center; */
+      width: 100%;
+      border-bottom: 1px solid transparent;
     }
 
     .text-border {
@@ -604,7 +604,7 @@
 
 
       <p class="1h18 agreements center page1">买卖双方信息确认表</p>
-      <p class="1h18 agreements page1">房屋出卖人（含共有权人）</p>
+      <p class="1h18 agreements">房屋出卖人（含共有权人）</p>
       <table class="tablestyle new_table_style" border="1">
         <tbody id="tbody">
           <tr>
@@ -632,7 +632,7 @@
         </tbody>
       </table>
 
-      <p class="1h18 center agreements page1">委托代理人（如有，请填写以下信息）</p>
+      <p class="1h18 agreements" style="text-align: center;">委托代理人（如有，请填写以下信息）</p>
       <table class="tablestyle new_table_style" border="1">
         <tbody id="tbody">
           <tr>
@@ -655,7 +655,7 @@
       </table>
 
 
-      <p class="1h18 agreements page1">房屋买受人（含共同买受人）</p>
+      <p class="1h18 agreements">房屋买受人（含共同买受人）</p>
       <table class="tablestyle new_table_style" border="1">
         <tbody id="tbody">
           <tr>
@@ -684,24 +684,24 @@
       </table>
 
 
-      <p class="1h18 agreements page1">委托代理人（如有，请填写以下信息）</p>
+      <p class="1h18 agreements" style="text-align: center;">委托代理人（如有，请填写以下信息）</p>
       <table class="tablestyle new_table_style" border="1">
         <tbody id="tbody">
           <tr>
             <td class="text_td">姓名：</td>
-            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val118" noline="true"></span></td>
+            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val118"></span></td>
           </tr>
           <tr>
             <td class="text_td">证件名称及号码：</td>
-            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val119" noline="true"></span></td>
+            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val119"></span></td>
           </tr>
           <tr>
             <td class="text_td">通讯地址：</td>
-            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val120" noline="true"></span></td>
+            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val120"></span></td>
           </tr>
           <tr>
             <td class="text_td">现居住地址：</td>
-            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val121" noline="true"></span></td>
+            <td colspan="3"><span tag="input-auto" class="body-item text-limit input-before" extendParam="val121"></span></td>
           </tr>
         </tbody>
       </table>
@@ -756,7 +756,9 @@
         <ul>
           <li><span>代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val1"></span></span>
           </li>
-          <!-- <li><span>身份证/护照号码：</span><span class="text-limit input-before" tag="input-auto"></span></span></li> -->
+        </ul>
+        <ul>
+          <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" extendParam="val990"></span></span></li>
         </ul>
         <ul style="margin-top: 20px;">
           <li><span>房屋买受人：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
@@ -774,7 +776,9 @@
         <ul>
           <li><span>代理人：</span><span class="text-limit input-before" tag="input-auto" extendParam="val2"></span></span>
           </li>
-          <!-- <li><span>身份证/护照号码：</span><span class="text-limit input-before" tag="input-auto"></span></span></li> -->
+        </ul>
+        <ul>
+          <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" extendParam="val991"></span></span></li>
         </ul>
         <!-- <ul>
                     <li><span>丙方（居间人）：</span><span class="text-limit " systemparam="companyNames" company="true"></span></span></li>
@@ -917,9 +921,9 @@
       <p class="1h18 agreements navTitle">第四条、房产转让价格</p>
       <div class="1h18 agreements">
         <span>（一）该房产转让价格为按套转让，转让价格为人民币（小写）</span>
-        <span class="input-before" listen="number" max="16" extendParam="val18" tag="input-auto"></span>
+        <span class="input-before" listen="number" max="16" extendParam="val18" tag="input-auto" systemParam="dealPrice"></span>
         <span>元(金额大写：</span>
-        <span tag="input-auto" extendparam="val18_add" systemParam="true" class="input-readonly"></span>
+        <span tag="input-auto" extendparam="val18_add" systemParam="dealPriceUpper" class="input-readonly"></span>
         <span>)。此转让价：</span>
       </div>
 
@@ -927,9 +931,9 @@
       <div class="1h18 agreements">
         <span>1、</span>
         <div class="info-checkbox" name="check7">
-            <p type="check"></p>包含该房屋家具、家电、装饰装
+            <p type="check"></p>包含该房屋家具、家电
         </div>
-        <span>修及配套设施设备（以列明的家私清单为准），出卖人应当保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</span>
+        <span>、装饰装修及配套设施设备（以列明的家私清单为准），出卖人应当保证自本合同签订之日起至该房屋验收交接完成，对各项房屋附属设施设备及其装饰装修保持良好的状况。</span>
         <div style="text-indent: 34px;padding-left: 30px;" class="1h18 agreements">
             <div class="info-checkbox" name="check7">
                 <p type="check"></p>不包含该房屋家具、家电
@@ -1248,7 +1252,7 @@
 
 
       <div class="1h18 agreements">
-        <span>（二）该房屋交付时，应当履行下列第 1、2、3</span>
+        <span>（二）该房屋交付时，应当履行下列第 <span style="border-bottom: 1px solid gray;">1、2、3</span></span>
         <!-- <span tag="input-auto" class="text-limit input-before" extendParam="val46"></span> -->
         <span>项手续：</span>
       </div>
@@ -1431,239 +1435,23 @@
         <span class="w50">签署日期：<span style="border: none;" systemParam="signDate" extendParam="val51"></span></span>
         <!-- <span class="w50">签署日期：<span style="display:inline-block; border-bottom: 1px solid gray; min-width: 150px;"></span></span> -->
       </div>
-
-
-
-
-      <!-- 附件一 -->
-      <p class="page1" style="margin-top: 30px;"><strong>附件：</strong></p>
-      <p class="1h18 agreements navTitle">家私清单</p>
-      <div class="1h18 agreements">
-        <span>关于装饰、装修、家具、家电等附属设施清单的约定：</span>
-        <div class="info-checkbox" name="four">
-          <p type="check"></p>有
-        </div>
-        <div class="info-checkbox" name="four">
-          <p type="check"></p>无
-        </div>
-        <span>（若家私清单与合同约定不符的，以家私清单为准）以下附属设施随房屋一并转移并交付给买受人：</span>
-      </div>
-      <span extendParam="val666"></span>
-      <span extendParam="val888"></span>
-      <table class="tablestyle new_table_style" border="1">
-        <tbody id="tbody">
-          <tr>
-            <td rowspan="4">装饰装修</td>
-          </tr>
-          <tr>
-            <td colspan="10">以下装饰、装修及附属设施保持原状：</td>
-          </tr>
-          <tr>
-            <td colspan="10">
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>卫浴设施设备/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>整体橱柜/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>地板/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>墙壁/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>门、窗/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>热水器/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>暖气片/
-              </div>
-              <div class="body-item info-checkbox" name="two" more="true">
-                <p type="check" nocheck="true"></p>窗帘
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="10">
-              <span>其他：</span>
-              <span tag="input-auto" class="body-item text-limit input-before" extendParam="val53" noline="true"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td rowspan="7">家具</td>
-          </tr>
-          <tr>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-          </tr>
-          <tr>
-            <td>床</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val54" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val55" noline="true"></span></td>
-            <td>沙发</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val56" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val57" noline="true"></span></td>
-            <td>衣柜</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val58" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val59" noline="true"></span></td>
-          </tr>
-          <tr>
-            <td>床垫</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val60" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val61" noline="true"></span></td>
-            <td>茶几</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val62" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val63" noline="true"></span></td>
-            <td>餐桌</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val64" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val65" noline="true"></span></td>
-          </tr>
-
-
-          <tr>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val601" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val602" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val603" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val604" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val605" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val606" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val607" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val608" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val609" noline="true"></span></td>
-          </tr>
-          <tr>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val610" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val611" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val612" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val613" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val614" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val615" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val616" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val617" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val618" noline="true"></span></td>
-          </tr>
-
-
-
-          <tr>
-            <td colspan="10">
-              <span>其他：</span>
-              <span tag="input-auto" class="body-item text-limit input-before" extendParam="val66" noline="true"></span>
-            </td>
-          </tr>
-          <tr>
-            <td rowspan="7">家电</td>
-          </tr>
-          <tr>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-            <td>名称</td>
-            <td>品牌</td>
-            <td>数量</td>
-          </tr>
-          <tr>
-            <td>电视机</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val67" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val68" noline="true"></span></td>
-            <td>空调</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val69" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val70" noline="true"></span></td>
-            <td>冰箱</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val71" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val72" noline="true"></span></td>
-          </tr>
-          <tr>
-            <td>洗衣机</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val73" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val74" noline="true"></span></td>
-            <td>油烟机</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val75" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val76" noline="true"></span></td>
-            <td>灶台</td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val77" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val78" noline="true"></span></td>
-          </tr>
-
-
-
-          <tr>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val619" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val620" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val621" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val622" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val623" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val624" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val625" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val626" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val627" noline="true"></span></td>
-          </tr>
-          <tr>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val628" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val629" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val630" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val631" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val632" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val633" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val634" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val635" noline="true"></span></td>
-            <td><span tag="input-auto" class="body-item text-limit input-before" extendParam="val636" noline="true"></span></td>
-          </tr>
-
-
-
-          <tr>
-            <td colspan="10">
-              <span>其他：</span>
-              <span tag="input-auto" class="body-item text-limit input-before" extendParam="val79" noline="true"></span>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-      <div class="1h18 agreements">
-        <span>其他约定：</span>
-        <div class="info-checkbox" name="check30">
-          <p type="check" nocheck="true"></p>有/
-        </div>
-        <div class="info-checkbox" name="check30">
-          <p type="check" nocheck="true"></p>无/
-        </div>
-      </div>
-      <div class="1h18 agreements">
-        <span tag="input-auto" class="text-limit input-before" extendParam="val80" noline="true"></span>
-      </div>
     </div>
   </div>
 
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_JZ_MM_20210128.js"></script>  -->
-<script>
+<script type="text/javascript" src="/js/bundle_JZ_MM_20210128.js"></script> 
+<!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
         if (!scriptList[0].src) {
             var host = 'https://sign2.jjw.com'
             var host_other = "http://sign2.jjw.com:28879"
-            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
+            var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_JZ_MM_20210128.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
                 if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
@@ -1692,6 +1480,6 @@
             }
         }
     })();
-</script>
+</script> -->
 
 </html>

@@ -426,9 +426,19 @@ export default {
 							if(emptyInput1[0].type){
 								let inputTag = iframebox1.contentWindow.document.querySelector(`*[extendparam=${emptyInput1[0].name}]`)
 								inputTag.classList.add("BODERRED")
-								inputHeight1 = inputTag.offsetTop
+								if (inputTag.offsetParent.tagName==="TD") {
+									inputHeight1=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+								} else {
+									inputHeight1 = inputTag.offsetTop
+								}
 							}else{
-								inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
+								let inputTag = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`)
+								if (inputTag.offsetParent.tagName==="TD") {
+									inputHeight1=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+								} else {
+									inputHeight1 = inputTag.offsetTop
+								}
+								// inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
 							}
 							iframebox1.contentWindow.scrollTo(0,inputHeight1)
 						}else if(emptyInput2.length>0){
@@ -454,9 +464,20 @@ export default {
 							if(emptyInput2[0].type){
 								let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
 								inputTag.classList.add("BODERRED")
-								inputHeight2 = inputTag.offsetTop
+								if(inputTag.offsetParent.tagName==="TD"){
+									inputHeight2=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+								}else{
+									inputHeight2 = inputTag.offsetTop
+								}
+								// inputHeight2 = inputTag.offsetTop
 							}else{
-								inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
+								let inputTag = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`)
+								if (inputTag.offsetParent.tagName==="TD") {
+									inputHeight2=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+								} else {
+									inputHeight2 = inputTag.offsetTop
+								}
+								// inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
 							}
 							iframebox2.contentWindow.scrollTo(0,inputHeight2)
 						}else if(emptyInput1.length>0){
@@ -484,9 +505,20 @@ export default {
 						if(emptyInput2[0].type){
 							let inputTag = iframebox2.contentWindow.document.querySelector(`*[extendparam=${emptyInput2[0].name}]`)
 							inputTag.classList.add("BODERRED")
-							inputHeight2 = inputTag.offsetTop
+							if(inputTag.offsetParent.tagName==="TD"){
+								inputHeight2=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+							}else{
+								inputHeight2 = inputTag.offsetTop
+							}
+							// inputHeight2 = inputTag.offsetTop
 						}else{
-							inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
+							let inputTag = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`)
+							if (inputTag.offsetParent.tagName==="TD") {
+								inputHeight2=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+							} else {
+								inputHeight2 = inputTag.offsetTop
+							}
+							// inputHeight2 = iframebox2.contentWindow.document.querySelector(`*[name=${emptyInput2[0]}]`).offsetTop
 						}
 						iframebox2.contentWindow.scrollTo(0,inputHeight2)
 					}
@@ -517,7 +549,13 @@ export default {
 							inputHeight1 = inputTag.offsetTop
 						}
 					}else{
-						inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
+						let inputTag = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`)
+						if (inputTag.offsetParent.tagName==="TD") {
+							inputHeight1=inputTag.offsetParent.offsetTop + inputTag.offsetParent.offsetParent.offsetTop
+						} else {
+							inputHeight1 = inputTag.offsetTop
+						}
+						// inputHeight1 = iframebox1.contentWindow.document.querySelector(`*[name=${emptyInput1[0]}]`).offsetTop
 					}
 					iframebox1.contentWindow.scrollTo(0,inputHeight1)
 				}

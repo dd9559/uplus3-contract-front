@@ -89,7 +89,7 @@
       <div class="title-box">
         <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-dk-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </div>
-      <el-table :data="tableData.list" ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" border>
+      <el-table :data="tableData.list" @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" border>
 
         <el-table-column label="分账门店" :formatter="nullFormatter" min-width="80">
           <template slot-scope="scope">
@@ -350,6 +350,27 @@
     },
 
     methods:{
+      // 双击详情事件
+      toDetail(e) {
+        this.$ajax
+        .get("/api/separate/getPayNotes", {ids:e.fromId})
+        .then(res => {
+          if (res.data.status === 200) {
+            let newPage = this.$router.resolve({
+              path: '/routingRemitDetail',
+              query:{
+                ids: res.data.data.join(','),
+                type: 2
+              }
+            });
+          window.open(newPage.href, '_blank');
+          }
+        }).catch(error => {
+          this.$message({
+            message: error
+          })
+        })
+      },
       // 导出功能
       getExcel() {
           // this.queryFn();
