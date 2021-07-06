@@ -173,6 +173,7 @@
               <el-select size="small" v-model="deductData.commissionCalculation" style="width:240px">
                 <el-option label="分级累进" value="1"></el-option>
                 <el-option label="分级累进回溯" value="2"></el-option>
+                <el-option label="简单分级" value="3"></el-option>
               </el-select>
             </div>
             <div class="dialog-item">

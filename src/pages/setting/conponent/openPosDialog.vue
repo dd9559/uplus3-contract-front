@@ -111,7 +111,7 @@
 				<span>输入验证码：</span>
 				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
 				<el-button size="mini" type="primary" @click="yzCode" style="min-width:80px" v-if="getYzCode">获取验证码</el-button>
-				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px" v-else>{{getCode}}</el-button>
+				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px" v-else>{{getCodes}}</el-button>
 			</div>
 			<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;" v-if="titleIndex == 2">当前状态：绑定中</span>
 			<div slot="footer" v-if="titleIndex == 2">
@@ -186,6 +186,7 @@
 				sms:1,
 				inputCode:'',
 				getCode:'60秒',
+				getCodes:'60',
 				disable:false,
 				next:false,
 				rulesForm: {
@@ -273,9 +274,11 @@
 					this.$refs.form.resetFields()
 				}
 				// this.dataInfo = {}
-				this.idCard = []
-				this.theotherside = []
-				this.businessLicense = []
+				this.companyForm = {
+					idCard:'',
+					theotherside:'',
+					businessLicense:''
+				},
 				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
@@ -385,6 +388,8 @@
         if(data.btnId === "idCard") {
           this.companyForm.idCard = data.param[0].path+`?${data.param[0].name}`
           this.contractName = data.param[0].name
+					console.log(this.companyForm.idCard);
+					console.log(this.contractName);
         }else if(data.btnId === "theotherside") {
           this.companyForm.theotherside = data.param[0].path+`?${data.param[0].name}`
           this.contractName = data.param[0].name
@@ -427,10 +432,10 @@
 			countDowns(e) {
 				if(e == 'yzCode') {
 					this.disable = true
-					this.getCode = 60
+					this.getCodes = 60
 					this.countDown = setInterval(()=>{
-						this.getCode--
-						if(this.getCode == 0) {
+						this.getCodes--
+						if(this.getCodes == 0) {
 							this.getYzCode = true
 							clearInterval(this.countDown)
 							this.disable = false
@@ -503,9 +508,9 @@
 					bankBranchName:this.dataInfo.bankBranchName,
 					bankBranchCode:this.dataInfo.bankBranchCode,
 					bankCard:this.dataInfo.bankCard,
-					lepCardFront:this.idCard,
-					lepCardBack:this.theotherside,
-					licenseSign:this.businessLicense
+					lepCardFront:this.companyForm.idCard,
+					lepCardBack:this.companyForm.theotherside,
+					licenseSign:this.companyForm.businessLicense
 				}
 				console.log(params);
 				this.$refs.form.validate((vaid,object) =>{
@@ -558,9 +563,9 @@
 					bankBranchName:this.dataInfo.bankBranchName,
 					bankBranchCode:this.dataInfo.bankBranchCode,
 					bankCard:this.dataInfo.bankCard,
-					lepCardFront:this.idCard,
-					lepCardBack:this.theotherside,
-					licenseSign:this.businessLicense
+					lepCardFront:this.companyForm.idCard,
+					lepCardBack:this.companyForm.theotherside,
+					licenseSign:this.companyForm.businessLicense
 				}
 				// let params = {
 				// 	companyId:this.dataInfo.id,
@@ -591,7 +596,7 @@
 						})
 						this.timer = setInterval(() =>{
 							this.enterprise()
-						},5000)
+						},10000)
 						setTimeout(()=>{
 							this.$message({
 								type:'success',
@@ -614,14 +619,22 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
 						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
 						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = [];
-
+							console.log(data.resultInfo);
+							let dataInfo = data.resultInfo.split(';')
+							console.log(dataInfo,8989);
+							let flag = false
+							dataInfo.forEach(element => {
+								flag = false
+								if(element.indexOf('成功') != -1) {
+									flag = true
+								}
+							});
 							if (ocrIdcardComparisonResult) {
 								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
 							}
@@ -678,9 +691,7 @@
 									})
 								})
 							}
-							
-							if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
-								console.log(data.status == 2, data.ocrRegnumComparisonResult == 1,data.ocrIdcardComparisonResult == 1,this.status == false);
+							if (this.status&& flag &&(data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
 								clearInterval(this.timer);
 								this.$message({
 									type: 'warning',
@@ -708,7 +719,6 @@
 							return
 						} else if (!data.isPhoneChecked) {
 							if(this.titleIndex == 1) {
-								this.getCode = '60秒'
 								this.sms = 2
 							}else {
 								this.titleIndex = 2
@@ -829,9 +839,9 @@
 				this.signContract()
 			},
 			smsNext() {
-				this.getCode = '60秒'
 				clearInterval(this.timer);
 				clearInterval(this.countDown)
+				// this.getCodes = 60
 				this.titleIndex = 2
 				this.yzCode()
 			}

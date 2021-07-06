@@ -187,12 +187,24 @@
           <div>
             <p class="title">其它信息</p>
             <div class="stamp">
-              <span>合同章: </span>
+              <span>合同章：</span>
               <div @click="getPicture(1)"><img :src="preConFile[0]" alt="" width="120px" height="120px"></div>
             </div>
             <div class="stamp">
-              <span>财务章: </span>
+              <span>财务章：</span>
               <div @click="getPicture(2)"><img :src="preFinFile[0]" alt="" width="120px" height="120px"></div>
+            </div>
+            <div class="stamp" v-if="lepCardFrontFile[0]">
+              <span>法人身份证：</span> 
+              <div @click="getPicture(3)"><img :src="lepCardFrontFile[0]" alt="" width="120px" height="120px"></div>
+            </div>
+            <div class="stamp" v-if="lepCardBackFile[0]">
+              <span></span>
+              <div @click="getPicture(4)"><img :src="lepCardBackFile[0]" alt="" width="120px" height="120px"></div>
+            </div>
+            <div class="stamp" v-if="licenseSignFile[0]">
+              <span>营业执照：</span>
+              <div @click="getPicture(5)"><img :src="licenseSignFile[0]" alt="" width="120px" height="120px"></div>
             </div>
           </div>
         </div>
@@ -529,9 +541,15 @@
         bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
+        lepCardBackFile: [], //法人身份证缩略图
+        lepCardFrontFile: [], //法人身份证反面缩略图
+        licenseSignFile: [], //营业执照缩略图
         openpos:false,
         posInfo:{},
-        posDialog:false
+        posDialog:false,
+        lepCardFront:[],
+        lepCardBack:[],
+        licenseSign:[]
       }
     },
     mounted() {
@@ -738,6 +756,9 @@
         this.searchDepTableData = []
         this.end = true
         this.page = 1
+        this.lepCardFront = []
+        this.lepCardBack = []
+        this.licenseSign = []
         done()
       },
       addDep() {
@@ -1017,6 +1038,7 @@
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
+        console.log(row);
         if(type === 'init') {
           this.searchDepTableData = []
           this.deptName = ''
@@ -1040,7 +1062,19 @@
           entBankList: currentRow.entBankList,
           franchiseRatio: "",
           verifyState:currentRow.verifyState,
-          warrantState:currentRow.warrantState
+          warrantState:currentRow.warrantState,
+        }
+        if(currentRow.lepCardFront) {
+          newForm.lepCardFront = currentRow.lepCardFront
+          this.lepCardFront = newForm.lepCardFront.split('?')[0]
+        }
+        if(currentRow.lepCardBack) {
+          newForm.lepCardBack = currentRow.lepCardBack
+          this.lepCardBack = newForm.lepCardBack.split('?')[0]
+        }
+        if(currentRow.licenseSign) {
+          newForm.licenseSign = currentRow.licenseSign
+          this.licenseSign = newForm.licenseSign.split('?')[0]
         }
         this.companyForm = newForm
         //获取电子章文件名和签名展示缩略图
@@ -1048,11 +1082,23 @@
         this.financialName = newForm.financialSign.split('?')[1]
         let arr1 = [newForm.contractSign.split('?')[0]]
         let arr2 = [newForm.financialSign.split('?')[0]]
+        let arr3 = [this.lepCardFront]
+        let arr4 = [this.lepCardBack]
+        let arr5 = [this.licenseSign]
         this.fileSign(arr1, 'preload').then(res => {
             this.preConFile = res
         })
         this.fileSign(arr2, 'preload').then(res => {
             this.preFinFile = res
+        })
+        this.fileSign(arr3, 'preload').then(res => {
+            this.lepCardFrontFile = res
+        })
+        this.fileSign(arr4, 'preload').then(res => {
+            this.lepCardBackFile = res
+        })
+        this.fileSign(arr5, 'preload').then(res => {
+            this.licenseSignFile = res
         })
         if (type !== 'init') {
           this.setCompanyData(newForm)
@@ -1071,8 +1117,14 @@
         let img_arr = []
         if(type === 1) {
           img_arr.push({path:this.companyForm.contractSign.split('?')[0],name:this.companyForm.contractSign.split('?')[1]})
-        } else {
+        } else if(type === 2) {
           img_arr.push({path:this.companyForm.financialSign.split('?')[0],name:this.companyForm.financialSign.split('?')[1]})
+        } else if(type === 3 && this.companyForm.lepCardFront) {
+          img_arr.push({path:this.companyForm.lepCardFront.split('?')[0],name:this.companyForm.lepCardFront.split('?')[1]})
+        } else if(type === 4 && this.companyForm.lepCardBack){
+          img_arr.push({path:this.companyForm.lepCardBack.split('?')[0],name:this.companyForm.lepCardBack.split('?')[1]})
+        } else if(type === 5 && this.companyForm.licenseSign){
+          img_arr.push({path:this.companyForm.licenseSign.split('?')[0],name:this.companyForm.licenseSign.split('?')[1]})
         }
         this.previewPhoto(img_arr,0)
       },
@@ -1631,7 +1683,7 @@
         display: flex;
         float: left;
         margin-top: 20px;
-        span { margin-right: 5px; }
+        span { margin-right: 5px; width: 120px;text-align: right;}
         > div {
           width: 120px;
           height: 120px;
