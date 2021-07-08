@@ -1,81 +1,81 @@
 import { contractConfig, toChineseNumber,formatMoney } from "./base.js"
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  "houseinfoCode": "S00119148",
-  "wHEmpName": "刘刘",
-  "ownerIDs": "12312312321312、12312321",
-  "isHaveData": 0,
-  "ownerTels": "13111111111、13222222222",
-  "custCommission": 434,
-  "ownerCommission": 44,
-  "propertyAddr": "234市24区4444444444444",
-  "singleCompany": "",
-  "cityId": 52,
-  "dealPrice": 23,
-  "lepName": "冯偏",
-  "type": 2,
-  "signDate": 1625561466000,
-  "guestName": "搜索",
-  "wtSignDate": "",
-  "companyNames": [
-    "西牛皮防水科技有限公司"
-  ],
-  "otherCooperationCost": 0,
-  "guestStoreName": "西牛皮防水科技有限公司",
-  "guestTel": "18735304955",
-  "id": 9422,
-  "guestCardType": "护照",
-  "ownerCommissionUpper": "肆拾肆",
-  "companyBanks": [
-    {
-      "bankAccountName": "西牛皮防水科技有限公司",
-      "bankBranchName": "2搜索",
-      "bankCard": "2333333",
-      "bankCode": "CMB",
-      "bankId": 18,
-      "bankName": "招商银行",
-      "entBankList": [],
-      "id": 291,
-      "storeId": 50736,
-      "storeName": "测试小队2（片区）",
-      "type": 1
-    }
-  ],
-  "guestinfoCode": "G00004459",
-  "subscriptionPriceUpper": "零",
-  "guestCardTypes": "护照、护照",
-  "isRefer": 0,
-  "ownerID": "234324",
-  "tendingName": "阿斯顿",
-  "square": 100,
-  "transFlowCode": 129,
-  "moneyUnit": "元",
-  "guestTels": "13112222222、13333333333",
-  "ownerCardTypes": "护照、护照",
-  "code": "S0052210706009",
-  "ownerCardType": "护照",
-  "guestStoreRegisterCode": "91450100718897478Y",
-  "ownerTel": "15423467890",
-  "dealPriceUpper": "贰拾叁",
-  "companyLepPhone": "18217597612",
-  "guestNames": "123213、41231231",
-  "ownerName": "搜索",
-  "guestIDs": "23123123123、123123123123213",
-  "custEnsure": 0,
-  "timeUnit": "",
-  "isRetained": 0,
-  "commissionPayment": 0,
-  "ownerNames": "12312、123123",
-  "isWuHanMM": 0,
-  "custCommissionUpper": "肆佰叁拾肆",
-  "propertyCard": "",
-  "guestID": "342323232323",
-  "squareUse": 99,
-  "subscriptionPrice": 0,
-  "remarks": ""
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   "houseinfoCode": "S00119148",
+//   "wHEmpName": "刘刘",
+//   "ownerIDs": "12312312321312、12312321",
+//   "isHaveData": 0,
+//   "ownerTels": "13111111111、13222222222",
+//   "custCommission": 434,
+//   "ownerCommission": 44,
+//   "propertyAddr": "234市24区4444444444444",
+//   "singleCompany": "",
+//   "cityId": 52,
+//   "dealPrice": 23,
+//   "lepName": "冯偏",
+//   "type": 2,
+//   "signDate": 1625561466000,
+//   "guestName": "搜索",
+//   "wtSignDate": "",
+//   "companyNames": [
+//     "西牛皮防水科技有限公司"
+//   ],
+//   "otherCooperationCost": 0,
+//   "guestStoreName": "西牛皮防水科技有限公司",
+//   "guestTel": "18735304955",
+//   "id": 9422,
+//   "guestCardType": "护照",
+//   "ownerCommissionUpper": "肆拾肆",
+//   "companyBanks": [
+//     {
+//       "bankAccountName": "西牛皮防水科技有限公司",
+//       "bankBranchName": "2搜索",
+//       "bankCard": "2333333",
+//       "bankCode": "CMB",
+//       "bankId": 18,
+//       "bankName": "招商银行",
+//       "entBankList": [],
+//       "id": 291,
+//       "storeId": 50736,
+//       "storeName": "测试小队2（片区）",
+//       "type": 1
+//     }
+//   ],
+//   "guestinfoCode": "G00004459",
+//   "subscriptionPriceUpper": "零",
+//   "guestCardTypes": "护照、护照",
+//   "isRefer": 0,
+//   "ownerID": "234324",
+//   "tendingName": "阿斯顿",
+//   "square": 100,
+//   "transFlowCode": 129,
+//   "moneyUnit": "元",
+//   "guestTels": "13112222222、13333333333",
+//   "ownerCardTypes": "护照、护照",
+//   "code": "S0052210706009",
+//   "ownerCardType": "护照",
+//   "guestStoreRegisterCode": "91450100718897478Y",
+//   "ownerTel": "15423467890",
+//   "dealPriceUpper": "贰拾叁",
+//   "companyLepPhone": "18217597612",
+//   "guestNames": "123213、41231231",
+//   "ownerName": "搜索",
+//   "guestIDs": "23123123123、123123123123213",
+//   "custEnsure": 0,
+//   "timeUnit": "",
+//   "isRetained": 0,
+//   "commissionPayment": 0,
+//   "ownerNames": "12312、123123",
+//   "isWuHanMM": 0,
+//   "custCommissionUpper": "肆佰叁拾肆",
+//   "propertyCard": "",
+//   "guestID": "342323232323",
+//   "squareUse": 99,
+//   "subscriptionPrice": 0,
+//   "remarks": ""
+// }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   console.log();
@@ -264,6 +264,9 @@ let sub = {
 }
 
 let checkArr = {
+  check2: {
+    6 : ["val3"]
+  },
   check6: {
     0 : ["val4","val5","val6"],
     1 : ["val4","val5","val6"],
@@ -292,7 +295,7 @@ let checkArr = {
     1 : ["val20"]
   },
   check17: {
-    1 : ["val24","val25"]
+    2 : ["val24","val25"]
   },
   check18: {
     0 : ["val26"],
@@ -420,15 +423,17 @@ let indexChcek = 0;
 // 选择事件回调
 contractConfig.checkboxListener(function(obj, i) {
     indexChcek = i;
-    console.log(obj,i,'第一个回调');
 }, function(obj, boxArray) {
-  console.log(obj,boxArray,'第二个回调');
     // 循环
     boxArray.forEach((e, i) => {
         let bool = e.querySelector('p').getAttribute('checked');
         let name = e.getAttribute('name');
         // 如果是选中状态
-
+        if (name === 'check2') {
+          if (checkArr[name][i]) {
+            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
+          }
+        }
         if (name === 'check6') {
           if (indexChcek === 1) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);

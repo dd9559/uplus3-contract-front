@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="/datepicker.css" />
-  <title>代办合同</title>
+  <title>定金合同</title>
   <style>
     body {
       font-family: SimHei;
@@ -381,7 +381,7 @@
 
     .w50 {
       display: inline-block;
-      min-width: 31%;
+      min-width: 45%;
       text-indent: 0;
     }
 
@@ -479,211 +479,165 @@
     <!-- 可编辑界面 -->
     <!-- 吴兴勇开始编辑 -->
     <div class="page_one">
-      <p class="title" style="position: relative;">存量房委托合同（代办）</p>
-      <p class="code">合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px" /></p>
+      <p class="title" style="position: relative;">存量房购房定金合同</p>
       <div class="cw_message">
         <ul>
-          <li><span>甲方（卖方）：</span><span class="text-limit" tag="input-auto" systemparam="ownerName"></span></li>
+          <li><span>出售方（以下简称甲方）：</span><span class="text-limit" tag="input-auto" systemparam="ownerName"></span></li>
         </ul>
         <ul>
           <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerID"></span></li>
         </ul>
         <ul>
-          <li><span>地址：</span><span class="text-limit input-before" tag="input-auto" extendparam="val1"></span></span></li>
+          <li><span>共有人：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerNames"></span></span></li>
         </ul>
         <ul>
-          <li><span>电话：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerTel"></span></span></li>
+          <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerIDs"></span></span></li>
         </ul>
         <ul style="margin-top: 20px;">
-          <li><span>乙方（买方）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+          <li><span>购买方（以下简称乙方）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
           
         </ul>
         <ul>
           <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestID"></span></li>
         </ul>
         <ul>
-          <li><span>地址：</span><span class="text-limit input-before" tag="input-auto" extendparam="val2"></span></span></li>
+          <li><span>共有人：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestNames"></span></span></li>
         </ul>
         <ul>
-          <li><span>电话：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestTel"></span></span></li>
+          <li><span>证件号码：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestIDs"></span></span></li>
         </ul>
         <ul style="margin-top: 20px;">
-          <li><span>丙方（中介方）：</span><span class="text-limit " systemparam="companyNames" company="true"></span></span></li>
+            <li><span>居间方（以下简称丙方）：</span><span class="text-limit " systemparam="companyNames" company="true"></span></span></li>
         </ul>
         <ul>
-          <li><span>地址：</span><span class="text-limit input-before" tag="input-auto" extendparam="val3"></span></span></li>
+            <li><span>丙方公司注册地址：</span>麻城市孝感乡北路三和山景华苑1号楼1号门店</li>
         </ul>
         <ul>
-          <li><span>电话：</span><span class="text-limit input-before" tag="input-auto" extendparam="val4"></span></span></li>
+            <li><span>丙方公司联系电话：</span>0713-2917123</li>
         </ul>
       </div>
+      
+      <!-- 第一条 -->
       <div class="1h18 agreements">
-        <span>乙方购买甲方位于</span>
+        <span>第一条：甲方的房屋位于麻城市</span>
         <span tag="input-auto" class="text-limit input-before" systemparam="propertyAddr" company="true"></span>
-        <span>的房屋，房屋所有权证/不动产权证书编号：</span>
-        <span tag="input-auto" class="text-limit input-before" extendparam="val21"></span>
-        <span>，双方自行成交需办理房产交易相关手续，现委托丙方协助办理后续交易事宜，协议如下：</span>
+        <span>，(以下简称该房屋)。该房屋建筑面积约为：</span>
+        <span tag="input-auto" class="text-limit input-before" systemparam="square"></span>
+        <span>(具体以房产证为准)平方米。该房屋所有权证书号为：</span>
+        <span tag="input-auto" class="text-limit input-before" extendparam="val1"></span>
+        <span>，该房屋产权人为：</span>
+        <span class="text-limit" tag="input-auto" systemparam="ownerName" extendparam="val2"></span>
+        <span>。甲方承诺该房屋产权证书或契税发票取得时间为：</span>
+        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val3" />
+        <span>。 乙方已对该房屋进行了充分的了解并愿意购买。乙方购买的该房屋为麻城市内第</span>
+        <span class="input-before" listen="number" max="16" extendparam="val4" tag="input-auto"></span>
+        <span>套房屋。该房屋内家具家电以及其他物品详情见清单。</span>
       </div>
 
+      <!-- 第二条 -->
       <div class="1h18 agreements">
-        <span>第一条、甲乙双方委托丙方办理</span>
-        <div class="info-checkbox" name="check1">
-          <p type="check"></p>房屋产权过户手续
-        </div>
-        <div class="info-checkbox" name="check1">
-          <p type="check"></p>住房按揭贷款手续。
-        </div>
-        <span>(请在对应选项勾选“√”)</span>
-      </div>
-
-      <div class="1h18 agreements">第二条、房产交易所涉及产权、房款及付款、房屋交接等相关交易事项，甲乙双方需另行签订房屋买卖合同，如双方怠于签署或未签署造成损失的由双方自行承担。三方明确，丙方对《房屋买卖合同》所产生的风险不负任何责任。</div>
-
-      <div class="1h18 agreements">
-        <span>第三条、甲乙双方应按照丙方要求及时提供办理后期手续所需的真实、完整的证件与资料，并在手续办理过程中积极配合丙方的工作。具体时间为甲乙双方在本合同签订之日起</span>
-        <span tag="input-auto" class="text-limit input-before" extendparam="val5"></span>
-        <span>日内提供所需资料（资料清单附后）给丙方，丙方在双方资料提供完整后
-        <span tag="input-auto" class="text-limit input-before" extendparam="val6"></span>
-        <span>日内陪同双方到相关机构办理手续。</span>
-      </div>
-
-      <div class="1h18 agreements">第四条、如因甲、乙双方自身原因导致相关手续不能完成或不能按时完成，丙方对此不负任何责任，且对受委托的事项已发生的费用不予退还。</div>
-
-      <div class="1h18 agreements">
-        <span>第五条、经三方协商，在签订本协议时，由</span>
-        <div class="info-checkbox" name="check2">
-          <p type="check"></p>甲方
-        </div>
-        <div class="info-checkbox" name="check2">
-          <p type="check"></p>乙方
-        </div>
-        <span>支付丙方服务费人民币（小写）</span>
-        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val7" ></span>
+        <span>第二条：买卖双方一致同意该房屋成交价格为人民币(小写)</span>
+        <span class="input-before" listen="number" max="16" tag="input-auto" systemParam="dealPrice"></span>
         <span>元(金额大写：</span>
-        <span tag="input-auto" extendparam="val7_add" systemParam="true" class="input-readonly"></span>
-        <span>元整)。（请在对应选项勾选“√”）</span>
+        <span tag="input-auto" systemParam="dealPriceUpper" class="input-readonly"></span>
+        <span>元整)，税费（含：契税，卖方个人所得税，测量费。公证费，工本费等）由乙方承担。该房屋物业交割当天之前的物业费，水费，电费，由甲方承担，该房屋物业交割当天（含当日）之后的物业费，水费，电费，由乙方承担。交房时间签订买卖合同当天确定。乙方同意在签订本合同时，向甲方支付人民币(小写)</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val5" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val5_add" systemParam="true" class="input-readonly"></span>
+        <span>)的购房定金，作为甲乙双方当事人订立该房屋买卖合同的担保，签订房屋买卖合同后，乙方支付的定金自动转为购房款。甲方同意在签订本合同时向丙方支付人民币（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val6" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val6_add" systemParam="true" class="input-readonly"></span>
+        <span>)作为甲乙双方订立该房屋买卖.顺利交付房屋的保证金，房屋交付完结，甲方持丙方所开具的收据退还交房保证金。如甲方更换家具家电，拒不支付房屋交付之前的物业，水，电，燃气费等对乙方造成的损失，丙方有权从交房保证金中扣除。甲方违约，双倍返还已收取的定金。乙方违约，无权要求甲方退还定金。</span>
       </div>
 
-      <p class="1h18 agreements">第六条、本合同一式叁份，甲、乙、丙三方各执壹份，各份均具同等法律效力。</p>
+      <!-- 第三条 -->
+      <div class="1h18 agreements">
+        <span>第三条：购房款付款方式：第</span>
+        <div class="info-checkbox" name="check1">
+          <p type="check"></p>1
+        </div>
+        <div class="info-checkbox" name="check1">
+          <p type="check"></p>2
+        </div>
+        <span>条</span>
+      </div>
 
-      <div style="margin-top: 30px;">
-        <span class="w50" style="position: relative;">出售方（签章）：<img
+      <div class="1h18 agreements">
+        <span>1）银行按揭贷款：甲乙双方约定在</span>
+        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val7" />
+        <span>前签订房屋买卖合同，乙方支付不低于（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val8" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val8_add" systemParam="true" class="input-readonly"></span>
+        <span>)的首付款给甲方，包含定金（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val9" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val9_add" systemParam="true" class="input-readonly"></span>
+        <span>）。余下尾款（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val10" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val10_add" systemParam="true" class="input-readonly"></span>
+        <span>）办理按揭贷款支付。甲方同意配合乙方提供办理按揭贷款所需要的材料及手续，如一方恶意拖延签订买卖合同时间，则视为违约。</span>
+      </div>
+
+      <div class="1h18 agreements">
+        <span>2）一次性付款：甲乙双方约定在</span>
+        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val11" />
+        <span>前签订房屋买卖合同，乙方一次性支付（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val12" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val12_add" systemParam="true" class="input-readonly"></span>
+        <span>)的购房款款给甲方，包含定金（小写）</span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val13" ></span>
+        <span>元(金额大写：</span>
+        <span tag="input-auto" extendparam="val13_add" systemParam="true" class="input-readonly"></span>
+        <span>）。甲乙双方于买卖合同签订当日完成该房屋物权过户手续。</span>
+      </div>
+
+      <p class="1h18 agreements">甲方承诺：</p>
+
+      <p class="1h18 agreements">1）该房屋权属清楚，不存在被查封、非法抵押、挂失、债权债务纠纷等影响转让的情况，并没有与第三方遗留下本房屋有关的任何纠纷。</p>
+
+      <p class="1h18 agreements">2）保证所提供证件票据及身份证是真实、合法、有效。</p>
+
+      <p class="1h18 agreements">3）保证配偶、家庭成员和共有人均同意出售该房屋，共同履行该合同相关约定。</p>
+
+      <p class="1h18 agreements">乙方承诺：</p>
+
+      <p class="1h18 agreements">1）乙方保证提供的身份证件是真实、合法、有效的；</p>
+
+      <p class="1h18 agreements">2）乙方须按照本合同约定的时间和方式向甲方付款；</p>
+
+      <p class="1h18 agreements">3）乙方保证家庭成员和共有人均同意购买该房屋。</p>
+
+      <!-- 第四条 -->
+      <p class="1h18 agreements">第四条：争议解决办法：甲乙双方应以诚信为本，忠实履行本合同全部内容。如在履行合同期间发生争议，应由丙方及时协商友好解决，如协商不成，则甲乙双方均可依法向人民法院提请诉讼，丙方作为中立方应依据事实出庭作证。因任何一方违约，守约方以诉讼形式向违约方主张权利的，违约方须承担守约方所支出的诉讼费.保全费.执行费.律师代理费以及交通费等相关费用，并赔偿守约方支出的居间费用。</p>
+
+      <!-- 第五条 -->
+      <p class="1h18 agreements">第五条：如因不可抗力不能按约定履行本合同，根据不可抗力的影响，部分或全部免除责任，但因不可抗力不能按照约定履行合同的一方当事人应当及时告知另一方当事人，并自不可抗力事件结束之日起30日内向另一方当事人提供证明。上述房屋风险责任自该房屋所有权转移之日起转移给购买方。</p>
+
+      <!-- 第六条 -->
+      <p class="1h18 agreements">第六条：签订定金合同，甲乙双方各付总成交价的1%的居间服务费给丙方。买卖双方在合同履行过程中,因任何一方违约,守约方以诉讼形式向违约方主张权利的,违约方须承担守约方所支出的诉讼费、保全费、执行费、律师代理费及交通费等相关费用,并赔偿守约方支出的居间服务费。</p>
+
+      <!-- 第七条 -->
+      <p class="1h18 agreements">第七条：本协议一式叁份，甲乙丙各持一份，签字生效</p>
+
+      <div class="1h18 agreements" style="margin-top: 30px;">
+        <span class="w50" style="position: relative;">甲方：(签章)<img
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFwmlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyMC0wNi0xMFQxMTowOToxMiswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YTc2ZjAwNGMtYjNlYy1kMDQ5LWIyZTUtNTk2NzdlZmM5ZjY1IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6YjI1MGQ4OTktZjc1Mi1iZTRlLWI1NjAtOTRlMGRiNDk0NDMzIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MzMzNWY4MTEtYWI2ZC0zODQ2LWIwNDktMDUwYzc3YjE1NDQ4IiBzdEV2dDp3aGVuPSIyMDIwLTA2LTEwVDExOjA5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphNzZmMDA0Yy1iM2VjLWQwNDktYjJlNS01OTY3N2VmYzlmNjUiIHN0RXZ0OndoZW49IjIwMjAtMDYtMTBUMTE6MDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+NFHNswAAABVJREFUGJVj/P//PwM+wIRXdtgoAAAYYwMNqG/jSgAAAABJRU5ErkJggg=="
             style="position: absolute;left:116px;top:-21px;"></span>
-        <span class="w50" style="position: relative;">购买方（签章）：<img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
-            style="position: absolute;left:100px;top:-21px;"></span>
-            <span class="w50" style="position: relative;">居间方(签章)：<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:116px;top:-5px;"></span>
       </div>
-      <div class="1h18 agreements" style="text-align: right;">
-        <span class="w50"><span style="border: none;" systemParam="signDate"></span></span>
-        <span class="w50"><span style="border: none;" systemParam="signDate"></span></span>
-        <span class="w50"><span style="border: none;" systemParam="signDate"></span></span>
-      </div>
-
-      <p class="page1">附件：资料清单</p>
-      <p>甲方需提供资料：</p>
       <div class="1h18 agreements">
-        <ul>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>夫妻双方身份证复印件 
-            </div>
-            <span>（ <span tag="input-auto" class="text-limit input-before" extendparam="val8"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val8"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>夫妻双方户本复印件
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val9"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val9"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>结婚证复印件
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val10"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val10"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>房屋产权证
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val11"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val11"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>国有土地使用证 
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val12"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val12"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check3" more="true">
-              <p type="check"></p>离婚复印件或婚姻状况证明
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val13"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val13"></span> -->
-          </li>
-          <li>
-            <div>
-              <div class="body-item info-checkbox" name="check3" more="true">
-                <p type="check"></p>其他
-              </div>
-              <span tag="input-auto" class="text-limit input-before" extendparam="val14"></span>
-            </div>
-          </li>  
-        </ul>
+        <span class="w50" style="position: relative;">乙方：(签章)<img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjlFM0Q1N0IwNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjlFM0Q1N0IxNTY4QTExRTlCQjk5QzFERThFNTBEOUZCIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OUUzRDU3QUU1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OUUzRDU3QUY1NjhBMTFFOUJCOTlDMURFOEU1MEQ5RkIiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz66bpDAAAAAGklEQVR42mL8//8/AzGAiYFIMKqQOgoBAgwA1RIDEWq+kVwAAAAASUVORK5CYII="
+          style="position: absolute;left:100px;top:-21px;"></span>
       </div>
-
-      <p style="margin-top: 20px;">乙方需提供资料：</p>
       <div class="1h18 agreements">
-        <ul>
-          <li>
-            <div class="body-item info-checkbox" name="check4" more="true">
-              <p type="check"></p>身份证复印件 
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val15"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val15"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check4" more="true">
-              <p type="check"></p>户口本复印件
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val16"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val16"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check4" more="true">
-              <p type="check"></p>经济收入证明
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val17"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val17"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check4" more="true">
-              <p type="check"></p>婚姻证明复印件 
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val18"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val18"></span> -->
-          </li>
-          <li>
-            <div class="body-item info-checkbox" name="check4" more="true">
-              <p type="check"></p>银行流水 
-            </div>
-            <span>（<span tag="input-auto" class="text-limit input-before" extendparam="val19"></span>份）</span>
-            <!-- <span tag="input-auto" class="text-limit input-before" extendparam="val19"></span> -->
-          </li>
-          <li>
-            <div>
-              <div class="body-item info-checkbox" name="check4" more="true">
-                <p type="check"></p>其他
-              </div>
-              <span tag="input-auto" class="text-limit input-before" extendparam="val20"></span>
-            </div>
-          </li>  
-        </ul>
+        <span class="w50" style="position: relative;">丙方：（签字）<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:116px;top:-5px;"></span>
+      </div>
+      <div class="1h18 agreements" style="padding-left: 50%;">
+        <span class="w50"><span style="border: none;" systemParam="signDate" extendparam="val51"></span></span>
       </div>
     </div>
   </div>
@@ -693,7 +647,7 @@
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_MC_DB_20210707.js"></script> 
+<script type="text/javascript" src="/js/bundle_MC_DJ_20210707.js"></script> 
 <!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
@@ -706,7 +660,7 @@
                 if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
-                        addrList[i] = './MC-DB.js'
+                        addrList[i] = './MC-DJ.js'
                     } else {
                         addrList[i] = host_other + '/' + addrList[i]
                     }
@@ -722,7 +676,7 @@
                     document.head.appendChild(hm);
                 } else {
                     var hm = document.createElement("script");
-                    addrList[i].includes('MC-DB') && (hm.type = 'module');
+                    addrList[i].includes('MC-DJ') && (hm.type = 'module');
                     hm.src = addrList[i];
                     var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1];
                     s.parentNode.insertBefore(hm, s);
