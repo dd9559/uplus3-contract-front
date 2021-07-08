@@ -331,7 +331,7 @@
               state:false,
           },
           'sign-ht-dk-export':{
-              name:'重新打款',
+              name:'打款导出',
               state:false,
           }
         }
