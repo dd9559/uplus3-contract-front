@@ -18,9 +18,9 @@
 			<!-- titleIndex == 'first' -->
       <div class="posDialogBox" v-if="titleIndex == 0">
 				<div class="formBox">
-					<el-form label-position="right" ref="form" size="mini" :rules="rulesForm" :model="dataInfo" label-width="140px"
+					<el-form label-position="right" ref="form" size="mini" :disabled="disForm" :rules="rulesForm" :model="dataInfo" label-width="140px"
 					v-loading.fullscreen.lock="fullscreenLoading"
-					element-loading-text="信息审核中"
+					element-loading-text="信息提交中"
 					element-loading-spinner="el-icon-loading"
 					element-loading-background="rgba(0, 0, 0, 0.8)">
 						<el-form-item label="企业名称：">
@@ -66,30 +66,32 @@
 				<div style="margin-left: 115px;">
 					<div class="tips">温馨提示：每次仅支持上传一张图片，大小不超过1M； 格式：jpg，png</div>
 					<div style="display:flex;align-items: center;">
-						
 						<div class="idCard">
 							<div style="margin-bottom: 15px;">法人身份证照片上传：</div>
-							<div style="display:flex;align-items: center;">
+							<div style="display:flex;align-items: center;position: relative;">
 								<fileUp id="idCard" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
                   <img :src="idCard" width="235px" height="150px" v-show="companyForm.idCard" style="border: 1px solid #8fb3fa;border-radius:10px">
-                  <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">
+                  <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">	
 								</fileUp>
+								<div class="mask" v-if="mask"></div>
 								<div style="width:229px;height:147px;margin-left: 50px;">
 									<fileUp id="theotherside" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
 										<img :src="theotherside" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;">
 										<img src="@/assets/img/theotherside.png" width="229px" height="147px" v-show="!companyForm.theotherside">
 									</fileUp>
 								</div>
+								<div class="masks" v-if="mask"></div>
 							</div>
 						</div>
 					</div>
 					<div class="businessLicense" >
 						<div style="margin:20px 0;">企业营业执照上传：</div>
-						<div style="width:316px;height:174px">
+						<div style="width:316px;height:174px;position: relative;">
 							<fileUp id="businessLicense" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
                 <img :src="businessLicense" width="316px" height="174px" v-show="companyForm.businessLicense" style="border: 1px solid #8fb3fa;border-radius:10px">
 								<img src="@/assets/img/businessLicense.png" width="316px" height="174px" v-show="!companyForm.businessLicense">
 							</fileUp>
+							<div class="maskbig" v-if="mask"></div>
 						</div>
 					</div>
 				</div>
@@ -105,7 +107,7 @@
 			<div class="contract" slot="footer" v-if="titleIndex == 1">
         <el-button @click="signContract" type="primary" round v-if="sms == 1 && signContracts">补发签约短信</el-button>
 				<el-button type="primary" :class="disable ? 'contract-after-class' : ''" :disabled="disable"  @click="countDowns" round v-if="!signContracts && sms == 1">{{getCode}}</el-button>
-				<el-button @click="smsNext" type="primary" round v-if="sms == 2">下一步</el-button>
+				<el-button @click="smsNext" type="primary" v-dbClick round>下一步</el-button>
       </div>
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
@@ -171,7 +173,12 @@
 					bankAccountName:'',
 				},
 				status: false,
+				isFlag: false,
+				disForm:false,
+				mask:false,
+				approved:false,
 				timer: null,
+				contract:false,
 				// signContractFlag: false,
         entBank:{},
         companyForm: {
@@ -416,13 +423,13 @@
 				this.$ajax.get('/api/enterprise_pos/signContract',params).then(res => {
 					res = res.data
 					if(res.status == 200) {
-						clearInterval(this.timer);
 						// this.signContractFlag = true
 						this.$message.success(res.message)
 						this.countDowns()
-						this.timer = setInterval(() =>{
-							this.enterprise()
-						},5000)
+						// this.sms = 2
+						// this.timer = setInterval(() =>{
+						// 	this.enterprise()
+						// },5000)
 					}
 				}).catch(error=>{
           this.$message({message:error})
@@ -445,6 +452,7 @@
 					this.disable = true
 					this.getCode = 60
 					this.signContracts = false
+					this.enterprise()
 					this.countDown = setInterval(()=>{
 						this.getCode--
 						if(this.getCode == 0) {
@@ -551,38 +559,38 @@
 				})
       },
 			sunmitData() {
-				let params = {
-					companyId:this.dataInfo.id,
-					name:this.dataInfo.name,
-					address:this.dataInfo.address,
-					documentCard:this.dataInfo.documentCard,
-					lepName:this.dataInfo.lepName,
-					lepDocumentCard:this.dataInfo.lepDocumentCard,
-					lepPhone:this.dataInfo.lepPhone,
-					bankAccountName:this.dataInfo.bankAccountName,
-					bankBranchName:this.dataInfo.bankBranchName,
-					bankBranchCode:this.dataInfo.bankBranchCode,
-					bankCard:this.dataInfo.bankCard,
-					lepCardFront:this.companyForm.idCard,
-					lepCardBack:this.companyForm.theotherside,
-					licenseSign:this.companyForm.businessLicense
-				}
 				// let params = {
 				// 	companyId:this.dataInfo.id,
-				// 	name: "武汉阿克涅网络科技有限公司",
-				// 	address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
-				// 	documentCard: "91420100MA49G98561",
-				// 	lepName: "段枭宇",
-				// 	lepDocumentCard: "420583199610180043",
-				// 	lepPhone: "15827846050",
-				// 	bankBranchName: "武汉农村商业银行光谷支行",
-				// 	bankBranchCode: "402521009216",
-				// 	bankCard: "210880551210017",
-				// 	bankAccountName: "武汉农村商业银行",
+				// 	name:this.dataInfo.name,
+				// 	address:this.dataInfo.address,
+				// 	documentCard:this.dataInfo.documentCard,
+				// 	lepName:this.dataInfo.lepName,
+				// 	lepDocumentCard:this.dataInfo.lepDocumentCard,
+				// 	lepPhone:this.dataInfo.lepPhone,
+				// 	bankAccountName:this.dataInfo.bankAccountName,
+				// 	bankBranchName:this.dataInfo.bankBranchName,
+				// 	bankBranchCode:this.dataInfo.bankBranchCode,
+				// 	bankCard:this.dataInfo.bankCard,
 				// 	lepCardFront:this.companyForm.idCard,
 				// 	lepCardBack:this.companyForm.theotherside,
 				// 	licenseSign:this.companyForm.businessLicense
 				// }
+				let params = {
+					companyId:this.dataInfo.id,
+					name: "武汉阿克涅网络科技有限公司",
+					address: "武汉东湖新技术开发区关南园一路20号当代华夏创业中心1、2、3栋2层19号（自贸区武汉片区）",
+					documentCard: "91420100MA49G98561",
+					lepName: "段枭宇",
+					lepDocumentCard: "420583199610180043",
+					lepPhone: "15827846050",
+					bankBranchName: "武汉农村商业银行光谷支行",
+					bankBranchCode: "402521009216",
+					bankCard: "210880551210017",
+					bankAccountName: "武汉农村商业银行",
+					lepCardFront:this.companyForm.idCard,
+					lepCardBack:this.companyForm.theotherside,
+					licenseSign:this.companyForm.businessLicense
+				}
 				this.fullscreenLoading = true
 				this.$ajax.postJSON('/api/enterprise_pos',params).then(res => {
 					res= res.data
@@ -590,19 +598,18 @@
 						this.fullscreenLoading = false
 						this.subDisable= true
 						this.status= true
+						this.isSubmit = true
+						this.next = true
+						this.disForm = true
+						this.mask = true
+						setTimeout(()=>{
+							this.isSubmit = false
+						},5000)
 						this.$message({
 							type:'success',
 							message:res.message
 						})
-						this.timer = setInterval(() =>{
-							this.enterprise()
-						},10000)
-						setTimeout(()=>{
-							this.$message({
-								type:'success',
-								message:'信息审核中，请稍后！'
-							})
-						},2500)
+						this.currentState = '提交信息成功，点击下一步，开始信息审核'
 					}
 				}).catch((e)=>{
 					this.fullscreenLoading = false
@@ -619,47 +626,63 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
+						this.isFlag = false
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
 						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
 						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
-									imgList = [];
-							console.log(data.resultInfo);
-							let dataInfo = data.resultInfo.split(';')
-							console.log(dataInfo,8989);
-							let flag = false
+									imgList = [],
+									dataInfo = data.resultInfo ? data.resultInfo.split(';') : []
+							let flag = []
 							dataInfo.forEach(element => {
-								flag = false
-								if(element.indexOf('成功') != -1) {
-									flag = true
-								}
+								element && flag.push(element.indexOf('成功'))
 							});
-							if (ocrIdcardComparisonResult) {
-								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
+							console.log(flag);
+							if ((status == 2 && ocrRegnumComparisonResult === undefined && ocrIdcardComparisonResult === undefined && flag.length === 0) ||
+							(ocrRegnumComparisonResult == 0 && flag.length === 0 ) ||
+							(ocrRegnumComparisonResult ==1 && flag.length === 1 && flag[0] !== -1)
+							) {
+								this.isFlag = true
+								this.next = true
 							}
-							if (ocrRegnumComparisonResult) {
+							if (status == 2) {
+								this.dataInfo.name = data.companyName
+								this.dataInfo.address = data.companyAddress
+								this.dataInfo.lepName = data.legalName
+								this.dataInfo.lepDocumentCard = data.legalIds
+								this.dataInfo.lepPhone = data.legalPhone
+								this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
+								this.$set(this.dataInfo,'bankBranchName',data.bankName)
+								this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
+								this.$set(this.dataInfo,'bankCard',data.accountNo)
+								
+							}
+							// console.log(status,ocrRegnumComparisonResult,ocrIdcardComparisonResult);
+							if(status == 2 && ocrRegnumComparisonResult == undefined || ocrIdcardComparisonResult == undefined) {
+								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
+							}
+							if (ocrRegnumComparisonResult && flag[0] !== -1) {
 								imgList.push(copyData.licenseSign)
 							}
+							if (ocrIdcardComparisonResult && flag[1] !== -1) {
+								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
+							}
+							
 							if(data.status !== 2) {
 								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
 							}
-							if(data.status == 2 && !data.ocrRegnumComparisonResult) {
+							if(data.status == 2 && data.ocrRegnumComparisonResult == 0) {
 								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
 							}
-							if(data.status == 2 && data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
+							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0) {
 								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
 							}
-							if (status == 2) {
-									this.dataInfo.name = data.companyName
-									this.dataInfo.address = data.companyAddress
-									this.dataInfo.lepName = data.legalName
-									this.dataInfo.lepDocumentCard = data.legalIds
-									this.dataInfo.lepPhone = data.legalPhone
-									this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
-									this.$set(this.dataInfo,'bankBranchName',data.bankName)
-									this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
-									this.$set(this.dataInfo,'bankCard',data.accountNo)
+							if(this.isFlag) {
+								this.currentState = '审核中'
+							}else{
+								this.mask = false
+								this.disForm = false
 							}
 							
 							if (!this.status && imgList.length) {
@@ -692,13 +715,21 @@
 								})
 							}
 							if (this.status&& flag &&(data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
-								clearInterval(this.timer);
-								this.$message({
-									type: 'warning',
-									message: '证件信息审核失败！'
-								})
-								this.firstDisable = false
-								this.subDisable = false
+								// clearInterval(this.timer);
+								if(copyData.status == 3) {
+									this.currentState = '信息审核中，请稍后查询'
+									this.next = true
+									this.disForm = true
+									this.mask = true
+								}else {
+									this.$message({
+										type: 'warning',
+										message: '证件信息审核失败！'
+									})
+									this.next = false
+									this.firstDisable = false
+									this.subDisable = false
+								}
 								return
 							}
 							return
@@ -710,145 +741,58 @@
 								this.status = true
 							} else {
 								this.currentState = '审核通过'
-								this.firstDisable = false
-								this.next = true
-								if(this.titleIndex == 0 && this.nexts) {
-									clearInterval(this.next)
-								}
+								this.approved = true
+								// this.firstDisable = false
+								// this.next = true
+								// if(this.titleIndex == 0 && this.nexts) {
+								// 	clearInterval(this.next)
+								// }
 							}
 							return
 						} else if (!data.isPhoneChecked) {
 							if(this.titleIndex == 1) {
-								this.sms = 2
+								this.contract = true
+								// this.sms = 2
 							}else {
 								this.titleIndex = 2
 								this.getYzCode = true
 							}
 							return
 						} 
-						
-						
-						// if (!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
-						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-						// 	this.fileSign(imgList,'preload',false).then(res => {
-						// 		for (const key in copyData) {
-						// 			if (key !== 'data') {
-						// 				let element = copyData[key],
-						// 						elementName = element.split('?')[0].split('/');
-						// 				res.some(item => {
-						// 					let itemName = item.split('?')[0].split('/');
-
-						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.idCard = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.theotherside = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.businessLicense = item
-						// 						this.companyForm.businessLicense = item
-						// 					}
-						// 				})
-						// 			}
-						// 		}
-						// 	})
-						// 	this.titleIndex = 0
-						// 	return
-						// }
-						// if(this.dataInfo.status == 2 && data.status == 2 && this.titleIndex == 0 && !data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
-						// 	console.log(798);
-						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-						// 	this.fileSign(imgList,'preload',false).then(res => {
-						// 		for (const key in copyData) {
-						// 			if (key !== 'data') {
-						// 				let element = copyData[key],
-						// 						elementName = element.split('?')[0].split('/');
-						// 				res.some(item => {
-						// 					let itemName = item.split('?')[0].split('/');
-
-						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.idCard = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.theotherside = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.businessLicense = item
-						// 						this.companyForm.businessLicense = item
-						// 					}
-						// 				})
-						// 			}
-						// 		}
-						// 	})
-						// 	return
-						// }
-						// if(data.status != 2 && this.titleIndex == 0) {
-						// 	this.$message.error('个人信息提交失败，请重新提交！')
-						// 	this.firstDisable = false
-						// 	clearInterval(this.timer);
-						// 	return
-						// }
-						// if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
-						// 	if (data.ocrRegnumComparisonResult === 0) {
-						// 		this.$message.error('上传营业执照失败，请重新上传！')
-						// 		this.firstDisable = false
-						// 		clearInterval(this.timer);
-						// 	}
-						// 	return
-						// }
-						// if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
-						// 	if (data.ocrIdcardComparisonResult === 0) {
-						// 		this.$message.error('上传身份证照失败，请重新上传！')
-						// 		this.firstDisable = false
-						// 		clearInterval(this.timer);
-						// 	}
-						// 	// clearInterval(this.timer);
-						// 	return
-						// }
-						// if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0 && this.dataInfo.status != 0) {
-						// 	// this.$message.success('信息审核成功')
-						// 	this.firstDisable = false
-						// 	clearInterval(this.timer);
-						// 	this.titleIndex = 1
-						// 	this.signContract()
-						// 	return
-						// }
-						// if(this.titleIndex == 1 && data.isSignContract == true) {
-						// 	this.sms = 2
-						// 	clearInterval(this.timer);
-						// 	return
-						// }
-						
 					}
 				}).catch((e)=>{
 					if(e == '服务端操作失败') {
-						clearInterval(this.timer);
 						this.$message({message:e})
 					}
 				})
 			},
 			nexts() {
-				this.titleIndex = 1 
-				this.status = true
-				this.firstDisable = true
-				clearInterval(this.timer);
-				this.signContract()
+				
+				// // console.log(this.isSubmit);
+				if(this.isSubmit) {
+					return this.$message.warning('审核中')
+				}
+				this.enterprise()
+				// if(this.isFlag) {
+				// 	return this.$message.warning('审核中')
+				// }
+				if(this.approved) {
+					this.titleIndex = 1 
+					this.sms = 1
+					this.signContracts = true
+					// this.status = true
+					// this.firstDisable = true
+					this.signContract()
+				}
 			},
 			smsNext() {
-				clearInterval(this.timer);
-				clearInterval(this.countDown)
-				// this.getCodes = 60
-				this.titleIndex = 2
-				this.yzCode()
+				this.enterprise()
+				if(this.contract) {
+					this.titleIndex = 2
+					this.yzCode()
+				}
 			}
 		},
-		beforeDestroy() {
-			clearInterval(this.timer);
-		}
 			
 	}
 </script>
@@ -904,6 +848,30 @@
 			margin-top: 20px;
 			display: flex;
 			align-items: center;
+			.mask {
+				position: absolute;
+				top: 0;
+				width: 237px;
+				height: 150px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
+			.masks {
+				position: absolute;
+				right: 0;
+				width: 229px;
+				height: 147px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
+			.maskbig {
+				position: absolute;
+				top: 0;
+				width: 316px;
+				height: 174px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
 		}
 		.contract {
 			/deep/.contract-after-class {
