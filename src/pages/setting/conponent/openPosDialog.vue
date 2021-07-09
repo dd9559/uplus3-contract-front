@@ -102,7 +102,7 @@
       </div>
 			<div style="margin-top: 30px;color: #ff0000;height: 100px;" class="qyBox" v-if="titleIndex == 1">
 				<span v-if="sms == 1" class="qyBoxtips">当前状态：签约中</span>
-				<span v-if="sms == 2" class="qyBoxtips">当前状态：签约完成</span>
+				<span v-if="sms == 2" class="qyBoxtips">当前状态：签约完成，点击 [下一步] 发送电子签约短信</span>
 				<el-button @click="signContract" type="primary" round v-if="sms == 1 && signContracts" size="mini">补发签约短信</el-button>
 				<el-button type="primary" :class="disable ? 'contract-after-class' : ''" :disabled="disable" size="mini" @click="countDowns" round v-if="!signContracts && sms == 1">{{getCode}}</el-button>
 			</div>
@@ -596,7 +596,7 @@
 							type:'success',
 							message:res.message
 						})
-						this.currentState = '提交信息成功，审核中，点击（下一步）查询审核结果'
+						this.currentState = '提交信息成功，审核中，点击 [下一步] 查询审核结果'
 					}
 				}).catch((e)=>{
 					this.fullscreenLoading = false
@@ -634,7 +634,7 @@
 								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
 							}
 							if(copyData.status == 2 && status == 2 && ocrRegnumComparisonResult && !ocrIdcardComparisonResult) {
-
+								imgList = new Array(copyData.licenseSign)
 							}
 							if(data.status !== 2 && copyData.status == 2) {
 								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
@@ -643,8 +643,8 @@
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult == 0 && copyData.status == 2) {
 								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
-								// this.disForm = false
-								// this.mask = false
+								this.disForm = false
+								this.mask = false
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0 && copyData.status == 2) {
 								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
@@ -699,7 +699,7 @@
 							}
 							return
 						} else if (!data.isSignContract) {
-							this.currentState = '审核通过'
+							this.currentState = '审核通过,点击 [下一步] 发送电子签约短信'
 							this.info = false
 							if(!this.info && !this.next) {
 								this.titleIndex = 0
@@ -816,7 +816,7 @@
 					this.titleIndex = 2
 					this.yzCode()
 				}else {
-					this.$message.warning('请尽快完成电子签约')
+					this.$message.warning('请在短信中尽快完成电子签约')
 				}
 				
 			}
