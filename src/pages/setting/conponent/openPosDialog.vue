@@ -173,7 +173,6 @@
 					bankAccountName:'',
 				},
 				status: false,
-				isFlag: false,
 				disForm:false,
 				mask:false,
 				approved:false,
@@ -497,7 +496,9 @@
 					if(res.status == 200) {
 						this.$message.success(res.message)
 						this.handleClose()
-						this.$emit('bindingComplete',true)
+						setTimeout(()=>{
+							this.$emit('bindingComplete',true)
+						},2000)
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -627,7 +628,6 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-						this.isFlag = false
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
 						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
 						data.isSignContract && data.isPhoneChecked)) {
@@ -657,12 +657,6 @@
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0 && copyData.status == 2) {
 								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
-							}
-							if(this.isFlag) {
-								this.currentState = '审核中'
-							}else{
-								this.mask = false
-								this.disForm = false
 							}
 							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
@@ -702,7 +696,7 @@
 								}else {
 									this.$message({
 										type: 'warning',
-										message: '证件信息审核失败！'
+										message: '证件信息审核失败,请重新提交信息!'
 									})
 									this.next = false
 									this.firstDisable = false

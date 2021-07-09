@@ -196,15 +196,15 @@
             </div>
             <div class="stamp" v-if="lepCardFrontFile[0]">
               <span>法人身份证：</span> 
-              <div @click="getPicture(3)"><img :src="lepCardFrontFile[0]" alt="" width="120px" height="120px"></div>
+              <div @click="getPicture(3)" style="width:160px"><img :src="lepCardFrontFile[0]" alt="" width="100%"  height="120px"></div>
             </div>
             <div class="stamp" v-if="lepCardBackFile[0]">
               <span></span>
-              <div @click="getPicture(4)"><img :src="lepCardBackFile[0]" alt="" width="120px" height="120px"></div>
+              <div @click="getPicture(4)" style="width:160px"><img :src="lepCardBackFile[0]" alt="" width="100%" height="120px"></div>
             </div>
             <div class="stamp" v-if="licenseSignFile[0]">
               <span>营业执照：</span>
-              <div @click="getPicture(5)"><img :src="licenseSignFile[0]" alt="" width="120px" height="120px"></div>
+              <div @click="getPicture(5)" style="width:160px"><img :src="licenseSignFile[0]" alt="" width="100%" height="120px"></div>
             </div>
           </div>
         </div>
