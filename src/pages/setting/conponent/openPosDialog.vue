@@ -293,6 +293,8 @@
 				this.signContracts = true
 				this.contract = false
 				this.next = false
+				this.mask = false
+				this.disForm = false
 				this.subDisable = false
 				this.getYzCode = false
 				clearInterval(this.countDown)
