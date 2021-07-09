@@ -662,7 +662,7 @@
 								this.$nextTick(() => {
 									this.fileSign(imgList,'preload',false).then(res => {
 										for (const key in copyData) {
-											if (key !== 'data') {
+											if (!['data','status'].includes(key)) {
 												let element = copyData[key],
 														elementName = element.split('?')[0].split('/');
 												res.some(item => {
@@ -736,7 +736,7 @@
 								this.$nextTick(() => {
 									this.fileSign(imgList,'preload',false).then(res => {
 										for (const key in copyData) {
-											if (key !== 'data') {
+											if (!['data','status'].includes(key)) {
 												let element = copyData[key],
 														elementName = element.split('?')[0].split('/');
 												res.some(item => {
