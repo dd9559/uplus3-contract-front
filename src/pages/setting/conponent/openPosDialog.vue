@@ -292,6 +292,7 @@
 				this.currentState = '未提交'
 				this.sms = 1
 				this.signContracts = true
+				this.contract = false
 				this.next = false
 				this.subDisable = false
 				this.getYzCode = false
@@ -395,8 +396,6 @@
         if(data.btnId === "idCard") {
           this.companyForm.idCard = data.param[0].path+`?${data.param[0].name}`
           this.contractName = data.param[0].name
-					console.log(this.companyForm.idCard);
-					console.log(this.contractName);
         }else if(data.btnId === "theotherside") {
           this.companyForm.theotherside = data.param[0].path+`?${data.param[0].name}`
           this.contractName = data.param[0].name
@@ -412,6 +411,7 @@
               this.theotherside = res[0]
             }else if(data.btnId === "businessLicense") {
               this.businessLicense = res[0]
+							console.log(this.businessLicense,99);
             }
         })
       },
@@ -633,19 +633,7 @@
 						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
-									imgList = [],
-									dataInfo = data.resultInfo ? data.resultInfo.split(';') : []
-							let flag = []
-							dataInfo.forEach(element => {
-								element && flag.push(element.indexOf('成功'))
-							});
-							// if ((status == 2 && ocrRegnumComparisonResult === undefined && ocrIdcardComparisonResult === undefined && flag.length === 0) ||
-							// (ocrRegnumComparisonResult == 0 && flag.length === 0 ) ||
-							// (ocrRegnumComparisonResult ==1 && flag.length === 1 && flag[0] !== -1)
-							// ) {
-							// 	this.isFlag = true
-							// 	this.next = true
-							// }
+									imgList = []
 							if (status == 2) {
 								this.dataInfo.name = data.companyName
 								this.dataInfo.address = data.companyAddress
@@ -657,15 +645,8 @@
 								this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
 								this.$set(this.dataInfo,'bankCard',data.accountNo)
 							}
-							// console.log(status,ocrRegnumComparisonResult,ocrIdcardComparisonResult);
-							if(status == 2 && ocrRegnumComparisonResult == undefined || ocrIdcardComparisonResult == undefined) {
+							if((copyData.status == 2 && status == 2 &&ocrRegnumComparisonResult == undefined && ocrIdcardComparisonResult == undefined) || copyData.status == 3) {
 								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
-							}
-							if (ocrRegnumComparisonResult && flag[0] !== -1) {
-								imgList.push(copyData.licenseSign)
-							}
-							if (ocrIdcardComparisonResult && flag[1] !== -1) {
-								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
 							}
 							
 							if(data.status !== 2 && copyData.status == 2) {
@@ -683,7 +664,6 @@
 								this.mask = false
 								this.disForm = false
 							}
-							
 							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
 									this.fileSign(imgList,'preload',false).then(res => {
@@ -828,29 +808,23 @@
 				})
 			},
 			nexts() {
-				
-				// // console.log(this.isSubmit);
 				if(this.isSubmit) {
 					return this.$message.warning('审核中')
 				}
 				this.enterprise()
-				// if(this.isFlag) {
-				// 	return this.$message.warning('审核中')
-				// }
 				this.info = true
 				this.next = true
 				if(this.approved) {
 					this.titleIndex = 1 
 					this.sms = 1
 					this.signContracts = true
-					// this.status = true
-					// this.firstDisable = true
 					this.signContract()
 				}
 			},
 			smsNext() {
 				this.signContracts = false
 				this.enterprise()
+				console.log(this.contract);
 				if(this.contract) {
 					this.titleIndex = 2
 					this.yzCode()
