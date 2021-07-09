@@ -102,7 +102,7 @@
       </div>
 			<div style="margin-top: 30px;color: #ff0000;height: 100px;" class="qyBox" v-if="titleIndex == 1">
 				<span v-if="sms == 1" class="qyBoxtips">当前状态：签约中</span>
-				<span v-if="sms == 2" class="qyBoxtips">当前状态：签约完成，点击 [下一步] 发送电子签约短信</span>
+				<span v-if="sms == 2" class="qyBoxtips">当前状态：签约完成，点击 [下一步] 发送短信</span>
 				<el-button @click="signContract" type="primary" round v-if="sms == 1 && signContracts" size="mini">补发签约短信</el-button>
 				<el-button type="primary" :class="disable ? 'contract-after-class' : ''" :disabled="disable" size="mini" @click="countDowns" round v-if="!signContracts && sms == 1">{{getCode}}</el-button>
 			</div>
@@ -292,6 +292,7 @@
 				this.sms = 1
 				this.signContracts = true
 				this.contract = false
+				this.approved = false
 				this.next = false
 				this.mask = false
 				this.disForm = false
@@ -704,7 +705,7 @@
 							if(!this.info && !this.next) {
 								this.titleIndex = 0
 							}
-							console.log(this.info,99990);
+							// console.log(this.info,99990);
 							// if(this.titleIndex == 1 && this.info) {
 							// 	this.$message.warning('请尽快完成电子签约')
 							// }
