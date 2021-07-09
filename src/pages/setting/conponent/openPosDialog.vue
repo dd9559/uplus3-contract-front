@@ -22,7 +22,7 @@
 					v-loading.fullscreen.lock="fullscreenLoading"
 					element-loading-text="信息提交中"
 					element-loading-spinner="el-icon-loading"
-					element-loading-background="rgba(0, 0, 0, 0.8)">
+					element-loading-background="rgba(0, 0, 0, 0.6)">
 						<el-form-item label="企业名称：">
 							<span>{{dataInfo.name}}</span>
 						</el-form-item>
@@ -497,8 +497,8 @@
 					res= res.data
 					if(res.status == 200) {
 						this.$message.success(res.message)
-						this.handleClose()
 						setTimeout(()=>{
+							this.handleClose()
 							this.$emit('bindingComplete',true)
 						},2000)
 					}
@@ -508,23 +508,6 @@
 			},
       //提交信息
       submitInfo() {
-				let params = {
-					companyId:this.dataInfo.id,
-					name:this.dataInfo.name,
-					address:this.dataInfo.address,
-					documentCard:this.dataInfo.documentCard,
-					lepName:this.dataInfo.lepName,
-					lepDocumentCard:this.dataInfo.lepDocumentCard,
-					lepPhone:this.dataInfo.lepPhone,
-					bankAccountName:this.dataInfo.bankAccountName,
-					bankBranchName:this.dataInfo.bankBranchName,
-					bankBranchCode:this.dataInfo.bankBranchCode,
-					bankCard:this.dataInfo.bankCard,
-					lepCardFront:this.companyForm.idCard,
-					lepCardBack:this.companyForm.theotherside,
-					licenseSign:this.companyForm.businessLicense
-				}
-				console.log(params);
 				this.$refs.form.validate((vaid,object) =>{
 					console.log(vaid,object);
 					if(vaid) {
@@ -613,7 +596,7 @@
 							type:'success',
 							message:res.message
 						})
-						this.currentState = '提交信息成功，开始信息审核'
+						this.currentState = '提交信息成功，审核中，点击（下一步）查询审核结果'
 					}
 				}).catch((e)=>{
 					this.fullscreenLoading = false
@@ -647,18 +630,26 @@
 								this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
 								this.$set(this.dataInfo,'bankCard',data.accountNo)
 							}
-							if((copyData.status == 2 && status == 2 &&ocrRegnumComparisonResult == undefined && ocrIdcardComparisonResult == undefined) || copyData.status == 3) {
+							if((copyData.status == 2 && status == 2 && ocrRegnumComparisonResult == undefined && ocrIdcardComparisonResult == undefined) || copyData.status == 3) {
 								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
 							}
-							
+							if(copyData.status == 2 && status == 2 && ocrRegnumComparisonResult && !ocrIdcardComparisonResult) {
+
+							}
 							if(data.status !== 2 && copyData.status == 2) {
 								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
+								this.disForm = false
+								this.mask = false
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult == 0 && copyData.status == 2) {
 								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
+								// this.disForm = false
+								// this.mask = false
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0 && copyData.status == 2) {
 								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
+								this.disForm = false
+								this.mask = false
 							}
 							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
