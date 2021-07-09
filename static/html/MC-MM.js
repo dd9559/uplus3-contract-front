@@ -260,7 +260,12 @@ let sub = {
   },
   "val39": null,
   "val40": null,
-  "val41": null
+  "val41": null,
+  "info_check21": {
+    stateful: function () {
+      return document.querySelectorAll(`*[name=check21]`)[1].querySelector('p').getAttribute('checked') ? {'val111': null} : null
+    }
+  }
 }
 
 let checkArr = {
@@ -319,6 +324,9 @@ let checkArr = {
   },
   check20: {
     0 : ["val38"]
+  },
+  check21: {
+    1 : ["val111"]
   }
 }
 
@@ -500,6 +508,11 @@ contractConfig.checkboxListener(function(obj, i) {
           }
         }
         if (name === 'check20') {
+          if (checkArr[name][i]) {
+            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
+          }
+        }
+        if (name === 'check21') {
           if (checkArr[name][i]) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
           }

@@ -522,7 +522,7 @@
         <span>第一条：甲方的房屋位于麻城市</span>
         <span tag="input-auto" class="text-limit input-before" systemparam="propertyAddr" company="true"></span>
         <span>，(以下简称该房屋)。该房屋建筑面积约为：</span>
-        <span tag="input-auto" class="text-limit input-before" systemparam="square"></span>
+        <span tag="input-auto" class="text-limit input-before" extendparam="val111"></span>
         <span>(具体以房产证为准)平方米。该房屋所有权证书号为：</span>
         <span tag="input-auto" class="text-limit input-before" extendparam="val1"></span>
         <span>，该房屋产权人为：</span>
@@ -537,10 +537,10 @@
       <!-- 第二条 -->
       <div class="1h18 agreements">
         <span>第二条：买卖双方一致同意该房屋成交价格为人民币(小写)</span>
-        <span class="input-before" listen="number" max="16" tag="input-auto" systemParam="dealPrice"></span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val112" ></span>
         <span>元(金额大写：</span>
-        <span tag="input-auto" systemParam="dealPriceUpper" class="input-readonly"></span>
-        <span>元整)，税费（含：契税，卖方个人所得税，测量费。公证费，工本费等）由乙方承担。该房屋物业交割当天之前的物业费，水费，电费，由甲方承担，该房屋物业交割当天（含当日）之后的物业费，水费，电费，由乙方承担。交房时间签订买卖合同当天确定。乙方同意在签订本合同时，向甲方支付人民币(小写)</span>
+        <span tag="input-auto" extendparam="val112_add" systemParam="true" class="input-readonly"></span>
+        <span>)，税费（含：契税，卖方个人所得税，测量费，公证费，工本费等）由乙方承担。该房屋物业交割当天之前的物业费，水费，电费，由甲方承担，该房屋物业交割当天（含当日）之后的物业费，水费，电费，由乙方承担。交房时间签订买卖合同当天确定。乙方同意在签订本合同时，向甲方支付人民币(小写)</span>
         <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val5" ></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val5_add" systemParam="true" class="input-readonly"></span>
@@ -548,7 +548,7 @@
         <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val6" ></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val6_add" systemParam="true" class="input-readonly"></span>
-        <span>)作为甲乙双方订立该房屋买卖.顺利交付房屋的保证金，房屋交付完结，甲方持丙方所开具的收据退还交房保证金。如甲方更换家具家电，拒不支付房屋交付之前的物业，水，电，燃气费等对乙方造成的损失，丙方有权从交房保证金中扣除。甲方违约，双倍返还已收取的定金。乙方违约，无权要求甲方退还定金。</span>
+        <span>)作为甲乙双方订立该房屋买卖顺利交付房屋的保证金，房屋交付完结，甲方持丙方所开具的收据退还交房保证金。如甲方更换家具家电，拒不支付房屋交付之前的物业，水，电，燃气费等对乙方造成的损失，丙方有权从交房保证金中扣除。甲方违约，双倍返还已收取的定金。乙方违约，无权要求甲方退还定金。</span>
       </div>
 
       <!-- 第三条 -->
@@ -643,12 +643,12 @@
   </div>
 
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_MC_DJ_20210707.js"></script> 
-<!-- <script>
+<script type="text/javascript" src="/js/bundle_MC_DJ_20210707.js"></script>  -->
+<script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -684,6 +684,6 @@
             }
         }
     })();
-</script> -->
+</script>
 
 </html>

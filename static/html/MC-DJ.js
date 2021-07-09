@@ -107,9 +107,11 @@ for (let readonlyItem in msg) {
 
 
 let sub = {
+  'val111': null,
   'val1': null,
   'val3': null,
   'val4': null,
+  'val112': null,
   'val5': null,
   'val6': null,
   'checkbox_check1': {
