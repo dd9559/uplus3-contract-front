@@ -69,7 +69,7 @@
           </el-table-column>
           <el-table-column label="开通POS收款">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top" v-if="scope.row.status == 2">
+              <el-popover trigger="hover" placement="top" v-if="[2,3,4].includes(scope.row.status)">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.reason}}
                 </div>
