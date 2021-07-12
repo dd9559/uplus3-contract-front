@@ -285,6 +285,9 @@
 					theotherside:'',
 					businessLicense:''
 				},
+				this.idCard = '',
+				this.theotherside='',
+				this.businessLicense=''
 				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
@@ -601,7 +604,11 @@
 					}
 				}).catch((e)=>{
 					this.fullscreenLoading = false
-					this.$message.error(e)
+					if(e == '信息查询失败') {
+						this.$message.error('统一社会信用代码错误，请修改！')
+					}else{
+						this.$message.error(e)
+					}
 				})
 			},
 			//查询注册状态
@@ -648,7 +655,7 @@
 								this.mask = false
 							}
 							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0 && copyData.status == 2) {
-								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
+								this.currentState = '未审核通过,身份证信息审核失败，请核对身份证号码与图片是否一致'
 								this.disForm = false
 								this.mask = false
 							}
