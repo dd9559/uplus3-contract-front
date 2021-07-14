@@ -533,7 +533,10 @@
         <!-- 第二条 -->
         <p id="two" class="navTitle fontBold">第二条、居间服务费 </p>
         <p class="lh18 agreements">
-          <span>鉴于丙方已促成乙方与房屋出卖人签署《买卖合同》，经友好协商，乙方于《买卖合同》签署当日向丙方支付居间服务费人民币（小写）</span>
+          <!-- 2021年7月13日 修改 -->
+          <span>鉴于丙方已促成乙方与房屋出卖人签署《买卖合同》，经友好协商，乙方于</span>
+          <span tag="input-auto" class="body-item text-limit input-before" extendParam="val10"></span>
+          <span></span>向丙方支付居间服务费人民币（小写）</span>
           <span tag="input-auto" listen="number" max="16" class="text-limit input-before" extendParam="val2"></span>
           <span>元(大写</span>
           <span tag="input-auto" systemParam="true" extendParam="val2_add"></span>
@@ -706,6 +709,43 @@
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
 <script type="text/javascript" src="/js/bundle_JJ_JZ_20210128.js"></script>
+<!-- <script>
+  (function () {
+    var scriptList = document.getElementsByTagName("script")
+    console.log(scriptList)
+    if(!scriptList[0].src){
+      var host='https://sign2.jjw.com'
+      var host_other="http://sign2.jjw.com:28879"
+      var addrList = ["browser-polyfill.min.js","browser.min.js","datepicker.js","dropdown.js","js/bundle_WHU2_JJ20200909","datepicker.css"]
+      for (let i = 0; i < addrList.length; i++) {
+        if(window.location.host==='localhost:8080'){
+          if(addrList[i].indexOf('bundle')>-1){
+            // addrList[i]=host_other+'/'+addrList[i]
+            addrList[i]='./JZ_JJ.js'
+          }else{
+            addrList[i]=host_other+'/'+addrList[i]
+          }
+        }else{
+          addrList[i]='/'+addrList[i]
+        }
+        if(addrList[i].indexOf('.css')>-1){
+          var hm = document.createElement("link");
+          hm.rel="stylesheet"
+          hm.href = addrList[i];
+          /*var s = document.getElementsByTagName("link")[0];
+          s.parentNode.insertBefore(hm,s);*/
+          document.head.appendChild(hm);
+        }else{
+          var hm = document.createElement("script");
+          addrList[i].includes('JZ_JJ')&&(hm.type = 'module');
+          hm.src = addrList[i];
+          var s = document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1];
+          s.parentNode.insertBefore(hm,s);
+        }
+      }
+    }
+  })();
+</script> -->
 
 
 </html>

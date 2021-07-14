@@ -18,6 +18,11 @@ let Obj;
 
 let sub = {
   val1: null,
+  'info_val10': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val10]') ? {'val10': null} : null
+    }
+  },
   val2: null,
   "info_two": {
     stateful: function () {

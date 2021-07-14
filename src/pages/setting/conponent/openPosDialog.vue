@@ -7,6 +7,9 @@
       width="1200px"
       :before-close="handleClose"
       class="dep-dialog"
+			v-loading="dialogLoading"
+			element-loading-spinner="el-icon-loading"
+			element-loading-background="rgba(0, 0, 0, 0.6)"
 			@open="dialogOpen"
 			@click="handleClose">
 			<div class="titleBox"
@@ -159,6 +162,7 @@
 				firstDisable: false,
 				subDisable:false,
 				getYzCode:false,
+				dialogLoading:false,
 				signContracts:true,
 				dataInfo:{
 					bankAccountName:'',
@@ -269,8 +273,9 @@
 			//打开dialog
 			dialogOpen() {
 				this.status = false
+				this.dialogLoading = true
 				this.enterprise()
-				// console.log(this.dataInfo);
+				console.log(this.signContracts);
 			},
 			clearList() {
 				this.companyForm = {}
@@ -614,8 +619,18 @@
 			//查询注册状态
 			enterprise() {
 				let params = {
-					companyId:this.dataInfo.id
-				}
+							companyId:this.dataInfo.id
+						},
+						isSignContractFlag = false,
+						isSetTimeout = false;
+				setTimeout(() => {
+					if (isSignContractFlag && this.signContracts) {
+						this.titleIndex = 1
+						this.sms = 2
+						this.dialogLoading = false
+					}
+					isSetTimeout = true
+				},2000)
 				this.$ajax.get('/api/enterprise_pos',params).then(res => {
 					res=res.data
 					if(res.status == 200) {
@@ -625,6 +640,9 @@
 						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
 						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
+							setTimeout(() => {
+								this.dialogLoading = false
+							},1000)
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = []
 							if (status == 2) {
@@ -707,6 +725,9 @@
 							}
 							return
 						} else if (!data.isSignContract) {
+							setTimeout(() => {
+								this.dialogLoading = false
+							},1000)
 							this.currentState = '审核通过,点击 [下一步] 发送电子签约短信'
 							this.info = false
 							if(!this.info && !this.next) {
@@ -778,9 +799,11 @@
 							// }
 							return
 						} else if (!data.isPhoneChecked) {
-							if(this.signContracts) {
+							isSignContractFlag = true
+							if(this.signContracts && isSetTimeout && this.dialogLoading) {
 								this.titleIndex = 1
 								this.sms = 2
+								this.dialogLoading = false
 							}
 							if(data.isSignContract) {
 								this.contract = true
@@ -797,6 +820,7 @@
 						} 
 					}
 				}).catch((e)=>{
+					this.dialogLoading = false
 					if(e == '服务端操作失败') {
 						this.$message({message:e})
 					}
