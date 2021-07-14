@@ -618,6 +618,7 @@
 				}
 				this.$ajax.get('/api/enterprise_pos',params).then(res => {
 					res=res.data
+
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
@@ -643,6 +644,12 @@
 							}
 							if(copyData.status == 2 && status == 2 && ocrRegnumComparisonResult && !ocrIdcardComparisonResult) {
 								imgList = new Array(copyData.licenseSign)
+							}
+							if(copyData.status == 3) {
+								this.currentState = '信息审核中，请稍后查询'
+								// this.next = true
+								this.disForm = true
+								this.mask = true
 							}
 							if(data.status !== 2 && copyData.status == 2) {
 								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
@@ -688,29 +695,24 @@
 									})
 								})
 							}
-							if (this.status&&(data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
-								if(copyData.status == 3) {
-									this.currentState = '信息审核中，请稍后查询'
-									this.next = true
-									this.disForm = true
-									this.mask = true
-								}else {
-									this.$message({
-										type: 'warning',
-										message: '证件信息审核失败,请重新提交信息!'
-									})
-									this.next = false
-									this.firstDisable = false
-									this.subDisable = false
-								}
+							// console.log(this.status,data.status != 2,data.ocrRegnumComparisonResult == 0,data.ocrIdcardComparisonResult == 0);
+							if (this.status&&copyData.status == 2&&(data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
+								this.$message({
+									type: 'warning',
+									message: '证件信息审核失败,请重新提交信息!'
+								})
+								this.next = false
+								this.firstDisable = false
+								this.subDisable = false
 								return
 							}
-							return
 						} else if (!data.isSignContract) {
 							this.currentState = '审核通过,点击 [下一步] 发送电子签约短信'
 							this.info = false
+							
 							if(!this.info && !this.next) {
 								this.titleIndex = 0
+
 							}
 							// console.log(this.info,99990);
 							// if(this.titleIndex == 1 && this.info) {
@@ -804,6 +806,7 @@
 			},
 			nexts() {
 				if(this.isSubmit) {
+					this.currentState = '信息审核中，请稍后查询'
 					return this.$message.warning('审核中')
 				}
 				this.enterprise()
