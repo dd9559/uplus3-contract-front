@@ -199,6 +199,7 @@
 				getCodes:'60',
 				disable:false,
 				next:false,
+				countDown:null,
 				rulesForm: {
 					address:[
 						{ required: true, message: '请输入企业地址', trigger: 'blur' },
@@ -307,6 +308,7 @@
 				this.subDisable = false
 				this.getYzCode = false
 				clearInterval(this.countDown)
+				this.$emit('bindingComplete',true)
 				this.getYzCode = true
         this.$emit("handleDialogClose",this.clearList);
       },
@@ -447,6 +449,7 @@
 			},
 			//倒计时
 			countDowns(e) {
+				clearInterval(this.countDown)
 				if(e == 'yzCode') {
 					this.disable = true
 					this.getCodes = 60
@@ -665,7 +668,7 @@
 							}
 							if(copyData.status == 3) {
 								this.currentState = '信息审核中，请稍后查询'
-								// this.next = true
+								this.next = true
 								this.disForm = true
 								this.mask = true
 							}
@@ -809,6 +812,7 @@
 							}
 							if(data.isSignContract) {
 								this.contract = true
+								console.log(this.contract);
 							}
 							// if(this.titleIndex == 1) {
 							// 	this.contract = true
@@ -844,15 +848,19 @@
 				}
 			},
 			smsNext() {
+				clearInterval(this.countDown)
 				this.signContracts = false
 				this.enterprise()
-				console.log(this.contract);
-				if(this.contract) {
-					this.titleIndex = 2
-					this.yzCode()
-				}else {
-					this.$message.warning('请在短信中尽快完成电子签约')
-				}
+				// console.log(this.contract);
+				// return
+				setTimeout(()=>{
+					if(this.contract) {
+						this.titleIndex = 2
+						this.yzCode()
+					}else {
+						this.$message.warning('请在短信中尽快完成电子签约')
+					}
+				},1000)
 				
 			}
 		},
