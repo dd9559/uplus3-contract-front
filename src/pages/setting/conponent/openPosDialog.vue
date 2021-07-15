@@ -652,6 +652,7 @@
 							if (status == 2) {
 								this.dataInfo.name = data.companyName
 								this.dataInfo.address = data.companyAddress
+								this.dataInfo.documentCard = data.uniCredit
 								this.dataInfo.lepName = data.legalName
 								this.dataInfo.lepDocumentCard = data.legalIds
 								this.dataInfo.lepPhone = data.legalPhone
