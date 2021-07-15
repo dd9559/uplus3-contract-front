@@ -74,13 +74,19 @@
         currentNum: 0,//执行上传的次数
         canvasBlobState:false,//图片转成透明背景色是否已经执行过
         fileLeng:0,
-        flag: false,
+        // flag: false,
+        maxNumFlag: false,
+        maxSizeFlag: false,
+        maxNameFlag: false,
       }
     },
     mounted() {
       let that = this
       this.filePath = []
-      this.flag = false
+      // this.flag = false
+      this.maxNumFlag = false
+      this.maxSizeFlag = false
+      this.maxNameFlag = false
       this.$nextTick(() => {
         this.uploader = new plupload.Uploader({
           runtimes: 'html5',
@@ -99,22 +105,38 @@
           },
           init: {
             FilesAdded: function (up, files) {
-              that.flag = false
+              // that.flag = false
+              that.maxNumFlag = false
+              that.maxSizeFlag = false
+              that.maxNameFlag = false
               files.map((item,index) => {
                 if (that.getNum + index + 1 > that.maxNum) {
                   that.uploader.removeFile(item)
-                  that.flag = true
+                  that.maxNumFlag = true
                 }
                 if (item.size > that.maxSize * 1024 *1024) {
                   that.uploader.removeFile(item)
-                  that.flag = true
+                  that.maxSizeFlag = true
+                }
+                if (item.name.length > 100) {
+                  that.uploader.removeFile(item)
+                  that.maxNameFlag = true
                 }
               });
               this.fileLeng=up.files.length
               // 选择文件后执行
               if(up.files.length===0){
-                if (that.flag) {
-                  let msg = up.files.length > that.maxNum ? `上传文件大小不能超过${that.maxSize}M,最多上传${that.maxNum}张` : `上传文件大小不能超过${that.maxSize}M`
+                if (that.maxNumFlag || that.maxSizeFlag || that.maxNameFlag) {
+                  let msg = ''
+                  if (that.maxSizeFlag) {
+                    msg += `上传文件大小不能超过${that.maxSize}M`
+                  }
+                  if (that.maxNumFlag) {
+                    msg += `最多上传${that.maxNum}张`
+                  }
+                  if (that.maxNameFlag) {
+                    msg += `上传文件名长度不能超过100字符`
+                  }
                   return that.$message(msg);
                 }
                 return
@@ -246,8 +268,17 @@
                 if (that.currentNum === up.files.length) {
                   // 向父组件传递监听函数，并初始化上传配置
                   loading.close()
-                  if (that.flag) {
-                    let msg = up.files.length > that.maxNum ? `超过${that.maxSize}M,最多上传${that.maxNum}张` : `超过${that.maxSize}M`
+                  if (that.maxNumFlag || that.maxSizeFlag || that.maxNameFlag) {
+                    let msg = ''
+                    if (that.maxSizeFlag) {
+                      msg += `上传文件大小不能超过${that.maxSize}M`
+                    }
+                    if (that.maxNumFlag) {
+                      msg += `最多上传${that.maxNum}张`
+                    }
+                    if (that.maxNameFlag) {
+                      msg += `上传文件名长度不能超过100字符`
+                    }
                     that.$message(msg)
                   }
                   that.$emit('getUrl', {param: that.filePath, btnId: that.getId})
@@ -420,7 +451,10 @@
             }
           }).catch(error => {
             reject()
+            loading.close()
             this.uploader.splice(0, this.uploader.files.length)
+            this.currentNum = 0
+            this.filePath = []
             this.$message({
               message: '网络异常，稍后再试'
             })

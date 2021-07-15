@@ -67,9 +67,9 @@
               <span>{{scope.row.deptName + ' ' + scope.row.createByName}}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="开通POS收款">
+          <el-table-column label="开通POS收款">
             <template slot-scope="scope">
-              <el-popover trigger="hover" placement="top" v-if="scope.row.status == 2">
+              <el-popover trigger="hover" placement="top" v-if="[2,3,4].includes(scope.row.status)">
                 <div style="width:160px;word-break: break-all;word-wrap:break-word;white-space: normal;text-align: justify">
                   {{scope.row.reason}}
                 </div>
@@ -82,10 +82,10 @@
             <template slot-scope="scope">
               <span>{{(scope.row.status === 1 ? scope.row.posTime : '')|formatDate(2)}}</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column label="操作" min-width="80">
             <template slot-scope="scope">
-              <!-- <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button> -->
+              <el-button type="text" @click="openPosCollection(scope.row)" size="medium" v-if="power['sign-set-bl-openPos'].state && scope.row.status !== 1">开通POS收款</el-button>
               <el-button type="text" @click="viewEditCompany(scope.row,'init')" size="medium" v-if="power['sign-set-gs'].state">查看</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state && (scope.row.verifyState == 0 ||scope.row.verifyState == 2 ||scope.row.verifyState == 1)">认证</el-button>
               <el-button type="text" class="edit-btn" @click="viewEditCompany(scope.row,'edit')" size="medium" v-if="power['sign-set-gs'].state &&editBtnShow(scope.row) && scope.row.verifyState == 3">编辑</el-button>
@@ -187,12 +187,24 @@
           <div>
             <p class="title">其它信息</p>
             <div class="stamp">
-              <span>合同章: </span>
+              <span>合同章：</span>
               <div @click="getPicture(1)"><img :src="preConFile[0]" alt="" width="120px" height="120px"></div>
             </div>
             <div class="stamp">
-              <span>财务章: </span>
+              <span>财务章：</span>
               <div @click="getPicture(2)"><img :src="preFinFile[0]" alt="" width="120px" height="120px"></div>
+            </div>
+            <div class="stamp" v-if="lepCardFrontFile[0]">
+              <span>法人身份证：</span> 
+              <div @click="getPicture(3)" style="width:160px"><img :src="lepCardFrontFile[0]" alt="" width="100%"  height="120px"></div>
+            </div>
+            <div class="stamp" v-if="lepCardBackFile[0]">
+              <span></span>
+              <div @click="getPicture(4)" style="width:160px"><img :src="lepCardBackFile[0]" alt="" width="100%" height="120px"></div>
+            </div>
+            <div class="stamp" v-if="licenseSignFile[0]">
+              <span>营业执照：</span>
+              <div @click="getPicture(5)" style="width:160px"><img :src="licenseSignFile[0]" alt="" width="100%" height="120px"></div>
             </div>
           </div>
         </div>
@@ -215,7 +227,7 @@
             </template>
           </el-table-column>
           <el-table-column label="门店名称" prop="name"></el-table-column>
-          <!-- <el-table-column label="商户号" prop="name">
+          <el-table-column label="商户号" prop="name">
             <template slot-scope="scope">
               <span>{{scope.row.vspCusid || '-'}}</span>
             </template>
@@ -224,12 +236,12 @@
             <template slot-scope="scope">
               <span>{{scope.row.vspTermid || '-'}}</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>
           <el-table-column label="操作" width="170">
             <template slot-scope="scope">
               <el-button type="text" @click="clickOpen(scope.row,'company',scope.$index)" size="medium" v-if="power['sign-set-gs'].state">解绑公司</el-button>
-              <!-- <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
-              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button> -->
+              <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
+              <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -529,9 +541,15 @@
         bdHomeStoreList:[],
         preConFile: [], //合同章缩略图
         preFinFile: [], //财务章缩略图
+        lepCardBackFile: [], //法人身份证缩略图
+        lepCardFrontFile: [], //法人身份证反面缩略图
+        licenseSignFile: [], //营业执照缩略图
         openpos:false,
         posInfo:{},
-        posDialog:false
+        posDialog:false,
+        lepCardFront:[],
+        lepCardBack:[],
+        licenseSign:[]
       }
     },
     mounted() {
@@ -738,6 +756,9 @@
         this.searchDepTableData = []
         this.end = true
         this.page = 1
+        this.lepCardFront = []
+        this.lepCardBack = []
+        this.licenseSign = []
         done()
       },
       addDep() {
@@ -1006,6 +1027,8 @@
       },
       handleCloses() {
         this.posDialog = false
+        this.posInfo = {}
+        console.log(this.posInfo,96969);
       },
       //开通POS收款
       openPosCollection(data) {
@@ -1015,6 +1038,7 @@
       },
       //点击查看和编辑
       viewEditCompany(row, type) {
+        console.log(row);
         if(type === 'init') {
           this.searchDepTableData = []
           this.deptName = ''
@@ -1038,7 +1062,19 @@
           entBankList: currentRow.entBankList,
           franchiseRatio: "",
           verifyState:currentRow.verifyState,
-          warrantState:currentRow.warrantState
+          warrantState:currentRow.warrantState,
+        }
+        if(currentRow.lepCardFront) {
+          newForm.lepCardFront = currentRow.lepCardFront
+          this.lepCardFront = newForm.lepCardFront.split('?')[0]
+        }
+        if(currentRow.lepCardBack) {
+          newForm.lepCardBack = currentRow.lepCardBack
+          this.lepCardBack = newForm.lepCardBack.split('?')[0]
+        }
+        if(currentRow.licenseSign) {
+          newForm.licenseSign = currentRow.licenseSign
+          this.licenseSign = newForm.licenseSign.split('?')[0]
         }
         this.companyForm = newForm
         //获取电子章文件名和签名展示缩略图
@@ -1046,11 +1082,23 @@
         this.financialName = newForm.financialSign.split('?')[1]
         let arr1 = [newForm.contractSign.split('?')[0]]
         let arr2 = [newForm.financialSign.split('?')[0]]
+        let arr3 = [this.lepCardFront]
+        let arr4 = [this.lepCardBack]
+        let arr5 = [this.licenseSign]
         this.fileSign(arr1, 'preload').then(res => {
             this.preConFile = res
         })
         this.fileSign(arr2, 'preload').then(res => {
             this.preFinFile = res
+        })
+        this.fileSign(arr3, 'preload').then(res => {
+            this.lepCardFrontFile = res
+        })
+        this.fileSign(arr4, 'preload').then(res => {
+            this.lepCardBackFile = res
+        })
+        this.fileSign(arr5, 'preload').then(res => {
+            this.licenseSignFile = res
         })
         if (type !== 'init') {
           this.setCompanyData(newForm)
@@ -1069,8 +1117,14 @@
         let img_arr = []
         if(type === 1) {
           img_arr.push({path:this.companyForm.contractSign.split('?')[0],name:this.companyForm.contractSign.split('?')[1]})
-        } else {
+        } else if(type === 2) {
           img_arr.push({path:this.companyForm.financialSign.split('?')[0],name:this.companyForm.financialSign.split('?')[1]})
+        } else if(type === 3 && this.companyForm.lepCardFront) {
+          img_arr.push({path:this.companyForm.lepCardFront.split('?')[0],name:this.companyForm.lepCardFront.split('?')[1]})
+        } else if(type === 4 && this.companyForm.lepCardBack){
+          img_arr.push({path:this.companyForm.lepCardBack.split('?')[0],name:this.companyForm.lepCardBack.split('?')[1]})
+        } else if(type === 5 && this.companyForm.licenseSign){
+          img_arr.push({path:this.companyForm.licenseSign.split('?')[0],name:this.companyForm.licenseSign.split('?')[1]})
         }
         this.previewPhoto(img_arr,0)
       },
@@ -1629,7 +1683,7 @@
         display: flex;
         float: left;
         margin-top: 20px;
-        span { margin-right: 5px; }
+        span { margin-right: 5px; width: 120px;text-align: right;}
         > div {
           width: 120px;
           height: 120px;

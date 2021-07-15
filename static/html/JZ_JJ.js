@@ -1,12 +1,47 @@
 import { contractConfig, toChineseNumber, formatMoney } from "./base.js";
 
-let Obj = {
-  cn_arr: ["val2"]
-};
+let Obj;
+(function() {
+    let t = document.querySelectorAll(`[extendParam]`);
+    let arr = [];
+
+    t.forEach(e => {
+        let name = e.getAttribute("extendParam")
+        if (name.indexOf("_add") > 0) {
+            let name2 = name.slice(0, -4);
+            arr.push(name2);
+        }
+    });
+    Obj = Obj || {};
+    Obj.cn_arr = arr;
+})()
 
 let sub = {
   val1: null,
-  val2: null
+  'info_val10': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val10]') ? {'val10': null} : null
+    }
+  },
+  val2: null,
+  "info_two": {
+    stateful: function () {
+      if (!document.querySelector(`*[name=two]`)) {
+        return null
+      } else {
+        return {"checkbox_two": {
+          stateful: function (index) {
+            return index === 3 ? {"val102":null} : null
+          }
+        }}
+      }
+    }
+  },
+  'info_val104': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val104]') ? {'val104': null} : null
+    }
+  },
 };
 
 //给按钮添加点击事件
@@ -51,40 +86,59 @@ textLong.forEach(function(item) {
   });
 });
 
+// 选择第几个
+let indexChcek = 0;
+contractConfig.checkboxListener(function(obj, i) {
+  indexChcek = i;
+}, function(obj, boxArray) {
+  // 循环
+  boxArray.forEach((e, i) => {
+      let bool = e.querySelector('p').getAttribute('checked');
+      let name = e.getAttribute('name');
+      if(name === 'two' && document.querySelector("[extendparam=val102]")){
+        if (indexChcek === 3) {
+          contractConfig.initForm(["val102"], 0);
+        } else {
+          contractConfig.initForm(["val102"], 1);
+        }
+      }
+  });
+});
+
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "ee2353-344，ii397-4839",
-  guestName: "然迪生",
-  guestNames: "胜负少，发士夫",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "ee2353-344，ii397-4839",
-  ownerName: "熊先",
-  ownerNames: "胜多少，发士夫",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "是的噶几开会说",
-  dealPrice: 1000,
-  dealPriceUpper: '壹仟',
-  square: 160,
-  guestStoreRegisterCode: '213',
-  signDate: 1592465819508,
-  wtSignDate: 1592465819508,
-  organizationCode:"8888888888"
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "ee2353-344，ii397-4839",
+//   guestName: "然迪生",
+//   guestNames: "胜负少，发士夫",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "ee2353-344，ii397-4839",
+//   ownerName: "熊先",
+//   ownerNames: "胜多少，发士夫",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   propertyAddr: "a市b区c",
+//   singleCompany: "是的噶几开会说",
+//   dealPrice: 1000,
+//   dealPriceUpper: '壹仟',
+//   square: 160,
+//   guestStoreRegisterCode: '213',
+//   signDate: 1592465819508,
+//   wtSignDate: 1592465819508,
+//   organizationCode:"8888888888"
+// }
 for (let readonlyItem in msg) {
   //得到readonly的值
   let onlyReadDom = Array.from(

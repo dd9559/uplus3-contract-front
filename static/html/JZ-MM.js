@@ -30,16 +30,16 @@ let sub = {
       return document.querySelector('*[extendparam=val117]') ? {'val117': null} : null
     }
   },
-  // "checkbox_check1": {
-  //   stateful: function (index) {
-  //     return [0,1].includes(index) ? {"val4": null}:''
-  //   }
-  // },
-  // "checkbox_check2": {
-  //   stateful: function (index) {
-  //     return index === 0 ? {"val5":null,"val6":null,"val7":null,"val8":null,} : {"val9":null,"checkbox_check3":null}
-  //   }
-  // },
+  "checkbox_check1": {
+    stateful: function (index) {
+      return [0,1].includes(index) ? {"val4": null}:''
+    }
+  },
+  "checkbox_check2": {
+    stateful: function (index) {
+      return index === 0 ? {"val5":null,"val6":null,"val7":null,"val8":null,} : {"val9":null,"checkbox_check3":null}
+    }
+  },
   // "checkbox_check4": null, // 新添加
   "checkbox_check4": {
     stateful: function (index) {
@@ -62,7 +62,11 @@ let sub = {
   },
   "checkbox_check6": null,
   "val16": null,
-  "val18": null,
+  'info_val18': {
+    stateful: function () {
+      return document.querySelector('*[extendparam=val18]').innerHTML !== '' ? {'val18': null} : null
+    }
+  },
   "checkbox_check7": null,
   "checkbox_check8": {
     stateful: function (index) {
@@ -107,13 +111,27 @@ let sub = {
       return i === "(1)" ? {"val43": null} : i === "(2)" ? {"val44": null} : {"val45": null}
     }
   },
-  "val46": null,
+  // "val46": null,
   "checkbox_check22": null,
   "drapdown_val49":{
     stateful: function (i) {
       return i === "(1)" ? {"val50": null} : null
     }
-  }
+  },
+  "info_four": {
+    stateful: function () {
+      return document.querySelector(`*[name=four]`) ? {'checkbox_four': null} : null
+    }
+  },
+  "info_check30": {
+    stateful: function () {
+      return document.querySelector(`*[name=check30]`) ? {'checkbox_check30': {
+        stateful: function (index) {
+          return index === 0 ? {"val80":null} : null
+        }
+      }} : null
+    }
+  },
 }
 
 let checkArr = {
