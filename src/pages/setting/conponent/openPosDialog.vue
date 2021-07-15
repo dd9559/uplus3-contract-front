@@ -640,6 +640,7 @@
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
+								console.log(data);
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
 						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
 						data.isSignContract && data.isPhoneChecked)) {
@@ -649,6 +650,7 @@
 							},1000)
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
 									imgList = []
+									
 							if (status == 2) {
 								this.dataInfo.name = data.companyName
 								this.dataInfo.address = data.companyAddress
@@ -664,6 +666,7 @@
 							if((copyData.status == 2 && status == 2 && ocrRegnumComparisonResult == undefined && ocrIdcardComparisonResult == undefined) || copyData.status == 3) {
 								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
 							}
+							console.log(data,777);
 							if(copyData.status == 2 && status == 2 && ocrRegnumComparisonResult && !ocrIdcardComparisonResult) {
 								imgList = new Array(copyData.licenseSign)
 							}
@@ -752,6 +755,7 @@
 								this.dataInfo.name = data.companyName
 								this.dataInfo.address = data.companyAddress
 								this.dataInfo.lepName = data.legalName
+								this.dataInfo.documentCard = data.uniCredit
 								this.dataInfo.lepDocumentCard = data.legalIds
 								this.dataInfo.lepPhone = data.legalPhone
 								this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
