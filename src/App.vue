@@ -20,7 +20,7 @@
           <el-menu ref="menu" :router="true" :collapse-transition="false" :collapse="collapse" @open="openAllNav"
             @select="handleSelect" class="el-menu-demo" active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{ 'collapse-row': collapse }]" v-for="item in views"
-              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.can">
+              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.id !== 9 && item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{ item.name }}</span>
@@ -57,6 +57,13 @@
               <div class="el-submenu__title">
                 <i class="iconfont" :class="views[7].icon"></i>
                 <span>{{ views[7].name }}</span>
+              </div>
+            </el-menu-item>
+            <el-menu-item :index="views[8].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
+              v-if="views[8].can">
+              <div class="el-submenu__title">
+                <i class="iconfont" :class="views[8].icon"></i>
+                <span>{{ views[8].name }}</span>
               </div>
             </el-menu-item>
           </el-menu>
@@ -176,7 +183,7 @@ export default {
           let arr = val.privileges;
           this.views.forEach((item, index) => {
             let sliders = [];
-            if (item.id === 7 || item.id === 8) {
+            if (item.id === 7 || item.id === 8 || item.id === 9) {
               let objType = Object.prototype.toString.call(item.code);
               if (objType === "[object Boolean]") {
                 // item.can = item.code
