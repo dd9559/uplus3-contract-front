@@ -84,6 +84,9 @@ const iframTest = () => import("@/pages/iframe/iframeTest")
 const ledger = () => import("@/pages/ledger/ledgerDetails")
 const errorMsg = () => import("@/errorMsg")
 
+//文件下载
+const download = () => import("@/pages/download")
+
 // Vue.use(Router)
 
 export default new Router({
@@ -496,6 +499,15 @@ export default new Router({
       {
         path: "otherContractDetail",
         component: otherContractDetail,
+      },
+      //文件下载
+      {
+        path: "download",
+        component: download,
+        meta: {
+          root: true,
+          list: ["文件下载"]
+        }
       },
     ]
   },
