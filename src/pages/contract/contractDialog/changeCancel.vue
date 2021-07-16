@@ -373,6 +373,7 @@
       },
       //获取变更解约详情
       getChangeDetail(type) {
+        console.log(type,111);
         let param = {
           type: type,
           // id: this.contId

@@ -5,6 +5,7 @@
       class="info-scrollbar"
       :data="tableDate"
       style="width: 100%"
+      @row-dblclick="openChangeCancel"
       border
     >
       <el-table-column label="合同信息" label-class-name="pdl" min-width="200" fixed>
@@ -250,6 +251,12 @@ export default {
     this.getDictionary(); //字典
   },
   methods: {
+    //双击打开
+    openChangeCancel(row,column,e) {
+      console.log(row);
+      this.changeCancel = true
+      this.contId = row.id
+    },
     choseCheckPerson(row, type) {
       this.checkPerson.code = row.code;
       this.checkPerson.state = true;
