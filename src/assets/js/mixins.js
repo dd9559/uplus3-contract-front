@@ -33,7 +33,9 @@ const MIXINS = {
       tableNumberCom: null,
       systemTagList: [],
       systemTagSelect: [],
-      HQloadingList: false
+      HQloadingList: false,
+      isSetTimeOut:false,
+      isFlag:false
     }
   },
   watch: {
@@ -437,51 +439,18 @@ const MIXINS = {
     /**
      * 导出excel
      */
-    excelCreate: function (url, param) {
-      if (this.HQloadingList) {
-        this.$message.warning('资源下载中请勿重复点击！')
-        return
-      }
+    excelCreate: function(url, param) {
       this.HQloadingList = true
-      this.$message.success('开始导出报表！')
-      this.$ajax.getFile(`/api${url}`, param).then(res => {
-        this.HQloadingList = false
-        let link = document.createElement('a')
-        link.style.display = "none"
-        let fileName = decodeURI(res.headers["content-disposition"].split(";")[1].split("filename=")[1])
-        let blob = new Blob([res.data], { type: 'application/vnd.ms-excel' })
-        link.href = URL.createObjectURL(blob)
-        link.setAttribute('download', fileName)
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link) // 下载完成移除元素
-        window.URL.revokeObjectURL(blob)
-
-        // if (res.headers['content-type'] === 'application/octet-stream') {
-        //   this.HQloadingList = false
-        //   let link = document.createElement('a')
-        //   link.style.display = 'none'
-        //   let query = Object.entries(param)
-        //   .reduce((result, entry) => {
-        //       result.push(entry.join('='))
-        //       return result
-        //   }, []).join('&')
-        //   link.href = `${window.location.origin}/api${url}?${query}`
-        //   console.log(`${window.location.origin}/api${url}?${query}`,'`${window.location.origin}/api${url}?${query}`');
-        //   link.download = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('=')[1]) //下载的文件名
-        //   document.body.appendChild(link)
-        //   link.click()
-        //   document.body.removeChild(link)
-        // } else if (res.data.status === 200) {
-        //   this.HQloadingList = false
-        //   this.fileSign([res.data.data], 'download')
-        // }
-      }).catch(error => {
-        this.$message({
-          message: '暂无可导出数据！'
+      this.$message.success('文件正在导出，请到文件下载菜单获取！')
+      if((this.HQloadingList && !this.isSetTimeout) || this.isFlag) {
+        this.$ajax.getFile(`/api${url}`, param).then(res =>{
+          this.isFlag = false
+          this.isSetTimeout = true
+          setTimeout(()=>{
+            this.isFlag = true
+          },5000)
         })
-        this.HQloadingList = false
-      })
+      }
     },
     /**
      * 权限判断
