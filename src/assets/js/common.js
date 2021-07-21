@@ -461,7 +461,7 @@ let TOOL = {
       name: "文件下载",
       category: "download",
       can: true, //是否可见
-      icon: "icon-caiwu",
+      icon: "icon-daochu",
       code: true,
       child: []
     },

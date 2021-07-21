@@ -359,7 +359,7 @@
       :destroy-on-close="true"
       width="740px"
       class="log-dialog">
-        <el-button class="f_r" round type="primary" size="medium" v-if="power['sign-set-bl-tx-info'].state" @click="getExcel"
+        <el-button class="f_r" round type="primary" size="medium" v-if="power['sign-set-bl-tx-info'].state" @click="getExcel" v-dbClick
                    style="padding:9px 15px;min-width: 80px;margin: 8px;">导出
         </el-button>
         <el-table :data="withdrawRecordData" v-loadmore="withdrawLazyLoad" style="width: 100%" border :max-height="445">

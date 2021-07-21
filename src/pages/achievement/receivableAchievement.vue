@@ -144,7 +144,7 @@
             </li>
           </ul> -->
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel"
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" v-dbClick
                    style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出
         </el-button>
       </div>

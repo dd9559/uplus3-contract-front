@@ -117,6 +117,7 @@
             type="primary"
             size="small"
             @click="getExcel"
+            v-dbClick
           >导出</el-button>
         </div>
       </div>
