@@ -441,15 +441,19 @@ const MIXINS = {
      */
     excelCreate: function(url, param) {
       this.HQloadingList = true
-      this.$message.success('文件正在导出，请到文件下载菜单获取！')
       if((this.HQloadingList && !this.isSetTimeout) || this.isFlag) {
         this.$ajax.getFile(`/api${url}`, param).then(res =>{
+          this.$message.success('文件正在导出，请到文件下载菜单获取！')
           this.isFlag = false
           this.isSetTimeout = true
           setTimeout(()=>{
             this.isFlag = true
           },5000)
+        }).catch(e=>{
+          this.$message.error(e)
         })
+      }else {
+        this.$message.success('文件正在导出，请到文件下载菜单获取！')
       }
     },
     /**

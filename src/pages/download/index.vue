@@ -147,7 +147,7 @@ export default {
     resetFormFn() {
       TOOL.clearForm(this.downLoadForm);
       this.pageNum = 1;
-      this.initTimePicker()
+      // this.initTimePicker()
       // this.EmployeList = []
     },
   }
