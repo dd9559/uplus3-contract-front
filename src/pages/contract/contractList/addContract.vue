@@ -549,7 +549,43 @@
                         class="thirdParty">备注栏 <span class="attention iconfont icon-tubiao-10"
                             :class="{'attention_':showRemark}"></span></p>
                     <div class="remarkType" v-show="showRemark">
-                        <el-form-item style="padding-left:20px;padding-bottom:30px;position:relative;">
+                        <el-form-item label="客户后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
+                            <span class="merge">
+                                <input v-model="commissionGuestList.name"
+                                    :disabled="canInput"
+                                    placeholder="姓名"
+                                    maxlength="30"
+                                    @input="inputOnly(null,'commissionGuestList')"
+                                    class="name_"
+                                    :class="{'disabled':canInput}">
+                                <input v-model="commissionGuestList.mobile"
+                                    :disabled="canInput"
+                                    type="tel"
+                                    placeholder="电话"
+                                    class="mobile_"
+                                    :class="{'disabled':canInput}"
+                                    @input="verifyMobile(commissionGuestList,null,'commissionGuestList')">
+                            </span>
+                        </el-form-item>
+                        <el-form-item label="业主后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
+                            <span class="merge">
+                                <input v-model="commissionOwnerList.name"
+                                    :disabled="canInput"
+                                    placeholder="姓名"
+                                    maxlength="30"
+                                    @input="inputOnly(null,'commissionOwnerList')"
+                                    class="name_"
+                                    :class="{'disabled':canInput}">
+                                <input v-model="commissionOwnerList.mobile"
+                                    :disabled="canInput"
+                                    type="tel"
+                                    placeholder="电话"
+                                    class="mobile_"
+                                    :class="{'disabled':canInput}"
+                                    @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')">
+                            </span>
+                        </el-form-item>
+                        <el-form-item label="合同备注：" :label-width="contractForm.type===2||contractForm.type===3 ? '154px' : 'auto'" label-position="right">
                             <!-- @input="inputCode('remarks')" -->
                             <el-input type="textarea"
                                 :rows="8"
@@ -880,6 +916,10 @@ export default {
                 }
             ],
             ownerList_: [],
+            commissionOwnerList: {
+                name: '',
+                mobile: ''
+            },
             //客户信息
             guestList: [
                 {
@@ -897,6 +937,10 @@ export default {
                 }
             ],
             guestList_: [],
+            commissionGuestList: {
+                name: '',
+                mobile: ''
+            },
             dialogType: "",
             isShowDialog: false,
             dialogSave: false,
@@ -1330,6 +1374,20 @@ export default {
                         );
                     }
                     item.mobile = this.guestList[index].mobile;
+                } else {
+                    if (beginNum.test(item.mobile)) {
+                        this[type].mobile = item.mobile.substring(
+                            0,
+                            13
+                        );
+                        // }else if(beginNum_.test(item.mobile)){
+                    } else {
+                        this[type].mobile = item.mobile.substring(
+                            0,
+                            11
+                        );
+                    }
+                    item.mobile = this[type].mobile;
                 }
             }
             if (item.isEncryption) {
@@ -2041,14 +2099,87 @@ export default {
                                                                     militaryIDList.length ===
                                                                     militaryIDList_.length
                                                                 ) {
+                                                                    // 验证代办人
+                                                                    let isCommissionOwner = Object.values(this.commissionOwnerList).some(item => item !== ''),
+                                                                        isCommissionGuest = Object.values(this.commissionGuestList).some(item => item !== ''),
+                                                                        CommissionOwnerOk = true,
+                                                                        CommissionGuestOk = true,
+                                                                        reg = /^1[0-9]{10}$/,
+                                                                        reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
+                                                                    
+                                                                    
+
+                                                                    if (isCommissionOwner) {
+                                                                            CommissionOwnerOk = false
+                                                                            if (this.commissionOwnerList.name == '' || this.commissionOwnerList.mobile == '') {
+                                                                                this.$message(
+                                                                                    {
+                                                                                        message:
+                                                                                            "业主后期代办联系人-未填写完整",
+                                                                                        type:
+                                                                                            "warning"
+                                                                                    }
+                                                                                );
+                                                                            } else {
+                                                                                if (reg.test(this.commissionOwnerList.mobile)) {
+                                                                                    CommissionOwnerOk = true
+                                                                                } else {
+                                                                                    this.$message(
+                                                                                        {
+                                                                                            message:
+                                                                                                "业主后期代办联系人-电话号码不正确",
+                                                                                            type:
+                                                                                                "warning"
+                                                                                        }
+                                                                                    );
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (isCommissionGuest) {
+                                                                            CommissionGuestOk = false
+                                                                            if (this.commissionGuestList.name == '' || this.commissionGuestList.mobile == '') {
+                                                                                this.$message(
+                                                                                    {
+                                                                                        message:
+                                                                                            "客户后期代办联系人-未填写完整",
+                                                                                        type:
+                                                                                            "warning"
+                                                                                    }
+                                                                                );
+                                                                            } else {
+                                                                                if (reg.test(this.commissionGuestList.mobile)) {
+                                                                                    CommissionGuestOk = true
+                                                                                } else {
+                                                                                    this.$message(
+                                                                                        {
+                                                                                            message:
+                                                                                                "客户后期代办联系人-电话号码不正确",
+                                                                                            type:
+                                                                                                "warning"
+                                                                                        }
+                                                                                    );
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if (CommissionOwnerOk && CommissionGuestOk && this.commissionOwnerList.mobile && this.commissionGuestList.mobile && this.commissionOwnerList.mobile === this.commissionGuestList.mobile) {
+                                                                            CommissionOwnerOk = false
+                                                                            CommissionGuestOk = false
+                                                                            this.$message(
+                                                                                {
+                                                                                    message:
+                                                                                        "后期代办联系人-电话号码不可重复",
+                                                                                    type:
+                                                                                        "warning"
+                                                                                }
+                                                                            );
+                                                                        }
+
+                                                                    console.log(isCommissionOwner,isCommissionGuest,CommissionOwnerOk,CommissionGuestOk,999999);
                                                                     //验证三方合作
-                                                                    if (
-                                                                        this
-                                                                            .contractForm
-                                                                            .isHaveCooperation
-                                                                    ) {
+                                                                    if (this.contractForm.isHaveCooperation) {
                                                                         let mobileOk = true;
                                                                         let IDcardOk = true;
+
                                                                         if (
                                                                             this
                                                                                 .contractForm
@@ -2056,8 +2187,6 @@ export default {
                                                                                 .mobile
                                                                         ) {
                                                                             mobileOk = false;
-                                                                            let reg = /^1[0-9]{10}$/;
-                                                                            let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
                                                                             if (
                                                                                 reg.test(
                                                                                     this
@@ -2113,12 +2242,18 @@ export default {
                                                                         }
                                                                         if (
                                                                             mobileOk &&
-                                                                            IDcardOk
+                                                                            IDcardOk && 
+                                                                            CommissionOwnerOk && 
+                                                                            CommissionGuestOk
                                                                         ) {
+                                                                            console.log(1321312);
                                                                             this.dialogSave = true;
                                                                         }
                                                                     } else {
-                                                                        this.dialogSave = true;
+                                                                        console.log(898989898);
+                                                                        if (CommissionOwnerOk && CommissionGuestOk) {
+                                                                            this.dialogSave = true;
+                                                                        }
                                                                     }
                                                                 } else {
                                                                     this.$message(
@@ -2228,6 +2363,8 @@ export default {
             this.contractForm.contPersons = [];
             let ownerArr = this.ownerList.map(item => Object.assign({}, item));
             let guestArr = this.guestList.map(item => Object.assign({}, item));
+            let isCommissionOwner = Object.values(this.commissionOwnerList).some(item => item !== '');
+            let isCommissionGuest = Object.values(this.commissionGuestList).some(item => item !== '');
             ownerArr.forEach((element, index) => {
                 if (element.isEncryption) {
                     element.encryptionMobile = this.ownerList_[index].encryptionMobile;
@@ -2246,6 +2383,20 @@ export default {
                 delete element.isEncryption;
                 this.contractForm.contPersons.push(element);
             });
+            let data = {
+                // encryptionCode: "",
+                // propertyRightRatio: "",
+                // cardType: "",
+                // companyName: "",
+                // lepName: "",
+                // lepIdentity: ""
+            }
+            if (isCommissionOwner) {
+                this.contractForm.contPersons.push({...this.commissionOwnerList,...{type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:"业主后期代办"}});
+            }
+            if (isCommissionGuest) {
+                this.contractForm.contPersons.push({...this.commissionGuestList,...{type:3,encryptionMobile: this.commissionGuestList.mobile,relation:"客户后期代办"}});
+            }
             if (this.contractForm.type === 1) {
                 //租赁合同
                 var param = {
@@ -2957,9 +3108,6 @@ export default {
                             this.contractForm.dealAgentId = "";
                         }
                     }
-                    if (res.data.remarks && res.data.remarks.length > 0) {
-                        this.showRemark = true;
-                    }
                     if (res.data.loanType) {
                         //武汉买卖 全款贷款
                         this.loanType = res.data.loanType;
@@ -3081,7 +3229,16 @@ export default {
                             this.guestList.push(obj);
                             let obj_ = Object.assign({}, element);
                             this.guestList_.push(obj_);
+                        } else if (this.contractForm.contPersons[i].personType.value === 3) {
+                            this.commissionGuestList.name = this.contractForm.contPersons[i].name
+                            this.commissionGuestList.mobile = this.contractForm.contPersons[i].mobile
+                        } else if (this.contractForm.contPersons[i].personType.value === 4) {
+                            this.commissionOwnerList.name = this.contractForm.contPersons[i].name
+                            this.commissionOwnerList.mobile = this.contractForm.contPersons[i].mobile
                         }
+                    }
+                    if ((res.data.remarks && res.data.remarks.length > 0) || this.commissionGuestList.mobile || this.commissionOwnerList.mobile) {
+                        this.showRemark = true;
                     }
                 }
             });
@@ -3218,6 +3375,8 @@ export default {
                 //     this.contractForm.otherCooperationInfo.name
                 // );
                 this.contractForm.otherCooperationInfo.name = this.contractForm.otherCooperationInfo.name.replace(/[^\a-zA-Z\u4E00-\u9FA5]*(先生|小姐|男士|女士|太太)+[\u4e00-\u9fa5]*/g, "").replace(/\s/g, "")
+            } else {
+                this[type].name = this[type].name.replace(/\s/g, "")
             }
         },
         inputCode(type) {
@@ -3704,9 +3863,29 @@ export default {
     }
     .remarkType {
         padding-left: 30px;
+        .el-form-item {
+            display: block;
+        }
         /deep/.el-textarea__inner {
             width: 800px;
             min-height: 200px;
+        }
+        .merge {
+            border: 1px solid #dcdfe6;
+            padding: 7px 2px;
+            border-radius: 3px;
+            .name_ {
+                width: 250px;
+                padding-left: 5px;
+                border: none;
+                border-right: 1px solid #dcdfe6;
+            }
+            .mobile_ {
+                width: 100px;
+                border: none;
+                margin-left: -4px;
+                padding-left: 2px;
+            }
         }
         .textLength {
             position: absolute;
