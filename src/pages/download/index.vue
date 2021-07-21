@@ -28,6 +28,9 @@
       <div>
         <el-table
         :data="tableData"
+        header-row-class-name="theader-bg"
+        width="400px"
+        class="submit-dialog"
         border>
           <el-table-column label="文件名称" align="center" prop="fileName"></el-table-column>
           <el-table-column label="文件生成状态" align="center" prop="state">
