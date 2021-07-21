@@ -325,6 +325,44 @@
               </div>
             </div>
 
+            <div class="msg msg-table" v-if="commissionClientrData.length">
+              <div class="title">客户后期代办联系人</div>
+              <div class="table">
+                <el-table :data="commissionClientrData" border header-row-class-name="theader-bg">
+                  <el-table-column prop="name" label="客户姓名"></el-table-column>
+                  <el-table-column label="电话" min-width="120">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile}}
+                      <i
+                        class="iconfont icon-tubiao_shiyong-16"
+                        @click="call(scope.row,scope.$index,'guest')"
+                        v-if="power['sign-ht-xq-ly-call'].state"
+                      ></i>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+
+            <div class="msg msg-table" v-if="commissionOwnerData.length">
+              <div class="title">业主后期代办联系人</div>
+              <div class="table">
+                <el-table :data="commissionOwnerData" border header-row-class-name="theader-bg">
+                  <el-table-column prop="name" label="客户姓名"></el-table-column>
+                  <el-table-column label="电话" min-width="120">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile}}
+                      <i
+                        class="iconfont icon-tubiao_shiyong-16"
+                        @click="call(scope.row,scope.$index,'guest')"
+                        v-if="power['sign-ht-xq-ly-call'].state"
+                      ></i>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+
             <div class="msg" v-if="contractDetail.remarks">
               <div class="title">备注栏</div>
               <div class="content">
@@ -703,7 +741,8 @@
                 round
                 type="primary"
                 class="search_btn"
-                v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
+                v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)
+                ||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
                 @click="goEdit"
               >编辑</el-button>
               <el-button
@@ -2219,6 +2258,10 @@ export default {
       ownerData: [],
       //客户信息
       clientrData: [],
+      //业主信息
+      commissionOwnerData: [],
+      //客户信息
+      commissionClientrData: [],
       //录音
       recordData: [],
       callNumber: "",
@@ -3122,6 +3165,14 @@ export default {
                 this.contractDetail.contPersons[i].personType.value === 2
               ) {
                 this.clientrData.push(this.contractDetail.contPersons[i]);
+              } else if (
+                this.contractDetail.contPersons[i].personType.value === 3
+              ) {
+                this.commissionClientrData.push(this.contractDetail.contPersons[i]);
+              } else if (
+                this.contractDetail.contPersons[i].personType.value === 4
+              ) {
+                this.commissionOwnerData.push(this.contractDetail.contPersons[i]);
               }
             }
             //转佣数据
@@ -4078,6 +4129,8 @@ export default {
   .firstDetail {
     overflow-y: auto;
   }
+  
+  // flex-direction: column;
   .msg {
     border-bottom: 1px solid @border-ED;
     display: flex;
@@ -4188,6 +4241,19 @@ export default {
           display: inline-block;
           width: 180px;
         }
+      }
+    }
+  }
+  .msg-table {
+    flex-direction: column;
+    .table {
+      width: 300px;
+      padding: 20px 54px;
+      i {
+        font-size: 20px;
+        padding-left: 5px;
+        color: #54d384;
+        cursor: pointer;
       }
     }
   }
