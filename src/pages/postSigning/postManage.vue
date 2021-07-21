@@ -242,6 +242,7 @@
             type="primary"
             size="small"
             @click="getExcel"
+            v-dbClick
             v-if="power['sign-qh-mgr-export'].state"
           >导出</el-button>
         </p>

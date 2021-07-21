@@ -78,7 +78,7 @@
           <p>
             <el-button class="btn-info" type="primary" size="small" @click="operBtn('del')" v-if="power['sign-book-mx-add'].state">批量删除
             </el-button>
-            <el-button class="btn-info" type="primary" size="small" @click="getExcel" v-if="power['sign-book-mx-export'].state">导出
+            <el-button class="btn-info" type="primary" size="small" @click="getExcel" v-dbClick v-if="power['sign-book-mx-export'].state">导出
             </el-button>
             <el-button class="btn-info" type="primary" size="small" @click="operBtn('import')" v-if="power['sign-book-mx-insert'].state">导入固定成本
             </el-button>

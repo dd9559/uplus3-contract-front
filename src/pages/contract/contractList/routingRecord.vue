@@ -74,7 +74,7 @@
     <div class="routing-list">
       <p>
         <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
-        <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </p>
       <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
         <el-table-column prop="currDeptName">

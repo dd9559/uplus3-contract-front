@@ -467,6 +467,7 @@
             round
             type="primary"
             size="small"
+            v-dbClick
             @click="getExcel"
             >导出</el-button
           >

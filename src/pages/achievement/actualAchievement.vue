@@ -262,6 +262,7 @@
             type="primary"
             size="medium"
             @click="getExcel"
+            v-dbClick
             style="padding:9px 15px;min-width: 80px;"
             v-if="power['sign-yj-rev-export'].state"
           >导出</el-button>
