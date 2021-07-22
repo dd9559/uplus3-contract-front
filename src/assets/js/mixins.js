@@ -456,6 +456,8 @@ const MIXINS = {
         }).catch(e=>{
           this.$message.error(e)
         })
+      }else {
+        this.$message.success('文件正在导出，请到文件下载菜单获取！')
       }
     },
     /**
