@@ -742,9 +742,16 @@
                 type="primary"
                 class="search_btn"
                 v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)
-                ||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
+                ||(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
                 @click="goEdit"
               >编辑</el-button>
+              <!-- <el-button
+                round
+                type="primary"
+                class="search_btn"
+                v-if="power['sign-ht-info-edit'].state"
+                @click="goEdit"
+              >编辑</el-button> -->
               <el-button
                 round
                 type="primary"
@@ -2679,7 +2686,7 @@ export default {
         plateType: 0,
         id: value.pid,
         contractCode: this.contCode,
-        sourceType: value.personType.value === 1 ? 0 : 1,
+        sourceType: [1,4].includes(value.personType.value) ? 0 : 1,
         calledMobile: value.encryptionMobile,
         calledName: value.name,
       };
