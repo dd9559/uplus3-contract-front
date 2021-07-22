@@ -440,6 +440,10 @@ const MIXINS = {
      * 导出excel
      */
     excelCreate: function(url, param) {
+      if(this.isSetTimeout && !this.isFlag) {
+        this.$message.warning('文件正在导出，请5秒后点击！')
+        return
+      }
       this.HQloadingList = true
       if((this.HQloadingList && !this.isSetTimeout) || this.isFlag) {
         this.$ajax.getFile(`/api${url}`, param).then(res =>{
@@ -452,8 +456,6 @@ const MIXINS = {
         }).catch(e=>{
           this.$message.error(e)
         })
-      }else {
-        this.$message.success('文件正在导出，请到文件下载菜单获取！')
       }
     },
     /**
