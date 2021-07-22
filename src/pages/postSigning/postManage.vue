@@ -1323,7 +1323,7 @@ export default {
     // 导出excel
     getExcel: function() {
       this.pageNum = 1;
-      this.getData("export");
+      // this.getData("export");
       this.excelCreate("/input/stepAdminExcel", paramObj);
     },
     // 赋值给交易步骤

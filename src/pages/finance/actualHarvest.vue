@@ -303,7 +303,7 @@
     },
     methods: {
       getExcel:function () {
-        this.getData('search')
+        // this.getData('search')
 
         let param=Object.assign({},this.searchForm)
         if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){

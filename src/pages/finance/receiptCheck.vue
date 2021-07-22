@@ -138,7 +138,7 @@
     },
     methods:{
       getExcel:function () {
-        this.getData('search')
+        // this.getData('search')
         let param = JSON.parse(JSON.stringify(this.searchForm))
         Object.assign(param,{startTime:'',endTime:''})
         if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){

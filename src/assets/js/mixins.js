@@ -33,7 +33,7 @@ const MIXINS = {
       tableNumberCom: null,
       systemTagList: [],
       systemTagSelect: [],
-      HQloadingList: false,
+      HQloadingLists: false,
       isSetTimeOut:false,
       isFlag:false
     }
@@ -444,8 +444,8 @@ const MIXINS = {
         this.$message.warning('文件正在导出，请5秒后点击！')
         return
       }
-      this.HQloadingList = true
-      if((this.HQloadingList && !this.isSetTimeout) || this.isFlag) {
+      this.HQloadingLists = true
+      if((this.HQloadingLists && !this.isSetTimeout) || this.isFlag) {
         this.$ajax.getFile(`/api${url}`, param).then(res =>{
           this.$message.success('文件正在导出，请到文件下载菜单获取！')
           this.isFlag = false

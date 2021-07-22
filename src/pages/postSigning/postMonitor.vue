@@ -462,7 +462,7 @@ export default {
     // 导出excel
     getExcel: function() {
       this.pageNum = 1;
-      this.getListData("export");
+      // this.getListData("export");
       this.excelCreate("/input/stepMonitorExcel", paramObj);
     },
     // 成功提示

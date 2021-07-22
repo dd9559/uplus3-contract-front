@@ -773,7 +773,7 @@ export default {
       });
     },
     getExcel: function () {
-      this.getData("search");
+      // this.getData("search");
 
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (

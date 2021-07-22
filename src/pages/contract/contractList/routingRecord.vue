@@ -358,7 +358,7 @@ export default {
   methods: {
     // 导出功能
     getExcel() {
-        this.queryFn();
+        // this.queryFn();
         let param = Object.assign({}, this.ajaxParam)
         this.excelCreate('/input/currencyListExcel', param)
     },

@@ -445,7 +445,7 @@
         }
       },
       getExcel: function () {
-        this.getData('search')
+        // this.getData('search')
 
         let param=Object.assign({},this.searchForm)
         if(this.searchForm.timeRange.length>0){

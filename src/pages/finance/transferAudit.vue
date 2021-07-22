@@ -536,7 +536,7 @@ export default {
   },
   methods: {
     getExcel: function () {
-      this.getData("search");
+      // this.getData("search");
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (
         typeof param.timeRange === "object" &&
