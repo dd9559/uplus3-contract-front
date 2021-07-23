@@ -30,7 +30,7 @@
                             class="form-label">
                             <el-date-picker 
                                 style="width:166px"
-                                :disabled="type===2?true:false"
+                                :disabled="canInput||offLine"
                                 v-model="contractForm.signDate"
                                 type="datetime"
                                 format="yyyy-MM-dd HH:mm"
@@ -79,13 +79,11 @@
                             <input 
                                 style="width:140px;"
                                 type="text"
-                                :disabled="canInput"
                                 maxlength="30"
                                 v-model="contractForm.pCode"
                                 @input="inputCode('pCode')"
                                 placeholder="请输入"
-                                class="dealPrice"
-                                :class="{'disabled':canInput}">
+                                class="dealPrice">
                         </el-form-item>
                         <el-form-item 
                             label="预计过户时间："
@@ -95,7 +93,6 @@
                             <el-date-picker 
                                 style="width:140px"
                                 v-model="contractForm.estTransferTime"
-                                :disabled="canInput"
                                 type="date"
                                 format="yyyy-MM-dd"
                                 value-format="yyyy-MM-dd"
@@ -115,8 +112,8 @@
                                 placeholder="请选择交易流程"
                                 @change="choseFlow"
                                 :clearable="true"
-                                style="width:140px"
-                                :disabled="offLine">
+                                style="width:140px">
+                                <!-- :disabled="offLine"> 2.6.6 已签约交易流程支持编辑 -->
                                 <el-option
                                     v-for="item in transFlowList" :key="item.id"
                                     :label="item.name"
@@ -175,13 +172,11 @@
                             style="text-align:right;width:280px;">
                             <input 
                                 type="text"
-                                :disabled="canInput"
                                 v-model="contractForm.commissionPayment"
                                 @input="cutNumber('commissionPayment')"
                                 @change="countTotal"
                                 placeholder="请输入内容"
-                                class="dealPrice"
-                                :class="{'disabled':canInput}">
+                                class="dealPrice">
                             <i class="hint iconfont icon-wenhao1" title="佣金成本支出"></i>
                             <i class="yuan">元</i>
                         </el-form-item>
@@ -196,7 +191,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('house')"
-                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
+                                v-if="sourceBtnCheck||isDeal">{{contractForm.houseinfoCode?contractForm.houseinfoCode:'请选择房源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.houseinfoCode}}</span>
                         </el-form-item>
@@ -430,7 +425,7 @@
                             :class="{'form-label':type===1}">
                             <span class="select"
                                 @click="showDialog('guest')"
-                                v-if="sourceBtnCheck||canInput||!offLine||isDeal">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
+                                v-if="sourceBtnCheck||isDeal">{{contractForm.guestinfoCode?contractForm.guestinfoCode:'请选择客源'}}</span>
                             <span class="select_"
                                 v-else>{{contractForm.guestinfoCode}}</span>
                         </el-form-item>
@@ -552,36 +547,28 @@
                         <el-form-item label="客户后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
                             <span class="merge">
                                 <input v-model="commissionGuestList.name"
-                                    :disabled="canInput"
                                     placeholder="姓名"
                                     maxlength="30"
                                     @input="inputOnly(null,'commissionGuestList')"
-                                    class="name_"
-                                    :class="{'disabled':canInput}">
+                                    class="name_">
                                 <input v-model="commissionGuestList.mobile"
-                                    :disabled="canInput"
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    :class="{'disabled':canInput}"
                                     @input="verifyMobile(commissionGuestList,null,'commissionGuestList')">
                             </span>
                         </el-form-item>
                         <el-form-item label="业主后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
                             <span class="merge">
                                 <input v-model="commissionOwnerList.name"
-                                    :disabled="canInput"
                                     placeholder="姓名"
                                     maxlength="30"
                                     @input="inputOnly(null,'commissionOwnerList')"
-                                    class="name_"
-                                    :class="{'disabled':canInput}">
+                                    class="name_">
                                 <input v-model="commissionOwnerList.mobile"
-                                    :disabled="canInput"
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    :class="{'disabled':canInput}"
                                     @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')">
                             </span>
                         </el-form-item>
@@ -591,7 +578,6 @@
                                 :rows="8"
                                 maxlength="500"
                                 resize='none'
-                                :disabled="canInput"
                                 v-model="contractForm.remarks"
                                 placeholder="请输入备注内容"></el-input>
                             <span class="textLength">{{contractForm.remarks.length}}/500</span>
@@ -610,17 +596,14 @@
                                 class="width-250">
                                 <input type="text"
                                     v-model="contractForm.otherCooperationCost"
-                                    :disabled="canInput"
                                     @input="cutNumber('otherCooperationCost')"
                                     placeholder="请输入内容"
-                                    class="dealPrice"
-                                    :class="{'disabled':canInput}">
+                                    class="dealPrice">
                                 <i class="yuan">元</i>
                             </el-form-item>
                             <el-form-item label="类型："
                                 class="width-250">
                                 <el-select v-model="contractForm.otherCooperationInfo.type"
-                                    :disabled="canInput"
                                     placeholder="请选择"
                                     style="width:140px">
                                     <el-option label="无"
@@ -638,17 +621,14 @@
                                 class="width-250">
                                 <input type="text"
                                     v-model="contractForm.otherCooperationInfo.name"
-                                    :disabled="canInput"
                                     maxlength="6"
                                     @input="inputOnly(999,'other')"
                                     placeholder="请输入姓名"
-                                    class="dealPrice"
-                                    :class="{'disabled':canInput}">
+                                    class="dealPrice">
                             </el-form-item>
                             <el-form-item label="联系方式："
                                 class="width-250">
                                 <el-input v-model="contractForm.otherCooperationInfo.mobile"
-                                    :disabled="canInput"
                                     type="tel"
                                     placeholder="请输入手机号"
                                     style="width:140px"
@@ -657,7 +637,6 @@
                             <el-form-item label="身份证号："
                                 style="width:310px;text-align:right">
                                 <el-input v-model="contractForm.otherCooperationInfo.identifyCode"
-                                    :disabled="canInput"
                                     maxlength="18"
                                     placeholder="请输入身份证号"
                                     @input="verifyIdcard(contractForm.otherCooperationInfo.identifyCode,2)"></el-input>
@@ -670,7 +649,6 @@
                                     :rows="6"
                                     maxlength="200"
                                     resize='none'
-                                    :disabled="canInput"
                                     v-model="contractForm.otherCooperationInfo.remarks"
                                     placeholder="无备注内容"></el-input>
                             </el-form-item>
@@ -2383,14 +2361,6 @@ export default {
                 delete element.isEncryption;
                 this.contractForm.contPersons.push(element);
             });
-            let data = {
-                // encryptionCode: "",
-                // propertyRightRatio: "",
-                // cardType: "",
-                // companyName: "",
-                // lepName: "",
-                // lepIdentity: ""
-            }
             if (isCommissionOwner) {
                 this.contractForm.contPersons.push({...this.commissionOwnerList,...{type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:"业主后期代办"}});
             }
@@ -2400,14 +2370,14 @@ export default {
             if (this.contractForm.type === 1) {
                 //租赁合同
                 var param = {
-                    leaseCont: this.contractForm,
+                    leaseCont: JSON.parse(JSON.stringify(this.contractForm)),
                     type: this.type,
                     haveExamine: this.haveExamine
                 };
             } else if (this.contractForm.type === 2 || this.contractForm.type === 3) {
                 //买卖代办合同
                 var param = {
-                    saleCont: this.contractForm,
+                    saleCont: JSON.parse(JSON.stringify(this.contractForm)),
                     type: this.type,
                     haveExamine: this.haveExamine
                 };
@@ -2425,7 +2395,8 @@ export default {
             if (this.type === 1) {
                 //新增
                 if(this.isDeal){
-                    let paramType = this.contractForm.type === 1 ? "leaseCont" : "saleCont"
+                    let paramType = this.contractForm.type === 1 ? "leaseCont" : "saleCont",
+                        copyContractForm = JSON.parse(JSON.stringify(this.contractForm));
                     delete param[paramType].contChangeState;
                     delete param[paramType].contState;
                     delete param[paramType].contType;
@@ -2440,7 +2411,7 @@ export default {
                     delete param[paramType].resultState;
                 
                     param[paramType].dealById = this.id
-                    param[paramType].dealByCode = this.contractForm.code
+                    param[paramType].dealByCode = copyContractForm.code
                     // param[paramType].isTransfeOfCommission = this.isToCommission//是否转佣
                     param[paramType].isTransfeOfCommission = 1//是否转佣
                     param[paramType].zyComission = this.zy//转佣金额
