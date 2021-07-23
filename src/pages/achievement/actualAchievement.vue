@@ -1276,7 +1276,7 @@ export default {
     },
     // 导出功能
     getExcel() {
-      this.queryFn();
+      // this.queryFn();
       // this.ajaxParam.is_Receivable=1;
       let param = Object.assign(
         {},
