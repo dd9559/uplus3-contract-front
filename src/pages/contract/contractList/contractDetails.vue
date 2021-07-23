@@ -737,21 +737,21 @@
                 v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0&&contractDetail.resultState.value===1"
                 @click="goChangeCancel(1)"
               >变更</el-button>
-              <el-button
+              <!-- <el-button
                 round
                 type="primary"
                 class="search_btn"
                 v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)
                 ||(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
                 @click="goEdit"
-              >编辑</el-button>
-              <!-- <el-button
+              >编辑</el-button> -->
+              <el-button
                 round
                 type="primary"
                 class="search_btn"
-                v-if="power['sign-ht-info-edit'].state"
+                v-if="power['sign-ht-info-edit'].state && contractDetail.contChangeState && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState)"
                 @click="goEdit"
-              >编辑</el-button> -->
+              >编辑</el-button>
               <el-button
                 round
                 type="primary"
@@ -2221,6 +2221,23 @@ const marriage = [
   { id: 4, type: "再婚" },
   { id: 5, type: "丧偶" },
 ];
+const accAdd = (arg1, arg2) => {
+    var r1, r2, m;
+    try {
+        r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r1 = 0;
+    }
+    try {
+        r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r2 = 0;
+    }
+    m = Math.pow(10, Math.max(r1, r2));
+    return (arg1 * m + arg2 * m) / m;
+}
 
 export default {
   mixins: [MIXINS],
@@ -2804,6 +2821,11 @@ export default {
     },
     // 合同编辑
     goEdit() {
+      
+      if (this.contractDetail.isResultAudit == 0) {
+        this.message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+        return
+      }
       //锁定合同
       if (
         (this.contractDetail.contState.value === 1 &&
@@ -2815,6 +2837,7 @@ export default {
         };
         this.$ajax.put("/api/contract/lock", param, 2).then((res) => {});
       }
+
       this.$router.push({
         path: "/addContract",
         query: {
@@ -3190,9 +3213,7 @@ export default {
             //   //转成交的合同并且转佣
             //   this.getZYInfo(this.contractDetail.id);
             // } else {
-            this.commissionTotal =
-              Number(this.contractDetail.custCommission) +
-              Number(this.contractDetail.ownerCommission);
+            this.commissionTotal = accAdd(Number(this.contractDetail.custCommission),Number(this.contractDetail.ownerCommission))
             // }
           }
         })
