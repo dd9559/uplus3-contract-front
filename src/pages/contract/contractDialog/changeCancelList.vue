@@ -227,7 +227,7 @@ export default {
       contCode: "",
       contId: "",
       commission: "",
-      look:'look',
+      look:'edit',
       dictionary: {
         //数据字典
         "507": "",
@@ -258,6 +258,7 @@ export default {
       console.log(row);
       this.changeCancel = true
       this.contId = row.id
+      this.look = 'look'
       if (row.contType.value > 3) {
         this.dialogContType = 2;
       } else {
@@ -348,6 +349,7 @@ export default {
       if (item.changeRecord.auditId === this.getUserMsg.empId) {
         this.changeCancel = true;
         this.contCode = item.code;
+        this.look = 'edit'
         this.contId = item.id;
       } else {
         this.$ajax
