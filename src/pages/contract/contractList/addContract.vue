@@ -2509,7 +2509,7 @@ export default {
                                     message: "保存成功",
                                     type: "success"
                                 });
-                                if (this.canInput) {
+                                if (this.offLine) {
                                     //已签约状态编辑完成跳转合同列表
                                     this.$router.push({
                                         path: "/contractList"
@@ -3102,7 +3102,7 @@ export default {
                         this.getZYInfo(this.contractForm.id)
                     }
                     //合同状态为已签约且未结算时只允许编辑房客源编号
-                    if (this.contractForm.recordType.value === 1 && res.data.resultState.value === 1 && res.data.contState.value === 3 && !this.$route.query.isDeal) {
+                    if ([1,10].includes(this.contractForm.recordType.value) && res.data.resultState.value === 1 && res.data.contState.value === 3 && !this.$route.query.isDeal) {
                         this.canInput = true;
                     }
                     //线下合同已签约状态除签约时间、合同类型、房客源编号、物业地址不支持编辑外，其他都字段均支持修改

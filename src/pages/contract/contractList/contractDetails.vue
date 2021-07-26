@@ -2547,17 +2547,17 @@ export default {
     } else {
       this.getAchievement(); //业绩分成
     }
-    if (this.$route.query.type === "dataBank") {
-      this.activeName = "third";
-      this.name = "third";
-    } else if (this.$route.query.type === "contBody") {
-      this.activeName = "second";
-      this.name = "second";
-    } else if (this.$route.query.type === "agency") {
-      this.activeName = "agency";
-      this.name = "agency";
-      this.agencyShow = true;
-    }
+    // if (this.$route.query.type === "dataBank") {
+    //   this.activeName = "third";
+    //   this.name = "third";
+    // } else if (this.$route.query.type === "contBody") {
+    //   this.activeName = "second";
+    //   this.name = "second";
+    // } else if (this.$route.query.type === "agency") {
+    //   this.activeName = "agency";
+    //   this.name = "agency";
+    //   this.agencyShow = true;
+    // }
     this.getTransFlow(); //交易类型
     this.getContractDetail(); //合同详情
     this.getDictionary(); //字典
@@ -2565,6 +2565,18 @@ export default {
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin(); //获取当前登录人信息
+    if (this.$route.query.type === "dataBank") {
+      this.activeName = "third";
+      this.name = "third";
+    } else if (this.$route.query.type === "contBody") {
+      this.activeName = "second";
+      this.handleClick({name:'second'})
+      // this.name = "second";
+    } else if (this.$route.query.type === "agency") {
+      this.activeName = "agency";
+      this.name = "agency";
+      this.agencyShow = true;
+    }
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -2692,6 +2704,7 @@ export default {
         this.getSupposedList(); //应收应付
         this.getActualList(); //实收实付
       } else if (tab.name === "agency") {
+        this.getContractDetail();
         this.agencyShow = true; //委托合同
       }
     },
@@ -2823,7 +2836,7 @@ export default {
     goEdit() {
       
       if (this.contractDetail.isResultAudit == 0) {
-        this.message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+        this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
         return
       }
       //锁定合同
