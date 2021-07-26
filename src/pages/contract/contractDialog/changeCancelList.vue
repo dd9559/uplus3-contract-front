@@ -178,6 +178,7 @@
       dialogOperation="details"
       :contId="contId"
       :code="contCode"
+      :operationType="look"
       :dialogContType="dialogContType"
       @close="ChangeCancelDialog"
       @success="freachChangeCancel"
@@ -226,6 +227,7 @@ export default {
       contCode: "",
       contId: "",
       commission: "",
+      look:'edit',
       dictionary: {
         //数据字典
         "507": "",
@@ -256,6 +258,12 @@ export default {
       console.log(row);
       this.changeCancel = true
       this.contId = row.id
+      this.look = 'look'
+      if (row.contType.value > 3) {
+        this.dialogContType = 2;
+      } else {
+        this.dialogContType = 1;
+      }
     },
     choseCheckPerson(row, type) {
       this.checkPerson.code = row.code;
@@ -341,6 +349,7 @@ export default {
       if (item.changeRecord.auditId === this.getUserMsg.empId) {
         this.changeCancel = true;
         this.contCode = item.code;
+        this.look = 'edit'
         this.contId = item.id;
       } else {
         this.$ajax
