@@ -992,7 +992,7 @@ export default {
       }else{
         //锁定合同
         if (this.contType <= 3 && this.isResultAudit == 0) {
-          this.message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+          this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
           return
         }
         if((this.contState===1&&this.examineState===0)||this.contState===2){

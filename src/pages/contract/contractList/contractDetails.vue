@@ -749,7 +749,7 @@
                 round
                 type="primary"
                 class="search_btn"
-                v-if="power['sign-ht-info-edit'].state && contractDetail.contChangeState && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState)"
+                v-if="contractDetail.cancelExamineState && power['sign-ht-info-edit'].state && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState)"
                 @click="goEdit"
               >编辑</el-button>
               <el-button

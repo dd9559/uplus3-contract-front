@@ -112,8 +112,8 @@
                                 placeholder="请选择交易流程"
                                 @change="choseFlow"
                                 :clearable="true"
-                                style="width:140px">
-                                <!-- :disabled="offLine"> 2.6.6 已签约交易流程支持编辑 -->
+                                style="width:140px"
+                                :disabled="contractForm.laterStageState&&contractForm.laterStageState.value == 5">
                                 <el-option
                                     v-for="item in transFlowList" :key="item.id"
                                     :label="item.name"
@@ -898,6 +898,7 @@ export default {
                 name: '',
                 mobile: ''
             },
+            commissionOwnerData: null,
             //客户信息
             guestList: [
                 {
@@ -919,6 +920,7 @@ export default {
                 name: '',
                 mobile: ''
             },
+            commissionGuestListData: null,
             dialogType: "",
             isShowDialog: false,
             dialogSave: false,
@@ -2362,10 +2364,10 @@ export default {
                 this.contractForm.contPersons.push(element);
             });
             if (isCommissionOwner) {
-                this.contractForm.contPersons.push({...this.commissionOwnerList,...{type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:"业主后期代办"}});
+                this.contractForm.contPersons.push(Object.assign({},this.commissionOwnerData,this.commissionOwnerList,{type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:""}));
             }
             if (isCommissionGuest) {
-                this.contractForm.contPersons.push({...this.commissionGuestList,...{type:3,encryptionMobile: this.commissionGuestList.mobile,relation:"客户后期代办"}});
+                this.contractForm.contPersons.push(Object.assign({},this.commissionGuestData,this.commissionGuestList,{type:3,encryptionMobile: this.commissionGuestList.mobile,relation:""}));
             }
             if (this.contractForm.type === 1) {
                 //租赁合同
@@ -3203,9 +3205,43 @@ export default {
                         } else if (this.contractForm.contPersons[i].personType.value === 3) {
                             this.commissionGuestList.name = this.contractForm.contPersons[i].name
                             this.commissionGuestList.mobile = this.contractForm.contPersons[i].mobile
+                            let element = {
+                                name: this.contractForm.contPersons[i].name,
+                                mobile: this.contractForm.contPersons[i].mobile,
+                                pid: this.contractForm.contPersons[i].pid,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
+                                email: this.contractForm.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email,
+                                lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
+                                companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
+                                lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,
+                                type: 3
+                            };
+                            this.commissionGuestData = Object.assign({},element)
                         } else if (this.contractForm.contPersons[i].personType.value === 4) {
                             this.commissionOwnerList.name = this.contractForm.contPersons[i].name
                             this.commissionOwnerList.mobile = this.contractForm.contPersons[i].mobile
+                            let element = {
+                                name: this.contractForm.contPersons[i].name,
+                                mobile: this.contractForm.contPersons[i].mobile,
+                                pid: this.contractForm.contPersons[i].pid,
+                                encryptionMobile: this.contractForm.contPersons[i].encryptionMobile,
+                                relation: this.contractForm.contPersons[i].relation,
+                                propertyRightRatio: this.contractForm.contPersons[i].propertyRightRatio,
+                                identifyCode: this.contractForm.contPersons[i].identifyCode,
+                                encryptionCode: this.contractForm.contPersons[i].encryptionCode,
+                                cardType: this.contractForm.contPersons[i].cardType,
+                                email: this.contractForm.contPersons[i].email==='-'?'':this.contractForm.contPersons[i].email,
+                                lepName: this.contractForm.contPersons[i].lepName==='-'?'':this.contractForm.contPersons[i].lepName,
+                                companyName: this.contractForm.contPersons[i].companyName==='-'?'':this.contractForm.contPersons[i].companyName,
+                                lepIdentity: this.contractForm.contPersons[i].lepIdentity==='-'?'':this.contractForm.contPersons[i].lepIdentity,
+                                type: 4
+                            };
+                            this.commissionOwnerData = Object.assign({},element)
                         }
                     }
                     if ((res.data.remarks && res.data.remarks.length > 0) || this.commissionGuestList.mobile || this.commissionOwnerList.mobile) {
