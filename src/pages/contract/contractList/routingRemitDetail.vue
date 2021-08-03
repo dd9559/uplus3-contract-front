@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <div class="title-box">
-      <el-button round type="primary" size="medium" @click="getExcel" v-if="(type == 1 && power['sign-ht-fz-export'].state) || (type == 2 && power['sign-ht-dk-export'].state)" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+      <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="(type == 1 && power['sign-ht-fz-export'].state) || (type == 2 && power['sign-ht-dk-export'].state)" style="padding:9px 15px;min-width: 80px;">导出</el-button>
     </div>
     <el-table :data="tableData" border>
       <el-table-column align="left" label="合同编号" width="140">

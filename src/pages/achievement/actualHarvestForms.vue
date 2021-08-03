@@ -35,7 +35,7 @@
         </div>
         <div class="table-tab">
             <span :class="tabCurrent == index+1 ? 'curent' : ''" v-for="(item,index) of ['人员','分组','分店','片区','大区','事业部']" :key="index" @click="toggleForms(index,'tabCurrent')">{{item}}</span>
-            <el-button round type="primary" size="medium" @click="getExcel" v-if="(formsCurrent===1 && power['sign-yj-ysjsreport-ys-export'].state) || (formsCurrent===2 && power['sign-yj-ysjsreport-js-export'].state)" style="padding:9px 15px;min-width: 80px;float:right;">导出</el-button>
+            <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="(formsCurrent===1 && power['sign-yj-ysjsreport-ys-export'].state) || (formsCurrent===2 && power['sign-yj-ysjsreport-js-export'].state)" style="padding:9px 15px;min-width: 80px;float:right;">导出</el-button>
         </div>
       </div>
       <el-table

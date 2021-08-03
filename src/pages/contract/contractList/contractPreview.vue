@@ -14,7 +14,7 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&contState!=3&&detailPower" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&((contType<=3&&contChangeState!=2&&isResultAudit!=1&&![0,1].includes(cancelExamineState))||(contType>3&&contState!=3&&detailPower))" @click="toEdit">编辑</el-button>
         <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign&&detailPower&&recordType!=10" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
@@ -285,6 +285,8 @@ export default {
       showTotal:'',
       src:[],
       count:1,
+      // 结算审核状态
+      isResultAudit: '',
       //合同状态
       contState:'',
       //审核状态
@@ -900,6 +902,8 @@ export default {
               owner:res.data.ownerCommission,
               user:res.data.custCommission
             }
+            // 结算审核状态
+            this.isResultAudit = res.data.isResultAudit
             //签后审核状态
             this.signingState=res.data.signingState
             //变更解约参数  是否是意向定金合同
@@ -987,6 +991,10 @@ export default {
         });
       }else{
         //锁定合同
+        if (this.contType <= 3 && this.isResultAudit == 0) {
+          this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+          return
+        }
         if((this.contState===1&&this.examineState===0)||this.contState===2){
           let param = {
             id:this.id

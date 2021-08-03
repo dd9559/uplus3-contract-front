@@ -175,7 +175,7 @@
           <el-button v-if="power['sign-cw-debt-whtfk'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
           <el-button v-if="power['sign-cw-debt-whtsk'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
-            v-if="power['sign-cw-debt-export'].state">导出</el-button>
+            v-if="power['sign-cw-debt-export'].state" v-dbClick>导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
@@ -773,7 +773,7 @@ export default {
       });
     },
     getExcel: function () {
-      this.getData("search");
+      // this.getData("search");
 
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (

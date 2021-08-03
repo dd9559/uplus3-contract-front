@@ -70,7 +70,7 @@
               class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" @click="clickExportFn">导出
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn">导出
         </el-button>
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn">批量发放
         </el-button>

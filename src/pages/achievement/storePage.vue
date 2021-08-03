@@ -61,7 +61,7 @@
           </div>-->
           <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         </div>
-        <el-button class="data-head-right" round type="primary" size="medium" @click="getExcel" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button class="data-head-right" round type="primary" size="medium" @click="getExcel" v-dbClick style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </div>
       <!-- 头部 end -->
       <!-- 表格一 -->

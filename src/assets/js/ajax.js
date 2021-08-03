@@ -94,7 +94,7 @@ let api = {
       url,
       params:param,
       method: 'get',
-      responseType: 'blob',
+      // responseType: 'blob',
     }).then(res => {
       return res
     })

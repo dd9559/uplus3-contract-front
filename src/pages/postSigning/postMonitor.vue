@@ -147,6 +147,7 @@
             type="primary"
             size="small"
             @click="getExcel"
+            v-dbClick
             v-if="power['sign-qh-cont-export'].state"
           >导出</el-button>
         </p>
@@ -461,7 +462,7 @@ export default {
     // 导出excel
     getExcel: function() {
       this.pageNum = 1;
-      this.getListData("export");
+      // this.getListData("export");
       this.excelCreate("/input/stepMonitorExcel", paramObj);
     },
     // 成功提示
