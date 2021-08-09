@@ -1,7 +1,7 @@
 <template>
   <div class="view-container">
     <div class="title-box">
-      <el-button round type="primary" size="medium" @click="getExcel" v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+      <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="(type == 1 && power['sign-ht-fz-export'].state) || (type == 2 && power['sign-ht-dk-export'].state)" style="padding:9px 15px;min-width: 80px;">导出</el-button>
     </div>
     <el-table :data="tableData" border>
       <el-table-column align="left" label="合同编号" width="140">
@@ -84,6 +84,10 @@ export default {
         'sign-ht-fz-export': {
           state: false,
           name: '分账导出'
+        },
+        'sign-ht-dk-export':{
+            name:'打款导出',
+            state:false,
         }
       }
     }
@@ -149,19 +153,25 @@ export default {
     // 导出功能
     getExcel() {
         if (this.tableData.length === 0) return this.$message('没有可导出的数据!')
-        this.excelCreate('/input/proateNotesExcel', {relationId:this.ids})
+        let url = ''
+        if(this.type===1){
+          url='/input/proateNotesExcel';
+        }else if(this.type===2){
+          url='/input/payNotesExcel'
+        }
+        this.excelCreate(url, {relationId:this.ids})
     },
     //分账明细列表
     getAccountList(ids){
       let param = {
         relationId:ids
       };
-      let url;
-      if(this.type===1){
-        url='/api/settlement/getProateNotes';
-      }else if(this.type===2){
-        url='/api/separate/money/out/details'
-      }
+      let url = '/api/settlement/getProateNotes';
+      // if(this.type===1){
+      //   url='/api/settlement/getProateNotes';
+      // }else if(this.type===2){
+      //   url='/api/settlement/getProateNotes'
+      // }
       this.$ajax.get(url,param).then(res=>{
         res=res.data;
         if(res.status===200){

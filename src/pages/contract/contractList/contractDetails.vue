@@ -325,6 +325,44 @@
               </div>
             </div>
 
+            <div class="msg msg-table" v-if="commissionClientrData.length">
+              <div class="title">客户后期代办联系人</div>
+              <div class="table">
+                <el-table :data="commissionClientrData" border header-row-class-name="theader-bg">
+                  <el-table-column prop="name" label="客户姓名"></el-table-column>
+                  <el-table-column label="电话" min-width="120">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile}}
+                      <i
+                        class="iconfont icon-tubiao_shiyong-16"
+                        @click="call(scope.row,scope.$index,'guest')"
+                        v-if="power['sign-ht-xq-ly-call'].state"
+                      ></i>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+
+            <div class="msg msg-table" v-if="commissionOwnerData.length">
+              <div class="title">业主后期代办联系人</div>
+              <div class="table">
+                <el-table :data="commissionOwnerData" border header-row-class-name="theader-bg">
+                  <el-table-column prop="name" label="客户姓名"></el-table-column>
+                  <el-table-column label="电话" min-width="120">
+                    <template slot-scope="scope">
+                      {{scope.row.mobile}}
+                      <i
+                        class="iconfont icon-tubiao_shiyong-16"
+                        @click="call(scope.row,scope.$index,'guest')"
+                        v-if="power['sign-ht-xq-ly-call'].state"
+                      ></i>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
+
             <div class="msg" v-if="contractDetail.remarks">
               <div class="title">备注栏</div>
               <div class="content">
@@ -699,11 +737,19 @@
                 v-if="power['sign-ht-xq-modify'].state&&contractDetail.contState.value===3&&contractDetail.contChangeState.value!=1&&contractDetail.laterStageState.value!=5&&contractDetail.changeExamineState!=0&&contractDetail.resultState.value===1"
                 @click="goChangeCancel(1)"
               >变更</el-button>
+              <!-- <el-button
+                round
+                type="primary"
+                class="search_btn"
+                v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)
+                ||(power['sign-ht-info-edit'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
+                @click="goEdit"
+              >编辑</el-button> -->
               <el-button
                 round
                 type="primary"
                 class="search_btn"
-                v-if="(power['sign-ht-info-edit'].state&&(contractDetail.recordType.value===1||contractDetail.recordType.value===10)&&contractDetail.contState.value!=3)||(power['sign-ht-info-addoffline'].state&&contractDetail.recordType.value===2&&(contractDetail.contState.value!=3||contractDetail.contState.value===3&&contractDetail.resultState.value===1&&!getUserMsg))"
+                v-if="contractDetail.cancelExamineState && power['sign-ht-info-edit'].state && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState)"
                 @click="goEdit"
               >编辑</el-button>
               <el-button
@@ -2175,6 +2221,23 @@ const marriage = [
   { id: 4, type: "再婚" },
   { id: 5, type: "丧偶" },
 ];
+const accAdd = (arg1, arg2) => {
+    var r1, r2, m;
+    try {
+        r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r1 = 0;
+    }
+    try {
+        r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r2 = 0;
+    }
+    m = Math.pow(10, Math.max(r1, r2));
+    return (arg1 * m + arg2 * m) / m;
+}
 
 export default {
   mixins: [MIXINS],
@@ -2219,6 +2282,10 @@ export default {
       ownerData: [],
       //客户信息
       clientrData: [],
+      //业主信息
+      commissionOwnerData: [],
+      //客户信息
+      commissionClientrData: [],
       //录音
       recordData: [],
       callNumber: "",
@@ -2480,17 +2547,17 @@ export default {
     } else {
       this.getAchievement(); //业绩分成
     }
-    if (this.$route.query.type === "dataBank") {
-      this.activeName = "third";
-      this.name = "third";
-    } else if (this.$route.query.type === "contBody") {
-      this.activeName = "second";
-      this.name = "second";
-    } else if (this.$route.query.type === "agency") {
-      this.activeName = "agency";
-      this.name = "agency";
-      this.agencyShow = true;
-    }
+    // if (this.$route.query.type === "dataBank") {
+    //   this.activeName = "third";
+    //   this.name = "third";
+    // } else if (this.$route.query.type === "contBody") {
+    //   this.activeName = "second";
+    //   this.name = "second";
+    // } else if (this.$route.query.type === "agency") {
+    //   this.activeName = "agency";
+    //   this.name = "agency";
+    //   this.agencyShow = true;
+    // }
     this.getTransFlow(); //交易类型
     this.getContractDetail(); //合同详情
     this.getDictionary(); //字典
@@ -2498,6 +2565,18 @@ export default {
     // this.getExtendParams();//获取扩展参数
     // this.getRecordList();//电话录音
     this.getAdmin(); //获取当前登录人信息
+    if (this.$route.query.type === "dataBank") {
+      this.activeName = "third";
+      this.name = "third";
+    } else if (this.$route.query.type === "contBody") {
+      this.activeName = "second";
+      this.handleClick({name:'second'})
+      // this.name = "second";
+    } else if (this.$route.query.type === "agency") {
+      this.activeName = "agency";
+      this.name = "agency";
+      this.agencyShow = true;
+    }
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -2625,6 +2704,7 @@ export default {
         this.getSupposedList(); //应收应付
         this.getActualList(); //实收实付
       } else if (tab.name === "agency") {
+        this.getContractDetail();
         this.agencyShow = true; //委托合同
       }
     },
@@ -2636,7 +2716,7 @@ export default {
         plateType: 0,
         id: value.pid,
         contractCode: this.contCode,
-        sourceType: value.personType.value === 1 ? 0 : 1,
+        sourceType: [1,4].includes(value.personType.value) ? 0 : 1,
         calledMobile: value.encryptionMobile,
         calledName: value.name,
       };
@@ -2754,6 +2834,11 @@ export default {
     },
     // 合同编辑
     goEdit() {
+      
+      if (this.contractDetail.isResultAudit == 0) {
+        this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+        return
+      }
       //锁定合同
       if (
         (this.contractDetail.contState.value === 1 &&
@@ -2765,6 +2850,7 @@ export default {
         };
         this.$ajax.put("/api/contract/lock", param, 2).then((res) => {});
       }
+
       this.$router.push({
         path: "/addContract",
         query: {
@@ -3122,6 +3208,14 @@ export default {
                 this.contractDetail.contPersons[i].personType.value === 2
               ) {
                 this.clientrData.push(this.contractDetail.contPersons[i]);
+              } else if (
+                this.contractDetail.contPersons[i].personType.value === 3
+              ) {
+                this.commissionClientrData.push(this.contractDetail.contPersons[i]);
+              } else if (
+                this.contractDetail.contPersons[i].personType.value === 4
+              ) {
+                this.commissionOwnerData.push(this.contractDetail.contPersons[i]);
               }
             }
             //转佣数据
@@ -3132,9 +3226,7 @@ export default {
             //   //转成交的合同并且转佣
             //   this.getZYInfo(this.contractDetail.id);
             // } else {
-            this.commissionTotal =
-              Number(this.contractDetail.custCommission) +
-              Number(this.contractDetail.ownerCommission);
+            this.commissionTotal = accAdd(Number(this.contractDetail.custCommission),Number(this.contractDetail.ownerCommission))
             // }
           }
         })
@@ -4078,6 +4170,8 @@ export default {
   .firstDetail {
     overflow-y: auto;
   }
+  
+  // flex-direction: column;
   .msg {
     border-bottom: 1px solid @border-ED;
     display: flex;
@@ -4188,6 +4282,19 @@ export default {
           display: inline-block;
           width: 180px;
         }
+      }
+    }
+  }
+  .msg-table {
+    flex-direction: column;
+    .table {
+      width: 300px;
+      padding: 20px 54px;
+      i {
+        font-size: 20px;
+        padding-left: 5px;
+        color: #54d384;
+        cursor: pointer;
       }
     }
   }

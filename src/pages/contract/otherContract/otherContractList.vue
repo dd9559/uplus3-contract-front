@@ -62,7 +62,7 @@
         <div>
           <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-add'].state||contractType==='longRent'&&power['sign-cz-ht-ls-add'].state||contractType==='financial'&&power['sign-jr-ht-ls-add'].state"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
           <!-- <el-button class="btn-info" round type="primary" size="small" @click="toAddcontract">新增合同</el-button> -->
-          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" v-dbClick @click="getExcel">导出</el-button>
           <!-- <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button> -->
         </div>
       </div>

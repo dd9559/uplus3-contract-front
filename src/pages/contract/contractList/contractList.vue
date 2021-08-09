@@ -467,6 +467,7 @@
             round
             type="primary"
             size="small"
+            v-dbClick
             @click="getExcel"
             >导出</el-button
           >
@@ -1634,6 +1635,8 @@ export default {
       // if (session.query.dataType) {
       //   this.dataType = session.dataType  
       // }
+      // console.log(session.query.lrBeginDate);
+      // console.log(session.query.lrBeginDate);
       if (session.query.lrBeginDate) {
         this.inputDate[0] = session.query.lrBeginDate;
         this.inputDate[1] = session.query.lrEndDate;
@@ -2682,7 +2685,7 @@ export default {
       val.contPersons.forEach((element) => {
         if (element.personType.value === 1) {
           owner.push(element);
-        } else {
+        } else if (element.personType.value === 2) {
           guest.push(element);
         }
       });

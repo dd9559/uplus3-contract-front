@@ -38,7 +38,7 @@
     <div class="table-tool" v-if="power[`sign-${$route.query.type}-cw-rev-export`].state">
       <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
       <p>
-        <el-button class="btn-info" round size="small" type="primary" @click="getExcel">导出</el-button>
+        <el-button class="btn-info" round size="small" type="primary" @click="getExcel" v-dbClick>导出</el-button>
       </p>
     </div>
     <component ref="tableCom" :tableHeight="tableNumberCom" v-bind:is="activeComponent" :list="list" :type="getType" @choseCheckPerson="choseCheckPerson"></component>
@@ -138,7 +138,7 @@
     },
     methods:{
       getExcel:function () {
-        this.getData('search')
+        // this.getData('search')
         let param = JSON.parse(JSON.stringify(this.searchForm))
         Object.assign(param,{startTime:'',endTime:''})
         if(typeof param.timeRange==='object'&&Object.prototype.toString.call(param.timeRange)==='[object Array]'){

@@ -7,6 +7,9 @@
       width="1200px"
       :before-close="handleClose"
       class="dep-dialog"
+			v-loading="dialogLoading"
+			element-loading-spinner="el-icon-loading"
+			element-loading-background="rgba(0, 0, 0, 0.6)"
 			@open="dialogOpen"
 			@click="handleClose">
 			<div class="titleBox"
@@ -18,11 +21,11 @@
 			<!-- titleIndex == 'first' -->
       <div class="posDialogBox" v-if="titleIndex == 0">
 				<div class="formBox">
-					<el-form label-position="right" ref="form" size="mini" :rules="rulesForm" :model="dataInfo" label-width="140px"
+					<el-form label-position="right" ref="form" size="mini" :disabled="disForm" :rules="rulesForm" :model="dataInfo" label-width="140px"
 					v-loading.fullscreen.lock="fullscreenLoading"
-					element-loading-text="信息审核中"
+					element-loading-text="信息提交中"
 					element-loading-spinner="el-icon-loading"
-					element-loading-background="rgba(0, 0, 0, 0.8)">
+					element-loading-background="rgba(0, 0, 0, 0.6)">
 						<el-form-item label="企业名称：">
 							<span>{{dataInfo.name}}</span>
 						</el-form-item>
@@ -66,30 +69,32 @@
 				<div style="margin-left: 115px;">
 					<div class="tips">温馨提示：每次仅支持上传一张图片，大小不超过1M； 格式：jpg，png</div>
 					<div style="display:flex;align-items: center;">
-						
 						<div class="idCard">
 							<div style="margin-bottom: 15px;">法人身份证照片上传：</div>
-							<div style="display:flex;align-items: center;">
+							<div style="display:flex;align-items: center;position: relative;">
 								<fileUp id="idCard" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
                   <img :src="idCard" width="235px" height="150px" v-show="companyForm.idCard" style="border: 1px solid #8fb3fa;border-radius:10px">
-                  <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">
+                  <img src="@/assets/img/idcard.png" width="237px" height="152px" v-show="!companyForm.idCard">	
 								</fileUp>
+								<div class="mask" v-if="mask"></div>
 								<div style="width:229px;height:147px;margin-left: 50px;">
 									<fileUp id="theotherside" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
 										<img :src="theotherside" width="227px" height="145px" v-show="companyForm.theotherside" style="border: 1px solid #8fb3fa;border-radius:10px;">
 										<img src="@/assets/img/theotherside.png" width="229px" height="147px" v-show="!companyForm.theotherside">
 									</fileUp>
 								</div>
+								<div class="masks" v-if="mask"></div>
 							</div>
 						</div>
 					</div>
 					<div class="businessLicense" >
 						<div style="margin:20px 0;">企业营业执照上传：</div>
-						<div style="width:316px;height:174px">
+						<div style="width:316px;height:174px;position: relative;">
 							<fileUp id="businessLicense" class="up" :rules="['png','jpg']" @getUrl="upload" :more=false :picSize=true :scane="{path:'setting'}" :maxSize="1">
                 <img :src="businessLicense" width="316px" height="174px" v-show="companyForm.businessLicense" style="border: 1px solid #8fb3fa;border-radius:10px">
 								<img src="@/assets/img/businessLicense.png" width="316px" height="174px" v-show="!companyForm.businessLicense">
 							</fileUp>
+							<div class="maskbig" v-if="mask"></div>
 						</div>
 					</div>
 				</div>
@@ -98,20 +103,20 @@
         <el-button @click="submitInfo" type="primary" :disabled='subDisable' round v-if="!next">提交信息</el-button>
 				<el-button @click="nexts" type="primary" :disabled='firstDisable' v-dbClick round v-else>下一步</el-button>
       </div>
-			<div style="margin-top: 30px;color: #ff0000;height: 100px;" v-if="titleIndex == 1">
-				<span v-if="sms == 1">当前状态：签约中</span>
-				<span v-if="sms == 2">当前状态：签约完成</span>
+			<div style="margin-top: 30px;color: #ff0000;height: 100px;" class="qyBox" v-if="titleIndex == 1">
+				<span v-if="sms == 1" class="qyBoxtips">当前状态：签约中</span>
+				<span v-if="sms == 2" class="qyBoxtips">当前状态：签约完成，点击 [下一步] 发送短信</span>
+				<el-button @click="signContract" type="primary" round v-if="sms == 1 && signContracts" size="mini">补发签约短信</el-button>
+				<el-button type="primary" :class="disable ? 'contract-after-class' : ''" :disabled="disable" size="mini" @click="countDowns" round v-if="!signContracts && sms == 1">{{getCode}}</el-button>
 			</div>
-			<div slot="footer" v-if="titleIndex == 1">
-        <el-button @click="signContract" type="primary" round v-if="sms == 1">补发签约短信</el-button>
-				<el-button @click="smsNext" type="primary" round v-if="sms == 2">下一步</el-button>
+			<div class="contract" slot="footer" v-if="titleIndex == 1">
+				<el-button @click="smsNext" type="primary" v-dbClick round>下一步</el-button>
       </div>
 			<div class="inputCode" v-if="titleIndex == 2">
 				<span>输入验证码：</span>
 				<el-input v-model="inputCode" maxlength="6" style="width:200px" placeholder="请输入验证码" size="mini" type="number" oninput="if(value.length>6)value=value.slice(0,6)"></el-input>
 				<el-button size="mini" type="primary" @click="yzCode" style="min-width:80px" v-if="getYzCode">获取验证码</el-button>
-				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns" style="min-width:80px" v-else>{{getCode}}</el-button>
-				
+				<el-button size="mini" type="primary" :class="disable ? 'after-class' : ''" :disabled="disable"  @click="countDowns('yzCode')" style="min-width:80px" v-else>{{getCodes}}</el-button>
 			</div>
 			<span style="margin-left: 40px;color: rgb(255, 0, 0);height: 10px;margin-top: 10px;display: inline-block;" v-if="titleIndex == 2">当前状态：绑定中</span>
 			<div slot="footer" v-if="titleIndex == 2">
@@ -157,6 +162,8 @@
 				firstDisable: false,
 				subDisable:false,
 				getYzCode:false,
+				dialogLoading:false,
+				signContracts:true,
 				dataInfo:{
 					bankAccountName:'',
 					bankBranchName:'',
@@ -170,7 +177,11 @@
 					bankAccountName:'',
 				},
 				status: false,
-				timer: null,
+				disForm:false,
+				mask:false,
+				approved:false,
+				contract:false,
+				info: true,
 				// signContractFlag: false,
         entBank:{},
         companyForm: {
@@ -185,8 +196,10 @@
 				sms:1,
 				inputCode:'',
 				getCode:'60秒',
+				getCodes:'60',
 				disable:false,
 				next:false,
+				countDown:null,
 				rulesForm: {
 					address:[
 						{ required: true, message: '请输入企业地址', trigger: 'blur' },
@@ -225,9 +238,9 @@
 		},
 		mounted() {
 			// 银行列表
-			// if(this.power['sign-set-bl-openPos'].state) {
-			// 	this.getBanks()
-			// }
+			if(this.power['sign-set-bl-openPos'].state) {
+				this.getBanks()
+			}
 		},
     computed:{
     },
@@ -242,7 +255,10 @@
 			},
 			posInfo:{
 				handler(newName,oldName) {
+					// console.log(newName,888);
+					this.dataInfo = {}
 					this.dataInfo = Object.assign({},this.dataInfo,JSON.parse(JSON.stringify(newName)))
+					console.log(this.dataInfo,999999);
 				},
 				deep: true
 			},
@@ -258,8 +274,9 @@
 			//打开dialog
 			dialogOpen() {
 				this.status = false
+				this.dialogLoading = true
 				this.enterprise()
-				console.log(this.dataInfo);
+				console.log(this.signContracts);
 			},
 			clearList() {
 				this.companyForm = {}
@@ -268,18 +285,31 @@
 				if(this.titleIndex == 0) {
 					this.$refs.form.resetFields()
 				}
-				this.idCard = []
-				this.theotherside = []
-				this.businessLicense = []
+				// this.dataInfo = {}
+				this.companyForm = {
+					idCard:'',
+					theotherside:'',
+					businessLicense:''
+				},
+				this.idCard = '',
+				this.theotherside='',
+				this.businessLicense=''
 				this.dataInfo.bankBranchCode = ''
 				this.inputCode = ''
 				this.titleIndex = 0
 				this.currentState = '未提交'
 				this.sms = 1
+				this.signContracts = true
+				this.contract = false
+				this.approved = false
 				this.next = false
+				this.mask = false
+				this.disForm = false
 				this.subDisable = false
 				this.getYzCode = false
-				clearInterval(this.timer);
+				clearInterval(this.countDown)
+				this.$emit('bindingComplete',true)
+				this.getYzCode = true
         this.$emit("handleDialogClose",this.clearList);
       },
 			// 获取银行列表
@@ -393,6 +423,7 @@
               this.theotherside = res[0]
             }else if(data.btnId === "businessLicense") {
               this.businessLicense = res[0]
+							console.log(this.businessLicense,99);
             }
         })
       },
@@ -404,42 +435,60 @@
 				this.$ajax.get('/api/enterprise_pos/signContract',params).then(res => {
 					res = res.data
 					if(res.status == 200) {
-						clearInterval(this.timer);
 						// this.signContractFlag = true
-						this.$message.success(res.message)
-						this.timer = setInterval(() =>{
-							this.enterprise()
-						},5000)
+						this.$message.success('电子签约请求成功,请尽快完成签约')
+						this.countDowns()
+						// this.sms = 2
+						// this.timer = setInterval(() =>{
+						// 	this.enterprise()
+						// },5000)
 					}
 				}).catch(error=>{
           this.$message({message:error})
         })
 			},
 			//倒计时
-			countDowns() {
-				this.disable = true
-				this.getCode = 60
-				this.countDown = setInterval(()=>{
-					this.getCode--
-					if(this.getCode == 0) {
-						this.getYzCode = true
-						clearInterval(this.countDown)
-						this.disable = false
-					}
-				},1000)
+			countDowns(e) {
+				clearInterval(this.countDown)
+				if(e == 'yzCode') {
+					this.disable = true
+					this.getCodes = 60
+					this.countDown = setInterval(()=>{
+						this.getCodes--
+						if(this.getCodes == 0) {
+							this.getYzCode = true
+							clearInterval(this.countDown)
+							this.disable = false
+							this.getCodes = '获取验证码'
+						}
+					},1000)
+				}else {
+					this.disable = true
+					this.getCode = 60
+					this.signContracts = false
+					this.countDown = setInterval(()=>{
+						this.getCode--
+						if(this.getCode == 0) {
+							this.signContracts = true
+							clearInterval(this.countDown)
+							this.disable = false
+							this.getCode = '补发签约短信'
+						}
+					},1000)
+				}
 			},
 			//验证码
 			yzCode() {
 				let params = {
 					companyId:this.dataInfo.id,
-					lepPhone:'15827846050',
+					lepPhone:this.dataInfo.lepPhone,
 				}
 				this.$ajax.get('/api/enterprise_pos/checkCode',params).then(res => {
 					res = res.data
 					if(res.status == 200) {
 						this.$message.success(res.message)
 						this.getYzCode = false
-						this.countDowns()
+						this.countDowns('yzCode')
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -460,8 +509,10 @@
 					res= res.data
 					if(res.status == 200) {
 						this.$message.success(res.message)
-						this.handleClose()
-						this.$emit('bindingComplete',true)
+						setTimeout(()=>{
+							this.handleClose()
+							this.$emit('bindingComplete',true)
+						},2000)
 					}
 				}).catch((e)=>{
 					this.$message.error(e)
@@ -519,9 +570,9 @@
 					bankBranchName:this.dataInfo.bankBranchName,
 					bankBranchCode:this.dataInfo.bankBranchCode,
 					bankCard:this.dataInfo.bankCard,
-					lepCardFront:this.idCard,
-					lepCardBack:this.theotherside,
-					licenseSign:this.businessLicense
+					lepCardFront:this.companyForm.idCard,
+					lepCardBack:this.companyForm.theotherside,
+					licenseSign:this.companyForm.businessLicense
 				}
 				// let params = {
 				// 	companyId:this.dataInfo.id,
@@ -546,79 +597,105 @@
 						this.fullscreenLoading = false
 						this.subDisable= true
 						this.status= true
+						this.isSubmit = true
+						this.next = true
+						this.disForm = true
+						this.mask = true
+						setTimeout(()=>{
+							this.isSubmit = false
+						},5000)
 						this.$message({
 							type:'success',
 							message:res.message
 						})
-						this.timer = setInterval(() =>{
-							this.enterprise()
-						},5000)
-						setTimeout(()=>{
-							this.$message({
-								type:'success',
-								message:'信息审核中，请稍后！'
-							})
-						},2500)
+						this.currentState = '提交信息成功，审核中，点击 [下一步] 查询审核结果'
 					}
 				}).catch((e)=>{
 					this.fullscreenLoading = false
-					this.$message.error(e)
+					if(e == '信息查询失败') {
+						this.$message.error('统一社会信用代码错误，请修改！')
+					}else{
+						this.$message.error(e)
+					}
 				})
 			},
 			//查询注册状态
 			enterprise() {
 				let params = {
-					companyId:this.dataInfo.id
-				}
+							companyId:this.dataInfo.id
+						},
+						isSignContractFlag = false,
+						isSetTimeout = false;
+				setTimeout(() => {
+					if (isSignContractFlag && this.signContracts) {
+						this.titleIndex = 1
+						this.sms = 2
+						this.dialogLoading = false
+					}
+					isSetTimeout = true
+				},2000)
 				this.$ajax.get('/api/enterprise_pos',params).then(res => {
 					res=res.data
+
 					if(res.status == 200) {
 						let data = JSON.parse(res.data.data),
 								copyData = JSON.parse(JSON.stringify(res.data));
-
+								console.log(data);
 						if (data.status !== 2 || !data.ocrRegnumComparisonResult || !data.ocrIdcardComparisonResult ||
-						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult)) {
+						(!this.status && !this.posInfo.status && data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult && 
+						data.isSignContract && data.isPhoneChecked)) {
 							this.titleIndex = 0
+							setTimeout(() => {
+								this.dialogLoading = false
+							},1000)
 							let {ocrIdcardComparisonResult,ocrRegnumComparisonResult,status} = data,
-									imgList = [];
-
-							if (ocrIdcardComparisonResult) {
-								imgList.push(copyData.lepCardFront,copyData.lepCardBack)
-							}
-							if (ocrRegnumComparisonResult) {
-								imgList.push(copyData.licenseSign)
-							}
-							if(data.status !== 2) {
-								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
-							}
-							if(data.status == 2 && !data.ocrRegnumComparisonResult) {
-								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
-							}
-							if(data.status == 2 && data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
-								this.currentState = '未审核通过,身份证上传失败,请重新上传！'
-							}
-							if (status == 2) {
-								// this.$nextTick(()=>{
-								// 	console.log(data,9999999999999999999999);
+									imgList = []
 									
-								// })
-									this.dataInfo.name = data.companyName
-									this.dataInfo.address = data.companyAddress
-									// this.dataInfo.documentCard = data.companyAddress
-									this.dataInfo.lepName = data.legalName
-									this.dataInfo.lepDocumentCard = data.legalIds
-									this.dataInfo.lepPhone = data.legalPhone
-									this.dataInfo.bankAccountName = data.parentBankName
-									this.dataInfo.bankBranchName = data.bankName
-									this.dataInfo.bankBranchCode = data.unionBank
-									this.dataInfo.bankCard = data.accountNo
+							if (status == 2) {
+								this.dataInfo.name = data.companyName
+								this.dataInfo.address = data.companyAddress
+								this.dataInfo.documentCard = data.uniCredit
+								this.dataInfo.lepName = data.legalName
+								this.dataInfo.lepDocumentCard = data.legalIds
+								this.dataInfo.lepPhone = data.legalPhone
+								this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
+								this.$set(this.dataInfo,'bankBranchName',data.bankName)
+								this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
+								this.$set(this.dataInfo,'bankCard',data.accountNo)
 							}
-							
+							if((copyData.status == 2 && status == 2 && ocrRegnumComparisonResult == undefined && ocrIdcardComparisonResult == undefined) || copyData.status == 3) {
+								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
+							}
+							console.log(data,777);
+							if(copyData.status == 2 && status == 2 && ocrRegnumComparisonResult && !ocrIdcardComparisonResult) {
+								imgList = new Array(copyData.licenseSign)
+							}
+							if(copyData.status == 3) {
+								this.currentState = '信息审核中，请稍后查询'
+								this.next = true
+								this.disForm = true
+								this.mask = true
+							}
+							if(data.status !== 2 && copyData.status == 2) {
+								this.currentState = '未审核通过,个人信息审核失败,请重新提交！'
+								this.disForm = false
+								this.mask = false
+							}
+							if(data.status == 2 && data.ocrRegnumComparisonResult == 0 && copyData.status == 2) {
+								this.currentState = '未审核通过,营业执照上传失败,请重新上传！'
+								this.disForm = false
+								this.mask = false
+							}
+							if(data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult==0 && copyData.status == 2) {
+								this.currentState = '未审核通过,身份证信息审核失败，请核对身份证号码与图片是否一致'
+								this.disForm = false
+								this.mask = false
+							}
 							if (!this.status && imgList.length) {
 								this.$nextTick(() => {
 									this.fileSign(imgList,'preload',false).then(res => {
 										for (const key in copyData) {
-											if (key !== 'data') {
+											if (!['data','status'].includes(key)) {
 												let element = copyData[key],
 														elementName = element.split('?')[0].split('/');
 												res.some(item => {
@@ -643,161 +720,155 @@
 									})
 								})
 							}
-							if (this.status && (data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
-								clearInterval(this.timer);
+							// console.log(this.status,data.status != 2,data.ocrRegnumComparisonResult == 0,data.ocrIdcardComparisonResult == 0);
+							if (this.status&&copyData.status == 2&&(data.status != 2 || data.ocrRegnumComparisonResult == 0 || data.ocrIdcardComparisonResult == 0)) {
 								this.$message({
 									type: 'warning',
-									message: '证件信息审核失败！'
+									message: '证件信息审核失败,请重新提交信息!'
 								})
+								this.next = false
 								this.firstDisable = false
 								this.subDisable = false
 								return
 							}
-							return
 						} else if (!data.isSignContract) {
-							if (!this.status) {
-								this.titleIndex = 1
-								// this.signContract()
-								this.status = true
-							} else {
-								this.currentState = '审核通过'
-								this.firstDisable = false
-								this.next = true
-								if(this.titleIndex == 0 && this.nexts) {
-									clearInterval(this.next)
-								}
+							setTimeout(() => {
+								this.dialogLoading = false
+							},1000)
+							this.currentState = '审核通过,点击 [下一步] 发送电子签约短信'
+							this.info = false
+							
+							if(!this.info && !this.next) {
+								this.titleIndex = 0
+
 							}
+							// console.log(this.info,99990);
+							// if(this.titleIndex == 1 && this.info) {
+							// 	this.$message.warning('请尽快完成电子签约')
+							// }
+							this.approved =true
+							this.next = true
+							this.disForm = true
+							this.mask = true
+							let imgList = []
+							if (data.status == 2 && data.ocrRegnumComparisonResult && data.ocrIdcardComparisonResult) {
+								this.dataInfo.name = data.companyName
+								this.dataInfo.address = data.companyAddress
+								this.dataInfo.lepName = data.legalName
+								this.dataInfo.documentCard = data.uniCredit
+								this.dataInfo.lepDocumentCard = data.legalIds
+								this.dataInfo.lepPhone = data.legalPhone
+								this.$set(this.dataInfo,'bankAccountName',data.parentBankName)
+								this.$set(this.dataInfo,'bankBranchName',data.bankName)
+								this.$set(this.dataInfo,'bankBranchCode',data.unionBank)
+								this.$set(this.dataInfo,'bankCard',data.accountNo)
+								imgList.push(copyData.licenseSign,copyData.lepCardFront,copyData.lepCardBack)
+							}
+							if(imgList.length) {
+								this.$nextTick(() => {
+									this.fileSign(imgList,'preload',false).then(res => {
+										for (const key in copyData) {
+											if (!['data','status'].includes(key)) {
+												let element = copyData[key],
+														elementName = element.split('?')[0].split('/');
+												res.some(item => {
+													let itemName = item.split('?')[0].split('/');
+
+													if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.idCard = item
+														this.companyForm.idCard = item
+													}
+													if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.theotherside = item
+														this.companyForm.theotherside = item
+													}
+													if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
+														this.businessLicense = item
+														this.companyForm.businessLicense = item
+													}
+												})
+											}
+										}
+										this.status = true
+									})
+								})
+							}
+							// console.log(data.status, data.ocrRegnumComparisonResult,data.ocrIdcardComparisonResult,this.status);
+							// if (!this.status) {
+							// 	this.titleIndex = 0
+							// 	// this.signContract()
+							// 	this.status = true
+							// } else {
+							// 	this.currentState = '审核通过'
+							// 	this.approved = true
+							// 	// this.firstDisable = false
+							// 	// this.next = true
+							// 	// if(this.titleIndex == 0 && this.nexts) {
+							// 	// 	clearInterval(this.next)
+							// 	// }
+							// }
 							return
 						} else if (!data.isPhoneChecked) {
-							if(this.titleIndex == 1) {
+							isSignContractFlag = true
+							if(this.signContracts && isSetTimeout && this.dialogLoading) {
+								this.titleIndex = 1
 								this.sms = 2
-							}else {
-								console.log(this.getYzCode,99999996666);
-								// this.titleIndex = 2
-								// this.getYzCode = true
-								// return
+								this.dialogLoading = false
 							}
+							if(data.isSignContract) {
+								this.contract = true
+								console.log(this.contract);
+							}
+							// if(this.titleIndex == 1) {
+							// 	this.contract = true
+							// 	// this.sms = 2
+							// }else {
+							// 	this.titleIndex = 1
+							// 	this.sms = 2
+							// 	// this.getYzCode = true
+							// }
+							return
 						} 
-						
-						
-						// if (!this.dataInfo.status && data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1) {
-						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-						// 	this.fileSign(imgList,'preload',false).then(res => {
-						// 		for (const key in copyData) {
-						// 			if (key !== 'data') {
-						// 				let element = copyData[key],
-						// 						elementName = element.split('?')[0].split('/');
-						// 				res.some(item => {
-						// 					let itemName = item.split('?')[0].split('/');
-
-						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.idCard = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.theotherside = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.businessLicense = item
-						// 						this.companyForm.businessLicense = item
-						// 					}
-						// 				})
-						// 			}
-						// 		}
-						// 	})
-						// 	this.titleIndex = 0
-						// 	return
-						// }
-						// if(this.dataInfo.status == 2 && data.status == 2 && this.titleIndex == 0 && !data.ocrRegnumComparisonResult && !data.ocrIdcardComparisonResult) {
-						// 	console.log(798);
-						// 	let imgList = new Array(copyData.lepCardFront,copyData.lepCardBack,copyData.licenseSign)
-						// 	this.fileSign(imgList,'preload',false).then(res => {
-						// 		for (const key in copyData) {
-						// 			if (key !== 'data') {
-						// 				let element = copyData[key],
-						// 						elementName = element.split('?')[0].split('/');
-						// 				res.some(item => {
-						// 					let itemName = item.split('?')[0].split('/');
-
-						// 					if (key === 'lepCardFront' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.idCard = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'lepCardBack' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.theotherside = item
-						// 						this.companyForm.idCard = item
-						// 					}
-						// 					if (key === 'licenseSign' && itemName[itemName.length-1] === elementName[elementName.length-1]) {
-						// 						this.businessLicense = item
-						// 						this.companyForm.businessLicense = item
-						// 					}
-						// 				})
-						// 			}
-						// 		}
-						// 	})
-						// 	return
-						// }
-						// if(data.status != 2 && this.titleIndex == 0) {
-						// 	this.$message.error('个人信息提交失败，请重新提交！')
-						// 	this.firstDisable = false
-						// 	clearInterval(this.timer);
-						// 	return
-						// }
-						// if(!data.ocrRegnumComparisonResult && this.titleIndex == 0) {
-						// 	if (data.ocrRegnumComparisonResult === 0) {
-						// 		this.$message.error('上传营业执照失败，请重新上传！')
-						// 		this.firstDisable = false
-						// 		clearInterval(this.timer);
-						// 	}
-						// 	return
-						// }
-						// if(!data.ocrIdcardComparisonResult && this.titleIndex == 0) {
-						// 	if (data.ocrIdcardComparisonResult === 0) {
-						// 		this.$message.error('上传身份证照失败，请重新上传！')
-						// 		this.firstDisable = false
-						// 		clearInterval(this.timer);
-						// 	}
-						// 	// clearInterval(this.timer);
-						// 	return
-						// }
-						// if(data.status == 2 && data.ocrRegnumComparisonResult == 1 && data.ocrIdcardComparisonResult == 1 && this.titleIndex == 0 && this.dataInfo.status != 0) {
-						// 	// this.$message.success('信息审核成功')
-						// 	this.firstDisable = false
-						// 	clearInterval(this.timer);
-						// 	this.titleIndex = 1
-						// 	this.signContract()
-						// 	return
-						// }
-						// if(this.titleIndex == 1 && data.isSignContract == true) {
-						// 	this.sms = 2
-						// 	clearInterval(this.timer);
-						// 	return
-						// }
-						
 					}
 				}).catch((e)=>{
-					console.log(e);
-					// clearInterval(this.timer);
-					// this.$message({message:e})
+					this.dialogLoading = false
+					if(e == '服务端操作失败') {
+						this.$message({message:e})
+					}
 				})
 			},
 			nexts() {
-				this.titleIndex = 1 
-				this.status = true
-				this.firstDisable = true
-				clearInterval(this.timer);
-				this.signContract()
+				if(this.isSubmit) {
+					this.currentState = '信息审核中，请稍后查询'
+					return this.$message.warning('审核中')
+				}
+				this.enterprise()
+				this.info = true
+				this.next = true
+				if(this.approved) {
+					this.titleIndex = 1 
+					this.sms = 1
+					this.signContracts = true
+					this.signContract()
+				}
 			},
 			smsNext() {
-				this.titleIndex = 2
-				this.yzCode()
-				clearInterval(this.timer);
+				clearInterval(this.countDown)
+				this.signContracts = false
+				this.enterprise()
+				// console.log(this.contract);
+				// return
+				setTimeout(()=>{
+					if(this.contract) {
+						this.titleIndex = 2
+						this.yzCode()
+					}else {
+						this.$message.warning('请在短信中尽快完成电子签约')
+					}
+				},1000)
+				
 			}
 		},
-		beforeDestroy() {
-			clearInterval(this.timer);
-		}
 			
 	}
 </script>
@@ -820,9 +891,31 @@
 				.el-dialog__body {
 					margin-top: 20px;
 					padding: 0 40px;
+					
+					
 				}
 			}
 		}
+		.qyBox {
+			.qyBoxtips {
+				margin-left: 55px;
+				
+			}
+			/deep/ .is-round {
+					border-radius: 10px;
+				}
+				/deep/.contract-after-class {
+					min-width: 104px;
+					border-radius: 10px;
+					span::after {
+						width: 104px;
+						text-align: center;
+						content: '秒';
+						padding-left: 4px;
+					}
+				}
+		}
+		
 		.titleBox {
 			text-align: center;
 			display: flex;
@@ -853,6 +946,33 @@
 			margin-top: 20px;
 			display: flex;
 			align-items: center;
+			.mask {
+				position: absolute;
+				top: 0;
+				width: 237px;
+				height: 150px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
+			.masks {
+				position: absolute;
+				right: 0;
+				width: 229px;
+				height: 147px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
+			.maskbig {
+				position: absolute;
+				top: 0;
+				width: 316px;
+				height: 174px;
+				z-index: 99;
+				background-color: rgba(90, 90, 90, 0.5);
+			}
+		}
+		.contract {
+			
 		}
 		.inputCode {
 			margin-top: 40px;

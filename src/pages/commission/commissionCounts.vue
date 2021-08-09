@@ -59,7 +59,8 @@
     <div class="main">
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
-        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcjs-export'].state" @click="clickExportFn">导出
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcjs-export'].state"
+        v-dbClick @click="clickExportFn">导出
         </el-button>
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcjs-calc'].state" @click="batchCalculationFn">批量计算提成
         </el-button>

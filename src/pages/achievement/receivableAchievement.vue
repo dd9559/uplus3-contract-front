@@ -144,7 +144,7 @@
             </li>
           </ul> -->
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel"
+        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" v-dbClick
                    style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出
         </el-button>
       </div>
@@ -452,7 +452,7 @@
         methods: {
             // 导出功能
             getExcel() {
-                this.queryFn();
+                // this.queryFn();
                 // this.ajaxParam.is_Receivable=2;
                 let param = Object.assign({}, this.ajaxParam)
                 this.excelCreate('/input/exportSettleExcel', param)

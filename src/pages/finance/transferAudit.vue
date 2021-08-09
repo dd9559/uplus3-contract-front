@@ -80,6 +80,7 @@
         </div>
         <p>
           <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+          v-dbClick
             v-if="power['sign-cw-zk-export'].state">导出</el-button>
         </p>
       </div>
@@ -535,7 +536,7 @@ export default {
   },
   methods: {
     getExcel: function () {
-      this.getData("search");
+      // this.getData("search");
       let param = JSON.parse(JSON.stringify(this.searchForm));
       if (
         typeof param.timeRange === "object" &&

@@ -117,6 +117,7 @@
             type="primary"
             size="small"
             @click="getExcel"
+            v-dbClick
           >导出</el-button>
         </div>
       </div>
@@ -225,9 +226,10 @@
               <i class="el-icon-info" style="padding-left: 5px;color: #909399;"></i>
             </el-tooltip>
           </template>
-          <template
-            slot-scope="scope"
-          >{{scope.row.entrustCont&&!scope.row.entrustCont.id&&scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}</template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.achievementState == 1">{{(!scope.row.entrustCont || (scope.row.entrustCont&&!scope.row.entrustCont.id))&&scope.row.distributableAchievement?scope.row.distributableAchievement:'-'}}</span>
+            <span v-else>-</span>
+          </template>
         </el-table-column>
         <el-table-column label="签后审核状态" prop="toExamineState.label" min-width="100">
           <template slot-scope="scope">

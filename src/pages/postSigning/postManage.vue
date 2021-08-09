@@ -242,6 +242,7 @@
             type="primary"
             size="small"
             @click="getExcel"
+            v-dbClick
             v-if="power['sign-qh-mgr-export'].state"
           >导出</el-button>
         </p>
@@ -1322,7 +1323,7 @@ export default {
     // 导出excel
     getExcel: function() {
       this.pageNum = 1;
-      this.getData("export");
+      // this.getData("export");
       this.excelCreate("/input/stepAdminExcel", paramObj);
     },
     // 赋值给交易步骤

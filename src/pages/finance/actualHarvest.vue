@@ -113,7 +113,7 @@
       <div class="table-tool" v-if="power['sign-cw-rec-export'].state">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state" @click="getExcel">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state" v-dbClick @click="getExcel">导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -303,7 +303,7 @@
     },
     methods: {
       getExcel:function () {
-        this.getData('search')
+        // this.getData('search')
 
         let param=Object.assign({},this.searchForm)
         if(typeof param.signTime==='object'&&Object.prototype.toString.call(param.signTime)==='[object Array]'&&param.signTime.length>0){

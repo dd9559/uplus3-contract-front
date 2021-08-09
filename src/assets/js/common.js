@@ -455,7 +455,16 @@ let TOOL = {
       icon: "icon-caiwu",
       code: false,
       child: []
-    }
+    },
+    {
+      id: 9,
+      name: "文件下载",
+      category: "download",
+      can: true, //是否可见
+      icon: "icon-daochu",
+      code: true,
+      child: []
+    },
   ],
   //提成导航
   pathCommission: [
