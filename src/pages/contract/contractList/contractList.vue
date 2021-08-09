@@ -2685,7 +2685,7 @@ export default {
       val.contPersons.forEach((element) => {
         if (element.personType.value === 1) {
           owner.push(element);
-        } else {
+        } else if (element.personType.value === 2) {
           guest.push(element);
         }
       });

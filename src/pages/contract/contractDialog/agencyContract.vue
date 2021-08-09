@@ -222,6 +222,9 @@ export default {
         tradeFee(val) {
             let flowQZfee = this.defaultInfo.flowQZfee?Number.parseFloat(this.defaultInfo.flowQZfee):0
             this.tradeFeeCommission = (Number.parseFloat(val) - flowQZfee) > 0 ? Number.parseFloat((Number.parseFloat(val) - flowQZfee).toFixed(2)) : 0
+        },
+        defaultInfo (val) {
+            this.entrustBtn = val.contractEntrust&&val.contractEntrust.entrustState===3
         }
     },
     computed: {

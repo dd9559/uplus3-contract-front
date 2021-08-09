@@ -110,7 +110,7 @@
           </el-table-column>
           <el-table-column align="center" label="转款人">
             <template slot-scope="scope">
-              <span>{{billMsg.store}}-{{billMsg.inObjName}}</span>
+              <span>{{billMsg.store}}-{{billMsg.createByName}}</span>
             </template>
           </el-table-column>
         </el-table>
