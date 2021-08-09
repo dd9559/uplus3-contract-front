@@ -227,6 +227,18 @@
             ></el-date-picker>
           </el-form-item>
         </div>
+        <el-form-item label="结案时间">
+          <el-date-picker
+            v-model="propForm.finishDate"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :default-time="['00:00:00', '23:59:59']"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            class="w284"
+          ></el-date-picker>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -342,6 +354,9 @@
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" label="实际过户时间" min-width="100">
           <template slot-scope="scope">{{dateFormat(scope.row.transferTime)}}</template>
+        </el-table-column>
+        <el-table-column :formatter="nullFormatterData" label="结案时间" min-width="100">
+          <template slot-scope="scope">{{dateFormat(scope.row.finishDate)}}</template>
         </el-table-column>
         <el-table-column :formatter="nullFormatterData" prop="a10" label="实收/应收" min-width="80">
           <template
@@ -1052,7 +1067,8 @@ export default {
         areaName: "",
         recordType: "",
         regionTime: 0,
-        dateTime: ""
+        dateTime: "",
+        finishDate:""
       },
       // 筛选下拉
       rules: {
@@ -1409,11 +1425,10 @@ export default {
       // this.getData();
       this.EmployeList = [];
       this.propForm.recordType = "";
-      this.propForm.dateTime = "";
       this.propForm.transferTimeStar = "";
       this.propForm.transferTimeEnd = "";
       this.propForm.dateTime = "";
-      this.propForm.dateTime = "";
+      this.propForm.finishDate = ""
     },
     // 查询
     queryFn() {
@@ -2225,6 +2240,7 @@ export default {
     },
     // 列表数据
     getData(type = "init") {
+      console.log(this.propForm.finishDate);
       // if(!this.power['sign-qh-mgr-query'].state){
       //     this.noPower(this.power['sign-qh-mgr-query'].name);
       //     return false
@@ -2283,7 +2299,7 @@ export default {
         // estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
       };
 
-      let { dateTime = "", regionTime = 0 } = this.propForm || {};
+      let { dateTime = "", regionTime = 0, finishDate = ""} = this.propForm || {};
       if (regionTime) {
         //实际过户时间
         if (dateTime) {
@@ -2303,7 +2319,13 @@ export default {
           };
         }
       }
-
+      if(finishDate) {
+        paramObj = {
+          ...paramObj,
+          finishTimeStart:this.dateFormat(finishDate[0]),
+          finishTimeEnd:this.dateFormat(finishDate[1])
+        }
+      }
       //点击查询时，缓存筛选条件
       if (type === "search" || type === "pagination") {
         sessionStorage.setItem(
