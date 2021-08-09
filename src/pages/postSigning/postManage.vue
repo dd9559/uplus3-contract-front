@@ -227,18 +227,6 @@
             ></el-date-picker>
           </el-form-item>
         </div>
-        <el-form-item label="结案时间">
-          <el-date-picker
-            v-model="propForm.finishDate"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            class="w284"
-          ></el-date-picker>
-        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -1010,7 +998,8 @@ const STATUSCHANGE = 3;
 // 接收日期切换
 const RECEIVINGDATE = {
   start: 0,
-  end: 1
+  end: 1,
+  closeTheCase:2
 };
 // 是否超时
 const ISOVERTIME = 1;
@@ -1080,6 +1069,10 @@ export default {
           {
             label: "办理日期",
             value: 1
+          },
+          {
+            label: "结案日期",
+            value: 2
           }
         ],
         regionTime: [
@@ -1428,7 +1421,6 @@ export default {
       this.propForm.transferTimeStar = "";
       this.propForm.transferTimeEnd = "";
       this.propForm.dateTime = "";
-      this.propForm.finishDate = ""
     },
     // 查询
     queryFn() {
@@ -2252,6 +2244,8 @@ export default {
       let handleTimeStar = "";
       let receiveTimeEnd = "";
       let receiveTimeStar = "";
+      let finishTimeStart = "";
+      let finishTimeEnd = "";
       let datamo = "";
       if (this.propForm.dateMo) {
         datamo = [...this.propForm.dateMo];
@@ -2273,6 +2267,13 @@ export default {
         receiveTimeStar = this.dateFormat(datamo[0]);
         receiveTimeEnd = this.dateFormat(datamo[1]);
       }
+      // console.log(this.propForm.region,RECEIVINGDATE.start,RECEIVINGDATE.end);
+      //日期
+      console.log(this.propForm.region === RECEIVINGDATE.closeTheCase);
+      if (this.propForm.region === RECEIVINGDATE.closeTheCase && dataMoBool) {
+        finishTimeStart = this.dateFormat(datamo[0]);
+        finishTimeEnd = this.dateFormat(datamo[1]);
+      }
       paramObj = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
@@ -2291,6 +2292,8 @@ export default {
         stepInstanceCode: this.propForm.steps,
         receiveTimeEnd,
         receiveTimeStar,
+        finishTimeStart,
+        finishTimeEnd,
         keyword: this.propForm.search,
         depAttr: this.propForm.depAttr,
         areaName: this.propForm.areaName,
@@ -2299,7 +2302,7 @@ export default {
         // estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
       };
 
-      let { dateTime = "", regionTime = 0, finishDate = ""} = this.propForm || {};
+      let { dateTime = "", regionTime = 0} = this.propForm || {};
       if (regionTime) {
         //实际过户时间
         if (dateTime) {
@@ -2317,13 +2320,6 @@ export default {
             estTransferTimeStar: this.dateFormat(dateTime[0]), //预计过户时间（起）
             estTransferTimeEnd: this.dateFormat(dateTime[1]) //预计过户时间（终）
           };
-        }
-      }
-      if(finishDate) {
-        paramObj = {
-          ...paramObj,
-          finishTimeStart:this.dateFormat(finishDate[0]),
-          finishTimeEnd:this.dateFormat(finishDate[1])
         }
       }
       //点击查询时，缓存筛选条件
