@@ -1105,7 +1105,7 @@
           ></agency-contract>
         </el-tab-pane>
 
-        <el-tab-pane label="应收实收" name="receipt" v-if="power['sign-ht-xq-ys-qurey'].state">
+        <!-- <el-tab-pane label="应收实收" name="receipt" v-if="power['sign-ht-xq-ys-qurey'].state">
           <div class="receiptModule">
             <div class="moduleTitle">
               <span>应收/应付款项</span>
@@ -1234,7 +1234,7 @@
               ></el-pagination>
             </div>
           </div>
-        </el-tab-pane>
+        </el-tab-pane> -->
 
         <el-tab-pane label="回访录音" name="fourth">
           <div class="type">
@@ -2467,18 +2467,18 @@ export default {
           name: "查看备注",
         },
         //应收实收
-        "sign-ht-xq-ys-qurey": {
-          state: false,
-          name: "应收实收查询",
-        },
-        "sign-ht-xq-ys-add": {
-          state: false,
-          name: "新增/编辑",
-        },
-        "sign-ht-xq-ys-del": {
-          state: false,
-          name: "删除",
-        },
+        // "sign-ht-xq-ys-qurey": {
+        //   state: false,
+        //   name: "应收实收查询",
+        // },
+        // "sign-ht-xq-ys-add": {
+        //   state: false,
+        //   name: "新增/编辑",
+        // },
+        // "sign-ht-xq-ys-del": {
+        //   state: false,
+        //   name: "删除",
+        // },
         "sign-ht-xq-entrust-edit": {
           state: false,
           name: "委托合同",

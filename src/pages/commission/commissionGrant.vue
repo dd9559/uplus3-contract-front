@@ -75,7 +75,7 @@
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn">批量发放
         </el-button>
       </div>
-      <el-table :data="tableData" class="table-box" @selection-change="handleSelectionChange" ref="tableCom"
+      <el-table :data="tableData" class="table-box" @row-dblclick="toDetail" @selection-change="handleSelectionChange" ref="tableCom"
         :max-height="tableNumberCom">
         <el-table-column type="selection" min-width="60" :selectable="selectableFn">
         </el-table-column>
@@ -273,6 +273,17 @@ export default {
     }
   },
   methods: {
+    // 详情
+    toDetail(value) {
+      let newPage = this.$router.resolve({
+        path: '/commissionGrantDetail',
+        query:{
+          settleDetailsIds: value.settleDetailsIds, //合同id
+          settleDate: this.searchData.settleDate
+        }
+      });
+      window.open(newPage.href, '_blank');
+    },
     //重置
     reset() {
       this.searchData = {
