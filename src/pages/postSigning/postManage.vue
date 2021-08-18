@@ -343,6 +343,9 @@
         <el-table-column :formatter="nullFormatterData" label="实际过户时间" min-width="100">
           <template slot-scope="scope">{{dateFormat(scope.row.transferTime)}}</template>
         </el-table-column>
+        <el-table-column :formatter="nullFormatterData" label="结案时间" min-width="100">
+          <template slot-scope="scope">{{dateFormat(scope.row.finishDate)}}</template>
+        </el-table-column>
         <el-table-column :formatter="nullFormatterData" prop="a10" label="实收/应收" min-width="80">
           <template
             slot-scope="scope"
@@ -995,7 +998,8 @@ const STATUSCHANGE = 3;
 // 接收日期切换
 const RECEIVINGDATE = {
   start: 0,
-  end: 1
+  end: 1,
+  closeTheCase:2
 };
 // 是否超时
 const ISOVERTIME = 1;
@@ -1052,7 +1056,8 @@ export default {
         areaName: "",
         recordType: "",
         regionTime: 0,
-        dateTime: ""
+        dateTime: "",
+        finishDate:""
       },
       // 筛选下拉
       rules: {
@@ -1064,6 +1069,10 @@ export default {
           {
             label: "办理日期",
             value: 1
+          },
+          {
+            label: "结案日期",
+            value: 2
           }
         ],
         regionTime: [
@@ -1409,10 +1418,8 @@ export default {
       // this.getData();
       this.EmployeList = [];
       this.propForm.recordType = "";
-      this.propForm.dateTime = "";
       this.propForm.transferTimeStar = "";
       this.propForm.transferTimeEnd = "";
-      this.propForm.dateTime = "";
       this.propForm.dateTime = "";
     },
     // 查询
@@ -2225,6 +2232,7 @@ export default {
     },
     // 列表数据
     getData(type = "init") {
+      console.log(this.propForm.finishDate);
       // if(!this.power['sign-qh-mgr-query'].state){
       //     this.noPower(this.power['sign-qh-mgr-query'].name);
       //     return false
@@ -2236,6 +2244,8 @@ export default {
       let handleTimeStar = "";
       let receiveTimeEnd = "";
       let receiveTimeStar = "";
+      let finishTimeStart = "";
+      let finishTimeEnd = "";
       let datamo = "";
       if (this.propForm.dateMo) {
         datamo = [...this.propForm.dateMo];
@@ -2257,6 +2267,13 @@ export default {
         receiveTimeStar = this.dateFormat(datamo[0]);
         receiveTimeEnd = this.dateFormat(datamo[1]);
       }
+      // console.log(this.propForm.region,RECEIVINGDATE.start,RECEIVINGDATE.end);
+      //日期
+      console.log(this.propForm.region === RECEIVINGDATE.closeTheCase);
+      if (this.propForm.region === RECEIVINGDATE.closeTheCase && dataMoBool) {
+        finishTimeStart = this.dateFormat(datamo[0]);
+        finishTimeEnd = this.dateFormat(datamo[1]);
+      }
       paramObj = {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
@@ -2275,6 +2292,8 @@ export default {
         stepInstanceCode: this.propForm.steps,
         receiveTimeEnd,
         receiveTimeStar,
+        finishTimeStart,
+        finishTimeEnd,
         keyword: this.propForm.search,
         depAttr: this.propForm.depAttr,
         areaName: this.propForm.areaName,
@@ -2283,7 +2302,7 @@ export default {
         // estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
       };
 
-      let { dateTime = "", regionTime = 0 } = this.propForm || {};
+      let { dateTime = "", regionTime = 0} = this.propForm || {};
       if (regionTime) {
         //实际过户时间
         if (dateTime) {
@@ -2303,7 +2322,6 @@ export default {
           };
         }
       }
-
       //点击查询时，缓存筛选条件
       if (type === "search" || type === "pagination") {
         sessionStorage.setItem(

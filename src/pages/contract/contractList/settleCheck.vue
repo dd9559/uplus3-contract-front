@@ -55,6 +55,7 @@
 
         <el-form-item label="审核状态">
           <el-select v-model="adjustForm.examineState" placeholder="全部" class="width150">
+            <el-option label="撤销" value="-1"></el-option>
             <el-option label="审核中" value="0"></el-option>
             <el-option label="通过" value="1"></el-option>
             <el-option label="驳回" value="2"></el-option>
@@ -116,6 +117,7 @@
 
         <el-table-column label="审核状态" min-width="80">
           <template slot-scope="scope">
+            <span v-if="scope.row.examineState.value===-1">撤销</span>
             <span class="blue" v-if="scope.row.examineState.value===0">审核中</span>
             <span class="green" v-if="scope.row.examineState.value===1">通过</span>
             <span class="red" v-if="scope.row.examineState.value===2">驳回</span>
@@ -171,7 +173,8 @@
             <!-- <div class="btn" @click="auditApply(scope.row)">审核</div> -->
             <div class="btn" @click="auditApply(scope.row)" v-if="scope.row.examineState.value=== 0 && (scope.row.auditorId === getUserMsg.empId || ((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept !== 'false'))">审核</div>
             <div style="color:red;" v-if="scope.row.examineState.value===0&&scope.row.auditorId>0&&getUserMsg&&scope.row.auditorId!==getUserMsg.empId">{{scope.row.examineName}}正在审核</div>
-            <div v-if="scope.row.examineState.value!==0||scope.row.examineState.value===0&&((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept==='false')">--</div>
+            <div class="btn" @click="revocation(scope.row)" v-if="power['sign-ht-js-cx'].state && scope.row.examineState.value===1">撤销</div>
+            <div v-if="![0,1].includes(scope.row.examineState.value) ||(scope.row.examineState.value===0&&((!(scope.row.auditorId>0))&&getUserMsg&&scope.row.grabDept&&scope.row.grabDept==='false'))||(scope.row.examineState.value ===1&&!power['sign-ht-js-cx'].state)">--</div>
           </template>
         </el-table-column>
       </el-table>
@@ -511,6 +514,10 @@
               name:'合同详情',
               state:false,
           },
+          'sign-ht-js-cx': {
+            name:'撤销',
+            state:false,
+          }
         }
       }
     },
@@ -534,6 +541,29 @@
     },
 
     methods:{
+      // 撤销2.6.7
+      revocation(row) {
+        this.$confirm(`确认撤销当前合同编号为${row.code}的结算？
+        确认撤销后，该合同结算审核中、结算通过的审批单将同时一并撤销。`,'提示',{
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          console.log(row,'then');
+          this.$ajax.post("/api/settlement/settleRevoke", {contactId:row.contractId}).then(res => {
+            let data = res.data;
+            if (res.data.status === 200) {
+              this.queryFn();
+              this.$message.success(res.data.message)
+            }
+          }).catch(error => {
+            this.$message({
+              message: error
+            })
+          })
+        }).catch(()=>{
+        })
+      },
       trim(str){
         return str.replace(/(^\s*)|(\s*$)/g, "")
       },

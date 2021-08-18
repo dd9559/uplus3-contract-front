@@ -126,7 +126,6 @@ export default {
       }
       this.$ajax.get("/api/ossFile/findOssFileList", params).then(res => {
         res = res.data
-        console.log(res);
         if(res.status == 200) {
           this.tableData = res.data.list
           this.total = res.data.total
