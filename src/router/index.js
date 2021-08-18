@@ -541,6 +541,11 @@ export default new Router({
         path: "/commissionGrant",
         component: resolve => require(["@/pages/commission/commissionGrant"], resolve)
       },
+      // 提成详情
+      {
+        path: "/commissionGrantDetail",
+        component: resolve => require(["@/pages/commission/commissionGrantDetail"], resolve)
+      },
       //提成设置
       {
         path: "/commissionSetting",
@@ -557,6 +562,6 @@ export default new Router({
         component: resolve => require(["@/pages/commission/commissionOperationLog"], resolve)
       }
     ]
-  }
+  },
   ]
 });

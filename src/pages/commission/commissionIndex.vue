@@ -14,17 +14,34 @@
       </el-menu>
     </el-col>
     <!-- <p class="tag"></p> -->
+    <div class="page-view-index" v-if="breadcrumbState">
+      <ul>
+        <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
+      </ul>
+      <p
+        class="operation"
+        @click="goBack"
+        v-if="Index.length>3&&$route.path!=='/routingRemitDetail' && $route.path!=='/storeReceive' && $route.path!=='/achDetial' && $route.path!=='/detailIntention'&& $route.path!=='/contractDetails'&&$route.path!=='/achPage'&& $route.path!=='/otherContractList'&&( $route.path!=='/receiptBill'||!$route.query.deAudit)"
+      >
+        <i class="iconfont icon-fanhui"></i>
+        <span>返回</span>
+      </p>
+    </div>
     <router-view class="menu-right" />
   </div>
 </template>
 
 <script>
 import router from "vue-router";
+import { mapGetters } from "vuex";
 export default {
   name: "commissionIndex",
   data() {
     return {
       commissionTabs: [],
+      Index: [], //面包屑list
+      back: false, //返回按钮是否显示
+      breadcrumbState: false,
     };
   },
   mounted() {
@@ -54,8 +71,34 @@ export default {
         });
       }
     }, 200);
+    this.Index = this.getPath;
+    if (['/commissionGrantDetail'].includes(this.$router.currentRoute.path)) {
+      this.breadcrumbState = true
+    } else {
+      this.breadcrumbState = false
+    }
   },
   methods: {
+    toLink: function(item, index) {
+      if (index < 3) {
+        if (item.path.includes("/storeReceive")) {
+          //业绩报表特殊路由处理
+          item.path = item.path.split("?")[0];
+        }
+        this.$router.push({
+          path: item.path
+        });
+      }
+    },
+    goBack: function() {
+      if (this.$route.path === "/extendParams") {
+        let backMsg = {
+          type: 2
+        };
+        localStorage.setItem("backMsg", JSON.stringify(backMsg));
+      }
+      this.$router.go(-1);
+    },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
     },
@@ -63,10 +106,59 @@ export default {
       console.log(key, keyPath);
     },
   },
+  computed: {
+    ...mapGetters(["getPath"])
+  },
+  watch: {
+    getPath: function(val) {
+      this.Index = val;
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
+@import "~@/assets/common.less";
+.page-view-index {
+  height: 40px;
+  padding-left: 192px;
+  position: relative;
+  > ul {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    > li {
+      position: relative;
+      margin-right: 10px;
+      color: @color-99A;
+      cursor: pointer;
+      &:after {
+        content: ">";
+        margin-left: 10px;
+        /*width: 40px;
+          height: 40px;*/
+      }
+      &:last-of-type {
+        color: @color-324;
+        &:after {
+          content: "";
+          margin: 0;
+        }
+      }
+    }
+  }
+  .operation {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    background-color: @bg-white;
+    padding: @margin-base @margin-base @margin-base 0;
+    border-radius: 4px;
+  }
+}
 .el-col-2 {
   width: 180px;
   .nav-box {
