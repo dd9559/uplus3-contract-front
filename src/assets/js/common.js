@@ -1064,6 +1064,8 @@ let TOOL = {
    * 2 计算加载中
    */
   layerAlert(j) {
+    console.log(j);
+    let data = this.$tool.xData()
     let { message = "", typeInfo = 0 } = j;
     // 内容判断
     let m =
@@ -1077,7 +1079,20 @@ let TOOL = {
     <div class="img"></div>
     <p class="p">${message || "系统正在计算中，请稍后"}</p>
 </div>`
-        : `<div class="layer-txt">${message}</div>`;
+        : typeInfo === 3
+        ?`<div class="layer-txt">
+            <span>批量结算审核通过周期在</span>
+            <select style="width:120px" id="selectList">
+              <option value="${data[0].value}">${data[0].label}</option>
+              <option value="${data[1].value}">${data[1].label}</option>
+              <option value="${data[2].value}">${data[2].label}</option>
+              <option value="${data[3].value}">${data[3].label}</option>
+              <option value="${data[4].value}">${data[4].label}</option>
+              <option value="${data[5].value}">${data[5].label}</option>
+            </select>
+            <span>（含）以前的数据</span>
+          </div>`
+          :`<div class="layer-txt">${message}</div>`;
     // 类名判断
     let customClass =
       typeInfo === 1 ? "layer-succes" : typeInfo === 2 ? "layer-loading" : "";
@@ -1088,9 +1103,9 @@ let TOOL = {
       // 给弹层添加类名
       customClass: "layer-commission " + customClass,
       // 是否显示取消按钮
-      showCancelButton: typeInfo === 0 ? true : false,
+      showCancelButton: (typeInfo === 0 || typeInfo === 3)? true : false,
       // 是否显示确定按钮
-      showConfirmButton: typeInfo === 0 ? true : false,
+      showConfirmButton: (typeInfo === 0 || typeInfo === 3)? true : false,
       // 取消按钮添加类名
       cancelButtonClass: "btn-close",
       // 确定按钮添加类名
@@ -1109,7 +1124,20 @@ let TOOL = {
       ".layer-commission .el-message-box__headerbtn"
     );
     t.click();
+  },
+
+  xData() {
+    var dataArr = [];
+    var data=new Date();
+    var year=data.getFullYear();
+    data.setMonth(data.getMonth())
+    for (var i = 0; i < 6; i++) {
+        data.setMonth(data.getMonth()-1);
+        dataArr.push({label:data.getFullYear()+"年"+(data.getMonth()+1)+"月",value:data.getFullYear()+"-"+(data.getMonth()+1).toString().padStart(2, '0')})
+    }
+    return dataArr;
   }
 };
+
 
 export { TOOL };

@@ -269,6 +269,8 @@ export default {
       currentPage: 1,
       pageSize: 20,
       total: 20,
+      dialogVisible:false,
+      selectDate:this.$tool.xData()[0].value,
     };
   },
   created() {
@@ -305,6 +307,9 @@ export default {
         this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
       this.searchFn();
+      console.log(this.$tool.xData());
+      let d = this.dateFormat(new Date()).split("-");
+      console.log(d,9);
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -426,20 +431,21 @@ export default {
     // 批量计算
     batchCalculationFn() {
       this.$tool.layerAlert.call(this, {
-        message: "确认计算提成",
+        typeInfo: 3,
         title: "确认是否计算提成",
         callback: (action) => {
           // debugger
           // 如果为选择确定
           if (action === "confirm") {
+            let select = document.getElementById("selectList")
             this.copySearchData = { ...this.searchData };
             let data = this.getParamFn();
+            data.bonusDate = select.value
             // 加载中
             this.$tool.layerAlert.call(this, {
               typeInfo: 2,
               message: "加载中",
             });
-
             this.$ajax
               .get("/api/bonus/saveBonus", data)
               .then((res) => {
@@ -537,7 +543,6 @@ export default {
   },
   filters: {
     roundFilters: function (num, decimal = 2) {
-      console.log(num,777)
       if (num == '-') {
         return "-"
       }
@@ -582,5 +587,27 @@ export default {
   top: -1px;
   vertical-align: middle;
   margin-left: 4px;
+}
+/deep/ .el-dialog__header {
+  display: none;
+}
+/deep/ .el-dialog__body {
+  padding: 65px 45px;
+  .el-select {
+    margin-left: 0 !important;
+  }
+}
+/deep/ .el-input__inner {
+  width: 120px;
+}
+/deep/ .el-dialog__footer {
+  text-align: center;
+  .dialog-footer {
+    .el-button:nth-child(2) {
+      margin-left: 70px !important;
+      background: #ffa148;
+      border-color: #ffa148;
+    }
+  }
 }
 </style>
