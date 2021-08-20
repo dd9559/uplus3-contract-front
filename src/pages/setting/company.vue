@@ -242,6 +242,7 @@
               <el-button type="text" @click="clickOpen(scope.row,'company',scope.$index)" size="medium" v-if="power['sign-set-gs'].state">解绑公司</el-button>
               <el-button type="text" @click="clickOpen(scope.row,'vsp',scope.$index)" size="medium" v-if="!scope.row.vspCusid && !scope.row.vspTermid">绑定POS</el-button>
               <el-button type="text" class="is-bind" size="medium" v-else>已绑定POS</el-button>
+              <el-button type="text" @click="unBoundPos(scope.row,scope.$index)" size="medium" v-if="scope.row.vspCusid && scope.row.vspTermid">解绑POS</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -807,6 +808,37 @@
             this.$message({message:error})
         })
       },
+      // 解绑pos
+      unBoundPos(data,index) {
+        let confirmText = ['解除绑定POS前请确保：','1、线下POS已回收','2、当前门店和POS在通联绑定已解除'],
+            newDatas = [],
+            h = this.$createElement;
+            
+            for (const i in confirmText) {
+              newDatas.push(h('p', null, confirmText[i]))
+            };
+
+        this.$confirm('提示',{
+          message: h('div', null, newDatas),
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          console.log(data,this.searchDepTableData,index,'then');
+          this.$ajax.get("/api/enterprise_pos/unboundPos", {deptid:data.depId}).then(res => {
+            if (res.data.status === 200) {
+              this.$set(this.searchDepTableData,index,Object.assign(data,{vspCusid:'',vspTermid:''}))
+              this.$message.success(res.data.message)
+              console.log(this.searchDepTableData,'res',index,);
+            }
+          }).catch(error => {
+            this.$message({
+              message: error
+            })
+          })
+        }).catch(()=>{
+        })
+      },
       clickOpen(data,slot,index) {
         this.openSlot = slot
         this.vspInfo.vspCusid = '' 
@@ -1250,6 +1282,9 @@
 </style>
 <style lang="less" scoped>
 @import "~@/assets/common.less";
+.el-button+.el-button {
+  margin-left: 0;
+}
 .required {
   &::before {
     content: "*";
