@@ -2,15 +2,15 @@
   <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-tcjs-query'].state">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
-      <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
-        clearable>
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0px 15px 15px">
+      <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" 
+        clearable size="small">
       </el-input>
       <!-- 日期 -->
       <div class="triple-select set-data-class">
         <div class="item-text">结算周期</div>
         <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="monthrange"
-          value-format="yyyy-MM">
+          value-format="yyyy-MM" size="small">
         </el-date-picker>
       </div>
       
@@ -269,6 +269,8 @@ export default {
       currentPage: 1,
       pageSize: 20,
       total: 20,
+      dialogVisible:false,
+      selectDate:this.$tool.xData()[0].value,
     };
   },
   created() {
@@ -305,6 +307,9 @@ export default {
         this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
       this.searchFn();
+      console.log(this.$tool.xData());
+      let d = this.dateFormat(new Date()).split("-");
+      console.log(d,9);
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -426,20 +431,21 @@ export default {
     // 批量计算
     batchCalculationFn() {
       this.$tool.layerAlert.call(this, {
-        message: "确认计算提成",
+        typeInfo: 3,
         title: "确认是否计算提成",
         callback: (action) => {
           // debugger
           // 如果为选择确定
           if (action === "confirm") {
+            let select = document.getElementById("selectList")
             this.copySearchData = { ...this.searchData };
             let data = this.getParamFn();
+            data.bonusDate = Number(select.value)
             // 加载中
             this.$tool.layerAlert.call(this, {
               typeInfo: 2,
               message: "加载中",
             });
-
             this.$ajax
               .get("/api/bonus/saveBonus", data)
               .then((res) => {
@@ -537,7 +543,6 @@ export default {
   },
   filters: {
     roundFilters: function (num, decimal = 2) {
-      console.log(num,777)
       if (num == '-') {
         return "-"
       }
@@ -583,4 +588,8 @@ export default {
   vertical-align: middle;
   margin-left: 4px;
 }
+/deep/ .el-message-box {
+  width: 450px;
+}
+
 </style>

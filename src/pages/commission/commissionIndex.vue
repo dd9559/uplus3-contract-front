@@ -330,7 +330,8 @@ export default {
     }
   }
 
-  /deep/.table-box {
+
+  .table-box {
     width: 100%;
 
     th {
@@ -357,7 +358,7 @@ export default {
     }
   }
 
-  /deep/.commission-top {
+  .commission-top {
     .el-input__icon {
       line-height: 34px;
     }
@@ -374,7 +375,7 @@ export default {
         border-color: #ffa148;
       }
     }
-
+    
     &.paper-box .paper-box-content {
       margin-top: -44px;
       font-size: 0;
@@ -513,7 +514,7 @@ export default {
 <style lang="less">
 // 弹层
 .layer-commission {
-  width: 460px;
+  width: 460px !important;
   border: 0;
   padding-bottom: 14px;
   .el-message-box__header {
