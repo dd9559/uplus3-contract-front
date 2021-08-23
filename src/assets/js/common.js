@@ -1081,7 +1081,7 @@ let TOOL = {
 </div>`
         : typeInfo === 3
         ?`<div class="layer-txt">
-            <span>批量结算审核通过周期在</span>
+            <span>批量计算结算周期在</span>
             <select style="width:120px" id="selectList">
               <option value="${data[0].value}">${data[0].label}</option>
               <option value="${data[1].value}">${data[1].label}</option>
@@ -1130,10 +1130,10 @@ let TOOL = {
     var dataArr = [];
     var data=new Date();
     var year=data.getFullYear();
-    data.setMonth(data.getMonth())
+    data.setMonth(data.getMonth()+1)
     for (var i = 0; i < 6; i++) {
         data.setMonth(data.getMonth()-1);
-        dataArr.push({label:data.getFullYear()+"年"+(data.getMonth()+1)+"月",value:data.getFullYear()+"-"+(data.getMonth()+1).toString().padStart(2, '0')})
+        dataArr.push({label:data.getFullYear()+"年"+(data.getMonth()+1)+"月",value:data.getFullYear()+(data.getMonth()+1).toString().padStart(2, '0')})
     }
     return dataArr;
   }

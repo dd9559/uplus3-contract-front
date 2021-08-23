@@ -2,15 +2,15 @@
   <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-tcjs-query'].state">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
-      <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
-        clearable>
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0px 15px 15px">
+      <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" 
+        clearable size="small">
       </el-input>
       <!-- 日期 -->
       <div class="triple-select set-data-class">
         <div class="item-text">结算周期</div>
         <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="monthrange"
-          value-format="yyyy-MM">
+          value-format="yyyy-MM" size="small">
         </el-date-picker>
       </div>
       
@@ -440,7 +440,7 @@ export default {
             let select = document.getElementById("selectList")
             this.copySearchData = { ...this.searchData };
             let data = this.getParamFn();
-            data.bonusDate = select.value
+            data.bonusDate = Number(select.value)
             // 加载中
             this.$tool.layerAlert.call(this, {
               typeInfo: 2,
@@ -588,26 +588,8 @@ export default {
   vertical-align: middle;
   margin-left: 4px;
 }
-/deep/ .el-dialog__header {
-  display: none;
+/deep/ .el-message-box {
+  width: 450px;
 }
-/deep/ .el-dialog__body {
-  padding: 65px 45px;
-  .el-select {
-    margin-left: 0 !important;
-  }
-}
-/deep/ .el-input__inner {
-  width: 120px;
-}
-/deep/ .el-dialog__footer {
-  text-align: center;
-  .dialog-footer {
-    .el-button:nth-child(2) {
-      margin-left: 70px !important;
-      background: #ffa148;
-      border-color: #ffa148;
-    }
-  }
-}
+
 </style>
