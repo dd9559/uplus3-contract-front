@@ -95,7 +95,13 @@ for (let readonlyItem in msg) {
         let signDate = `${y}年${M}月${D}日`
         element.innerHTML = signDate
       } else {
-        element.innerHTML = msg[readonlyItem]
+        if (['ownerCommissionUpper','subscriptionPriceUpper','dealPriceUpper','custCommissionUpper'].includes(readonlyItem)) {
+          element.innerHTML = toChineseNumber(msg[readonlyItem.replace('Upper','')])
+        } else if (['ownerCommission','subscriptionPrice','dealPrice','custCommission'].includes(readonlyItem)) {
+          element.innerHTML = formatMoney(msg[readonlyItem])
+        } else {
+          element.innerHTML = msg[readonlyItem]
+        }
         element.classList.remove('input-title')
         element.classList.remove('input-title2')
         element.classList.remove('input-before')
@@ -107,214 +113,97 @@ for (let readonlyItem in msg) {
 
 
 let sub = {
-  'checkbox_check1': null,
-  'val1': null,
-  'val2': null,
-  "checkbox_check2": {
+  "val5": null,
+  "val6": null,
+  "val7": null,
+  "val8": null,
+  "checkbox_check1": {
     stateful: function (index) {
-      return index === 6 ? {"val3": null}:null
+      return index === 4 ? {"val9": null}:null
     }
   },
-  'checkbox_check3': null,
+  "drapdown_val10": {
+    stateful: function (val) {
+      let res = null;
+      switch (val) {
+        case '1':
+          break;
+        case '2':
+          res = {'val11': null,'val12': null}
+          break;
+        case '3':
+          res = {'val13': null};
+          break;
+      }
+      return res;
+    }
+  },
+  'checkbox_check2': null,
+  "val14": null,
+  "val15": null,
+  "val16": null,
+  "checkbox_check3": {
+    stateful: function (index) {
+      return index === 0 ? {"val19": null}:{"val20": null,"val21": null,"val22": null}
+    }
+  },
   'checkbox_check4': null,
-  'checkbox_check5': null,
-  "checkbox_check6": {
-    stateful: function (index) {
-      if (index === 1) {
-        let owner = ''
-        if (msg['ownerNames']) {
-          owner = `${msg['ownerName']}、${msg['ownerNames']}`
-        } else {
-          owner = msg['ownerName']
-        }
-        console.log(document.querySelector('*[extendparam=val4]'),99999);
-        document.querySelector('*[extendparam=val4]').innerHTML = owner
-        return {'val5': null, 'val6': null}
-      } else {
-        return null
-      }
-    }
-  },
-  "checkbox_check7": {
-    stateful: function (index) {
-      return index === 1 ? {'val7': null,'checkbox_check8': {
-        stateful: function (index) {
-          return index === 0 ? {'checkbox_check9': {
-            stateful: function (index) {
-              return index === 2 ? {'val8': null} : null
-            }
-          },'val9': null} : null
-        }
-      }} : null
-    }
-  },
-  '"checkbox_check10': null,
-  "checkbox_check11": {
-    stateful: function (index) {
-      return index === 0 ? {'checkbox_check12': null,'val10': null,'val11': null,'val12': null,'val13': null,} : null
-    }
-  },
-  'checkbox_check13': {
-    stateful: function (index) {
-      return index === 1 ? {'val14': null,'val15': null,'checkbox_check14': null,'val16': null,'checkbox_check15': {
-        stateful: function (index) {
-          let obj = null
-          switch (index) {
-            case 0:
-              obj = {"val17": null}
-              break;
-            case 1:
-              obj = {"val18": null}
-              break;
-            case 2:
-              obj = {"val19": null}
-              break;
-            default:
-              obj = null
-              break;
-          }
-          return obj
-        }
-      },'checkbox_check16': {
-        stateful: function (index) {
-          return index === 1 ? {'val20': null} : null
-        }
-      }} : null
-    }
-  },
-  'val21': null,
-  'val22': null,
-  'val23': null,
-  "checkbox_check17": {
-    stateful: function (index) {
-      return index === 2 ? {'val24': null,'val25': null} : null
-    }
-  },
-  'checkbox_check18': {
-    stateful: function (index) {
-      let obj = null
-      switch (index) {
-        case 0:
-          obj = {"val26": null}
-          break;
-        case 1:
-          obj = {"val27": null,'val28': null}
-          break;
-        case 2:
-          obj = {"val29": null}
-          break;
-        case 3:
-          obj = {"val30": null,'val31': null}
-          break;
-        case 4:
-          obj = {"val32": null}
-          break;
-        default:
-          obj = null
-          break;
-      }
-      return obj
-    }
-  },
-  "val33": null,
-  'checkbox_check19': {
-    stateful: function (index) {
-      let obj = null
-      switch (index) {
-        case 0:
-          obj = {"val34": null}
-          break;
-        case 1:
-          obj = {"val35": null}
-          break;
-        case 2:
-          obj = {"val36": null}
-          break;
-        case 3:
-          obj = {"val37": null}
-          break;
-        default:
-          obj = null
-          break;
-      }
-      return obj
-    }
-  },
-  "checkbox_check20": {
-    stateful: function (index) {
-      return index === 0 ? {'val38': null} : null
-    }
-  },
-  "val39": null,
-  "val40": null,
-  "val41": null,
-  "info_check21": {
+  "val23": null,
+  "val24": null,
+  "val25": null,
+  "val27": null,
+  "val28": null,
+  "val29": null,
+  "val30": null,
+  "val31": null,
+  "val32": null,
+  "info_check5": {
     stateful: function () {
-      return document.querySelectorAll(`*[name=check21]`)[1].querySelector('p').getAttribute('checked') ? {'val111': null} : null
+      return document.querySelectorAll(`*[name=check5]`)[0].querySelector('p').getAttribute('checked') ? {'checkbox_check6': {
+        stateful: function (index) {
+          return index === 4 ? {"val33": null}:null
+        }
+      }} : null
     }
-  }
+  },
+  "info_check7": {
+    stateful: function () {
+      return document.querySelectorAll(`*[name=check7]`)[0].querySelector('p').getAttribute('checked') ? {'checkbox_check8': null} : null
+    }
+  },
 }
 
 let checkArr = {
-  check2: {
-    6 : ["val3"]
+  check1: {
+    4 : ["val9"]
   },
-  check6: {
-    0 : ["val4","val5","val6"],
-    1 : ["val4","val5","val6"],
+  check3: {
+    0 : ["val19"],
+    1 : ["val20","val21","val22"],
+  },
+  check5: {
+    0 : ["checkbox_check6","val33"]
   },
   check7: {
-    1 : ["val7","checkbox_check8","checkbox_check9",'val8','val9']
+    0 : ["checkbox_check8"]
   },
-  check8: {
-    0 : ["checkbox_check9",'val8','val9']
+}
+
+let drapdownArr = {
+  val10: {
+    '1' : {
+      write: [],
+      disabled: ["val11","val12","val13"],
+    },
+    '2' : {
+      write: ["val11","val12"],
+      disabled: ["val13"]
+    },
+    '3' : {
+      write: ["val13"],
+      disabled: ["val11","val12"]
+    }
   },
-  check9: {
-    2 : ['val8']
-  },
-  check11: {
-    0 : ["checkbox_check12",'val10','val11','val12','val13']
-  },
-  check13: {
-    1 : ['val14','val15','checkbox_check14','val16','checkbox_check15',"val17","val18","val19",'checkbox_check16','val20']
-  },
-  check15: {
-    0 : ["val17"],
-    1 : ["val18"],
-    2 : ["val19"]
-  },
-  check16: {
-    1 : ["val20"]
-  },
-  check17: {
-    2 : ["val24","val25"]
-  },
-  check18: {
-    0 : ["val26"],
-    1 : ["val27","val28"],
-    2 : ["val29"],
-    3 : ["val30","val31"],
-    4 : ["val32"]
-  },
-  check18: {
-    0 : ["val26"],
-    1 : ["val27","val28"],
-    2 : ["val29"],
-    3 : ["val30","val31"],
-    4 : ["val32"]
-  },
-  check19: {
-    0 : ["val34"],
-    1 : ["val35"],
-    2 : ["val36"],
-    3 : ["val37"]
-  },
-  check20: {
-    0 : ["val38"]
-  },
-  check21: {
-    1 : ["val111"]
-  }
 }
 
 let Obj;
@@ -370,7 +259,7 @@ contractConfig.inputListener(
           } else  {
             ev.target.value=ev.target.value.replace(/[^\d]/g, "")
           }
-          if (max == 17) {
+          if (Obj['cn_arr'].includes(cn_str) && max == 17) {
             tip.target.innerHTML = formatMoney(ev.target.value)
           } else {
             tip.target.innerHTML = ev.target.value
@@ -413,6 +302,34 @@ contractConfig.inputListener(
   }
 )
 
+
+  //初始化下拉控件
+  Dropdown.create({
+    classN: 'dropdown-item',
+    callBack: function(bindElem, dateObj) {
+      if(bindElem.tagName.toLowerCase()==='input'){
+        bindElem.value=dateObj.value
+        bindElem.setAttribute('value',bindElem.value)
+        let attr = bindElem.getAttribute('inputmethod')
+        console.log(bindElem, dateObj,drapdownArr[attr][dateObj.value].write,23232);
+        if(drapdownArr[attr]){
+          if (drapdownArr[attr][dateObj.value]) {
+            contractConfig.initForm(drapdownArr[attr][dateObj.value].write,  0);
+            contractConfig.initForm(drapdownArr[attr][dateObj.value].disabled,  1);
+          }
+          if(attr==='val10'){
+            contractConfig.prohibit(bindElem,['1','2','3'],'val10')
+          }
+        }
+      }else{
+        bindElem.innerHTML = dateObj.value
+        bindElem.classList.remove('input-select')
+        bindElem.classList.remove('input-before')
+      }
+    }
+  })
+
+
 // 选择第几个
 let indexChcek = 0;
 // 选择事件回调
@@ -424,82 +341,22 @@ contractConfig.checkboxListener(function(obj, i) {
         let bool = e.querySelector('p').getAttribute('checked');
         let name = e.getAttribute('name');
         // 如果是选中状态
-        if (name === 'check2') {
+        if (name === 'check1') {
           if (checkArr[name][i]) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
           }
         }
-        if (name === 'check6') {
-          if (indexChcek === 1) {
+        if (name === 'check3') {
+          if (checkArr[name][i]) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-            let owner = ''
-            if (msg['ownerNames']) {
-              owner = `${msg['ownerName']}、${msg['ownerNames']}`
-            } else {
-              owner = msg['ownerName']
-            }
-            document.querySelector('*[extendparam=val4]').innerHTML = owner
-          } else {
-            document.querySelector('*[extendparam=val4]').innerHTML = ''
-            contractConfig.initForm(checkArr[name][1], 1);
+          }
+        }
+        if (name === 'check5') {
+          if (checkArr[name][i]) {
+            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
           }
         }
         if (name === 'check7') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check8') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check9') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check11') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check13') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check15') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check16') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check17') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check18') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check19') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check20') {
-          if (checkArr[name][i]) {
-            contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
-          }
-        }
-        if (name === 'check21') {
           if (checkArr[name][i]) {
             contractConfig.initForm(checkArr[name][i], bool ? 0 : 1);
           }

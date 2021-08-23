@@ -489,12 +489,12 @@
     <div class="page_one">
 
       <!-- 封面 -->
-      <div class="cover-fm" style="display: block;">
+      <div class="cover-fm" style="display: none;">
         <div class="cover-style">
             <p class="head_title">房屋买卖（居间）合同</p>
             <p class="content-text mar-top">甲方：<span class="text-limit input-before" style="display: inline-block;width: 60%;" tag="input-auto" systemparam="ownerName"></span></p>
             <p class="content-text">乙方：<span class="text-limit input-before" style="display: inline-block;width: 60%;" tag="input-auto" systemparam="guestName"></span></p>
-            <p class="content-text">居间方：<span class="text-border" style="width: 60%;">甘谷玛雅房屋投资顾问有限公司</span></p>
+            <p class="content-text">居间方：<span class="text-limit input-before" tag="input-auto" systemparam="companyNames" company="true" style="display: inline-block;width: 60%;">甘谷玛雅房屋投资顾问有限公司</span></p>
         </div>
       </div>
 
@@ -508,13 +508,10 @@
         <p>6.合同中"口”等需要选择的内容，请务必做岀明确的勾选，以划"√"方式选定您选择的事项；对于不选择的条款，应当划"／"或不选择。</p>
         <strong>如您有意见或建议，请您拨打玛雅服务热线：0938--5728888</strong>
       </div>
-
-      <!-- <p class="code">合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px" /></p> -->
-      <!-- <p class="title" style="position: relative;">存量房买卖合同</p> -->
-      <div class="cw_message">
+      <div class="page1 cw_message">
         <ul>
           <li><span>卖方（甲方）：</span><span class="text-limit" tag="input-auto" systemparam="ownerName"></span></li>
-          <li><span>身份证（印业执照）号：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerID"></span></li>
+          <li><span>身份证（营业执照）号：</span><span class="text-limit input-before" tag="input-auto" systemparam="ownerID"></span></li>
         </ul>
 
         <ul>
@@ -529,7 +526,7 @@
 
         <ul style="margin-top: 20px;">
           <li><span>买方（乙方）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
-          <li><span>身份证（印业执照）号：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestID"></span></li>
+          <li><span>身份证（营业执照）号：</span><span class="text-limit input-before" tag="input-auto" systemparam="guestID"></span></li>
         </ul>
 
         <ul>
@@ -543,12 +540,9 @@
         </ul>
 
         <ul>
-            <li><span>居间方（丙方）：</span><span class="text-border" style="width: 235px;">甘谷玛雅房屋投资顾问有限公司</span></span></li>
-            <li><span>营业执照号码：</span><span class="text-limit ">91620523MA73QNN2X0</span></span></li>
+            <li><span>居间方（丙方）：</span><span class="text-limit input-before" tag="input-auto" systemparam="companyNames" company="true"></span></span></li>
+            <li><span>营业执照号码：</span><span class="text-limit input-before" tag="input-auto" systemParam="guestStoreRegisterCode"></span></span></li>
         </ul>
-        <ul>
-          <li><span class="text-limit input-before" tag="input-auto" systemparam="companyNames" company="true"></span></span></li>
-      </ul>
       </div>
       <strong>注：本合同既是甲乙双方的房屋买卖合同又是丙方与甲乙各方的居间合同。</strong>
       <p class="1h18 agreements">
@@ -615,7 +609,7 @@
         <span>）种：</span>
       </p>
 
-      <p class="1h18 agreements">1、房屋所有权经合法登记，无抵押或其他权利瑕疵，甲方对该房屋享有完整所有权，能完全支配及处分</p>
+      <p class="1h18 agreements">1、房屋所有权经合法登记，无抵押或其他权利瑕疵，甲方对该房屋享有完整所有权，能完全支配及处分。</p>
 
       <div class="1h18 agreements">
         <span>2、该房屋设定抵押，抵押权人为</span>
@@ -649,7 +643,7 @@
         <span class="input-before" listen="number" max="16" tag="input-auto" systemParam="dealPrice"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" systemParam="dealPriceUpper" class="input-readonly"></span>
-        <span>元整)。</span>
+        <span>)。</span>
       </div>
 
       <div class="1h18 agreements">
@@ -662,12 +656,12 @@
 
       <div class="1h18 agreements">
         <span>1、乙方于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val15" />
-        <span>日交付定金人民币（小写）</span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val15" />
+        <span>交付定金人民币（小写）</span>
         <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val16"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val16_add" systemParam="true" class="input-readonly"></span>
-        <span>元整)予丙方。丙方于签订《房屋买卖（居间）合同》当时代乙方向甲方支付定金</span>
+        <span>)予丙方。丙方于签订《房屋买卖（居间）合同》当时代乙方向甲方支付定金</span>
         <span class="input-before" listen="number" max="17" extendparam="val17" tag="input-auto"></span>
         <span>元,剩余定金</span>
         <span class="input-before" listen="number" max="17" extendparam="val18" tag="input-auto"></span>
@@ -695,8 +689,8 @@
           <p type="check"></p>一次性付款：
         </div>
         <span>乙方于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val19" />
-        <span>日前将除定金外的全部房款按照房屋所有权登记部门关于资金监管的规定进行资金监管。</span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val19" />
+        <span>前将除定金外的全部房款按照房屋所有权登记部门关于资金监管的规定进行资金监管。</span>
       </div>
 
       <div class="1h18 agreements">
@@ -704,13 +698,13 @@
           <p type="check"></p>首付加银行按揭方式（公积金）付款：
         </div>
         <span>乙方于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val20" />
-        <span>日前将首付款人民币（小写）</span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val20" />
+        <span>前将首付款人民币（小写）</span>
         <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val21"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val21_add" systemParam="true" class="input-readonly"></span>
-        <span>元整)按照房屋所有权登记部门关于资金监管的规定进行资金监管。甲乙双方于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val22" />
+        <span>)按照房屋所有权登记部门关于资金监管的规定进行资金监管。甲乙双方于</span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val22" />
         <span>前备齐本次贷款所需相关证件及资料交给丙方并到现场办理相关手续；若以上事宜出现延误，均由延误方承担违约责任。</span>
       </div>
 
@@ -726,7 +720,7 @@
         <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val23"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val23_add" systemParam="true" class="input-readonly"></span>
-        <span>元整)贷款金额具体以银行或者公积金中心审批为准，如审批贷款金额低于申请贷款金额，不足房款由乙方于该房屋产权转移登记之日前以现金方式支付予甲方。甲乙双方须积极配合。 </span>
+        <span>)贷款金额具体以银行或者公积金中心审批为准，如审批贷款金额低于申请贷款金额，不足房款由乙方于该房屋产权转移登记之日前以现金方式支付予甲方。甲乙双方须积极配合。 </span>
       </div>
 
       <p class="1h18 agreements">2、乙方取得新产权证后，须于三个工作日内到资金监管部门办理资金解冻手续，完成最终付款义务。</p>
@@ -736,9 +730,9 @@
         <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val24"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" extendparam="val24_add" systemParam="true" class="input-readonly"></span>
-        <span>元整)待房屋交接完成，且房屋所有权变更登记完成 ，甲方承诺于 </span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val25" />
-        <span>日将户口（包含该物业上所有户口）迁出，并在房屋交接清单上签字后</span>
+        <span>)待房屋交接完成，且房屋所有权变更登记完成 ，甲方承诺于 </span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val25" />
+        <span>将户口（包含该物业上所有户口）迁出，并在房屋交接清单上签字后</span>
         <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="val26"></span>
         <span>个工作日内，由丙方代乙方向甲方支付。</span>
       </div>
@@ -750,11 +744,11 @@
         <span class="input-before" listen="number" max="16" tag="input-auto" systemParam="ownerCommission"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" systemParam="ownerCommissionUpper" class="input-readonly"></span>
-        <span>元整)；乙方须支付丙方的服务费为人民币（小写）</span>
+        <span>)；乙方须支付丙方的服务费为人民币（小写）</span>
         <span class="input-before" listen="number" max="16" tag="input-auto" systemParam="custCommission"></span>
         <span>元(金额大写：</span>
         <span tag="input-auto" systemParam="custCommissionUpper" class="input-readonly"></span>
-        <span>元整)。应于本合同签订之日起3日内支付。</span>
+        <span>)。应于本合同签订之日起3日内支付。</span>
       </div>
 
       <div class="1h18 agreements">
@@ -765,8 +759,8 @@
 
       <div class="1h18 agreements">
         <span>1、乙方按约定的付款方式交清一次性付款的款项（或按揭贷款的首付款并通过银行或公积金贷款审批）的情况下，甲乙双方按丙方要求于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val27" />
-        <span>日之前到房屋所有权登记部门现场办理该房屋产权转移登记手续，甲方同意将该房屋产权转移登记给乙方或乙方书面指定的任何合法第三方。甲乙双方均应互相配合到现场办理变更登记。</span>
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val27" />
+        <span>之前到房屋所有权登记部门现场办理该房屋产权转移登记手续，甲方同意将该房屋产权转移登记给乙方或乙方书面指定的任何合法第三方。甲乙双方均应互相配合到现场办理变更登记。</span>
       </div>
 
       <p class="1h18 agreements">2、若乙方选择按揭贷款或公积金贷款方式付款，由于乙方个人征信系统不良征信记录（或其他原因）造成按揭贷款或者公积金贷款无法办理，一切责任均由乙方承担。</p>
@@ -779,7 +773,7 @@
 
       <div class="1h18 agreements">
         <span>6、甲方同意于</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val28" />
+        <span tag="input-auto" class="text-limit input-before" extendParam="val28"></span>
         <span>交付房屋予乙方使用。甲乙双方在物业交割单上签字，视为交易房屋完成交付。</span>
       </div>
 
@@ -791,7 +785,7 @@
 
       <div class="1h18 agreements">
         <span>2、甲方收取房款后如违反本合同约定或其他原因无法将房屋售予乙方的，除应当返还乙方已经支付的所有房款，还应按已付款的</span>
-        <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="val29"></span>
+        <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val29"></span>
         <span>%向乙方承担违约金。</span>
       </div>
 
@@ -803,7 +797,7 @@
 
       <div class="1h18 agreements">
         <span>6、乙方逾期支付房款，每逾期一日，每日按未付房款的千分之三向甲方支付违约金。逾期30天，甲方有权不再向乙方出售该房屋，乙方应向甲方支付应付房款</span>
-        <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="30"></span>
+        <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val30"></span>
         <span>%违约金。</span>
       </div>
 
@@ -811,7 +805,7 @@
 
       <div class="1h18 agreements">
         <span>8、乙方未按本合同约定提交贷款所需资料并到现场办理申请贷款手续的，每迟延一日，每日应按欠付款额的千分之三向甲方支付违约金。逾期30天，视为乙方原因导致交易无法完成，甲方有权不再向乙方出售该房屋，乙方应向甲方支付应付房款</span>
-        <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="31"></span>
+        <span class="input-before" listen="number" max="17" tag="input-auto" extendparam="val31"></span>
         <span>%违约金。</span>
       </div>
 
@@ -833,7 +827,7 @@
 
       <div class="1h18 agreements navTitle">
         <span>十二、甲乙双方的有效文书送达地址以双方在地址联系单确认的地址为准，如有变更，须及时书面通知合同其他方，否则仍以地址电话联系单地址、电话为准，一经正常投递即视为送达。送达之日起超过</span>
-        <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="32"></span>
+        <span class="input-before" listen="number" max="16" tag="input-auto" extendparam="val32"></span>
         <span>天未回复，视为违约，违约方应当依照本合同第六条及第八条的约定向丙方和守约方支付费用并承担违约责任。</span>
       </div>
 
@@ -846,48 +840,50 @@
           <p type="check"></p>甲方承诺交易物业无权属争议，
         </div>
 
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check6" more="true">
           <p type="check"></p>非继承、
         </div>
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check6" more="true">
           <p type="check"></p>继承、
         </div>
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check6" more="true">
           <p type="check"></p>赠予、
         </div>
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check6" more="true">
           <p type="check"></p>遗赠所得、
         </div>
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check6" more="true">
           <p type="check"></p>析产、其他
         </div>
-        <span class="text-limit input-before" tag="input-auto" extendparam="val"></span>
+        <span class="text-limit input-before" tag="input-auto" extendparam="val33"></span>
         <span>，也无法院查封等其他无法过户的情况，否则由此产生的一切费用由甲方承担。</span>
       </div>
 
       <div class="1h18 agreements">
-        <div class="info-checkbox" name="check1">
-          <p type="check"></p>甲方承诺该交易物业□无抵押、
+        <div class="info-checkbox" name="check7">
+          <p type="check"></p>甲方承诺该交易物业
         </div>
-
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check8" more="true">
+          <p type="check"></p>无抵押、
+        </div>
+        <div class="info-checkbox" name="check8" more="true">
           <p type="check"></p>无担保、
         </div>
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check8" more="true">
           <p type="check"></p>无欠款等债权债务纠纷，
         </div>
         <span>并承诺因以上债权债务纠纷导致本合同约定的房屋无法完成交易给乙方和丙方造成损失的，均由甲方负责赔偿。</span>
       </div>
 
       <div class="1h18 agreements">
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check9">
           <p type="check"></p>因国家政策、
         </div>
         <span>房管局、土地局、公积金中心、银行等部门因素导致办理房屋所有权转移登记手续、发放不动产证、解冻资金等延期，甲乙双方及丙方均不承担任何责任。</span>
       </div>
 
       <div class="1h18 agreements">
-        <div class="info-checkbox" name="check1">
+        <div class="info-checkbox" name="check10">
           <p type="check"></p>因乙方已确定购买此房屋,
         </div>
         <span>并提供明确购房条件,特同意提前单方先签订《房屋买卖（居间）合同》并通过丙方对认购条件做出了约定。甲方如同意出售并在《房屋买卖（居间）合同》上签字，此《房屋买卖（居间）合同》双方均认可为有效合同，并对该合同不是双方同时在场签字不提出异议。</span>
@@ -904,25 +900,24 @@
             style="position: absolute;left:100px;top:-21px;"></span></br>
       </div>
       <div class="1h18 agreements">
-        <span class="w50" style="position: relative;">丙方：<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:116px;top:-5px;"></span>
+        <span class="w50" style="position: relative;">丙方：<span class="text-limit input-before" tag="input-auto" systemparam="companyNames" company="true"></span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkE5OUJEMTVFNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkE5OUJEMTVGNTY4QTExRTlBRTQ1RjhDOTM4NEY3NjMwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTk5QkQxNUM1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTk5QkQxNUQ1NjhBMTFFOUFFNDVGOEM5Mzg0Rjc2MzAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7bS3qnAAAAF0lEQVR42mL8//8/AzpgYsACKBQECDAANlADByyfnVcAAAAASUVORK5CYII=" style="position: absolute;left:116px;top:-5px;"></span>
       </div>
       <div class="1h18 agreements">
-        <span class="w50">代理人签字：<span class="text-limit input-before" tag="input-auto" extendparam="val50"></span></span>
-        <!-- <span class="w50">委托代理人（签章）：<span class="text-border"></span></span> -->
+        <span class="w50">代理人签字：<span class="text-limit input-before" tag="input-auto" extendparam="val34"></span></span>
       </div>
       <div class="1h18 agreements" style="text-align: right;">
-        <span class="w50">本合同签署日期：<span style="border: none;" systemParam="signDate" extendparam="val51"></span></span>
+        <span class="w50">签约日期：<span style="border: none;" systemParam="signDate"></span></span>
       </div>
     </div>
   </div>
 
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_MC_MM_20210707.js"></script>  -->
-<script>
+<script type="text/javascript" src="/js/bundle_GG_MM_20210823.js"></script> 
+<!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -958,6 +953,6 @@
             }
         }
     })();
-</script> 
+</script>  -->
 
 </html>

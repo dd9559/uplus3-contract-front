@@ -479,24 +479,28 @@
     <!-- 可编辑界面 -->
     <!-- 吴兴勇开始编辑 -->
     <div class="page_one">
-      <p class="title" style="position: relative;">房屋租赁合同</p>
+      <p class="title" style="position: relative;">房屋租赁契约</p>
       <p class="code">合同编号：<input systemparam="code" tag="input" readonly="readonly" type="text" class="text-limit" style="width:150px" /></p>
       <div class="cw_message">
         <ul>
           <li><span>出租方：（以下简称甲方）：</span><span class="text-limit" tag="input-auto" systemparam="ownerName"></span></li>
+          <li><span>身份证号：</span><span class="text-limit" tag="input-auto" systemparam="ownerID"></span></li>
         </ul>
         <ul>
           <li><span>委托代理人：</span><span class="text-limit input-before" tag="input-auto"></span></li>
+          <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>承租方：（以下简称乙方）：</span><span class="text-limit input-before" systemparam="guestName" tag="input-auto"></span></li>
+          <li><span>身份证号：</span><span class="text-limit input-before" systemparam="guestID" tag="input-auto"></span></li>
         </ul>
         <ul>
           <li><span>委托代理人：</span><span class="text-limit input-before" tag="input-auto"></span></li>
+          <li><span>身份证号：</span><span class="text-limit input-before" tag="input-auto"></span></li>
         </ul>
       </div>
       <p class="1h18 agreements">
-        根据《中华人民共和国合同法典》、《中华人民共和国城市房地产管理法》及《商品房屋租赁管理办法》等有关规定，甲乙双方在平等自愿基础上，协商一致签订本合同，以便双方共同遵守。
+        根据《中华人民共和国民法典》、《中华人民共和国城市房地产管理法》及《商品房屋租赁管理办法》等有关规定，甲乙双方在平等自愿基础上，协商一致签订本合同，以便双方共同遵守。
       </p>
       <!-- 第一条 -->
       <p class="1h18 agreements">第一条：房屋基本情况</p>
@@ -514,6 +518,9 @@
         <span tag="input-auto" class="text-limit input-before" extendparam="val3" tag="input-auto"></span>
         <span>朝向:</span>
         <span tag="input-auto" class="text-limit input-before" tag="input-auto"></span>
+      </div>
+
+      <div class="1h18 agreements">
         <span>配套：水</span>
         <span tag="input-auto" class="text-limit input-before" tag="input-auto"></span>
         <span>电</span>
@@ -536,18 +543,24 @@
         <span tag="input-auto" class="text-limit input-before" tag="input-auto"></span>
         <span>防盗门</span>
         <span tag="input-auto" class="text-limit input-before" tag="input-auto"></span>
+      </div>
+
+      <div class="1h18 agreements">
         <span>租房用途</span>
         <span tag="input-auto" class="text-limit input-before" extendparam="val4" tag="input-auto"></span>
         <span>装修及设施情况</span>
         <span tag="input-auto" class="text-limit input-before" extendparam="val5" tag="input-auto"></span>
       </div>
+
+
       <!-- 第二条 -->
       <p class="1h18 agreements">第二条：租赁期限</p>
       <div class="1h18 agreements">
         <span>从</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val6" />
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val6" />
         <span>到</span>
-        <input type="text" class="text-limit calendar-item" style="width:110px" readonly="readonly" extendparam="val7" />
+        <input type="text" class="text-limit calendar-item" style="width:123px;font-size: 16px;" readonly="readonly" extendparam="val7" />
+        <span>。</span>
       </div>
 
       <!-- 第三条 -->
@@ -555,7 +568,7 @@
 
       <div class="1h18 agreements">
         <span>租金交付方式为：租金按第</span>
-        <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val8" ></span>
+        <span tag="input-auto" class="text-limit input-before" listen="number" max="16" extendparam="val8" ></span>
         <span>种结算（1.每月交，2.每季交， 3.每半年交，4.每年交）。每月租金</span>
         <span tag="input-auto" class="text-limit input-before" listen="number" max="17" extendparam="val9" ></span>
         <span>元，由乙方在前一租金结算期满的前10日内足额交付甲方，逾期则视为违约。</span>
@@ -720,14 +733,14 @@
       <div class="1h18 agreements">
         <!-- <span class="w50">【委托代理人】(签章)：<span class="text-limit input-before" tag="input-auto" extendparam="val50"></span></span>
                     <span class="w50">【委托代理人】(签章)： <span class="text-limit input-before" tag="input-auto" extendparam="val51"></span></span> -->
-        <span class="w50">委托代理人：<span class="text-border"></span></span>
-        <span class="w50">委托代理人： <span class="text-border"></span></span>
+        <span class="w50">委托代理人：</span>
+        <span class="w50">委托代理人：</span>
       </div>
       <div class="1h18 agreements">
         <!-- <span class="w50">【委托代理人】(签章)：<span class="text-limit input-before" tag="input-auto" extendparam="val50"></span></span>
                     <span class="w50">【委托代理人】(签章)： <span class="text-limit input-before" tag="input-auto" extendparam="val51"></span></span> -->
-        <span class="w50">联 系 电 话：<span class="text-border"></span></span>
-        <span class="w50">联 系 电 话：<span class="text-border"></span></span>
+        <span class="w50">联 系 电 话：</span>
+        <span class="w50">联 系 电 话：</span>
       </div>
         <div class="1h18 agreements" style="text-align: right;">
           <span class="w50">日  期 ：<span style="border: none;" systemParam="signDate" extendparam="val51"></span></span>
@@ -736,12 +749,12 @@
   </div>
 
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_MC_ZL_20210707.js"></script>  -->
-<script>
+<script type="text/javascript" src="/js/bundle_GG_ZL_20210823.js"></script> 
+<!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -777,6 +790,6 @@
             }
         }
     })();
-</script>
+</script> -->
 
 </html>
