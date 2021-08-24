@@ -17,6 +17,7 @@ let Obj;
 })()
 
   let sub = {
+    'val0':null,
     'val1':null,
     'val111':null,
     'checkbox_guaranty': null,

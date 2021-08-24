@@ -466,10 +466,8 @@ export default {
     },
     // 发放
     clickIssueFn(scope) {
-      console.log(scope);
       let { row } = scope || {};
       let { id = 0 } = row || {};
-
       this.$tool.layerAlert.call(this, {
         message: `确定发放 ${scope.row.settleDate} 的提成吗？`,
         title: "确定是否发放提成",

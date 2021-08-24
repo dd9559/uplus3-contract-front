@@ -362,7 +362,10 @@
                 </li>
                 <br>
                 <li style="position:relative;">
-                  <span>居间人：</span><span tag="input-auto" systemParam="companyNames" company="true"></span>店
+                  <span>居间人：</span>
+                  <span class="text-limit" tag="input-auto" systemparam="storeName"></span>
+                  <span tag="input-auto" systemParam="companyNames" company="true"></span>
+                  店
                 </li>
             </ul>
         </div>
@@ -370,6 +373,8 @@
             <p>委托事项：</p>
             <div>
               <span> 一、居间人兹为委托人提供居间服务，房屋座落于</span>
+              <span tag="input-auto" max="17" class="input-before" extendparam="val0"></span>
+              <span>省</span>
               <span systemparam="propertyAddr" tag="input-auto"></span>
               <span>，证载建筑面积</span>
               <span tag="input-auto" listen="number" max="17" class="input-before" extendparam="val1"></span>
@@ -498,12 +503,12 @@
     </div>
     </div>
 </body>
-<script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_GG_WXJ_20210823.js"></script>
-<!-- <script>
+<script type="text/javascript" src="/js/bundle_GG_WXJ_20210823.js"></script> -->
+<script>
   (function () {
       var scriptList = document.getElementsByTagName("script")
       console.log(scriptList)
@@ -539,5 +544,5 @@
           }
       }
   })();
-</script>  -->
+</script> 
 </html>
