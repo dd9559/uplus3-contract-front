@@ -1133,7 +1133,7 @@ export default {
                   outMoney: "",
                 },
               ];
-              this.transterShow = true;
+              // this.transterShow = true;修改弹框打开时机为接口数据返回后
               this.selectPayInfo = val;
               this.getTransterInfo(val.id);
             } else {
@@ -1166,6 +1166,9 @@ export default {
         .then((res) => {
           res = res.data;
           if (res.status === 200) {
+            if (!this.isEdit) {
+              this.transterShow = true;
+            }
             if (res.data.inContractCode) {
               this.transterInfoPerson = res.data;
             } else {
