@@ -180,6 +180,7 @@ let msg={
   "subscriptionPrice": 1233.36,
   "remarks": ""
 }
+
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 

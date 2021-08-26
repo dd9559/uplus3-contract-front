@@ -514,7 +514,7 @@ export default {
 <style lang="less">
 // 弹层
 .layer-commission {
-  width: 460px !important;
+  width: 460px;
   border: 0;
   padding-bottom: 14px;
   .el-message-box__header {
@@ -556,8 +556,8 @@ export default {
     font-size: 16px;
   }
   .btn-sure {
-    background-color: #ffa148;
-    border-color: #ffa148;
+    background-color: #ffa148 !important;
+    border-color: #ffa148 !important;
   }
   .btn-close {
     background-color: #dddddd;

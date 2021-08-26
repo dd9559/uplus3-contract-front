@@ -4,13 +4,13 @@
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0px 15px 15px">
       <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" 
-        clearable size="small">
+        clearable>
       </el-input>
       <!-- 日期 -->
       <div class="triple-select set-data-class">
         <div class="item-text">结算周期</div>
         <el-date-picker class="item-billing-date w160" v-model="searchData.settleDate" type="monthrange"
-          value-format="yyyy-MM" size="small">
+          value-format="yyyy-MM">
         </el-date-picker>
       </div>
       
