@@ -94,40 +94,99 @@ textLong.forEach(function (item) {
 //基础数据赋值
 // let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
 let msg={
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "ee2353-344，ii397-4839",
-  guestName: "然迪生",
-  guestNames: "胜负少，发士夫",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  signDate:'5345436456457568',
-  subscriptionPrice:100,
-  ownerIDs: "ee2353-344，ii397-4839",
-  ownerName: "熊先",
-  ownerNames: "胜多少，发士夫",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  propertyAddr: "a市b区c",
-  singleCompany: "是的噶几开会说",
-  dealPrice:1000,
-  dealPriceUpper:'壹仟',
-  square:160
+  "houseinfoCode": "S00120557",
+  "wHEmpName": "刘才",
+  "ownerIDs": "",
+  "isHaveData": 0,
+  "ownerTels": "",
+  "custCommission": 0,
+  "ownerCommission": 0,
+  "propertyAddr": "湖北省武汉市洪山区天罗地网",
+  "singleCompany": "",
+  "cityId": 52,
+  "dealPrice": 452.33,
+  "lepName": "张小虎",
+  "type": 5,
+  "signDate": 1629794747000,
+  "guestName": "冯偏",
+  "companyNames": [
+      "贵州文洋农业科技发展有限责任公司"
+  ],
+  "otherCooperationCost": 0,
+  "guestStoreName": "贵州文洋农业科技发展有限责任公司",
+  "guestTel": "18217597612",
+  "id": 9672,
+  "guestCardType": "身份证",
+  "ownerCommissionUpper": "零",
+  "companyBanks": [
+      {
+          "bankAccountName": "贵州文洋农业科技发展有限责任公司",
+          "bankBranchName": "蜂花粉",
+          "bankCard": "65265564654848548545",
+          "bankCode": "GDB",
+          "bankId": 4,
+          "bankName": "广东发展银行",
+          "entBankList": [],
+          "id": 272,
+          "storeId": 50609,
+          "storeName": "太玄剑派第一分派",
+          "type": 1
+      },
+      {
+          "bankAccountName": "发个红包发的",
+          "bankBranchName": "",
+          "bankCard": "65646556",
+          "bankCode": "CMB",
+          "bankId": 18,
+          "bankName": "招商银行",
+          "entBankList": [],
+          "id": 277,
+          "storeId": 50609,
+          "storeName": "太玄剑派第一分派",
+          "type": 0
+      }
+  ],
+  "guestinfoCode": "R00033742",
+  "subscriptionPriceUpper": "壹仟贰佰叁拾叁圆叁角陆分",
+  "guestCardTypes": "",
+  "isRefer": 0,
+  "ownerID": "429006199209094008",
+  "tendingName": "叶吉家经纪人",
+  "square": 12131,
+  "moneyUnit": "元",
+  "guestTels": "",
+  "ownerCardTypes": "",
+  "code": "J0052210824002",
+  "ownerCardType": "身份证",
+  "guestStoreRegisterCode": "9152000055661346X9",
+  "ownerTel": "18627783021",
+  "dealPriceUpper": "肆佰伍拾贰圆叁角叁分",
+  "companyLepPhone": "15926302312",
+  "guestNames": "",
+  "propertyAddrWuYe": "当代梦工厂测试 3栋1单元128",
+  "ownerName": "骆玲",
+  "guestIDs": "",
+  "custEnsure": 0,
+  "timeUnit": "",
+  "isRetained": 0,
+  "commissionPayment": 0,
+  "ownerNames": "",
+  "subscriptionTerm": "2021-08-24 00:00:00",
+  "isWuHanMM": 0,
+  "custCommissionUpper": "零",
+  "propertyCard": "",
+  "guestID": "429006199111192507",
+  "squareUse": 1234,
+  "subscriptionPrice": 1233.36,
+  "remarks": ""
 }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
 
-  let readonlyArr = ['code','ownerName', 'ownerID', 'guestTel','ownerNames','signDate','subscriptionPriceUpper','subscriptionPrice', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode']
+  let readonlyArr = ['code','companyBanks','ownerName','ownerID', 'guestTel','ownerNames','signDate','subscriptionPriceUpper','subscriptionPrice', 'ownerIDs', 'guestName', 'guestID', 'guestNames', 'guestIDs', 'propertyAddr', 'dealPrice', 'dealPriceUpper','companyNames','guestStoreRegisterCode']
   if(onlyReadDom.length>0){
     onlyReadDom.forEach((element,index) => {
+      console.log(element);
       if(readonlyArr.includes(readonlyItem)){
         if(readonlyItem==='companyNames') {
           element.innerHTML=msg[readonlyItem][0]
@@ -138,6 +197,8 @@ for (let readonlyItem in msg) {
           let D = time.getDate();
           let signDate = `${y}年${M}月${D}日`
           element.innerHTML = signDate
+        }else if(readonlyItem === 'companyBanks') {
+          element.innerHTML= msg[readonlyItem][0].storeName
         }else {
           if (['ownerCommissionUpper','subscriptionPriceUpper','dealPriceUpper','custCommissionUpper'].includes(readonlyItem)) {
             element.innerHTML = toChineseNumber(msg[readonlyItem.replace('Upper','')])

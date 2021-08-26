@@ -113,7 +113,6 @@ for (let readonlyItem in msg) {
 
 
 let sub = {
-  "val5": null,
   "val6": null,
   "val7": null,
   "val8": null,
