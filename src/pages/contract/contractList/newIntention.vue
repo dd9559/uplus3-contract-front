@@ -79,7 +79,10 @@
                 <el-form-item prop="rightAddrArea" :rules="{validator: rightAddr2, trigger: 'change'}">
                   <el-input v-model="contractForm.rightAddrArea" :disabled="canInput" clearable maxlength="10" class="addrwidth" @input="cutAddress('area')"></el-input>
                 </el-form-item>
-                区
+                <select :disabled="canInput" id="selectList">
+                  <option value="1">县</option>
+                  <option value="2">区</option>
+                </select>
                 <el-form-item prop="rightAddrDetail" :rules="{validator: rightAddr3, trigger: 'change'}">
                   <el-input v-model="contractForm.rightAddrDetail" :disabled="canInput" clearable class="big-input" maxlength="70" @input="cutAddress('detail')"></el-input>
                 </el-form-item>
@@ -498,6 +501,7 @@ export default {
       offLine:false,
       singleCompany:false,
       singleCompanyName:"",//单公司（为设置签章）
+      selectName:''
     };
   },
   created() {
@@ -979,6 +983,7 @@ export default {
           let rightAddress = res.data.propertyRightAddr
           let index1 = rightAddress.indexOf('市')
           let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
+          let index3 = index1 > 0 ? rightAddress.indexOf("县",index1) : rightAddress.indexOf("县")
           if(index1>0){
             this.$set(this.contractForm,'rightAddrCity',rightAddress.substring(0,index1))
           }
@@ -989,14 +994,34 @@ export default {
               this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(0,index2))
             }
           }
-          if(index1>0&&index2>0){
-            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
-          }else if(index1>0&&index2<0){
-            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index1+1))
-          }else if(index1<0&&index2>0){
-            this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
-          }else{
-            this.$set(this.contractForm,'rightAddrDetail',rightAddress)
+          if(index3>0){
+            if(index1>0){
+              this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(index1+1,index3))
+            }else{
+              this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(0,index3))
+            }
+          }
+          if(index2 != -1) {
+            if(index1>0&&index2>0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
+            }else if(index1>0&&index2<0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index1+1))
+            }else if(index1<0&&index2>0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index2+1))
+            }else{
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress)
+            }
+          }
+          if(index3 != -1) {
+            if(index1>0&&index3>0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index3+1))
+            }else if(index1>0&&index3<0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index1+1))
+            }else if(index1<0&&index3>0){
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress.substring(index3+1))
+            }else{
+              this.$set(this.contractForm,'rightAddrDetail',rightAddress)
+            }
           }
 
           for (let i = 0; i < res.data.contPersons.length; i++) {
@@ -1129,7 +1154,15 @@ export default {
     onSubmit1() {
       // this.dialogSure = false
       this.fullscreenLoading=true
-
+      let select = document.getElementById("selectList")
+      switch(select.value) {
+          case '1':
+              this.selectName = '县'
+              break
+          case '2':
+              this.selectName = '区'
+              break
+      }
       let param = {
         igdCont: {
           type: this.contractForm.type,
@@ -1166,7 +1199,7 @@ export default {
 
             }
           ],
-          propertyRightAddr:this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
+          propertyRightAddr:this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+this.selectName+this.contractForm.rightAddrDetail
         },
         type: this.type,
         recordType:this.recordType
@@ -1276,7 +1309,15 @@ export default {
     onSubmit2() {
       // this.dialogSure = false
       this.fullscreenLoading=true
-
+      let select = document.getElementById("selectList")
+      switch(select.value) {
+          case '1':
+              this.selectName = '县'
+              break
+          case '2':
+              this.selectName = '区'
+              break
+      }
       let param = {
         igdCont: this.contractForm,
         type: this.type,
@@ -1286,7 +1327,7 @@ export default {
       param.igdCont.contPersons[1].encryptionMobile = param.igdCont.contPersons[1].mobile;
       param.igdCont.contPersons[0].encryptionCode = param.igdCont.contPersons[0].identifyCode;
       param.igdCont.contPersons[1].encryptionCode = param.igdCont.contPersons[1].identifyCode;
-      param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+"区"+this.contractForm.rightAddrDetail
+      param.igdCont.propertyRightAddr=this.contractForm.rightAddrCity+"市"+this.contractForm.rightAddrArea+this.selectName+this.contractForm.rightAddrDetail
       let price=''
       if(param.igdCont.houseInfo.ListingPrice){
         price = String(param.igdCont.houseInfo.ListingPrice)

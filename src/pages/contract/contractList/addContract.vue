@@ -249,7 +249,7 @@
                         <br>
                         <el-form-item label="产权地址："
                             class="form-label"
-                            style="width:750px;text-align:right">
+                            style="width:770px;text-align:right">
                             <input v-model="rightAddrCity"
                                 :disabled="canInput"
                                 maxlength="10"
@@ -265,7 +265,11 @@
                                 @input="cutAddress('area')"
                                 class="dealPrice"
                                 :class="{'disabled':canInput}"
-                                style="width:100px" /> 区
+                                style="width:100px" />
+                            <select :disabled="canInput" id="selectList">
+                                <option value="1">县</option>
+                                <option value="2">区</option>
+                            </select>
                             <input v-model="rightAddrDetail"
                                 :disabled="canInput"
                                 maxlength="70"
@@ -1035,6 +1039,7 @@ export default {
 
             houseId:0,//转成交房源id
             showZY:false,
+            selectName:'' //下拉内容
         };
     },
     computed: {
@@ -1488,7 +1493,16 @@ export default {
                         // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
                         // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
                         if ( this.rightAddrCity && this.rightAddrArea && this.rightAddrDetail ) {
-                            this.contractForm.propertyRightAddr = this.rightAddrCity + "市" + this.rightAddrArea + "区" + this.rightAddrDetail;
+                            let select = document.getElementById("selectList")
+                            switch(select.value) {
+                                case '1':
+                                    this.selectName = '县'
+                                    break
+                                case '2':
+                                    this.selectName = '区'
+                                    break
+                            } 
+                            this.contractForm.propertyRightAddr = this.rightAddrCity + "市" + this.rightAddrArea + this.selectName + this.rightAddrDetail;
                             // if(this.contractForm.propertyCard){
                             //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                             // }
@@ -3113,12 +3127,16 @@ export default {
                     }
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
                     let rightAddress = res.data.propertyRightAddr;
+                    console.log(rightAddress,999);
                     let index1 = rightAddress.indexOf("市");
                     let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
+                    let index3 = index1 > 0 ? rightAddress.indexOf("县",index1) : rightAddress.indexOf("县")
                     if (index1 > 0) {
                         this.rightAddrCity = rightAddress.substring(0, index1);
                     }
                     if (index2 > 0) {
+                        let select = document.getElementById("selectList")
+                        select.value = '2'
                         if (index1 > 0) {
                             this.rightAddrArea = rightAddress.substring(
                                 index1 + 1,
@@ -3131,22 +3149,59 @@ export default {
                             );
                         }
                     }
-                    if (index1 > 0 && index2 > 0) {
-                        this.rightAddrDetail = rightAddress.substring(
-                            index2 + 1
-                        );
-                    } else if (index1 > 0 && index2 < 0) {
-                        this.rightAddrDetail = rightAddress.substring(
-                            index1 + 1
-                        );
-                    } else if (index1 < 0 && index2 > 0) {
-                        this.rightAddrDetail = rightAddress.substring(
-                            index2 + 1
-                        );
-                    } else {
-                        this.rightAddrDetail = rightAddress;
+                    if(index3 > 0) {
+                        let select = document.getElementById("selectList")
+                        select.value = '1'
+                        if (index1 > 0) {
+                            this.rightAddrArea = rightAddress.substring(
+                                index1 + 1,
+                                index3
+                            )
+                            console.log(this.rightAddrArea);
+                        }else {
+                            this.rightAddrArea = rightAddress.substring(
+                                0,
+                                index3
+                            );
+                        }
                     }
+                    if(index2 != -1) {
+                        if (index1 > 0 && index2 > 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index2 + 1
+                            );
+                        } else if (index1 > 0 && index2 < 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index1 + 1
+                            );
+                        } else if (index1 < 0 && index2 > 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index2 + 1
+                            );
+                        } else {
+                            this.rightAddrDetail = rightAddress;
+                        } 
+                    
+                    }
+                    
 
+                    if(index3 != -1 ) {
+                        if (index1 > 0 && index3 > 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index3 + 1
+                            );
+                        } else if (index1 > 0 && index2 < 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index1 + 1
+                            );
+                        } else if (index1 < 0 && index2 > 0) {
+                            this.rightAddrDetail = rightAddress.substring(
+                                index3 + 1
+                            );
+                        } else {
+                            this.rightAddrDetail = rightAddress;
+                        }
+                    }
                     // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
                     // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
                     // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});
