@@ -14,7 +14,12 @@
           <el-button round @click="blowUp"><i class="iconfont icon-icon-test3"></i></el-button>
           <el-button round @click="shrink"><i class="iconfont icon-yuanjiaojuxing1"></i></el-button>
         </el-button-group>
-        <el-button type="primary" round v-if="power['sign-ht-info-edit'].state&&((contType<=3&&contChangeState!=2&&isResultAudit!=1&&![0,1].includes(cancelExamineState))||(contType>3&&contState!=3&&detailPower))" @click="toEdit">编辑</el-button>
+        <el-button type="primary" round v-if="((contType<=3&&
+        (([1,2].includes(contState)&&power['sign-ht-info-edit'].state&&contChangeState!=2&&isResultAudit!=1&&![0,1].includes(cancelExamineState))||
+        (contState==3&&power['sign-ht-xq-modify'].state&&contChangeState!=2&&laterStageState!=5&&resultState===1)))
+        ||(contType>3&&contState!=3&&detailPower))" @click="toEdit">
+          {{contType < 4 && contState === 3 ? '变更' : '编辑'}}
+        </el-button>
         <div class="showPosBox" v-if="examineState===1&&contState===1&&isActive===1&&(companySigns.length===1&&!isNewTemplate||companySigns.length!=1)&&showChooseSign&&detailPower&&recordType!=10" @mouseover="showList" @mouseout="closeList">
           <span class="signAddr" @click="showList_">{{isNewTemplate?"签章选择":"签章位置"}}</span>
           <div class="signList">
@@ -28,7 +33,7 @@
         </div>
         <el-button type="primary" round v-if="power['sign-ht-xq-void'].state&&contState===2&&detailPower" @click="dialogInvalid = true">撤单</el-button>
         <el-button round type="primary" v-if="power['sign-ht-view-toverify'].state&&examineState<0&&isCanAudit===1&&detailPower" @click="isSubmitAudit=true">提交审核</el-button>
-        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1&&detailPower" @click="goChangeCancel(1)">变更</el-button>
+        <el-button round type="primary" v-if="power['sign-ht-xq-modify'].state&&contType>3&&contState===3&&contChangeState!=2&&contChangeState!=1&&laterStageState!=5&&changeExamineState!=0&&resultState===1&&detailPower" @click="goChangeCancel(1)">变更</el-button>
         <el-button round type="danger"  v-if="power['sign-ht-xq-cancel'].state&&contState===3&&contChangeState!=2&&laterStageState!=5&&cancelExamineState!=0&&resultState===1&&detailPower"  @click="goChangeCancel(2)">解约</el-button>
         <el-popover
           v-if="power['sign-ht-view-print'].state&&examineState===1&&contState===1&&(!isNewTemplate&&signPositions.length>0||isNewTemplate&&storeId)&&detailPower&&recordType!=10"
@@ -990,9 +995,13 @@ export default {
           }
         });
       }else{
+        if (this.contState===3 && (this.changeExamineState === 0 || this.cancelExamineState === 0)) {
+          this.$message.warning(`当前合同在${this.cancelExamineState === 0 ? '解约' : '变更'}审核中，无法操作变更`)
+          return
+        }
         //锁定合同
         if (this.contType <= 3 && this.isResultAudit == 0) {
-          this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+          this.$message.warning(`合同存在正在审核中的结算，无法进行${this.contState === 3 ? '变更' : '编辑'}操作!`)
           return
         }
         if((this.contState===1&&this.examineState===0)||this.contState===2){
@@ -1022,7 +1031,8 @@ export default {
             query: {
               id: this.id,
               operateType: 2,
-              type: this.contType
+              type: this.contType,
+              contStateType: this.contState,
             }
           });
         }

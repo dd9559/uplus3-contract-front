@@ -749,9 +749,10 @@
                 round
                 type="primary"
                 class="search_btn"
-                v-if="contractDetail.cancelExamineState && power['sign-ht-info-edit'].state && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState)"
+                v-if="(contractDetail.cancelExamineState && power['sign-ht-info-edit'].state && [1,2].includes(contractDetail.contState.value) && contractDetail.contChangeState.value != 2 && contractDetail.isResultAudit != 1 && ![0,1].includes(contractDetail.cancelExamineState))
+                || (power['sign-ht-xq-modify'].state && contractDetail.contState.value===3 && contractDetail.contChangeState.value!=2 && contractDetail.laterStageState.value!=5&&contractDetail.resultState.value===1)"
                 @click="goEdit"
-              >编辑</el-button>
+              >{{contractDetail.contState.value===3 ? '变更' : '编辑'}}</el-button>
               <el-button
                 round
                 type="primary"
@@ -1547,13 +1548,13 @@
         v-if="power['sign-ht-xq-print'].state&&name==='deal-report'&&reportBtnShow"
         @click="printDemo"
       >打印成交报告</el-button>
-      <el-button
+      <!-- <el-button
         type="primary"
         round
         class="search_btn"
         @click="fencheng"
         v-if="power['sign-ht-xq-yj'].state&&name==='first'&&contractDetail.contState.value===3&&contractDetail.achievementState.value===-2"
-      >分成</el-button>
+      >分成</el-button> -->
     </div>
     <div class="uploadBtn">
       <el-button
@@ -2645,32 +2646,32 @@ export default {
       });
     },
     // 分成弹窗
-    fencheng() {
+    // fencheng() {
       // if(this.contractDetail.achievementState.value===-1||this.contractDetail.achievementState.value===2||this.contractDetail.achievementState.value===-2){
-      if (this.contractDetail.distributableAchievement > 0) {
-        this.dialogType = 3;
-        this.shows = true;
-        this.code2 = this.$route.query.code;
-        this.achObj = {
-          contractId: this.contractDetail.id, //合同id
-          houseCode: this.contractDetail.houseinfoCode, //房源编号
-          receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
-          signDate: this.contractDetail.signDate, //合同签约时间
-          contractType: this.contractDetail.contType.value, //合同类型
-          customerCode: this.contractDetail.guestinfoCode, //客源编号
-          comm: this.contractDetail.distributableAchievement, //可分配业绩
-        };
-      } else {
-        this.$message({
-          message: "无可分配业绩,无法分成",
-        });
-      }
+      // if (this.contractDetail.distributableAchievement > 0) {
+      //   this.dialogType = 3;
+      //   this.shows = true;
+      //   this.code2 = this.$route.query.code;
+      //   this.achObj = {
+      //     contractId: this.contractDetail.id, //合同id
+      //     houseCode: this.contractDetail.houseinfoCode, //房源编号
+      //     receivableComm: this.contractDetail.receivableCommission, //合同应收佣金
+      //     signDate: this.contractDetail.signDate, //合同签约时间
+      //     contractType: this.contractDetail.contType.value, //合同类型
+      //     customerCode: this.contractDetail.guestinfoCode, //客源编号
+      //     comm: this.contractDetail.distributableAchievement, //可分配业绩
+      //   };
+      // } else {
+      //   this.$message({
+      //     message: "无可分配业绩,无法分成",
+      //   });
+      // }
       // }else{
       //   this.$message({
       //     message:`当前业绩状态为${this.contractDetail.achievementState.label},无法分成`
       //   })
       // }
-    },
+    // },
     closeAch() {
       this.shows = false;
       this.code2 = "";
@@ -2686,9 +2687,12 @@ export default {
     },
     // 合同编辑
     goEdit() {
-      
+      if (this.contractDetail.contState.value===3 && (this.contractDetail.changeExamineState === 0 || this.contractDetail.cancelExamineState === 0)) {
+        this.$message.warning(`当前合同在${this.contractDetail.cancelExamineState === 0 ? '解约' : '变更'}审核中，无法操作变更`)
+        return
+      }
       if (this.contractDetail.isResultAudit == 0) {
-        this.$message.warning('合同存在正在审核中的结算，无法进行编辑操作!')
+        this.$message.warning(`合同存在正在审核中的结算，无法进行${this.contractDetail.contState.value === 3 ? '变更' : '编辑'}操作!`)
         return
       }
       //锁定合同
@@ -2710,6 +2714,7 @@ export default {
           operateType: 2,
           type: this.contType,
           recordType: this.contractDetail.recordType.value,
+          contStateType: this.contractDetail.contState.value,
         },
       });
     },
