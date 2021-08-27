@@ -1160,7 +1160,7 @@ export default {
               this.selectName = '县'
               break
           case '2':
-              this.selectName = '区'
+              this.selectName = '区' 
               break
       }
       let param = {
