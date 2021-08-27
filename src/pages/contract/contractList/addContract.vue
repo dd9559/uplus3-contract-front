@@ -266,9 +266,9 @@
                                 class="dealPrice"
                                 :class="{'disabled':canInput}"
                                 style="width:100px" />
-                            <select :disabled="canInput" id="selectList">
-                                <option value="1">县</option>
+                            <select :disabled="canInput" id="selectList" style="height: 32px;width: 50px;border: 1px solid #67C23A;border-radius: 4px;">
                                 <option value="2">区</option>
+                                <option value="1">县</option>
                             </select>
                             <input v-model="rightAddrDetail"
                                 :disabled="canInput"
