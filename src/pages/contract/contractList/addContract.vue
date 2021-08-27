@@ -245,7 +245,7 @@
                         <br>
                         <el-form-item label="产权地址："
                             class="form-label"
-                            style="width:770px;text-align:right">
+                            style="width:750px;text-align:right">
                             <input v-model="rightAddrCity"
                                 :disabled="canInput"
                                 maxlength="10"
@@ -261,11 +261,7 @@
                                 @input="cutAddress('area')"
                                 class="dealPrice"
                                 :class="{'disabled':canInput}"
-                                style="width:100px" />
-                            <select :disabled="canInput" id="selectList">
-                                <option value="1">县</option>
-                                <option value="2">区</option>
-                            </select>
+                                style="width:100px" /> 区
                             <input v-model="rightAddrDetail"
                                 :disabled="canInput"
                                 maxlength="70"
@@ -813,11 +809,12 @@
         <changeCancel
         dialogType="bg"
         :editFlag="1"
+        :isCheckFile="isCheckFile"
         :editParam="editParam"
         :cancelDialog="changeCancel_"
         :cityCode="contractForm.cityCode"
         :contId="id"
-        :commission="commission"
+        :commission="currentCommission"
         :code="contractForm.code"
         @close="changeCancelDialog"
         @success="freshChangeCancel"
@@ -898,6 +895,11 @@ export default {
                 owner: '',
                 user: '',
             },
+            currentCommission: {
+                owner: '',
+                user: '',
+            },
+            isCheckFile:true,
             changeCancel_: false,
             editParam: null,
             //业主信息
@@ -1058,7 +1060,6 @@ export default {
 
             houseId:0,//转成交房源id
             showZY:false,
-            selectName:'' //下拉内容
         };
     },
     computed: {
@@ -1105,10 +1106,11 @@ export default {
             "contractList"
         );
         arr.push({
-            name: this.type === 1 ? "新增合同" : "合同编辑",
+            name: this.type === 1 ? "新增合同" : this.$route.query.contStateType == 3 ? "合同变更" : "合同编辑",
             path: this.$route.fullPath
         });
         this.setPath(arr);
+        
         this.getDictionary(); //字典
         this.getTransFlow(); //交易类型
         this.getRelation(); //人员关系
@@ -1120,6 +1122,7 @@ export default {
             this.id = this.$route.query.id;
             this.getContractDetail();
         }
+        
     },
     methods: {
         // 关闭变更解约弹窗
@@ -1149,6 +1152,7 @@ export default {
                 return item.id===val
             })
             this.$set(this.contractForm,'flowQZfee',item.warrantFee)
+            this.$set(this.contractForm,'transFlow',item.name)
         },
         //计算总佣金
         countTotal() {
@@ -1308,6 +1312,8 @@ export default {
         showRemarkTab() {
             this.showRemark = !this.showRemark;
             this.contractForm.remarks = "";
+            Object.assign(this.commissionGuestList,{name: '',mobile: ''})
+            Object.assign(this.commissionOwnerList,{name: '',mobile: ''})
         },
         //证件类型切换
         changeCadrType(value, index, type) {
@@ -1522,16 +1528,7 @@ export default {
                         // let addrReg=/\\|\/|\?|\？|\*|\"|\“|\”|\'|\‘|\’|\<|\>|\{|\}|\[|\]|\【|\】|\：|\:|\、|\^|\$|\&|\!|\~|\`|\|/g
                         // this.contractForm.propertyRightAddr=this.contractForm.propertyRightAddr.replace(addrReg,'')
                         if ( this.rightAddrCity && this.rightAddrArea && this.rightAddrDetail ) {
-                            let select = document.getElementById("selectList")
-                            switch(select.value) {
-                                case '1':
-                                    this.selectName = '县'
-                                    break
-                                case '2':
-                                    this.selectName = '区'
-                                    break
-                            } 
-                            this.contractForm.propertyRightAddr = this.rightAddrCity + "市" + this.rightAddrArea + this.selectName + this.rightAddrDetail;
+                            this.contractForm.propertyRightAddr = this.rightAddrCity + "市" + this.rightAddrArea + "区" + this.rightAddrDetail;
                             // if(this.contractForm.propertyCard){
                             //   this.contractForm.propertyCard=this.contractForm.propertyCard.replace(/\s/g,"");
                             // }
@@ -2542,14 +2539,17 @@ export default {
                 param[paramType].ytComission = this.yt//已退金额
 
 
-                if (this.contractForm.contState.value===3 && this.contractForm.contChangeState.value!=1 && this.contractForm.laterStageState.value!=5&&this.contractForm.changeExamineState!=0&&this.contractForm.resultState.value===1&&(param[paramType].custCommission !== this.commission.user || param[paramType].ownerCommission !== this.commission.owner)) {
+                if (this.contractForm.contState.value===3 && this.contractForm.contChangeState.value!=2 && this.contractForm.laterStageState.value!=5&&this.contractForm.resultState.value===1) {
                     console.log('我是变更。。。。。。。。。');
+                    if (param[paramType].custCommission !== this.commission.user || param[paramType].ownerCommission !== this.commission.owner) {
+                        this.isCheckFile = false
+                    }
                     this.fullscreenLoading = false;
                     this.changeCancel_ = true;
                     this.editParam = JSON.parse(JSON.stringify(param))
-                    this.commission.owner = param[paramType].ownerCommission
-                    this.commission.user = param[paramType].custCommission
-                } else {
+                    this.currentCommission.owner = param[paramType].ownerCommission
+                    this.currentCommission.user = param[paramType].custCommission
+                } else if ([1,2].includes(this.contractForm.contState.value)) {
                     var url = "/api/contract/updateContract";
                     if (this.recordType === 2) {
                         url = "/api/contract/addLocalContract";
@@ -3168,16 +3168,12 @@ export default {
                     }
                     this.sourceBtnCheck = res.data.contState.value === 3 ? false : true;
                     let rightAddress = res.data.propertyRightAddr;
-                    console.log(rightAddress,999);
                     let index1 = rightAddress.indexOf("市");
                     let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
-                    let index3 = index1 > 0 ? rightAddress.indexOf("县",index1) : rightAddress.indexOf("县")
                     if (index1 > 0) {
                         this.rightAddrCity = rightAddress.substring(0, index1);
                     }
                     if (index2 > 0) {
-                        let select = document.getElementById("selectList")
-                        select.value = '2'
                         if (index1 > 0) {
                             this.rightAddrArea = rightAddress.substring(
                                 index1 + 1,
@@ -3190,59 +3186,22 @@ export default {
                             );
                         }
                     }
-                    if(index3 > 0) {
-                        let select = document.getElementById("selectList")
-                        select.value = '1'
-                        if (index1 > 0) {
-                            this.rightAddrArea = rightAddress.substring(
-                                index1 + 1,
-                                index3
-                            )
-                            console.log(this.rightAddrArea);
-                        }else {
-                            this.rightAddrArea = rightAddress.substring(
-                                0,
-                                index3
-                            );
-                        }
+                    if (index1 > 0 && index2 > 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index2 + 1
+                        );
+                    } else if (index1 > 0 && index2 < 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index1 + 1
+                        );
+                    } else if (index1 < 0 && index2 > 0) {
+                        this.rightAddrDetail = rightAddress.substring(
+                            index2 + 1
+                        );
+                    } else {
+                        this.rightAddrDetail = rightAddress;
                     }
-                    if(index2 != -1) {
-                        if (index1 > 0 && index2 > 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index2 + 1
-                            );
-                        } else if (index1 > 0 && index2 < 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index1 + 1
-                            );
-                        } else if (index1 < 0 && index2 > 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index2 + 1
-                            );
-                        } else {
-                            this.rightAddrDetail = rightAddress;
-                        } 
-                    
-                    }
-                    
 
-                    if(index3 != -1 ) {
-                        if (index1 > 0 && index3 > 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index3 + 1
-                            );
-                        } else if (index1 > 0 && index2 < 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index1 + 1
-                            );
-                        } else if (index1 < 0 && index2 > 0) {
-                            this.rightAddrDetail = rightAddress.substring(
-                                index3 + 1
-                            );
-                        } else {
-                            this.rightAddrDetail = rightAddress;
-                        }
-                    }
                     // this.contractForm.extendParams=JSON.parse(res.data.extendParams);
                     // this.options.push({id:res.data.houseInfo.HouseStoreCode,name:res.data.houseInfo.HouseStoreName});
                     // this.options_.push({id:res.data.guestInfo.GuestStoreCode,name:res.data.guestInfo.GuestStoreName});

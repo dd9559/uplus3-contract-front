@@ -1,7 +1,7 @@
 <template>
   <div class="info-dialog" @click="showInput('init')">
     <!-- 合同变更（编辑） -->
-    <el-dialog :title="`合同${getDialogType}`" :visible="getCancelDialog" width="740px" @close='close' :closeOnClickModal="false">
+    <el-dialog :title="`合同${dialogOperation==='details' && getDialogType === '变更' ? '内容' : ''}${getDialogType}${dialogOperation==='details' && getDialogType === '变更' ? '审核' : ''}`" :visible="getCancelDialog" width="740px" @close='close' :closeOnClickModal="false">
       <div class="audit-box">
         <div class="textareabox">
           <p :class="{'form-label':!getContentHidden}">{{getDialogType}}原因：</p>
@@ -15,25 +15,26 @@
         <div class="box" v-if="getDialogContType===1 && !editFlag">
           <p v-if="dialogOperation==='details' && getDialogType === '变更'">合同信息（{{recordTypeText}}）</p>
           <p v-else>佣金金额：</p>
-          <el-table v-if="dialogOperation==='details' && getDialogType === '变更'" :data="changeDetailTableData" border header-row-class-name="theader-bg" height="300" style="width: 100%">
+          <el-table v-if="dialogOperation==='details' && getDialogType === '变更'" :data="changeDetailTableData" border header-row-class-name="theader-bg" max-height="300" style="width: 100%">
             <el-table-column type="index" align="center" width="98" label="序号"></el-table-column>
             <el-table-column type="index" align="center" width="200" label="字段">
               <template slot-scope="scope">
                 <span>{{scope.row.name}}</span>
               </template>
             </el-table-column>
-            <el-table-column type="index" align="center" width="200" label="原字段">
+            <el-table-column type="index" align="center" width="200" label="变更前">
               <template slot-scope="scope">
                 <span v-if="scope.row.key === 'estTransferTime'">{{scope.row.beforeText|formatDate}}</span>
+                <span v-else-if="scope.row.key === 'signDate'">{{scope.row.beforeText|formatTime}}</span>
                 <span v-else-if="scope.row.key === 'otherCooperationInfo_type'">{{scope.row.beforeText === 1 ? '客户转' : '无'}}</span>
-                <span v-else>{{scope.row.beforeText || '-'}}</span>
+                <span v-else>{{scope.row.beforeText || scope.row.default}}</span>
               </template>
             </el-table-column>
-            <el-table-column type="index" align="center" width="200" label="调整后">
+            <el-table-column type="index" align="center" width="200" label="变更后">
               <template slot-scope="scope">
                 <span v-if="scope.row.key === 'estTransferTime'">{{scope.row.afterText|formatDate}}</span>
                 <span v-else-if="scope.row.key === 'otherCooperationInfo_type'">{{scope.row.afterText === 1 ? '客户转' : '无'}}</span>
-                <span v-else style="display: inline-block;padding-right:15px">{{scope.row.afterText}}</span>
+                <span v-else style="display: inline-block;padding-right:15px">{{scope.row.afterText || scope.row.default}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -67,7 +68,7 @@
         </div>
         <!-- 上传附件 -->
         <div class="uploadfile">
-          <div class="uploadtitle" :class="{'form-label':!getContentHidden}">{{getDialogType}}协议:
+          <div class="uploadtitle" :class="{'form-label':!getContentHidden && !isCheckFile}">{{getDialogType}}协议:
             <template v-if="!getContentHidden">
               <span><b>注：</b>协议支持所有格式</span>
               <!-- <span class="iconfont" @click="downloadFile" v-if="dialogType!=='bg'">
@@ -204,6 +205,13 @@
         type: Object,
         default: function () {
           return null
+        }
+      },
+      // 是否需要变更协议
+      isCheckFile: {
+        type: Boolean,
+        default: function () {
+          return false
         }
       },
       isContractList:{
@@ -417,13 +425,17 @@
           param.editParam = this.editParam
         }
         this.$tool.checkForm(param,rule).then(res=>{
-          if(this.uploadList.length===0){
-            this.$message({
-              message:`请上传${this.getDialogType}协议`,
-              type:"warning"
-            })
-          }else{
+          if (this.isCheckFile) {
             this.subChangeCancel(url, param);
+          } else {
+            if(this.uploadList.length===0){
+              this.$message({
+                message:`请上传${this.getDialogType}协议`,
+                type:"warning"
+              })
+            }else{
+              this.subChangeCancel(url, param);
+            }
           }
         }).catch(error=>{
           this.$message({
@@ -444,126 +456,207 @@
           res = res.data;
           if (res.status === 200) {
             this.textarea = res.data.changeReason;
-            let afterCont = JSON.parse(res.data.afterCont),
-                beforeCont = JSON.parse(res.data.beforeCont),
-                keyList = [
-                  {key: 'pCode',name:'纸质合同编号'},
-                  {key: 'dealPrice',name:'成交总价/租金'},
-                  {key: 'custCommission',name:'客户佣金'},
-                  {key: 'ownerCommission',name:'业主佣金'},
-                  {key: 'commissionPayment',name:'佣金支付费'},
-                  {key: 'estTransferTime',name:'预计过户时间'},
-                  {key: 'transFlow',name:'交易流程'},
-                  {key: 'propertyRightAddr',name:'产权地址'},
-                  {key: 'houseInfo_Square',name:'建筑面积'},
-                  {key: 'houseInfo_SquareUse',name:'套内面积'},
-                  {key: 'remarks',name:'备注内容'},
-                  {key: 'otherCooperationCost',name:'扣合作费'},
-                  {key: 'otherCooperationInfo_type',name:'类型'},
-                  {key: 'otherCooperationInfo_name',name:'合作方姓名'},
-                  {key: 'otherCooperationInfo_mobile',name:'联系方式'},
-                  {key: 'otherCooperationInfo_identifyCode',name:'身份证号'},
-                  {key: 'otherCooperationInfo_remarks',name:'备注'}
-                ],
-                getInfo = [],
-                afterOwner,beforeOwner,afterGuest,beforeGuest;
+            if (res.data.afterCont && res.data.beforeCont) {
+              let afterCont = JSON.parse(res.data.afterCont),
+                  beforeCont = JSON.parse(res.data.beforeCont),
+                  keyList = [
+                    {key: 'signDate',name:'签约时间',default:'-'},
+                    {key: 'estTransferTime',name:'预计过户时间',default:'-'},
+                    {key: 'transFlow',name:'交易流程',default:'-'},
+                    {key: 'flowQZfee',name:'权证费用',default:'-'},
+                    {key: 'custCommission',name:'客户佣金',default:0},
+                    {key: 'ownerCommission',name:'业主佣金',default:0},
+                    {key: 'commissionTotal',name:'总佣金',default:0},
+                    {key: 'commissionPayment',name:'佣金支付费',default:0},
+                    {key: 'houseinfoCode',name:'房源编号',default:'-'},
+                    {key: 'dealPrice',name:'成交总价/租金',default:0},
+                    {key: 'propertyAddr',name:'物业地址',default:'-'},
+                    {key: 'houseInfo_CompleteYear',name:'建成年代',default:'-'},
+                    {key: 'propertyRightAddr',name:'产权地址',default:'-'},
+                    {key: 'houseInfo_Square',name:'建筑面积',default:0},
+                    {key: 'houseInfo_SquareUse',name:'套内面积',default:0},
+                    {key: 'guestinfoCode',name:'客源编号',default:'-'},
+                    {key: 'remarks',name:'备注内容',default:'-'},
+                    {key: 'otherCooperationCost',name:'三方合作-扣合作费',default:0},
+                    {key: 'otherCooperationInfo_type',name:'三方合作-类型',default:'无'},
+                    {key: 'otherCooperationInfo_name',name:'三方合作-合作方姓名',default:'-'},
+                    {key: 'otherCooperationInfo_mobile',name:'三方合作-联系方式',default:'-'},
+                    {key: 'otherCooperationInfo_identifyCode',name:'三方合作-身份证号',default:'-'},
+                    {key: 'otherCooperationInfo_remarks',name:'三方合作-备注',default:'-'}
+                  ],
+                  getInfo = [],
+                  afterOwner = [],
+                  beforeOwner = [],
+                  afterGuest = [],
+                  beforeGuest = [],
+                  afterCommOwner = [],
+                  beforeCommOwner = [],
+                  afterCommGuest = [],
+                  beforeCommGuest = [];
 
 
-            switch (afterCont.recordType) {
-              case 'ON_LINE':
-                this.recordTypeText = '线上合同'
-                break;
-              case 'NOT_LINE':
-                this.recordTypeText = '线下合同'
-                keyList.shift()
-                break;
-              case 'APP':
-                this.recordTypeText = '无纸化合同'
-                break;
+              switch (afterCont.recordType) {
+                case 'ON_LINE':
+                  this.recordTypeText = '线上合同'
+                  break;
+                case 'NOT_LINE':
+                  this.recordTypeText = '线下合同'
+                  keyList.unshift({key: 'pCode',name:'纸质合同编号',default:'-'})
+                  break;
+                case 'APP':
+                  this.recordTypeText = '无纸化合同'
+                  break;
+              }
+              console.log(afterCont,beforeCont);
+              
+              afterCont.contPersons.forEach(item => {
+                if (item.personType) {
+                  if (item.personType === 'OWNER') {
+                    afterOwner.push(item)
+                  } else if (item.personType === 'GUST') {
+                    afterGuest.push(item)
+                  } else if (item.personType === 'OWNERAFTER') {
+                    afterCommOwner.push(item)
+                  } else if (item.personType === 'GUSTAFTER') {
+                    afterCommGuest.push(item)
+                  }
+                } else {
+                  if(item.type === 1) {
+                    afterOwner.push(item)
+                  } else if (item.type === 2) {
+                    afterGuest.push(item)
+                  } else if (item.type === 3) {
+                    afterCommGuest.push(item)
+                  } else if (item.type === 4) {
+                    afterCommOwner.push(item)
+                  }
+                }
+              })
+              beforeCont.contPersons.filter(item => {
+                if (item.personType) {
+                  if (item.personType === 'OWNER') {
+                    beforeOwner.push(item)
+                  } else if (item.personType === 'GUST') {
+                    beforeGuest.push(item)
+                  } else if (item.personType === 'OWNERAFTER') {
+                    beforeCommGuest.push(item)
+                  } else if (item.personType === 'GUSTAFTER') {
+                    beforeCommOwner.push(item)
+                  }
+                } else {
+                  if(item.type === 1) {
+                    beforeOwner.push(item)
+                  } else if (item.type === 2) {
+                    beforeGuest.push(item)
+                  } else if (item.type === 3) {
+                    beforeCommGuest.push(item)
+                  } else if (item.type === 4) {
+                    beforeCommOwner.push(item)
+                  }
+                }
+              })
+
+              keyList.forEach(item => {
+                let keys = item.key.split('_'),
+                    afterText,beforeText;
+
+                if (keys.length === 1) {
+                  if (keys[0] === 'dealPrice' && afterCont.contType === 'ZL') {
+                    let val = ''
+                    switch (afterCont.timeUnit) {
+                      case 1:
+                        val = '元/月'
+                        break;
+                      case 2:
+                        val = '元/季度'
+                        break;
+                      case 3:
+                        val = '元/半年'
+                        break;
+                      case 4:
+                        val = '元/年'
+                        break;
+                    }
+                    afterText = afterCont[keys[0]] + val
+                    beforeText = beforeCont[keys[0]] + val
+                  } else {
+                    afterText = afterCont[keys[0]]
+                    beforeText = beforeCont[keys[0]]
+                  }
+                } else {
+                  afterText = afterCont[keys[0]][keys[1]]
+                  beforeText = beforeCont[keys[0]][keys[1]]
+                }
+                if (afterText !== beforeText) {
+                  getInfo.push(Object.assign(item,{afterText:afterText,beforeText:beforeText}))
+                }
+              })
+
+              afterOwner.forEach((item,index) => {
+                let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                    beforeOwnerText;
+                if (beforeOwner[index]) {
+                  beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+                } else {
+                  beforeOwnerText = '-'
+                }
+                console.log(beforeOwner,afterOwnerText, beforeOwnerText,6767676);
+                if (afterOwnerText !== beforeOwnerText) {
+                  getInfo.push({key: `owner${index+1}`,name:`业主信息${index+1}`,afterText:afterOwnerText,beforeText:beforeOwnerText})
+                }
+              })
+
+              afterGuest.forEach((item,index) => {
+                let afterGuestText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                    beforeGuestText;
+                if (beforeGuest[index]) {
+                  beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].mobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+                } else {
+                  beforeGuestText = '-'
+                }
+                console.log(beforeGuest,afterGuestText,beforeGuestText,12312312);
+                if (afterGuestText !== beforeGuestText) {
+                  getInfo.push({key: `guest${index+1}`,name:`客户信息${index+1}`,afterText:afterGuestText,beforeText:beforeGuestText})
+                }
+              })
+
+              afterCommOwner.forEach((item,index) => {
+                let afterCommOwnerText = `${item.name}/${item.mobile}`,
+                    beforeCommOwnerText;
+                if (beforeCommOwner[index]) {
+                  beforeCommOwnerText = `${beforeCommOwner[index].name}/${beforeCommOwner[index].mobile}`
+                } else {
+                  beforeCommOwnerText = '-'
+                }
+                console.log(beforeCommOwner,afterCommOwnerText, beforeCommOwnerText,6767676);
+                if (afterCommOwnerText !== beforeCommOwnerText) {
+                  getInfo.push({key: `commowner${index+1}`,name:`业主后期代办人信息${index+1}`,afterText:afterCommOwnerText,beforeText:beforeCommOwnerText})
+                }
+              })
+
+              afterCommGuest.forEach((item,index) => {
+                let afterCommGuestText = `${item.name}/${item.mobile}`,
+                    beforeCommGuestText;
+                if (beforeCommGuest[index]) {
+                  beforeCommGuestText = `${beforeCommGuest[index].name}/${beforeCommGuest[index].mobile}`
+                } else {
+                  beforeCommGuestText = '-'
+                }
+                console.log(beforeCommGuest,afterCommGuestText,beforeCommGuestText,12312312);
+                if (afterCommGuestText !== beforeCommGuestText) {
+                  getInfo.push({key: `guest${index+1}`,name:`客户后期代办人信息${index+1}`,afterText:afterCommGuestText,beforeText:beforeCommGuestText})
+                }
+              })
+
+              console.log(getInfo,'getInfo');
+
+              this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
             }
-            console.log(afterCont,beforeCont);
-            
-            afterOwner = afterCont.contPersons.filter(item => {
-              if (item.personType) {
-                return item.personType === 'OWNER'
-              } else {
-                return item.type === 1
-              }
-            })
-            beforeOwner = beforeCont.contPersons.filter(item => {
-              if (item.personType) {
-                return item.personType === 'OWNER'
-              } else {
-                return item.type === 1
-              }
-            })
-            afterGuest = afterCont.contPersons.filter(item => {
-              if (item.personType) {
-                return item.personType === 'CUST'
-              } else {
-                return item.type === 2
-              }
-            })
-            beforeGuest = beforeCont.contPersons.filter(item => {
-              if (item.personType) {
-                return item.personType === 'CUST'
-              } else {
-                return item.type === 2
-              }
-            })
-
-            keyList.forEach(item => {
-              let keys = item.key.split('_'),
-                  afterText,beforeText;
-
-              if (keys.length === 1) {
-                afterText = afterCont[keys[0]]
-                beforeText = beforeCont[keys[0]]
-              } else {
-                afterText = afterCont[keys[0]][keys[1]]
-                beforeText = beforeCont[keys[0]][keys[1]]
-              }
-              if (afterText !== beforeText) {
-                getInfo.push(Object.assign(item,{afterText:afterText,beforeText:beforeText}))
-              }
-            })
-
-            afterOwner.forEach((item,index) => {
-              let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio}/${getCardType(item.cardType)}/${item.encryptionCode}`,
-                  beforeOwnerText;
-              if (beforeOwner[index]) {
-                beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio}/${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
-              } else {
-                beforeOwnerText = '-/-/-/-/-/-'
-              }
-              console.log(beforeOwner,afterOwnerText, beforeOwnerText,6767676);
-              if (afterOwnerText !== beforeOwnerText) {
-                console.log(6767676);
-                getInfo.push({key: `owner${index+1}`,name:`业主信息${index+1}`,afterText:afterOwnerText,beforeText:beforeOwnerText})
-              }
-            })
-
-            afterGuest.forEach((item,index) => {
-              let afterGuestText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio}/${getCardType(item.cardType)}/${item.encryptionCode}`,
-                  beforeGuestText;
-              if (beforeGuest[index]) {
-                beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].mobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio}/${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
-              } else {
-                beforeGuestText = '-/-/-/-/-/-'
-              }
-              console.log(beforeGuest,afterGuestText,beforeGuestText,12312312);
-              if (afterGuestText !== beforeGuestText) {
-                console.log(12312312);
-                getInfo.push({key: `guest${index+1}`,name:`客户信息${index+1}`,afterText:afterGuestText,beforeText:beforeGuestText})
-              }
-            })
-
-            console.log(getInfo,'getInfo');
-
-            this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
 
             Object.assign(this.moneyData,{owner:res.data.newOwnerCommission,user:res.data.newCustCommission})
             Object.assign(this.commission,{owner:res.data.ownerCommission,user:res.data.custCommission})
+
+            
             let address_ = JSON.parse(res.data.changeAtta);
             //console.log(address_);
             // let fileType = this.$tool.get_suffix(arr[0].name);
@@ -578,9 +671,11 @@
                 preloadList.push(item.path)
               }
             })
-            this.fileSign(preloadList, 'preload').then(res => {
-              this.changeCancelFiles = res
-            })
+            if (preloadList.length) {
+              this.fileSign(preloadList, 'preload').then(res => {
+                this.changeCancelFiles = res
+              })
+            }
           }
         })
       },
