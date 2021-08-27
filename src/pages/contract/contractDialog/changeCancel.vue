@@ -12,9 +12,32 @@
             <span>{{textarea.length}}/100</span>
           </div>
         </div>
-        <div class="box" v-if="getDialogContType===1">
-          <p>佣金金额：</p>
-          <el-table :data="tableData" border header-row-class-name="theader-bg" style="width: 100%">
+        <div class="box" v-if="getDialogContType===1 && !editFlag">
+          <p v-if="dialogOperation==='details' && getDialogType === '变更'">合同信息（{{recordTypeText}}）</p>
+          <p v-else>佣金金额：</p>
+          <el-table v-if="dialogOperation==='details' && getDialogType === '变更'" :data="changeDetailTableData" border header-row-class-name="theader-bg" height="300" style="width: 100%">
+            <el-table-column type="index" align="center" width="98" label="序号"></el-table-column>
+            <el-table-column type="index" align="center" width="200" label="字段">
+              <template slot-scope="scope">
+                <span>{{scope.row.name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column type="index" align="center" width="200" label="原字段">
+              <template slot-scope="scope">
+                <span v-if="scope.row.key === 'estTransferTime'">{{scope.row.beforeText|formatDate}}</span>
+                <span v-else-if="scope.row.key === 'otherCooperationInfo_type'">{{scope.row.beforeText === 1 ? '客户转' : '无'}}</span>
+                <span v-else>{{scope.row.beforeText || '-'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column type="index" align="center" width="200" label="调整后">
+              <template slot-scope="scope">
+                <span v-if="scope.row.key === 'estTransferTime'">{{scope.row.afterText|formatDate}}</span>
+                <span v-else-if="scope.row.key === 'otherCooperationInfo_type'">{{scope.row.afterText === 1 ? '客户转' : '无'}}</span>
+                <span v-else style="display: inline-block;padding-right:15px">{{scope.row.afterText}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-table v-else :data="tableData" border header-row-class-name="theader-bg" style="width: 100%">
             <el-table-column align="center" prop="name"></el-table-column>
             <el-table-column align="center" label="业主佣金">
               <template slot-scope="scope">
@@ -104,6 +127,25 @@
   import {MIXINS} from "@/assets/js/mixins";
   import checkPerson from '@/components/checkPerson';
 
+  function getCardType (val) {
+    let cardType;
+    switch (val) {
+      case 1:
+        cardType = '身份证'
+        break;
+      case 2:
+        cardType = '护照'
+        break;
+      case 3:
+        cardType = '营业执照'
+        break;
+      case 4:
+        cardType = '军官证'
+        break;
+    }
+    return cardType
+  }
+
   export default {
     mixins: [MIXINS],
     components:{
@@ -151,6 +193,19 @@
         type:Number,
         default:1
       },
+      // 是否是2.6.8版本新加的编辑变更逻辑
+      editFlag: {
+        type: Number,
+        default: function () {
+          return 0
+        }
+      },
+      editParam: {
+        type: Object,
+        default: function () {
+          return null
+        }
+      },
       isContractList:{
         type: Boolean,
         default: false
@@ -175,6 +230,8 @@
           {name: '原金额'},
           {name: '调整为',ownerState:true,userState:true}
         ],
+        changeDetailTableData:[],
+        recordTypeText: '',
         moneyData:{//调整佣金
           owner:0,
           user:0
@@ -346,7 +403,7 @@
             name:`${this.getDialogType}原因`
           }
         }
-        var url = this.getDialogType==='变更'?"/api/contract/change":"/api/contract/cancel";
+        var url = this.getDialogType==='变更'? this.editFlag ? "/api/contract/editChange" : "/api/contract/change":"/api/contract/cancel";
         var param = {
           id: this.contId,
           reason: this.textarea,
@@ -354,6 +411,10 @@
           type:this.getDialogType==='变更'?1:2,
           newOwnerCommission:Number(this.moneyData.owner),
           newCustCommission:Number(this.moneyData.user)
+        }
+        if (this.editFlag) {
+          param.editFlag = 1
+          param.editParam = this.editParam
         }
         this.$tool.checkForm(param,rule).then(res=>{
           if(this.uploadList.length===0){
@@ -383,6 +444,124 @@
           res = res.data;
           if (res.status === 200) {
             this.textarea = res.data.changeReason;
+            let afterCont = JSON.parse(res.data.afterCont),
+                beforeCont = JSON.parse(res.data.beforeCont),
+                keyList = [
+                  {key: 'pCode',name:'纸质合同编号'},
+                  {key: 'dealPrice',name:'成交总价/租金'},
+                  {key: 'custCommission',name:'客户佣金'},
+                  {key: 'ownerCommission',name:'业主佣金'},
+                  {key: 'commissionPayment',name:'佣金支付费'},
+                  {key: 'estTransferTime',name:'预计过户时间'},
+                  {key: 'transFlow',name:'交易流程'},
+                  {key: 'propertyRightAddr',name:'产权地址'},
+                  {key: 'houseInfo_Square',name:'建筑面积'},
+                  {key: 'houseInfo_SquareUse',name:'套内面积'},
+                  {key: 'remarks',name:'备注内容'},
+                  {key: 'otherCooperationCost',name:'扣合作费'},
+                  {key: 'otherCooperationInfo_type',name:'类型'},
+                  {key: 'otherCooperationInfo_name',name:'合作方姓名'},
+                  {key: 'otherCooperationInfo_mobile',name:'联系方式'},
+                  {key: 'otherCooperationInfo_identifyCode',name:'身份证号'},
+                  {key: 'otherCooperationInfo_remarks',name:'备注'}
+                ],
+                getInfo = [],
+                afterOwner,beforeOwner,afterGuest,beforeGuest;
+
+
+            switch (afterCont.recordType) {
+              case 'ON_LINE':
+                this.recordTypeText = '线上合同'
+                break;
+              case 'NOT_LINE':
+                this.recordTypeText = '线下合同'
+                keyList.shift()
+                break;
+              case 'APP':
+                this.recordTypeText = '无纸化合同'
+                break;
+            }
+            console.log(afterCont,beforeCont);
+            
+            afterOwner = afterCont.contPersons.filter(item => {
+              if (item.personType) {
+                return item.personType === 'OWNER'
+              } else {
+                return item.type === 1
+              }
+            })
+            beforeOwner = beforeCont.contPersons.filter(item => {
+              if (item.personType) {
+                return item.personType === 'OWNER'
+              } else {
+                return item.type === 1
+              }
+            })
+            afterGuest = afterCont.contPersons.filter(item => {
+              if (item.personType) {
+                return item.personType === 'CUST'
+              } else {
+                return item.type === 2
+              }
+            })
+            beforeGuest = beforeCont.contPersons.filter(item => {
+              if (item.personType) {
+                return item.personType === 'CUST'
+              } else {
+                return item.type === 2
+              }
+            })
+
+            keyList.forEach(item => {
+              let keys = item.key.split('_'),
+                  afterText,beforeText;
+
+              if (keys.length === 1) {
+                afterText = afterCont[keys[0]]
+                beforeText = beforeCont[keys[0]]
+              } else {
+                afterText = afterCont[keys[0]][keys[1]]
+                beforeText = beforeCont[keys[0]][keys[1]]
+              }
+              if (afterText !== beforeText) {
+                getInfo.push(Object.assign(item,{afterText:afterText,beforeText:beforeText}))
+              }
+            })
+
+            afterOwner.forEach((item,index) => {
+              let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio}/${getCardType(item.cardType)}/${item.encryptionCode}`,
+                  beforeOwnerText;
+              if (beforeOwner[index]) {
+                beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio}/${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+              } else {
+                beforeOwnerText = '-/-/-/-/-/-'
+              }
+              console.log(beforeOwner,afterOwnerText, beforeOwnerText,6767676);
+              if (afterOwnerText !== beforeOwnerText) {
+                console.log(6767676);
+                getInfo.push({key: `owner${index+1}`,name:`业主信息${index+1}`,afterText:afterOwnerText,beforeText:beforeOwnerText})
+              }
+            })
+
+            afterGuest.forEach((item,index) => {
+              let afterGuestText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio}/${getCardType(item.cardType)}/${item.encryptionCode}`,
+                  beforeGuestText;
+              if (beforeGuest[index]) {
+                beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].mobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio}/${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+              } else {
+                beforeGuestText = '-/-/-/-/-/-'
+              }
+              console.log(beforeGuest,afterGuestText,beforeGuestText,12312312);
+              if (afterGuestText !== beforeGuestText) {
+                console.log(12312312);
+                getInfo.push({key: `guest${index+1}`,name:`客户信息${index+1}`,afterText:afterGuestText,beforeText:beforeGuestText})
+              }
+            })
+
+            console.log(getInfo,'getInfo');
+
+            this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
+
             Object.assign(this.moneyData,{owner:res.data.newOwnerCommission,user:res.data.newCustCommission})
             Object.assign(this.commission,{owner:res.data.ownerCommission,user:res.data.custCommission})
             let address_ = JSON.parse(res.data.changeAtta);

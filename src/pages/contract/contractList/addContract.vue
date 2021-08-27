@@ -133,13 +133,11 @@
                             class="width-250">
                             <input 
                                 type="text"
-                                :disabled="canInput"
                                 v-model="contractForm.custCommission"
                                 @input="cutNumber('custCommission')"
                                 @change="countTotal"
                                 placeholder="请输入内容"
-                                class="dealPrice"
-                                :class="{'disabled':canInput}">
+                                class="dealPrice">
                             <i class="yuan">元</i>
                         </el-form-item>
                         <el-form-item 
@@ -147,13 +145,11 @@
                             style="text-align:right;width:245px;">
                             <input 
                                 type="text"
-                                :disabled="canInput"
                                 v-model="contractForm.ownerCommission"
                                 @input="cutNumber('ownerCommission')"
                                 @change="countTotal"
                                 placeholder="请输入内容"
-                                class="dealPrice"
-                                :class="{'disabled':canInput}">
+                                class="dealPrice">
                             <i class="yuan">元</i>
                         </el-form-item>
                         <el-form-item 
@@ -813,6 +809,20 @@
                 :operationType="type">
             </contractBasics>
         </div>
+        <!-- 变更/解约编辑弹窗 -->
+        <changeCancel
+        dialogType="bg"
+        :editFlag="1"
+        :editParam="editParam"
+        :cancelDialog="changeCancel_"
+        :cityCode="contractForm.cityCode"
+        :contId="id"
+        :commission="commission"
+        :code="contractForm.code"
+        @close="changeCancelDialog"
+        @success="freshChangeCancel"
+        v-if="changeCancel_"
+        ></changeCancel>
     </div>
 </template>
 
@@ -822,6 +832,7 @@ import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
 import checkPerson from "@/components/checkPerson";
 import contractBasics from "../contractDialog/contractBasics";
+import changeCancel from "../contractDialog/changeCancel";
 const rule = {
     signDate: {
         name: "签约日期"
@@ -848,7 +859,8 @@ export default {
     components: {
         houseGuest,
         checkPerson,
-        contractBasics
+        contractBasics,
+        changeCancel
     },
     data() {
         return {
@@ -881,6 +893,13 @@ export default {
                 isHaveCooperation: 0,
                 remarks: ""
             },
+            // 保存带出的业主/客户佣金
+            commission: {
+                owner: '',
+                user: '',
+            },
+            changeCancel_: false,
+            editParam: null,
             //业主信息
             ownerList: [
                 {
@@ -1103,6 +1122,16 @@ export default {
         }
     },
     methods: {
+        // 关闭变更解约弹窗
+        changeCancelDialog() {
+            this.changeCancel_ = false;
+        },
+        freshChangeCancel() {
+            this.changeCancel_ = false;
+            this.$router.push({
+                path: "/contractList"
+            });
+        },
         //获取合同基本信息版式（1 基础版  2 复杂版）
         getVersion() {
             this.$ajax.get("/api/cont/version/getVersion").then(res => {
@@ -2168,7 +2197,6 @@ export default {
                                                                             );
                                                                         }
 
-                                                                    console.log(isCommissionOwner,isCommissionGuest,CommissionOwnerOk,CommissionGuestOk,999999);
                                                                     //验证三方合作
                                                                     if (this.contractForm.isHaveCooperation) {
                                                                         let mobileOk = true;
@@ -2512,11 +2540,21 @@ export default {
                 param[paramType].ssComission = this.ss//实收金额
                 param[paramType].wsComission = this.ws//未收金额
                 param[paramType].ytComission = this.yt//已退金额
-                var url = "/api/contract/updateContract";
-                if (this.recordType === 2) {
-                    url = "/api/contract/addLocalContract";
-                }
-                this.$ajax.postJSON(url, param).then(res => {
+
+
+                if (this.contractForm.contState.value===3 && this.contractForm.contChangeState.value!=1 && this.contractForm.laterStageState.value!=5&&this.contractForm.changeExamineState!=0&&this.contractForm.resultState.value===1&&(param[paramType].custCommission !== this.commission.user || param[paramType].ownerCommission !== this.commission.owner)) {
+                    console.log('我是变更。。。。。。。。。');
+                    this.fullscreenLoading = false;
+                    this.changeCancel_ = true;
+                    this.editParam = JSON.parse(JSON.stringify(param))
+                    this.commission.owner = param[paramType].ownerCommission
+                    this.commission.user = param[paramType].custCommission
+                } else {
+                    var url = "/api/contract/updateContract";
+                    if (this.recordType === 2) {
+                        url = "/api/contract/addLocalContract";
+                    }
+                    this.$ajax.postJSON(url, param).then(res => {
                         res = res.data;
                         if (res.status === 200) {
                             this.fullscreenLoading = false;
@@ -2576,6 +2614,7 @@ export default {
                             type: "error"
                         });
                     });
+                }
             }
         },
         //跳转H5页面
@@ -3067,6 +3106,8 @@ export default {
                 res = res.data;
                 if (res.status === 200) {
                     this.contractForm = res.data;
+                    this.commission.owner = res.data.ownerCommission
+                    this.commission.user = res.data.custCommission
                     this.recordId = res.data.recordId;
                     this.isHaveDetail = true;
                     this.recordType=this.contractForm.recordType.value
