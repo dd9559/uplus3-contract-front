@@ -617,7 +617,7 @@ export default {
       if(type==="city"){
         this.contractForm.rightAddrCity=this.contractForm.rightAddrCity.replace(/\s+/g,"").replace(addrReg,'').replace("市","").replace(/\//g,'')
       }else if(type==="area"){
-        this.contractForm.rightAddrArea=this.contractForm.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace(/\//g,'')
+        this.contractForm.rightAddrArea=this.contractForm.rightAddrArea.replace(/\s+/g,"").replace(addrReg,'').replace("区","").replace("县","").replace(/\//g,'')
       }else{
         this.contractForm.rightAddrDetail=this.contractForm.rightAddrDetail.replace(/\s+/g,"").replace(addrReg,'')
       }
