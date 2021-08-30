@@ -1,7 +1,7 @@
 <template>
   <div class="info-dialog" @click="showInput('init')">
     <!-- 合同变更（编辑） -->
-    <el-dialog :title="`合同${dialogOperation==='details' && getDialogType === '变更' ? '内容' : ''}${getDialogType}${dialogOperation==='details' && getDialogType === '变更' ? '审核' : ''}`" :visible="getCancelDialog" width="740px" @close='close' :closeOnClickModal="false">
+    <el-dialog :title="`合同${dialogOperation==='details' && getDialogType === '变更' ? '内容' : ''}${getDialogType}${dialogOperation==='details' && getDialogType === '变更' && !isContractList ? '审核' : ''}`" :visible="getCancelDialog" width="740px" @close='close' :closeOnClickModal="false">
       <div class="audit-box">
         <div class="textareabox">
           <p :class="{'form-label':!getContentHidden}">{{getDialogType}}原因：</p>
@@ -513,21 +513,21 @@
                 if (item.personType) {
                   if (item.personType === 'OWNER') {
                     afterOwner.push(item)
-                  } else if (item.personType === 'GUST') {
+                  } else if (item.personType === 'CUST') {
                     afterGuest.push(item)
                   } else if (item.personType === 'OWNERAFTER') {
                     afterCommOwner.push(item)
-                  } else if (item.personType === 'GUSTAFTER') {
+                  } else if (item.personType === 'CUSTAFTER') {
                     afterCommGuest.push(item)
                   }
                 } else {
-                  if(item.type === 1) {
+                  if(item.type == 1) {
                     afterOwner.push(item)
-                  } else if (item.type === 2) {
+                  } else if (item.type == 2) {
                     afterGuest.push(item)
-                  } else if (item.type === 3) {
+                  } else if (item.type == 3) {
                     afterCommGuest.push(item)
-                  } else if (item.type === 4) {
+                  } else if (item.type == 4) {
                     afterCommOwner.push(item)
                   }
                 }
@@ -536,25 +536,27 @@
                 if (item.personType) {
                   if (item.personType === 'OWNER') {
                     beforeOwner.push(item)
-                  } else if (item.personType === 'GUST') {
+                  } else if (item.personType === 'CUST') {
                     beforeGuest.push(item)
                   } else if (item.personType === 'OWNERAFTER') {
                     beforeCommGuest.push(item)
-                  } else if (item.personType === 'GUSTAFTER') {
+                  } else if (item.personType === 'CUSTAFTER') {
                     beforeCommOwner.push(item)
                   }
                 } else {
-                  if(item.type === 1) {
+                  if(item.type == 1) {
                     beforeOwner.push(item)
-                  } else if (item.type === 2) {
+                  } else if (item.type == 2) {
                     beforeGuest.push(item)
-                  } else if (item.type === 3) {
+                  } else if (item.type == 3) {
                     beforeCommGuest.push(item)
-                  } else if (item.type === 4) {
+                  } else if (item.type == 4) {
                     beforeCommOwner.push(item)
                   }
                 }
               })
+
+              console.log(afterGuest,'==========afterGuest=============',beforeGuest,'================beforeGuest=============');
 
               keyList.forEach(item => {
                 let keys = item.key.split('_'),
@@ -595,6 +597,9 @@
               afterOwner.forEach((item,index) => {
                 let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
                     beforeOwnerText;
+
+
+                
                 if (beforeOwner[index]) {
                   beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
                 } else {
@@ -609,6 +614,7 @@
               afterGuest.forEach((item,index) => {
                 let afterGuestText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
                     beforeGuestText;
+                    console.log(item,index,beforeGuest,beforeGuest[index],'item,index,beforeGuest,beforeGuest[index]');
                 if (beforeGuest[index]) {
                   beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].mobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
                 } else {

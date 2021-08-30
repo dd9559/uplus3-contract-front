@@ -583,7 +583,7 @@
 
           <el-table-column label="操作" min-width="120" fixed="right">
             <template slot-scope="scope">
-              <div v-if="scope.row.isModify==0">
+              <div v-if="scope.row.isModify==0 && (scope.row.examineState === 'undefined' || scope.row.examineState !== 0)">
                 <div v-if="scope.row.achievementState==-1" class="check-btn">
                   <span
                     @click.stop="editAch(scope.row,scope.$index)"
@@ -645,7 +645,7 @@
                   >{{scope.row.auditName}}正在审核</div>
                 </div>
               </div>
-              <div v-else>
+              <div v-else-if="scope.row.examineState === 'undefined' || scope.row.examineState !== 0">
                 <div v-if="scope.row.achievementState==1" class="check-btn">
                   <span
                     @click.stop="againCheck(scope.row,scope.$index)"
@@ -655,6 +655,7 @@
                 </div>
                 <p v-else>--</p>
               </div>
+              <div v-else>--</div>
             </template>
           </el-table-column>
         </el-table>
