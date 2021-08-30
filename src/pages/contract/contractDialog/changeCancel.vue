@@ -147,6 +147,25 @@
     return cardType
   }
 
+   function getUnitType (val) {
+      let UnitType;
+      switch (val) {
+          case 1:
+            UnitType = '元/月'
+            break;
+          case 2:
+            UnitType = '元/季度'
+            break;
+          case 3:
+            UnitType = '元/半年'
+            break;
+          case 4:
+            UnitType = '元/年'
+            break;
+        }
+      return UnitType
+    }
+
   export default {
     mixins: [MIXINS],
     components:{
@@ -555,32 +574,14 @@
                   }
                 }
               })
-
-              console.log(afterGuest,'==========afterGuest=============',beforeGuest,'================beforeGuest=============');
-
               keyList.forEach(item => {
                 let keys = item.key.split('_'),
                     afterText,beforeText;
 
                 if (keys.length === 1) {
                   if (keys[0] === 'dealPrice' && afterCont.contType === 'ZL') {
-                    let val = ''
-                    switch (afterCont.timeUnit) {
-                      case 1:
-                        val = '元/月'
-                        break;
-                      case 2:
-                        val = '元/季度'
-                        break;
-                      case 3:
-                        val = '元/半年'
-                        break;
-                      case 4:
-                        val = '元/年'
-                        break;
-                    }
-                    afterText = afterCont[keys[0]] + val
-                    beforeText = beforeCont[keys[0]] + val
+                    afterText = afterCont[keys[0]] + getUnitType(afterCont.timeUnit)
+                    beforeText = beforeCont[keys[0]] + getUnitType(beforeCont.timeUnit)
                   } else {
                     afterText = afterCont[keys[0]]
                     beforeText = beforeCont[keys[0]]
@@ -597,15 +598,11 @@
               afterOwner.forEach((item,index) => {
                 let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
                     beforeOwnerText;
-
-
-                
                 if (beforeOwner[index]) {
                   beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
                 } else {
                   beforeOwnerText = '-'
                 }
-                console.log(beforeOwner,afterOwnerText, beforeOwnerText,6767676);
                 if (afterOwnerText !== beforeOwnerText) {
                   getInfo.push({key: `owner${index+1}`,name:`业主信息${index+1}`,afterText:afterOwnerText,beforeText:beforeOwnerText})
                 }
@@ -683,6 +680,11 @@
               })
             }
           }
+        }).catch(error => {
+          this.$message({
+            message: error,
+            type:"error"
+          })
         })
       },
       //变更解约详情审核
