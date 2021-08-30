@@ -79,9 +79,9 @@
                 <el-form-item prop="rightAddrArea" :rules="{validator: rightAddr2, trigger: 'change'}">
                   <el-input v-model="contractForm.rightAddrArea" :disabled="canInput" clearable maxlength="10" class="addrwidth" @input="cutAddress('area')"></el-input>
                 </el-form-item>
-                <select :disabled="canInput" id="selectList">
-                  <option value="1">县</option>
+                <select :disabled="canInput" id="selectList" style="height: 32px;width: 50px;border: 1px solid #67C23A;border-radius: 4px;">
                   <option value="2">区</option>
+                  <option value="1">县</option>
                 </select>
                 <el-form-item prop="rightAddrDetail" :rules="{validator: rightAddr3, trigger: 'change'}">
                   <el-input v-model="contractForm.rightAddrDetail" :disabled="canInput" clearable class="big-input" maxlength="70" @input="cutAddress('detail')"></el-input>
@@ -981,6 +981,7 @@ export default {
           // this.contractForm.guestInfo.EmpName = res.data.guestInfo.EmpName;
           // this.contractForm.guestInfo.empId = res.data.guestInfo.EmpCode;
           let rightAddress = res.data.propertyRightAddr
+          console.log(rightAddress,99);
           let index1 = rightAddress.indexOf('市')
           let index2 = index1 > 0 ? rightAddress.indexOf("区",index1) : rightAddress.indexOf("区");
           let index3 = index1 > 0 ? rightAddress.indexOf("县",index1) : rightAddress.indexOf("县")
@@ -988,6 +989,8 @@ export default {
             this.$set(this.contractForm,'rightAddrCity',rightAddress.substring(0,index1))
           }
           if(index2>0){
+            let select = document.getElementById("selectList")
+            select.value = '2'
             if(index1>0){
               this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(index1+1,index2))
             }else{
@@ -995,6 +998,8 @@ export default {
             }
           }
           if(index3>0){
+            let select = document.getElementById("selectList")
+            select.value = '1'
             if(index1>0){
               this.$set(this.contractForm,'rightAddrArea',rightAddress.substring(index1+1,index3))
             }else{
