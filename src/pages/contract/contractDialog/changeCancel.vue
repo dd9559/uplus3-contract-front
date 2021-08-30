@@ -574,9 +574,6 @@
                   }
                 }
               })
-
-              console.log(afterGuest,'==========afterGuest=============',beforeGuest,'================beforeGuest=============');
-
               keyList.forEach(item => {
                 let keys = item.key.split('_'),
                     afterText,beforeText;
@@ -683,6 +680,11 @@
               })
             }
           }
+        }).catch(error => {
+          this.$message({
+            message: error,
+            type:"error"
+          })
         })
       },
       //变更解约详情审核
