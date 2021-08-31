@@ -3467,6 +3467,7 @@ export default {
                     .replace(/\s+/g, "")
                     .replace(addrReg, "")
                     .replace("区", "")
+                    .replace("县", "")
                     .replace(/\//g, "");
             } else {
                 this.rightAddrDetail = this.rightAddrDetail
