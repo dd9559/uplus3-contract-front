@@ -558,9 +558,9 @@
                   } else if (item.personType === 'CUST') {
                     beforeGuest.push(item)
                   } else if (item.personType === 'OWNERAFTER') {
-                    beforeCommGuest.push(item)
-                  } else if (item.personType === 'CUSTAFTER') {
                     beforeCommOwner.push(item)
+                  } else if (item.personType === 'CUSTAFTER') {
+                    beforeCommGuest.push(item)
                   }
                 } else {
                   if(item.type == 1) {
@@ -596,30 +596,40 @@
               })
 
               afterOwner.forEach((item,index) => {
-                let afterOwnerText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                let afterOwnerText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
                     beforeOwnerText;
                 if (beforeOwner[index]) {
-                  beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].mobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+                  beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
                 } else {
                   beforeOwnerText = '-'
                 }
                 if (afterOwnerText !== beforeOwnerText) {
-                  getInfo.push({key: `owner${index+1}`,name:`业主信息${index+1}`,afterText:afterOwnerText,beforeText:beforeOwnerText})
+                  getInfo.push({
+                    key: `owner${index+1}`,
+                    name:`业主信息${index+1}`,
+                    afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                    beforeText:`${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+                  })
                 }
               })
 
               afterGuest.forEach((item,index) => {
-                let afterGuestText = `${item.name}/${item.mobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                let afterGuestText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
                     beforeGuestText;
                     console.log(item,index,beforeGuest,beforeGuest[index],'item,index,beforeGuest,beforeGuest[index]');
                 if (beforeGuest[index]) {
-                  beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].mobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+                  beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
                 } else {
                   beforeGuestText = '-'
                 }
                 console.log(beforeGuest,afterGuestText,beforeGuestText,12312312);
                 if (afterGuestText !== beforeGuestText) {
-                  getInfo.push({key: `guest${index+1}`,name:`客户信息${index+1}`,afterText:afterGuestText,beforeText:beforeGuestText})
+                  getInfo.push({
+                    key: `guest${index+1}`,
+                    name:`客户信息${index+1}`,
+                    afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                    beforeText:`${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+                  })
                 }
               })
 
