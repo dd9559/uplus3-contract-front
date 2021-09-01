@@ -262,7 +262,7 @@
                                 class="dealPrice"
                                 :class="{'disabled':canInput}"
                                 style="width:100px" />
-                            <select :disabled="canInput" id="selectList" style="height: 31px;width: 50px;border: 1px solid #dcdfe6;border-radius: 4px;" >
+                            <select :disabled="canInput" id="selectList" style="height: 31px;width: 50px;font-size: 14px;border: 1px solid #dcdfe6;border-radius: 4px;" >
                                 <option value="2">区</option>
                                 <option value="1">县</option>
                             </select>
