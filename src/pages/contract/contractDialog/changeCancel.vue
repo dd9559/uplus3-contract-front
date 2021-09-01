@@ -495,6 +495,10 @@
                     {key: 'houseInfo_Square',name:'建筑面积',default:0},
                     {key: 'houseInfo_SquareUse',name:'套内面积',default:0},
                     {key: 'guestinfoCode',name:'客源编号',default:'-'},
+                    {key: 'owner',name:'业主信息',default:'-'},
+                    {key: 'guest',name:'客户信息',default:'-'},
+                    {key: 'commowner',name:'业主后期代办人信息',default:'-'},
+                    {key: 'commguest',name:'客户后期代办人信息',default:'-'},
                     {key: 'remarks',name:'备注内容',default:'-'},
                     {key: 'otherCooperationCost',name:'三方合作-扣合作费',default:0},
                     {key: 'otherCooperationInfo_type',name:'三方合作-类型',default:'无'},
@@ -582,6 +586,154 @@
                   if (keys[0] === 'dealPrice' && afterCont.contType === 'ZL') {
                     afterText = afterCont[keys[0]] + getUnitType(afterCont.timeUnit)
                     beforeText = beforeCont[keys[0]] + getUnitType(beforeCont.timeUnit)
+                  } else if (keys[0] === 'owner') {
+                    let num = 0;
+                    afterOwner.forEach((item,index) => {
+                      let beforeIndex,
+                          beforeItem = beforeOwner.filter((bfItem,bfIndex) => {
+                            let flag = false
+                            if (bfItem.pid === item.pid) {
+                              beforeIndex = bfIndex;
+                              flag = true
+                            }
+                            return flag
+                          }),
+                          afterText,beforeText;
+
+                      afterText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`
+                      if (!beforeItem.length) {
+                        beforeText = '-'
+                      } else {
+                        beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}/${beforeItem[0].relation}/${beforeItem[0].propertyRightRatio ? beforeItem[0].propertyRightRatio + '%/' : ''}${getCardType(beforeItem[0].cardType)}/${beforeItem[0].encryptionCode}`
+                        beforeOwner.splice(beforeIndex,1)
+                      }
+                      if (afterText !== beforeText) {
+                        ++num
+                        getInfo.push({
+                          key: `owner${num}`,
+                          name:`业主信息${num}`,
+                          afterText: `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                          beforeText: !beforeItem.length ? '-' : `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeItem[0].relation}/${beforeItem[0].propertyRightRatio ? beforeItem[0].propertyRightRatio + '%/' : ''}${getCardType(beforeItem[0].cardType)}/${beforeItem[0].encryptionCode}`
+                        })
+                      }
+                    })
+
+                    if (beforeOwner.length) {
+                      beforeOwner.forEach((item,index) => {
+                        ++num
+                        getInfo.push({
+                          key: `owner${num}`,
+                          name:`业主信息${num}`,
+                          afterText: '-',
+                          beforeText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                        })
+                      })
+                    }
+                  } else if (keys[0] === 'guest') {
+                    let num = 0;
+                    afterGuest.forEach((item,index) => {
+                      let beforeIndex,
+                          beforeItem = beforeGuest.filter(bfItem => bfItem.pid === item.pid),
+                          afterText,beforeText;
+                      afterText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`
+                      if (!beforeItem.length) {
+                        beforeText = '-'
+                      } else {
+                        beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}/${beforeItem[0].relation}/${beforeItem[0].propertyRightRatio ? beforeItem[0].propertyRightRatio + '%/' : ''}${getCardType(beforeItem[0].cardType)}/${beforeItem[0].encryptionCode}`
+                        beforeGuest.splice(beforeIndex,1)
+                      }
+                      if (afterText !== beforeText) {
+                        ++num
+                        getInfo.push({
+                          key: `guest${num}`,
+                          name:`客户信息${num}`,
+                          afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                          beforeText:!beforeItem.length ? '-' : `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeItem[0].relation}/${beforeItem[0].propertyRightRatio ? beforeItem[0].propertyRightRatio + '%/' : ''}${getCardType(beforeItem[0].cardType)}/${beforeItem[0].encryptionCode}`
+                        })
+                      }
+                    })
+
+                    if (beforeGuest.length) {
+                      beforeGuest.forEach((item,index) => {
+                        ++num
+                        getInfo.push({
+                          key: `guest${num}`,
+                          name:`客户信息${num}`,
+                          afterText: '-',
+                          beforeText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+                        })
+                      })
+                    }
+
+
+                  } else if (keys[0] === 'commowner') {
+                    let num = 0;
+                    afterCommOwner.forEach((item,index) => {
+                      let beforeIndex,
+                          beforeItem = beforeCommOwner.filter(bfItem => bfItem.pid === item.pid),
+                          afterText,beforeText;
+                      afterText = `${item.name}/${item.encryptionMobile}`
+                      if (!beforeItem.length) {
+                        beforeText = '-'
+                      } else {
+                        beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}`
+                        beforeCommOwner.splice(beforeIndex,1)
+                      }
+                      if (afterText !== beforeText) {
+                        ++num
+                        getInfo.push({
+                          key: `commowner${num}`,
+                          name:`业主后期代办人信息${num}`,
+                          afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`,
+                          beforeText:!beforeItem.length ? '-' : `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`
+                        })
+                      }
+                    })
+                    if (beforeCommOwner.length) {
+                      beforeCommOwner.forEach((item,index) => {
+                        ++num
+                        getInfo.push({
+                          key: `commowner${num}`,
+                          name:`业主后期代办人信息${num}`,
+                          afterText: '-',
+                          beforeText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`,
+                        })
+                      })
+                    }
+                  } else if (keys[0] === 'commguest') {
+                    let num = 0;
+                    afterCommGuest.forEach((item,index) => {
+                      let beforeIndex,
+                          beforeItem = beforeCommGuest.filter(bfItem => bfItem.pid === item.pid),
+                          afterText,beforeText;
+                      afterText = `${item.name}/${item.encryptionMobile}`
+                      if (!beforeItem.length) {
+                        beforeText = '-'
+                      } else {
+                        beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}`
+                        beforeCommGuest.splice(beforeIndex,1)
+                      }
+                      if (afterText !== beforeText) {
+                        ++num
+                        getInfo.push({
+                          key: `guest${num}`,
+                          name:`客户后期代办人信息${num}`,
+                          afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`,
+                          beforeText:!beforeItem.length ? '-' : `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`
+                        })
+                      }
+                    })
+                    if (beforeCommGuest.length) {
+                      beforeCommGuest.forEach((item,index) => {
+                        ++num
+                        getInfo.push({
+                          key: `guest${num}`,
+                          name:`客户后期代办人信息${num}`,
+                          afterText: '-',
+                          beforeText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`,
+                        })
+                      })
+                    }
                   } else {
                     afterText = afterCont[keys[0]]
                     beforeText = beforeCont[keys[0]]
@@ -590,79 +742,73 @@
                   afterText = afterCont[keys[0]][keys[1]]
                   beforeText = beforeCont[keys[0]][keys[1]]
                 }
+                
                 if (afterText !== beforeText) {
                   getInfo.push(Object.assign(item,{afterText:afterText,beforeText:beforeText}))
                 }
               })
 
-              afterOwner.forEach((item,index) => {
-                let afterOwnerText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
-                    beforeOwnerText;
-                if (beforeOwner[index]) {
-                  beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
-                } else {
-                  beforeOwnerText = '-'
-                }
-                if (afterOwnerText !== beforeOwnerText) {
-                  getInfo.push({
-                    key: `owner${index+1}`,
-                    name:`业主信息${index+1}`,
-                    afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
-                    beforeText:`${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
-                  })
-                }
-              })
+              // afterOwner.forEach((item,index) => {
+              //   let afterOwnerText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+              //       beforeOwnerText;
+              //   if (beforeOwner[index]) {
+              //     beforeOwnerText = `${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+              //   } else {
+              //     beforeOwnerText = '-'
+              //   }
+              //   if (afterOwnerText !== beforeOwnerText) {
+              //     getInfo.push({
+              //       key: `owner${index+1}`,
+              //       name:`业主信息${index+1}`,
+              //       afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+              //       beforeText:`${beforeOwner[index].name}/${beforeOwner[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeOwner[index].relation}/${beforeOwner[index].propertyRightRatio ? beforeOwner[index].propertyRightRatio + '%/' : ''}${getCardType(beforeOwner[index].cardType)}/${beforeOwner[index].encryptionCode}`
+              //     })
+              //   }
+              // })
 
-              afterGuest.forEach((item,index) => {
-                let afterGuestText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
-                    beforeGuestText;
-                    console.log(item,index,beforeGuest,beforeGuest[index],'item,index,beforeGuest,beforeGuest[index]');
-                if (beforeGuest[index]) {
-                  beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
-                } else {
-                  beforeGuestText = '-'
-                }
-                console.log(beforeGuest,afterGuestText,beforeGuestText,12312312);
-                if (afterGuestText !== beforeGuestText) {
-                  getInfo.push({
-                    key: `guest${index+1}`,
-                    name:`客户信息${index+1}`,
-                    afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
-                    beforeText:`${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
-                  })
-                }
-              })
+              // afterGuest.forEach((item,index) => {
+              //   let afterGuestText = `${item.name}/${item.encryptionMobile}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+              //       beforeGuestText;
+              //   if (beforeGuest[index]) {
+              //     beforeGuestText = `${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+              //   } else {
+              //     beforeGuestText = '-'
+              //   }
+              //   if (afterGuestText !== beforeGuestText) {
+              //     getInfo.push({
+              //       key: `guest${index+1}`,
+              //       name:`客户信息${index+1}`,
+              //       afterText:`${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}/${item.propertyRightRatio ? item.propertyRightRatio + '%/' : ''}${getCardType(item.cardType)}/${item.encryptionCode}`,
+              //       beforeText:`${beforeGuest[index].name}/${beforeGuest[index].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeGuest[index].relation}/${beforeGuest[index].propertyRightRatio ? beforeGuest[index].propertyRightRatio + '%/' : ''}${getCardType(beforeGuest[index].cardType)}/${beforeGuest[index].encryptionCode}`
+              //     })
+              //   }
+              // })
 
-              afterCommOwner.forEach((item,index) => {
-                let afterCommOwnerText = `${item.name}/${item.mobile}`,
-                    beforeCommOwnerText;
-                if (beforeCommOwner[index]) {
-                  beforeCommOwnerText = `${beforeCommOwner[index].name}/${beforeCommOwner[index].mobile}`
-                } else {
-                  beforeCommOwnerText = '-'
-                }
-                console.log(beforeCommOwner,afterCommOwnerText, beforeCommOwnerText,6767676);
-                if (afterCommOwnerText !== beforeCommOwnerText) {
-                  getInfo.push({key: `commowner${index+1}`,name:`业主后期代办人信息${index+1}`,afterText:afterCommOwnerText,beforeText:beforeCommOwnerText})
-                }
-              })
+              // afterCommOwner.forEach((item,index) => {
+              //   let afterCommOwnerText = `${item.name}/${item.mobile}`,
+              //       beforeCommOwnerText;
+              //   if (beforeCommOwner[index]) {
+              //     beforeCommOwnerText = `${beforeCommOwner[index].name}/${beforeCommOwner[index].mobile}`
+              //   } else {
+              //     beforeCommOwnerText = '-'
+              //   }
+              //   if (afterCommOwnerText !== beforeCommOwnerText) {
+              //     getInfo.push({key: `commowner${index+1}`,name:`业主后期代办人信息${index+1}`,afterText:afterCommOwnerText,beforeText:beforeCommOwnerText})
+              //   }
+              // })
 
-              afterCommGuest.forEach((item,index) => {
-                let afterCommGuestText = `${item.name}/${item.mobile}`,
-                    beforeCommGuestText;
-                if (beforeCommGuest[index]) {
-                  beforeCommGuestText = `${beforeCommGuest[index].name}/${beforeCommGuest[index].mobile}`
-                } else {
-                  beforeCommGuestText = '-'
-                }
-                console.log(beforeCommGuest,afterCommGuestText,beforeCommGuestText,12312312);
-                if (afterCommGuestText !== beforeCommGuestText) {
-                  getInfo.push({key: `guest${index+1}`,name:`客户后期代办人信息${index+1}`,afterText:afterCommGuestText,beforeText:beforeCommGuestText})
-                }
-              })
-
-              console.log(getInfo,'getInfo');
-
+              // afterCommGuest.forEach((item,index) => {
+              //   let afterCommGuestText = `${item.name}/${item.mobile}`,
+              //       beforeCommGuestText;
+              //   if (beforeCommGuest[index]) {
+              //     beforeCommGuestText = `${beforeCommGuest[index].name}/${beforeCommGuest[index].mobile}`
+              //   } else {
+              //     beforeCommGuestText = '-'
+              //   }
+              //   if (afterCommGuestText !== beforeCommGuestText) {
+              //     getInfo.push({key: `guest${index+1}`,name:`客户后期代办人信息${index+1}`,afterText:afterCommGuestText,beforeText:beforeCommGuestText})
+              //   }
+              // })
               this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
             }
 
@@ -691,6 +837,7 @@
             }
           }
         }).catch(error => {
+          console.error(error)
           this.$message({
             message: error,
             type:"error"

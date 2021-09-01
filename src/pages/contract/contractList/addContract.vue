@@ -554,7 +554,8 @@
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    @input="verifyMobile(commissionGuestList,null,'commissionGuestList')">
+                                    @input="verifyMobile(commissionGuestList,null,'commissionGuestList')"
+                                    @keydown="saveMobile(commissionOwnerList,null,'commissionGuestList')">
                             </span>
                         </el-form-item>
                         <el-form-item label="业主后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
@@ -568,7 +569,8 @@
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')">
+                                    @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')"
+                                    @keydown="saveMobile(commissionOwnerList,null,'commissionOwnerList')">
                             </span>
                         </el-form-item>
                         <el-form-item label="合同备注：" :label-width="contractForm.type===2||contractForm.type===3 ? '154px' : 'auto'" label-position="right">
@@ -948,7 +950,7 @@ export default {
                 name: '',
                 mobile: ''
             },
-            commissionGuestListData: null,
+            commissionGuestData: null,
             dialogType: "",
             isShowDialog: false,
             dialogSave: false,
@@ -1289,6 +1291,7 @@ export default {
         },
         //存贮改变之前的手机号
         saveMobile(item, index, type) {
+            if (type === 'commissionGuestList' || type === 'commissionOwnerList') return this[type].encryptionMobile = this[type].mobile;
             if (item.isEncryption) {
                 if (type === "owner") {
                     this.beforeChangeMobile = this.ownerList[index].mobile;
@@ -1316,8 +1319,8 @@ export default {
         showRemarkTab() {
             this.showRemark = !this.showRemark;
             this.contractForm.remarks = "";
-            Object.assign(this.commissionGuestList,{name: '',mobile: ''})
-            Object.assign(this.commissionOwnerList,{name: '',mobile: ''})
+            Object.assign(this.commissionGuestList,{name: '',mobile: '',encryptionMobile: '',isEncryption: ''})
+            Object.assign(this.commissionOwnerList,{name: '',mobile: '',encryptionMobile: '',isEncryption: ''})
         },
         //证件类型切换
         changeCadrType(value, index, type) {
@@ -1438,6 +1441,10 @@ export default {
                         }
                         this.guestList[index].isEncryption = false;
                     }
+                } else {
+                    this[type].mobile = ''
+                    this[type].encryptionMobile = ''
+                    this[type].isEncryption = ''
                 }
             } else {
                 if (item.mobile.length >= 11) {
@@ -1742,6 +1749,7 @@ export default {
                                                 if (element.name.replace(/\s/g,"")) {element.name = element.name.replace(/\s/g,"");
                                                     if (element.name.indexOf("先生") === -1 && element.name.indexOf("女士") === -1) {
                                                         if (element.encryptionMobile.length===11||true) {
+                                                            console.log(element,'element');
                                                             let reg = /^1[0-9]{10}$/; //手机号正则
                                                             let reg_ = /^0\d{2,3}\-?\d{7,8}$/; //固话正则
                                                             if (reg.test(element.encryptionMobile)||reg_.test( element.encryptionMobile)) {
@@ -2144,7 +2152,7 @@ export default {
 
                                                                     if (isCommissionOwner) {
                                                                             CommissionOwnerOk = false
-                                                                            if (this.commissionOwnerList.name == '' || this.commissionOwnerList.mobile == '') {
+                                                                            if (this.commissionOwnerList.name == '' || this.commissionOwnerList.encryptionMobile == '') {
                                                                                 this.$message(
                                                                                     {
                                                                                         message:
@@ -2154,7 +2162,7 @@ export default {
                                                                                     }
                                                                                 );
                                                                             } else {
-                                                                                if (reg.test(this.commissionOwnerList.mobile)) {
+                                                                                if (reg.test(this.commissionOwnerList.encryptionMobile)) {
                                                                                     CommissionOwnerOk = true
                                                                                 } else {
                                                                                     this.$message(
@@ -2170,7 +2178,7 @@ export default {
                                                                         }
                                                                         if (isCommissionGuest) {
                                                                             CommissionGuestOk = false
-                                                                            if (this.commissionGuestList.name == '' || this.commissionGuestList.mobile == '') {
+                                                                            if (this.commissionGuestList.name == '' || this.commissionGuestList.encryptionMobile == '') {
                                                                                 this.$message(
                                                                                     {
                                                                                         message:
@@ -2180,7 +2188,7 @@ export default {
                                                                                     }
                                                                                 );
                                                                             } else {
-                                                                                if (reg.test(this.commissionGuestList.mobile)) {
+                                                                                if (reg.test(this.commissionGuestList.encryptionMobile)) {
                                                                                     CommissionGuestOk = true
                                                                                 } else {
                                                                                     this.$message(
@@ -2194,7 +2202,7 @@ export default {
                                                                                 }
                                                                             }
                                                                         }
-                                                                        if (CommissionOwnerOk && CommissionGuestOk && this.commissionOwnerList.mobile && this.commissionGuestList.mobile && this.commissionOwnerList.mobile === this.commissionGuestList.mobile) {
+                                                                        if (CommissionOwnerOk && CommissionGuestOk && this.commissionOwnerList.encryptionMobile && this.commissionGuestList.encryptionMobile && this.commissionOwnerList.encryptionMobile === this.commissionGuestList.encryptionMobile) {
                                                                             CommissionOwnerOk = false
                                                                             CommissionGuestOk = false
                                                                             this.$message(
@@ -2416,10 +2424,10 @@ export default {
                 this.contractForm.contPersons.push(element);
             });
             if (isCommissionOwner) {
-                this.contractForm.contPersons.push(Object.assign({},this.commissionOwnerData,this.commissionOwnerList,{type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:""}));
+                this.contractForm.contPersons.push(Object.assign({type:4,encryptionMobile: this.commissionOwnerList.mobile,relation:""},this.commissionOwnerData,this.commissionOwnerList));
             }
             if (isCommissionGuest) {
-                this.contractForm.contPersons.push(Object.assign({},this.commissionGuestData,this.commissionGuestList,{type:3,encryptionMobile: this.commissionGuestList.mobile,relation:""}));
+                this.contractForm.contPersons.push(Object.assign({type:3,encryptionMobile: this.commissionGuestList.mobile,relation:""},this.commissionGuestData,this.commissionGuestList));
             }
             if (this.contractForm.type === 1) {
                 //租赁合同
@@ -3313,6 +3321,8 @@ export default {
                         } else if (this.contractForm.contPersons[i].personType.value === 3) {
                             this.commissionGuestList.name = this.contractForm.contPersons[i].name
                             this.commissionGuestList.mobile = this.contractForm.contPersons[i].mobile
+                            this.commissionGuestList.encryptionMobile = this.contractForm.contPersons[i].encryptionMobile
+                            this.commissionGuestList.isEncryption = true
                             let element = {
                                 name: this.contractForm.contPersons[i].name,
                                 mobile: this.contractForm.contPersons[i].mobile,
@@ -3333,6 +3343,8 @@ export default {
                         } else if (this.contractForm.contPersons[i].personType.value === 4) {
                             this.commissionOwnerList.name = this.contractForm.contPersons[i].name
                             this.commissionOwnerList.mobile = this.contractForm.contPersons[i].mobile
+                            this.commissionOwnerList.encryptionMobile = this.contractForm.contPersons[i].encryptionMobile
+                            this.commissionOwnerList.isEncryption = true
                             let element = {
                                 name: this.contractForm.contPersons[i].name,
                                 mobile: this.contractForm.contPersons[i].mobile,
