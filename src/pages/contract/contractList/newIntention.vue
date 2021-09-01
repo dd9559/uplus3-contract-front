@@ -79,7 +79,7 @@
                 <el-form-item prop="rightAddrArea" :rules="{validator: rightAddr2, trigger: 'change'}">
                   <el-input v-model="contractForm.rightAddrArea" :disabled="canInput" clearable maxlength="10" class="addrwidth" @input="cutAddress('area')"></el-input>
                 </el-form-item>
-                <select :disabled="canInput" id="selectList" style="height: 33px;width: 50px;border: 1px solid #67C23A;border-radius: 4px;">
+                <select :disabled="canInput" id="selectList" style="height: 33px;width: 50px;font-size: 14px;border: 1px solid #67C23A;border-radius: 4px;">
                   <option value="2">区</option>
                   <option value="1">县</option>
                 </select>
