@@ -620,7 +620,7 @@
                           }),
                           afterText,beforeText;
                       if (['Owner','Guest'].includes(keys[0])) {
-                        afterText = `${item.name}/${item.encryptionMobile}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%/' : ''}${afterCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
+                        afterText = `${item.name}/${item.encryptionMobile}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%' : ''}${afterCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
                       } else {
                         afterText = `${item.name}/${item.encryptionMobile}`
                       }
@@ -628,7 +628,7 @@
                         beforeText = '-'
                       } else {
                         if (['Owner','Guest'].includes(keys[0])) {
-                          beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}/${beforeItem[0].relation}${beforeItem[0].propertyRightRatio ? '/' + beforeItem[0].propertyRightRatio + '%/' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(beforeItem[0].cardType)+beforeItem[0].encryptionCode}`
+                          beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}/${beforeItem[0].relation}${beforeItem[0].propertyRightRatio ? '/' + beforeItem[0].propertyRightRatio + '%' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(beforeItem[0].cardType)+beforeItem[0].encryptionCode}`
                         } else {
                           beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile}`
                         }
@@ -638,9 +638,9 @@
                         ++num
                         let afterText,beforeText;
                         if (['Owner','Guest'].includes(keys[0])) {
-                          afterText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%/' : ''}${afterCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
+                          afterText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%' : ''}${afterCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
                           if (beforeItem.length) {
-                            beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeItem[0].relation}${beforeItem[0].propertyRightRatio ? '/' + beforeItem[0].propertyRightRatio + '%/' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(beforeItem[0].cardType)+beforeItem[0].encryptionCode}`
+                            beforeText = `${beforeItem[0].name}/${beforeItem[0].encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${beforeItem[0].relation}${beforeItem[0].propertyRightRatio ? '/' + beforeItem[0].propertyRightRatio + '%' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(beforeItem[0].cardType)+beforeItem[0].encryptionCode}`
                           }
                         } else {
                           afterText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`
@@ -662,7 +662,7 @@
                         ++num
                         let beforeText;
                         if (['Owner','Guest'].includes(keys[0])) {
-                          beforeText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%/' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
+                          beforeText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}/${item.relation}${item.propertyRightRatio ? '/' + item.propertyRightRatio + '%' : ''}${beforeCont.recordVersion == 1 ? '' : '/' + getCardType(item.cardType)+item.encryptionCode}`
                         } else {
                           beforeText = `${item.name}/${item.encryptionMobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}`
                         }
