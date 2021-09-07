@@ -1133,7 +1133,7 @@ export default {
                   outMoney: "",
                 },
               ];
-              // this.transterShow = true; 修改弹框打开时机为接口数据返回后
+              // this.transterShow = true;修改弹框打开时机为接口数据返回后
               this.selectPayInfo = val;
               this.getTransterInfo(val.id);
             } else {
