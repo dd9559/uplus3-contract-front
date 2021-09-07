@@ -340,7 +340,7 @@
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
                                         <el-select v-model="item.cardType"
-                                            :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)"
+                                            :disabled="canInput||recordType===10||(contractForm.contractEntrust&&!!contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)"
                                             placeholder="证件类型"
                                             class="idtype"
                                             @change="changeCadrType($event,index,'owner')">
@@ -467,7 +467,7 @@
                                                 placeholder="产权比"
                                                 class="propertyRight"
                                                 :class="{'disabled':canInput}"></span>
-                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10||(contractForm.contractEntrust&&contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
+                                        <el-select v-model="item.cardType" :disabled="canInput||recordType===10||(contractForm.contractEntrust&&!!contractForm.contractEntrust.recordType&&contractForm.contractEntrust.recordType===10)" placeholder="证件类型" class="idtype" @change="changeCadrType($event,index,'guest')">
                                             <template v-for="item in dictionary['633']">
                                                 <el-option
                                                     v-if="recordType===10&&item.key!=4||recordType!=10"
@@ -801,13 +801,17 @@
                 :guestList="guestList"
                 :canInput="canInput"
                 :getShowRemark="showRemark"
-                :basicsOptions="basicsOptions">
+                :basicsOptions="basicsOptions"
+                :id="id"
+                :commission="commission">
             </contractBasics>
             <contractBasics :contractForm="contractForm"
                 v-if="isHaveDetail&&type===1"
                 :recordType="recordType"
                 :houseId="houseId"
-                :operationType="type">
+                :operationType="type"
+                :id="id"
+                :commission="commission">
             </contractBasics>
         </div>
         <!-- 变更/解约编辑弹窗 -->
@@ -2162,7 +2166,7 @@ export default {
                                                                                     }
                                                                                 );
                                                                             } else {
-                                                                                if (reg.test(this.commissionOwnerList.encryptionMobile)) {
+                                                                                if (this.commissionOwnerList.isEncryption || reg.test(this.commissionOwnerList.encryptionMobile)) {
                                                                                     CommissionOwnerOk = true
                                                                                 } else {
                                                                                     this.$message(
@@ -2188,13 +2192,15 @@ export default {
                                                                                     }
                                                                                 );
                                                                             } else {
-                                                                                if (reg.test(this.commissionGuestList.encryptionMobile)) {
+                                                                                console.log(this.commissionGuestList.encryptionMobile,this.commissionGuestList.isEncryption,'this.commissionGuestList.isEncryption');
+                                                                                if (this.commissionGuestList.isEncryption || reg.test(this.commissionGuestList.encryptionMobile)) {
                                                                                     CommissionGuestOk = true
+                                                                                    console.log(123213213213213);
                                                                                 } else {
                                                                                     this.$message(
                                                                                         {
                                                                                             message:
-                                                                                                "客户后期代办联系人-电话号码不正确",
+                                                                                                "客户后期代办联系人-电话号码不正确1",
                                                                                             type:
                                                                                                 "warning"
                                                                                         }
@@ -2559,9 +2565,7 @@ export default {
                 param[paramType].wsComission = this.ws//未收金额
                 param[paramType].ytComission = this.yt//已退金额
 
-
                 if (this.contractForm.contState.value===3 && this.contractForm.contChangeState.value!=2 && this.contractForm.laterStageState.value!=5&&this.contractForm.resultState.value===1) {
-                    console.log('我是变更。。。。。。。。。');
                     if (param[paramType].custCommission !== this.commission.user || param[paramType].ownerCommission !== this.commission.owner) {
                         this.isCheckFile = false
                     }

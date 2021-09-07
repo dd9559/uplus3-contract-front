@@ -44,7 +44,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
     <el-button size="small" class="btn-info" round @click="opera('close')">返 回</el-button>
-    <el-button size="small" class="btn-info" round type="primary" @click="opera('submit')">确 定</el-button>
+    <el-button size="small" class="btn-info" round type="primary" v-dbClick @click="opera('submit')">确 定</el-button>
   </span>
   </el-dialog>
 </template>

@@ -263,6 +263,21 @@
     <!-- 设置/转交审核人 -->
     <checkPerson :show="checkPerson.state" :type="checkPerson.type" :showLabel="checkPerson.label" :bizCode="checkPerson.code" :flowType="checkPerson.flowType" @close="closeCheckPerson" @submit="closeCheckPerson" v-if="checkPerson.state"></checkPerson>
     <a id="add" href="" v-show="false" target="_blank"></a>
+    <!-- 变更/解约编辑弹窗 -->
+    <changeCancel
+    dialogType="bg"
+    :editFlag="1"
+    :isCheckFile="isCheckFile"
+    :editParam="editParam"
+    :cancelDialog="changeCancel_"
+    :cityCode="contractForm.cityCode"
+    :contId="id"
+    :commission="currentCommission"
+    :code="contractForm.code"
+    @close="changeCancelDialog"
+    @success="freshChangeCancel"
+    v-if="changeCancel_"
+    ></changeCancel>
   </div>
 </template>
 
@@ -272,6 +287,7 @@ import { MIXINS } from "@/assets/js/mixins";
 import houseGuest from "../contractDialog/houseGuest";
 import checkPerson from '@/components/checkPerson';
 import contractBasics from "../contractDialog/contractBasics";
+import changeCancel from "./changeCancel";
 const rule = {
   signDate: {
     name: "签约时间"
@@ -289,7 +305,8 @@ export default {
   components: {
     houseGuest,
     checkPerson,
-    contractBasics
+    contractBasics,
+    changeCancel
   },
   props:{
     contractForm:{
@@ -375,6 +392,14 @@ export default {
     getShowRemark:{
       type:Boolean,
       default:false
+    },
+    id:{
+      type:Number,
+      default: "",
+    },
+    commission:{
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -442,6 +467,14 @@ export default {
       },
       //总佣金
       commissionTotal:0,
+      isCheckFile:true,
+      editParam: null,
+      changeCancel_: false,
+      currentCommission: {
+          owner: '',
+          user: '',
+      },
+      // 保存带出的业主/客户佣金
     };
   },
   created() {
@@ -456,6 +489,16 @@ export default {
     }
   },
   methods: {
+    // 关闭变更解约弹窗
+    changeCancelDialog() {
+        this.changeCancel_ = false;
+    },
+    freshChangeCancel() {
+        this.changeCancel_ = false;
+        this.$router.push({
+            path: "/contractList"
+        });
+    },
     //计算总佣金
     countTotal(){
       let owner = Number(this.contractForm.ownerCommission?this.contractForm.ownerCommission:0)
@@ -930,6 +973,7 @@ export default {
           })
         })
       }else if(this.operationType===2){//编辑
+        let paramType = this.contractForm.type === 1?"leaseCont":"saleCont"
         if(this.contractForm.type===1){
           delete param.leaseCont.contChangeState;
           delete param.leaseCont.contState;
@@ -957,64 +1001,75 @@ export default {
           delete param.saleCont.recordType
           delete param.saleCont.resultState
         }
-        var url = '/api/contract/updateContract';
-        if(this.recordType===2){
-          url = '/api/contract/addLocalContract'
-        }
-        this.$ajax.postJSON(url, param).then(res => {
-          res = res.data;
-          if (res.status === 200) {
-            this.fullscreenLoading=false;
-            if(this.recordType===2){
-              this.$message({
-                message:"保存成功",
-                type: "success"
-              })
-              if(this.canInput){//已签约状态编辑完成跳转合同列表
-                this.$router.push({
-                  path: "/contractList"
-                });
-              }else{
-                this.$router.push({
-                  path: "/contractDetails",
-                  query:{
-                    id:res.data.id,
-                    contType:this.contractForm.type,
-                    type:"contBody"
-                  }
-                });
-              }
-            }else{
-              if(this.canInput){//已签约状态编辑完成跳转合同列表
+        if (this.contractForm.contState.value===3 && this.contractForm.contChangeState.value!=2 && this.contractForm.laterStageState.value!=5&&this.contractForm.resultState.value===1) {
+            if (param[paramType].custCommission !== this.commission.user || param[paramType].ownerCommission !== this.commission.owner) {
+                this.isCheckFile = false
+            }
+            this.fullscreenLoading = false;
+            this.changeCancel_ = true;
+            this.editParam = JSON.parse(JSON.stringify(param))
+            this.currentCommission.owner = param[paramType].ownerCommission
+            this.currentCommission.user = param[paramType].custCommission
+        } else if ([1,2].includes(this.contractForm.contState.value)) {
+          var url = '/api/contract/updateContract';
+          if(this.recordType===2){
+            url = '/api/contract/addLocalContract'
+          }
+          this.$ajax.postJSON(url, param).then(res => {
+            res = res.data;
+            if (res.status === 200) {
+              this.fullscreenLoading=false;
+              if(this.recordType===2){
                 this.$message({
                   message:"保存成功",
                   type: "success"
                 })
-                this.$router.push({
-                  path: "/contractList"
-                });
-              }else{
-                let contractMsg = res.data
-                sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
-                if(contractMsg.singleCompany){
-                  this.singleCompany=true
-                  this.singleCompanyName=contractMsg.singleCompany
+                if(this.canInput){//已签约状态编辑完成跳转合同列表
+                  this.$router.push({
+                    path: "/contractList"
+                  });
                 }else{
                   this.$router.push({
-                    path: "/extendParams"
+                    path: "/contractDetails",
+                    query:{
+                      id:res.data.id,
+                      contType:this.contractForm.type,
+                      type:"contBody"
+                    }
                   });
+                }
+              }else{
+                if(this.canInput){//已签约状态编辑完成跳转合同列表
+                  this.$message({
+                    message:"保存成功",
+                    type: "success"
+                  })
+                  this.$router.push({
+                    path: "/contractList"
+                  });
+                }else{
+                  let contractMsg = res.data
+                  sessionStorage.setItem("contractMsg", JSON.stringify(contractMsg));
+                  if(contractMsg.singleCompany){
+                    this.singleCompany=true
+                    this.singleCompanyName=contractMsg.singleCompany
+                  }else{
+                    this.$router.push({
+                      path: "/extendParams"
+                    });
+                  }
                 }
               }
             }
-          }
 
-        }).catch(error => {
-          this.fullscreenLoading=false;
-          this.$message({
-            message:error,
-            type: "error"
+          }).catch(error => {
+            this.fullscreenLoading=false;
+            this.$message({
+              message:error,
+              type: "error"
+            })
           })
-        })
+        }
       }
     },
     //跳转H5页面
