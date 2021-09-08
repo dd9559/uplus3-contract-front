@@ -554,8 +554,8 @@
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    @input="verifyMobile(commissionGuestList,null,'commissionGuestList')"
-                                    @keydown="saveMobile(commissionOwnerList,null,'commissionGuestList')">
+                                    @input="verifyMobile(commissionGuestList,null,'commissionGuestList')">
+                                    <!-- @keydown="saveMobile(commissionOwnerList,null,'commissionGuestList')"> -->
                             </span>
                         </el-form-item>
                         <el-form-item label="业主后期代办联系人：" v-if="contractForm.type===2||contractForm.type===3" label-width="154px" label-position="right">
@@ -569,8 +569,8 @@
                                     type="tel"
                                     placeholder="电话"
                                     class="mobile_"
-                                    @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')"
-                                    @keydown="saveMobile(commissionOwnerList,null,'commissionOwnerList')">
+                                    @input="verifyMobile(commissionOwnerList,null,'commissionOwnerList')">
+                                    <!-- @keydown="saveMobile(commissionOwnerList,null,'commissionOwnerList')" -->
                             </span>
                         </el-form-item>
                         <el-form-item label="合同备注：" :label-width="contractForm.type===2||contractForm.type===3 ? '154px' : 'auto'" label-position="right">
@@ -1295,7 +1295,7 @@ export default {
         },
         //存贮改变之前的手机号
         saveMobile(item, index, type) {
-            if (type === 'commissionGuestList' || type === 'commissionOwnerList') return this[type].encryptionMobile = this[type].mobile;
+            // if (type === 'commissionGuestList' || type === 'commissionOwnerList') return this[type].encryptionMobile = this[type].mobile;
             if (item.isEncryption) {
                 if (type === "owner") {
                     this.beforeChangeMobile = this.ownerList[index].mobile;
@@ -1411,14 +1411,17 @@ export default {
                             0,
                             13
                         );
+                        this[type].encryptionMobile = this[type].mobile 
                         // }else if(beginNum_.test(item.mobile)){
                     } else {
                         this[type].mobile = item.mobile.substring(
                             0,
                             11
                         );
+                        this[type].encryptionMobile = this[type].mobile 
                     }
                     item.mobile = this[type].mobile;
+                    this[type].encryptionMobile = this[type].mobile 
                 }
             }
             if (item.isEncryption) {
