@@ -130,6 +130,8 @@ export default {
           this.tableData = res.data.list
           this.total = res.data.total
         }
+      }).catch(err => {
+        this.$message.error(err)
       })
     },
     openDownload(e) {
@@ -148,7 +150,7 @@ export default {
     //重置
     resetFormFn() {
       TOOL.clearForm(this.downLoadForm);
-      this.pageNum = 1;
+      this.currentPage = 1;
       // this.initTimePicker()
       // this.EmployeList = []
     },

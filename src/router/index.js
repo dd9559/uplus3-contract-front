@@ -87,6 +87,12 @@ const errorMsg = () => import("@/errorMsg")
 //文件下载
 const download = () => import("@/pages/download")
 
+//线上合同
+const rechargeRecord = () => import("@/pages/onlineContract/rechargeRecord")
+const contractConsumption = () => import("@/pages/onlineContract/contractConsumption")
+//合同中心
+const consumptionProfile = () => import("@/pages/contractCenter/consumptionProfile")
+const record = () =>import("@/pages/contractCenter/record")
 // Vue.use(Router)
 
 export default new Router({
@@ -507,6 +513,41 @@ export default new Router({
         meta: {
           root: true,
           list: ["文件下载"]
+        }
+      },
+      //线上合同
+      {
+        path: "rechargeRecord",
+        component: rechargeRecord,
+        meta: {
+          root: true,
+          list: ["线上合同"]
+        }
+      },
+      //合同消费 
+      {
+        path: "contractConsumption",
+        component: contractConsumption,
+        meta: {
+          root: true,
+          list: ["合同消费"]
+        }
+      },
+      //消费概况 
+      {
+        path: "consumptionProfile",
+        component: consumptionProfile,
+        meta: {
+          root: true,
+          list: ["消费概况"]
+        }
+      },
+      {
+        path: "record",
+        component: record,
+        meta: {
+          root: true,
+          list: ["充值记录"]
         }
       },
     ]
