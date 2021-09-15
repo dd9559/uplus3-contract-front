@@ -112,7 +112,8 @@
                                 placeholder="请选择交易流程"
                                 @change="choseFlow"
                                 :clearable="true"
-                                style="width:140px">
+                                style="width:140px"
+                                :disabled="contractForm.laterStageState&&contractForm.laterStageState.value == 5">
                                 <el-option
                                     v-for="item in transFlowList" :key="item.id"
                                     :label="item.name"
@@ -361,7 +362,6 @@
                                             class="idCard_"
                                             :class="{'disabled':canInput}"
                                             @input="verifyIdcard(item)">
-
                                         <input v-model="item.email"
                                             v-if="recordType===10"
                                             type="text"

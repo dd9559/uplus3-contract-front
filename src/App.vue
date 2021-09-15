@@ -45,6 +45,7 @@
                 </el-submenu>
               </template>
             </el-submenu>
+            
             <el-menu-item :index="views[8].category" class="navbar-item" :class="[{ 'collapse-row': collapse }]"
               v-if="views[8].can">
               <div class="el-submenu__title">
