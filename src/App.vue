@@ -20,7 +20,7 @@
           <el-menu ref="menu" :router="true" :collapse-transition="false" :collapse="collapse" @open="openAllNav"
             @select="handleSelect" class="el-menu-demo" active-text-color="#409EFF">
             <el-submenu :index="item.category" :class="[{ 'collapse-row': collapse }]" v-for="item in views"
-              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.id !== 9 && item.can">
+              :key="item.id" v-if="item.id !== 7 && item.id !== 8 && item.id !== 9  && item.can">
               <template slot="title">
                 <i class="iconfont" :class="item.icon"></i>
                 <span>{{ item.name }}</span>
@@ -183,6 +183,7 @@ export default {
       handler: function (val) {
         if (val) {
           let arr = val.privileges;
+          console.log(this.views);
           this.views.forEach((item, index) => {
             console.log(item,8989);
             let sliders = [];

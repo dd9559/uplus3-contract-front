@@ -292,6 +292,8 @@
             this.tableData = list
             this.total = total
           }
+        }).catch(err => {
+          this.$message.error(err)
         })
       },
       cityInfo() {

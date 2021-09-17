@@ -2041,64 +2041,77 @@ export default {
     },
     //新增线上合同
     addOnLine(val) {
-      if (val.type.value != 2 || (val.type.value=== 2 && !val.children)) {
-        this.showOnLine = false;
-        let param = {
-          recordType: 1,
-          type: val.type.value,
-        };
-        this.$ajax
-          .get("/api/contract/checkContTemplate", param)
-          .then((res) => {
-            res = res.data;
-            if (res.status === 200) {
-              localStorage.removeItem("backMsg");
-              if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
-                this.$router.push({
-                  path: "/addContract",
-                  query: {
-                    type: val.type.value,
-                    operateType: 1,
-                    // isOffline: 0
-                    recordType: 1,
-                  },
+      this.$ajax.get('/api/contract/copies/getSurplus').then(res=>{
+        res=res.data
+        if(res.status == 200) {
+          let {surplusOnLineQuantity,surplusPaperlessQuantity} = res.data
+          if(surplusOnLineQuantity <= 0) {
+            this.$message.warning('当前权限未开放')
+            return
+          }else {
+            if (val.type.value != 2 || (val.type.value=== 2 && !val.children)) {
+              this.showOnLine = false;
+              let param = {
+                recordType: 1,
+                type: val.type.value,
+              };
+              this.$ajax
+                .get("/api/contract/checkContTemplate", param)
+                .then((res) => {
+                  res = res.data;
+                  if (res.status === 200) {
+                    localStorage.removeItem("backMsg");
+                    if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
+                      this.$router.push({
+                        path: "/addContract",
+                        query: {
+                          type: val.type.value,
+                          operateType: 1,
+                          // isOffline: 0
+                          recordType: 1,
+                        },
+                      });
+                    } else if (val.type.value === 7 || val.type.value === 8) {
+                      this.$router.push({
+                        path: "/addContract",
+                        query: {
+                          type: 2,
+                          operateType: 1,
+                          // isOffline: 0,
+                          recordType: 1,
+                          loanType: val.type.value,
+                        },
+                      });
+                    } else if (val.type.value=== 4 || val.type.value === 5) {
+                      this.$router.push({
+                        path: "/newIntention",
+                        query: {
+                          contType: val.type.value,
+                          operateType: 1,
+                          // isOffline: 0
+                          recordType: 1,
+                        },
+                      });
+                    }
+                  } else {
+                    this.$message({
+                      message: "该类型合同模板未上传,请上传后再创建",
+                      type: "warning",
+                    });
+                  }
+                })
+                .catch((error) => {
+                  this.$message({
+                    message: error,
+                    type: "error",
+                  });
                 });
-              } else if (val.type.value === 7 || val.type.value === 8) {
-                this.$router.push({
-                  path: "/addContract",
-                  query: {
-                    type: 2,
-                    operateType: 1,
-                    // isOffline: 0,
-                    recordType: 1,
-                    loanType: val.type.value,
-                  },
-                });
-              } else if (val.type.value=== 4 || val.type.value === 5) {
-                this.$router.push({
-                  path: "/newIntention",
-                  query: {
-                    contType: val.type.value,
-                    operateType: 1,
-                    // isOffline: 0
-                    recordType: 1,
-                  },
-                });
-              }
-            } else {
-              this.$message({
-                message: "该类型合同模板未上传,请上传后再创建",
-                type: "warning",
-              });
             }
-          })
-          .catch((error) => {
-            this.$message({
-              message: error,
-              type: "error",
-            });
-          });
-      }
+          }
+        }
+      }).catch(err => {
+        this.$message.error(err)
+      })
     },
     //新增线下合同
     addOffLine(val) {
@@ -2529,41 +2542,52 @@ export default {
     },
     //意向/定金转成交
     toDeal(row) {
-      let param = {
-          recordType: row.recordType.value,
-          type: row.houseinfoCode ? row.houseinfoCode.search("Z") === 0 ? 1 : 2 : row.contType.value,
-        };
-      this.$ajax
-        .get("/api/contract/checkContTemplate", param)
-        .then((res) => {
-          res = res.data;
-          if (res.status === 200) {
-            this.$router.push({
-              path: "/addContract",
-              query: {
-                id: row.id,
-                operateType: 1, //1新增 2编辑
-                type: row.contType.value,
-                recordType: row.recordType.value,
-                isDeal: 1,
-              },
-            });
-          } else {
-            this.$message({
-              message: "该类型合同模板未上传,请上传后再创建",
-              type: "warning",
+      this.$ajax.get('/api/contract/copies/getSurplus').then(res=>{
+        res=res.data
+        if(res.status == 200) {
+          let {surplusOnLineQuantity,surplusPaperlessQuantity} = res.data
+          if(row.recordType.value == 1 && surplusOnLineQuantity <= 0 ) {
+            this.$message.warning('当前权限未开放')
+            return
+          }else if(row.recordType.value == 10 && surplusPaperlessQuantity <= 0) {
+            this.$message.warning('当前权限未开放')
+            return
+          }else {
+            let param = {
+              recordType: row.recordType.value,
+              type: row.houseinfoCode ? row.houseinfoCode.search("Z") === 0 ? 1 : 2 : row.contType.value,
+            };
+            this.$ajax.get("/api/contract/checkContTemplate", param).then((res) => {
+                res = res.data;
+                if (res.status === 200) {
+                  this.$router.push({
+                    path: "/addContract",
+                    query: {
+                      id: row.id,
+                      operateType: 1, //1新增 2编辑
+                      type: row.contType.value,
+                      recordType: row.recordType.value,
+                      isDeal: 1,
+                    },
+                  });
+                } else {
+                  this.$message({
+                    message: "该类型合同模板未上传,请上传后再创建",
+                    type: "warning",
+                  });
+                }
+              })
+            .catch((error) => {
+              this.$message({
+                message: error,
+                type: "error",
+              });
             });
           }
-        })
-        .catch((error) => {
-          this.$message({
-            message: error,
-            type: "error",
-          });
-        });
-
-
-
+        }
+      }).catch(err => {
+        this.$message.error(err)
+      })
       // this.$router.push({
       //   path: "/addContract",
       //   query: {

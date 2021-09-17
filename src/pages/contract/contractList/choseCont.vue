@@ -38,7 +38,7 @@
           <el-option
             v-for="item in dictionary['64']"
             :key="item.key"
-            :label="item.value"
+            :label="item.value=='线上'?item.value+` (剩余份数：${surplusOnLineQuantity})`:item.value=='无纸化'?item.value+` (剩余份数：${surplusPaperlessQuantity})`:item.value"
             :value="item.key"
           ></el-option>
         </el-select>
@@ -78,13 +78,16 @@ export default {
       onlineContractList: [],
       offlineContractList: [],
       uPlusHouseDetail: null,
-      uPlusIsShow:false
+      uPlusIsShow:false,
+      surplusOnLineQuantity:'',
+      surplusPaperlessQuantity:''
     };
   },
   created() {
     this.uPlusIsShow=true;
     this.getDictionary(); //字典
     this.getUplusHouseDetail(this.$route.query.houseId);
+    this.getSurplus()
     this.$parent.loadingState = false;
   },
   methods: {
@@ -178,8 +181,29 @@ export default {
           });
         });
     },
+    //查看剩余
+    getSurplus() {
+      this.$ajax.get('/api/contract/copies/getSurplus').then(res =>{
+        res = res.data
+        if(res.status == 200) {
+          let {surplusOnLineQuantity,surplusPaperlessQuantity} = res.data
+          this.surplusOnLineQuantity =surplusOnLineQuantity
+          this.surplusPaperlessQuantity = surplusPaperlessQuantity
+        }
+      }).catch(err => {
+        this.$message.error(err)
+      })
+    },
     // 跳转新增合同
     skipAddCont() {
+      if(this.surplusOnLineQuantity <= 0) {
+        this.$message.warning('当前权限未开放')
+        return
+      }
+      if(this.surplusPaperlessQuantity <= 0) {
+        this.$message.warning('当前权限未开放')
+        return
+      }
       if (this.uPlusContType == "") {
         this.$message({
           message: "请选择合同类型",

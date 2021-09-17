@@ -6,12 +6,12 @@
         <el-form-item label="日期">
           <el-date-picker
             v-model="downLoadForm.signData"
-            type="daterange"
+            type="monthrange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :default-time="['00:00:00', '23:59:59']"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            format="yyyy-MM"
+            value-format="yyyy-MM"
             style="width:330px"
           ></el-date-picker>
         </el-form-item>
@@ -112,6 +112,7 @@
       },
       getInfo() {
         this.$ajax.get("/api/contract/copies/record/getInfo").then(res=>{
+          console.log(this,999);
           res = res.data
           if(res.status == 200) {
             this.onlineQuentity = res.data.onlineQuentity

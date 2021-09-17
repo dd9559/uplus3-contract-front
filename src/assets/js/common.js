@@ -477,21 +477,21 @@ let TOOL = {
           name: "合同中心",
           category: "10-1-1",
           can: true, //是否可见
-          code: "sign-ht-info-query",
+          code: true,
           child:[
             {
               name: "消费概况",
               category: "4-2-1",
               can: true, //是否可见
               path: "consumptionProfile",
-              code: "sign-jr-cw-rev-query"
+              code: "sign-ht-info-query"
             },
             {
               name: "充值记录",
               category: "4-2-1",
               can: true, //是否可见
               path: "record",
-              code: "sign-jr-cw-rev-query"
+              code: "sign-ht-info-query"
             }
           ]
         },
@@ -507,14 +507,14 @@ let TOOL = {
               category: "4-2-1",
               can: true, //是否可见
               path: "contractConsumption",
-              code: "sign-jr-cw-rev-query"
+              code: "sign-ht-info-query",
             },
             {
               name: "充值记录",
               category: "4-2-1",
               can: true, //是否可见
               path: "rechargeRecord",
-              code: "sign-jr-cw-rev-query"
+              code: "sign-ht-info-query",
             }
           ]
         },
