@@ -22,6 +22,15 @@
             </p>
           </div>
         </li>
+        <li v-if="!billStatus && !isBoxPay">
+          <div class="input-group" style="white-space: nowrap;">
+            <label class="form-label no-width f14 margin-bottom-base">支付方式:</label>
+            <el-select size="small" v-model="payType" @change="payTypeChange" placeholder="请选择">
+              <el-option v-for="(item,index) in payTypeList" :key="index" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </div>
+        </li>
         <li>
           <div class="input-group col">
             <div class="flex-box tool-tip">
@@ -292,10 +301,11 @@
       </section>
     </div>
     <p>
+      <el-button class="btn-info" round size="small" @click="closePay" v-if="status!=4&&payStatusValue!==5">关闭支付订单</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel" v-if="!$route.query.deAudit">取消</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult"
         v-loading.fullscreen.lock="fullscreenLoading" v-if="!$route.query.deAudit">
-        {{!billStatus?'创建POS收款订单':'录入信息并提交审核'}}</el-button>
+        {{!billStatus?'创建线上收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult"
         v-loading.fullscreen.lock="fullscreenLoading" v-if="$route.query.deAudit">保存</el-button>
     </p>
@@ -339,6 +349,9 @@ const rule = {
   },
   admin: {
     name: "收账账户",
+  },
+  payType: {
+    name: "支付方式",
   },
 };
 const cardRule = {
@@ -393,6 +406,7 @@ export default {
       },
       inputPerson: false, //是否显示第三方输入框
       billStatus: true, //线上或线下,false=线上，true=线下
+      isBoxPay: false,
       form: {
         contId: "",
         remark: "",
@@ -425,6 +439,9 @@ export default {
       entrustMoneyName: "", //委托合同收款类名
       isentrust: false, //是否为委托合同创建收款
       moneyTypeOther: [],
+      status: "", // 收款状态,
+      payStatusValue: "",
+      id: "",
       payList: [
         {
           payMethod: "",
@@ -494,7 +511,18 @@ export default {
           id: 1,
         },
       ],
+      payTypeList: [
+        {
+          name: "收款-手机扫码",
+          id: 1,
+        },
+        {
+          name: "收款-POS刷卡",
+          id: 2,
+        },
+      ],
       addressVal: "",
+      payType: "",
       isShowDialog: false,
       addAountOther: {
         houseInfo: "", //房源
@@ -527,7 +555,9 @@ export default {
   mounted() {
     let urlParam = this.$route.query; //id款单id,contId合同id,code合同编号
     this.form.contId = urlParam.contId ? parseInt(urlParam.contId) : "";
-    this.isentrust = Number(urlParam.isentrust) === 0 ? false : true;
+    if (urlParam.isentrust) {
+      this.isentrust = Number(urlParam.isentrust) === 0 ? false : true;
+    }
     // this.billStatus=this.isentrust
     // let { user = {} } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
     this.getMoneyType();
@@ -579,7 +609,10 @@ export default {
     this.setPath(arr);
 
     // 设置收款人
-    let { user = {} } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
+    let { user = {}, isProd = 0 } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
+    if ((isProd && [21,25].includes(user.cityId)) || (!isProd && [21,25,40].includes(user.cityId))) {
+      this.isBoxPay = true
+    }
     this.dep.id = user.depId;
     this.dep.name = user.depName;
     if (user.depId && urlParam.collect && urlParam.contId != 0) {
@@ -643,6 +676,28 @@ export default {
     }
   },
   methods: {
+    closePay: function () {
+      this.$confirm(`确认关闭当前收款订单？`,'提示',{
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          this.$ajax.get("/api/payInfo/closePay", {id:this.id}).then((res) => {
+            res = res.data
+            if (res.status === 200) {
+              this.$message.success(res.message)
+              this.$router.push({
+                path: "Bill"
+              });
+            }
+          }).catch(error => {
+            this.$message({
+              message: error
+            })
+          })
+        }).catch(()=>{
+        })
+    },
     checkDate: function (val) {
       // let date = new Date(val);
       // if (date.getTime() > Date.now()) {
@@ -954,6 +1009,10 @@ export default {
           if (obj.outObjType === 3) {
             this.inputPerson = true;
           }
+          this.status = res.data.status
+          this.payStatusValue = res.data.payStatusValue
+          this.id = res.data.id
+          this.payType = res.data.payType
           this.billStatus = res.data.inAccountType === 3 ? false : true;
           this.moneyTypeName = res.data.moneyTypeName;
           this.dep.id = res.data.inObjStoreId;
@@ -1135,6 +1194,10 @@ export default {
       if (!this.billStatus) {
         delete param.admin;
         delete param.createTime;
+      }
+      //线上添加支付方式
+      if (!this.billStatus && !this.isBoxPay) {
+        param['payType'] = this.payType
       }
       //无合同编号收款
       if (this.$route.query.collect) {
@@ -1330,45 +1393,60 @@ export default {
             });
         } else {
           // 编辑接口
-          this.$ajax
-            .put("/api/payInfo/updateProceedsInfo", param)
-            .then((res) => {
-              res = res.data;
-              if (res.status === 200) {
-                this.fullscreenLoading = false;
-                res.data.payCode = this.payCode;
-                if (this.billStatus) {
-                  this.$router.go(-1);
-                } else {
-                  //编辑成为线上收款时跳转至结果页显示二维码
-                  this.$router.replace({
-                    path: "receiptResult",
-                    query: {
-                      type: 1,
-                      content: JSON.stringify(res.data),
-                    },
-                  });
-                }
-              }
-            })
-            .catch((error) => {
-              this.fullscreenLoading = false;
-              if (error.message === "下一节点审批人不存在") {
-                this.checkPerson.code = error.data.payCode;
-                this.checkPerson.state = true;
-                this.checkPerson.flowType = 1;
-                this.checkPerson.label = true;
-                this.checkPerson.type = 1;
-              } else {
-                this.$message({
-                  message: error,
-                  type: "error",
+          // this.$ajax
+          //   .get("/api/payInfo/closePay",  {id:this.id})
+          //   .then((res) => {
+          //     res = res.data;
+          //     if (res.status === 200) {
+                this.$ajax
+                .put("/api/payInfo/updateProceedsInfo", param)
+                .then((res) => {
+                  res = res.data;
+                  if (res.status === 200) {
+                    this.fullscreenLoading = false;
+                    res.data.payCode = this.payCode;
+                    if (this.billStatus) {
+                      this.$router.go(-1);
+                    } else {
+                      //编辑成为线上收款时跳转至结果页显示二维码
+                      this.$router.replace({
+                        path: "receiptResult",
+                        query: {
+                          type: 1,
+                          content: JSON.stringify(res.data),
+                          isPhone: this.payType == 1 ? true : false
+                        },
+                      });
+                    }
+                  }
+                })
+                .catch((error) => {
+                  this.fullscreenLoading = false;
+                  if (error.message === "下一节点审批人不存在") {
+                    this.checkPerson.code = error.data.payCode;
+                    this.checkPerson.state = true;
+                    this.checkPerson.flowType = 1;
+                    this.checkPerson.label = true;
+                    this.checkPerson.type = 1;
+                  } else {
+                    this.$message({
+                      message: error,
+                      type: "error",
+                    });
+                  }
+                  // this.$message({
+                  //     message: error
+                  // })
                 });
-              }
-              // this.$message({
-              //     message: error
-              // })
-            });
+            //   }
+            // })
+            // .catch((error) => {
+            //   this.fullscreenLoading = false;
+            //   this.$message({
+            //     message: error,
+            //     type: "error",
+            //   });
+            // });
         }
       } else {
         if (this.$route.query.collect) {
@@ -1641,6 +1719,9 @@ export default {
       if (this.addressVal === 0 || this.addressVal === 1) {
         this.isShowDialog = true;
       }
+    },
+    payTypeChange() {
+
     },
     addressChangeFn() {
       this.addressLabel = {
@@ -2296,7 +2377,7 @@ input.person {
   > p {
     &:last-of-type {
       position: absolute;
-      bottom: @margin-10;
+      bottom: 32px;
       right: @margin-15;
       text-align: right;
     }

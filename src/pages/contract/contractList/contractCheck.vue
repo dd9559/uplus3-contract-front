@@ -202,7 +202,7 @@
                     fixed>
                     <template slot-scope="scope">
                         <div v-if="!scope.row.isCombine">
-                            <span>{{scope.row.dealPrice}} 元</span>
+                            <span>{{ scope.row.contType.value === 5 ? scope.row.subscriptionPrice : scope.row.dealPrice }} 元</span>
                             <span v-for="item in dictionary['507']"
                                 :key="item.key"
                                 v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>

@@ -176,9 +176,14 @@
             </el-table-column>
             <el-table-column align="center" label="支付方式">
               <template slot-scope="scope">
-                <span
+                <template v-if="!billStatus">
+                  <span>收款-{{billMsg.payType == 1 ? '手机扫码' : 'POS刷卡'}}</span>
+                </template>
+                <template v-else>
+                  <span
                   v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.payMethod?scope.row.payMethod.label:'--'}}</span>
-                <span v-else>{{billMsg.method}}</span>
+                  <span v-else>{{billMsg.method}}</span>
+                </template>
               </template>
             </el-table-column>
             <el-table-column align="center" label="金额（元）">
@@ -316,7 +321,11 @@
       <!-- 收款二维码(收款信息) -->
       <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
         <h4 class="f14">收款二维码</h4>
-        <img :src="billMsg.RQcode" alt />
+         <el-image 
+            class="preview-size"
+            :src="billMsg.RQcode" 
+            :preview-src-list="[billMsg.RQcode]">
+          </el-image>
       </li>
       <!-- 转款信息(转款信息) -->
       <li v-if="activeItem!=='付款信息'">
@@ -492,6 +501,7 @@ export default {
       printType: "client", //票据是否只显示客户联
       transferInfo: [],
       isZk: false, //是否转款
+      billStatus: true, //线上或线下,false=线上，true=线下
     };
   },
   created() {
@@ -713,14 +723,15 @@ export default {
           if (
             res.data.inAccountType &&
             res.data.inAccountType === 3 &&
-            param.type === 1 &&
-            res.data.billPath &&
-            res.data.billPath.length > 0
+            param.type === 1
           ) {
-            this.files = [].concat({
-              path: res.data.billPath,
-              name: "pos小票",
-            });
+            if (res.data.billPath && res.data.billPath.length > 0) {
+              this.files = [].concat({
+                path: res.data.billPath,
+                name: "pos小票",
+              });
+            }
+            this.billStatus = false
           }
           this.checkPerson.code = res.data.payCode;
           this.getCheckData();
@@ -1163,6 +1174,9 @@ export default {
     }
     &:last-child {
       padding-bottom: 10px;
+    }
+    /deep/ .preview-size {
+
     }
   }
 }

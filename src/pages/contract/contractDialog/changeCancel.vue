@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="box" v-if="getDialogContType===1 && !editFlag">
-          <p v-if="dialogOperation==='details' && getDialogType === '变更'">合同信息（{{recordTypeText}}）</p>
+          <p v-if="dialogOperation==='details' && getDialogType === '变更'">合同信息{{isHaveChangeDetailTableData ? `（${recordTypeText}）` : ''}}</p>
           <p v-else>佣金金额：</p>
           <el-table v-if="dialogOperation==='details' && getDialogType === '变更'" :data="changeDetailTableData" border header-row-class-name="theader-bg" max-height="300" style="width: 100%">
             <el-table-column type="index" align="center" width="98" label="序号"></el-table-column>
@@ -260,6 +260,7 @@
           {name: '调整为',ownerState:true,userState:true}
         ],
         changeDetailTableData:[],
+        isHaveChangeDetailTableData: false,
         recordTypeText: '',
         moneyData:{//调整佣金
           owner:0,
@@ -687,6 +688,16 @@
                   getInfo.push(Object.assign(item,{afterText:afterText,beforeText:beforeText}))
                 }
               })
+              this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
+              this.isHaveChangeDetailTableData = true
+            } else {
+              let getInfo = []
+              if (res.data.newOwnerCommission !== res.data.ownerCommission) {
+                getInfo.push(Object.assign({key: 'ownerCommission',name:'业主佣金',default:0},{afterText:res.data.newOwnerCommission,beforeText:res.data.ownerCommission}))
+              }
+              if (res.data.newCustCommission !== res.data.custCommission) {
+                getInfo.push(Object.assign({key: 'custCommission',name:'客户佣金',default:0},{afterText:res.data.newCustCommission,beforeText:res.data.custCommission}))
+              }
               this.changeDetailTableData = JSON.parse(JSON.stringify(getInfo))
             }
 
