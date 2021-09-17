@@ -61,7 +61,7 @@
 
       <el-table-column label="成交总价" prop="dealPrice" min-width="90">
         <template slot-scope="scope">
-          <span>{{scope.row.dealPrice}} 元</span>
+          <span>{{scope.row.contType.value === 5 ? scope.row.subscriptionPrice : scope.row.dealPrice}} 元</span>
           <!-- <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span> -->
         </template>
       </el-table-column>

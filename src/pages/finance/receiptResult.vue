@@ -4,8 +4,8 @@
       <h1 v-if="type===1">扫码收款</h1>
       <h1 v-else><i class="iconfont icon-chenggong"></i></h1>
       <div v-if="type===1"><img :src="result.RQcode" width="220" alt=""></div>
-      <p v-if="type===1" class="other">请勿手动在pos上输入金额！否则无法开收据！</p>
-      <h3 v-if="checkPerson.state">{{type===1?edit?'POS收款订单修改成功':'POS收款订单创建成功':edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
+      <p v-if="type===1" class="other">{{isPhone ? '手机用户，扫描或者长按二维码识别图片完成支付' : '请勿手动在pos上输入金额！否则无法开收据！'}}</p>
+      <h3 v-if="checkPerson.state">{{type===1?edit?`${isPhone ? '手机' : 'POS'}收款订单修改成功`:`${isPhone ? '手机' : 'POS'}收款订单创建成功`:edit?'收款信息修改成功':'收款信息录入成功'}}</h3>
       <p><i class="iconfont icon-chenggong" v-if="type===1"></i><span>{{edit?'收款单修改成功':'已成功生成收款单'}}</span></p>
       <div class="bill-result-table">
         <!-- <div class="warning-text" v-if="type===1">
@@ -87,6 +87,7 @@ export default {
     return {
       list: [{}],
       type: 1, //1=创建 2=录入
+      isPhone: false, // false pos true 手机
       edit: false, //是否为修改结果页
       result: {},
       // confirm: false,
@@ -120,6 +121,7 @@ export default {
   },
   created() {
     this.type = parseInt(this.$route.query.type);
+    this.isPhone = parseInt(this.$route.query.isPhone);
     this.edit = parseInt(this.$route.query.edit) === 1 ? true : false;
     this.result = JSON.parse(this.$route.query.content);
     /*if(this.result.payCode&&this.result.payCode.length>0){

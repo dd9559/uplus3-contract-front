@@ -191,7 +191,7 @@
         <el-table-column label="成交总价" prop="dealPrice" min-width="90" fixed>
           <template slot-scope="scope">
             <div v-if="scope.row.contTypes">
-              <span>{{scope.row.price}} 元</span>
+              <span>{{scope.row.contType.value === 5 ? scope.row.subscriptionPrice : scope.row.price}} 元</span>
               <span
                 v-for="item in dictionary['507']"
                 :key="item.key"

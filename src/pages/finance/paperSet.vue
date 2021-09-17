@@ -310,7 +310,7 @@
             <!-- 已作废 -->
             <template v-else-if="scope.row.state.value===4">
               <el-button type="text" @click="btnOpera(scope.row,4)"
-                         v-if="power['sign-cw-bill-invoice'].state && scope.row.invalidPrint">开票
+                         v-if="power['sign-cw-bill-invoice'].state && scope.row.invalidPrint && scope.row.status !== 4">开票
               </el-button>
               <el-button type="text" @click="btnOpera(scope.row,2)" v-if="power['sign-cw-bill-trash'].state">回收
               </el-button>

@@ -233,32 +233,34 @@
         <el-table-column min-width="80" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120" class-name="null-formatter">
           <template slot-scope="scope">
-            <el-button type="text" @click="cellOpera(scope.row,'edit')"
-              v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3">
-              编辑</el-button>
-            <div style="color:red"
-              v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId&&scope.row.isDeal!=3">
-              {{scope.row.auditByName}}正在审核</div>
-            <el-button type="text" @click="cellOpera(scope.row)"
-              v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3">审核</el-button>
-            <!-- 20200630新加反审核按钮 -->
-            <template v-if="scope.row.contId!=0">
-              <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
-                v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">
-                反审核</el-button>
-            </template>
-            <template v-else>
-              <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
-                v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">反审核</el-button>
-            </template>
-            <!-- <el-button
-              type="text"
-              @click="cellOpera(scope.row,'del')"
-              v-if="((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&
-                       scope.row.isDel===1&&
-                       (scope.row.caozuo===1||scope.row.caozuo===2)&&
-                       power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state"
-            >作废</el-button>-->
+            <div v-if="activeView===1 && scope.row.status !== 4">
+              <el-button type="text" @click="cellOpera(scope.row,'edit')"
+                v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3">
+                编辑</el-button>
+              <div style="color:red"
+                v-if="scope.row.payStatus.value===3&&scope.row.auditBy>0&&getUser.user&&scope.row.auditBy!==getUser.user.empId&&scope.row.isDeal!=3">
+                {{scope.row.auditByName}}正在审核</div>
+              <el-button type="text" @click="cellOpera(scope.row)"
+                v-if="scope.row.auditButton||scope.row.grabDept&&scope.row.isDeal!=3">审核</el-button>
+              <!-- 20200630新加反审核按钮 -->
+              <template v-if="scope.row.contId!=0">
+                <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
+                  v-if="scope.row.payStatus.value==5&&(scope.row.statusResult&&scope.row.statusResult.value!=2)&&(scope.row.statusResult&&scope.row.statusResult.value!=3)&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">
+                  反审核</el-button>
+              </template>
+              <template v-else>
+                <el-button type="text" @click="cellOpera(scope.row,'deAudit')"
+                  v-if="scope.row.payStatus.value==5&&scope.row.isDeal!=3&&power['sign-cw-rev-fsh'].state">反审核</el-button>
+              </template>
+              <!-- <el-button
+                type="text"
+                @click="cellOpera(scope.row,'del')"
+                v-if="((activeView===1&&scope.row.billStatus&&scope.row.billStatus.value===1)||activeView===2)&&
+                        scope.row.isDel===1&&
+                        (scope.row.caozuo===1||scope.row.caozuo===2)&&
+                        power[activeView===1?'sign-cw-rev-void':'sign-cw-pay-void'].state"
+              >作废</el-button>-->
+            </div>
           </template>
         </el-table-column>
       </el-table>
