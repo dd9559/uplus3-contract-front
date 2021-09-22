@@ -989,6 +989,7 @@ export default {
      * 修改款单，获取初始数据
      */
     getDetails: function (param) {
+      this.fullscreenLoading = true;
       this.$ajax.get("/api/payInfo/selectRevDetail", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
@@ -1082,7 +1083,13 @@ export default {
               this.addressLabel.selectCode = guestinfoJson.InquiryNo;
             }
           }
+          this.fullscreenLoading = false;
         }
+      }).catch((error) => {
+        this.fullscreenLoading = false;
+        this.$message({
+          message: error,
+        });
       });
     },
     /**

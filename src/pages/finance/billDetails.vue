@@ -321,10 +321,10 @@
       <!-- 收款二维码(收款信息) -->
       <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
         <h4 class="f14">收款二维码</h4>
-         <el-image 
-            class="preview-size"
+         <el-image
             :src="billMsg.RQcode" 
-            :preview-src-list="[billMsg.RQcode]">
+            :preview-src-list="[billMsg.RQcode]"
+            @click="clickPreview">
           </el-image>
       </li>
       <!-- 转款信息(转款信息) -->
@@ -577,6 +577,13 @@ export default {
     this.getInOutPayInfoDetail();
   },
   methods: {
+    clickPreview: function () {
+      this.$nextTick(() => {
+        let imgPreview = document.querySelector('.el-image-viewer__img')
+        imgPreview.style.width = '250px'
+        imgPreview.style.height = '250px'
+      })
+    },
     previewImg: function () {
       let arr = [];
       this.files.forEach((item) => {
@@ -959,10 +966,18 @@ export default {
   },
 };
 </script>
+<style>
+.el-image-viewer__canvas img{
+    width: 300px;
+    height: 300px;
+}
+</style>
 
 <style scoped lang="less">
 @import "~@/assets/common.less";
 @import "~@/assets/less/lsx.less";
+
+
 
 .card-list-item {
   position: relative;
@@ -1174,9 +1189,6 @@ export default {
     }
     &:last-child {
       padding-bottom: 10px;
-    }
-    /deep/ .preview-size {
-
     }
   }
 }
