@@ -77,6 +77,12 @@
           </el-table-column>
           <el-table-column  label="操作人" align="center" prop="empName"></el-table-column>
           <el-table-column  label="撤销人" align="center" prop="revokeEmpName"></el-table-column>
+          <el-table-column  label="付款记录" align="center">
+            <template slot-scope="scope">
+              <span class="btn" @click="check(scope.row)" style="margin-right:5px;" v-if="scope.row.annex !== 'null'">点击查看</span>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
           <el-table-column  label="备注" align="center" prop="remarks"></el-table-column>
           <el-table-column  label="操作" align="center">
             <template slot-scope="scope">
@@ -134,6 +140,7 @@
       </span>
       </el-dialog>
     </div>
+    <preview :imgList="list" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -170,7 +177,8 @@
               state: false,
               name: "导出"
           }
-        }
+        },
+        list:[]
       }
     },
     mounted() {
@@ -210,16 +218,35 @@
         this.downLoadForm.systemTag = ''
         this.systemTagSelect = []
       },
+      check(row) {
+        console.log(row);
+        let annex= JSON.parse(row.annex)
+        // let a = this.$tool.cutFilePath(annex)
+        this.fileSign(annex, "preload",false).then(res => {
+          console.log(res);
+          this.list = res
+          // console.log(this.list);
+          this.preview = true
+        });
+        // console.log(a);
+        // this.previewPhoto(a,0)
+        // previewPhoto(item.value,index_,3)
+      },
       commit() {
+        if(!this.editForm.remark) {
+          this.$message.error('请填写备注!')
+          return
+        }
         let params = {
+          id:this.editForm.id,
           remarks:this.editForm.remark
         }
-        this.$ajax.get('/api/contract/copies/recharge/revoke/'+this.editForm.id,params).then(res=>{
+        this.$ajax.get('/api/contract/copies/recharge/revoke',params).then(res=>{
           res= res.data
           if(res.status == 200) {
             this.rechargeCancel()
+            this.dataInfo()
           }
-          console.log(res);
         }).catch(err => {
           this.$message.error(err)
         })
@@ -236,8 +263,7 @@
       revoke(row) {
         this.revokeDialog = true
         let data = row
-        console.log(data);
-        this.editForm = data
+        this.editForm = Object.assign({},this.editForm,data)
         this.editForm.id = data.id
       },
       getExcel() {

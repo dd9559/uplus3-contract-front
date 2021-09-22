@@ -285,7 +285,6 @@ const MIXINS = {
      * 获取签名
      */
     fileSign: async function (arr, type, mini = true) {
-      console.log(typeof(arr));
       let param = {
         urls: arr.join(',')
       }
@@ -294,7 +293,7 @@ const MIXINS = {
       } else {
         param.style = 'jjw-sign-big'
       }
-
+      
       if (type === 'download') {
         param.rct = 'application%2Foctet-stream'
       }

@@ -84,7 +84,7 @@
         pageSize:10,
         onlineQuentity:0,
         paperlessQuentity:0,
-        warnQuentity:0
+        warnQuentity:0,
       }
     },
     mounted() {

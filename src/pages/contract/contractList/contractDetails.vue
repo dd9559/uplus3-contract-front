@@ -995,6 +995,7 @@
                         :content="item_.name"
                         placement="bottom"
                       >
+                      
                         <div class="namePath" @click="previewPhoto(item.value,index_,3)">
                           <img
                             class="signImage"
