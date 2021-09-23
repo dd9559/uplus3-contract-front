@@ -134,7 +134,7 @@
                     </li>
                     <template v-for="(item,index) in uploadData">
                       <el-tooltip effect="dark" :content="item.contractName" placement="bottom" :key="index">
-                        <li>this.;
+                        <li>
                           <div @click="previewPhoto(uploadList,index)">
                             <img :src="item.preConFile" width="90px" height="80px">
                           </div>
