@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column  label="无纸化合同剩余（份）" align="center" prop="paperlessQuantity">
             <template slot-scope="scope">
-              <span :class="[scope.row.paperlessQuantity <= scope.row.warnQuantity ?'colorRed':'']">{{scope.row.onLineQuantity}}</span>
+              <span :class="[scope.row.paperlessQuantity <= scope.row.warnQuantity ?'colorRed':'']">{{scope.row.paperlessQuantity}}</span>
             </template>
           </el-table-column>
           <el-table-column  label="可透支份数" align="center" prop="overdrawQuantity"></el-table-column>
@@ -182,20 +182,20 @@
           </el-form-item>
           <div style="display: flex;margin-top: 10px;">
             <el-form-item label="城市联系人" label-width="90px" >
-              <el-input style="width:100px" placeholder="请输入" v-model="editForm.citypeople" :clearable="true"></el-input>
+              <el-input style="width:100px" placeholder="请输入" v-model="editForm.cityContactsName" :clearable="true"></el-input>
             </el-form-item>
             <el-form-item label="联系方式（手机号）" label-width="140px" style="margin-left:80px">
               <el-input style="width:120px;" placeholder="请输入" maxlength="11" @input="cityphone" 
-              onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" type="number" v-model="editForm.cityphone" :clearable="true"></el-input>
+              onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" type="number" v-model="editForm.cityContactsMobile" :clearable="true"></el-input>
             </el-form-item>
           </div>
           <div style="display: flex">
             <el-form-item label="商务联系人" label-width="90px" >
-              <el-input style="width:100px" placeholder="请输入" v-model="editForm.businesspeople" :clearable="true"></el-input>
+              <el-input style="width:100px" placeholder="请输入" v-model="editForm.businessContactsName" :clearable="true"></el-input>
             </el-form-item>
             <el-form-item label="联系方式（手机号）" label-width="140px" style="margin-left:80px">
               <el-input style="width:120px;" placeholder="请输入" maxlength="11" @input="businessphone" 
-              onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" type="number" v-model="editForm.businessphone" :clearable="true"></el-input>
+              onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" type="number" v-model="editForm.businessContactsMobile" :clearable="true"></el-input>
             </el-form-item>
           </div>
         </el-form>
@@ -236,16 +236,16 @@
         },
         editForm:{
           cityName:"",
-          citypeople:"",
+          cityContactsName:"",
           cityId:"",
-          cityphone:"",
+          cityContactsMobile:"",
           deptSystemtagName:"",
           deptSystemtagId:"",
           paperless:"",
           onLine:"",
           money:"",
-          businesspeople:"",
-          businessphone:"",
+          businessContactsName:"",
+          businessContactsMobile:"",
           overdrawQuantity:""
         },
         warnTypeSelect:[
@@ -321,18 +321,20 @@
       },
       businessphone(e) {
         if(e.length >= 11) {
-          this.editForm.businessphone = e.slice(0,11)
+          this.editForm.businessContactsMobile = e.slice(0,11)
         }
       },
       cityphone(e) {
         if(e.length >= 11) {
-          this.editForm.cityphone = e.slice(0,11)
+          this.editForm.cityContactsMobile = e.slice(0,11)
         }
       },
       edit(row){
-        console.log(row);
         this.editDialog = true
         let data = row
+        console.log(data);
+        this.editForm = Object.assign({},this.editForm,data)
+        console.log(this.editForm);
         this.editForm.cityName = data.cityName
         this.editForm.cityId = data.cityId
         this.editForm.deptSystemtagName = data.deptSystemtagName
@@ -372,9 +374,9 @@
               this.editForm.warnQuantity = this.$tool.numberInput(this.editForm.warnQuantity);
             });
             break
-          case 'businesspeople':
+          case 'businessContactsName':
             this.$nextTick(() => {
-              this.editForm.businessphone = this.$tool.numberInput(this.editForm.businessphone);
+              this.editForm.businessContactsMobile = this.$tool.numberInput(this.editForm.businessContactsMobile);
             });
             break
         }
@@ -412,6 +414,7 @@
             })
             this.uploadData.push(addData)
           })
+          console.log(this.uploadList);
         })
       },
       // 删除电子签章
@@ -423,6 +426,7 @@
         if(val == 'rechargeDialog') {
           this.rechargeDialog = false
           TOOL.clearForm(this.dialogForm);
+          this.uploadData = []
         }else if(val == 'editDialog') {
           this.editDialog = false
           TOOL.clearForm(this.editForm);
@@ -468,27 +472,27 @@
           })
         }else if(val == 'editDialog') {
           let reg = /^1[0-9]{10}$/
-          if(!Number(this.editForm.overdrawQuantity)) {
-            this.$message.error('可透支份数不能为0或者不能为空！')
+          if(this.editForm.overdrawQuantity.length <= 0) {
+            this.$message.error('可透支份数不能为空！')
             return
-          }else if(!Number(this.editForm.warnQuantity)) {
-            this.$message.error('预警额度不能为0或者不能为空！')
+          }else if(this.editForm.warnQuantity.length <= 0) {
+            this.$message.error('预警额度不能为空！')
             return
-          }else if(!this.editForm.citypeople) {
+          }else if(!this.editForm.cityContactsName) {
             this.$message.error('城市联系人不能为空！')
             return
-          }else if(!this.editForm.businesspeople) {
+          }else if(!this.editForm.businessContactsName) {
             this.$message.error('商务联系人不能为空！')
             return
-          }else if(!reg.test(this.editForm.businessphone) || !reg.test(this.editForm.cityphone) ) {
+          }else if(!reg.test(this.editForm.businessContactsMobile) || !reg.test(this.editForm.cityContactsMobile) ) {
             this.$message.error('电话号码格式不正确或者不能为空！')
             return
           }
           let params = {
-            businessContactsMobile:this.editForm.businessphone,
-            businessContactsName:this.editForm.businesspeople,
-            cityContactsMobile:this.editForm.cityphone,
-            cityContactsName:this.editForm.citypeople,
+            businessContactsMobile:this.editForm.businessContactsMobile,
+            businessContactsName:this.editForm.businessContactsName,
+            cityContactsMobile:this.editForm.cityContactsMobile,
+            cityContactsName:this.editForm.cityContactsName,
             cityId:this.editForm.cityId,
             deptSystemtag:this.editForm.deptSystemtagId,
             overdrawQuantity:this.editForm.overdrawQuantity,
