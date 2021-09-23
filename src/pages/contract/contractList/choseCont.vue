@@ -196,11 +196,11 @@ export default {
     },
     // 跳转新增合同
     skipAddCont() {
-      if(this.surplusOnLineQuantity <= 0) {
+      if(this.surplusOnLineQuantity <= 0 && this.uPlusQianyueType == 1) {
         this.$message.warning('当前权限未开放')
         return
       }
-      if(this.surplusPaperlessQuantity <= 0) {
+      if(this.surplusPaperlessQuantity <= 0 && this.uPlusQianyueType == 10) {
         this.$message.warning('当前权限未开放')
         return
       }

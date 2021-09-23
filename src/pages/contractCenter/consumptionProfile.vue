@@ -129,13 +129,13 @@
                   <ul>
                     <li v-show="uploadData.length >= 3" class="mask" @click="maxUpLoad"></li>
                     <li class="up-content">
-                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="5" :getNum="uploadData.length" :maxSize="2" :scane="{path:'other'}"><i>+</i></fileUp>
+                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="3" :getNum="uploadData.length" :maxSize="2" :scane="{path:'other'}"><i>+</i></fileUp>
                       <p class="text">点击上传</p>
                     </li>
                     <template v-for="(item,index) in uploadData">
                       <el-tooltip effect="dark" :content="item.contractName" placement="bottom" :key="index">
-                        <li>
-                          <div @click="previewPhoto(uploadList,index,2)">
+                        <li>this.;
+                          <div @click="previewPhoto(uploadList,index)">
                             <img :src="item.preConFile" width="90px" height="80px">
                           </div>
                           <p class="pic-name">{{item.contractName}}</p>
@@ -158,7 +158,7 @@
       <el-dialog
         title="城市配置-编辑"
         :visible.sync="editDialog"
-        width="550px"
+        width="590px"
         :closeOnClickModal="$tool.closeOnClickModal"
         @close="rechargeCancel('editDialog')"
       >
@@ -206,6 +206,7 @@
       </span>
       </el-dialog>
     </div>
+    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -435,11 +436,11 @@
       },
       commit(val) {
         if(val == 'rechargeDialog') {
-          if(!Number(this.dialogForm.paperless)) {
-            this.$message.error('无纸化合同不能为0份或者不能为空！')
+          if(this.dialogForm.paperless.length <= 0 && Number(this.dialogForm.paperless) >= 0 ) {
+            this.$message.error('无纸化合同不能为空！')
             return
-          }else if(!Number(this.dialogForm.onLine)) {
-            this.$message.error('线上合同不能为0份或者不能为空！')
+          }else if(this.dialogForm.onLine.length <= 0) {
+            this.$message.error('线上合同不能为空！')
             return
           }else if(!Number(this.dialogForm.money)) {
             this.$message.error('付款金额不能为0元或者不能为空！')

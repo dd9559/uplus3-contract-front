@@ -521,7 +521,7 @@ export default new Router({
         component: rechargeRecord,
         meta: {
           root: true,
-          list: ["线上合同"]
+          list: ["合同中心","线上合同","充值记录"]
         }
       },
       //合同消费 
@@ -530,7 +530,7 @@ export default new Router({
         component: contractConsumption,
         meta: {
           root: true,
-          list: ["合同消费"]
+          list: ["合同中心","线上合同","合同消费"]
         }
       },
       //消费概况 
@@ -539,7 +539,7 @@ export default new Router({
         component: consumptionProfile,
         meta: {
           root: true,
-          list: ["消费概况"]
+          list: ["合同中心","合同中心","消费概况"]
         }
       },
       {
@@ -547,7 +547,7 @@ export default new Router({
         component: record,
         meta: {
           root: true,
-          list: ["充值记录"]
+          list: ["合同中心","合同中心","充值记录"]
         }
       },
     ]

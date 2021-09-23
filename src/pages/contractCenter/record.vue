@@ -129,7 +129,7 @@
             <span>{{editForm.onLineQuantity}}</span>
           </el-form-item>
           <el-form-item label="备注：">
-            <el-input type="textarea" resize="none"  placeholder="请输入内容" v-model="editForm.remark" maxlength="500" show-word-limit>
+            <el-input type="textarea" resize="none"  placeholder="请输入内容" v-model="editForm.remark" maxlength="225" show-word-limit>
             </el-input>
           </el-form-item>
         </el-form>
