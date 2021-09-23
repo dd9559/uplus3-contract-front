@@ -96,7 +96,7 @@
         <div class="input-group">
           <label>收付方式:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
-            <el-option v-for="item in dictionary['24']" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['24']" v-show="item.key!==12" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </div>
