@@ -301,7 +301,7 @@
       </section>
     </div>
     <p>
-      <el-button class="btn-info" round size="small" @click="closePay" v-if="status!=4&&payStatusValue!==5">关闭支付订单</el-button>
+      <el-button class="btn-info" round size="small" @click="closePay" v-if="status!=4&&payStatusValue!==5&&!isBoxPay">关闭支付订单</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel" v-if="!$route.query.deAudit">取消</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult"
         v-loading.fullscreen.lock="fullscreenLoading" v-if="!$route.query.deAudit">
@@ -1083,10 +1083,16 @@ export default {
               this.addressLabel.selectCode = guestinfoJson.InquiryNo;
             }
           }
-          this.fullscreenLoading = false;
+          setTimeout(()=>{
+            this.fullscreenLoading = false;
+          },500)
+          // this.fullscreenLoading = false;
         }
       }).catch((error) => {
-        this.fullscreenLoading = false;
+        setTimeout(()=>{
+          this.fullscreenLoading = false;
+        },500)
+        // this.fullscreenLoading = false;
         this.$message({
           message: error,
         });
