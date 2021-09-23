@@ -121,7 +121,7 @@ export default {
   },
   created() {
     this.type = parseInt(this.$route.query.type);
-    this.isPhone = parseInt(this.$route.query.isPhone);
+    this.isPhone = this.$route.query.isPhone;
     this.edit = parseInt(this.$route.query.edit) === 1 ? true : false;
     this.result = JSON.parse(this.$route.query.content);
     /*if(this.result.payCode&&this.result.payCode.length>0){
