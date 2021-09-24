@@ -96,7 +96,7 @@
         <div class="input-group">
           <label>收付方式:</label>
           <el-select :clearable="true" size="small" v-model="searchForm.payMethod" placeholder="请选择">
-            <el-option v-for="item in dictionary['24']" v-show="item.key!==12" :key="item.key" :label="item.value" :value="item.key">
+            <el-option v-for="item in dictionary['24']" :key="item.key" :label="item.value" :value="item.key">
             </el-option>
           </el-select>
         </div>
@@ -683,7 +683,7 @@ export default {
       transterInfoPerson: {},
       zkTitle: "转款信息填写",
       zkEdit: false,
-      isBoxPay: false,
+      isBoxPay: false,// true 盒子支付
     };
   },
   mounted() {
@@ -1305,7 +1305,34 @@ export default {
         });
         return;
       }
-      this.sureSaveTransterShow = true;
+      if (!this.isBoxPay) {
+        let param = {
+        payId: this.selectPayInfo.id,
+        contCode: this.transterInfoPerson.inContractCode
+      };
+      this.$ajax
+        .get("/api/payInfo/validateInOut", param)
+        .then((res) => {
+          res = res.data;
+          if (res.status === 200) {
+            if (res.data) {
+              this.sureSaveTransterShow = true;
+            } else {
+              this.$message({
+                message: `${res.message}`,
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          this.$message({
+            message: `${error}`,
+          });
+        });
+      } else {
+        this.sureSaveTransterShow = true;
+      }
+      
     },
     transterSaveFinal() {
       let param = {

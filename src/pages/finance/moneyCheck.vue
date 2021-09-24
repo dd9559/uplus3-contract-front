@@ -233,7 +233,7 @@
         <el-table-column min-width="80" label="票据状态" prop="billStatus.label" v-if="activeView===1"></el-table-column>
         <el-table-column label="操作" fixed="right" min-width="120" class-name="null-formatter">
           <template slot-scope="scope">
-            <div v-if="activeView===1 && scope.row.status !== 4">
+            <div v-if="activeView!==1 || (activeView===1 && scope.row.status !== 4)">
               <el-button type="text" @click="cellOpera(scope.row,'edit')"
                 v-if="scope.row.payway&&scope.row.payStatus&&(scope.row.payway.value!==4||scope.row.payway.value===4&&scope.row.billStatus.value!==2)&&scope.row.payStatus.value!==5&&(scope.row.type===1||scope.row.type===8)&&scope.row.edit===1&&power['sign-cw-rev-update'].state&&scope.row.isDeal!=3">
                 编辑</el-button>

@@ -322,10 +322,12 @@
       <li v-if="activeItem==='收款信息'&&billMsg.RQcode">
         <h4 class="f14">收款二维码</h4>
          <el-image
+            v-if="billMsg.status!==4"
             :src="billMsg.RQcode" 
             :preview-src-list="[billMsg.RQcode]"
             @click="clickPreview">
           </el-image>
+          <span v-else>-</span>
       </li>
       <!-- 转款信息(转款信息) -->
       <li v-if="activeItem!=='付款信息'">
@@ -679,53 +681,44 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.billMsg = Object.assign({}, res.data);
-          if (res.data.filePath&&JSON.parse(res.data.filePath).length>0) {
-            // 新版
-            let copyFiles = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
-            let preloadList = [];
-            copyFiles.forEach((item, index) => {
-              //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-              if (this.isPictureFile(item.type)) {
-                preloadList.push(item.path);
-              }
-            });
-            this.fileSign(preloadList, "preload").then((data) => {
-              if (data.length > 0) {
-                this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
-                this.preloadFiles = data;
-              } else {
-                let param = {
-                  filePath: JSON.parse(res.data.filePath).join(""),
-                  code: res.data.payCode,
-                  id: res.data.id
+          if (res.data.filePath) {
+            let getFilePath = JSON.parse(res.data.filePath)
+            if (getFilePath.length>0) {
+              // 新版
+              let copyFiles = this.$tool.cutFilePath(getFilePath);
+              let preloadList = [];
+              copyFiles.forEach((item, index) => {
+                //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                if (this.isPictureFile(item.type)) {
+                  preloadList.push(item.path);
                 }
-                this.$ajax.get('/api/payInfo/uploadTip', param).then((upData) => {
-                  this.files = this.$tool.cutFilePath(new Array(upData.data.data.filePath));
-                  let preloadList = [];
-                  this.files.forEach((item, index) => {
-                    //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-                    if (this.isPictureFile(item.type)) {
-                      preloadList.push(item.path);
-                    }
-                  });
-                  this.fileSign(preloadList, "preload").then((data) => {
-                     this.preloadFiles = data;
-                  })
-                })
+              });
+              this.fileSign(preloadList, "preload").then((data) => {
+                this.files = copyFiles;
+                this.preloadFiles = data;
+              });
+            }
+          } else {
+            let param = {
+                filePath: "",
+                code: res.data.payCode,
+                id: res.data.id
               }
-            });
-            // 原版
-            // this.files = this.$tool.cutFilePath(JSON.parse(res.data.filePath));
-            // let preloadList = [];
-            // this.files.forEach((item, index) => {
-            //   //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-            //   if (this.isPictureFile(item.type)) {
-            //     preloadList.push(item.path);
-            //   }
-            // });
-            // this.fileSign(preloadList, "preload").then((res) => {
-            //   this.preloadFiles = res;
-            // });
+              this.$ajax.get('/api/payInfo/uploadTip', param).then((upData) => {
+                this.files = this.$tool.cutFilePath(new Array(upData.data.data.filePath));
+                let preloadList = [];
+                this.files.forEach((item, index) => {
+                  //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                  if (this.isPictureFile(item.type)) {
+                    preloadList.push(item.path);
+                  }
+                });
+                this.fileSign(preloadList, "preload").then((data) => {
+                  this.preloadFiles = data;
+                })
+              }).catch((error) => {
+                this.$message(error);
+              });
           }
           if (
             res.data.inAccountType &&
@@ -743,6 +736,8 @@ export default {
           this.checkPerson.code = res.data.payCode;
           this.getCheckData();
         }
+      }).catch((error) => {
+        this.$message(error);
       });
     },
     /**
