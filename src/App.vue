@@ -185,7 +185,6 @@ export default {
           let arr = val.privileges;
           console.log(this.views);
           this.views.forEach((item, index) => {
-            console.log(item,8989);
             let sliders = [];
             if (item.id === 7 || item.id === 8 || item.id === 9) {
               let objType = Object.prototype.toString.call(item.code);

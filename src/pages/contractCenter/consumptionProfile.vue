@@ -38,7 +38,6 @@
         </div>
         <div class="float-right">
           <el-button class="btn-info"
-            v-if="power['sign-ht-htsh-export'].state"
             round
             type="primary"
             size="small"
@@ -135,7 +134,7 @@
                     <template v-for="(item,index) in uploadData">
                       <el-tooltip effect="dark" :content="item.contractName" placement="bottom" :key="index">
                         <li>
-                          <div @click="previewPhoto(uploadList,index)">
+                          <div @click="previewPhoto(uploadList,index,3)">
                             <img :src="item.preConFile" width="90px" height="80px">
                           </div>
                           <p class="pic-name">{{item.contractName}}</p>
@@ -206,7 +205,7 @@
       </span>
       </el-dialog>
     </div>
-    <preview :imgList="previewFiles" v-if="preview" @close="preview=false"></preview>
+    <preview :imgList="previewFiles" :start="previewIndex" :previewType="previewType" v-if="preview" @close="preview=false"></preview>
   </div>
 </template>
 
@@ -263,13 +262,6 @@
         currentPage: 1,
         pageSize:10,
         total:0,
-        //权限配置
-        power: {
-          "sign-ht-htsh-export": {
-              state: false,
-              name: "导出"
-          }
-        }
       }
     },
     mounted() {
@@ -383,7 +375,8 @@
         }
       },
       getExcel() {
-        this.excelCreate('/contract/copies/setting/export')
+        let param = Object.assign({}, param, this.downLoadForm);
+        this.excelCreate('/contract/copies/setting/export',param)
       },
       maxUpLoad() {
         if (this.uploadData.length >= 3) {
@@ -428,6 +421,7 @@
           this.rechargeDialog = false
           TOOL.clearForm(this.dialogForm);
           this.uploadData = []
+          this.uploadList = []
         }else if(val == 'editDialog') {
           this.editDialog = false
           TOOL.clearForm(this.editForm);

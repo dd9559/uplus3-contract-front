@@ -44,7 +44,6 @@
         </div>
         <div class="float-right">
           <el-button class="btn-info"
-            v-if="power['sign-ht-htsh-export'].state"
             round
             type="primary"
             size="small"
@@ -75,9 +74,19 @@
               <span>{{scope.row.status == 10?'正常':'已撤销'}}</span>
             </template>
           </el-table-column>
-          <el-table-column  label="操作人" align="center" prop="empName"></el-table-column>
-          <el-table-column  label="撤销人" align="center" prop="revokeEmpName"></el-table-column>
-          <el-table-column  label="付款记录" align="center">
+          <el-table-column  label="操作人" align="center" >
+            <template slot-scope="scope">
+              <!-- <span>{{scope.row.empDeptName&&scope.row.empName?scope.row.empDeptName+'-'+scope.row.empName:'-'}}</span> -->
+              <span>{{`${scope.row.empDeptName?scope.row.empDeptName:''}`+`${scope.row.empDeptName&&scope.row.empName?'--':''}`+`${scope.row.empName?scope.row.empName:''}`}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column  label="撤销人" align="center">
+            <template slot-scope="scope">
+              <!-- <span>{{scope.row.revokeDeptName+'-'+scope.row.revokeEmpName}}</span> -->
+              <span>{{`${scope.row.revokeDeptName?scope.row.revokeDeptName:''}`+`${scope.row.revokeDeptName&&scope.row.revokeEmpName?'--':''}`+`${scope.row.revokeEmpName?scope.row.revokeEmpName:''}`}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column  label="付款凭证" align="center">
             <template slot-scope="scope">
               <span class="btn" @click="check(scope.row)" style="margin-right:5px;" v-if="scope.row.annex !== 'null'">点击查看</span>
               <span v-else>-</span>
@@ -156,8 +165,8 @@
     data() {
       return {
         downLoadForm:{
-          signData:'',
-          city:'',
+          signData:"",
+          city:"",
           systemTag: "", //体系id
         },
         tableData:[],
@@ -171,13 +180,6 @@
           remark:'',
           id:''
         },
-        //权限配置
-        power: {
-          "sign-ht-htsh-export": {
-              state: false,
-              name: "导出"
-          }
-        },
         list:[]
       }
     },
@@ -187,13 +189,21 @@
     },
     methods:{
       dataInfo() {
+        let years = "",months = ""
+        if(!this.downLoadForm.signData) {
+          this.downLoadForm.signData = []
+        }
         let params = {
-          beginDate:this.downLoadForm.signData[0],
-          endDate:this.downLoadForm.signData[1],
           cityId:this.downLoadForm.city,
           deptSystemtag:this.downLoadForm.systemTag,
           pageNum:this.currentPage,
           pageSize:this.pageSize
+        }
+        if(this.downLoadForm.signData.length) {
+          years = this.downLoadForm.signData[1].split('-')[0]
+          months = this.downLoadForm.signData[1].split('-')[1]
+          params.beginDate=this.downLoadForm.signData[0]+'-1',
+          params.endDate=this.downLoadForm.signData[1]+'-'+new Date(years,months,0).getDate()
         }
         this.$ajax.postJSON('/api/contract/copies/recharge/pageList',params).then(res=>{
           res = res.data
@@ -219,13 +229,9 @@
         this.systemTagSelect = []
       },
       check(row) {
-        console.log(row);
         let annex= JSON.parse(row.annex)
-        // let a = this.$tool.cutFilePath(annex)
         this.fileSign(annex, "preload",false).then(res => {
-          console.log(res);
           this.list = res
-          // console.log(this.list);
           this.preview = true
         });
         // console.log(a);
@@ -267,7 +273,18 @@
         this.editForm.id = data.id
       },
       getExcel() {
-        this.excelCreate('/contract/copies/recharge/export')
+        let years = "",months = ""
+        let param = {
+          cityId:this.downLoadForm.city,
+          deptSystemtag:this.downLoadForm.systemTag,
+        }
+        if(this.downLoadForm.signData && this.downLoadForm.signData.length) {
+          years = this.downLoadForm.signData[1].split('-')[0]
+          months = this.downLoadForm.signData[1].split('-')[1]
+          param.beginDate = this.downLoadForm.signData[0]+'-1',
+          param.endDate = this.downLoadForm.signData[1]+'-'+new Date(years,months,0).getDate()
+        }
+        this.excelCreate('/contract/copies/recharge/export',param)
       },
       rechargeCancel() {
         this.revokeDialog = false

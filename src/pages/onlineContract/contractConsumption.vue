@@ -93,11 +93,19 @@
     },
     methods:{
       dataInfo() {
+        let years = "",months = ""
+        if(!this.downLoadForm.signData) {
+          this.downLoadForm.signData = []
+        }
         let params = {
-          startTime:this.downLoadForm.signData[0],
-          endTime:this.downLoadForm.signData[1],
           pageNum:this.currentPage,
           pageSize:this.pageSize
+        }
+        if(this.downLoadForm.signData.length) {
+          years = this.downLoadForm.signData[1].split('-')[0]
+          months = this.downLoadForm.signData[1].split('-')[1]
+          params.startTime=this.downLoadForm.signData[0]+'-1',
+          params.endTime=this.downLoadForm.signData[1]+'-'+new Date(years,months,0).getDate()
         }
         this.$ajax.get("/api/contract/copies/record/consumptionInfo",params).then(res=>{
           res = res.data
@@ -136,6 +144,8 @@
       resetFormFn() {
         TOOL.clearForm(this.downLoadForm);
         this.currentPage = 1;
+        // this.downLoadForm.signData[0] = ""
+        // this.downLoadForm.signData[1] = ""
         // this.initTimePicker()
         // this.EmployeList = []
       },

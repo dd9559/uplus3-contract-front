@@ -35,10 +35,16 @@
           :clearable="true"
           style="width:600px;margin-left:20px;margin-bottom:20px;"
         >
-          <el-option
+          <!-- <el-option
             v-for="item in dictionary['64']"
             :key="item.key"
             :label="item.value=='线上'?item.value+` (剩余份数：${surplusOnLineQuantity})`:item.value=='无纸化'?item.value+` (剩余份数：${surplusPaperlessQuantity})`:item.value"
+            :value="item.key"
+          ></el-option> -->
+          <el-option
+            v-for="item in dictionary['64']"
+            :key="item.key"
+            :label="item.value"
             :value="item.key"
           ></el-option>
         </el-select>
@@ -79,15 +85,16 @@ export default {
       offlineContractList: [],
       uPlusHouseDetail: null,
       uPlusIsShow:false,
-      surplusOnLineQuantity:'',
-      surplusPaperlessQuantity:''
+      // surplusOnLineQuantity:null,
+      // surplusPaperlessQuantity:null,
+      // overdrawQuantity:null
     };
   },
   created() {
     this.uPlusIsShow=true;
     this.getDictionary(); //字典
     this.getUplusHouseDetail(this.$route.query.houseId);
-    this.getSurplus()
+    // this.getSurplus()
     this.$parent.loadingState = false;
   },
   methods: {
@@ -186,8 +193,9 @@ export default {
       this.$ajax.get('/api/contract/copies/getSurplus').then(res =>{
         res = res.data
         if(res.status == 200) {
-          let {surplusOnLineQuantity,surplusPaperlessQuantity} = res.data
+          let {surplusOnLineQuantity,surplusPaperlessQuantity,overdrawQuantity} = res.data
           this.surplusOnLineQuantity =surplusOnLineQuantity
+          this.overdrawQuantity = overdrawQuantity
           this.surplusPaperlessQuantity = surplusPaperlessQuantity
         }
       }).catch(err => {
@@ -196,11 +204,11 @@ export default {
     },
     // 跳转新增合同
     skipAddCont() {
-      if(this.surplusOnLineQuantity <= 0 && this.uPlusQianyueType == 1) {
+      if(this.surplusOnLineQuantity +  this.overdrawQuantity <= 0 && this.uPlusQianyueType == 1) {
         this.$message.warning('当前权限未开放')
         return
       }
-      if(this.surplusPaperlessQuantity <= 0 && this.uPlusQianyueType == 10) {
+      if(this.surplusPaperlessQuantity + this.overdrawQuantity <= 0 && this.uPlusQianyueType == 10) {
         this.$message.warning('当前权限未开放')
         return
       }
