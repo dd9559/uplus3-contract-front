@@ -1376,7 +1376,7 @@ export default {
         verifyMobile(item, index, type) {
             let beginNum = /^0.*$/;
             let beginNum_ = /^1.*$/;
-            if (item.mobile.length > 0) {
+            // if (item.mobile.length > 0) {
                 if (type === "owner") {
                     if (beginNum.test(item.mobile)) {
                         this.ownerList[index].mobile = item.mobile.substring(
@@ -1423,7 +1423,7 @@ export default {
                     item.mobile = this[type].mobile;
                     this[type].encryptionMobile = this[type].mobile 
                 }
-            }
+            // }
             if (item.isEncryption) {
                 //是否是加密的号码
                 if (type === "owner") {

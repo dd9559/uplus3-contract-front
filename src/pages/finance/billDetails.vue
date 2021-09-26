@@ -504,12 +504,17 @@ export default {
       transferInfo: [],
       isZk: false, //是否转款
       billStatus: true, //线上或线下,false=线上，true=线下
+      isBoxPay: false,// true 盒子支付
     };
   },
   created() {
     // debugger
     this.activeItem = this.$route.query.tab || "收款信息";
     this.billId = parseInt(this.$route.query.id) || 0;
+    let { user = {}, isProd = 0 } = JSON.parse(sessionStorage.getItem("userMsg")) || {};
+    if ((isProd && [21,25].includes(user.cityId)) || (!isProd && [21,25,40].includes(user.cityId))) {
+      this.isBoxPay = true
+    }
 
     //审批流参数
     switch (this.activeItem) {
@@ -681,41 +686,42 @@ export default {
         res = res.data;
         if (res.status === 200) {
           this.billMsg = Object.assign({}, res.data);
-          if (res.data.filePath) {
+          if (res.data.filePath&&JSON.parse(res.data.filePath).length>0) {
             let getFilePath = JSON.parse(res.data.filePath)
-            if (getFilePath.length>0) {
-              // 新版
-              let copyFiles = this.$tool.cutFilePath(getFilePath);
-              let preloadList = [];
-              copyFiles.forEach((item, index) => {
-                //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-                if (this.isPictureFile(item.type)) {
-                  preloadList.push(item.path);
-                }
-              });
-              this.fileSign(preloadList, "preload").then((data) => {
-                this.files = copyFiles;
-                this.preloadFiles = data;
-              });
-            }
-          } else {
+            // 新版
+            let copyFiles = this.$tool.cutFilePath(getFilePath);
+            let preloadList = [];
+            copyFiles.forEach((item, index) => {
+              //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+              if (this.isPictureFile(item.type)) {
+                preloadList.push(item.path);
+              }
+            });
+            this.fileSign(preloadList, "preload").then((data) => {
+              this.files = copyFiles;
+              this.preloadFiles = data;
+            });
+          } else if (!this.isBoxPay&&res.data.payType!==1) {
             let param = {
                 filePath: "",
                 code: res.data.payCode,
                 id: res.data.id
               }
               this.$ajax.get('/api/payInfo/uploadTip', param).then((upData) => {
-                this.files = this.$tool.cutFilePath(new Array(upData.data.data.filePath));
-                let preloadList = [];
-                this.files.forEach((item, index) => {
-                  //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
-                  if (this.isPictureFile(item.type)) {
-                    preloadList.push(item.path);
-                  }
-                });
-                this.fileSign(preloadList, "preload").then((data) => {
-                  this.preloadFiles = data;
-                })
+                if (upData.data.data.filePath && upData.data.data.filePath !== '') {
+                  let arr = new Array(upData.data.data.filePath)
+                  this.files = this.$tool.cutFilePath(arr);
+                  let preloadList = [];
+                  this.files.forEach((item, index) => {
+                    //判断附件是否为图片，是则存入临时数组获取签名用于缩略图展示
+                    if (this.isPictureFile(item.type)) {
+                      preloadList.push(item.path);
+                    }
+                  });
+                  this.fileSign(preloadList, "preload").then((data) => {
+                    this.preloadFiles = data;
+                  })
+                }
               }).catch((error) => {
                 this.$message(error);
               });

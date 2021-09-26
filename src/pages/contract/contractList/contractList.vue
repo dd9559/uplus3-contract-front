@@ -2175,43 +2175,43 @@ export default {
       }
     },
     //新增线下合同
-    // addOffLine(val) {
-    //   if (val.type.value != 2 || (val.type.value === 2 && !val.children)) {
-    //     this.showOffLine = false;
-    //     if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
-    //       this.$router.push({
-    //         path: "/addContract",
-    //         query: {
-    //           type: val.type.value,
-    //           operateType: 1,
-    //           // isOffline: 1
-    //           recordType: 2,
-    //         },
-    //       });
-    //     } else if (val.type.value === 7 || val.type.value === 8) {
-    //       this.$router.push({
-    //         path: "/addContract",
-    //         query: {
-    //           type: 2,
-    //           operateType: 1,
-    //           // isOffline: 1,
-    //           recordType: 2,
-    //           loanType: val.type.value,
-    //         },
-    //       });
-    //     } else if (val.type.value === 4 || val.type.value === 5) {
-    //       this.$router.push({
-    //         path: "/newIntention",
-    //         query: {
-    //           contType: val.type.value,
-    //           operateType: 1,
-    //           // isOffline: 1
-    //           recordType: 2,
-    //         },
-    //       });
-    //     }
-    //   }
-    // },
+    addOffLine(val) {
+      if (val.type.value != 2 || (val.type.value === 2 && !val.children)) {
+        this.showOffLine = false;
+        if (val.type.value === 1 || val.type.value === 2 || val.type.value === 3) {
+          this.$router.push({
+            path: "/addContract",
+            query: {
+              type: val.type.value,
+              operateType: 1,
+              // isOffline: 1
+              recordType: 2,
+            },
+          });
+        } else if (val.type.value === 7 || val.type.value === 8) {
+          this.$router.push({
+            path: "/addContract",
+            query: {
+              type: 2,
+              operateType: 1,
+              // isOffline: 1,
+              recordType: 2,
+              loanType: val.type.value,
+            },
+          });
+        } else if (val.type.value === 4 || val.type.value === 5) {
+          this.$router.push({
+            path: "/newIntention",
+            query: {
+              contType: val.type.value,
+              operateType: 1,
+              // isOffline: 1
+              recordType: 2,
+            },
+          });
+        }
+      }
+    },
     //合同预览
     goPreview(item) {
       this.$router.push({
