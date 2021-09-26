@@ -406,7 +406,7 @@ export default {
       },
       inputPerson: false, //是否显示第三方输入框
       billStatus: true, //线上或线下,false=线上，true=线下
-      isBoxPay: false,
+      isBoxPay: false,// true 盒子支付
       form: {
         contId: "",
         remark: "",
