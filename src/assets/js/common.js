@@ -465,61 +465,61 @@ let TOOL = {
       code: true,
       child: []
     },
-    // {
-    //   id: 10,
-    //   name: "合同中心",
-    //   category: "10",
-    //   can: true, //是否可见
-    //   icon: "",
-    //   code: true,
-    //   child: [
-    //     {
-    //       name: "合同中心",
-    //       category: "10-1-1",
-    //       can: true, //是否可见
-    //       code: true,
-    //       child:[
-    //         {
-    //           name: "消费概况",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "consumptionProfile",
-    //           code: "sign-ht-info-query"
-    //         },
-    //         {
-    //           name: "充值记录",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "record",
-    //           code: "sign-ht-info-query"
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       name: "线上合同",
-    //       category: "10-1-2",
-    //       can: true, //是否可见
-    //       path: "onlineContract",
-    //       code: "sign-ht-info-query",
-    //       child:[
-    //         {
-    //           name: "合同消费",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "contractConsumption",
-    //           code: "sign-ht-info-query",
-    //         },
-    //         {
-    //           name: "充值记录",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "rechargeRecord",
-    //           code: "sign-ht-info-query",
-    //         }
-    //       ]
-    //     },
-    //   ]
-    // },
+    {
+      id: 10,
+      name: "合同中心",
+      category: "10",
+      can: true, //是否可见
+      icon: "",
+      code: true,
+      child: [
+        {
+          name: "合同中心",
+          category: "10-1-1",
+          can: true, //是否可见
+          code: true,
+          child:[
+            {
+              name: "消费概况",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "consumptionProfile",
+              code: "sign-ht-info-query"
+            },
+            {
+              name: "充值记录",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "record",
+              code: "sign-ht-info-query"
+            }
+          ]
+        },
+        {
+          name: "线上合同",
+          category: "10-1-2",
+          can: true, //是否可见
+          path: "onlineContract",
+          code: "sign-ht-info-query",
+          child:[
+            {
+              name: "合同消费",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "contractConsumption",
+              code: "sign-ht-info-query",
+            },
+            {
+              name: "充值记录",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "rechargeRecord",
+              code: "sign-ht-info-query",
+            }
+          ]
+        },
+      ]
+    },
   ],
   //提成导航
   pathCommission: [
