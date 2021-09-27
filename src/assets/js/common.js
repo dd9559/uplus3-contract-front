@@ -470,7 +470,7 @@ let TOOL = {
       name: "合同中心",
       category: "10",
       can: true, //是否可见
-      icon: "",
+      icon: "icon-hetongs-copy",
       code: true,
       child: [
         {

@@ -3,7 +3,7 @@
      <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="downLoadForm" class="prop-form" size="small">
-        <el-form-item label="采购日期">
+        <el-form-item label="充值日期">
           <el-date-picker
             v-model="downLoadForm.signData"
             type="monthrange"
@@ -59,15 +59,15 @@
           class="submit-dialog"
           border>
           <el-table-column type="index" label="序号" align="center"></el-table-column>
-          <el-table-column  label="采购日期" align="center">
+          <el-table-column  label="充值日期" align="center">
             <template slot-scope="scope">
               {{scope.row.createTime | formatTime}}
             </template>
           </el-table-column>
           <el-table-column label="城市" align="center" prop="cityName"></el-table-column>
           <el-table-column label="体系" align="center" prop="deptSystemtagName"></el-table-column>
-          <el-table-column label="无纸化合同采购（份）" align="center" prop="paperlessQuantity"></el-table-column>
-          <el-table-column  label="线上合同采购（份）" align="center" prop="onLineQuantity"></el-table-column>
+          <el-table-column label="无纸化合同充值（份）" align="center" prop="paperlessQuantity"></el-table-column>
+          <el-table-column  label="线上合同充值（份）" align="center" prop="onLineQuantity"></el-table-column>
           <el-table-column  label="付款金额（元）" align="center" prop="money"></el-table-column>
           <el-table-column  label="状态" align="center">
             <template slot-scope="scope">
@@ -95,7 +95,7 @@
           <el-table-column  label="备注" align="center" prop="remarks"></el-table-column>
           <el-table-column  label="操作" align="center">
             <template slot-scope="scope">
-              <span class="btn" @click="revoke(scope.row)" style="margin-right:5px;" v-if="scope.row.status == 10">撤 销</span>
+              <span class="btn" @click="revoke(scope.row)" style="margin-right:5px;" v-if="scope.row.createTime + 8.64e7*2 >= new Date().getTime() && scope.row.status == 10">撤 销</span>
               <span v-else>-</span>
             </template>
           </el-table-column>

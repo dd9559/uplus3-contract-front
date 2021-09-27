@@ -128,7 +128,7 @@
                   <ul>
                     <li v-show="uploadData.length >= 3" class="mask" @click="maxUpLoad"></li>
                     <li class="up-content">
-                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="3" :getNum="uploadData.length" :maxSize="2" :scane="{path:'other'}"><i>+</i></fileUp>
+                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="3" :getNum="uploadData.length"  :scane="{path:'other'}"><i>+</i></fileUp>
                       <p class="text">点击上传</p>
                     </li>
                     <template v-for="(item,index) in uploadData">
@@ -375,7 +375,11 @@
         }
       },
       getExcel() {
-        let param = Object.assign({}, param, this.downLoadForm);
+        let param = {
+          cityId:this.downLoadForm.city,
+          deptSystemtag:this.downLoadForm.systemTag,
+          warnType:this.downLoadForm.warnType
+        }
         this.excelCreate('/contract/copies/setting/export',param)
       },
       maxUpLoad() {
