@@ -23,8 +23,8 @@ module.exports = {
         // target: 'http://192.168.10.17:28081', //需要代理的地址 余川
         // target: 'http://192.168.1.29:28081', //需要代理的地址 童享
         //  target: 'http://192.168.10.25:28081', //需要代理的地址 王双
-        // target: 'http://192.168.10.28:28081', //需要代理的地址 范威乐
-        target: 'http://120.76.202.91:28085', //需要代理的地址
+        target: 'http://192.168.10.28:28081', //需要代理的地址 范威乐
+        // target: 'http://120.76.202.91:28085', //需要代理的地址
         changeOrigin: true, //是否跨域
         secure: false,
         pathRewrite: {
@@ -34,7 +34,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '192.168.10.31', // can be overwritten by process.env.HOST
+    host: '192.168.10.22', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

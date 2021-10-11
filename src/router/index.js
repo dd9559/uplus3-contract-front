@@ -92,6 +92,7 @@ const rechargeRecord = () => import("@/pages/onlineContract/rechargeRecord")
 const contractConsumption = () => import("@/pages/onlineContract/contractConsumption")
 //合同中心
 const consumptionProfile = () => import("@/pages/contractCenter/consumptionProfile")
+const recordSconsumption = () => import("@/pages/contractCenter/recordSconsumption")
 const record = () =>import("@/pages/contractCenter/record")
 // Vue.use(Router)
 
@@ -540,6 +541,14 @@ export default new Router({
         meta: {
           root: true,
           list: ["合同中心","合同中心","消费概况"]
+        }
+      },
+      {
+        path: "recordSconsumption",
+        component: recordSconsumption,
+        meta: {
+          root: true,
+          list: ["合同中心","合同中心","消费记录"]
         }
       },
       {
