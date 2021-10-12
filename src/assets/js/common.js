@@ -487,8 +487,15 @@ let TOOL = {
               code: "sign-ht-info-query"
             },
             {
+              name: "消费记录",
+              category: "4-2-2",
+              can: true, //是否可见
+              path: "recordSconsumption",
+              code: "sign-ht-info-query"
+            },
+            {
               name: "充值记录",
-              category: "4-2-1",
+              category: "4-2-3",
               can: true, //是否可见
               path: "record",
               code: "sign-ht-info-query"

@@ -44,6 +44,8 @@
           class="submit-dialog"
           border>
           <el-table-column type="index" label="序号" align="center"></el-table-column>
+          <el-table-column  label="城市" align="center" prop="cityName"></el-table-column>
+          <el-table-column  label="体系" align="center" prop="systemtagName"></el-table-column>
           <el-table-column  label="日期" align="center" prop="dates"></el-table-column>
           <el-table-column  label="无纸化签约使用(份)" align="center" prop="papernum"></el-table-column>
           <el-table-column  label="线上签约使用(份)" align="center" prop="onlinenum"></el-table-column>

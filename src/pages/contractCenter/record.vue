@@ -61,7 +61,7 @@
           <el-table-column type="index" label="序号" align="center"></el-table-column>
           <el-table-column  label="充值日期" align="center">
             <template slot-scope="scope">
-              {{scope.row.createTime | formatTime}}
+              {{scope.row.createTime|formatDate}}
             </template>
           </el-table-column>
           <el-table-column label="城市" align="center" prop="cityName"></el-table-column>
@@ -180,7 +180,18 @@
           remark:'',
           id:''
         },
-        list:[]
+        list:[],
+        //权限
+        power: {
+          "sign-ht-core-czinfo-revoke": {
+            state: false,
+            name: "撤销",
+          },
+          "sign-ht-core-czinfo-export": {
+            state: false,
+            name: "导出",
+          },
+        }
       }
     },
     mounted() {

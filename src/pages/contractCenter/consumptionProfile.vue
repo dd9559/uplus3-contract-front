@@ -42,7 +42,8 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel">导出</el-button>
+            @click="getExcel"
+            v-if="power['sign-ht-core-xfinfo-export'].state">导出</el-button>
         </div>
       </div>
       <div>
@@ -78,8 +79,8 @@
           </el-table-column>
           <el-table-column  label="操作" align="center">
             <template slot-scope="scope">
-              <span class="btn" @click="recharge(scope.row)" style="margin-right:5px;">充 值</span>
-              <span class="btn" @click="edit(scope.row)" style="margin-left:5px;">编 辑</span>
+              <span class="btn" @click="recharge(scope.row)" style="margin-right:5px;" v-if="power['sign-ht-core-xfinfo-save'].state">充 值</span>
+              <span class="btn" @click="edit(scope.row)" style="margin-left:5px;" v-if="power['sign-ht-core-xfinfo-update'].state">编 辑</span>
             </template>
           </el-table-column>
         </el-table>
@@ -262,6 +263,21 @@
         currentPage: 1,
         pageSize:10,
         total:0,
+        //权限
+        power: {
+          "sign-ht-core-xfinfo-save": {
+            state: false,
+            name: "充值",
+          },
+          "sign-ht-core-xfinfo-update": {
+            state: false,
+            name: "编辑",
+          },
+          "sign-ht-core-xfinfo-export": {
+            state: false,
+            name: "导出",
+          },
+        }
       }
     },
     mounted() {

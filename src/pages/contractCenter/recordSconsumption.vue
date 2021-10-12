@@ -1,5 +1,5 @@
 <template>
-  <div class="rechargeRecord">
+  <div class="recordSconsumption">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="downLoadForm" class="prop-form" size="small">
@@ -14,6 +14,24 @@
             value-format="yyyy-MM"
             style="width:330px"
           ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="城市">
+          <el-select v-model="downLoadForm.city" filterable placeholder="请选择" :clearable="true" @clear="clear">
+            <el-option
+              v-for="item in cityList"
+              :key="item.cityId"
+              :label="item.cityName"
+              :value="item.cityId"
+              @click.native=citySelect(item)
+              >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="体系">
+          <el-select v-model="downLoadForm.systemTag" class="w100" placeholder="请选择" :clearable="true">
+            <el-option v-for="item in systemTagSelect" :key="item.deptSystemtag" :label="item.deptSystemtagName" :value="item.deptSystemtag">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
     </ScreeningTop>
@@ -35,25 +53,10 @@
           <el-table-column type="index" label="序号" align="center"></el-table-column>
           <el-table-column  label="城市" align="center" prop="cityName"></el-table-column>
           <el-table-column  label="体系" align="center" prop="systemtagName"></el-table-column>
-          <el-table-column  label="充值日期" align="center">
-            <template slot-scope="scope">
-              {{scope.row.createTime | formatTime}}
-            </template>
-          </el-table-column>
-          <el-table-column  label="无纸化充值（份）" align="center" prop="paperQuentity"></el-table-column>
-          <el-table-column  label="线上签约充值（份）" align="center" prop="onlineQuentity"></el-table-column>
-          <el-table-column  label="充值金额（元）" align="center" prop="money"></el-table-column>
+          <el-table-column  label="日期" align="center" prop="dates"></el-table-column>
+          <el-table-column  label="无纸化签约使用(份)" align="center" prop="papernum"></el-table-column>
+          <el-table-column  label="线上签约使用(份)" align="center" prop="onlinenum"></el-table-column>
         </el-table>
-        <div class="pagination" v-if="tableData.length > 0">
-          <el-pagination
-            class="pagination-info"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            layout="total, prev, pager, next, jumper"
-            :total="total"
-          ></el-pagination>
-        </div>
       </div>
     </div>
   </div>
@@ -72,16 +75,19 @@
       return {
         downLoadForm:{
           signData:'',
-          company:''
+          city:'',
+          systemTag:''
         },
+        cityList:[],
         tableData:[],
-        total:0,
         currentPage: 1,
         pageSize:10,
+        total:0,
       }
     },
-    mounted() {
+    mounted(){
       this.dataInfo()
+      this.cityInfo()
     },
     methods:{
       dataInfo() {
@@ -90,28 +96,44 @@
           this.downLoadForm.signData = []
         }
         let params = {
+          cityId:this.downLoadForm.city,
+          deptSystemtag:this.downLoadForm.systemTag,
           pageNum:this.currentPage,
-          pageSize:this.pageSize
+          pageSize:this.pageSize,
         }
-        if(this.downLoadForm.signData.length ) {
+        if(this.downLoadForm.signData.length) {
           years = this.downLoadForm.signData[1].split('-')[0]
           months = this.downLoadForm.signData[1].split('-')[1]
           params.startTime=this.downLoadForm.signData[0]+'-1',
           params.endTime=this.downLoadForm.signData[1]+'-'+new Date(years,months,0).getDate()
         }
-        this.$ajax.get("/api/contract/copies/record/rechargeInfo",params).then(res=>{
-          res = res.data
+        this.$ajax.get('/api/contract/copies/record/consumptionList',params).then(res=>{
+           res = res.data
           if(res.status == 200) {
-            const {list,total} = res.data
+            const { list,total} = res.data
             this.tableData = list
             this.total = total
           }
         }).catch(err => {
           this.$message.error(err)
         })
-        
       },
-      //翻页
+      cityInfo() {
+        this.$ajax.get('/api/contract/copies/recharge/cityList').then(res=>{
+          res = res.data
+          if(res.status == 200) {
+            this.cityList = res.data
+          }
+        })
+      },
+      clear() {
+        this.downLoadForm.systemTag = ''
+        this.systemTagSelect = []
+      },
+      citySelect(i) {
+        console.log(i.deptSystemTagList);
+        this.systemTagSelect = i.deptSystemTagList
+      },
       handleCurrentChange(val) {
         this.currentPage = val;
         this.dataInfo();
@@ -124,7 +146,6 @@
       resetFormFn() {
         TOOL.clearForm(this.downLoadForm);
         this.currentPage = 1;
-        // this.downLoadForm.signData = []
         // this.initTimePicker()
         // this.EmployeList = []
       },
@@ -133,9 +154,9 @@
 </script>
 
 <style lang="less" scoped>
-  @import "~@/assets/common.less";
-  .rechargeRecord {
-    .contract {
+@import "~@/assets/common.less";
+.recordSconsumption {
+  .contract {
       padding: 0 10px;
       border-radius: 2px;
       > .listTitle {
@@ -151,6 +172,10 @@
           }
         }
       }
-    }
+      .btn {
+        color: @color-blue;
+        cursor: pointer;
+      }
   }
+}
 </style>
