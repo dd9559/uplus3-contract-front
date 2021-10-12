@@ -48,7 +48,8 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel">导出</el-button>
+            @click="getExcel"
+            v-if="power['sign-ht-core-czinfo-export'].state">导出</el-button>
         </div>
       </div>
       <div>
@@ -95,7 +96,7 @@
           <el-table-column  label="备注" align="center" prop="remarks"></el-table-column>
           <el-table-column  label="操作" align="center">
             <template slot-scope="scope">
-              <span class="btn" @click="revoke(scope.row)" style="margin-right:5px;" v-if="scope.row.createTime + 8.64e7*2 >= new Date().getTime() && scope.row.status == 10">撤 销</span>
+              <span class="btn" @click="revoke(scope.row)" style="margin-right:5px;" v-if="scope.row.createTime + 8.64e7*2 >= new Date().getTime() && scope.row.status == 10 && power['sign-ht-core-czinfo-revoke'].state">撤 销</span>
               <span v-else>-</span>
             </template>
           </el-table-column>
