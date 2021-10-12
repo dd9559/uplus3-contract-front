@@ -3,7 +3,7 @@
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="downLoadForm" class="prop-form" size="small">
-        <el-form-item label="充值日期">
+        <el-form-item label="日期">
           <el-date-picker
             v-model="downLoadForm.signData"
             type="monthrange"
@@ -57,6 +57,16 @@
           <el-table-column  label="无纸化签约使用(份)" align="center" prop="papernum"></el-table-column>
           <el-table-column  label="线上签约使用(份)" align="center" prop="onlinenum"></el-table-column>
         </el-table>
+        <div class="pagination" v-if="tableData.length > 0">
+          <el-pagination
+            class="pagination-info"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            layout="total, prev, pager, next, jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
       </div>
     </div>
   </div>
