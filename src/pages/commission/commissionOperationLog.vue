@@ -35,7 +35,7 @@
           </el-select> -->
       </div>
 
-      <el-select v-model="searchData.typeId" class="w116 mr-16" placeholder="全部" clearable>
+      <el-select v-model="searchData.typeId" class="mr-16 w116" placeholder="全部" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -140,6 +140,7 @@ export default {
       this.searchData.systemTag =
         JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
     }
+    this.setPath(this.$tool.getRouter(['提成','提成业务','操作日志'],'commissionCounts'))
   },
   methods: {
     reset() {

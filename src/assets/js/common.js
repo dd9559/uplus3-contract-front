@@ -1144,7 +1144,11 @@ let TOOL = {
         : typeInfo === 3
         ?`<div class="layer-txt">
         <span>批量计算结算周期在</span>
-          <select style="width:110px" id="selectList">
+          <select style="width:110px;border: 1px solid #DCDFE6;
+          border-radius: 3px;
+          line-height: 25px;
+          height: 25px;
+          color: #606266;" id="selectList">
             <option value="${data[0].value}">${data[0].label}</option>
             <option value="${data[1].value}">${data[1].label}</option>
             <option value="${data[2].value}">${data[2].label}</option>
@@ -1152,7 +1156,7 @@ let TOOL = {
             <option value="${data[4].value}">${data[4].label}</option>
             <option value="${data[5].value}">${data[5].label}</option>
           </select>
-          <span>（含）以前的数据</span>
+          <span>(含)以前的数据</span>
         </div>`
         :`<div class="layer-txt">${message}</div>`;
     // 类名判断

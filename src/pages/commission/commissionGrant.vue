@@ -41,7 +41,7 @@
         </el-select> -->
       </div>
 
-      <el-select v-model="searchData.isCalculation" class="w116 mr-16" placeholder="在职状态" clearable>
+      <el-select v-model="searchData.isCalculation" class="mr-16 w116" placeholder="在职状态" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -56,7 +56,7 @@
         </el-date-picker>
       </div>
 
-      <el-select v-model="searchData.status" class="w116 mr-16" placeholder="发放状态" clearable>
+      <el-select v-model="searchData.status" class="mr-16 w116" placeholder="发放状态" clearable>
         <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -70,9 +70,9 @@
               class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn">导出
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn" round>导出
         </el-button>
-        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn">批量发放
+        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn" round>批量发放
         </el-button>
       </div>
       <el-table :data="tableData" class="table-box" @row-dblclick="toDetail" @selection-change="handleSelectionChange" ref="tableCom"
@@ -271,6 +271,7 @@ export default {
       this.searchData.systemTag =
         JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
     }
+    this.setPath(this.$tool.getRouter(['提成','提成业务','提成发放'],'commissionCounts'))
   },
   methods: {
     // 详情

@@ -14,7 +14,7 @@
       </el-menu>
     </el-col>
     <!-- <p class="tag"></p> -->
-    <div class="page-view-index" v-if="breadcrumbState">
+    <div class="page-view-index">
       <ul>
         <li v-for="(item,index) in Index" :key="index" @click="toLink(item,index)">{{item.name}}</li>
       </ul>
@@ -41,7 +41,6 @@ export default {
       commissionTabs: [],
       Index: [], //面包屑list
       back: false, //返回按钮是否显示
-      breadcrumbState: false,
     };
   },
   mounted() {
@@ -72,11 +71,6 @@ export default {
       }
     }, 200);
     this.Index = this.getPath;
-    if (['/commissionGrantDetail'].includes(this.$router.currentRoute.path)) {
-      this.breadcrumbState = true
-    } else {
-      this.breadcrumbState = false
-    }
   },
   methods: {
     toLink: function(item, index) {
@@ -121,7 +115,7 @@ export default {
 @import "~@/assets/common.less";
 .page-view-index {
   height: 40px;
-  padding-left: 192px;
+  margin-left: 192px;
   position: relative;
   > ul {
     height: 100%;
@@ -163,52 +157,69 @@ export default {
   width: 180px;
   .nav-box {
     padding: 0 4px;
-    background-color: #20272f;
+    background-color: #fff;
   }
   .el-menu-item {
     width: 100%;
-    line-height: 34px;
-    height: 34px;
+    line-height: 50px;
+    height: 50px;
     padding: 0 8px;
-    color: #9299a5;
-    margin: 18px 0 14px;
+    color: #303133;
+    font-weight: bold;
+    // margin: 18px 0 14px;
     border-bottom: 0;
 
     &.is-active {
-      background-color: rgba(173, 195, 220, 0.2);
-      color: #fff;
-      &:hover {
-        background-color: rgba(173, 195, 220, 0.2);
-      }
-      .icon-commission-01 {
-        background-image: url("../../assets/img/icon-commission-01-on.png");
-      }
-      .icon-commission-02 {
-        background-image: url("../../assets/img/icon-commission-02-on.png");
-      }
-      .icon-commission-03 {
-        background-image: url("../../assets/img/icon-commission-03-on.png");
-      }
-      .icon-commission-04 {
-        background-image: url("../../assets/img/icon-commission-04-on.png");
-      }
+      background-color: #ecf5ff;
+      color: #669eff;
+      // &:hover {
+      //   background-color: #ecf5ff;
+      // }
+      // .icon-commission-01 {
+      //   background-image: url("../../assets/img/icon-commission-01-on.png");
+      // }
+      // .icon-commission-02 {
+      //   background-image: url("../../assets/img/icon-commission-02-on.png");
+      // }
+      // .icon-commission-03 {
+      //   background-image: url("../../assets/img/icon-commission-03-on.png");
+      // }
+      // .icon-commission-04 {
+      //   background-image: url("../../assets/img/icon-commission-04-on.png");
+      // }
+    }
+    .icon-commission-01 {
+      background-image: url("../../assets/img/icon-commission-01-on.png");
+      background-size: 16px;
+    }
+    .icon-commission-02 {
+      background-image: url("../../assets/img/icon-commission-02-on.png");
+      background-size: 16px;
+    }
+    .icon-commission-03 {
+      background-image: url("../../assets/img/icon-commission-03-on.png");
+      background-size: 16px;
+    }
+    .icon-commission-04 {
+      background-image: url("../../assets/img/icon-commission-04-on.png");
+      background-size: 16px;
     }
 
     &:hover {
-      background-color: #20272f;
-      color: #fff;
-      .icon-commission-01 {
-        background-image: url("../../assets/img/icon-commission-01-on.png");
-      }
-      .icon-commission-02 {
-        background-image: url("../../assets/img/icon-commission-02-on.png");
-      }
-      .icon-commission-03 {
-        background-image: url("../../assets/img/icon-commission-03-on.png");
-      }
-      .icon-commission-04 {
-        background-image: url("../../assets/img/icon-commission-04-on.png");
-      }
+      background-color: #ecf5ff;
+      // color: #fff;
+      // .icon-commission-01 {
+      //   background-image: url("../../assets/img/icon-commission-01-on.png");
+      // }
+      // .icon-commission-02 {
+      //   background-image: url("../../assets/img/icon-commission-02-on.png");
+      // }
+      // .icon-commission-03 {
+      //   background-image: url("../../assets/img/icon-commission-03-on.png");
+      // }
+      // .icon-commission-04 {
+      //   background-image: url("../../assets/img/icon-commission-04-on.png");
+      // }
     }
   }
 }
@@ -239,7 +250,7 @@ export default {
 }
 .el-col-left {
   height: 100vh;
-  background-color: #20272f;
+  background-color: #fff;
   .el-menu {
     border-bottom: 0;
   }
@@ -275,6 +286,7 @@ export default {
     padding-left: 20px;
   }
   .main {
+    padding: 0 10px;
     background-color: #fff;
     border-radius: 4px;
   }
@@ -291,7 +303,7 @@ export default {
 
   .reveal-box {
     overflow: hidden;
-    padding: 18px 14px;
+    padding: 8px 14px;
     line-height: 34px;
     font-size: 14px;
     .reveal-txt {
@@ -309,20 +321,19 @@ export default {
       line-height: 34px;
       height: 34px;
       padding: 0 20px;
-      background-color: #ffa148;
+      background-color: #66b1ff;
       color: #fff;
-      border-color: #ffa148;
       margin-right: 10px;
     }
     .btn-orange-border {
       line-height: 34px;
       height: 34px;
       padding: 0 20px;
-      border-color: #ffa148;
-      color: #ffa148;
+      background-color: #66b1ff;
+      color: #fff;
       &:hover,
       &:focus {
-        background-color: #fff;
+        // background-color: #fff;
       }
     }
     .fr {
@@ -335,12 +346,12 @@ export default {
     width: 100%;
 
     th {
-      padding: 18px 0;
+      padding: 6px 0;
       background-color: #eff4f8;
       & > .cell {
-        line-height: 28px;
-        height: 28px;
-        color: #28304e;
+        line-height: 23px;
+        height: 23px;
+        // color: #28304e;
         padding-left: 25px;
         padding-right: 0;
       }
@@ -366,18 +377,18 @@ export default {
       line-height: 34px;
       height: 34px;
       &:focus {
-        border-color: #ffa148;
+        // border-color: #ffa148;
       }
     }
     .el-range-editor.is-active {
-      border-color: #ffa148;
+      // border-color: #ffa148;
       &:hover {
-        border-color: #ffa148;
+        // border-color: #ffa148;
       }
     }
     
     &.paper-box .paper-box-content {
-      margin-top: -44px;
+      margin-top: -8px;
       font-size: 0;
     }
     &.paper-box.collapse-off .paper-box-content {
@@ -390,8 +401,8 @@ export default {
         margin-right: 0;
       }
       &.is-focus .el-input__inner {
-        border-color: #ffa148;
-        border-right: 1px solid #ffa148;
+        // border-color: #ffa148;
+        // border-right: 1px solid #ffa148;
       }
     }
     .select-tree {
@@ -405,7 +416,7 @@ export default {
     }
 
     .paper-box-title {
-      padding-top: 12px;
+      padding-top: 6px;
     }
     .item-text {
       font-size: 12px;
@@ -460,7 +471,7 @@ export default {
       }
       .el-input__inner {
         border-radius: 0;
-        border-right: 0;
+        // border-right: 0;
       }
       .el-select {
         &:last-child .el-input__inner {
@@ -468,7 +479,7 @@ export default {
           border-radius: 0px 4px 4px 0px;
         }
         &:last-child .el-input.is-focus .el-input__inner {
-          border-right: 1px solid #ffa148;
+          // border-right: 1px solid #ffa148;
         }
 
         &:first-child .el-input__inner {
@@ -476,16 +487,16 @@ export default {
         }
       }
       .el-date-editor {
-        &:last-child {
-          border-right: 1px solid #d3d6e6;
-          border-radius: 0px 4px 4px 0px;
-        }
-        &:first-child {
-          border-radius: 4px 0px 0px 4px;
-        }
-        &.is-active:last-child {
-          border-right: 1px solid #ffa148;
-        }
+        // &:last-child {
+        //   // border-right: 1px solid #d3d6e6;
+        //   border-radius: 0px 4px 4px 0px;
+        // }
+        // &:first-child {
+        //   border-radius: 4px 0px 0px 4px;
+        // }
+        // &.is-active:last-child {
+        //   // border-right: 1px solid #ffa148;
+        // }
         .el-range-input {
           width: 34%;
           height: 30px;
@@ -507,19 +518,20 @@ export default {
   }
 }
 /deep/.el-button--warning {
-  background-color: #ffa148;
-  border-color: #ffa148;
+  // background-color: #ffa148;
+  // border-color: #ffa148;
 }
 </style>
 <style lang="less">
 // 弹层
 .layer-commission {
   width: 460px;
-  border: 0;
+  // border: 0;
   padding-bottom: 14px;
   .el-message-box__header {
-    background-color: #f0f3fa;
+    // background-color: #f0f3fa;
     padding: 15px 24px;
+    border-bottom: 1px solid #e8eaf6;
   }
   .el-message-box__title {
     font-size: 14px;
@@ -532,7 +544,7 @@ export default {
     transform: translateY(-50%);
     &:hover {
       .el-message-box__close {
-        color: #ffa148;
+        // color: #ffa148;
       }
     }
   }
@@ -556,8 +568,8 @@ export default {
     font-size: 16px;
   }
   .btn-sure {
-    background-color: #ffa148 !important;
-    border-color: #ffa148 !important;
+    // background-color: #ffa148 !important;
+    // border-color: #ffa148 !important;
   }
   .btn-close {
     background-color: #dddddd;
@@ -596,6 +608,7 @@ export default {
         height: 60px;
         background: url("../../assets/img/icon-commission-06.png") no-repeat
           center center;
+        background-size: 66px;
         -webkit-animation: layerLoding 0.5s infinite linear;
       }
       .p {
@@ -623,7 +636,7 @@ export default {
 .el-menu--horizontal > .el-menu-item.is-active {
   border: 0 !important;
   span {
-    color: #fff !important;
+    // color: #fff !important;
   }
 }
 </style>

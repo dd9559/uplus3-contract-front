@@ -60,12 +60,12 @@
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
         <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcjs-export'].state"
-        v-dbClick @click="clickExportFn">导出
+        v-dbClick @click="clickExportFn" round>导出
         </el-button>
-        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcjs-calc'].state" @click="batchCalculationFn">批量计算提成
+        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcjs-calc'].state" @click="batchCalculationFn" round>批量计算提成
         </el-button>
       </div>
-      <el-table :data="tableData" class="table-box" ref="tableCom" :max-height="tableNumberCom">
+      <el-table :data="tableData" class="table-box" ref="tableCom" :max-height="tableNumberCom" border>
         <el-table-column prop="empName" min-width="100" label="姓名"></el-table-column>
         <el-table-column prop="depName" min-width="110" label="部门"></el-table-column>
         <el-table-column prop="positionName" min-width="100" label="职位"></el-table-column>
@@ -279,6 +279,7 @@ export default {
       this.searchData.systemTag =
         JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
     }
+    this.setPath(this.$tool.getRouter(['提成','提成业务','提成计算'],'commissionCounts'))
   },
   methods: {
     //重置
