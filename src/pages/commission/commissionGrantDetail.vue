@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView">
+  <div class="page-class commission-view" ref="tableComView">
     <div class="main">
       <div class="reveal-box">
         <el-button class="fr btn-orange-border"

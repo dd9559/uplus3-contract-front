@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-tcjs-query'].state">
+  <div class="page-class commission-view" ref="tableComView" v-if="power['sign-tcyw-tcjs-query'].state">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0px 15px 15px">
@@ -325,7 +325,7 @@ export default {
       let data = this.getParamFn();
 
       // 加载中
-      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+      // this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
 
       Object.assign(data, {
         pageSize: this.pageSize,
@@ -348,11 +348,11 @@ export default {
             });
           }
           // 关闭加载中
-          this.$tool.layerAlertClose();
+          // this.$tool.layerAlertClose();
         })
         .catch((err) => {
           // 关闭加载中
-          this.$tool.layerAlertClose();
+          // this.$tool.layerAlertClose();
 
           this.$message({
             message: err,

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view :key="$route.fullPath"
-      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog','/commissionGrantDetail'].includes($route.path)">
+      v-if="['/login','/ledger','/error','/choseCont','/accountSetting'].includes($route.path)">
     </router-view>
     <div class="main" v-else>
       <div class="nav">

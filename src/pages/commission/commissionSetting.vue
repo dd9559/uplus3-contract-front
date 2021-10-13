@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <p class="brand-nav">财务>提成设置</p> -->
-    <div ref="tableComView" v-if="power['sign-tcyw-set-query'].state">
+    <div ref="tableComView" class="commission-view" v-if="power['sign-tcyw-set-query'].state">
       <!-- 查询组件 -->
       <!-- <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px"> -->
       <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">

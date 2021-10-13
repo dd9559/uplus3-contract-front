@@ -1,6 +1,6 @@
 <template>
   <!-- 筛选 -->
-  <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
+  <div class="paper-box view-header commission-view" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
     <div class="paper-box-title">
       <p class="f14"><i class="mr-10 iconfont icon-tubiao-5 font-cl1"></i>筛选查询</p>
       <p class="paper-box-btns">

@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-tcff-query'].state">
+  <div class="page-class commission-view" ref="tableComView" v-if="power['sign-tcyw-tcff-query'].state">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">

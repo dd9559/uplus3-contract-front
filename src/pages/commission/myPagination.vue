@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination-box">
+  <div class="pagination-box commission-view">
     <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
       :current-page="currentPage" :page-size="pageSize" :total="total" layout="total, prev, pager, next, jumper">
     </el-pagination>

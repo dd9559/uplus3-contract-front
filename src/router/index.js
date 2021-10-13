@@ -559,28 +559,6 @@ export default new Router({
           list: ["合同中心","合同中心","充值记录"]
         }
       },
-    ]
-  },
-  {
-    path: "/login",
-    component: Login
-  },
-  {
-    path: "/ledger",
-    component: ledger
-  },
-  {
-    path: "/error",
-    component: errorMsg
-  },
-  {
-    path: "/choseCont",
-    component: resolve => require(["@/pages/contract/contractList/choseCont"], resolve)
-  },
-  {
-    path: "/commissionIndex",
-    component: resolve => require(["@/pages/commission/commissionIndex"], resolve),
-    children: [
       // 提成计算
       {
         path: "/commissionCounts",
@@ -613,5 +591,57 @@ export default new Router({
       }
     ]
   },
+  {
+    path: "/login",
+    component: Login
+  },
+  {
+    path: "/ledger",
+    component: ledger
+  },
+  {
+    path: "/error",
+    component: errorMsg
+  },
+  {
+    path: "/choseCont",
+    component: resolve => require(["@/pages/contract/contractList/choseCont"], resolve)
+  },
+  // {
+  //   path: "/commissionIndex",
+  //   component: resolve => require(["@/pages/commission/commissionIndex"], resolve),
+  //   children: [
+  //     // 提成计算
+  //     {
+  //       path: "/commissionCounts",
+  //       component: resolve => require(["@/pages/commission/commissionCounts"], resolve)
+  //     },
+  //     // 提成发放
+  //     {
+  //       path: "/commissionGrant",
+  //       component: resolve => require(["@/pages/commission/commissionGrant"], resolve)
+  //     },
+  //     // 提成详情
+  //     {
+  //       path: "/commissionGrantDetail",
+  //       component: resolve => require(["@/pages/commission/commissionGrantDetail"], resolve)
+  //     },
+  //     //提成设置
+  //     {
+  //       path: "/commissionSetting",
+  //       component: resolve => require(["@/pages/commission/commissionSetting"], resolve)
+  //     },
+  //     //结算周期设置
+  //     {
+  //       path: "/accountSetting",
+  //       component: resolve => require(["@/pages/commission/accountSetting"], resolve)
+  //     },
+  //     //提成操作日志
+  //     {
+  //       path: "/commissionOperationLog",
+  //       component: resolve => require(["@/pages/commission/commissionOperationLog"], resolve)
+  //     }
+  //   ]
+  // },
   ]
 });

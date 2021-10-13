@@ -1,6 +1,6 @@
 <template>
   <div class="app-bj">
-    <el-col :span="2" class="el-col-left">
+    <!-- <el-col :span="2" class="el-col-left">
       <el-menu :default-active="this.$route.path" router mode="horizontal" class="nav-box" @open="handleOpen"
         @close="handleClose">
         <template v-for="(item, i) in commissionTabs">
@@ -12,7 +12,7 @@
           </el-menu-item>
         </template>
       </el-menu>
-    </el-col>
+    </el-col> -->
     <!-- <p class="tag"></p> -->
     <div class="page-view-index">
       <ul>
@@ -115,7 +115,7 @@ export default {
 @import "~@/assets/common.less";
 .page-view-index {
   height: 40px;
-  margin-left: 192px;
+  // margin-left: 192px;
   position: relative;
   > ul {
     height: 100%;
@@ -246,7 +246,7 @@ export default {
   background-image: url("../../assets/img/icon-commission-04.png");
 }
 .menu-right {
-  padding-left: 192px;
+  // padding-left: 192px;
 }
 .el-col-left {
   height: 100vh;
@@ -517,10 +517,10 @@ export default {
     }
   }
 }
-/deep/.el-button--warning {
-  // background-color: #ffa148;
-  // border-color: #ffa148;
-}
+// /deep/.el-button--warning {
+//   // background-color: #ffa148;
+//   // border-color: #ffa148;
+// }
 </style>
 <style lang="less">
 // 弹层
@@ -633,10 +633,10 @@ export default {
   }
 }
 
-.el-menu--horizontal > .el-menu-item.is-active {
-  border: 0 !important;
-  span {
-    // color: #fff !important;
-  }
-}
+// .el-menu--horizontal > .el-menu-item.is-active {
+//   border: 0 !important;
+//   span {
+//     // color: #fff !important;
+//   }
+// }
 </style>
