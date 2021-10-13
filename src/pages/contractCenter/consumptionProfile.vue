@@ -265,6 +265,10 @@
         total:0,
         //权限
         power: {
+          "sign-ht-core-xfinfo-query": {
+            state: false,
+            name: "查询",
+          },
           "sign-ht-core-xfinfo-save": {
             state: false,
             name: "充值",

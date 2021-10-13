@@ -484,21 +484,21 @@ let TOOL = {
               category: "4-2-1",
               can: true, //是否可见
               path: "consumptionProfile",
-              code: "sign-ht-info-query"
+              code: "sign-ht-core-xfinfo-query"
             },
             {
               name: "消费记录",
               category: "4-2-2",
               can: true, //是否可见
               path: "recordSconsumption",
-              code: "sign-ht-info-query"
+              code: "sign-ht-core-xfrecord-query"
             },
             {
               name: "充值记录",
               category: "4-2-3",
               can: true, //是否可见
               path: "record",
-              code: "sign-ht-info-query"
+              code: "sign-ht-core-czinfo-query"
             }
           ]
         },
@@ -507,21 +507,21 @@ let TOOL = {
           category: "10-1-2",
           can: true, //是否可见
           path: "onlineContract",
-          code: "sign-ht-info-query",
+          code: "true",
           child:[
             {
               name: "合同消费",
               category: "4-2-1",
               can: true, //是否可见
               path: "contractConsumption",
-              code: "sign-ht-info-query",
+              code: "sign-ht-lineht-xfht-query",
             },
             {
               name: "充值记录",
               category: "4-2-1",
               can: true, //是否可见
               path: "rechargeRecord",
-              code: "sign-ht-info-query",
+              code: "sign-ht-lineht-czinfo-query",
             }
           ]
         },
