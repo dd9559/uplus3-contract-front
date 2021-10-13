@@ -341,8 +341,9 @@ export default {
         })
       }
       if(session.query.startTime){
-        this.signDate[0]=session.query.startTime
-        this.signDate[1]=session.query.endTime
+        this.signDate=new Array(session.query.startTime.replace(/-/g,'/'),session.query.endTime.replace(/-/g,'/')) 
+        // this.signDate[0]=session.query.startTime
+        // this.signDate[1]=session.query.endTime
       }
     }else{
       this.getDepList({
@@ -404,6 +405,7 @@ export default {
       data.push(new Date(nowYear, nowMonth, 1).toLocaleDateString()); 
       //本月的结束时间
       data.push(now.toLocaleDateString());
+      console.log(data);
       this.$set(this,'signDate',data)
     },
     //获取分账记录列表

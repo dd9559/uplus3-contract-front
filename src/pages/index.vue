@@ -132,7 +132,7 @@ export default {
         top: 0;
         bottom: 0;
         right: 0;
-        // background-color: @bg-white;
+        background-color: @bg-white;
       }
       /deep/.theader-bg {
         > th {
@@ -167,7 +167,7 @@ export default {
       }
       .router-view {
         // min-height: 100%;
-        // background-color: @bg-white;
+        background-color: @bg-white;
         position: relative;
         // z-index: 1;
       }

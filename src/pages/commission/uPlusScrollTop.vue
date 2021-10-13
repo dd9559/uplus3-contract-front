@@ -109,7 +109,7 @@ export default {
     left: 0;
     right: 0;
     bottom: -15px;
-    // background-color: @bg-grey;
+    background-color: @bg-grey;
   }
   &.collapse-on {
     // padding-bottom: 0;
