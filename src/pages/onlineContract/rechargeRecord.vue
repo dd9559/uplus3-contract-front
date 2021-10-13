@@ -37,7 +37,7 @@
           <el-table-column  label="体系" align="center" prop="systemtagName"></el-table-column>
           <el-table-column  label="充值日期" align="center">
             <template slot-scope="scope">
-              {{scope.row.createTime | formatTime}}
+              {{scope.row.createTime | formatDate}}
             </template>
           </el-table-column>
           <el-table-column  label="无纸化充值（份）" align="center" prop="paperQuentity"></el-table-column>
