@@ -132,7 +132,7 @@ export default {
         top: 0;
         bottom: 0;
         right: 0;
-        background-color: @bg-white;
+        // background-color: @bg-white;
       }
       /deep/.theader-bg {
         > th {
@@ -167,7 +167,7 @@ export default {
       }
       .router-view {
         // min-height: 100%;
-        background-color: @bg-white;
+        // background-color: @bg-white;
         position: relative;
         // z-index: 1;
       }
@@ -236,7 +236,7 @@ export default {
       line-height: 34px;
       height: 34px;
       padding: 0 20px;
-      background-color: #66b1ff;
+      background-color: #409eff;
       color: #fff;
       margin-right: 10px;
     }
@@ -244,7 +244,7 @@ export default {
       line-height: 34px;
       height: 34px;
       padding: 0 20px;
-      background-color: #66b1ff;
+      background-color: #409eff;
       color: #fff;
     }
     .fr {

@@ -1091,7 +1091,7 @@ export default {
     align-items: center;
     padding: 8px 0;
     .color {
-      background-color: #66b1ff;
+      background-color: #409eff;
       color: #fff;
     }
   }
@@ -1138,7 +1138,7 @@ export default {
           cursor: pointer;
         }
         .add {
-          background-color: #66b1ff;
+          background-color: #409eff;
           margin-left: 25px;
         }
         .sub {

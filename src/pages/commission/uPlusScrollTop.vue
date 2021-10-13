@@ -178,7 +178,7 @@ export default {
 }
 
 .paper-btn-blue {
-  background-color: #66b1ff;
+  background-color: #409eff;
   border-color: #fff;
   &:hover {
     // background-color: #66b1ff;
