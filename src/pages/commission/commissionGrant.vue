@@ -70,9 +70,9 @@
               class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn" round>导出
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn" round size="small">导出
         </el-button>
-        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn" round>批量发放
+        <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn" round size="small">批量发放
         </el-button>
       </div>
       <el-table :data="tableData" class="table-box" @row-dblclick="toDetail" @selection-change="handleSelectionChange" ref="tableCom"

@@ -303,7 +303,7 @@
     <p>
       <el-button class="btn-info" round size="small" @click="closePay" v-if="this.$route.query.edit&&status!=4&&payStatusValue!==5&&!isBoxPay">关闭支付订单</el-button>
       <el-button class="btn-info" round size="small" @click="goCancel" v-if="!$route.query.deAudit">取消</el-button>
-      <el-button class="btn-info" round size="small" type="primary" @click="goResult"
+      <el-button class="btn-info" round size="small" type="primary" @click="goResult" v-dbClick
         v-loading.fullscreen.lock="fullscreenLoading" v-if="!$route.query.deAudit">
         {{!billStatus?'创建线上收款订单':'录入信息并提交审核'}}</el-button>
       <el-button class="btn-info" round size="small" type="primary" @click="goResult"
