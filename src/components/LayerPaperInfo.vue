@@ -118,7 +118,7 @@
           <div class="fl">
             <span class="fl fb mr-10">交款方式：</span>
             <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount"
-                  :key="i+item.method">{{item.method}}{{item.amount}}<template
+                  :key="i+item.method">{{payType === 1 ? '手机扫码' : item.method}}{{item.amount}}<template
               v-if="item.method!==''">元</template></span>
           </div>
           <div class="fr"><span class="mr-10">合计：</span><span class="fb">￥{{comMoney}}元</span></div>
