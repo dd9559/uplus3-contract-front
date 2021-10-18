@@ -2118,7 +2118,7 @@ export default {
     },
     // 编辑确定
     editorBtnFn() {
-      this.confirmStepFn("api/postSigning/updateStep");
+      this.confirmStepFn("/api/postSigning/updateStep");
     },
     // 选择第几个上传
     // stepsIndexBtnFn(i){
