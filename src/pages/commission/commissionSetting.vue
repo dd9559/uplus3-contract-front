@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <p class="brand-nav">财务>提成设置</p> -->
-    <div ref="tableComView" v-if="power['sign-tcyw-set-query'].state">
+    <div ref="tableComView" class="commission-view" v-if="power['sign-tcyw-set-query'].state">
       <!-- 查询组件 -->
       <!-- <uPlusScrollTop class="search-top" ref="topRef" :height="searchTop" @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px"> -->
       <uPlusScrollTop @propResetFormFn="resetFormFn" @propQueryFn="queryFn" style="padding: 0 15px 15px">
@@ -54,8 +54,8 @@
               <!-- <i class="iconfont icon-tubiao-11"></i> -->
               <span>当前共找到【{{total}}】条数据</span>
             </span>
-            <el-button v-if="power['sign-tcyw-set-add'].state" class="btn-info" type="warning" size="small"
-              @click="add('add')">新增</el-button>
+            <el-button v-if="power['sign-tcyw-set-add'].state" class="btn-info color" size="small"
+              @click="add('add')" round>新增</el-button>
             <!-- >新增结算设置</el-button> -->
           </div>
           <el-table :data="tableData" border style="width: 100%" ref="tableCom" :max-height="tableNumberCom"
@@ -226,8 +226,8 @@
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAddDeduct = false" type="info" plain>取消</el-button>
-          <el-button type="warning" @click="checkSave()">保 存</el-button>
+          <el-button @click="dialogAddDeduct = false" plain>取消</el-button>
+          <el-button type="primary" @click="checkSave()">保 存</el-button>
         </div>
       </el-dialog>
       <!-- 保存提成设置方案确认框 -->
@@ -245,8 +245,8 @@
           </div>
         </div>
         <span slot="footer" class="dialog-footer">
-          <el-button type="info" plain @click="dialogSave = false">取消</el-button>
-          <el-button type="warning" @click="addDeduct">确认</el-button>
+          <el-button plain @click="dialogSave = false">取消</el-button>
+          <el-button type="primary" @click="addDeduct">确认</el-button>
         </span>
       </el-dialog>
     </div>
@@ -344,6 +344,7 @@ export default {
       this.searchForm.systemTag =
         JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
     }
+    this.setPath(this.$tool.getRouter(['提成','提成业务','提成设置'],'commissionCounts'))
     this.getSystemTag();
     this.getSystemTagSelect();
     this.getDictionary();
@@ -351,7 +352,6 @@ export default {
     this.getPosition("search");
     let res = this.getDataList;
 
-    console.log(this.getDataList, 767);
     if (res && res.route === this.$route.path) {
       let session = JSON.parse(sessionStorage.getItem("sessionQuery"));
       let query = session.query;
@@ -425,6 +425,8 @@ export default {
           })
         );
       }
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
       this.$ajax
         .postJSON("/api/bonusSetting/listBonusSetting", params)
         .then((res) => {
@@ -469,9 +471,13 @@ export default {
             }
             // console.log(this.tableData,89888);
             this.total = res.data.total;
+            // 关闭加载中
+            this.$tool.layerAlertClose();
           }
         })
         .catch((error) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
           this.$message({ message: error });
         });
     },
@@ -1022,14 +1028,14 @@ export default {
   }
 }
 /deep/ .el-select .el-input.is-focus .el-input__inner {
-  border-color: #ffa148;
+  // border-color: #ffa148;
 }
 /deep/ .is-active,
 .el-range-editor.is-active:hover {
-  border-color: #ffa148;
+  // border-color: #ffa148;
 }
 /deep/ .el-input__inner:focus {
-  border-color: #ffa148 !important;
+  // border-color: #ffa148 !important;
   outline: 0;
 }
 /deep/.el-table__body {
@@ -1068,9 +1074,15 @@ export default {
   background-color: #fff;
   padding: 0 10px;
   border-radius: 2px;
-  /deep/ .theader-bg {
-    > th {
-      background-color: #f5f5f9;
+  /deep/ .el-table {
+    .theader-bg {
+      > th {
+        background-color: #f5f5f9;
+        padding: 6px 0;
+      }
+    }
+    td {
+      padding: 6px 0;
     }
   }
   .pagination-info {
@@ -1083,12 +1095,16 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
+    .color {
+      background-color: #409eff;
+      color: #fff;
+    }
   }
 }
 /deep/ .el-dialog {
   border-radius: 12px;
   .el-dialog__header {
-    background-color: #f0f3fa;
+    // background-color: #f0f3fa;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
   }
@@ -1127,11 +1143,11 @@ export default {
           cursor: pointer;
         }
         .add {
-          background-color: #ffa148;
+          background-color: #409eff;
           margin-left: 25px;
         }
         .sub {
-          background-color: #8492a6;
+          background-color: #c5cbd3;
           margin-left: 25px;
         }
       }
@@ -1144,8 +1160,8 @@ export default {
     }
     .info-box {
       padding: 5px 10px;
-      color: #e87058;
-      background: rgba(232, 112, 88, 0.3);
+      color: #8492A6;
+      background: #eef2fb;
       border-radius: 4px;
       p:nth-child(2) {
         text-indent: 28px;

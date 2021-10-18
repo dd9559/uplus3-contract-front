@@ -1,5 +1,5 @@
 <template>
-  <div class="page-class" ref="tableComView" v-if="power['sign-tcyw-log-query'].state">
+  <div class="page-class commission-view" ref="tableComView" v-if="power['sign-tcyw-log-query'].state">
     <!-- <p class="brand-nav">财务>操作日志</p> -->
     <!-- 查询组件 -->
     <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
@@ -35,7 +35,7 @@
           </el-select> -->
       </div>
 
-      <el-select v-model="searchData.typeId" class="w116 mr-16" placeholder="全部" clearable>
+      <el-select v-model="searchData.typeId" class="mr-16 w116" placeholder="全部" clearable>
         <el-option v-for="item in isCalculation" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
@@ -140,6 +140,7 @@ export default {
       this.searchData.systemTag =
         JSON.parse(sessionStorage.getItem("userMsg")).user.deptSystemtag || 0;
     }
+    this.setPath(this.$tool.getRouter(['提成','提成业务','操作日志'],'commissionCounts'))
   },
   methods: {
     reset() {

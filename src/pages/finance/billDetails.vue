@@ -194,8 +194,8 @@
             </el-table-column>
             <el-table-column align="center" label="手续费金额（元）">
               <template slot-scope="scope">
-                <span v-if="billMsg.inAccount&&billMsg.inAccount.length>0">{{scope.row.fee}}</span>
-                <!--                  <span v-else>{{billMsg.amount}}</span>-->
+                <span v-if="billMsg.payway&&billMsg.payway.value===4">{{scope.row.fee}}</span>
+                <span v-else>{{billMsg.systemFee}}</span>
               </template>
             </el-table-column>
             <el-table-column min-width="200" align="center" label="收款账户">

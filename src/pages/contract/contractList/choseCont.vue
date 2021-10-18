@@ -35,16 +35,10 @@
           :clearable="true"
           style="width:600px;margin-left:20px;margin-bottom:20px;"
         >
-          <!-- <el-option
-            v-for="item in dictionary['64']"
-            :key="item.key"
-            :label="item.value=='线上'?item.value+` (剩余份数：${surplusOnLineQuantity})`:item.value=='无纸化'?item.value+` (剩余份数：${surplusPaperlessQuantity})`:item.value"
-            :value="item.key"
-          ></el-option> -->
           <el-option
             v-for="item in dictionary['64']"
             :key="item.key"
-            :label="item.value"
+            :label="item.value=='线上'?item.value+` (剩余份数：${surplusOnLineQuantity})`:item.value=='无纸化'?item.value+` (剩余份数：${surplusPaperlessQuantity})`:item.value"
             :value="item.key"
           ></el-option>
         </el-select>
@@ -85,16 +79,16 @@ export default {
       offlineContractList: [],
       uPlusHouseDetail: null,
       uPlusIsShow:false,
-      // surplusOnLineQuantity:null,
-      // surplusPaperlessQuantity:null,
-      // overdrawQuantity:null
+      surplusOnLineQuantity:null,
+      surplusPaperlessQuantity:null,
+      overdrawQuantity:null
     };
   },
   created() {
     this.uPlusIsShow=true;
     this.getDictionary(); //字典
     this.getUplusHouseDetail(this.$route.query.houseId);
-    // this.getSurplus()
+    this.getSurplus()
     this.$parent.loadingState = false;
   },
   methods: {

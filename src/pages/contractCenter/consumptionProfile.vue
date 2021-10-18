@@ -42,7 +42,8 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel">导出</el-button>
+            @click="getExcel"
+            v-if="power['sign-ht-core-xfinfo-export'].state">导出</el-button>
         </div>
       </div>
       <div>
@@ -78,8 +79,8 @@
           </el-table-column>
           <el-table-column  label="操作" align="center">
             <template slot-scope="scope">
-              <span class="btn" @click="recharge(scope.row)" style="margin-right:5px;">充 值</span>
-              <span class="btn" @click="edit(scope.row)" style="margin-left:5px;">编 辑</span>
+              <span class="btn" @click="recharge(scope.row)" style="margin-right:5px;" v-if="power['sign-ht-core-xfinfo-save'].state">充 值</span>
+              <span class="btn" @click="edit(scope.row)" style="margin-left:5px;" v-if="power['sign-ht-core-xfinfo-update'].state">编 辑</span>
             </template>
           </el-table-column>
         </el-table>
@@ -128,7 +129,7 @@
                   <ul>
                     <li v-show="uploadData.length >= 3" class="mask" @click="maxUpLoad"></li>
                     <li class="up-content">
-                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="3" :getNum="uploadData.length" :maxSize="2" :scane="{path:'other'}"><i>+</i></fileUp>
+                      <fileUp id="imgcontract" class="up" :rules="['png','jpg']" @getUrl="upload" :more="true" :picSize="true" :maxNum="3" :getNum="uploadData.length"  :scane="{path:'other'}"><i>+</i></fileUp>
                       <p class="text">点击上传</p>
                     </li>
                     <template v-for="(item,index) in uploadData">
@@ -262,6 +263,25 @@
         currentPage: 1,
         pageSize:10,
         total:0,
+        //权限
+        power: {
+          "sign-ht-core-xfinfo-query": {
+            state: false,
+            name: "查询",
+          },
+          "sign-ht-core-xfinfo-save": {
+            state: false,
+            name: "充值",
+          },
+          "sign-ht-core-xfinfo-update": {
+            state: false,
+            name: "编辑",
+          },
+          "sign-ht-core-xfinfo-export": {
+            state: false,
+            name: "导出",
+          },
+        }
       }
     },
     mounted() {
@@ -375,7 +395,11 @@
         }
       },
       getExcel() {
-        let param = Object.assign({}, param, this.downLoadForm);
+        let param = {
+          cityId:this.downLoadForm.city,
+          deptSystemtag:this.downLoadForm.systemTag,
+          warnType:this.downLoadForm.warnType
+        }
         this.excelCreate('/contract/copies/setting/export',param)
       },
       maxUpLoad() {

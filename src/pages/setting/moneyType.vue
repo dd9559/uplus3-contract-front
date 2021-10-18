@@ -127,7 +127,7 @@
         },
         methods: {
             initList(){
-                    this.$ajax.get('api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
+                    this.$ajax.get('/api/setting/moneyType/list',{id:this.bigId},).then((res)=>{
                     if(res.status==200){
                         if(this.bigId==''){
                             this.tableData=res.data.data
@@ -181,7 +181,7 @@
                 if(this.title==`新增【${this.bigName}】小类`){
                     this.addForm.name=this.trim(this.addForm.name)
                      if(this.power['sign-set-kl-add'].state){
-                         this.$ajax.post('api/setting/moneyType/insert',this.addForm).then((res)=>{
+                         this.$ajax.post('/api/setting/moneyType/insert',this.addForm).then((res)=>{
                         if(res.status==200){
                             this.$message({
                             type: 'success',

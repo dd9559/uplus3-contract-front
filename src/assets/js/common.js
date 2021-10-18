@@ -333,28 +333,28 @@ let TOOL = {
               category: "5-1-1",
               can: true, //是否可见
               code: "sign-tcyw-tcjs-query",
-              to: "commissionCounts",
+              path: "commissionCounts",
             },
             {
               name: "提成发放",
               category: "5-1-2",
               can: true, //是否可见
               code: "sign-tcyw-tcff-query",
-              to: "commissionGrant",
+              path: "commissionGrant",
             },
             {
               name: "提成设置",
               category: "5-1-3",
               can: true, //是否可见
               code: "sign-tcyw-set-query",
-              to: "commissionSetting",
+              path: "commissionSetting",
             },
             {
               name: "操作日志",
               category: "5-1-4",
               can: true, //是否可见
               code: "sign-tcyw-log-query",
-              to: "commissionOperationLog",
+              path: "commissionOperationLog",
             }
           ]
         }
@@ -465,61 +465,68 @@ let TOOL = {
       code: true,
       child: []
     },
-    // {
-    //   id: 10,
-    //   name: "合同中心",
-    //   category: "10",
-    //   can: true, //是否可见
-    //   icon: "",
-    //   code: true,
-    //   child: [
-    //     {
-    //       name: "合同中心",
-    //       category: "10-1-1",
-    //       can: true, //是否可见
-    //       code: true,
-    //       child:[
-    //         {
-    //           name: "消费概况",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "consumptionProfile",
-    //           code: "sign-ht-info-query"
-    //         },
-    //         {
-    //           name: "充值记录",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "record",
-    //           code: "sign-ht-info-query"
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       name: "线上合同",
-    //       category: "10-1-2",
-    //       can: true, //是否可见
-    //       path: "onlineContract",
-    //       code: "sign-ht-info-query",
-    //       child:[
-    //         {
-    //           name: "合同消费",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "contractConsumption",
-    //           code: "sign-ht-info-query",
-    //         },
-    //         {
-    //           name: "充值记录",
-    //           category: "4-2-1",
-    //           can: true, //是否可见
-    //           path: "rechargeRecord",
-    //           code: "sign-ht-info-query",
-    //         }
-    //       ]
-    //     },
-    //   ]
-    // },
+    {
+      id: 10,
+      name: "合同中心",
+      category: "10",
+      can: true, //是否可见
+      icon: "icon-hetongs-copy",
+      code: true,
+      child: [
+        {
+          name: "合同中心",
+          category: "10-1-1",
+          can: true, //是否可见
+          code: true,
+          child:[
+            {
+              name: "消费概况",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "consumptionProfile",
+              code: "sign-ht-core-xfinfo-query"
+            },
+            {
+              name: "消费记录",
+              category: "4-2-2",
+              can: true, //是否可见
+              path: "recordSconsumption",
+              code: "sign-ht-core-xfrecord-query"
+            },
+            {
+              name: "充值记录",
+              category: "4-2-3",
+              can: true, //是否可见
+              path: "record",
+              code: "sign-ht-core-czinfo-query"
+            }
+          ]
+        },
+        {
+          name: "线上合同",
+          category: "10-1-2",
+          can: true, //是否可见
+          path: "onlineContract",
+          code: "true",
+          child:[
+            {
+              name: "合同消费",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "contractConsumption",
+              code: "sign-ht-lineht-xfht-query",
+            },
+            {
+              name: "充值记录",
+              category: "4-2-1",
+              can: true, //是否可见
+              path: "rechargeRecord",
+              code: "sign-ht-lineht-czinfo-query",
+            }
+          ]
+        },
+      ]
+    },
   ],
   //提成导航
   pathCommission: [
@@ -1137,7 +1144,11 @@ let TOOL = {
         : typeInfo === 3
         ?`<div class="layer-txt">
         <span>批量计算结算周期在</span>
-          <select style="width:110px" id="selectList">
+          <select style="width:110px;border: 1px solid #DCDFE6;
+          border-radius: 3px;
+          line-height: 25px;
+          height: 25px;
+          color: #606266;" id="selectList">
             <option value="${data[0].value}">${data[0].label}</option>
             <option value="${data[1].value}">${data[1].label}</option>
             <option value="${data[2].value}">${data[2].label}</option>
@@ -1145,7 +1156,7 @@ let TOOL = {
             <option value="${data[4].value}">${data[4].label}</option>
             <option value="${data[5].value}">${data[5].label}</option>
           </select>
-          <span>（含）以前的数据</span>
+          <span>(含)以前的数据</span>
         </div>`
         :`<div class="layer-txt">${message}</div>`;
     // 类名判断

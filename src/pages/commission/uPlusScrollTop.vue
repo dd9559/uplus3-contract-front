@@ -1,8 +1,8 @@
 <template>
   <!-- 筛选 -->
-  <div class="paper-box view-header" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
+  <div class="paper-box view-header commission-view" :class="[show?'collapse-on':'collapse-off']" style="padding: 20px;">
     <div class="paper-box-title">
-      <p class="f14"></p>
+      <p class="f14"><i class="mr-10 iconfont icon-tubiao-5 font-cl1"></i>筛选查询</p>
       <p class="paper-box-btns">
         <el-button class="paper-btn btn-info paper-btn-blue" type="primary" size="small" @click="queryFn" round>查 询
         </el-button>
@@ -109,7 +109,7 @@ export default {
     left: 0;
     right: 0;
     bottom: -15px;
-    // background-color: @bg-grey;
+    background-color: @bg-grey;
   }
   &.collapse-on {
     // padding-bottom: 0;
@@ -134,7 +134,7 @@ export default {
     align-items: center;
   }
   /deep/ .paper-box-content {
-    margin-top: -40px;
+    margin-top: -8px;
     font-size: @size-14;
     .el-select {
       width: 140px;
@@ -173,21 +173,21 @@ export default {
 // 按钮
 .paper-btn {
   text-align: center;
-  border-radius: 4px;
+  // border-radius: 4px;
   padding: 10px 15px;
 }
 
 .paper-btn-blue {
-  background-color: #ffa148;
+  background-color: #409eff;
   border-color: #fff;
   &:hover {
-    background-color: #ffa148;
+    // background-color: #66b1ff;
   }
 }
 .paper-btn-gray {
-  background-color: #edeff5;
+  background-color: #fff;
   border-color: #edeff5;
-  color: #8492a6;
+  color: #606266;
   &:hover {
     background-color: #edeff5;
     // color: #333;

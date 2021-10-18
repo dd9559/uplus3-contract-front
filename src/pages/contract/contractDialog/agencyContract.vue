@@ -291,87 +291,54 @@ export default {
                 // 线下合同直接保存
                 this.saveCon(2)
             } else {
-                // 线上合同保存前先验证是否有委托合同模板
-               this.$ajax.get('/api/contract/checkContTemplate',{
-                    type: 6, //委托合同类型
-                    recordType: this.recordType //合同签约方式
-                }).then(res => {
-                    if(res.data.status === 200) {
-                        this.saveCon()
+                this.$ajax.get('/api/contract/copies/getSurplus').then(res=>{
+                    res=res.data
+                    if(res.status == 200) {
+                        let {surplusOnLineQuantity,surplusPaperlessQuantity,overdrawQuantity} = res.data
+                        if(this.defaultInfo.contractEntrust.id && this.defaultInfo.contractEntrust) {
+                            // 线上合同保存前先验证是否有委托合同模板
+                            this.$ajax.get('/api/contract/checkContTemplate',{
+                                type: 6, //委托合同类型
+                                recordType: this.recordType //合同签约方式
+                            }).then(res => {
+                                if(res.data.status === 200) {
+                                    this.saveCon()
+                                }
+                            }).catch(error => {
+                                this.$message({
+                                    message: error,
+                                    type: "error"
+                                })
+                            })
+                        }else {
+                            if(this.recordType == 1 && surplusOnLineQuantity + overdrawQuantity <= 0 ) {
+                                this.$message.warning('当前权限未开放')
+                                return
+                            }else if(this.recordType == 10 && surplusPaperlessQuantity + overdrawQuantity <= 0 ) {
+                                this.$message.warning('当前权限未开放')
+                                return
+                            }else {
+                                // 线上合同保存前先验证是否有委托合同模板
+                                this.$ajax.get('/api/contract/checkContTemplate',{
+                                    type: 6, //委托合同类型
+                                    recordType: this.recordType //合同签约方式
+                                }).then(res => {
+                                    if(res.data.status === 200) {
+                                        this.saveCon()
+                                    }
+                                }).catch(error => {
+                                    this.$message({
+                                        message: error,
+                                        type: "error"
+                                    })
+                                })
+                            }
+                        }
                     }
-                }).catch(error => {
-                    this.$message({
-                        message: error,
-                        type: "error"
-                    })
                 })
+                
             }
         },
-        // isSave() {
-        //     if(!this.signDate){
-        //         this.$message("签约时间不能为空")
-        //         return
-        //     }
-        //     if(this.tradeFee == ''){
-        //         this.$message("交易服务费不能为空")
-        //         return
-        //     }
-        //     if(this.recordType == ''){
-        //         this.$message("签约方式不能为空")
-        //         return
-        //     }
-        //     if(this.recordType == 2) {
-        //         // 线下合同直接保存
-        //         this.saveCon(2)
-        //     } else {
-        //         this.$ajax.get('/api/contract/copies/getSurplus').then(res=>{
-        //             res=res.data
-        //             if(res.status == 200) {
-        //                 let {surplusOnLineQuantity,surplusPaperlessQuantity,overdrawQuantity} = res.data
-        //                 if(this.defaultInfo.contractEntrust.id && this.defaultInfo.contractEntrust) {
-        //                     // 线上合同保存前先验证是否有委托合同模板
-        //                     this.$ajax.get('/api/contract/checkContTemplate',{
-        //                         type: 6, //委托合同类型
-        //                         recordType: this.recordType //合同签约方式
-        //                     }).then(res => {
-        //                         if(res.data.status === 200) {
-        //                             this.saveCon()
-        //                         }
-        //                     }).catch(error => {
-        //                         this.$message({
-        //                             message: error,
-        //                             type: "error"
-        //                         })
-        //                     })
-        //                 }else {
-        //                     if(this.recordType == 1 && surplusOnLineQuantity + overdrawQuantity <= 0 ) {
-        //                         this.$message.warning('当前权限未开放')
-        //                         return
-        //                     }else if(this.recordType == 10 && surplusPaperlessQuantity + overdrawQuantity <= 0 ) {
-        //                         this.$message.warning('当前权限未开放')
-        //                         return
-        //                     }else {
-        //                         // 线上合同保存前先验证是否有委托合同模板
-        //                         this.$ajax.get('/api/contract/checkContTemplate',{
-        //                             type: 6, //委托合同类型
-        //                             recordType: this.recordType //合同签约方式
-        //                         }).then(res => {
-        //                             if(res.data.status === 200) {
-        //                                 this.saveCon()
-        //                             }
-        //                         }).catch(error => {
-        //                             this.$message({
-        //                                 message: error,
-        //                                 type: "error"
-        //                             })
-        //                         })
-        //                     }
-        //                 }
-        //             }
-        //         })
-                
-        //     }
-        // },
         saveCon(type=1) {
             this.fullscreenLoading = true
             this.$ajax.post('/api/contract/entrust/addContract', {

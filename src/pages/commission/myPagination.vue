@@ -1,16 +1,16 @@
 <template>
-  <div class="pagination-box">
+  <div class="pagination-box commission-view">
     <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange"
-      :current-page="currentPage" :page-size="pageSize" :total="total" layout=" prev, pager, next">
+      :current-page="currentPage" :page-size="pageSize" :total="total" layout="total, prev, pager, next, jumper">
     </el-pagination>
     <div class="my-pagination">
-      <el-input class="my-inp" type="number" v-model="cPageValue" :placeholder="currentPage"></el-input>
+      <!-- <el-input class="my-inp" type="number" v-model="cPageValue" :placeholder="currentPage"></el-input>
       <el-button class="my-inp-btn" @click="btnClickFn">确定</el-button>
       <span class="my-txt">共有{{ total }}条数据</span>
       <span class="my-txt">每页显示</span>
       <el-input class="my-inp" type="number" v-model="cPageSize" :placeholder="pageSize"
         @keyup.enter.native="selectChangeFn"></el-input>
-      <el-button class="my-inp-btn" @click="selectChangeFn">确定</el-button>
+      <el-button class="my-inp-btn" @click="selectChangeFn">确定</el-button> -->
       <!-- <el-select v-model="selectVal" class="my-select" @change="selectChangeFn">
         <el-option
           v-for="item in selectArr"
@@ -101,7 +101,7 @@ export default {
 // 分页
 .pagination-box {
   padding: 16px 0;
-  text-align: center;
+  text-align: right;
   height: 24px;
 
   /deep/.pagination {
@@ -113,34 +113,34 @@ export default {
   }
   /deep/.btn-prev,
   /deep/.btn-next {
-    height: 24px;
-    width: 24px;
+    // height: 24px;
+    // width: 24px;
     padding: 0;
     min-width: auto;
-    color: #94a1b2;
-    border-radius: 4px;
-    border: 1px solid #8e9cae;
+    // color: #94a1b2;
+    // border-radius: 4px;
+    // border: 1px solid #8e9cae;
     margin: 0 5px;
     &:disabled {
-      background-color: #e5ebf4;
-      color: #b8c1cd;
-      border-color: #e5ebf4;
+      // background-color: #e5ebf4;
+      // color: #b8c1cd;
+      // border-color: #e5ebf4;
       &:hover {
-        color: #b8c1cd;
-        border-color: #e5ebf4;
+        // color: #b8c1cd;
+        // border-color: #e5ebf4;
       }
     }
     &:hover {
       color: #ffa148;
-      border-color: #ffa148;
+      // border-color: #ffa148;
     }
   }
 
   /deep/.el-pager li {
     font-size: 12px;
     padding: 0;
-    border: 1px solid #8e9cae;
-    color: #8e9cae;
+    // border: 1px solid #8e9cae;
+    // color: #8e9cae;
     border-radius: 4px;
     width: 24px;
     height: 24px;
@@ -153,16 +153,16 @@ export default {
       width: auto;
     }
     &.active {
-      background-color: #ffa148;
-      color: #fff;
-      border-color: #ffa148;
+      // background-color: #ffa148;
+      // color: #fff;
+      // border-color: #ffa148;
       &:hover {
-        color: #fff;
+        // color: #fff;
       }
     }
     &:hover {
-      color: #ffa148;
-      border-color: #ffa148;
+      // color: #ffa148;
+      // border-color: #ffa148;
     }
   }
 
@@ -180,7 +180,7 @@ export default {
       padding: 0 5px;
       text-align: center;
       &:focus {
-        border-color: #ffa148;
+        // border-color: #ffa148;
       }
     }
   }
@@ -204,9 +204,9 @@ export default {
     }
     &:hover {
       background-color: #fff;
-      border-color: #ffa148;
+      // border-color: #ffa148;
       & > span {
-        color: #ffa148;
+        // color: #ffa148;
       }
     }
     &:focus {
@@ -233,7 +233,7 @@ export default {
       color: #8e9cae;
     }
     .is-focus .el-input__inner {
-      border-color: #ffa148;
+      // border-color: #ffa148;
     }
     .el-input__icon {
       line-height: 24px;
@@ -242,7 +242,7 @@ export default {
 }
 .el-popper {
   .el-select-dropdown__item.selected {
-    color: #ffa148;
+    // color: #ffa148;
   }
 }
 </style>

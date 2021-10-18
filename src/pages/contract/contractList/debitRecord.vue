@@ -11,7 +11,7 @@
         </el-form-item>
 
         <el-form-item label="打款日期">
-          <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :clearable="false" :default-time="['00:00:00', '23:59:59']" format="yyyy-MM-dd" value-format="yyyy-MM-dd">
+          <el-date-picker v-model="adjustForm.signDate" type="daterange" unlink-panels start-placeholder="开始日期" end-placeholder="结束日期" :clearable="false" :default-time="['00:00:00', '23:59:59']" value-format="yyyy/MM/dd">
           </el-date-picker>
         </el-form-item>
 
@@ -815,7 +815,7 @@
           label:''
         }
         if(session.query.startTime){
-          this.adjustForm.signDate=[session.query.startTime,session.query.endTime]
+          this.adjustForm.signDate=[session.query.startTime.replace(/-/g,'/'),session.query.endTime.replace(/-/g,'/')]
         }
         delete this.adjustForm.pageNum
         delete this.adjustForm.startTime
@@ -858,6 +858,7 @@
           })
         }
       }else{
+        console.log(1231232131);
         this.initialTimeFn()
         this.queryFn();
         this.getDepList({
@@ -963,7 +964,7 @@
     font-size: 14px;
   }
   .el-range-editor--mini .el-range-input{
-    font-size: 14px;
+    font-size: 13px;
   }
   .el-input--mini .el-input__inner{
     height: 32px;

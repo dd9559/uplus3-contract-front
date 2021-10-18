@@ -1,9 +1,9 @@
 <template>
-  <div class="page-class" ref="tableComView">
+  <div class="page-class commission-view" ref="tableComView">
     <div class="main">
       <div class="reveal-box">
         <el-button class="fr btn-orange-border"
-        v-dbClick @click="clickExportFn">导出
+        v-dbClick @click="clickExportFn" size="small">导出
         </el-button>
       </div>
       <el-table :data="tableData" class="table-box" ref="tableCom" :max-height="tableNumberCom">

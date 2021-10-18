@@ -189,7 +189,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>
-        <el-button round type="primary" v-dbClick @click="commit">确定</el-button>
+        <el-button round type="primary" v-dbClick :disabled="isDisabled" @click="commit">确定</el-button>
       </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -262,6 +262,7 @@ export default {
         "64": "",
       },
       dialogReceipt:false,
+      isDisabled:false,
       receiptData:{},
       uploadData: [],
       //上传的凭证
@@ -340,8 +341,9 @@ export default {
         })
       }
       if(session.query.startTime){
-        this.signDate[0]=session.query.startTime
-        this.signDate[1]=session.query.endTime
+        this.signDate=new Array(session.query.startTime.replace(/-/g,'/'),session.query.endTime.replace(/-/g,'/')) 
+        // this.signDate[0]=session.query.startTime
+        // this.signDate[1]=session.query.endTime
       }
     }else{
       this.getDepList({
@@ -403,6 +405,7 @@ export default {
       data.push(new Date(nowYear, nowMonth, 1).toLocaleDateString()); 
       //本月的结束时间
       data.push(now.toLocaleDateString());
+      console.log(data);
       this.$set(this,'signDate',data)
     },
     //获取分账记录列表
@@ -725,11 +728,13 @@ export default {
       if (this.uploadData.length > 0) {
         param.signImg = this.uploadData.map(item => item.contractSign)
       }
+      this.isDisabled = true
       this.$ajax.postJSON("/api/separate/currency_pay", param)
       .then(res => {
         let data = res.data;
         if (res.data.status === 200) {
           this.dialogReceipt = false
+          this.isDisabled = false
             // 数据刷新
           this.queryFn();
           this.$message({
@@ -739,6 +744,7 @@ export default {
         }
       }).catch(error => {
         this.dialogReceipt = false
+        this.isDisabled = false
         this.$message({
           message: error
         })

@@ -3,7 +3,7 @@
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="downLoadForm" class="prop-form" size="small">
-        <el-form-item label="采购日期">
+        <el-form-item label="充值日期">
           <el-date-picker
             v-model="downLoadForm.signData"
             type="monthrange"
@@ -33,14 +33,16 @@
           class="submit-dialog"
           border>
           <el-table-column type="index" label="序号" align="center"></el-table-column>
-          <el-table-column  label="采购日期" align="center">
+          <el-table-column  label="城市" align="center" prop="cityName"></el-table-column>
+          <el-table-column  label="体系" align="center" prop="systemtagName"></el-table-column>
+          <el-table-column  label="充值日期" align="center">
             <template slot-scope="scope">
-              {{scope.row.createTime | formatTime}}
+              {{scope.row.createTime | formatDate}}
             </template>
           </el-table-column>
-          <el-table-column  label="无纸化采购" align="center" prop="paperQuentity"></el-table-column>
-          <el-table-column  label="线上签约采购" align="center" prop="onlineQuentity"></el-table-column>
-          <el-table-column  label="采购金额" align="center" prop="money"></el-table-column>
+          <el-table-column  label="无纸化充值（份）" align="center" prop="paperQuentity"></el-table-column>
+          <el-table-column  label="线上签约充值（份）" align="center" prop="onlineQuentity"></el-table-column>
+          <el-table-column  label="充值金额（元）" align="center" prop="money"></el-table-column>
         </el-table>
         <div class="pagination" v-if="tableData.length > 0">
           <el-pagination

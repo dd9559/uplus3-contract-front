@@ -1,5 +1,5 @@
 <template>
-  <div class="contractConsumption">
+  <div class="recordSconsumption">
     <!-- 筛选查询 -->
     <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn" class="adjustbox">
       <el-form :inline="true" :model="downLoadForm" class="prop-form" size="small">
@@ -15,20 +15,27 @@
             style="width:330px"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="城市">
+          <el-select v-model="downLoadForm.city" filterable placeholder="请选择" :clearable="true" @clear="clear">
+            <el-option
+              v-for="item in cityList"
+              :key="item.cityId"
+              :label="item.cityName"
+              :value="item.cityId"
+              @click.native=citySelect(item)
+              >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="体系">
+          <el-select v-model="downLoadForm.systemTag" class="w100" placeholder="请选择" :clearable="true">
+            <el-option v-for="item in systemTagSelect" :key="item.deptSystemtag" :label="item.deptSystemtagName" :value="item.deptSystemtag">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <div class="contract">
-      <h2 class="surplus">合同剩余份数</h2>
-      <div class="contract-box">
-        <div class="contract-box_one">
-          <div class="contract-box_one-name">无纸化合同（份）</div>
-          <div class="contract-box_one-num" :class="[paperlessQuentity <= warnQuentity ?'colorRed':'']">{{paperlessQuentity}}</div>
-        </div>
-        <div class="contract-box_two">
-          <div class="contract-box_two-name">线上合同（份）</div>
-          <div class="contract-box_two-num" :class="[onlineQuentity <= warnQuentity ?'colorRed':'']">{{onlineQuentity}}</div>
-        </div>
-      </div>
       <div class="listTitle">
         <div>
           <span class="title">
@@ -62,7 +69,6 @@
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 
@@ -78,20 +84,20 @@
     data() {
       return {
         downLoadForm:{
-          signData:''
+          signData:'',
+          city:'',
+          systemTag:''
         },
+        cityList:[],
         tableData:[],
-        total:0,
         currentPage: 1,
         pageSize:10,
-        onlineQuentity:0,
-        paperlessQuentity:0,
-        warnQuentity:0,
+        total:0,
       }
     },
-    mounted() {
+    mounted(){
       this.dataInfo()
-      this.getInfo()
+      this.cityInfo()
     },
     methods:{
       dataInfo() {
@@ -100,8 +106,10 @@
           this.downLoadForm.signData = []
         }
         let params = {
+          cityId:this.downLoadForm.city,
+          deptSystemtag:this.downLoadForm.systemTag,
           pageNum:this.currentPage,
-          pageSize:this.pageSize
+          pageSize:this.pageSize,
         }
         if(this.downLoadForm.signData.length) {
           years = this.downLoadForm.signData[1].split('-')[0]
@@ -109,10 +117,10 @@
           params.startTime=this.downLoadForm.signData[0]+'-1',
           params.endTime=this.downLoadForm.signData[1]+'-'+new Date(years,months,0).getDate()
         }
-        this.$ajax.get("/api/contract/copies/record/consumptionInfo",params).then(res=>{
-          res = res.data
+        this.$ajax.get('/api/contract/copies/record/consumptionList',params).then(res=>{
+           res = res.data
           if(res.status == 200) {
-            const {list,total} = res.data
+            const { list,total} = res.data
             this.tableData = list
             this.total = total
           }
@@ -120,20 +128,22 @@
           this.$message.error(err)
         })
       },
-      getInfo() {
-        this.$ajax.get("/api/contract/copies/record/getInfo").then(res=>{
-          console.log(this,999);
+      cityInfo() {
+        this.$ajax.get('/api/contract/copies/recharge/cityList').then(res=>{
           res = res.data
           if(res.status == 200) {
-            this.onlineQuentity = res.data.onlineQuentity
-            this.paperlessQuentity  = res.data.paperlessQuentity 
-            this.warnQuentity = res.data.warnQuentity
+            this.cityList = res.data
           }
-        }).catch(err => {
-          this.$message.error(err)
         })
       },
-      //翻页
+      clear() {
+        this.downLoadForm.systemTag = ''
+        this.systemTagSelect = []
+      },
+      citySelect(i) {
+        console.log(i.deptSystemTagList);
+        this.systemTagSelect = i.deptSystemTagList
+      },
       handleCurrentChange(val) {
         this.currentPage = val;
         this.dataInfo();
@@ -146,8 +156,6 @@
       resetFormFn() {
         TOOL.clearForm(this.downLoadForm);
         this.currentPage = 1;
-        // this.downLoadForm.signData[0] = ""
-        // this.downLoadForm.signData[1] = ""
         // this.initTimePicker()
         // this.EmployeList = []
       },
@@ -157,66 +165,27 @@
 
 <style lang="less" scoped>
 @import "~@/assets/common.less";
-.contractConsumption {
+.recordSconsumption {
   .contract {
-    padding: 0 10px;
-    border-radius: 2px;
-    .listTitle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-      .title {
-        font-size: 14px;
-        color: @color-blank;
-        i {
-          padding-right: 8px;
+      padding: 0 10px;
+      border-radius: 2px;
+      > .listTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        .title {
+          font-size: 14px;
+          color: @color-blank;
+          i {
+            padding-right: 8px;
+          }
         }
       }
-    }
-    .surplus {
-      font-size: 25px;
-      font-weight: 600;
-      padding: 20px 0;
-    }
-    &-box {
-      display: flex;
-      align-items: center;
-      &_one {
-        padding-bottom: 10px;
-        &-name {
-          font-size: 15px;
-          padding-bottom: 10px;
-        }
-        &-num {
-          font-size: 16px;
-          font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
-          font-weight: 700;
-          font-style: normal;
-        }
-        .colorRed {
-          color: red;
-        }
+      .btn {
+        color: @color-blue;
+        cursor: pointer;
       }
-      &_two {
-        padding-left: 40px;
-        padding-bottom: 10px;
-        &-name {
-          font-size: 15px;
-          padding-bottom: 10px;
-        }
-        &-num {
-          font-size: 16px;
-          font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑';
-          font-weight: 700;
-          font-style: normal;
-        }
-        .colorRed {
-          color: red;
-        }
-      }
-    }
-    
   }
 }
 </style>

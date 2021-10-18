@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view :key="$route.fullPath"
-      v-if="['/login','/ledger','/error','/choseCont','/commissionIndex','/commissionCounts','/commissionGrant','/commissionSetting','/accountSetting','/commissionOperationLog','/commissionGrantDetail'].includes($route.path)">
+      v-if="['/login','/ledger','/error','/choseCont','/accountSetting'].includes($route.path)">
     </router-view>
     <div class="main" v-else>
       <div class="nav">
@@ -33,14 +33,7 @@
                     {{ grade.name }}
                   </template>
                   <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
-                    <template v-if="tip.to">
-                      <span class="link" @click="toDetail(tip.to)">{{tip.name}}</span>
-                      <!-- <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link> -->
-                    </template>
-                    <template v-else>
-                      {{ tip.name }}
-                    </template>
-                    <!-- {{ tip.name }} -->
+                    {{ tip.name }}
                   </el-menu-item>
                 </el-submenu>
               </template>
