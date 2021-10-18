@@ -333,28 +333,28 @@ let TOOL = {
               category: "5-1-1",
               can: true, //是否可见
               code: "sign-tcyw-tcjs-query",
-              to: "commissionCounts",
+              path: "commissionCounts",
             },
             {
               name: "提成发放",
               category: "5-1-2",
               can: true, //是否可见
               code: "sign-tcyw-tcff-query",
-              to: "commissionGrant",
+              path: "commissionGrant",
             },
             {
               name: "提成设置",
               category: "5-1-3",
               can: true, //是否可见
               code: "sign-tcyw-set-query",
-              to: "commissionSetting",
+              path: "commissionSetting",
             },
             {
               name: "操作日志",
               category: "5-1-4",
               can: true, //是否可见
               code: "sign-tcyw-log-query",
-              to: "commissionOperationLog",
+              path: "commissionOperationLog",
             }
           ]
         }

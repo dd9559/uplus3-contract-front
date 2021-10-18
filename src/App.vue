@@ -33,14 +33,7 @@
                     {{ grade.name }}
                   </template>
                   <el-menu-item v-for="tip in grade.child" :key="tip.name" :index="tip.path" v-if="tip.can">
-                    <template v-if="tip.to">
-                      <span class="link" @click="toDetail(tip.to)">{{tip.name}}</span>
-                      <!-- <router-link class="link" target="_blank" :to="tip.to"> {{ tip.name }}</router-link> -->
-                    </template>
-                    <template v-else>
-                      {{ tip.name }}
-                    </template>
-                    <!-- {{ tip.name }} -->
+                    {{ tip.name }}
                   </el-menu-item>
                 </el-submenu>
               </template>

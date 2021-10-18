@@ -116,6 +116,7 @@
         </div>
         <div class="paper-ov">
           <div class="fl">
+            <!-- 添加线上手机扫码 -->
             <span class="fl fb mr-10">交款方式：</span>
             <span :class="i === getMethodAndAmount.length-1?'':'mr-10'" v-for="(item,i) in getMethodAndAmount"
                   :key="i+item.method">{{payType === 1 ? '手机扫码' : item.method}}{{item.amount}}<template

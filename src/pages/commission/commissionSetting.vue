@@ -352,7 +352,6 @@ export default {
     this.getPosition("search");
     let res = this.getDataList;
 
-    console.log(this.getDataList, 767);
     if (res && res.route === this.$route.path) {
       let session = JSON.parse(sessionStorage.getItem("sessionQuery"));
       let query = session.query;
@@ -426,6 +425,8 @@ export default {
           })
         );
       }
+      // 加载中
+      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
       this.$ajax
         .postJSON("/api/bonusSetting/listBonusSetting", params)
         .then((res) => {
@@ -470,9 +471,13 @@ export default {
             }
             // console.log(this.tableData,89888);
             this.total = res.data.total;
+            // 关闭加载中
+            this.$tool.layerAlertClose();
           }
         })
         .catch((error) => {
+          // 关闭加载中
+          this.$tool.layerAlertClose();
           this.$message({ message: error });
         });
     },
