@@ -231,7 +231,7 @@
         </el-table-column>
         <el-table-column label="收/付/转款人" min-width="120">
           <template slot-scope="scope">
-            <template v-if="scope.row.isZK.toString()==='true'">
+            <template v-if="scope.row.isZK && scope.row.isZK.toString()==='true'">
               {{scope.row.store+"-"+scope.row.createByName}}
             </template>
             <template v-else>
