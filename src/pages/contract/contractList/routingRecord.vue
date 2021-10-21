@@ -745,8 +745,12 @@ export default {
       }).catch(error => {
         this.dialogReceipt = false
         this.isDisabled = false
+        let str = error
+        if (error === '用户不存在') {
+          str = '该公司未开通POS收款'
+        }
         this.$message({
-          message: error
+          message: str
         })
       });
     },

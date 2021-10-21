@@ -468,7 +468,7 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel"
+            @click="queryFn('getExcel')"
             >导出</el-button
           >
         </div>
@@ -1586,6 +1586,7 @@ export default {
       checkPersonData: null,
       onlineContractList: [],
       offlineContractList: [],
+      ajaxParams: null,
     };
   },
   created() {
@@ -1809,7 +1810,17 @@ export default {
         param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
       }
       if (type === "ChosePersonEditor") {
+        this.ajaxParams = null
         param.keyword = this.contCode;
+      }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        console.log(12312321);
+        if (!this.total) {
+          this.$message('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/contractExcel", param)
+        }
+        return
       }
       this.$ajax.postJSON("/api/contract/contractList", param).then((res) => {
         res = res.data;
@@ -1821,10 +1832,20 @@ export default {
             if (index !== -1) {
               this.$set(this.tableData, index, res.data.list[0]);
             }
-            console.log(index, 777777777777777);
           } else {
             this.tableData = res.data.list;
             this.total = res.data.count;
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/contractExcel", param);
+              }
+            }
+            
           }
         }
       });
@@ -1839,9 +1860,9 @@ export default {
       this.EmployeList = [];
     },
     // 查询
-    queryFn() {
+    queryFn(type='search') {
       this.currentPage = 1;
-      this.getContractList("search");
+      this.getContractList(type);
     },
     //佣金比例
     changeRatio(type) {
