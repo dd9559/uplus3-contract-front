@@ -174,7 +174,7 @@
         <p>
           <el-button v-if="power['sign-cw-debt-whtfk'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
           <el-button v-if="power['sign-cw-debt-whtsk'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
-          <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+          <el-button class="btn-info" round type="primary" size="small" @click="getData('getExcel')"
             v-if="power['sign-cw-debt-export'].state" v-dbClick>导出</el-button>
         </p>
       </div>
@@ -907,6 +907,14 @@ export default {
       if (type === "search") {
         param.empId = this.searchForm.empId.split("-")[0];
       }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/payInfoExcel", param);
+        }
+        return
+      }
       this.$ajax
         .get("/api/payInfo/selectPayInfoList", param)
         .then((res) => {
@@ -921,6 +929,16 @@ export default {
               { balance: res.data.balance },
               { sumFees: res.data.fees && res.data.fees.sumFees }
             );
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/payInfoExcel", param);
+              }
+            }
           }
         })
         .catch((error) => {

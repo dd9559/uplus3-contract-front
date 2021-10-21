@@ -1585,8 +1585,7 @@ export default {
       localChoseList: [],
       checkPersonData: null,
       onlineContractList: [],
-      offlineContractList: [],
-      ajaxParams: null,
+      offlineContractList: []
     };
   },
   created() {
@@ -1814,9 +1813,8 @@ export default {
         param.keyword = this.contCode;
       }
       if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
-        console.log(12312321);
         if (!this.total) {
-          this.$message('当前筛选条件结果无数据！')
+          this.$message.warning('当前筛选条件结果无数据！')
         } else {
           this.excelCreate("/input/contractExcel", param)
         }
@@ -1840,7 +1838,7 @@ export default {
             }
             if (type === 'getExcel') {
               if (!this.total) {
-                this.$message('当前筛选条件结果无数据！')
+                this.$message.warning('当前筛选条件结果无数据！')
               } else {
                 this.excelCreate("/input/contractExcel", param);
               }
