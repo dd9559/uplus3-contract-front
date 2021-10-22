@@ -118,7 +118,7 @@
           <i class="iconfont icon-tubiao-11"></i>数据列表
         </h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary" @click="getExcel"
+          <el-button class="btn-info" round size="small" type="primary" @click="getData('getExcel')"
           v-dbClick
             v-if="(activeView===1&&power['sign-cw-rev-export'].state)||(activeView===2&&power['sign-cw-pay-export'].state)">
             导出</el-button>
@@ -706,6 +706,17 @@ export default {
         this.activeView === 1
           ? "/payInfo/proceedsAuditList"
           : "/payInfo/payMentAuditList";
+
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate(this.activeView === 1
+          ? "/input/proceedsAuditExcel"
+          : "/input/payMentAuditExcel", param)
+        }
+        return
+      }
       this.$ajax
         .get(`/api${url}`, param)
         .then((res) => {
@@ -713,6 +724,18 @@ export default {
           if (res.status === 200) {
             this.list = res.data.page.list;
             this.total = res.data.page.total;
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate(this.activeView === 1
+                ? "/input/proceedsAuditExcel"
+                : "/input/payMentAuditExcel", param)
+              }
+            }
           }
         })
         .catch((error) => {

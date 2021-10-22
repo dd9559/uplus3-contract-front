@@ -113,7 +113,7 @@
       <div class="table-tool" v-if="power['sign-cw-rec-export'].state">
         <h4 class="f14"><i class="iconfont icon-tubiao-11"></i>数据列表</h4>
         <p>
-          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state" v-dbClick @click="getExcel">导出</el-button>
+          <el-button class="btn-info" round size="small" type="primary" v-if="power['sign-cw-rec-export'].state" v-dbClick @click="getData('getExcel')">导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" :class="[showScroll?'info-scrollbar':'']" border :data="list" style="width: 100%" header-row-class-name="theader-bg">
@@ -409,12 +409,29 @@
             methods:'put'
           }))
         }
-
+        if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+          if (!this.total) {
+            this.$message.warning('当前筛选条件结果无数据！')
+          } else {
+            this.excelCreate("/input/RceivablesExcel", param)
+          }
+          return
+        }
         this.$ajax.put('/api/payInfo/receivables',param,1).then(res => {
           res = res.data
           if (res.status === 200) {
             this.list = res.data.list
             this.total = res.data.total
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/RceivablesExcel", param);
+              }
+            }
           }
         }).catch(error => {
           console.log(error)

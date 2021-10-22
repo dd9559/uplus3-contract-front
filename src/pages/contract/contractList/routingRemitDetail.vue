@@ -152,7 +152,7 @@ export default {
   methods:{
     // 导出功能
     getExcel() {
-        if (this.tableData.length === 0) return this.$message('没有可导出的数据!')
+        if (this.tableData.length === 0) return this.$message.warning('没有可导出的数据!')
         let url = ''
         if(this.type===1){
           url='/input/proateNotesExcel';
