@@ -313,7 +313,6 @@
           textarea: '', //备注
         },
         tableData:[],
-        total: 0,
         power: {
           'sign-ht-maid-query': {
             state: false,
@@ -583,7 +582,7 @@
             let data = res.data;
             if (res.data.status === 200) {
               this.tableData = data.data
-              this.total=data.total;
+              this.total=data.data.total;
               if (['init','search','getExcel'].includes(type)) {
                 this.ajaxParams = JSON.parse(JSON.stringify(param))
               }
