@@ -1,6 +1,6 @@
 <template>
   <div class="layout" style="background-color: #f5f5f5" ref="tableComView">
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn">
       <!-- 筛选条件 -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
 
@@ -115,7 +115,7 @@
             <i class="iconfont icon-tubiao-11"></i>数据列表
           </h4>
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" v-dbClick
+        <el-button class="f_r" round type="primary" size="medium" @click="queryFn('getExcel')" v-dbClick
                    style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出
         </el-button>
       </div>
@@ -379,7 +379,7 @@
                         this.loading = false;
                     })
                 } else {
-                    this.getData(this.ajaxParam);
+                    this.getData(this.ajaxParam,'init');
                 }
             })
             // 字典初始化
@@ -454,6 +454,16 @@
                         //   _that.countData = [0, 0, 0, 0];
                         // }
                         _that.total = data.data.total;
+                        if (['init','search','getExcel'].includes(typeshow)) {
+                          this.ajaxParams = JSON.parse(JSON.stringify(ajaxParam))
+                        }
+                        if (typeshow === 'getExcel') {
+                          if (!this.total) {
+                            this.$message.warning('当前筛选条件结果无数据！')
+                          } else {
+                            this.excelCreate('/input/exportSettleExcel', ajaxParam)
+                          }
+                        }
                         this.$nextTick(() => {
                             this.loading = false;
                         })
