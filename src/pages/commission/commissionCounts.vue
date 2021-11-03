@@ -322,9 +322,11 @@ export default {
     },
     // 搜索数据
     searchFn(type) {
-      if (this.searchData.bonusDateValue === null)
-        this.searchData.bonusDateValue = "";
-        this.copySearchData = { ...this.searchData };
+      if (type == 'getExcel') {
+        if (this.searchData.bonusDateValue === null)
+          this.searchData.bonusDateValue = "";
+        this.copySearchData = { ...this.searchData };
+      }
       let data = this.getParamFn();
 
       // 加载中
