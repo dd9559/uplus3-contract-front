@@ -1,6 +1,6 @@
 <template>
   <div class="view-container" ref="tableComView">
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn">
       <el-form class="header" ref="propForm" size="small">
         <div class="content">
           <el-form-item label="关键字">
@@ -113,7 +113,7 @@
               round
               type="primary"
               size="medium"
-              @click="getExcel"
+              @click="queryFn('getExcel')"
               v-dbClick
               style="padding:9px 15px;min-width: 80px;"
             >导出</el-button>
@@ -260,7 +260,7 @@ export default {
         this.searchTime = [date, date2];
       });
     },
-    getAchList() {
+    getAchList(typeshow) {
       let param = {
         keyword: this.keyword,
         startTime:
@@ -283,6 +283,14 @@ export default {
       if (param.empId) {
         param.empId = param.empId.split("/")[0];
       }
+      if(typeshow === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate('/input/AchievementContractExcel', param)
+        }
+        return
+      }
       this.$ajax
         .get("/api/achievementSheet/getAchievementContractSumList", param)
         .then((res) => {
@@ -290,6 +298,16 @@ export default {
           if (res.status == 200) {
             this.achList = res.data.list;
             this.total = res.data.total;
+            if (['search','getExcel'].includes(typeshow)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (typeshow === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate('/input/AchievementContractExcel', param)
+              }
+            }
           }
         })
         .catch((err) => {
@@ -316,6 +334,7 @@ export default {
           if (res.status == 200) {
             this.achList = res.data.list;
             this.total = res.data.total;
+            this.ajaxParams = JSON.parse(JSON.stringify(param))
           }
         })
         .catch((err) => {
@@ -399,9 +418,9 @@ export default {
       this.EmployeList = [];
     },
     // 查询
-    queryFn() {
+    queryFn(typeshow) {
       this.pageNum = 1;
-      this.getAchList();
+      this.getAchList(typeshow);
     },
   },
   components: {

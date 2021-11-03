@@ -60,7 +60,7 @@
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
         <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcjs-export'].state"
-        v-dbClick @click="clickExportFn" round size="small">导出
+        v-dbClick @click="searchFn('getExcel')" round size="small">导出
         </el-button>
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcjs-calc'].state" @click="batchCalculationFn" round size="small">批量计算提成
         </el-button>
@@ -307,7 +307,7 @@ export default {
       if (this.searchData.bonusDateValue === null)
         this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
-      this.searchFn();
+      this.searchFn('init');
       console.log(this.$tool.xData());
       let d = this.dateFormat(new Date()).split("-");
       console.log(d,9);
@@ -321,7 +321,7 @@ export default {
       this.searchFn();
     },
     // 搜索数据
-    searchFn() {
+    searchFn(type) {
       let data = this.getParamFn();
 
       // 加载中
@@ -331,7 +331,15 @@ export default {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
       });
-
+      console.log(JSON.stringify(data) === JSON.stringify(this.ajaxParams));
+      if (type === 'getExcel' && JSON.stringify(data) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/bonusListExcel", data)
+        }
+        return
+      }
       this.$ajax
         .get("/api/bonus/bonusList", data)
         .then((res) => {
@@ -346,6 +354,16 @@ export default {
               pageSize,
               total,
             });
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(data))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/bonusListExcel", data);
+              }
+            }
           }
           // 关闭加载中
           // this.$tool.layerAlertClose();
@@ -353,7 +371,6 @@ export default {
         .catch((err) => {
           // 关闭加载中
           // this.$tool.layerAlertClose();
-
           this.$message({
             message: err,
             type: "error",
@@ -475,6 +492,7 @@ export default {
     },
     // 获取请求参数
     getParamFn() {
+      console.log(this.copySearchData,1010);
       let data = { ...this.copySearchData };
 
       let sign = {
