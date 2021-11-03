@@ -918,7 +918,7 @@
                 <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
               </div>
               <div class="house-right f_r">
-                <el-button type="primary" @click="addserviceAgents">添加分配人</el-button>
+                <el-button type="primary" @click="addserviceAgents" :disabled="entrustState">添加分配人</el-button>
               </div>
             </div>
             <div class="ach-divide-list" v-if="contType==2||contType==3">
@@ -930,6 +930,7 @@
                       v-model="scope.row.roleType"
                       placeholder="请选择"
                       @change="feecli(scope.row.roleType0,scope.$index)"
+                      :disabled="entrustState"
                     >
                       <el-option
                         v-for="item in roleType1"
@@ -947,6 +948,7 @@
                       v-model="scope.row.ratio"
                       placeholder="请输入"
                       @input="filterFeeNumber(scope.row.ratio,scope.$index)"
+                      :disabled="entrustState"
                     ></el-input>
                   </template>
                 </el-table-column>
@@ -954,7 +956,7 @@
                 <el-table-column label="应收分成金额（元）" width="90">
                   <!-- fomatFloat((comm|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 ) -->
                   <!-- <template slot-scope="scope">{{(Math.round((tradeFee * scope.row.ratio / 100)*100 || 0,2)/100).toFixed(2)}}</template> -->
-                  <template slot-scope="scope">{{fomatFloat((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</template>
+                  <template slot-scope="scope"><div :class="entrustState ? 'disabled' : ''" :disabled="entrustState">{{fomatFloat((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100,2 )}}</div></template>
                 </el-table-column>
 
                 <el-table-column label="经纪人" width="96">
@@ -978,6 +980,7 @@
                         :loading="loading1"
                         v-loadmore="moreAssignors"
                         @change="changeAssignors(scope.row.assignor,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in assignors"
@@ -1066,7 +1069,7 @@
 
                 <el-table-column label="在职状况" width="90">
                   <template slot-scope="scope">
-                    <el-select v-model="scope.row.isJob" placeholder="请选择">
+                    <el-select v-model="scope.row.isJob" placeholder="请选择" :disabled="entrustState">
                       <el-option
                         v-for="item in dictionary['20']"
                         :key="item.key"
@@ -1099,6 +1102,7 @@
                         :loading="loading1"
                         :remote-method="getLevel(3)"
                         @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in level3s"
@@ -1119,6 +1123,7 @@
                       :loading="loading1"
                       :remote-method="getLevel(3)"
                       @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                      :disabled="entrustState"
                     >
                       <el-option
                         v-for="item in level3s"
@@ -1151,6 +1156,7 @@
                         :loading="loading1"
                         :remote-method="getShopInfo(2)"
                         @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in shopkeepers"
@@ -1184,6 +1190,7 @@
                         :loading="loading1"
                         v-loadmore="moreAssignors"
                         @change="changeDirectors(scope.row.mName,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in directors"
@@ -1217,6 +1224,7 @@
                         :loading="loading1"
                         :remote-method="getLevel(4)"
                         @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in level4s"
@@ -1251,6 +1259,7 @@
                         :remote-method="getShopInfo(1)"
                         v-loadmore="moreAmaldars"
                         @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in amaldars"
@@ -1285,6 +1294,7 @@
                         :remote-method="getShopInfo(0)"
                         v-loadmore="moreManagers"
                         @change="changeManager(scope.row.manager,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in managers"
@@ -1299,7 +1309,7 @@
 
                 <el-table-column label="公共业绩" width="280">
                   <template slot-scope="scope">
-                    <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox">
+                    <el-checkbox-group @change="text4(scope.row)" v-model="scope.row.checkbox" :disabled="entrustState">
                       <el-checkbox
                         v-for="(item,index) in ['门店','公司','大区']"
                         :key="index"
@@ -1734,6 +1744,7 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from "@/components/checkPerson";
+let copyServiceAgents = null
 export default {
   mixins: [MIXINS],
   data() {
@@ -1824,7 +1835,8 @@ export default {
       },
       hasServiceAgent: false, //是否勾选交易服务费佣金分成,20191220新加
       contRemarks: "", //合同备注栏,
-      beforeData:null //编辑前数据
+      beforeData:null, //编辑前数据
+      entrustState: false,
     };
   },
   components: {
@@ -1859,9 +1871,24 @@ export default {
           "actualAchievement"
         )
       );
+      this.getEntrustState()
     }
   },
   methods: {
+    getEntrustState() {
+      this.$ajax
+        .get("/api/settlement/isEntrust", {contactId:this.contractId2})
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.data == 0) {
+              this.entrustState = true
+            }
+          }
+        })
+        .catch(err => {
+          this.$message({ message: err, type: "error" });
+        });
+    },
     close() {
       this.aplremark = "";
     },
@@ -2527,6 +2554,7 @@ export default {
       rows.splice(index, 1);
     },
     deletefee(index, rows, id) {
+      if (this.entrustState) return
       this.agendIds.push(id);
       rows.splice(index, 1);
     },
@@ -2962,6 +2990,7 @@ export default {
             ? -1
             : this.clientArr[i].checkbox[0];
       }
+      let copyServiceAgents2 = JSON.stringify(this.serviceAgents)
       for (let i = 0; i < this.serviceAgents.length; i++) {
         this.serviceAgents[i].sortNum = i + 1;
         this.serviceAgents[i].contractId = this.achObj.contractId;
@@ -3077,7 +3106,86 @@ export default {
             data:this.beforeData
           };
         }
-        this.$ajax
+        if (copyServiceAgents !== copyServiceAgents2 && !this.entrustState && type == 1) {
+          this.$ajax
+            .get("/api/settlement/isEntrust", {contactId:this.contractId2})
+            .then(res => {
+              if (res.status == 200) {
+                if (res.data.data == 0) {
+                  this.$message({ message: '存在已结算委托合同，不允许修改交易服务费', type: "warning" });
+                  this.loading = false;
+                  return
+                }
+                this.$ajax
+                  .postJSON("/api/achievement/" + editStr, param)
+                  .then(res => {
+                    if (res.data.status == 200) {
+                      let sendObj = {
+                        agendIds: this.agendIds
+                      };
+                      if (type == 1) {
+                        this.codeBaseInfo(this.contractId2, 1, null, "getExamineInfo");
+                      }
+                      if (type == 2 && status == 2) {
+                        // this.$emit("saveData", this.achIndex, resultArr, -1);
+                      }
+                      if (type == 2 && status == 1) {
+                        if (this.state2 === 1) {
+                          this.codeBaseInfo(
+                            this.contractId2,
+                            1,
+                            null,
+                            "getExamineInfo"
+                          );
+                          var paperBtn2 = document.getElementById("savebtn2");
+                          paperBtn2.disabled = true;
+                          paperBtn2.classList.remove("color-blue");
+                          paperBtn2.classList.add("grey");
+                          // this.$emit("saveData", this.achIndex, resultArr, 0);
+                        }
+                      }
+                      this.loading = false;
+                      this.$emit("close");
+                      this.$message({
+                        message: "操作成功",
+                        type: "success"
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    // if(this.state2==0){
+                    //   var paperBtn2=document.getElementById('savebtn2')
+                    //       paperBtn2.disabled=true
+                    //       paperBtn2.classList.remove('color-blue')
+                    //       paperBtn2.classList.add('grey')
+                    // }
+                    if (error.message === "下一节点审批人不存在") {
+                      this.checkPerson.flowType = 2;
+                      this.checkPerson.code = this.aId;
+                      this.checkPerson.state = true;
+                      this.checkPerson.type = 1;
+                      this.codeBaseInfo(this.contractId2, 1, null, "getExamineInfo");
+                      var paperBtn2 = document.getElementById("savebtn2");
+                      paperBtn2.disabled = true;
+                      paperBtn2.classList.remove("color-blue");
+                      paperBtn2.classList.add("grey");
+                      // this.$emit("saveData", this.achIndex, resultArr, 0);
+                    } else {
+                      this.$message({
+                        message: error,
+                        type: "error"
+                      });
+                    }
+                    this.loading = false;
+                  });
+              }
+            })
+            .catch(err => {
+              this.$message({ message: err, type: "error" });
+              this.loading = false;
+            });
+        } else {
+          this.$ajax
           .postJSON("/api/achievement/" + editStr, param)
           .then(res => {
             if (res.data.status == 200) {
@@ -3139,6 +3247,7 @@ export default {
             }
             this.loading = false;
           });
+        }
       } else if (!sumFlag && flag) {
         this.$message.error("请输入正确的分成比例");
       } else {
@@ -3403,6 +3512,9 @@ export default {
           for (let i = 0; i < this.serviceAgents.length; i++) {
             this.$set(this.serviceAgents[i], "checkbox", []);
             this.serviceAgents[i].checkbox.push(this.serviceAgents[i].place);
+          }
+          if ( infoType == "getBackExamineInfo") {
+            copyServiceAgents = JSON.stringify(this.serviceAgents)
           }
           if (
             res.data.data.distributionAgreement &&
@@ -4103,7 +4215,16 @@ export default {
   /deep/ .el-table__body-wrapper table tbody tr {
     td:nth-child(3) {
       // background-color: red;
-      border: solid 1px #dcdfe6;
+      
+      .cell {
+        border: solid 1px #dcdfe6;
+        padding: 4px 0;
+        border-radius: 3px;
+        text-align: center;
+        .disabled {
+          color: #C0C4CC;
+        }
+      }
     }
     .el-input__inner {
       padding: 0 22px 0 3px;

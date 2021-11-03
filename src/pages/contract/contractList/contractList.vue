@@ -835,11 +835,11 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-if="!scope.row.isCombine && scope.row.contType.value < 4"
+              v-if="scope.row.contType.value < 4"
               type="text"
               size="medium"
               @click="closeAccount(scope.row)"
-              >{{ scope.row.resultState.label }}</el-button
+              >{{scope.row.isCombine ? '未结算' : scope.row.resultState.label }}</el-button
             >
             <span v-else>-</span>
             <!-- <span
@@ -1119,6 +1119,7 @@
       :settleDialog="jiesuan"
       :contId="settleId"
       :layerAudit="layerSettle"
+      :settlementIsEntrust="settlementIsEntrust"
       @closeSettle="closeSettle"
       v-if="settleId"
     ></layerSettle>
@@ -1372,6 +1373,7 @@ export default {
       tiaoyong: false,
       layerAudit: {},
       jiesuan: false,
+      settlementIsEntrust: -1,
       changeCancel: false,
       dialogOperation: "details",
       dialogType: "",
@@ -2344,6 +2346,7 @@ export default {
         if (item.contChangeState.value !== 2) {
           let param = {
             id: item.id,
+            isEntrust: item.isCombine ? 0 : 1, // 是否委托合同，0是，1否
           };
           this.$ajax
             .get("/api/settlement/getSettlById", param)
@@ -2354,6 +2357,7 @@ export default {
                 this.jiesuan = true;
                 this.settleId = item.id;
                 this.layerSettle = data.data;
+                this.settlementIsEntrust = item.isCombine ? 0 : 1; // 是否委托合同，0是，1否
               }
             })
             .catch((error) => {
