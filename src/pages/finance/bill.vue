@@ -181,7 +181,7 @@
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
         class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
         <el-table-column min-width="120" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
+        <el-table-column label="合同信息" min-width="180" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>
@@ -205,7 +205,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column min-width="160" label="票据编号" prop="billCode" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="140" label="票据编号" prop="billCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="160" label="物业地址">
           <template slot-scope="scope">
             <span v-if="scope.row.address.length===0">--</span>
@@ -224,9 +224,15 @@
             <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
           </template>
         </el-table-column>
+        <el-table-column min-width="80" label="收付状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
+          </template>
+        </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{scope.row.outObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column label="收/付/转款人" min-width="120">
@@ -274,12 +280,6 @@
             <template v-else>
               <span>{{scope.row.toAccountTime|formatTime}}</span>
             </template>
-          </template>
-        </el-table-column>
-        <el-table-column min-width="80" label="收付状态" prop="payStatus">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
-            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column min-width="80" label="转款审核状态" prop="payStatus">

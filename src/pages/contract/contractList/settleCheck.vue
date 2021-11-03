@@ -19,7 +19,7 @@
           <el-select v-model="adjustForm.contTypes" multiple placeholder="全部" style="width:200px" :class="{'width300':adjustForm.contTypes&&adjustForm.contTypes.length>3}">
             <el-option
               v-for="item in dictionary['10']"
-              v-if="item.key!=6&&item.key!=5&&item.key!=4"
+              v-if="item.key!=5&&item.key!=4"
               :key="item.key"
               :label="item.value"
               :value="item.key">
@@ -76,15 +76,19 @@
 
         <el-table-column label="合同类型" min-width="60">
           <template slot-scope="scope">
-            <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+            <p v-if="scope.row.isEntrust === 0">委托合同</p>
+            <span v-else-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
             <span v-else>{{scope.row.contType.label}}</span>
           </template>
         </el-table-column>
 
         <el-table-column label="成交总价" :formatter="nullFormatter" prop="dealPrice" min-width="90">
           <template slot-scope="scope">
-            <span>{{scope.row.dealPrice}} 元</span>
-            <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+            <div v-if="scope.row.isEntrust === 0">-</div>
+            <div v-else>
+              <span>{{scope.row.dealPrice}} 元</span>
+              <span v-for="item in dictionary['507']" :key="item.key" v-if="item.key===scope.row.timeUnit&&scope.row.contType.value===1"> / {{item.value}}</span>
+            </div>
           </template>
         </el-table-column>
 
@@ -198,21 +202,22 @@
             <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
           </div>
           <div class="col-li col-li2">
-            <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
-            <p>后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
+            <p>合同类型：<span>{{!this.settlementIsEntrust ? '委托合同' : layerAudit.contractType.label}}</span></p>
+            <p v-if="this.settlementIsEntrust">后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
-            <!-- <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p> -->
+            <p v-if="!this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2 col-li-between">
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-            <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+            <p style="color: #6C7986;" v-if="!this.settlementIsEntrust">本次结算金额：<span><em>{{layerAudit.actualsettlement|fomatFloat}}元</em></span></p>
+            <p v-if="this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+            <p v-if="this.settlementIsEntrust">已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <!-- <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p> -->
           </div>
-          <div class="col-li">
+          <div class="col-li" v-if="this.settlementIsEntrust">
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
-          <div class="col-li col-li2">
+          <div class="col-li col-li2" v-if="this.settlementIsEntrust">
             <!-- <p style="color: red;">当期实际结算：<span><em>{{layerAudit.actualsettlement}}元</em>（当期实收*结算比例-成本）</span></p> -->
             <p style="color: red;">本次结算金额：<span><em>{{layerAudit.actualsettlement|fomatFloat}}元</em></span></p>
             <p>
@@ -310,21 +315,22 @@
             <p>发起人：<span>{{layerAudit.sponsorStoreName + '-' + layerAudit.sponsorName}}</span></p>
           </div>
           <div class="col-li col-li2">
-            <p>合同类型：<span>{{layerAudit.contractType.label}}</span></p>
-            <p>后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
+            <p>合同类型：<span>{{!this.settlementIsEntrust ? '委托合同' : layerAudit.contractType.label}}</span></p>
+            <p v-if="this.settlementIsEntrust">后期状态：<span v-if="layerAudit.contractType.value!==1">{{layerAudit.statusLaterStage.label}}</span><span v-else>--</span></p>
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p>
-            <!-- <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p> -->
+            <p v-if="!this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
           </div>
           <div class="col-li col-li2 col-li-between">
-            <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-            <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
+            <p style="color: #6C7986;" v-if="!this.settlementIsEntrust">本次结算金额：<span>{{layerAudit.actualsettlement|fomatFloat}}元</span></p>
+            <p v-if="this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+            <p v-if="this.settlementIsEntrust">已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
             <!-- <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
             <p>应收佣金：<span>{{layerAudit.thisCost}}元</span></p> -->
           </div>
-          <div class="col-li">
+          <div class="col-li" v-if="this.settlementIsEntrust">
             <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>
           </div>
-          <div class="col-li col-li2">
+          <div class="col-li col-li2" v-if="this.settlementIsEntrust">
             <!-- <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p> -->
             <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement|fomatFloat}}元</span></p>
             <p>
@@ -518,7 +524,8 @@
             name:'撤销',
             state:false,
           }
-        }
+        },
+        settlementIsEntrust: 1, // 是否委托合同 0是1否
       }
     },
 
@@ -664,6 +671,7 @@
       toDetail(e){
         if(this.power['sign-ht-js-vdetail'].state){
           this.dialogVisible2 = true
+          this.settlementIsEntrust = e.isEntrust
           let param = {
             id: e.id,
           }
@@ -712,6 +720,7 @@
         console.log(e);
         if(e.auditorId === this.getUserMsg.empId){
           this.dialogVisible = true
+          this.settlementIsEntrust = e.isEntrust
           this.auditForm.textarea = ''
           let param = {
             id:e.id
@@ -726,6 +735,7 @@
             res = res.data
             if(res.status===200){
               this.dialogVisible = true
+              this.settlementIsEntrust = e.isEntrust
               this.auditForm.textarea = ''
               let param = {
                 id:e.id

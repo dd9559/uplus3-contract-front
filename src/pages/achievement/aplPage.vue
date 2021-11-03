@@ -915,7 +915,7 @@
                 <p class="f_l delive">交易服务费佣金可分配业绩总计：{{tradeFee?tradeFee:0}}元</p>
               </div>
               <div class="house-right f_r">
-                <el-button type="primary" @click="addListCell('serviceAgents')">添加分配人</el-button>
+                <el-button type="primary" @click="addListCell('serviceAgents')" :disabled="entrustState">添加分配人</el-button>
               </div>
             </div>
 
@@ -928,6 +928,7 @@
                       v-model="scope.row.roleType"
                       placeholder="请选择"
                       @change="rolesTypeCheck(scope.row.roleType,scope.$index,'serviceAgents')"
+                      :disabled="entrustState"
                     >
                       <el-option
                         v-for="item in roleType1"
@@ -945,12 +946,13 @@
                       v-model="scope.row.ratio"
                       placeholder="请输入"
                       @input="filterRatioVal(scope.row.ratio,scope.$index,'serviceAgents')"
+                      :disabled="entrustState"
                     ></el-input>
                   </template>
                 </el-table-column>
 
                 <el-table-column label="分成金额（元）" width="90">
-                   <template slot-scope="scope">{{((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}</template>
+                   <template slot-scope="scope"><div :class="entrustState ? 'disabled' : ''" :disabled="entrustState">{{((currentTradeFee|| 0) * scope.row.ratio / 100 * (100 - (scope.row.platformFeeRatio || 0) - (scope.row.feeRatio || 0)) / 100) | fixedFilter }}</div></template>
                     <!-- (合同应收佣金 * 个人角色比例) - (特许服务费 = 合同应收佣金 * 个人角色比例 * 平台费比例) -->
                 </el-table-column>
 
@@ -975,6 +977,7 @@
                         :loading="loading1"
                         v-loadmore="moreAssignors"
                         @change="changeAssignors(scope.row.assignor,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in assignors"
@@ -1063,7 +1066,7 @@
 
                 <el-table-column label="在职状况" width="90">
                   <template slot-scope="scope">
-                    <el-select v-model="scope.row.isJob" placeholder="请选择">
+                    <el-select v-model="scope.row.isJob" placeholder="请选择" :disabled="entrustState">
                       <el-option
                         v-for="item in dictionary['20']"
                         :key="item.key"
@@ -1096,6 +1099,7 @@
                         :loading="loading1"
                         :remote-method="getLevel(3)"
                         @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in level3s"
@@ -1116,6 +1120,7 @@
                       :loading="loading1"
                       :remote-method="getLevel(3)"
                       @change="changeLevel3(scope.row.level3,scope.$index,2,0)"
+                      :disabled="entrustState"
                     >
                       <el-option
                         v-for="item in level3s"
@@ -1148,6 +1153,7 @@
                         :loading="loading1"
                         :remote-method="getShopInfo(2)"
                         @change="changeShopkeeper(scope.row.shopkeeper,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in shopkeepers"
@@ -1182,6 +1188,7 @@
                         :loading="loading1"
                         v-loadmore="moreAssignors"
                         @change="changeDirectors(scope.row.mName,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in directors"
@@ -1215,6 +1222,7 @@
                         :loading="loading1"
                         :remote-method="getLevel(4)"
                         @change="changeLevel3(scope.row.level4,scope.$index,2,1)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in level4s"
@@ -1249,6 +1257,7 @@
                         :remote-method="getShopInfo(1)"
                         v-loadmore="moreAmaldars"
                         @change="changeAmaldar(scope.row.amaldar,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in amaldars"
@@ -1283,6 +1292,7 @@
                         :remote-method="getShopInfo(0)"
                         v-loadmore="moreManagers"
                         @change="changeManager(scope.row.manager,scope.$index,2)"
+                        :disabled="entrustState"
                       >
                         <el-option
                           v-for="item in managers"
@@ -1300,6 +1310,7 @@
                     <el-checkbox-group
                       @change="getPublicGrade(scope.row)"
                       v-model="scope.row.checkbox"
+                      :disabled="entrustState"
                     >
                       <el-checkbox
                         v-for="(item,index) in ['门店','公司','大区']"
@@ -1315,6 +1326,7 @@
                     <a
                       class="delete"
                       style="color:#478de3;text-decoration:underline;cursor:pointer;"
+                      :style="entrustState ? 'pointer-events: none;cursor: not-allowed;' : ''"
                       @click="deleteListCell(scope.$index,serviceAgents,scope.row.id)"
                     >删除</a>
                   </template>
@@ -1329,7 +1341,7 @@
             </div>
           </div>
           <div class="ach-divide-list" style="margin-bottom:20px">
-            <el-table :data="shensuArr" class="sushen" style="width: 100%">
+            <el-table :data="shensuArr" style="width: 100%">
               <el-table-column label="申诉人">
                 <template slot-scope="scope">
                   <div
@@ -1646,7 +1658,6 @@
 <script>
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from "@/components/checkPerson";
-
 export default {
   mixins: [MIXINS],
   data() {
@@ -1731,7 +1742,8 @@ export default {
       preloadFiles: [],
       contType: "",
       hasServiceAgent: false, //是否勾选交易服务费佣金分成
-      contRemarks: "" //合同备注栏
+      contRemarks: "", //合同备注栏
+      entrustState: false,
     };
   },
   components: {
@@ -1756,8 +1768,25 @@ export default {
     });
 
     this.getData();
+    if (this.dialogType==0) {
+      this.getEntrustState()
+    }
   },
   methods: {
+    getEntrustState() {
+      this.$ajax
+        .get("/api/settlement/isEntrust", {contactId:this.contractId2})
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.data == 0) {
+              this.entrustState = true
+            }
+          }
+        })
+        .catch(err => {
+          this.$message({ message: err, type: "error" });
+        });
+    },
     getData() {
       this.$ajax
         .get("/api/appeal/getExamineInfo", { aId: this.aId })
@@ -3342,7 +3371,15 @@ export default {
   /deep/ .el-table__body-wrapper table tbody tr {
     td:nth-child(3) {
       // background-color: red;
-      border: solid 1px #dcdfe6;
+      .cell {
+        border: solid 1px #dcdfe6;
+        padding: 4px 0;
+        border-radius: 3px;
+        text-align: center;
+        .disabled {
+          color: #C0C4CC;
+        }
+      }
     }
     .el-input__inner {
       padding: 0 22px 0 3px;
