@@ -220,8 +220,10 @@
         </el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="100" label="收付方式">
+          {{searchForm.payway == 3}}
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+            <p v-if="searchForm.payway == 3">{{scope.row.pay_type == 1?'手机扫码':'pos刷卡支付'}}</p>
+             <p v-for="(item,index) in scope.row.method" :key="index" v-if="searchForm.payway == 4">{{item}}</p>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收付状态" prop="payStatus">
