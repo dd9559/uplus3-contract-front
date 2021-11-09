@@ -220,10 +220,11 @@
         </el-table-column>
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="100" label="收付方式">
-          {{searchForm.payway == 3}}
           <template slot-scope="scope">
-            <p v-if="searchForm.payway == 3">{{scope.row.pay_type == 1?'手机扫码':'pos刷卡支付'}}</p>
-             <p v-for="(item,index) in scope.row.method" :key="index" v-if="searchForm.payway == 4">{{item}}</p>
+            <p v-if="scope.row.payway&&scope.row.payway.value!==4">收款-{{scope.row.pay_type == 1?'手机扫码':'pos刷卡支付'}}</p>
+            <template v-else> 
+               <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+            </template>
           </template>
         </el-table-column>
         <el-table-column min-width="80" label="收付状态" prop="payStatus">
@@ -234,7 +235,7 @@
         </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{scope.row.outObjName}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName:scope.row.inObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column label="收/付/转款人" min-width="120">

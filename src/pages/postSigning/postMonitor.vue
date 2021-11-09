@@ -607,6 +607,9 @@ export default {
         );
       }
       if(type === 'getExcel' && JSON.stringify(paramObj) === JSON.stringify(this.ajaxParams)) {
+        this.$nextTick(() => {
+          this.HQloadingList = false;
+        });
         if (!this.tableData.total) {
           this.$message.warning('当前筛选条件结果无数据！')
         } else {

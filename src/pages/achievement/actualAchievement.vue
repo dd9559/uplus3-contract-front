@@ -1257,6 +1257,7 @@ export default {
         } else {
           this.excelCreate('/input/achievementExcel', ajaxParam)
         }
+        this.loading = false;
         return
       }
       this.$ajax
@@ -1280,7 +1281,7 @@ export default {
               if (!this.total) {
                 this.$message.warning('当前筛选条件结果无数据！')
               } else {
-                this.excelCreate('/input/transferListExcel', ajaxParam)
+                this.excelCreate('/input/achievementExcel', ajaxParam)
               }
             }
             this.$nextTick(() => {

@@ -370,31 +370,47 @@ export default {
                 direction: 1,
                 isEntrust: this.settlementIsEntrust, // 是否委托合同，0是，1否
             }
-            this.$ajax         
-            .postJSON("/api/settlement/applySettlement", param)
+            this.$ajax
+            .get("/api/appeal/isAppeal", {contractId:Number(this.getContId)})
             .then(res => {
-                this.fullscreenLoading=false
-                if (res.data.status === 200) {
-                    this.$message('已申请');
-                    setTimeout(() => {                
-                        this.$emit('closeSettle')
-                    }, 1500);              
+                if (res.status == 200) {
+                    if (res.data.data == 1) {
+                        this.$message({ message: '存在审核中的业绩申诉，不能发起结算', type: "warning" });
+                        this.fullscreenLoading=false
+                        return
+                    }
+                    this.$ajax         
+                    .postJSON("/api/settlement/applySettlement", param)
+                    .then(res => {
+                        this.fullscreenLoading=false
+                        if (res.data.status === 200) {
+                            this.$message('已申请');
+                            setTimeout(() => {                
+                                this.$emit('closeSettle')
+                            }, 1500);              
+                        }
+                        // else if (res.data.bizId) {
+                        //     setTimeout(() => {                     
+                        //     this.$emit('closeSettle')
+                        //     }, 1500);  
+                        //     this.choseCheckPerson(res.data.bizId,'init')
+                        // }
+                    }).catch(error => {
+                        this.fullscreenLoading=false
+                        if (error.status === 300 && error.data.bizId) {    
+                            this.choseCheckPerson(error.data.bizId)                                    
+                        } else{
+                            this.$message({
+                            message: error
+                            })
+                        }
+                    })
                 }
-                // else if (res.data.bizId) {
-                //     setTimeout(() => {                     
-                //     this.$emit('closeSettle')
-                //     }, 1500);  
-                //     this.choseCheckPerson(res.data.bizId,'init')
-                // }
             }).catch(error => {
                 this.fullscreenLoading=false
-                if (error.status === 300 && error.data.bizId) {    
-                    this.choseCheckPerson(error.data.bizId)                                    
-                  } else{
-                    this.$message({
-                      message: error
-                    })
-                  }
+                this.$message({
+                    message: error
+                })
             })
         }
         // 结算设置修改为不必填

@@ -171,7 +171,7 @@
         </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{activeView===1?scope.row.outObjName:scope.row.inObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="activeView===1?'收款人':'付款人'" min-width="120">
