@@ -16,7 +16,7 @@
       </el-table-column>
       <el-table-column align="left" label="合同类型">
         <template slot-scope="scope">
-          <span v-if="type == 1 && scope.row.isEntrust === 0">委托合同</span>
+          <span v-if="scope.row.isEntrust === 0">委托合同</span>
           <span v-else-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
           <span v-else>{{scope.row.contType.label}}</span>
         </template>
