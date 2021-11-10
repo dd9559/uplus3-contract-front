@@ -35,7 +35,8 @@ const MIXINS = {
       systemTagSelect: [],
       HQloadingLists: false,
       isSetTimeOut:false,
-      isFlag:false
+      isFlag:false,
+      ajaxParams:null,
     }
   },
   watch: {

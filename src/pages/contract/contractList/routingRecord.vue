@@ -74,7 +74,7 @@
     <div class="routing-list">
       <p>
         <span class="title"><i class="iconfont icon-tubiao-11"></i>数据列表</span>
-        <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button round type="primary" size="medium" @click="queryFn('getExcel')" v-dbClick v-if="power['sign-ht-fz-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </p>
       <el-table :data="tableData" border @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom">
         <el-table-column prop="currDeptName">
@@ -228,7 +228,6 @@ export default {
         inStoreAttr:'',//收款门店属性
         status:'',//分账类型
       },
-      ajaxParam: {},
       outStoreList:[],//分账门店
       inStoreList:[],//收款门店
       checkOutDep:{
@@ -361,7 +360,7 @@ export default {
     // 导出功能
     getExcel() {
         // this.queryFn();
-        let param = Object.assign({}, this.ajaxParam)
+        // let param = Object.assign({}, this.ajaxParam)
         this.excelCreate('/input/currencyListExcel', param)
     },
     // 删除电子签章
@@ -430,13 +429,30 @@ export default {
           methods:"get"
         }))
       }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate('/input/currencyListExcel', param)
+        }
+        return
+      }
       this.$ajax.get('/api/separate/currency_list',param).then(res=>{
         res=res.data;
         if(res.status===200){
           this.tableData=res.data.list;
           this.total=res.data.total;
           this.copySignDate = this.signDate
-          this.ajaxParam = param
+          if (['init','search','getExcel'].includes(type)) {
+            this.ajaxParams = JSON.parse(JSON.stringify(param))
+          }
+          if (type === 'getExcel') {
+            if (!this.total) {
+              this.$message.warning('当前筛选条件结果无数据！')
+            } else {
+              this.excelCreate('/input/currencyListExcel', param)
+            }
+          }
         }
       }).catch(error=>{
         this.$message({
@@ -471,10 +487,10 @@ export default {
       }
     },
     // 查询
-    queryFn() {
+    queryFn(type = 'search') {
       if(this.signDate&&this.signDate.length>1){
         this.pageNum=1
-        this.getProateNotes("search");
+        this.getProateNotes(type);
       }else{
         this.$message({
           message:"请选择时间范围",
@@ -745,8 +761,12 @@ export default {
       }).catch(error => {
         this.dialogReceipt = false
         this.isDisabled = false
+        let str = error
+        if (error === '用户不存在') {
+          str = '该公司未开通POS收款'
+        }
         this.$message({
-          message: error
+          message: str
         })
       });
     },

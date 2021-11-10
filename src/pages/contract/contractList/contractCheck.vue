@@ -140,7 +140,7 @@
                         type="primary"
                         size="small"
                         v-dbClick
-                        @click="getExcel">导出</el-button>
+                        @click="queryFn('getExcel')">导出</el-button>
                 </div>
             </div>
             <el-table ref="tableCom"
@@ -390,7 +390,6 @@ import changeCancel from "../contractDialog/changeCancel";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from "@/components/checkPerson";
-let printParam = {};
 let rows = {};
 
 export default {
@@ -571,7 +570,7 @@ export default {
             }
         },
         getExcel: function() {
-            this.excelCreate("/input/contractAuditExcel", printParam);
+            this.excelCreate("/input/contractAuditExcel", param);
         },
         //获取合同列表
         getContractList(type = "init") {
@@ -611,13 +610,29 @@ export default {
                     })
                 );
             }
-            printParam = Object.assign({}, param);
-
+            if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+                if (!this.total) {
+                    this.$message.warning('当前筛选条件结果无数据！')
+                } else {
+                    this.excelCreate("/input/contractAuditExcel", param);
+                }
+                return
+            }
             this.$ajax.postJSON("/api/contract/auditList", param).then(res => {
                 res = res.data;
                 if (res.status === 200) {
                     this.tableData = res.data.list;
                     this.total = res.data.count;
+                    if (['init','search','getExcel'].includes(type)) {
+                        this.ajaxParams = JSON.parse(JSON.stringify(param))
+                    }
+                    if (type === 'getExcel') {
+                        if (!this.total) {
+                            this.$message.warning('当前筛选条件结果无数据！')
+                        } else {
+                            this.excelCreate("/input/contractAuditExcel", param);
+                        }
+                    }
                 }
             });
         },
@@ -634,9 +649,9 @@ export default {
             this.EmployeList = [];
         },
         // 查询
-        queryFn() {
+        queryFn(type = 'search') {
             this.currentPage = 1;
-            this.getContractList("search");
+            this.getContractList(type);
         },
         //字典查询
         getDictionaries() {

@@ -116,7 +116,7 @@
             round
             type="primary"
             size="small"
-            @click="getExcel"
+            @click="queryFn('getExcel')"
             v-dbClick
           >导出</el-button>
         </div>
@@ -355,7 +355,6 @@ import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import checkPerson from "@/components/checkPerson";
 import signedDialog from "../contractDialog/signedDialog";
-let printParam = {};
 let rows = {};
 
 export default {
@@ -505,21 +504,6 @@ export default {
         };
       }
     },
-    getExcel: function () {
-      if (printParam.signDateEnd) {
-        printParam.signDateEnd = printParam.signDateEnd.replace(/\//g, "-");
-      } else {
-        printParam.signDateEnd = "";
-      }
-      if (printParam.signDateSta) {
-        printParam.signDateSta = printParam.signDateSta.replace(/\//g, "-");
-      } else {
-        printParam.signDateSta = "";
-      }
-      // printParam.signDateEnd = printParam.signDateEnd.replace(/\//g, "-");
-      // printParam.signDateSta = printParam.signDateSta.replace(/\//g, "-");
-      this.excelCreate("/input/signingAuditExcel", printParam);
-    },
     //获取合同列表
     getSignedList(type = "init") {
       let param = {
@@ -553,13 +537,29 @@ export default {
           })
         );
       }
-      printParam = Object.assign({}, param);
-
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/signingAuditExcel", param)
+        }
+        return
+      }
       this.$ajax.get("/api/signingAudit/getlist", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.tableData = res.data.list;
           this.total = res.data.total;
+          if (['init','search','getExcel'].includes(type)) {
+            this.ajaxParams = JSON.parse(JSON.stringify(param))
+          }
+          if (type === 'getExcel') {
+            if (!this.total) {
+              this.$message.warning('当前筛选条件结果无数据！')
+            } else {
+              this.excelCreate("/input/signingAuditExcel", param);
+            }
+          }
         }
       });
     },
@@ -576,9 +576,9 @@ export default {
       this.EmployeList = [];
     },
     // 查询
-    queryFn() {
+    queryFn(type = 'search') {
       this.currentPage = 1;
-      this.getSignedList("search");
+      this.getSignedList(type);
     },
     //字典查询
     getDictionaries() {

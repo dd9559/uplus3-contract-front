@@ -468,7 +468,7 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel"
+            @click="queryFn('getExcel')"
             >导出</el-button
           >
         </div>
@@ -835,11 +835,11 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-if="!scope.row.isCombine && scope.row.contType.value < 4"
+              v-if="scope.row.contType.value < 4"
               type="text"
               size="medium"
               @click="closeAccount(scope.row)"
-              >{{ scope.row.resultState.label }}</el-button
+              >{{scope.row.isCombine ? '未结算' : scope.row.resultState.label }}</el-button
             >
             <span v-else>-</span>
             <!-- <span
@@ -1119,6 +1119,7 @@
       :settleDialog="jiesuan"
       :contId="settleId"
       :layerAudit="layerSettle"
+      :settlementIsEntrust="settlementIsEntrust"
       @closeSettle="closeSettle"
       v-if="settleId"
     ></layerSettle>
@@ -1372,6 +1373,7 @@ export default {
       tiaoyong: false,
       layerAudit: {},
       jiesuan: false,
+      settlementIsEntrust: -1,
       changeCancel: false,
       dialogOperation: "details",
       dialogType: "",
@@ -1585,7 +1587,7 @@ export default {
       localChoseList: [],
       checkPersonData: null,
       onlineContractList: [],
-      offlineContractList: [],
+      offlineContractList: []
     };
   },
   created() {
@@ -1809,7 +1811,16 @@ export default {
         param.dealAgentId = this.contractForm.dealAgentId.split("-")[0];
       }
       if (type === "ChosePersonEditor") {
+        this.ajaxParams = null
         param.keyword = this.contCode;
+      }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/contractExcel", param)
+        }
+        return
       }
       this.$ajax.postJSON("/api/contract/contractList", param).then((res) => {
         res = res.data;
@@ -1821,10 +1832,20 @@ export default {
             if (index !== -1) {
               this.$set(this.tableData, index, res.data.list[0]);
             }
-            console.log(index, 777777777777777);
           } else {
             this.tableData = res.data.list;
             this.total = res.data.count;
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/contractExcel", param);
+              }
+            }
+            
           }
         }
       });
@@ -1839,9 +1860,9 @@ export default {
       this.EmployeList = [];
     },
     // 查询
-    queryFn() {
+    queryFn(type='search') {
       this.currentPage = 1;
-      this.getContractList("search");
+      this.getContractList(type);
     },
     //佣金比例
     changeRatio(type) {
@@ -2325,6 +2346,7 @@ export default {
         if (item.contChangeState.value !== 2) {
           let param = {
             id: item.id,
+            isEntrust: item.isCombine ? 0 : 1, // 是否委托合同，0是，1否
           };
           this.$ajax
             .get("/api/settlement/getSettlById", param)
@@ -2335,6 +2357,7 @@ export default {
                 this.jiesuan = true;
                 this.settleId = item.id;
                 this.layerSettle = data.data;
+                this.settlementIsEntrust = item.isCombine ? 0 : 1; // 是否委托合同，0是，1否
               }
             })
             .catch((error) => {

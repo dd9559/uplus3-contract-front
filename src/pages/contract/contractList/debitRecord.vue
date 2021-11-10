@@ -87,7 +87,7 @@
     <!-- 数据列表 -->
     <div class="contract-list">
       <div class="title-box">
-        <el-button round type="primary" size="medium" @click="getExcel" v-dbClick v-if="power['sign-ht-dk-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
+        <el-button round type="primary" size="medium" @click="queryFn('getExcel')" v-dbClick v-if="power['sign-ht-dk-export'].state" style="padding:9px 15px;min-width: 80px;">导出</el-button>
       </div>
       <el-table :data="tableData.list" @row-dblclick='toDetail' ref="tableCom" :max-height="tableNumberCom" style="width: 100%" v-loading="loadingTable" border>
 
@@ -535,58 +535,76 @@
           if(type==="search"){
             this.pageNum=1
           }
-        this.loadingTable = true;
-            let startTime = '';
-            let endTime = '';
-            if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
-                startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
-                endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
+          let startTime = '';
+          let endTime = '';
+          if(this.adjustForm.signDate && this.adjustForm.signDate.length === 2){
+              startTime = TOOL.dateFormat(this.adjustForm.signDate[0]);
+              endTime = TOOL.dateFormat(this.adjustForm.signDate[1]);
+          }
+          let param = {
+            outStoreId:  this.adjustForm.outStoreId,
+            outStoreAttr: this.adjustForm.outStoreAttr,
+            inStoreId:  this.adjustForm.inStoreId,
+            inStoreAttr: this.adjustForm.inStoreAttr,
+            startTime,
+            endTime,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            keyword: this.adjustForm.keyword,
+          }
+          if (this.adjustForm.status.value) {
+            param.status = this.adjustForm.status.value
+          }
+          if(type==="search"||type==="page"){
+            sessionStorage.setItem('sessionQuery',JSON.stringify({
+              path:'/debitRecord',
+              url:'/separate/pay_list',
+              query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
+              methods:"get"
+            }))
+          }
+          if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+            if (!this.total) {
+              this.$message.warning('当前筛选条件结果无数据！')
+            } else {
+              this.excelCreate('/input/transferListExcel', param)
             }
-            let param = {
-              outStoreId:  this.adjustForm.outStoreId,
-              outStoreAttr: this.adjustForm.outStoreAttr,
-              inStoreId:  this.adjustForm.inStoreId,
-              inStoreAttr: this.adjustForm.inStoreAttr,
-              startTime,
-              endTime,
-              pageNum: this.pageNum,
-              pageSize: this.pageSize,
-              keyword: this.adjustForm.keyword,
-            }
-            if (this.adjustForm.status.value) {
-              param.status = this.adjustForm.status.value
-            }
-            if(type==="search"||type==="page"){
-              sessionStorage.setItem('sessionQuery',JSON.stringify({
-                path:'/debitRecord',
-                url:'/separate/pay_list',
-                query:Object.assign({},param,{checkOutDep:this.checkOutDep},{checkInDep:this.checkInDep}),
-                methods:"get"
-              }))
-            }
-            //调整佣金审核列表
-            this.$ajax
-            .get("/api/separate/pay_list", param)
-            .then(res => {
-              this.$nextTick(() => {
-                this.loadingTable = false;
-              })
-              let data = res.data;
-              if (res.data.status === 200) {
-                this.tableData = data.data
-                this.ajaxParam = param
-              }
-
-
-
-            }).catch(error => {
-              this.$nextTick(() => {
-                this.loadingTable = false;
-              })
-              this.$message({
-                message: error
-              })
+            return
+          }
+          this.loadingTable = true;
+          //调整佣金审核列表
+          this.$ajax
+          .get("/api/separate/pay_list", param)
+          .then(res => {
+            this.$nextTick(() => {
+              this.loadingTable = false;
             })
+            let data = res.data;
+            if (res.data.status === 200) {
+              this.tableData = data.data
+              this.total=data.data.total;
+              if (['init','search','getExcel'].includes(type)) {
+                this.ajaxParams = JSON.parse(JSON.stringify(param))
+              }
+              if (type === 'getExcel') {
+                if (!this.total) {
+                  this.$message.warning('当前筛选条件结果无数据！')
+                } else {
+                  this.excelCreate('/input/transferListExcel', param)
+                }
+              }
+            }
+
+
+
+          }).catch(error => {
+            this.$nextTick(() => {
+              this.loadingTable = false;
+            })
+            this.$message({
+              message: error
+            })
+          })
       },
     checkIn(data){//收款门店
       if(data){

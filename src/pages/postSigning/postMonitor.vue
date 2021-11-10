@@ -146,7 +146,7 @@
             round
             type="primary"
             size="small"
-            @click="getExcel"
+            @click="getListData('getExcel')"
             v-dbClick
             v-if="power['sign-qh-cont-export'].state"
           >导出</el-button>
@@ -606,13 +606,33 @@ export default {
           })
         );
       }
-
+      if(type === 'getExcel' && JSON.stringify(paramObj) === JSON.stringify(this.ajaxParams)) {
+        this.$nextTick(() => {
+          this.HQloadingList = false;
+        });
+        if (!this.tableData.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate('/input/stepMonitorExcel', paramObj)
+        }
+        return
+      }
       this.$ajax
         .get("/api/postSigning/getMonitorContract", paramObj)
         .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.tableData = res.data;
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(paramObj))
+            }
+            if (type === 'getExcel') {
+              if (!this.tableData.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate('/input/stepAdminExcel', paramObj)
+              }
+            }
           }
           this.$nextTick(() => {
             this.HQloadingList = false;

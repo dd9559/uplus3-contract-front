@@ -241,7 +241,7 @@
             round
             type="primary"
             size="small"
-            @click="getExcel"
+            @click="getData('getExcel')"
             v-dbClick
             v-if="power['sign-qh-mgr-export'].state"
           >导出</el-button>
@@ -2269,7 +2269,6 @@ export default {
       }
       // console.log(this.propForm.region,RECEIVINGDATE.start,RECEIVINGDATE.end);
       //日期
-      console.log(this.propForm.region === RECEIVINGDATE.closeTheCase);
       if (this.propForm.region === RECEIVINGDATE.closeTheCase && dataMoBool) {
         finishTimeStart = this.dateFormat(datamo[0]);
         finishTimeEnd = this.dateFormat(datamo[1]);
@@ -2339,13 +2338,33 @@ export default {
           })
         );
       }
-
+      if(type === 'getExcel' && JSON.stringify(paramObj) === JSON.stringify(this.ajaxParams)) {
+        this.$nextTick(() => {
+          this.HQloadingList = false;
+        });
+        if (!this.tableData.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate('/input/stepAdminExcel', paramObj)
+        }
+        return
+      }
       this.$ajax
         .get("/api/postSigning/getAdminContract", paramObj)
         .then(res => {
           res = res.data;
           if (res.status === 200) {
             this.tableData = res.data;
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(paramObj))
+            }
+            if (type === 'getExcel') {
+              if (!this.tableData.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate('/input/stepAdminExcel', paramObj)
+              }
+            }
           } else {
             this.tableData = {
               list: [],

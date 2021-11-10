@@ -174,14 +174,14 @@
         <p>
           <el-button v-if="power['sign-cw-debt-whtfk'].state" class="btn-info" round type="primary" size="small" @click="toPayPages()">付款</el-button>
           <el-button v-if="power['sign-cw-debt-whtsk'].state" class="btn-info" round type="primary" size="small" @click="getCollectMoney">收款</el-button>
-          <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+          <el-button class="btn-info" round type="primary" size="small" @click="getData('getExcel')"
             v-if="power['sign-cw-debt-export'].state" v-dbClick>导出</el-button>
         </p>
       </div>
       <el-table ref="tableCom" :max-height="tableNumberCom" border :data="list" header-row-class-name="theader-bg"
         class="info-scrollbar" style="width: 100%" @row-dblclick="toDetails">
         <el-table-column min-width="120" label="收付ID" prop="payCode" :formatter="nullFormatter"></el-table-column>
-        <el-table-column label="合同信息" min-width="200" prop="cityName" :formatter="nullFormatter">
+        <el-table-column label="合同信息" min-width="180" prop="cityName" :formatter="nullFormatter">
           <template slot-scope="scope">
             <ul class="contract-msglist">
               <li>
@@ -205,7 +205,7 @@
             </ul>
           </template>
         </el-table-column>
-        <el-table-column min-width="160" label="票据编号" prop="billCode" :formatter="nullFormatter"></el-table-column>
+        <el-table-column min-width="140" label="票据编号" prop="billCode" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="160" label="物业地址">
           <template slot-scope="scope">
             <span v-if="scope.row.address.length===0">--</span>
@@ -221,12 +221,21 @@
         <el-table-column min-width="80" label="款类" prop="moneyType" :formatter="nullFormatter"></el-table-column>
         <el-table-column min-width="100" label="收付方式">
           <template slot-scope="scope">
-            <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+            <p v-if="scope.row.payway&&scope.row.payway.value!==4">收款-{{scope.row.pay_type == 1?'手机扫码':'pos刷卡支付'}}</p>
+            <template v-else> 
+               <p v-for="(item,index) in scope.row.method" :key="index">{{item}}</p>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="80" label="收付状态" prop="payStatus">
+          <template slot-scope="scope">
+            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
+            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="60" label="对象">
           <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}</span>
+            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjName:scope.row.inObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column label="收/付/转款人" min-width="120">
@@ -274,12 +283,6 @@
             <template v-else>
               <span>{{scope.row.toAccountTime|formatTime}}</span>
             </template>
-          </template>
-        </el-table-column>
-        <el-table-column min-width="80" label="收付状态" prop="payStatus">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payStatusValue!==10">{{scope.row.payStatus|getLabel}}</span>
-            <span class="text-warning" v-else @click="getErrorMsg(scope.row)">{{scope.row.payStatus|getLabel}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column min-width="80" label="转款审核状态" prop="payStatus">
@@ -907,6 +910,14 @@ export default {
       if (type === "search") {
         param.empId = this.searchForm.empId.split("-")[0];
       }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/payInfoExcel", param);
+        }
+        return
+      }
       this.$ajax
         .get("/api/payInfo/selectPayInfoList", param)
         .then((res) => {
@@ -921,6 +932,16 @@ export default {
               { balance: res.data.balance },
               { sumFees: res.data.fees && res.data.fees.sumFees }
             );
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/payInfoExcel", param);
+              }
+            }
           }
         })
         .catch((error) => {

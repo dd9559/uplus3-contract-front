@@ -79,7 +79,7 @@
           </h4>
         </div>
         <p>
-          <el-button class="btn-info" round type="primary" size="small" @click="getExcel"
+          <el-button class="btn-info" round type="primary" size="small" @click="getData('getExcel')"
           v-dbClick
             v-if="power['sign-cw-zk-export'].state">导出</el-button>
         </p>
@@ -634,6 +634,14 @@ export default {
           })
         );
       }
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/zkAuditExcel", param);
+        }
+        return
+      }
       this.$ajax
         .get("/api/payInfo/zkAuditList", param)
         .then((res) => {
@@ -648,6 +656,16 @@ export default {
               { balance: res.data.balance },
               { sumFees: res.data.fees && res.data.fees.sumFees }
             );
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(param))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/zkAuditExcel", param);
+              }
+            }
           }
         })
         .catch((error) => {

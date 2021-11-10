@@ -1,6 +1,6 @@
 <template>
   <div class="layout" style="background-color: #f5f5f5" ref="tableComView">
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn">
       <el-form :inline="true" :model="propForm" class="prop-form" size="small">
         <el-form-item label="关键字" prop="search">
           <el-tooltip content="合同编号/纸质合同编号/房源编号/客源编号/物业地址/业主/客户/房产证号/手机号/经纪人姓名" placement="top">
@@ -261,7 +261,7 @@
             round
             type="primary"
             size="medium"
-            @click="getExcel"
+            @click="queryFn('getExcel')"
             v-dbClick
             style="padding:9px 15px;min-width: 80px;"
             v-if="power['sign-yj-rev-export'].state"
@@ -1040,7 +1040,7 @@ export default {
           this.loading = false;
         });
       } else {
-        this.getData(this.ajaxParam);
+        this.getData(this.ajaxParam,'init');
       }
     });
     // 字典初始化
@@ -1250,6 +1250,16 @@ export default {
       if (ajaxParam.dealAgentId) {
         ajaxParam.dealAgentId = ajaxParam.dealAgentId.split("/")[0];
       }
+      console.log(JSON.stringify(ajaxParam),JSON.stringify(this.ajaxParams));
+      if(typeshow === 'getExcel' && JSON.stringify(ajaxParam) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate('/input/achievementExcel', ajaxParam)
+        }
+        this.loading = false;
+        return
+      }
       this.$ajax
         .get("/api/achievement/selectAchievementList", ajaxParam)
         .then(res => {
@@ -1258,10 +1268,21 @@ export default {
           if (res.status === 200) {
             _that.selectAchList = data.data.list;
             _that.total = data.data.total;
+            
             if (data.data.list[0]) {
               _that.countData = data.data.list[0].contractCount;
             } else {
               _that.countData = [0, 0, 0, 0];
+            }
+            if (['init','search','getExcel'].includes(typeshow)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(ajaxParam))
+            }
+            if (typeshow === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate('/input/achievementExcel', ajaxParam)
+              }
             }
             this.$nextTick(() => {
               this.loading = false;
@@ -1371,6 +1392,7 @@ export default {
           auditEndTime: this.propForm.auditTime[1]
         });
       }
+      
       // this.ajaxParam.pageNum = 1;
       // this.currentPage = 1;
       let param = JSON.parse(JSON.stringify(this.ajaxParam));

@@ -13,22 +13,20 @@
                         </p>
                     </div>
                     <div class="col-li col-li2">
-                        <p>合同类型：<span>{{layerAudit.contarctType.label}}</span></p>
-                        <p>后期状态：<span v-if="layerAudit.contarctType.value!==1">{{layerAudit.laterStageStatus.label}}</span><span v-else>--</span></p>
+                        <p>合同类型：<span>{{!this.settlementIsEntrust ? '委托合同' : layerAudit.contarctType.label}}</span></p>
+                        <p v-if="this.settlementIsEntrust">后期状态：<span v-if="layerAudit.contarctType.value!==1">{{layerAudit.laterStageStatus.label}}</span><span v-else>--</span></p>
                         <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p>
-                        <!-- <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p> -->
+                        <p v-if="!this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
                     </div>
                     <div class="col-li col-li2 col-li-between">
-                        <p>合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
-                        <p>已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
-                        <!-- <p>当期实收：<span>{{layerAudit.thissettlement}}元</span></p>
-                        <p>应收佣金：<span>{{layerAudit.receivableComm}}元</span></p> -->
+                        <p style="color: #6C7986;" v-if="!this.settlementIsEntrust">本次结算金额：<span>{{layerAudit.actualsettlement}}元</span></p>
+                        <p v-if="this.settlementIsEntrust">合同总实收：<span>{{layerAudit.receivablesSum}}元</span></p>
+                        <p v-if="this.settlementIsEntrust">已结算：<span>{{layerAudit.alreadysettlement}}元</span></p>
                     </div>
-                    <div class="col-li">
+                    <div class="col-li" v-if="this.settlementIsEntrust">
                         <p>物业地址：<span>{{layerAudit.propertyAddr}}</span></p>                  
                     </div>
-                    <div class="col-li col-li2">
-                        <!-- <p>当期实际结算：<span>{{layerAudit.actualsettlement}}元（当期实收*结算比例-成本）</span></p> -->
+                    <div class="col-li col-li2" v-if="this.settlementIsEntrust">
                         <p style="color: red;">本次结算金额：<span>{{layerAudit.actualsettlement}}元</span></p>    
                         <p>
                             <span>本次结算留存：</span>
@@ -144,6 +142,10 @@ export default {
                type: String,
                default:""
            }
+        },
+        settlementIsEntrust: {
+            type: Number,
+            default: -1
         }
     },
     data() {
@@ -277,7 +279,8 @@ export default {
       close(){
           let param = {
               id: this.contId,
-              direction: 2
+              direction: 2,
+              isEntrust: this.settlementIsEntrust, // 是否委托合同，0是，1否
           }
           this.$ajax         
             .postJSON("/api/settlement/applySettlement", param)
@@ -364,33 +367,50 @@ export default {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
                 voucher: this.uploadList,
-                direction: 1
+                direction: 1,
+                isEntrust: this.settlementIsEntrust, // 是否委托合同，0是，1否
             }
-            this.$ajax         
-            .postJSON("/api/settlement/applySettlement", param)
+            this.$ajax
+            .get("/api/appeal/isAppeal", {contractId:Number(this.getContId)})
             .then(res => {
-                this.fullscreenLoading=false
-                if (res.data.status === 200) {
-                    this.$message('已申请');
-                    setTimeout(() => {                
-                        this.$emit('closeSettle')
-                    }, 1500);              
+                if (res.status == 200) {
+                    if (res.data.data == 1) {
+                        this.$message({ message: '存在审核中的业绩申诉，不能发起结算', type: "warning" });
+                        this.fullscreenLoading=false
+                        return
+                    }
+                    this.$ajax         
+                    .postJSON("/api/settlement/applySettlement", param)
+                    .then(res => {
+                        this.fullscreenLoading=false
+                        if (res.data.status === 200) {
+                            this.$message('已申请');
+                            setTimeout(() => {                
+                                this.$emit('closeSettle')
+                            }, 1500);              
+                        }
+                        // else if (res.data.bizId) {
+                        //     setTimeout(() => {                     
+                        //     this.$emit('closeSettle')
+                        //     }, 1500);  
+                        //     this.choseCheckPerson(res.data.bizId,'init')
+                        // }
+                    }).catch(error => {
+                        this.fullscreenLoading=false
+                        if (error.status === 300 && error.data.bizId) {    
+                            this.choseCheckPerson(error.data.bizId)                                    
+                        } else{
+                            this.$message({
+                            message: error
+                            })
+                        }
+                    })
                 }
-                // else if (res.data.bizId) {
-                //     setTimeout(() => {                     
-                //     this.$emit('closeSettle')
-                //     }, 1500);  
-                //     this.choseCheckPerson(res.data.bizId,'init')
-                // }
             }).catch(error => {
                 this.fullscreenLoading=false
-                if (error.status === 300 && error.data.bizId) {    
-                    this.choseCheckPerson(error.data.bizId)                                    
-                  } else{
-                    this.$message({
-                      message: error
-                    })
-                  }
+                this.$message({
+                    message: error
+                })
             })
         }
         // 结算设置修改为不必填

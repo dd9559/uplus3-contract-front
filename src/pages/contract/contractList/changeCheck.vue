@@ -113,7 +113,7 @@
             type="primary"
             size="small"
             v-dbClick
-            @click="getExcel"
+            @click="queryFn('getExcel')"
           >导出</el-button>
         </div>
       </div>
@@ -185,9 +185,9 @@ export default {
   },
   methods: {
     //查询
-    queryFn() {
+    queryFn(type = 'search') {
       this.currentPage = 1;
-      this.getChangeList("search");
+      this.getChangeList(type);
     },
     //重置
     resetFormFn() {
@@ -230,12 +230,33 @@ export default {
           })
         );
       }
-
+      if (type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          param.signStart && (param.signStart = param.signStart.replace(/\//g, "-"))
+          param.signEnd && (param.signEnd = param.signEnd.replace(/\//g, "-"))
+          this.excelCreate("/input/changeAuditExcel", param)
+        }
+        return
+      }
       this.$ajax.get("/api/contract/changeAuditList", param).then((res) => {
         res = res.data;
         if (res.status === 200) {
           this.list = res.data.list;
           this.total = res.data.total;
+          if (['init','search','getExcel'].includes(type)) {
+            this.ajaxParams = JSON.parse(JSON.stringify(param))
+          }
+          if (type === 'getExcel') {
+            if (!this.total) {
+              this.$message.warning('当前筛选条件结果无数据！')
+            } else {
+              param.signStart && (param.signStart = param.signStart.replace(/\//g, "-"))
+              param.signEnd && (param.signEnd = param.signEnd.replace(/\//g, "-"))
+              this.excelCreate("/input/changeAuditExcel", param);
+            }
+          }
         }
       });
     },

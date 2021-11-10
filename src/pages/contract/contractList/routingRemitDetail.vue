@@ -16,7 +16,8 @@
       </el-table-column>
       <el-table-column align="left" label="合同类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
+          <span v-if="type == 1 && scope.row.isEntrust === 0">委托合同</span>
+          <span v-else-if="scope.row.loanType">{{scope.row.loanType===7?"全款买卖":"贷款买卖"}}</span>
           <span v-else>{{scope.row.contType.label}}</span>
         </template>
       </el-table-column>
@@ -152,7 +153,7 @@ export default {
   methods:{
     // 导出功能
     getExcel() {
-        if (this.tableData.length === 0) return this.$message('没有可导出的数据!')
+        if (this.tableData.length === 0) return this.$message.warning('没有可导出的数据!')
         let url = ''
         if(this.type===1){
           url='/input/proateNotesExcel';

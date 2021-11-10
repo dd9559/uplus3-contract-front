@@ -2,7 +2,7 @@
   <div class="page-class commission-view" ref="tableComView" v-if="power['sign-tcyw-tcff-query'].state">
     <!-- <p class="brand-nav">财务>提成发放</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0 15px 15px">
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn('search')" class="commission-top" style="padding: 0 15px 15px">
       <el-input placeholder="登录账号/员工工号" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword"
         clearable>
       </el-input>
@@ -70,7 +70,7 @@
               class="cl-red">{{moneyFFSum|fomatFloat}}</em>元
             未发放总金额：<em class="cl-red">{{moneyWFFSum|fomatFloat}}</em>元</span>
         </div>
-        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="clickExportFn" round size="small">导出
+        <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcff-export'].state" v-dbClick @click="searchFn('getExcel')" round size="small">导出
         </el-button>
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcff-ff'].state" @click="batchCalculationFn" round size="small">批量发放
         </el-button>
@@ -311,7 +311,7 @@ export default {
       if (this.searchData.bonusDateValue === null)
         this.searchData.bonusDateValue = "";
       this.copySearchData = { ...this.searchData };
-      this.searchFn();
+      this.searchFn('init');
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -325,18 +325,30 @@ export default {
       this.selectionList = val;
     },
     // 搜索数据
-    searchFn() {
+    searchFn(type) {
+      if (type == 'getExcel') {
+        if (this.searchData.bonusDateValue === null)
+          this.searchData.bonusDateValue = "";
+        this.copySearchData = { ...this.searchData };
+      }
       let data = this.getParamFn();
 
       // 加载中
-      this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
+      // this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
 
       let arr = {};
       arr.empCount = 0;
       arr.moneySum = 0;
       arr.moneyFFSum = 0;
       arr.moneyWFFSum = 0;
-
+      if (type === 'getExcel' && JSON.stringify(data) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/bonusSummaryExcel", data)
+        }
+        return
+      }
       this.$ajax
         .get("/api/bonus/bonusSummaryList", data)
         .then((res) => {
@@ -351,7 +363,16 @@ export default {
               pageSize,
               total,
             });
-
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(data))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/bonusSummaryExcel", data)
+              }
+            }
             if (list.length > 0) {
               arr.empCount = list[0].empCount || 0; //人数
               arr.moneySum = list[0].moneySum || 0; //提成总额
@@ -359,14 +380,15 @@ export default {
               arr.moneyWFFSum = list[0].moneyWFFSum || 0; //未发放
             }
             Object.assign(this, arr);
+            
           }
           // 关闭加载中
-          this.$tool.layerAlertClose();
+          // this.$tool.layerAlertClose();
         })
         .catch((err) => {
           Object.assign(this, arr);
           // 关闭加载中
-          this.$tool.layerAlertClose();
+          // this.$tool.layerAlertClose();
 
           this.$message({
             message: err,

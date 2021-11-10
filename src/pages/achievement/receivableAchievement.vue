@@ -1,6 +1,6 @@
 <template>
   <div class="layout" style="background-color: #f5f5f5" ref="tableComView">
-    <ScreeningTop @propQueryFn="queryFn" @propResetFormFn="resetFormFn">
+    <ScreeningTop @propQueryFn="queryFn('search')" @propResetFormFn="resetFormFn">
       <!-- 筛选条件 -->
       <el-form :inline="true" ref="propForm" :model="propForm" class="prop-form" size="small">
 
@@ -74,7 +74,7 @@
                      :class="{'width325':propForm.contractType.length>3}" multiple :clearable="true">
             <el-option
               v-for="item in dictionary['10']"
-              v-if="![4,5,6].includes(item.key)"
+              v-if="![4,5].includes(item.key)"
               :key="item.value"
               :label="item.value"
               :value="item.key"
@@ -114,37 +114,8 @@
           <h4 class="f14">
             <i class="iconfont icon-tubiao-11"></i>数据列表
           </h4>
-          <!-- <ul>
-            <li>
-              <span>
-                总分成：
-                <b class="orange">{{countData[3] ?countData[3] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>分类分成：</span>
-            </li>
-            <li>
-              <span>
-                出售：
-                <b class="orange">{{countData[1] ?countData[1] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>
-                代办：
-                <b class="orange">{{countData[2] ?countData[2] :'0'}}元</b>，
-              </span>
-            </li>
-            <li>
-              <span>
-                出租：
-                <b class="orange">{{countData[0] ?countData[0] :'0'}}元</b>
-              </span>
-            </li>
-          </ul> -->
         </div>
-        <el-button class="f_r" round type="primary" size="medium" @click="getExcel" v-dbClick
+        <el-button class="f_r" round type="primary" size="medium" @click="queryFn('getExcel')" v-dbClick
                    style="padding:9px 15px;min-width: 80px;" v-if="power['sign-yj-rec-export'].state">导出
         </el-button>
       </div>
@@ -182,7 +153,8 @@
           <!-- contType  合同类型(0:租赁 1:低佣 2:二手  3:代办)-->
           <el-table-column label="合同类型" min-width="80">
             <template slot-scope="scope">
-              <p v-if="scope.row.loanType&&scope.row.loanType==7">全款买卖</p>
+              <p v-if="scope.row.isEntrust === 0">委托合同</p>
+              <p v-else-if="scope.row.loanType&&scope.row.loanType==7">全款买卖</p>
               <p v-else-if="scope.row.loanType&&scope.row.loanType==8">贷款买卖</p>
               <p v-else>{{scope.row.contType.label}}</p>
             </template>
@@ -258,7 +230,11 @@
 
           <el-table-column prop="agentReceipts" label="分账金额（元）" min-width="80">
             <template slot="header">分账金额（元）
-              <el-tooltip content="分账金额=合同总实收-第三方合作费-佣金支付费-权证费-平台费-企业管理费-手续费" placement="top">
+              <el-tooltip placement="top">
+                <div slot="content">
+                  <span>分账金额(主合同)=合同总实收-第三方合作费-佣金支付费-权证费-平台费-企业管理费-手续费</span><br/>
+                  <span>分账金额(委托合同)=委托合同总实收-手续费</span>
+                </div>
                 <img class="icon-prompt" src="../../assets/img/icon-commissionCounts-prompt.png" alt="说明">
               </el-tooltip>
             </template>
@@ -403,7 +379,7 @@
                         this.loading = false;
                     })
                 } else {
-                    this.getData(this.ajaxParam);
+                    this.getData(this.ajaxParam,'init');
                 }
             })
             // 字典初始化
@@ -478,6 +454,16 @@
                         //   _that.countData = [0, 0, 0, 0];
                         // }
                         _that.total = data.data.total;
+                        if (['init','search','getExcel'].includes(typeshow)) {
+                          this.ajaxParams = JSON.parse(JSON.stringify(ajaxParam))
+                        }
+                        if (typeshow === 'getExcel') {
+                          if (!this.total) {
+                            this.$message.warning('当前筛选条件结果无数据！')
+                          } else {
+                            this.excelCreate('/input/exportSettleExcel', ajaxParam)
+                          }
+                        }
                         this.$nextTick(() => {
                             this.loading = false;
                         })

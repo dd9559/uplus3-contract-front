@@ -2,7 +2,7 @@
   <div class="page-class commission-view" ref="tableComView" v-if="power['sign-tcyw-tcjs-query'].state">
     <!-- <p class="brand-nav">财务>提成计算</p> -->
     <!-- 查询组件 -->
-    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn" class="commission-top" style="padding: 0px 15px 15px">
+    <uPlusScrollTop @propResetFormFn="reset" @propQueryFn="queryFn('search')" class="commission-top" style="padding: 0px 15px 15px">
       <el-input placeholder="合同编号/纸质合同编号/物业地址" prefix-icon="el-icon-search" class="w300" v-model="searchData.keyword" 
         clearable>
       </el-input>
@@ -60,7 +60,7 @@
       <div class="reveal-box">
         <div class="reveal-txt">当前共找到【{{ total }}】条数据</div>
         <el-button class="fr btn-orange-border" v-if="power['sign-tcyw-tcjs-export'].state"
-        v-dbClick @click="clickExportFn" round size="small">导出
+        v-dbClick @click="searchFn('getExcel')" round size="small">导出
         </el-button>
         <el-button class="fr btn-orange" v-if="power['sign-tcyw-tcjs-calc'].state" @click="batchCalculationFn" round size="small">批量计算提成
         </el-button>
@@ -306,11 +306,11 @@ export default {
       this.currentPage = 1;
       if (this.searchData.bonusDateValue === null)
         this.searchData.bonusDateValue = "";
-      this.copySearchData = { ...this.searchData };
-      this.searchFn();
-      console.log(this.$tool.xData());
-      let d = this.dateFormat(new Date()).split("-");
-      console.log(d,9);
+        this.copySearchData = { ...this.searchData };
+        this.searchFn('init');
+        console.log(this.$tool.xData());
+        let d = this.dateFormat(new Date()).split("-");
+        console.log(d,9);
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -321,17 +321,30 @@ export default {
       this.searchFn();
     },
     // 搜索数据
-    searchFn() {
+    searchFn(type) {
+      if (type == 'getExcel') {
+        if (this.searchData.bonusDateValue === null)
+          this.searchData.bonusDateValue = "";
+        this.copySearchData = { ...this.searchData };
+      }
       let data = this.getParamFn();
 
       // 加载中
       // this.$tool.layerAlert.call(this, { typeInfo: 2, message: "加载中" });
-
       Object.assign(data, {
         pageSize: this.pageSize,
         pageNum: this.currentPage,
       });
-
+      if (type === 'getExcel' && JSON.stringify(data) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          this.excelCreate("/input/bonusListExcel", data,Object.assign(data,{
+            type:0
+          }))
+        }
+        return
+      }
       this.$ajax
         .get("/api/bonus/bonusList", data)
         .then((res) => {
@@ -346,6 +359,18 @@ export default {
               pageSize,
               total,
             });
+            if (['init','search','getExcel'].includes(type)) {
+              this.ajaxParams = JSON.parse(JSON.stringify(data))
+            }
+            if (type === 'getExcel') {
+              if (!this.total) {
+                this.$message.warning('当前筛选条件结果无数据！')
+              } else {
+                this.excelCreate("/input/bonusListExcel", data,Object.assign(data,{
+                  type:0
+                }));
+              }
+            }
           }
           // 关闭加载中
           // this.$tool.layerAlertClose();
@@ -353,7 +378,6 @@ export default {
         .catch((err) => {
           // 关闭加载中
           // this.$tool.layerAlertClose();
-
           this.$message({
             message: err,
             type: "error",
@@ -474,9 +498,8 @@ export default {
       });
     },
     // 获取请求参数
-    getParamFn() {
+    getParamFn() {  
       let data = { ...this.copySearchData };
-
       let sign = {
         signDateStar: "", //签约日期开始
         signDateEnd: "", //签约日期结束

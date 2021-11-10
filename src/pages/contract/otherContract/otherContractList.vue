@@ -62,7 +62,7 @@
         <div>
           <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-add'].state||contractType==='longRent'&&power['sign-cz-ht-ls-add'].state||contractType==='financial'&&power['sign-jr-ht-ls-add'].state"  round type="primary" size="small" @click="toAddcontract">新增合同</el-button>
           <!-- <el-button class="btn-info" round type="primary" size="small" @click="toAddcontract">新增合同</el-button> -->
-          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" v-dbClick @click="getExcel">导出</el-button>
+          <el-button class="btn-info" v-if="contractType==='newHouse'&&power['sign-xf-ht-ls-export'].state||contractType==='longRent'&&power['sign-cz-ht-ls-export'].state||contractType==='financial'&&power['sign-jr-ht-ls-export'].state"  round type="primary" size="small" v-dbClick @click="getContractList('getExcel')">导出</el-button>
           <!-- <el-button class="btn-info" round type="primary" size="small" @click="getExcel">导出</el-button> -->
         </div>
       </div>
@@ -310,11 +310,91 @@ export default {
           methods:"get"
         }))
       }
+      if(type === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+        if (!this.total) {
+          this.$message.warning('当前筛选条件结果无数据！')
+        } else {
+          if(this.contractType==="newHouse"){
+            url="/input/newHouse/contractExcel"
+            if(this.signData){
+              if (this.signData.length > 0) {
+                param.signStart = this.signData[0];
+                param.signEnd = this.signData[1];
+              }
+            }
+            if(this.closingData){
+              if (this.closingData.length > 0) {
+                param.closingStart = this.closingData[0];
+                param.closingEnd = this.closingData[1];
+              }
+            }
+          }else if(this.contractType==="longRent"){
+            url="/input/longLease/contractExcel"
+            if(this.signData){
+              if (this.signData.length > 0) {
+                param.signStart = this.signData[0];
+                param.signEnd = this.signData[1];
+              }
+            }
+          }else{
+            url="/input/finance/contractExcel"
+            if(this.loanData){
+              if (this.loanData.length > 0) {
+                param.loanStart = this.loanData[0];
+                param.loanEnd = this.loanData[1];
+              }
+            }
+          }
+          this.excelCreate(url,param)
+        }
+        return
+      }
       this.$ajax.get(`/api${url}`,param).then(res=>{
         res=res.data
         if(res.status===200){
           this.list=res.data.list
           this.total=res.data.total
+          if (['init','search','getExcel'].includes(type)) {
+            this.ajaxParams = JSON.parse(JSON.stringify(param))
+          }
+          if (type === 'getExcel') {
+            if (!this.total) {
+              this.$message.warning('当前筛选条件结果无数据！')
+            } else {
+              if(this.contractType==="newHouse"){
+                url="/input/newHouse/contractExcel"
+                if(this.signData){
+                  if (this.signData.length > 0) {
+                    param.signStart = this.signData[0];
+                    param.signEnd = this.signData[1];
+                  }
+                }
+                if(this.closingData){
+                  if (this.closingData.length > 0) {
+                    param.closingStart = this.closingData[0];
+                    param.closingEnd = this.closingData[1];
+                  }
+                }
+              }else if(this.contractType==="longRent"){
+                url="/input/longLease/contractExcel"
+                if(this.signData){
+                  if (this.signData.length > 0) {
+                    param.signStart = this.signData[0];
+                    param.signEnd = this.signData[1];
+                  }
+                }
+              }else{
+                url="/input/finance/contractExcel"
+                if(this.loanData){
+                  if (this.loanData.length > 0) {
+                    param.loanStart = this.loanData[0];
+                    param.loanEnd = this.loanData[1];
+                  }
+                }
+              }
+              this.excelCreate(url,param)
+            }
+          }
           this.list.forEach(element=>{
             this.$set(element,"contractInfo",JSON.parse(element.contractInfo))
           })
@@ -333,6 +413,8 @@ export default {
     },
     //导出
     getExcel(){
+      console.log(this.contractType);
+      return
       let url,param
       param = {
         pageNum: this.currentPage,
