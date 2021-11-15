@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // 模块懒加载
 
-const Index = () => import("@/pages/Index");
+const Index = () => import("@/pages/index");
 
 //设置模块
 const contractTemplate = () => import('@/pages/setting/contractTemplate')
