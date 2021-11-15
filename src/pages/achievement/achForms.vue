@@ -261,6 +261,7 @@ export default {
       });
     },
     getAchList(typeshow) {
+      const isGetExcel = typeshow === 'getExcel';
       let param = {
         keyword: this.keyword,
         startTime:
@@ -277,13 +278,16 @@ export default {
         status: this.contStatus,
         recordType: this.signType,
         isJob: this.jobStatus.value,
+        
+      };
+      !isGetExcel && Object.assign(param, {
         pageNum: this.pageNum,
         pageSize: this.pageSize,
-      };
+      });
       if (param.empId) {
         param.empId = param.empId.split("/")[0];
       }
-      if(typeshow === 'getExcel' && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
+      if( isGetExcel && JSON.stringify(param) === JSON.stringify(this.ajaxParams)) {
         if (!this.total) {
           this.$message.warning('当前筛选条件结果无数据！')
         } else {
@@ -301,7 +305,7 @@ export default {
             if (['search','getExcel'].includes(typeshow)) {
               this.ajaxParams = JSON.parse(JSON.stringify(param))
             }
-            if (typeshow === 'getExcel') {
+            if (isGetExcel) {
               if (!this.total) {
                 this.$message.warning('当前筛选条件结果无数据！')
               } else {
