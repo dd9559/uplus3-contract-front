@@ -11,6 +11,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // const TerserPlugin = require("terser-webpack-plugin")
+const WebpackBar = require('webpackbar');
+
 
 const env = require('../config/prod.env')
 const webpackConfig = merge(baseWebpackConfig, {
@@ -32,6 +34,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+    new WebpackBar(),
     new UglifyJsPlugin({
       uglifyOptions: {
         compress: {
