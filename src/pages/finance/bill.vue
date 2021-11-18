@@ -142,6 +142,19 @@
             </el-option>
           </el-select>
         </div>
+        <div class="input-group">
+          <label>结算状态：</label>
+          <el-select size="small" placeholder="请选择" v-model="searchForm.settleStatus">
+            <el-option v-for="item in settleStatusOption" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </div>
+        <div class="input-group">
+          <label>结算时间：</label>
+          <el-date-picker v-model="settleStatusTimeRange"
+            type="daterange" size="small"
+            value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          </el-date-picker>
+        </div>
       </div>
     </ScreeningTop>
     <div class="view-context" ref="box">
@@ -562,6 +575,9 @@ export default {
         payway: "", //收款方式
         hasCont: "", //有/无合同
         zkAuditState: "",
+        settleStatus: '', //结算状态
+        startExamineDate: '', //结算起始时间
+        endExamineDate: '', //结算截止时间
       },
       tableTotal: {},
       list: [],
@@ -687,6 +703,11 @@ export default {
       zkTitle: "转款信息填写",
       zkEdit: false,
       isBoxPay: false,// true 盒子支付
+      settleStatusOption: [
+        {value: 0, label: '未结算'},
+        {value: 1, label: '已结算'}
+      ],
+      settleStatusTimeRange: [],
     };
   },
   mounted() {
@@ -761,7 +782,10 @@ export default {
           this.searchForm.timeRange = []
         }
       }
-    }
+    },
+    settleStatusTimeRange(val) {
+      [this.searchForm.startExamineDate, this.searchForm.endExamineDate] = val || [];
+    },
   },
   /*watch:{
           getCollapse:function (val) {
