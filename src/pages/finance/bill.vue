@@ -310,6 +310,16 @@
             <span>{{scope.row.moneyType}}{{scope.row.amount}}元</span>
           </template>
         </el-table-column>
+        <el-table-column min-width="90" label="结算状态">
+          <template slot-scope="scope">
+            <span>{{scope.row.settleStatusValue}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="90" label="结算时间">
+          <template slot-scope="scope">
+            <span>{{scope.row.examineDate | formatTime}}</span>
+          </template>
+        </el-table-column>
         <el-table-column min-width="80" label="票据状态">
           <template slot-scope="scope">{{scope.row|billState}}</template>
         </el-table-column>
