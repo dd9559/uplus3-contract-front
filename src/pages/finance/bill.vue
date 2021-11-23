@@ -312,7 +312,7 @@
         </el-table-column>
         <el-table-column min-width="90" label="结算状态">
           <template slot-scope="scope">
-            <span>{{scope.row.settleStatusValue}}</span>
+            <span>{{scope.row.settleStatusValue || '--'}}</span>
           </template>
         </el-table-column>
         <el-table-column min-width="90" label="结算时间">
