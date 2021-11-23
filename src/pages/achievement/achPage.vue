@@ -3713,7 +3713,8 @@ export default {
         sq2 = 0;
       }
       m = Math.pow(10, Math.max(sq1, sq2));
-      return (num1 * m + num2 * m) / m;
+      // return (num1 * m + num2 * m) / m;
+      return parseFloat( (num1 * m + num2 * m).toFixed(10) ) / m;
     },
     accAdd(num1, num2) {
       var baseNum, baseNum1, baseNum2;
