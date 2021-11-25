@@ -840,6 +840,7 @@ export default {
     reset: function () {
       this.$tool.clearForm(this.searchForm);
       this.EmployeList = [];
+      this.settleStatusTimeRange = '';
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
