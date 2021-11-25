@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const HappyPack = require('happypack');
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -42,10 +43,20 @@ module.exports = {
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
+      // {
+      //   test: /\.js$/,
+      //   loader: 'babel-loader',
+      //   include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+      // },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        // loader: 'babel-loader',
+        use: [
+          'happypack/loader?id=babel',
+          'babel-loader'
+        ],
+        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')],
+        exclude: /node_modules/,
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -73,6 +84,12 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new HappyPack({
+      id: 'babel',
+      loaders: ['babel-loader?cacheDirectory']
+    })
+  ],
   // plugins: [
   //   new UglifyJsPlugin({
   //     uglifyOptions: {
