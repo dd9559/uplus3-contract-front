@@ -115,6 +115,10 @@ export default {
         background-color: @bg-white;
         padding: @margin-base @margin-base @margin-base 0;
         border-radius: 4px;
+        cursor: pointer;
+        &:hover {
+          opacity: .8;
+        }
       }
     }
     &-content {

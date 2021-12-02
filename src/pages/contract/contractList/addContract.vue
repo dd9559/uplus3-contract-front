@@ -572,7 +572,7 @@
                                     <!-- @keydown="saveMobile(commissionOwnerList,null,'commissionOwnerList')" -->
                             </span>
                         </el-form-item>
-                        <el-form-item label="合同备注：" :label-width="contractForm.type===2||contractForm.type===3 ? '154px' : 'auto'" label-position="right">
+                        <el-form-item label="合同备注：" :label-width="contractForm.type===2||contractForm.type===3 ? '154px' : ''" label-position="right">
                             <!-- @input="inputCode('remarks')" -->
                             <el-input type="textarea"
                                 :rows="8"

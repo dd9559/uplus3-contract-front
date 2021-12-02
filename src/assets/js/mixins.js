@@ -486,7 +486,9 @@ const MIXINS = {
         let h1 = this.$refs.tableComView.clientHeight + 80;
         let h2 = this.$refs.tableCom.$el.clientHeight;
         let th = wh - h1;
-        this.tableNumberCom = h2 + th;
+        let height = h2 + th;
+        height -= height % 10;
+        this.tableNumberCom = height;
       }
     },
     ...mapMutations([

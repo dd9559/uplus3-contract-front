@@ -214,6 +214,12 @@
                 <span>{{billMsg.statusName}}</span>
               </template>
             </el-table-column>
+            <el-table-column align="center" label="交易单号">
+              <template>
+                <!--{{billMsg.checkStatus|getLabel}}-->
+                <span>{{billMsg.payTradeNo || '--'}}</span>
+              </template>
+            </el-table-column>
             <el-table-column align="center" label="到账时间">
               <template slot-scope="scope">{{billMsg.toAccountTime|formatTime}}</template>
             </el-table-column>
