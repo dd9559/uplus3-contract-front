@@ -83,6 +83,10 @@
             </template>
           </el-table-column>
         </el-table>
+        <template v-if="activeItem === 'refundInfo'">
+          <h4 class="f14">退款金额</h4>
+          <span class="f14">合计：xxx元</span>
+        </template>
       </li>
       <!-- 合同信息(转款信息) -->
       <li v-if="activeItem=='转款信息'">
@@ -693,6 +697,7 @@ export default {
         param.type === 1
           ? "/payInfo/selectRevDetail"
           : "/payInfo/selectPayDetail";
+      this.activeItem === 'refundInfo' && ( param.type  = 9 );
       this.$ajax.get(`/api${src}`, param).then((res) => {
         res = res.data;
         if (res.status === 200) {
