@@ -85,7 +85,7 @@
         </el-table>
         <template v-if="activeItem === 'refundInfo'">
           <h4 class="f14">退款金额</h4>
-          <span class="f14">合计：xxx元</span>
+          <span class="f14">合计：{{billMsg.amount}}元</span>
         </template>
       </li>
       <!-- 合同信息(转款信息) -->
