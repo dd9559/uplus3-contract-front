@@ -776,7 +776,7 @@ export default {
         // this.setPath(this.getPath.concat({name: '收款详情'}))
       } else {
         param.query = {
-          tab: "付款信息",
+          tab: item.type === 9 ? 'refundInfo' : "付款信息",
           id: item.id,
           power: this.getUser.user.empId === item.auditBy,
           print: this.power["sign-cw-bill-print"].state,
@@ -797,7 +797,9 @@ export default {
           this.$ajax
             .get("/api/machine/getAuditAuth", {
               bizCode: item.payCode,
-              flowType: item.type === 1 || item.type === 8 ? 1 : 0,
+              flowType: item.type === 1 || item.type === 8 
+                ? 1
+                : item.type === 9 ? 14 : 0,
             })
             .then((res) => {
               res = res.data;

@@ -27,7 +27,7 @@
               <span>{{billMsg.contCode}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="activeItem==='付款信息'?'付款ID':'收款ID'">
+          <el-table-column align="center" :label="activeItem==='付款信息'?'付款ID': activeItem === 'refundInfo' ? '退款ID' : '收款ID' ">
             <template slot-scope="scope">
               <span>{{billMsg.payCode}}</span>
             </template>
@@ -336,7 +336,7 @@
           <span v-else>-</span>
       </li>
       <!-- 转款信息(转款信息) -->
-      <li v-if="activeItem!=='付款信息'">
+      <li v-if="activeItem!=='付款信息' && activeItem !== 'refundInfo'">
         <h4 class="f14">转款信息</h4>
         <el-table border :data="transferInfo" header-row-class-name="theader-bg">
           <el-table-column align="center" label="时间">
@@ -533,6 +533,9 @@ export default {
       case "转款信息":
         this.checkPerson.flowType = 13;
         break;
+      case "refundInfo":
+        this.checkPerson.flowType = 14;
+        break;
     }
 
     //权限
@@ -580,10 +583,12 @@ export default {
         path: this.$route.fullPath,
       });
     } else {
-      arr.push({
+      const route = {
         name: `${this.$route.query.tab === "收款信息" ? "收款" : "付款"}详情`,
         path: this.$route.fullPath,
-      });
+      }
+      this.$route.query.tab === 'refundInfo' && (route.name = '退款详情');
+      arr.push(route);
     }
 
     this.setPath(arr);
