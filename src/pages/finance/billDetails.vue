@@ -12,7 +12,11 @@
           @click="choseTab(item)"
         >{{item}}</li>
       </ul>-->
-      <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'||activeItem==='合同信息'||activeItem==='转款信息'">
+      <!-- <p v-if="(activeItem==='收款信息'&&receiptBill===4)||activeItem==='付款信息'||activeItem==='合同信息'||activeItem==='转款信息'">
+        <el-button class="btn-info" round size="small" type="primary" @click="quickCheck" v-if="billMsg.auditButton">审核
+        </el-button>
+      </p> -->
+      <p v-if="(activeItem==='收款信息'&&receiptBill===4) || ['付款信息', '合同信息', '转款信息', 'refundInfo'].includes(activeItem)">
         <el-button class="btn-info" round size="small" type="primary" @click="quickCheck" v-if="billMsg.auditButton">审核
         </el-button>
       </p>
