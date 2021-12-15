@@ -805,8 +805,8 @@
                   >打印客户联</el-button
                 >
               </div>
-              <!-- <template v-if="(scope.row.payStatus.value===5&&scope.row.settleStatus==='0')"> -->
-              <template v-if="true">
+              <!-- refundFlag 0不能退款  1可以退款 -->
+              <template v-if="scope.row.refundFlag === 1">
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
                 >
@@ -1626,6 +1626,9 @@ export default {
             amount: this.refundData.amount, //退款金额
             accountProperties: 1,
             out_obj: this.refundData.outObjName, //付款人
+            settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
+            type: this.refundData.type, // 收付款类别
+            status: this.refundData.status, // 订单状态
             inAccount, //收款账户
             filePath: this.files //凭证
           })
@@ -1635,11 +1638,12 @@ export default {
               this.$message({
                 message: data.data["200"]
               });
-              this.refundTransterShow = false;
-              this.refundChean();
+              this.refundHandleClose();
+              this.getData();
             }
           })
           .catch(err => {
+            this.refundHandleClose();
             this.$message({
               message: err
             });
@@ -1984,7 +1988,7 @@ export default {
       } else if (type === 4) {
         this.$refs.layerInvoice.show(row.billId);
       } else if (type === 5) {
-        // console.log(row);
+        console.log(row);
         this.refundData = row;
         // let { payCode,address,inObjName,payway,moneyType,amount } = row
         // console.log([payCode,address,inObjName,payway,moneyType,amount])
