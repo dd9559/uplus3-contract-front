@@ -208,7 +208,7 @@
         </el-table-column>
         <el-table-column min-width="90" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column :label="activeView===1?'收款时间':'付款时间'" :formatter="nullFormatter" min-width="90">
+        <el-table-column :label="activeView===1?'收款时间':'提交审核时间'" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
