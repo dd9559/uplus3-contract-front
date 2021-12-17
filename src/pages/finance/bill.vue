@@ -1235,7 +1235,7 @@
     <!-- 退款 -->
     <el-dialog
       width="600px"
-      title="退款信息"
+      title="退款审核"
       :visible.sync="refundTransterShow"
       append-to-body
     >
@@ -1255,11 +1255,11 @@
         <el-row>
           <span class="row-left">收款方:</span>
           <span class="row-right">{{ refundData.inObjName }}</span>
-          <span class="row-left">收款方式:</span>
+          <span class="row-left" style="margin-left:30px;">收款方式:</span>
           <span class="row-right">{{
             refundData.payway && refundData.payway.label
           }}</span>
-          <span class="row-left">款类:</span>
+          <span class="row-left" style="margin-left:30px;">款类:</span>
           <span class="row-right">{{ refundData.moneyType }}</span>
         </el-row>
         <el-row>
@@ -1628,7 +1628,7 @@ export default {
             out_obj: this.refundData.outObjName, //付款人
             settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
             type: this.refundData.type, // 收付款类别
-            inAccountType: this.refundData.inAccountType,//线上下付款3线上 4线下
+            inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
             status: this.refundData.status, // 订单状态
             inAccount, //收款账户
             filePath: this.files //凭证
@@ -2887,6 +2887,8 @@ export default {
     font-size: 16px;
     font-weight: bold;
     padding-top: 10px;
+  }
+  .row-left {
   }
 }
 
