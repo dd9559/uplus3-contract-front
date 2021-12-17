@@ -1628,6 +1628,7 @@ export default {
             out_obj: this.refundData.outObjName, //付款人
             settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
             type: this.refundData.type, // 收付款类别
+            inAccountType: this.refundData.inAccountType,//线上下付款3线上 4线下
             status: this.refundData.status, // 订单状态
             inAccount, //收款账户
             filePath: this.files //凭证
