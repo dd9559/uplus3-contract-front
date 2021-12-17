@@ -319,6 +319,9 @@ import { MIXINS } from "@/assets/js/mixins";
 import { UPLOAD } from "@/assets/js/uploadMixins";
 import checkPerson from "@/components/checkPerson";
 
+const REFUND_STAT = 9;  //退款状态  接口约定
+const APPROVAL_TYPE = 14; //审批类型 接口约定
+
 export default {
   mixins: [FILTER, MIXINS, UPLOAD],
   components: {
@@ -594,6 +597,7 @@ export default {
     // 选择审核人
     choseCheckPerson: function (row, type) {
       this.checkPerson.flowType = this.activeView === 1 ? 1 : 0;
+      row.type === REFUND_STAT && ( this.checkPerson.flowType = APPROVAL_TYPE ); 
       this.checkPerson.code = row.payCode;
       this.checkPerson.state = true;
       this.checkPerson.type = type;
@@ -776,7 +780,7 @@ export default {
         // this.setPath(this.getPath.concat({name: '收款详情'}))
       } else {
         param.query = {
-          tab: item.type === 9 ? 'refundInfo' : "付款信息",
+          tab: item.type === REFUND_STAT ? 'refundInfo' : "付款信息",
           id: item.id,
           power: this.getUser.user.empId === item.auditBy,
           print: this.power["sign-cw-bill-print"].state,
@@ -799,7 +803,7 @@ export default {
               bizCode: item.payCode,
               flowType: item.type === 1 || item.type === 8 
                 ? 1
-                : item.type === 9 ? 14 : 0,
+                : item.type === REFUND_STAT ? APPROVAL_TYPE : 0,
             })
             .then((res) => {
               res = res.data;
