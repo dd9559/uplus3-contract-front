@@ -1629,27 +1629,33 @@ export default {
     refundHandleConfirm() {
       if (this.refundData && this.refundData.inAccount) {
         let inAccount = JSON.parse(this.refundData.inAccount);
+        let param = {
+          contId: this.refundData.contId, //合同ID
+          remark: this.refundRemark, //退款备注
+          inObj: this.refundData.inObjName, //收款人
+          inObjId: this.refundData.inObjId, //收款ID
+          inObjType: this.refundData.inObjType.value, //收款类型
+          outObjName: this.refundData.outObjName, //付款人
+          outObjId: this.refundData.outObjId, //付款ID
+          outObjType: this.refundData.outObjType.value, //付款类型
+          moneyType: this.refundData.moneyTypeId,
+          moneyTypePid: this.refundData.moneyTypePid,
+          sk_pay_id: this.refundData.id, //支付ID
+          amount: this.refundData.amount, //退款金额
+          accountProperties: 1,
+          out_obj: this.refundData.outObjName, //付款人
+          settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
+          type: this.refundData.type, // 收付款类别
+          inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
+          status: this.refundData.status, // 订单状态
+          inAccount, //收款账户
+          filePath: this.files //凭证
+        };
+        console.log(param);
+        // return;
         //退款审核
         this.$ajax
-          .postJSON("api/refund/saveOrder", {
-            contId: this.refundData.contId, //合同ID
-            remark: this.refundRemark, //退款备注
-            inObj: this.refundData.inObjName, //收款人
-            inObjId: this.refundData.inObjId, //收款ID
-            inObjType: this.refundData.inObjType.value, //收款类型
-            moneyType: this.refundData.moneyTypeId,
-            moneyTypePid: this.refundData.moneyTypePid,
-            sk_pay_id: this.refundData.id, //支付ID
-            amount: this.refundData.amount, //退款金额
-            accountProperties: 1,
-            out_obj: this.refundData.outObjName, //付款人
-            settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
-            type: this.refundData.type, // 收付款类别
-            inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
-            status: this.refundData.status, // 订单状态
-            inAccount, //收款账户
-            filePath: this.files //凭证
-          })
+          .postJSON("api/refund/saveOrder", param)
           .then(res => {
             let data = res.data;
             if (data.status === 200) {
