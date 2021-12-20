@@ -1241,7 +1241,7 @@
     <!-- 退款 -->
     <el-dialog
       width="600px"
-      title="退款审核"
+      title="退款申请"
       :visible.sync="refundTransterShow"
       append-to-body
     >
