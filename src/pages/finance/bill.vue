@@ -649,6 +649,7 @@
         >
           <template slot-scope="scope">
             <template v-if="scope.row.status != 4">
+              <!-- 开票 -->
               <template
                 v-if="
                   power['sign-cw-bill-invoice'].state && scope.row.isDel === 1 //权限+未删除
@@ -663,20 +664,24 @@
                     scope.row.billStatus &&
                     (scope.row.billStatus.value === 1 ||
                       scope.row.billStatus.value === 4) && //票据状态等于(未开票||已作废)
-                      scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 11 &&
+                    scope.row.payway &&
+                    scope.row.payway.value === 4 && //收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                      scope.row.payStatus.value !== 22) || //不等于退款-审核中
+                      (scope.row.isDeal == 3 &&
+                      scope.row.billStatus.value != 2 &&
                       scope.row.payStatusValue !== 11 &&
                       scope.row.payway &&
-                      scope.row.payway.value === 4) || //收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
-                      (scope.row.isDeal == 3 &&
-                        scope.row.billStatus.value != 2 &&
-                        scope.row.payStatusValue !== 11 &&
-                        scope.row.payway &&
-                        scope.row.payway.value === 4 &&
-                        scope.row.payStatus.value !== 11) //转入收款+未开票+线下转款
+                      scope.row.payway.value === 4 &&
+                      scope.row.payStatus.value !== 11 && //转入收款+未开票+线下转款
+                      scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                        scope.row.payStatus.value !== 22) //不等于退款-审核中
                   "
                   >开票
                 </el-button>
-                <!-- 线上收款,需判断收付+支付状态或转入收款+未开票 -->
+                <!-- 线上收款 -->
                 <el-button
                   type="text"
                   @click="btnOpera(scope.row, 3)"
@@ -685,25 +690,22 @@
                     scope.row.billStatus &&
                     (scope.row.billStatus.value === 1 ||
                       scope.row.billStatus.value === 4) && //票据状态等于(未开票||已作废)
-                      scope.row.payStatusValue !== 4 &&
-                      scope.row.payStatusValue !== 11 &&
-                      scope.row.payStatus.value !== 11) || //收付状态不等于(收款-未付款&&收款-收款失败)
+                    scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 11 &&
+                    scope.row.payStatus.value !== 11 && //收付状态不等于(收款-未付款&&收款-收款失败)
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                      scope.row.payStatus.value !== 22) || //不等于退款-审核中
                       (scope.row.isDeal == 3 &&
-                        scope.row.billStatus.value != 2 &&
-                        scope.row.payStatus.value !== 11) //转入收款+已开票+收付状态不等于(失败)
+                      scope.row.billStatus.value != 2 &&
+                      scope.row.payStatus.value !== 11 && //转入收款+已开票+收付状态不等于(失败)
+                      scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                        scope.row.payStatus.value !== 22) //不等于退款-审核中
                   "
                   >开票
                 </el-button>
               </template>
-              <!-- <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
-                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
-                        scope.row.isDel===1&&//未删除
-                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
-                        scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
-                        (scope.row.isDeal==3&&scope.row.billStatus.value!=2)//转入收款+已开票
-                        ">开票
-              </el-button> -->
 
+              <!-- 编辑 -->
               <template
                 v-if="
                   scope.row.isZK === 'true' &&
@@ -724,22 +726,24 @@
                   @click="btnOpera(scope.row, 1)"
                   v-if="
                     scope.row.payway &&
-                      scope.row.payStatus &&
-                      (scope.row.payway.value !== 4 ||
-                        (scope.row.payway.value === 4 &&
-                          scope.row.billStatus.value !== 2)) &&
-                      scope.row.payStatus.value !== 5 &&
-                      (scope.row.type === 1 || scope.row.type === 8) &&
-                      scope.row.edit === 1 &&
-                      power['sign-cw-rev-update'].state &&
-                      scope.row.isDeal != 3
+                    scope.row.payStatus &&
+                    (scope.row.payway.value !== 4 ||
+                      (scope.row.payway.value === 4 &&
+                        scope.row.billStatus.value !== 2)) &&
+                    scope.row.payStatus.value !== 5 &&
+                    (scope.row.type === 1 || scope.row.type === 8) &&
+                    scope.row.edit === 1 &&
+                    power['sign-cw-rev-update'].state &&
+                    scope.row.isDeal != 3 &&
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                      scope.row.payStatus.value !== 22 //不等于退款-审核中
                   "
                 >
                   编辑</el-button
                 >
               </template>
 
-              <!-- 新增转款按钮 &&power['sign-cw-bill-zk'].state-->
+              <!-- 转款 -->
               <template
                 v-if="
                   !scope.row.payway ||
@@ -778,8 +782,8 @@
                   >
                 </template>
               </template>
-
-              <template
+              <!-- 作废 -->
+              <!-- <template
                 v-if="
                   (((scope.row.type === 1 || scope.row.type === 8) &&
                     scope.row.billStatus &&
@@ -788,12 +792,13 @@
                     scope.row.isDel === 1
                 "
               >
-                <!-- <el-button type="text"
+                <el-button type="text"
                                   @click="btnOpera(scope.row,2)"
                                   v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
-                </el-button>-->
-              </template>
-              <div
+                </el-button>
+              </template> -->
+              <!-- 打印客户联 -->
+              <template
                 v-if="
                   power['sign-cw-bill-invoice'].state &&
                     scope.row.billStatus &&
@@ -804,8 +809,8 @@
                 <el-button type="text" @click="btnOpera(scope.row, 4)"
                   >打印客户联</el-button
                 >
-              </div>
-              <!-- refundFlag 0不能退款  1可以退款 -->
+              </template>
+              <!-- 退款 -->
               <template v-if="scope.row.refundFlag === 1">
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
@@ -1254,7 +1259,17 @@
         </el-row>
         <el-row>
           <span class="row-left">收款方:</span>
-          <span class="row-right">{{ refundData.inObjName }}</span>
+          <span class="row-right">
+            {{
+              refundData.type === 1 || refundData.type === 8
+                ? refundData.outObjType && refundData.outObjType.label
+                : refundData.inObjType && refundData.inObjType.label
+            }}-{{
+              refundData.type === 1 || refundData.type === 8
+                ? refundData.outObjName
+                : refundData.inObjName
+            }}
+          </span>
           <span class="row-left" style="margin-left:30px;">收款方式:</span>
           <span class="row-right">{{
             refundData.payway && refundData.payway.label
@@ -1274,6 +1289,7 @@
             :rows="4"
             placeholder="请填写备注信息"
             v-model="refundRemark"
+            maxlength="500"
           >
           </el-input>
         </el-row>
@@ -1285,6 +1301,7 @@
                 class="upload-context"
                 @getUrl="getFiles"
                 :scane="uploadScane"
+                :maxNum="3"
               >
                 <i class="iconfont icon-shangchuan"></i> <span>点击上传</span>
               </file-up>
@@ -1612,27 +1629,33 @@ export default {
     refundHandleConfirm() {
       if (this.refundData && this.refundData.inAccount) {
         let inAccount = JSON.parse(this.refundData.inAccount);
+        let param = {
+          contId: this.refundData.contId, //合同ID
+          remark: this.refundRemark, //退款备注
+          inObj: this.refundData.inObjName, //收款人
+          inObjId: this.refundData.inObjId, //收款ID
+          inObjType: this.refundData.inObjType.value, //收款类型
+          outObjName: this.refundData.outObjName, //付款人
+          outObjId: this.refundData.outObjId, //付款ID
+          outObjType: this.refundData.outObjType.value, //付款类型
+          moneyType: this.refundData.moneyTypeId,
+          moneyTypePid: this.refundData.moneyTypePid,
+          sk_pay_id: this.refundData.id, //支付ID
+          amount: this.refundData.amount, //退款金额
+          accountProperties: 1,
+          out_obj: this.refundData.outObjName, //付款人
+          settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
+          type: this.refundData.type, // 收付款类别
+          inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
+          status: this.refundData.status, // 订单状态
+          inAccount, //收款账户
+          filePath: this.files //凭证
+        };
+        console.log(param);
+        // return;
         //退款审核
         this.$ajax
-          .postJSON("api/refund/saveOrder", {
-            contId: this.refundData.contId, //合同ID
-            remark: this.refundRemark, //退款备注
-            inObj: this.refundData.inObjName, //收款人
-            inObjId: this.refundData.inObjId, //收款ID
-            inObjType: this.refundData.inObjType.value, //收款类型
-            moneyType: this.refundData.moneyTypeId,
-            moneyTypePid: this.refundData.moneyTypePid,
-            sk_pay_id: this.refundData.id, //支付ID
-            amount: this.refundData.amount, //退款金额
-            accountProperties: 1,
-            out_obj: this.refundData.outObjName, //付款人
-            settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
-            type: this.refundData.type, // 收付款类别
-            inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
-            status: this.refundData.status, // 订单状态
-            inAccount, //收款账户
-            filePath: this.files //凭证
-          })
+          .postJSON("api/refund/saveOrder", param)
           .then(res => {
             let data = res.data;
             if (data.status === 200) {
@@ -2893,6 +2916,7 @@ export default {
 }
 
 .upload-list {
+  width: 100%;
   display: flex;
   flex-wrap: nowrap;
   margin: @margin-base 0;
