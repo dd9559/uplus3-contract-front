@@ -811,7 +811,7 @@
                 >
               </template>
               <!-- 退款 -->
-              <template v-if="scope.row.refundFlag === 0">
+              <template v-if="scope.row.refundFlag === 1">
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
                 >
@@ -1262,8 +1262,8 @@
           <span class="row-right">
             {{
               refundData.type === 1 || refundData.type === 8
-                ? refundData.outObjType.label
-                : refundData.inObjType.label
+                ? refundData.outObjType && refundData.outObjType.label
+                : refundData.inObjType && refundData.inObjType.label
             }}-{{
               refundData.type === 1 || refundData.type === 8
                 ? refundData.outObjName
