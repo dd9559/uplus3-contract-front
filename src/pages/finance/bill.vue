@@ -1301,21 +1301,22 @@
               <file-up
                 class="upload-context"
                 @getUrl="getFiles"
-                :scane="uploadScane"
-                :maxNum="3"
+                :scane="refundUploadScane"
+                :maxNum="refundMaxNum"
+                :getNum="refundFiles.length"
               >
                 <i class="iconfont icon-shangchuan"></i> <span>点击上传</span>
               </file-up>
             </li>
             <li
-              v-for="(item, index) in imgList"
+              v-for="(item, index) in refundImgList"
               :key="index"
-              @mouseenter="activeLi = index"
-              @mouseleave="activeLi = ''"
-              @click="previewPhoto(imgList, index)"
+              @mouseenter="refundActiveLi = index"
+              @mouseleave="refundActiveLi = ''"
+              @click="previewPhoto(refundImgList, index)"
             >
               <img
-                :src="item | getSignImage(preloadFiles, _self)"
+                :src="item | getSignImage(refundPreloadFiles, _self)"
                 alt
                 v-if="isPictureFile(item.type)"
                 height="90px"
@@ -1327,7 +1328,7 @@
               <el-tooltip :content="item.name" placement="top">
                 <div class="span">{{ item.name }}</div>
               </el-tooltip>
-              <p v-show="activeLi === index" @click.stop="delFile">
+              <p v-show="refundActiveLi === index" @click.stop="delFile">
                 <i class="iconfont icon-tubiao-6"></i>
               </p>
             </li>
@@ -1526,11 +1527,12 @@ export default {
       refundTransterShow: false, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
-      uploadScane: { path: "sk", id: "" }, //上传场景值
-      imgList: [],
-      files: [],
-      preloadFiles: [],
-      activeLi: ""
+      refundUploadScane: { path: "sk", id: "" }, //上传场景值
+      refundImgList: [],
+      refundFiles: [],
+      refundPreloadFiles: [],
+      refundActiveLi: "",
+      refundMaxNum: 3
     };
   },
   mounted() {
@@ -1650,10 +1652,16 @@ export default {
           inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
           status: this.refundData.status, // 订单状态
           inAccount, //收款账户
-          filePath: this.files //凭证
+          filePath: this.refundFiles //凭证
         };
+
+        if (param.filePath.length > this.refundMaxNum) {
+          this.$message({ message: `最多上传${this.refundMaxNum}张` });
+          return;
+        }
         console.log(param);
-        // return;
+        console.log(this.$data);
+        // return
         //退款审核
         this.$ajax
           .postJSON("api/refund/saveOrder", param)
@@ -1684,39 +1692,37 @@ export default {
     refundChean() {
       this.refundData = {};
       this.refundRemark = "";
-      this.uploadScane = { path: "sk", id: "" };
-      this.imgList = [];
-      this.files = [];
-      this.preloadFiles = [];
-      this.activeLi = "";
+      this.refundUploadScane = { path: "sk", id: "" };
+      this.refundImgList = [];
+      this.refundFiles = [];
+      this.refundPreloadFiles = [];
+      this.refundActiveLi = "";
     },
     /**
      * 获取上传文件
      */
     getFiles: function(payload) {
-      /*this.files = this.files.concat(this.$tool.getFilePath(payload.param))
-                this.imgList = this.$tool.cutFilePath(this.files)*/
-
       if (payload) {
-        this.files = this.files.concat(this.$tool.getFilePath(payload.param));
+        this.refundFiles = this.refundFiles.concat(
+          this.$tool.getFilePath(payload.param)
+        );
       }
-      this.imgList = this.$tool.cutFilePath(this.files);
-      // this.preloadFiles=[].concat()
-      this.imgList.forEach(item => {
+      this.refundImgList = this.$tool.cutFilePath(this.refundFiles);
+      this.refundImgList.forEach(item => {
         if (this.isPictureFile(item.type)) {
-          let hasImg = this.preloadFiles.find(imgData =>
+          let hasImg = this.refundPreloadFiles.find(imgData =>
             imgData.includes(item.path)
           );
           !hasImg &&
             this.fileSign([].concat(item.path), "preload").then(res => {
-              this.preloadFiles.push(res[0]);
+              this.refundPreloadFiles.push(res[0]);
             });
         }
       });
     },
     delFile: function() {
-      this.imgList.splice(this.activeLi, 1);
-      this.files.splice(this.activeLi, 1);
+      this.refundImgList.splice(this.refundActiveLi, 1);
+      this.refundFiles.splice(this.refundActiveLi, 1);
     },
     // 收款
     getCollectMoney() {
@@ -2921,7 +2927,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   margin: @margin-base 0;
-  width: 810px;
+  // width: 810px;
   overflow-x: auto;
   > li {
     border: 1px dashed @color-D6;
