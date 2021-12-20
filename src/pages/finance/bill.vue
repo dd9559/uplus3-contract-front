@@ -736,6 +736,7 @@
                     power['sign-cw-rev-update'].state &&
                     scope.row.isDeal != 3 &&
                     scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                    scope.row.payStatus.value !== 21 && //不等于退款-失败
                       scope.row.payStatus.value !== 22 //不等于退款-审核中
                   "
                 >
