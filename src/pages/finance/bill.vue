@@ -812,7 +812,12 @@
                 >
               </template>
               <!-- 退款 -->
-              <template v-if="scope.row.refundFlag === 1">
+              <template
+                v-if="
+                  power['sign-cw-debt-refund'].state &&
+                    scope.row.refundFlag === 1
+                "
+              >
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
                 >
@@ -1243,6 +1248,7 @@
       width="600px"
       title="退款申请"
       :visible.sync="refundTransterShow"
+      :close-on-click-modal="false"
       append-to-body
     >
       <div class="refundBox">
@@ -1493,6 +1499,10 @@ export default {
         "sign-cw-zk-edit": {
           state: false,
           name: "转款编辑"
+        },
+        "sign-cw-debt-refund": {
+          state: false,
+          name: "退款申请"
         }
       },
       transterShow: false,
@@ -1630,6 +1640,7 @@ export default {
   methods: {
     //退款信息提交
     refundHandleConfirm() {
+      this.refundChean();
       if (this.refundData && this.refundData.inAccount) {
         let inAccount = JSON.parse(this.refundData.inAccount);
         let param = {
@@ -2019,11 +2030,8 @@ export default {
       } else if (type === 4) {
         this.$refs.layerInvoice.show(row.billId);
       } else if (type === 5) {
-        console.log(row);
-        this.refundData = row;
-        // let { payCode,address,inObjName,payway,moneyType,amount } = row
-        // console.log([payCode,address,inObjName,payway,moneyType,amount])
         //退款信息
+        this.refundData = row;
         this.refundTransterShow = true;
       }
     },
