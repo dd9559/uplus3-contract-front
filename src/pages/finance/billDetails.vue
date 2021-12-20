@@ -23,7 +23,8 @@
     </div>
     <ul class="bill-details-content">
       <!-- 合同信息(不等于转款信息) -->
-      <li v-if="activeItem!='转款信息'">
+      <!-- <li v-if="activeItem!='转款信息'"> -->
+      <li v-if="!['转款信息', 'refundInfo'].includes(activeItem)">
         <h4 class="f14">合同信息</h4>
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="合同编号">
@@ -31,7 +32,7 @@
               <span>{{billMsg.contCode}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" :label="activeItem==='付款信息'?'付款ID': activeItem === 'refundInfo' ? '退款ID' : '收款ID' ">
+          <el-table-column align="center" :label="activeItem==='付款信息'?'付款ID':'收款ID' ">
             <template slot-scope="scope">
               <span>{{billMsg.payCode}}</span>
             </template>
@@ -87,10 +88,6 @@
             </template>
           </el-table-column>
         </el-table>
-        <template v-if="activeItem === 'refundInfo'">
-          <h4 class="f14">退款金额</h4>
-          <span class="f14">合计：{{billMsg.amount}}元</span>
-        </template>
       </li>
       <!-- 合同信息(转款信息) -->
       <li v-if="activeItem=='转款信息'">
@@ -275,6 +272,65 @@
             </el-table>
           </template>
         </div>
+      </li>
+      <!-- 退款信息 合同信息 -->
+      <li v-if="activeItem === 'refundInfo'">
+        <h4 class="f14">合同信息</h4>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column label="合同编号" align="center">
+            <!-- 因为list是常量，不会改变，table组件又感知不到billMsg的改变(只会监听list), 所以将其变为作用域插槽, vue框架在父组件更新时会强制更新作用域插槽的内容 -->
+            <template slot-scope="scope">
+              <span>{{ billMsg.contCode }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="收付ID" align="center">
+            <span>{{ billMsg.payCodeSK }}</span>
+          </el-table-column>
+          <el-table-column label="物业地址" align="center">
+            <span>{{ billMsg.address | nullFormatter(2) }}</span>
+          </el-table-column>
+          <el-table-column label="收款方" align="center">
+            <span>{{ billMsg.inObjType | getLabel }}{{ billMsg.inObjName ? `-${billMsg.inObjName}` : '' }}</span>
+          </el-table-column>
+          <el-table-column label="收款时间" align="center">
+            <span>{{ billMsg.payStartTime | formatTime }}</span>
+          </el-table-column>
+          <el-table-column label="发起人" align="center">
+            <span>{{ billMsg.store }}-{{ billMsg.createByName }}</span>
+          </el-table-column>
+          <el-table-column label="款类" align="center">
+            <span>{{ billMsg.moneyTypeName }}</span>
+          </el-table-column>
+          <el-table-column label="交易单号" align="center">
+            <span>{{ billMsg.payTradeNo || '--' }}</span>
+          </el-table-column>
+        </el-table>
+        <div>
+          <h4 class="f14">退款金额</h4>
+          <span class="f14">合计：{{billMsg.amount}}元</span>
+        </div>
+        <el-table border :data="list" header-row-class-name="theader-bg">
+          <el-table-column align="center" label="收款方式">
+            <template slot-scope="scope">
+              <span>{{ billMsg.method }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="收款金额">
+            <span>{{ billMsg.amount }}</span>
+          </el-table-column>
+          <el-table-column align="center" label="退款ID">
+            <span>{{ billMsg.payCode }}</span>
+          </el-table-column>
+          <el-table-column align="center" label="退款金额">
+            <span>{{ billMsg.amount }}</span>
+          </el-table-column>
+          <el-table-column align="center" label="退款时间">
+            <span>{{ billMsg.updateTime | formatTime }}</span>
+          </el-table-column>
+          <el-table-column align="center" label="退款状态">
+            <span>{{ billMsg.checkStatus | getLabel}}</span>
+          </el-table-column>
+        </el-table>
       </li>
       <!-- 账户信息(付款信息) -->
       <li v-if="activeItem==='付款信息'">
