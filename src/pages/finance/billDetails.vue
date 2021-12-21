@@ -328,7 +328,7 @@
             <span>{{ billMsg.refundTime | formatTime }}</span>
           </el-table-column>
           <el-table-column align="center" label="退款状态">
-            <span>{{ billMsg.checkStatus | getLabel}}</span>
+            <span>{{ billMsg.refundStatus }}</span>
           </el-table-column>
         </el-table>
       </li>
