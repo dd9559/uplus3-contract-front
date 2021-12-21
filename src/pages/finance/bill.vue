@@ -1245,29 +1245,27 @@
     </div>
     <!-- 退款 -->
     <el-dialog
-      width="600px"
+      width="700px"
       title="退款申请"
       :visible.sync="refundTransterShow"
+      :before-close="refundHandleClose"
       :close-on-click-modal="false"
       append-to-body
     >
       <div class="refundBox">
-        <el-row>
-          <span class="row-left">合同编号:</span>
-          <span class="row-right">{{ refundData.contCode || "" }}</span>
+        <el-row class="row">
+          <div class="item">
+            <span>合同编号:</span>{{ refundData.contCode }}
+          </div>
+          <div class="item"><span>收付ID:</span>{{ refundData.payCode }}</div>
         </el-row>
-        <el-row>
-          <span class="row-left">收付ID:</span>
-          <span class="row-right">{{ refundData.payCode }}</span>
-        </el-row>
-        <el-row>
-          <span class="row-left">物业地址:</span>
-          <span class="row-right">{{ refundData.address }}</span>
-        </el-row>
-        <el-row>
-          <span class="row-left">收款方:</span>
-          <span class="row-right">
-            {{
+        <el-row class="row2"
+          ><span>物业地址:</span>{{ refundData.address }}</el-row
+        >
+        <el-row class="row">
+          <div class="item">
+            <span>收款方:</span
+            >{{
               refundData.type === 1 || refundData.type === 8
                 ? refundData.outObjType && refundData.outObjType.label
                 : refundData.inObjType && refundData.inObjType.label
@@ -1276,33 +1274,34 @@
                 ? refundData.outObjName
                 : refundData.inObjName
             }}
-          </span>
-          <span class="row-left" style="margin-left:30px;">收款方式:</span>
-          <span class="row-right">{{
-            refundData.payway && refundData.payway.label
-          }}</span>
-          <span class="row-left" style="margin-left:30px;">款类:</span>
-          <span class="row-right">{{ refundData.moneyType }}</span>
+          </div>
+          <div class="item">
+            <span>收款方式:</span
+            >{{ refundData.payway && refundData.payway.label }}
+          </div>
         </el-row>
-        <el-row>
-          <span class="row-left">收款金额:</span>
-          <span class="row-right">{{ refundData.amount }}元</span>
+        <el-row class="row">
+          <div class="item"><span>款类:</span>{{ refundData.moneyType }}</div>
+          <div class="item">
+            <span>收款金额:</span>{{ refundData.amount }} 元
+          </div>
         </el-row>
-        <el-row class="min-title"> 其他信息 </el-row>
-        <el-row>
-          <p>备注信息</p>
+
+        <el-row class="row2">
+          <span>备注信息</span>
           <el-input
+            style="margin-top:10px;"
             type="textarea"
             :rows="4"
             placeholder="请填写备注信息"
             v-model="refundRemark"
             maxlength="200"
-            :autosize="{ minRows: 2, maxRows: 4}"
+            :autosize="{ minRows: 2, maxRows: 4 }"
           >
           </el-input>
         </el-row>
-        <el-row> 退款凭证 </el-row>
-        <el-row>
+        <el-row class="row2"> <span>退款凭证</span> </el-row>
+        <el-row class="row2">
           <ul class="upload-list">
             <li>
               <file-up
@@ -1341,10 +1340,10 @@
             </li>
           </ul>
         </el-row>
-        <el-row class="upload-text">
+        <el-row class="row2 upload-text">
           * 退款申请通过后，本次收款金额会全额原路退还（含手续费）。
         </el-row>
-        <el-row>
+        <el-row class="row2">
           <el-button type="primary" @click="refundHandleConfirm"
             >提交退款申请</el-button
           >
@@ -1535,7 +1534,7 @@ export default {
       ],
       settleStatusTimeRange: [],
 
-      refundTransterShow: false, //退款弹层
+      refundTransterShow: true, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
       refundRemarkContLength: 200,
@@ -1672,7 +1671,9 @@ export default {
           return;
         }
         if (param.remark.length > this.refundRemarkContLength) {
-          this.$message({ message: `备注信息最多${this.refundRemarkContLength}字` });
+          this.$message({
+            message: `备注信息最多${this.refundRemarkContLength}字`
+          });
           return;
         }
         // console.log(param);
@@ -2920,78 +2921,86 @@ export default {
 
 .refundBox {
   padding: 15px;
-  .el-row {
+  .row {
     margin-bottom: 10px;
-    p {
-      padding: 0 0 10px 0;
-    }
-  }
-  .min-title {
-    font-size: 16px;
-    font-weight: bold;
-    padding-top: 10px;
-  }
-  .row-left {
-  }
-}
-
-.upload-list {
-  width: 100%;
-  display: flex;
-  flex-wrap: nowrap;
-  margin: @margin-base 0;
-  // width: 810px;
-  overflow-x: auto;
-  > li {
-    border: 1px dashed @color-D6;
-    width: 115px;
-    min-width: 115px;
-    height: 115px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .span {
-      width: 100px;
-      text-align: center;
-      /*word-break: break-all;*/
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    &:first-of-type {
-      .iconfont {
-        cursor: pointer;
-        color: @bg-th;
-        font-size: 58px;
-        position: relative;
-        display: flex;
-        align-items: center;
+    .item {
+      flex: 1;
+      span {
+        display: inline-block;
+        width: 70px;
+        color: #999;
       }
     }
+  }
+  .row2 {
+    margin-bottom: 10px;
+    span {
+      display: inline-block;
+      width: 70px;
+      color: #999;
+    }
+  }
 
-    &:nth-of-type(n + 1) {
-      margin-right: @margin-base;
-      position: relative;
+  .upload-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    margin: @margin-base 0;
+    overflow-x: auto;
+    > li {
+      border: 1px dashed @color-D6;
+      width: 115px;
+      min-width: 115px;
+      height: 115px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .upload-context {
+        text-align: center;
+      }
+      .span {
+        width: 100px;
+        text-align: center;
+        /*word-break: break-all;*/
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-      > p {
-        position: absolute;
-        top: 0;
-        right: 0;
-        color: @color-red;
-
+      &:first-of-type {
         .iconfont {
-          font-size: 20px;
+          cursor: pointer;
+          color: @bg-th;
+          font-size: 58px;
+          position: relative;
+          // display: flex;
+          // align-items: center;
+        }
+      }
+
+      &:nth-of-type(n + 1) {
+        margin-right: @margin-base;
+        position: relative;
+
+        > p {
+          position: absolute;
+          top: 0;
+          right: 0;
+          color: @color-red;
+
+          .iconfont {
+            font-size: 20px;
+          }
         }
       }
     }
   }
-}
 
-.upload-text {
-  color: @color-red;
-  padding: 0 @margin-base;
+  .upload-text {
+    color: @color-red;
+    padding: 0 @margin-base;
+  }
 }
 </style>
