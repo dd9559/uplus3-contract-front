@@ -290,13 +290,13 @@
             <span>{{ billMsg.address | nullFormatter(2) }}</span>
           </el-table-column>
           <el-table-column label="收款方" align="center">
-            <span>{{ billMsg.inObjType | getLabel }}{{ billMsg.inObjName ? `-${billMsg.inObjName}` : '' }}</span>
+            <span>{{ billMsg.outObjType | getLabel }}-{{ billMsg.outObj }}</span>
           </el-table-column>
           <el-table-column label="收款时间" align="center">
-            <span>{{ billMsg.payStartTime | formatTime }}</span>
+            <span>{{ billMsg.toAccountTime | formatTime }}</span>
           </el-table-column>
           <el-table-column label="发起人" align="center">
-            <span>{{ billMsg.store }}-{{ billMsg.createByName }}</span>
+            <span>{{ billMsg.inObjName || '--' }}</span>
           </el-table-column>
           <el-table-column label="款类" align="center">
             <span>{{ billMsg.moneyTypeName }}</span>
@@ -312,7 +312,7 @@
         <el-table border :data="list" header-row-class-name="theader-bg">
           <el-table-column align="center" label="收款方式">
             <template slot-scope="scope">
-              <span>{{ billMsg.method }}</span>
+              <span>{{ billMsg.payway | getLabel }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="收款金额">
@@ -325,7 +325,7 @@
             <span>{{ billMsg.amount }}</span>
           </el-table-column>
           <el-table-column align="center" label="退款时间">
-            <span>{{ billMsg.updateTime | formatTime }}</span>
+            <span>{{ billMsg.refundTime | formatTime }}</span>
           </el-table-column>
           <el-table-column align="center" label="退款状态">
             <span>{{ billMsg.checkStatus | getLabel}}</span>
