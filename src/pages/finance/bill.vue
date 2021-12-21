@@ -812,7 +812,12 @@
                 >
               </template>
               <!-- 退款 -->
-              <template v-if="scope.row.refundFlag === 1">
+              <template
+                v-if="
+                  power['sign-cw-debt-refund'].state &&
+                    scope.row.refundFlag === 1
+                "
+              >
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
                 >
@@ -1243,6 +1248,7 @@
       width="600px"
       title="退款申请"
       :visible.sync="refundTransterShow"
+      :close-on-click-modal="false"
       append-to-body
     >
       <div class="refundBox">
@@ -1290,7 +1296,8 @@
             :rows="4"
             placeholder="请填写备注信息"
             v-model="refundRemark"
-            maxlength="500"
+            maxlength="200"
+            :autosize="{ minRows: 2, maxRows: 4}"
           >
           </el-input>
         </el-row>
@@ -1493,6 +1500,10 @@ export default {
         "sign-cw-zk-edit": {
           state: false,
           name: "转款编辑"
+        },
+        "sign-cw-debt-refund": {
+          state: false,
+          name: "退款申请"
         }
       },
       transterShow: false,
@@ -1527,6 +1538,7 @@ export default {
       refundTransterShow: false, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
+      refundRemarkContLength: 200,
       refundUploadScane: { path: "sk", id: "" }, //上传场景值
       refundImgList: [],
       refundFiles: [],
@@ -1659,8 +1671,12 @@ export default {
           this.$message({ message: `最多上传${this.refundMaxNum}张` });
           return;
         }
-        console.log(param);
-        console.log(this.$data);
+        if (param.remark.length > this.refundRemarkContLength) {
+          this.$message({ message: `备注信息最多${this.refundRemarkContLength}字` });
+          return;
+        }
+        // console.log(param);
+        // console.log(this.$data);
         // return
         //退款审核
         this.$ajax
@@ -2019,11 +2035,8 @@ export default {
       } else if (type === 4) {
         this.$refs.layerInvoice.show(row.billId);
       } else if (type === 5) {
-        console.log(row);
-        this.refundData = row;
-        // let { payCode,address,inObjName,payway,moneyType,amount } = row
-        // console.log([payCode,address,inObjName,payway,moneyType,amount])
         //退款信息
+        this.refundData = row;
         this.refundTransterShow = true;
       }
     },
