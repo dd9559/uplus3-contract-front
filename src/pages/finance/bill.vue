@@ -1640,7 +1640,6 @@ export default {
   methods: {
     //退款信息提交
     refundHandleConfirm() {
-      this.refundChean();
       if (this.refundData && this.refundData.inAccount) {
         let inAccount = JSON.parse(this.refundData.inAccount);
         let param = {
