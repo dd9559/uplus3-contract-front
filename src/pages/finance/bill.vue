@@ -1296,7 +1296,8 @@
             :rows="4"
             placeholder="请填写备注信息"
             v-model="refundRemark"
-            maxlength="500"
+            maxlength="200"
+            :autosize="{ minRows: 2, maxRows: 4}"
           >
           </el-input>
         </el-row>
@@ -1537,6 +1538,7 @@ export default {
       refundTransterShow: false, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
+      refundRemarkContLength: 200,
       refundUploadScane: { path: "sk", id: "" }, //上传场景值
       refundImgList: [],
       refundFiles: [],
@@ -1669,8 +1671,12 @@ export default {
           this.$message({ message: `最多上传${this.refundMaxNum}张` });
           return;
         }
-        console.log(param);
-        console.log(this.$data);
+        if (param.remark.length > this.refundRemarkContLength) {
+          this.$message({ message: `备注信息最多${this.refundRemarkContLength}字` });
+          return;
+        }
+        // console.log(param);
+        // console.log(this.$data);
         // return
         //退款审核
         this.$ajax
