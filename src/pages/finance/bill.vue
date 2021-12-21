@@ -1534,7 +1534,7 @@ export default {
       ],
       settleStatusTimeRange: [],
 
-      refundTransterShow: true, //退款弹层
+      refundTransterShow: false, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
       refundRemarkContLength: 200,
