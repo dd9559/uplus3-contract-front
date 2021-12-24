@@ -170,8 +170,9 @@
           </template>
         </el-table-column>
         <el-table-column min-width="60" label="对象">
-          <template slot-scope="scope">
-            <span>{{(scope.row.type===1||scope.row.type===8)?scope.row.outObjType:scope.row.inObjType|getLabel}}-{{activeView===1?scope.row.outObjName:scope.row.inObjName}}</span>
+          <template slot-scope="{ row }">
+            <!-- <span>{{(row.type===1||row.type===8)?row.outObjType:row.inObjType|getLabel}}-{{activeView===1?row.outObjName:row.inObjName}}</span> -->
+            <span>{{[1, 8, 9].includes(row.type) ? row.outObjType : row.inObjType | getLabel}}-{{activeView === 1 || row.type === 9 ? row.outObjName : row.inObjName}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="activeView===1?'收款人':'付款人'" min-width="120">
@@ -208,7 +209,7 @@
         </el-table-column>
         <el-table-column min-width="90" label="金额（元）" prop="amount" :formatter="nullFormatter"></el-table-column>
         <!--<el-table-column align="center" label="刷卡手续费" prop="fee" :formatter="nullFormatter"></el-table-column>-->
-        <el-table-column :label="activeView===1?'收款时间':'付款时间'" :formatter="nullFormatter" min-width="90">
+        <el-table-column :label="activeView===1?'收款时间':'提交审核时间'" :formatter="nullFormatter" min-width="90">
           <template slot-scope="scope">
             <span>{{scope.row.createTime|formatTime}}</span>
           </template>
@@ -318,6 +319,9 @@ import { FILTER } from "@/assets/js/filter";
 import { MIXINS } from "@/assets/js/mixins";
 import { UPLOAD } from "@/assets/js/uploadMixins";
 import checkPerson from "@/components/checkPerson";
+
+const REFUND_STAT = 9;  //退款状态  接口约定
+const APPROVAL_TYPE = 14; //审批类型 接口约定
 
 export default {
   mixins: [FILTER, MIXINS, UPLOAD],
@@ -594,6 +598,7 @@ export default {
     // 选择审核人
     choseCheckPerson: function (row, type) {
       this.checkPerson.flowType = this.activeView === 1 ? 1 : 0;
+      row.type === REFUND_STAT && ( this.checkPerson.flowType = APPROVAL_TYPE ); 
       this.checkPerson.code = row.payCode;
       this.checkPerson.state = true;
       this.checkPerson.type = type;
@@ -776,7 +781,7 @@ export default {
         // this.setPath(this.getPath.concat({name: '收款详情'}))
       } else {
         param.query = {
-          tab: item.type === 9 ? 'refundInfo' : "付款信息",
+          tab: item.type === REFUND_STAT ? 'refundInfo' : "付款信息",
           id: item.id,
           power: this.getUser.user.empId === item.auditBy,
           print: this.power["sign-cw-bill-print"].state,
@@ -799,7 +804,7 @@ export default {
               bizCode: item.payCode,
               flowType: item.type === 1 || item.type === 8 
                 ? 1
-                : item.type === 9 ? 14 : 0,
+                : item.type === REFUND_STAT ? APPROVAL_TYPE : 0,
             })
             .then((res) => {
               res = res.data;

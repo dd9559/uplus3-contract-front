@@ -649,6 +649,7 @@
         >
           <template slot-scope="scope">
             <template v-if="scope.row.status != 4">
+              <!-- 开票 -->
               <template
                 v-if="
                   power['sign-cw-bill-invoice'].state && scope.row.isDel === 1 //权限+未删除
@@ -663,20 +664,24 @@
                     scope.row.billStatus &&
                     (scope.row.billStatus.value === 1 ||
                       scope.row.billStatus.value === 4) && //票据状态等于(未开票||已作废)
-                      scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 11 &&
+                    scope.row.payway &&
+                    scope.row.payway.value === 4 && //收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                      scope.row.payStatus.value !== 22) || //不等于退款-审核中
+                      (scope.row.isDeal == 3 &&
+                      scope.row.billStatus.value != 2 &&
                       scope.row.payStatusValue !== 11 &&
                       scope.row.payway &&
-                      scope.row.payway.value === 4) || //收付状态不等于(收款-未付款&&收款-收款失败)+线下转款
-                      (scope.row.isDeal == 3 &&
-                        scope.row.billStatus.value != 2 &&
-                        scope.row.payStatusValue !== 11 &&
-                        scope.row.payway &&
-                        scope.row.payway.value === 4 &&
-                        scope.row.payStatus.value !== 11) //转入收款+未开票+线下转款
+                      scope.row.payway.value === 4 &&
+                      scope.row.payStatus.value !== 11 && //转入收款+未开票+线下转款
+                      scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                        scope.row.payStatus.value !== 22) //不等于退款-审核中
                   "
                   >开票
                 </el-button>
-                <!-- 线上收款,需判断收付+支付状态或转入收款+未开票 -->
+                <!-- 线上收款 -->
                 <el-button
                   type="text"
                   @click="btnOpera(scope.row, 3)"
@@ -685,25 +690,22 @@
                     scope.row.billStatus &&
                     (scope.row.billStatus.value === 1 ||
                       scope.row.billStatus.value === 4) && //票据状态等于(未开票||已作废)
-                      scope.row.payStatusValue !== 4 &&
-                      scope.row.payStatusValue !== 11 &&
-                      scope.row.payStatus.value !== 11) || //收付状态不等于(收款-未付款&&收款-收款失败)
+                    scope.row.payStatusValue !== 4 &&
+                    scope.row.payStatusValue !== 11 &&
+                    scope.row.payStatus.value !== 11 && //收付状态不等于(收款-未付款&&收款-收款失败)
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                      scope.row.payStatus.value !== 22) || //不等于退款-审核中
                       (scope.row.isDeal == 3 &&
-                        scope.row.billStatus.value != 2 &&
-                        scope.row.payStatus.value !== 11) //转入收款+已开票+收付状态不等于(失败)
+                      scope.row.billStatus.value != 2 &&
+                      scope.row.payStatus.value !== 11 && //转入收款+已开票+收付状态不等于(失败)
+                      scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                        scope.row.payStatus.value !== 22) //不等于退款-审核中
                   "
                   >开票
                 </el-button>
               </template>
-              <!-- <el-button type="text" @click="btnOpera(scope.row,3)" v-if="(power['sign-cw-bill-invoice'].state&&
-                        (scope.row.type===1||scope.row.type===8)&&//支付状态等于(付款-已通过||付款-已通过-支付成功)
-                        scope.row.isDel===1&&//未删除
-                        scope.row.billStatus&&(scope.row.billStatus.value===1||scope.row.billStatus.value===4)&&//票据状态等于(未开票||已作废)
-                        scope.row.payStatusValue!==4&&scope.row.payStatusValue!==11&&scope.row.payStatus.value!==3)||//收付状态不等于(收款-未付款&&收款-收款失败)
-                        (scope.row.isDeal==3&&scope.row.billStatus.value!=2)//转入收款+已开票
-                        ">开票
-              </el-button> -->
 
+              <!-- 编辑 -->
               <template
                 v-if="
                   scope.row.isZK === 'true' &&
@@ -724,22 +726,25 @@
                   @click="btnOpera(scope.row, 1)"
                   v-if="
                     scope.row.payway &&
-                      scope.row.payStatus &&
-                      (scope.row.payway.value !== 4 ||
-                        (scope.row.payway.value === 4 &&
-                          scope.row.billStatus.value !== 2)) &&
-                      scope.row.payStatus.value !== 5 &&
-                      (scope.row.type === 1 || scope.row.type === 8) &&
-                      scope.row.edit === 1 &&
-                      power['sign-cw-rev-update'].state &&
-                      scope.row.isDeal != 3
+                    scope.row.payStatus &&
+                    (scope.row.payway.value !== 4 ||
+                      (scope.row.payway.value === 4 &&
+                        scope.row.billStatus.value !== 2)) &&
+                    scope.row.payStatus.value !== 5 &&
+                    (scope.row.type === 1 || scope.row.type === 8) &&
+                    scope.row.edit === 1 &&
+                    power['sign-cw-rev-update'].state &&
+                    scope.row.isDeal != 3 &&
+                    scope.row.payStatus.value !== 20 && //不等于退款-已通过
+                    scope.row.payStatus.value !== 21 && //不等于退款-失败
+                      scope.row.payStatus.value !== 22 //不等于退款-审核中
                   "
                 >
                   编辑</el-button
                 >
               </template>
 
-              <!-- 新增转款按钮 &&power['sign-cw-bill-zk'].state-->
+              <!-- 转款 -->
               <template
                 v-if="
                   !scope.row.payway ||
@@ -778,8 +783,8 @@
                   >
                 </template>
               </template>
-
-              <template
+              <!-- 作废 -->
+              <!-- <template
                 v-if="
                   (((scope.row.type === 1 || scope.row.type === 8) &&
                     scope.row.billStatus &&
@@ -788,12 +793,13 @@
                     scope.row.isDel === 1
                 "
               >
-                <!-- <el-button type="text"
+                <el-button type="text"
                                   @click="btnOpera(scope.row,2)"
                                   v-if="power['sign-cw-debt-void'].state&&(scope.row.caozuo===1||scope.row.caozuo===2)">作废
-                </el-button>-->
-              </template>
-              <div
+                </el-button>
+              </template> -->
+              <!-- 打印客户联 -->
+              <template
                 v-if="
                   power['sign-cw-bill-invoice'].state &&
                     scope.row.billStatus &&
@@ -804,9 +810,14 @@
                 <el-button type="text" @click="btnOpera(scope.row, 4)"
                   >打印客户联</el-button
                 >
-              </div>
-              <!-- <template v-if="(scope.row.payStatus.value===5&&scope.row.settleStatus==='0')"> -->
-              <template v-if="true">
+              </template>
+              <!-- 退款 -->
+              <template
+                v-if="
+                  power['sign-cw-debt-refund'].state &&
+                    scope.row.refundFlag === 1
+                "
+              >
                 <el-button type="text" @click="btnOpera(scope.row, 5)"
                   >退款</el-button
                 >
@@ -1234,70 +1245,84 @@
     </div>
     <!-- 退款 -->
     <el-dialog
-      width="600px"
-      title="退款信息"
+      width="700px"
+      title="退款申请"
       :visible.sync="refundTransterShow"
+      :before-close="refundHandleClose"
+      :close-on-click-modal="false"
       append-to-body
     >
       <div class="refundBox">
-        <el-row>
-          <span class="row-left">合同编号:</span>
-          <span class="row-right">{{ refundData.contCode || "" }}</span>
+        <el-row class="row">
+          <div class="item">
+            <span>合同编号:</span>{{ refundData.contCode }}
+          </div>
+          <div class="item"><span>收付ID:</span>{{ refundData.payCode }}</div>
         </el-row>
-        <el-row>
-          <span class="row-left">收付ID:</span>
-          <span class="row-right">{{ refundData.payCode }}</span>
+        <el-row class="row2"
+          ><span>物业地址:</span>{{ refundData.address }}</el-row
+        >
+        <el-row class="row">
+          <div class="item">
+            <span>收款方:</span
+            >{{
+              refundData.type === 1 || refundData.type === 8
+                ? refundData.outObjType && refundData.outObjType.label
+                : refundData.inObjType && refundData.inObjType.label
+            }}-{{
+              refundData.type === 1 || refundData.type === 8
+                ? refundData.outObjName
+                : refundData.inObjName
+            }}
+          </div>
+          <div class="item">
+            <span>收款方式:</span
+            >{{ refundData.payway && refundData.payway.label }}
+          </div>
         </el-row>
-        <el-row>
-          <span class="row-left">物业地址:</span>
-          <span class="row-right">{{ refundData.address }}</span>
+        <el-row class="row">
+          <div class="item"><span>款类:</span>{{ refundData.moneyType }}</div>
+          <div class="item">
+            <span>收款金额:</span>{{ refundData.amount }} 元
+          </div>
         </el-row>
-        <el-row>
-          <span class="row-left">收款方:</span>
-          <span class="row-right">{{ refundData.inObjName }}</span>
-          <span class="row-left">收款方式:</span>
-          <span class="row-right">{{
-            refundData.payway && refundData.payway.label
-          }}</span>
-          <span class="row-left">款类:</span>
-          <span class="row-right">{{ refundData.moneyType }}</span>
-        </el-row>
-        <el-row>
-          <span class="row-left">收款金额:</span>
-          <span class="row-right">{{ refundData.amount }}元</span>
-        </el-row>
-        <el-row class="min-title"> 其他信息 </el-row>
-        <el-row>
-          <p>备注信息</p>
+
+        <el-row class="row2">
+          <span>备注信息</span>
           <el-input
+            style="margin-top:10px;"
             type="textarea"
             :rows="4"
             placeholder="请填写备注信息"
             v-model="refundRemark"
+            maxlength="200"
+            :autosize="{ minRows: 2, maxRows: 4 }"
           >
           </el-input>
         </el-row>
-        <el-row> 退款凭证 </el-row>
-        <el-row>
+        <el-row class="row2"> <span>退款凭证</span> </el-row>
+        <el-row class="row2">
           <ul class="upload-list">
             <li>
               <file-up
                 class="upload-context"
                 @getUrl="getFiles"
-                :scane="uploadScane"
+                :scane="refundUploadScane"
+                :maxNum="refundMaxNum"
+                :getNum="refundFiles.length"
               >
                 <i class="iconfont icon-shangchuan"></i> <span>点击上传</span>
               </file-up>
             </li>
             <li
-              v-for="(item, index) in imgList"
+              v-for="(item, index) in refundImgList"
               :key="index"
-              @mouseenter="activeLi = index"
-              @mouseleave="activeLi = ''"
-              @click="previewPhoto(imgList, index)"
+              @mouseenter="refundActiveLi = index"
+              @mouseleave="refundActiveLi = ''"
+              @click="previewPhoto(refundImgList, index)"
             >
               <img
-                :src="item | getSignImage(preloadFiles, _self)"
+                :src="item | getSignImage(refundPreloadFiles, _self)"
                 alt
                 v-if="isPictureFile(item.type)"
                 height="90px"
@@ -1309,16 +1334,16 @@
               <el-tooltip :content="item.name" placement="top">
                 <div class="span">{{ item.name }}</div>
               </el-tooltip>
-              <p v-show="activeLi === index" @click.stop="delFile">
+              <p v-show="refundActiveLi === index" @click.stop="delFile">
                 <i class="iconfont icon-tubiao-6"></i>
               </p>
             </li>
           </ul>
         </el-row>
-        <el-row class="upload-text">
+        <el-row class="row2 upload-text">
           * 退款申请通过后，本次收款金额会全额原路退还（含手续费）。
         </el-row>
-        <el-row>
+        <el-row class="row2">
           <el-button type="primary" @click="refundHandleConfirm"
             >提交退款申请</el-button
           >
@@ -1474,6 +1499,10 @@ export default {
         "sign-cw-zk-edit": {
           state: false,
           name: "转款编辑"
+        },
+        "sign-cw-debt-refund": {
+          state: false,
+          name: "退款申请"
         }
       },
       transterShow: false,
@@ -1508,11 +1537,13 @@ export default {
       refundTransterShow: false, //退款弹层
       refundData: {}, //退款信息
       refundRemark: "", //退款备注
-      uploadScane: { path: "sk", id: "" }, //上传场景值
-      imgList: [],
-      files: [],
-      preloadFiles: [],
-      activeLi: ""
+      refundRemarkContLength: 200,
+      refundUploadScane: { path: "sk", id: "" }, //上传场景值
+      refundImgList: [],
+      refundFiles: [],
+      refundPreloadFiles: [],
+      refundActiveLi: "",
+      refundMaxNum: 3
     };
   },
   mounted() {
@@ -1612,34 +1643,57 @@ export default {
     refundHandleConfirm() {
       if (this.refundData && this.refundData.inAccount) {
         let inAccount = JSON.parse(this.refundData.inAccount);
+        let param = {
+          contId: this.refundData.contId, //合同ID
+          remark: this.refundRemark, //退款备注
+          inObj: this.refundData.inObjName, //收款人
+          inObjId: this.refundData.inObjId, //收款ID
+          inObjType: this.refundData.inObjType.value, //收款类型
+          outObjName: this.refundData.outObjName, //付款人
+          outObjId: this.refundData.outObjId, //付款ID
+          outObjType: this.refundData.outObjType.value, //付款类型
+          moneyType: this.refundData.moneyTypeId,
+          moneyTypePid: this.refundData.moneyTypePid,
+          sk_pay_id: this.refundData.id, //支付ID
+          amount: this.refundData.amount, //退款金额
+          accountProperties: 1,
+          out_obj: this.refundData.outObjName, //付款人
+          settleStatus: this.refundData.settleOldStatus, //已到账未结算状态
+          type: this.refundData.type, // 收付款类别
+          inAccountType: this.refundData.inAccountType, //线上下付款3线上 4线下
+          status: this.refundData.status, // 订单状态
+          inAccount, //收款账户
+          filePath: this.refundFiles //凭证
+        };
+
+        if (param.filePath.length > this.refundMaxNum) {
+          this.$message({ message: `最多上传${this.refundMaxNum}张` });
+          return;
+        }
+        if (param.remark.length > this.refundRemarkContLength) {
+          this.$message({
+            message: `备注信息最多${this.refundRemarkContLength}字`
+          });
+          return;
+        }
+        // console.log(param);
+        // console.log(this.$data);
+        // return
         //退款审核
         this.$ajax
-          .postJSON("api/refund/saveOrder", {
-            contId: this.refundData.contId, //合同ID
-            remark: this.refundRemark, //退款备注
-            inObj: this.refundData.inObjName, //收款人
-            inObjId: this.refundData.inObjId, //收款ID
-            inObjType: this.refundData.inObjType.value, //收款类型
-            moneyType: this.refundData.moneyTypeId,
-            moneyTypePid: this.refundData.moneyTypePid,
-            sk_pay_id: this.refundData.id, //支付ID
-            amount: this.refundData.amount, //退款金额
-            accountProperties: 1,
-            out_obj: this.refundData.outObjName, //付款人
-            inAccount, //收款账户
-            filePath: this.files //凭证
-          })
+          .postJSON("api/refund/saveOrder", param)
           .then(res => {
             let data = res.data;
             if (data.status === 200) {
               this.$message({
                 message: data.data["200"]
               });
-              this.refundTransterShow = false;
-              this.refundChean();
+              this.refundHandleClose();
+              this.getData();
             }
           })
           .catch(err => {
+            this.refundHandleClose();
             this.$message({
               message: err
             });
@@ -1655,39 +1709,37 @@ export default {
     refundChean() {
       this.refundData = {};
       this.refundRemark = "";
-      this.uploadScane = { path: "sk", id: "" };
-      this.imgList = [];
-      this.files = [];
-      this.preloadFiles = [];
-      this.activeLi = "";
+      this.refundUploadScane = { path: "sk", id: "" };
+      this.refundImgList = [];
+      this.refundFiles = [];
+      this.refundPreloadFiles = [];
+      this.refundActiveLi = "";
     },
     /**
      * 获取上传文件
      */
     getFiles: function(payload) {
-      /*this.files = this.files.concat(this.$tool.getFilePath(payload.param))
-                this.imgList = this.$tool.cutFilePath(this.files)*/
-
       if (payload) {
-        this.files = this.files.concat(this.$tool.getFilePath(payload.param));
+        this.refundFiles = this.refundFiles.concat(
+          this.$tool.getFilePath(payload.param)
+        );
       }
-      this.imgList = this.$tool.cutFilePath(this.files);
-      // this.preloadFiles=[].concat()
-      this.imgList.forEach(item => {
+      this.refundImgList = this.$tool.cutFilePath(this.refundFiles);
+      this.refundImgList.forEach(item => {
         if (this.isPictureFile(item.type)) {
-          let hasImg = this.preloadFiles.find(imgData =>
+          let hasImg = this.refundPreloadFiles.find(imgData =>
             imgData.includes(item.path)
           );
           !hasImg &&
             this.fileSign([].concat(item.path), "preload").then(res => {
-              this.preloadFiles.push(res[0]);
+              this.refundPreloadFiles.push(res[0]);
             });
         }
       });
     },
     delFile: function() {
-      this.imgList.splice(this.activeLi, 1);
-      this.files.splice(this.activeLi, 1);
+      this.refundImgList.splice(this.refundActiveLi, 1);
+      this.refundFiles.splice(this.refundActiveLi, 1);
     },
     // 收款
     getCollectMoney() {
@@ -1984,11 +2036,8 @@ export default {
       } else if (type === 4) {
         this.$refs.layerInvoice.show(row.billId);
       } else if (type === 5) {
-        // console.log(row);
-        this.refundData = row;
-        // let { payCode,address,inObjName,payway,moneyType,amount } = row
-        // console.log([payCode,address,inObjName,payway,moneyType,amount])
         //退款信息
+        this.refundData = row;
         this.refundTransterShow = true;
       }
     },
@@ -2872,75 +2921,86 @@ export default {
 
 .refundBox {
   padding: 15px;
-  .el-row {
+  .row {
     margin-bottom: 10px;
-    p {
-      padding: 0 0 10px 0;
-    }
-  }
-  .min-title {
-    font-size: 16px;
-    font-weight: bold;
-    padding-top: 10px;
-  }
-}
-
-.upload-list {
-  display: flex;
-  flex-wrap: nowrap;
-  margin: @margin-base 0;
-  width: 810px;
-  overflow-x: auto;
-  > li {
-    border: 1px dashed @color-D6;
-    width: 115px;
-    min-width: 115px;
-    height: 115px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .span {
-      width: 100px;
-      text-align: center;
-      /*word-break: break-all;*/
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    &:first-of-type {
-      .iconfont {
-        cursor: pointer;
-        color: @bg-th;
-        font-size: 58px;
-        position: relative;
-        display: flex;
-        align-items: center;
+    .item {
+      flex: 1;
+      span {
+        display: inline-block;
+        width: 70px;
+        color: #999;
       }
     }
+  }
+  .row2 {
+    margin-bottom: 10px;
+    span {
+      display: inline-block;
+      width: 70px;
+      color: #999;
+    }
+  }
 
-    &:nth-of-type(n + 1) {
-      margin-right: @margin-base;
-      position: relative;
+  .upload-list {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    margin: @margin-base 0;
+    overflow-x: auto;
+    > li {
+      border: 1px dashed @color-D6;
+      width: 115px;
+      min-width: 115px;
+      height: 115px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .upload-context {
+        text-align: center;
+      }
+      .span {
+        width: 100px;
+        text-align: center;
+        /*word-break: break-all;*/
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-      > p {
-        position: absolute;
-        top: 0;
-        right: 0;
-        color: @color-red;
-
+      &:first-of-type {
         .iconfont {
-          font-size: 20px;
+          cursor: pointer;
+          color: @bg-th;
+          font-size: 58px;
+          position: relative;
+          // display: flex;
+          // align-items: center;
+        }
+      }
+
+      &:nth-of-type(n + 1) {
+        margin-right: @margin-base;
+        position: relative;
+
+        > p {
+          position: absolute;
+          top: 0;
+          right: 0;
+          color: @color-red;
+
+          .iconfont {
+            font-size: 20px;
+          }
         }
       }
     }
   }
-}
 
-.upload-text {
-  color: @color-red;
-  padding: 0 @margin-base;
+  .upload-text {
+    color: @color-red;
+    padding: 0 @margin-base;
+  }
 }
 </style>
