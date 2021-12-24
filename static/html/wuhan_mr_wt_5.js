@@ -11,14 +11,12 @@ let sub = {
     }
   },
   checkbox_six: null,
-  checkbox_seven2: null,
   checkbox_nine: {
     state: true,
     stateful: function(index) {
       if(index == 0 || index == 1) {
         return { 
           checkbox_eleven : null,
-          checkbox_twelve: null,
           val21: null,
           val22: null
         }
@@ -109,26 +107,28 @@ contractConfig.inputListener(function (ev, tip) {
       if (ev.target.value.indexOf(",") != -1) {
         ev.target.value = ev.target.value.replace(/,/g, '')
       }
+      let d_val21 =  document.querySelector(`*[extendparam="val21"]`);
+      let d_val22 =  document.querySelector(`*[extendparam="val22"]`);
       if(cn_str == 'val21' || cn_str == 'val22') {
         ev.target.value = ev.target.value<=100 ? ev.target.value : 0
       }
       if(cn_str == 'val21' && ev.target.value!="") {
-        document.querySelector(`*[extendparam="val22"]`).innerHTML = (100 - ev.target.value).toFixed(2);
-        document.querySelector(`*[extendparam="val22"]`).classList.remove('input-before');
+        d_val22.innerHTML = (100*100 - ev.target.value*100)/100;
+        d_val22.classList.remove('input-before');
       }
       if(cn_str == 'val22' && ev.target.value!="") {
-        document.querySelector(`*[extendparam="val21"]`).innerHTML = (100 - ev.target.value).toFixed(2);
-        document.querySelector(`*[extendparam="val21"]`).classList.remove('input-before');
+        d_val21.innerHTML = (100*100 - ev.target.value*100)/100;
+        d_val21.classList.remove('input-before');
       }
       if(ev.target.value=="") {
-        document.querySelector(`*[extendparam="val21"]`).innerHTML = "";
-        document.querySelector(`*[extendparam="val22"]`).innerHTML = "";
-        document.querySelector(`*[extendparam="val21"]`).classList.add('input-before');
-        document.querySelector(`*[extendparam="val22"]`).classList.add('input-before');
+        d_val21.innerHTML = "";
+        d_val22.innerHTML = "";
+        d_val21.classList.add('input-before');
+        d_val22.classList.add('input-before');
       }
       let index = toChineseNumber(ev.target.value).indexOf('元')
       if(document.querySelector(`*[extendparam=${cn_str}_add]`))
-      document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index)
+      document.querySelector(`*[extendparam=${cn_str}_add]`).innerHTML = toChineseNumber(ev.target.value).substring(0, index) +  toChineseNumber(ev.target.value).substr(index);
       if (ev.target.value.indexOf(",") == -1) {
         document.querySelector(`*[extendparam=${cn_str}]`).innerHTML = formatMoney(ev.target.value)
       }
@@ -137,7 +137,15 @@ contractConfig.inputListener(function (ev, tip) {
 }, function (tip) {
   //获取输入框的默认值
   let initVal = tip.target.innerHTML
-  let strCn = tip.target.getAttribute('extendparam')
+  let strCn = tip.target.getAttribute('extendparam');
+  if(strCn == 'val21' && initVal!="")  {
+    document.querySelector(`*[extendparam="val22"]`).innerHTML = (100*100 - initVal*100)/100;
+    document.querySelector(`*[extendparam="val22"]`).classList.remove('input-before');
+  }
+  if(strCn == 'val22'  && initVal!="") {
+    document.querySelector(`*[extendparam="val21"]`).innerHTML = (100*100 - initVal*100)/100;
+    document.querySelector(`*[extendparam="val21"]`).classList.remove('input-before');
+  }
   if (Obj['cn_arr'].includes(strCn)) {
     if (initVal.length > 0) {
       if (initVal.indexOf(",") != -1) {
@@ -150,6 +158,7 @@ contractConfig.inputListener(function (ev, tip) {
           document.querySelector(`*[extendparam=${strCn}]`).innerHTML = formatMoney(initVal)
       }
     } else {
+      if(document.querySelector(`*[extendparam=${strCn}_add]`))
         document.querySelector(`*[extendparam=${strCn}_add]`).innerHTML = ''
     }
   }
@@ -157,47 +166,132 @@ contractConfig.inputListener(function (ev, tip) {
 
 // 勾选框逻辑
 contractConfig.checkboxListener(function () { }, function (obj, index) {
+  
   let attr = obj.currentTarget.getAttribute('name')
   let boxArray = document.getElementsByName(attr);
+
+  // 按揭服务费选项相关元素dom
+  let d_thirteen = document.querySelectorAll('[name="thirteen"]');
+  let d_one = document.querySelectorAll('[name="one"]');
+  let d_14 = document.querySelector('[extendparam="val14"]');
+  let d_14_add = document.querySelector('[extendparam="val14_add"]');
+
   if(attr == 'seven') { 
     let dom_eight = document.querySelectorAll('[name="eight"]');
     let dom_ten = document.querySelectorAll('[name="ten"]');
-    dom_eight.forEach(item => {
-      if(boxArray[0].querySelector('p').getAttribute('checked')) {
-        item.removeAttribute('readonly');
-      } else {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked')
-      }
-    })
-    dom_ten.forEach(item => {
-      if(boxArray[1].querySelector('p').getAttribute('checked')) {
-        item.removeAttribute('readonly');
-      } else {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked')
-      }
-    })
     // 如果选择了办理银行按揭
     if(boxArray[0].querySelector('p').hasAttribute('checked')) {
       sub.checkbox_eight = null;
+      dom_eight.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
     } else {
+      dom_eight.forEach(item => {
+        item.classList.add('pointer-events');
+        item.querySelector('p').removeAttribute('checked');
+      })
       delete sub.checkbox_eight;
+      clearServe();
     }
     // 如果选择的是自定义内容
     if(boxArray[1].querySelector('p').hasAttribute('checked')) {
       sub.val20 = null;
       sub.checkbox_ten = null;
+      dom_ten.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
     } else {
+      dom_ten.forEach(item => {
+        item.classList.add('pointer-events');
+        item.querySelector('p').removeAttribute('checked')
+      })
       delete sub.val20;
       delete sub.checkbox_ten;
+      document.querySelector('[extendparam="val20"]').innerHTML = "";  
+      document.querySelector('[extendparam="val20"]').classList.add('input-before');
     }
   }
-  if(attr == 'eight' || 'nine' || 'ten') {
+  if(attr == 'eight') {
+    if(boxArray[2].querySelector('p').getAttribute('checked')) {
+      d_thirteen.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
+      d_one.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
+      d_14.removeAttribute('systemparam');
+      sub.checkbox_thirteen =  {
+        state: true,
+        stateful: function(index) {
+          if(index == 0) {
+            return {
+              val14: null
+            }
+          }
+        }
+      }
+      sub.checkbox_one = null;
+    } else {
+      clearServe();
+    }
+  }
+  if(attr == 'nine') {
+    let d_fourteen = document.querySelectorAll('[name="fourteen"]');
+    let d_two = document.querySelectorAll('[name="two"]');
+    let d_three = document.querySelectorAll('[name="three"]');
+    let d_15 = document.querySelector('[extendparam="val15"]');
+    let d_15_add = document.querySelector('[extendparam="val15_add"]');
+    if(boxArray[2].querySelector('p').getAttribute('checked')) {
+      d_fourteen.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
+      d_two.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
+      d_three.forEach(item => {
+        item.classList.remove('pointer-events');
+      })
+      d_15.removeAttribute('systemparam');
+    } else {
+      d_fourteen.forEach(item => {
+        item.classList.add('pointer-events');
+        item.querySelector('p').removeAttribute('checked');
+      })
+      d_two.forEach(item => {
+        item.classList.add('pointer-events');
+        item.querySelector('p').removeAttribute('checked');
+      })
+      d_three.forEach(item => {
+        item.classList.add('pointer-events');
+        item.querySelector('p').removeAttribute('checked');
+      })
+      d_15.setAttribute('systemparam','true');
+      d_15.innerHTML = '';
+      d_15_add.innerHTML = '';
+      d_15.classList.add('input-before');
+    }
+  }
+  if(attr == 'thirteen') {
+    if(!boxArray[0].querySelector('p').hasAttribute('checked')) {
+      document.querySelector('[extendparam="val14"]').innerHTML = "";
+      document.querySelector('[extendparam="val14"]').classList.add('input-before');
+      document.querySelector('[extendparam="val14_add"]').innerHTML = "";
+    }
+  }
+  if(attr == 'fourteen') {
+    if(!boxArray[0].querySelector('p').hasAttribute('checked')) {
+      document.querySelector('[extendparam="val15"]').innerHTML = "";
+      document.querySelector('[extendparam="val15"]').classList.add('input-before');
+      document.querySelector('[extendparam="val15_add"]').innerHTML = "";
+      let d_two = document.querySelectorAll('[name="two"]');
+      d_two.forEach(item => {
+        item.querySelector('p').removeAttribute('checked');
+      })
+    }
+  }
+  function fn_checked() { // 判断甲方或者乙方是否被选择
     let checkboxA = [...document.getElementsByClassName('checkA')];
     let checkboxB = [...document.getElementsByClassName('checkB')];
-    let twelve0 = document.querySelectorAll('[name="twelve"]')[0];
-    let twelve1 = document.querySelectorAll('[name="twelve"]')[1];
     let checkedA = checkboxA.some(item => {
       return item.getAttribute('checked') == 'true';
     })
@@ -212,105 +306,38 @@ contractConfig.checkboxListener(function () { }, function (obj, index) {
     checkedB ? p1.setAttribute('checked', 'true') : p1.removeAttribute('checked');
     // 如果选择了委托办理人甲方或者乙方
     if(checkedA || checkedB) {
-      twelve0.removeAttribute('readonly');
-      twelve1.removeAttribute('readonly');
       d_21.removeAttribute('systemparam');
       d_22.removeAttribute('systemparam');
-      sub.checkbox_twelve = null;
       sub.val21 = null;
       sub.val22 = null;
     } else {
-      twelve0.setAttribute('readonly','readonly');
-      twelve1.setAttribute('readonly','readonly');
       d_21.setAttribute('systemparam','true');
       d_22.setAttribute('systemparam','true');
-      twelve0.querySelector('p').removeAttribute('checked');
-      twelve1.querySelector('p').removeAttribute('checked');
       d_21.innerHTML = '';
       d_22.innerHTML = '';
       d_21.classList.add('input-before');
       d_22.classList.add('input-before');
-      delete sub.checkbox_twelve;
       delete sub.val21;
       delete sub.val22;
     }
   }
-  if(attr == 'eight') {
-    let d_thirteen = document.querySelectorAll('[name="thirteen"]');
-    let d_one = document.querySelectorAll('[name="one"]');
-    let d_14 = document.querySelector('[extendparam="val14"]');
-    let d_14_add = document.querySelector('[extendparam="val14_add"]');
-    if(boxArray[2].querySelector('p').getAttribute('checked')) {
-      d_thirteen.forEach(item => {
-        item.removeAttribute('readonly');
-      })
-      d_one.forEach(item => {
-        item.removeAttribute('readonly');
-      })
-      d_14.removeAttribute('systemparam');
-      // sub.checkbox_thirteen = null;
-      sub.checkbox_thirteen =  {
-        state: true,
-        stateful: function(index) {
-          if(index == 0) {
-            return {
-              val14: null
-            }
-          }
-        }
-      }
-    } else {
-      delete sub.checkbox_thirteen;
-      d_one.forEach(item => {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked');
-      })
-      d_thirteen.forEach(item => {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked');
-      })
-      d_14.setAttribute('systemparam','true');
-      d_14.innerHTML = '';
-      d_14_add.innerHTML = '';
-      d_14.classList.add('input-before');
-    }
+  function clearServe() {  //清空按揭服务费选项
+    d_one.forEach(item => {
+      item.classList.add('pointer-events');
+      item.querySelector('p').removeAttribute('checked');
+    })
+    d_thirteen.forEach(item => {
+      item.classList.add('pointer-events');
+      item.querySelector('p').removeAttribute('checked');
+    })
+    d_14.setAttribute('systemparam','true');
+    d_14.innerHTML = '';
+    d_14_add.innerHTML = '';
+    d_14.classList.add('input-before');
+    delete sub.checkbox_thirteen;
+    delete sub.checkbox_one;
   }
-  if(attr == 'nine') {
-    let d_fourteen = document.querySelectorAll('[name="fourteen"]');
-    let d_two = document.querySelectorAll('[name="two"]');
-    let d_three = document.querySelectorAll('[name="three"]');
-    let d_15 = document.querySelector('[extendparam="val15"]');
-    let d_15_add = document.querySelector('[extendparam="val15_add"]');
-    if(boxArray[2].querySelector('p').getAttribute('checked')) {
-      d_fourteen.forEach(item => {
-        item.removeAttribute('readonly');
-      })
-      d_two.forEach(item => {
-        item.removeAttribute('readonly');
-      })
-      d_three.forEach(item => {
-        item.removeAttribute('readonly');
-      })
-      d_15.removeAttribute('systemparam');
-    } else {
-      d_fourteen.forEach(item => {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked');
-      })
-      d_two.forEach(item => {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked');
-      })
-      d_three.forEach(item => {
-        item.setAttribute('readonly','readonly');
-        item.querySelector('p').removeAttribute('checked');
-      })
-      d_15.setAttribute('systemparam','true');
-      d_15.innerHTML = '';
-      d_15_add.innerHTML = '';
-      d_15.classList.add('input-before');
-    }
-  }
+  fn_checked();
 })
 
 
@@ -332,32 +359,32 @@ if (mainBtn) {
 }
 
 //基础数据赋值
-// let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
-let msg = {
-  code: "S0001191107007",
-  companyNames: ["金银湖三级门店哦"],
-  guestCardType: "军官证",
-  guestCardTypes: "",
-  guestID: "132",
-  guestIDs: "",
-  guestName: "然爱迪生",
-  guestNames: "",
-  guestTel: "13011111111",
-  guestTels: "",
-  id: 3354,
-  isentrust: 1,
-  ownerCardType: "营业执照",
-  ownerCardTypes: "",
-  ownerID: "123",
-  ownerIDs: "",
-  ownerName: "熊先",
-  ownerNames: "",
-  ownerTel: "18888888888",
-  ownerTels: "",
-  signDate: 1592465819508,
-  propertyAddr: "a市b区c",
-  singleCompany: "",
-}
+let msg = JSON.parse(window.sessionStorage.getItem("contractMsg"));
+// let msg = {
+//   code: "S0001191107007",
+//   companyNames: ["金银湖三级门店哦"],
+//   guestCardType: "军官证",
+//   guestCardTypes: "",
+//   guestID: "132",
+//   guestIDs: "",
+//   guestName: "然爱迪生",
+//   guestNames: "",
+//   guestTel: "13011111111",
+//   guestTels: "",
+//   id: 3354,
+//   isentrust: 1,
+//   ownerCardType: "营业执照",
+//   ownerCardTypes: "",
+//   ownerID: "123",
+//   ownerIDs: "",
+//   ownerName: "熊先",
+//   ownerNames: "",
+//   ownerTel: "18888888888",
+//   ownerTels: "",
+//   signDate: 1592465819508,
+//   propertyAddr: "a市b区c",
+//   singleCompany: "",
+// }
 for (let readonlyItem in msg) {
   let onlyReadDom = Array.from(document.querySelectorAll(`*[systemparam=${readonlyItem}]`));
   if (onlyReadDom.length > 0) {

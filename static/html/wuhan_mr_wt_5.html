@@ -121,7 +121,7 @@
             line-height: 1;
         }
 
-        .info-checkbox>p[type="check"] {
+        .info-checkbox>p[type="check"]{
             display: inline-block;
             width: 10px;
             height: 10px;
@@ -151,7 +151,6 @@
             background-size: contain;
             background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdklEQVQ4T42TvUrEQBSFz1kt1BewU8QnSJ5gu0mrsGDjRAt/UVBBWRtdsdgVBBdcFBHFZK0U+8TKwkIsEt/Ffq9M9se4GzVTDZM5X865dy5tpd8EeIlDv4z8i7ajGwCmaSt3D8QJBPUo9LZzMIzmBsQiIKs0AsuZLxOFah6IrdxbI5YW1uNn7zIBmGU7ugLwUCC1OPD3s5xYyr0gsdYVmzs9QNuJrhIsA1KJAv8oDemKIa3tKGzWu99+ABInyj0DsSVo7cdBs5Y+6xcPOOjF6UCMAChMGmCW+FdAEqeT1+zTbvprMxChe8FS+pzkRgIQOY5D/yCrsFkA2kpfgVwyf6YUxpMIkNMo8Hf/c0BLuXckdFYRRaQRh/5mGvLtoFQasj7H7gnM/d1GuY5Cf/lnG0ulIftz9BHgTJ6HBEkgK6Y8RLE4bI9MPPwnTrW4/ZQFfhx6C7SUfiI5m2cOOpDvYRK5puW47wK8fgTeTo5J7EW3lPZITH0B+X227Y6+aJ4AAAAASUVORK5CYII=");
         }
-
         span[tag='input-auto'] {
             border-bottom: 1px solid gray;
             padding: 2px 10px;
@@ -429,16 +428,25 @@
             width: 125px;
         }
         .table1 {
-            width: calc(100% - 40px);
             margin-left: 30px;
             margin-top: 10px;
-        }
-        .th1 {
-            width: 30%;
         }
         .table1 td {
             padding: 0 20px;
             text-align: left;
+        }
+        .table1 th {
+            padding: 0 20px;
+            text-align: center;
+        }
+        .table1 th:nth-child(1) {
+            width: 160px;
+        }
+        .table1 th:nth-child(2) {
+            width: 420px;
+        }
+        .pointer-events {
+            pointer-events: none;
         }
     </style>
 </head>
@@ -466,7 +474,7 @@
                 <ul>
                     <li><span>甲方（出卖人）：</span><span class="text-limit input-before" tag="input-auto"
                             systemparam="ownerName"></span></li>
-                    <li><span>身份证号/统一社会信用代码：：</span><span class="text-limit input-before" tag="input-auto"
+                    <li><span>身份证号/统一社会信用代码：</span><span class="text-limit input-before" tag="input-auto"
                             systemparam="ownerID"></span></li>
                 </ul>
                 <ul>
@@ -541,23 +549,23 @@
                 <p><strong>2、针对“第一条第1项”所述付款方式，为保证房产交易全流程的顺利完成，甲、乙双方需配套完成的交易后期手续、及委托办理责任人为：</strong></p>
                 <table border="1" class="table1" cellpadding="0" cellspacing="0">
                     <tr>
-                      <th class="th1">交易后期服务内容</th>
+                      <th>交易后期服务内容</th>
                       <th>委托办理人</th>
                     </tr>
                     <tr>
                       <td><span class="info-checkbox"  name="seven" more="true"><p type="check"></p></span>办理银行按揭</td>
-                      <td><span class="info-checkbox"  name="eight" readonly="readonly"><p class="checkA" type="check"></p></span>甲方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="eight" readonly="readonly"><p class="checkB" type="check"></p></span>乙方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="eight" readonly="readonly"><p type="check"></p></span>丙方或丙方推荐的第三方服务机构</td>
+                      <td><span class="info-checkbox pointer-events"  name="eight"><p class="checkA" type="check"></p></span>甲方&nbsp;&nbsp;&nbsp;<span class="info-checkbox pointer-events"  name="eight"><p class="checkB" type="check"></p></span>乙方&nbsp;&nbsp;&nbsp;<span class="info-checkbox pointer-events"  name="eight"><p type="check"></p></span>丙方或丙方推荐的第三方服务机构</td>
                     </tr>
                     <tr>
-                      <td><span class="info-checkbox"  name="seven2" readonly="readonly"><p type="check" checked="true"></p></span>办理过户服务</td>
+                      <td><span class="info-checkbox pointer-events" name="seven2"><p type="check" checked="true"></p></span>办理过户服务</td>
                       <td><span class="info-checkbox" name="nine"><p class="checkA" type="check"></p></span>甲方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="nine"><p class="checkB" type="check"></p></span>乙方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="nine"><p type="check"></p></span>丙方或丙方推荐的第三方服务机构</td>
                     </tr>
                     <tr>
                       <td><span class="info-checkbox"  name="seven" more="true"><p type="check"></p></span><span class="text-limit input-before" tag="input-auto" extendParam="val20"></span></td>
-                      <td><span class="info-checkbox"  name="ten" readonly="readonly"><p class="checkA" type="check"></p></span>甲方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="ten" readonly="readonly"><p class="checkB" type="check"></p></span>乙方&nbsp;&nbsp;&nbsp;<span class="info-checkbox"  name="ten" readonly="readonly"><p type="check"></p></span>丙方或丙方推荐的第三方服务机构</td>
+                      <td><span class="info-checkbox pointer-events"  name="ten"><p class="checkA" type="check"></p></span>甲方&nbsp;&nbsp;&nbsp;<span class="info-checkbox pointer-events"  name="ten"><p class="checkB" type="check"></p></span>乙方&nbsp;&nbsp;&nbsp;<span class="info-checkbox pointer-events"  name="ten"><p type="check"></p></span>丙方或丙方推荐的第三方服务机构</td>
                     </tr>
                   </table>
-                  <div class="mt10">针对上述由（<span class="info-checkbox"  name="eleven" readonly="readonly"><p type="check"></p></span>甲方 <span class="info-checkbox"  name="eleven" readonly="readonly"><p type="check"></p></span>乙方）自行办理的服务内容， 甲、乙双方确认已知悉自办交易后期相关服务存在的风险。甲、乙双方同意，因自行办理交易后期服务所产生的一切纠纷及对本协议其他方造成的损失，由<span class="info-checkbox"  name="twelve" more="true" readonly="readonly"><p type="check"></p></span>甲方承担<span class="input-before" listen="number" max="5" extendParam="val21" systemparam="true" tag="input-auto"></span>% ， <span class="info-checkbox"  name="twelve" more="true" readonly="readonly"><p type="check"></p></span>乙方承担<span class="input-before" listen="number" max="5" systemparam="true" extendParam="val22" tag="input-auto"></span>% ，与丙方无关。</div>
+                  <div class="mt10">针对上述由（<span class="info-checkbox pointer-events"  name="eleven"><p type="check"></p></span>甲方 <span class="info-checkbox pointer-events"  name="eleven"><p type="check"></p></span>乙方）自行办理的服务内容， 甲、乙双方确认已知悉自办交易后期相关服务存在的风险。甲、乙双方同意，因自行办理交易后期服务所产生的一切纠纷及对本协议其他方造成的损失，由甲方承担<span class="input-before" listen="number" max="5" extendParam="val21" systemparam="true" tag="input-auto"></span>% ，乙方承担<span class="input-before" listen="number" max="5" systemparam="true" extendParam="val22" tag="input-auto"></span>% ，与丙方无关。</div>
             </div>
             <!-- <div class="1h18 agreements"> -->
             <!-- 第二条 -->
@@ -569,24 +577,24 @@
                 上述按揭贷款服务费由：
             </p>
             <div class="lh18 agreements">
-                <span class="info-checkbox"  name="thirteen" readonly="readonly"><p type="check"></p></span>丙方向乙方提供上述按揭服务，并收取上述按揭服务费；本项按揭服务费人民币为（小写）<span class="input-before" listen="number" max="16" extendParam="val14" systemparam="true"
+                <span class="info-checkbox pointer-events"  name="thirteen"><p type="check"></p></span>丙方向乙方提供上述按揭服务，并收取上述按揭服务费；本项按揭服务费人民币为（小写）<span class="input-before" listen="number" max="16" extendParam="val14" systemparam="true"
                 tag="input-auto"></span>元整
             (金额大写：<span tag="input-auto" extendparam="val14_add" systemParam="true"
                 class="input-readonly"></span>元)，由乙方承担，应于本合同签订之日支付。
             </div>
             <div class="lh18 agreements">
-                <span class="info-checkbox"  name="thirteen" readonly="readonly"><p type="check"></p></span>丙方推荐第三方服务机构提供上述按揭服务，具体收费标准以第三方实际收费标准为准。
+                <span class="info-checkbox pointer-events"  name="thirteen"><p type="check"></p></span>丙方推荐第三方服务机构提供上述按揭服务，具体收费标准以第三方实际收费标准为准。
             </div>
             <p class="1h18 agreements">三方同意，乙方支付按揭服务费后，由丙方或第三方服务机构启动服务工作,向其推荐房屋评估、贷款担保服务机构及贷款方。</p>
             <div class="1h18 agreements">
                 <span>其他可能产生的费用，包括但不限于抵押登记费、借款合同公证费、划款委托公证费、单身公证费、委托公证费、合同书工本费以及其他办理贷款业务产生的费用等由</span>
-                <div class="info-checkbox" name="one" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="one">
                     <p type="check"></p>甲方
                 </div>
-                <div class="info-checkbox" name="one" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="one">
                     <p type="check"></p>乙方
                 </div>
-                <div class="info-checkbox" name="one" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="one">
                     <p type="check"></p>甲、乙方承担
                 </div>。
             </div>
@@ -594,31 +602,31 @@
             <p class="1h18 agreements">甲、乙双方委托丙方或丙方推荐的第三方服务机构协助办理该房屋的产权过户手续。</p>
             <p class="lh18 agreements">上述过户服务费由：</p>
             <div class="1h18 agreements">
-                <span class="info-checkbox"  name="fourteen" readonly="readonly"><p type="check"></p></span>丙方向乙方提供上述过户服务，并收取上述过户服务费；本项过户服务费为人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val15" systemParam="true"
+                <span class="info-checkbox pointer-events"  name="fourteen"><p type="check"></p></span>丙方向乙方提供上述过户服务，并收取上述过户服务费；本项过户服务费为人民币（小写）<span class="input-before" listen="number" max="16" extendParam="val15" systemParam="true"
                 tag="input-auto"></span>元
                 (金额大写：<span tag="input-auto" extendparam="val15_add" systemParam="true"
                 class="input-readonly"></span>元)，由
-                    <div class="info-checkbox" name="two" readonly="readonly">
+                    <div class="info-checkbox pointer-events" name="two">
                         <p type="check"></p>甲方
                     </div>
                     /
-                    <div class="info-checkbox" name="two" readonly="readonly">
+                    <div class="info-checkbox pointer-events" name="two">
                         <p type="check"></p>乙方
                     </div>
                     承担，应于本合同签订之日支付。
             </div>
             <div class="lh18 agreements">
-                <span class="info-checkbox"  name="fourteen" readonly="readonly"><p type="check"></p></span>丙方推荐的第三方服务机构提供上述过户服务，具体收费标准以第三方实际收费标准为准。
+                <span class="info-checkbox pointer-events"  name="fourteen"><p type="check"></p></span>丙方推荐的第三方服务机构提供上述过户服务，具体收费标准以第三方实际收费标准为准。
             </div>
             <div class="1h18 agreements">
                 <span>三方同意，乙方支付过户服务费后，由丙方或第三方服务机构启动过户服务工作。该房屋产权人变更为乙方之日，视为服务成功。因办理产权过户手续产生的其他费用，由</span>
-                <div class="info-checkbox" name="three" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="three">
                     <p type="check"></p>甲方
                 </div>
-                <div class="info-checkbox" name="three" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="three">
                     <p type="check"></p>乙方
                 </div>
-                <div class="info-checkbox" name="three" readonly="readonly">
+                <div class="info-checkbox pointer-events" name="three">
                     <p type="check"></p>甲、乙方承担
                 </div>。
             </div>
@@ -692,7 +700,7 @@
             <p class="lh18 agreements fontBold" style="color: red;">5、若甲乙双方选择丙方推荐的第三方服务机构提供按揭和/或过户服务，因相关服务发生的纠纷由甲乙双方与第三方服务机构协商或通过法律途径解决，与丙方无关。</p>
 
             <!-- 第六条 -->
-            <p class="1h18 agreements navTitle"><strong>第六条、保密事项</strong></p>
+            <p class="page1 1h18 agreements navTitle"><strong>第六条、保密事项</strong></p>
             <p class="1h18 agreements">1、甲乙丙三方均应充分保守本合同所涉及的商业秘密，任何一方不得对外提供或泄露本合同所约定的内容。</p>
             <p class="1h18 agreements">2、如一方存在欺诈、恶意拖欠等违约情形的，各方有权向贷款方（如有）、各委托的代理人及相关部门披露违约方的相关信息。</p>
 
@@ -929,12 +937,12 @@
             </div>
         </div>
 </body>
-<!-- <script type="text/javascript" src="/browser-polyfill.min.js"></script>
+<script type="text/javascript" src="/browser-polyfill.min.js"></script>
 <script type="text/javascript" src="/browser.min.js"></script>
 <script type="text/javascript" src="/datepicker.js"></script>
 <script type="text/javascript" src="/dropdown.js"></script>
-<script type="text/javascript" src="/js/bundle_WT_MR_20201027.js"></script> -->
-<script>
+<script type="text/javascript" src="/js/wuhan_mr_wt_5_bundle.js"></script>
+<!-- <script>
     (function () {
         var scriptList = document.getElementsByTagName("script")
         console.log(scriptList)
@@ -943,7 +951,7 @@
             var host_other = "http://sign2.jjw.com:28879"
             var addrList = ["browser-polyfill.min.js", "browser.min.js", "datepicker.js", "dropdown.js", "js/bundle_mm20190402.js", "datepicker.css"]
             for (let i = 0; i < addrList.length; i++) {
-                if (window.location.host === 'localhost:28879') {
+                if (window.location.host === 'localhost:8080') {
                     if (addrList[i].indexOf('bundle') > -1) {
                         // addrList[i]=host_other+'/'+addrList[i]
                         addrList[i] = './wuhan_mr_wt_5.js'
@@ -970,6 +978,6 @@
             }
         }
     })();
-</script>
+</script> -->
 
 </html>
