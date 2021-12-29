@@ -295,7 +295,7 @@
           <el-table-column label="收款时间" align="center">
             <span>{{ billMsg.toAccountTime | formatTime }}</span>
           </el-table-column>
-          <el-table-column label="发起人" align="center">
+          <el-table-column label="收款人" align="center">
             <span>{{billMsg.store}}-{{ billMsg.inObjName }}</span>
           </el-table-column>
           <el-table-column label="款类" align="center">
