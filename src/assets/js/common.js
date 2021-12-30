@@ -1202,6 +1202,23 @@ let TOOL = {
         dataArr.push({label:data.getFullYear()+"年"+(data.getMonth()+1)+"月",value:data.getFullYear()+(data.getMonth()+1).toString().padStart(2, '0')})
     }
     return dataArr;
+  },
+  // 事件节流
+  eventThrottle(fun, delay=3000) {
+    let last, deferTimer;
+    return function () {
+      let now = +new Date();
+      if (last && now < last + delay) {
+        clearTimeout(deferTimer);
+        deferTimer = setTimeout(function () {
+          last = now;
+          fun.apply(this, arguments);
+        }, delay);
+      } else {
+        last = now;
+        fun.apply(this, arguments);
+      }
+    };
   }
 };
 
