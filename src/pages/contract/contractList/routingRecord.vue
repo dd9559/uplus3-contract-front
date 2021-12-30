@@ -189,7 +189,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>
-        <el-button round type="primary" v-dbClick @click="commit" v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
+        <el-button round type="primary" v-dbClick @click="commit" :disabled="isDisabled">确定</el-button>
       </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -733,7 +733,7 @@ export default {
     },
     commit(){
       let that = this
-      TOOL.eventThrottle(function(){
+      // TOOL.eventThrottle(function(){
         let param = {
         storeId: Number.parseInt(that.receiptData.currDeptId),
         fromId: that.receiptData.ids,
@@ -747,13 +747,15 @@ export default {
       if (that.uploadData.length > 0) {
         param.signImg = that.uploadData.map(item => item.contractSign)
       }
-      // that.isDisabled = true
+      that.isDisabled = true
       that.$ajax.postJSON("/api/separate/currency_pay", param)
       .then(res => {
         let data = res.data;
         if (res.data.status === 200) {
           that.dialogReceipt = false
-          // that.isDisabled = false
+          setTimeout(()=>{
+            that.isDisabled = false
+          },3000)
             // 数据刷新
           that.queryFn();
           that.$message({
@@ -763,6 +765,9 @@ export default {
         }
       }).catch(error => {
           that.dialogReceipt = false
+          setTimeout(()=>{
+            that.isDisabled = false
+          },3000)
           // that.isDisabled = false
           let str = error
           if (error === '用户不存在') {
@@ -772,7 +777,7 @@ export default {
             message: str
           })
         });
-      })()
+      // })()
     },
     closeReceipt(){
       this.receiptReason='';

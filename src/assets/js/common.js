@@ -1209,12 +1209,14 @@ let TOOL = {
     return function () {
       let now = +new Date();
       if (last && now < last + delay) {
+        console.log(11)
         clearTimeout(deferTimer);
         deferTimer = setTimeout(function () {
           last = now;
           fun.apply(this, arguments);
         }, delay);
       } else {
+        console.log(22)
         last = now;
         fun.apply(this, arguments);
       }
