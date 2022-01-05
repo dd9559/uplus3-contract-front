@@ -1120,6 +1120,7 @@
       :contId="settleId"
       :layerAudit="layerSettle"
       :settlementIsEntrust="settlementIsEntrust"
+      :setactualSettlement="setactualSettlement"
       @closeSettle="closeSettle"
       v-if="settleId"
     ></layerSettle>
@@ -1374,6 +1375,7 @@ export default {
       layerAudit: {},
       jiesuan: false,
       settlementIsEntrust: -1,
+      setactualSettlement: -1,
       changeCancel: false,
       dialogOperation: "details",
       dialogType: "",
@@ -2358,6 +2360,7 @@ export default {
                 this.settleId = item.id;
                 this.layerSettle = data.data;
                 this.settlementIsEntrust = item.isCombine ? 0 : 1; // 是否委托合同，0是，1否
+                this.setactualSettlement = data.data.actualsettlement; //结算金额
               }
             })
             .catch((error) => {
