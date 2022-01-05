@@ -1681,7 +1681,7 @@ export default {
         // return
         //退款审核
         this.$ajax
-          .post("api/refund/saveOrder", param)
+          .postJSON("/api/refund/saveOrder", param)
           .then(res => {
             let data = res.data;
             if (data.status === 200) {
