@@ -296,7 +296,7 @@
             <span>{{ billMsg.toAccountTime | formatTime }}</span>
           </el-table-column>
           <el-table-column label="收款人" align="center">
-            <span>{{billMsg.store}}-{{ billMsg.inObjName }}</span>
+            <span>{{billMsg.inObjStore }}-{{ billMsg.inObjName }}</span>
           </el-table-column>
           <el-table-column label="款类" align="center">
             <span>{{ billMsg.moneyTypeName }}</span>
