@@ -119,7 +119,7 @@
             <el-table-column prop="amount" label="金额（元）"></el-table-column>
             <el-table-column
               prop="checkStatus"
-              label="审核状态"
+              label="收付状态"
               width="70"
             ></el-table-column>
           </el-table>
@@ -147,7 +147,7 @@
             ></el-table-column>
             <el-table-column
               prop="checkStatus"
-              label="审核状态"
+              label="收付状态"
             ></el-table-column>
           </el-table>
         </el-tab-pane>
