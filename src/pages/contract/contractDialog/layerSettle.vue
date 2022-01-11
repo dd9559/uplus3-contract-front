@@ -146,6 +146,10 @@ export default {
         settlementIsEntrust: {
             type: Number,
             default: -1
+        },
+        setactualSettlement: {
+            type: String,
+            default: ""
         }
     },
     data() {
@@ -363,12 +367,14 @@ export default {
         // 结算设置修改为不必填
         // } else if((this.auditForm.textarea).trim() !== ""){
             this.fullscreenLoading=true   
+
             let param = {
                 id: this.contId,
                 settlRemark: this.auditForm.textarea,
                 voucher: this.uploadList,
                 direction: 1,
                 isEntrust: this.settlementIsEntrust, // 是否委托合同，0是，1否
+                actualSettlement: this.setactualSettlement, //结算金额
             }
             this.$ajax
             .get("/api/appeal/isAppeal", {contractId:Number(this.getContId)})

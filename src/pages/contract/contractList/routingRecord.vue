@@ -189,7 +189,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button round @click="dialogReceipt = false">取消</el-button>
-        <el-button round type="primary" v-dbClick :disabled="isDisabled" @click="commit">确定</el-button>
+        <el-button round type="primary" v-dbClick @click="commit" :disabled="isDisabled">确定</el-button>
       </span>
     </el-dialog>
     <preview :imgList="previewFiles" :start="previewIndex" v-if="preview" @close="preview=false"></preview>
@@ -262,6 +262,7 @@ export default {
       },
       dialogReceipt:false,
       isDisabled:false,
+      fullscreenLoading: false,//防抖
       receiptData:{},
       uploadData: [],
       //上传的凭证
@@ -731,44 +732,52 @@ export default {
       this.index = index;
     },
     commit(){
-      let param = {
-        storeId: Number.parseInt(this.receiptData.currDeptId),
-        fromId: this.receiptData.ids,
-        toStoreId: Number.parseInt(this.receiptData.toDeptId),
-        transRange: `${this.copySignDate[0].replace(/\//g,'-')}~${this.copySignDate[1].replace(/\//g,'-')}`,
-        amount: Number.parseFloat(this.receiptData.amount),
-        remark: this.receiptReason,
-        depName: this.receiptData.currDeptName,
-        toDepName: this.receiptData.toDeptName,
+      let that = this
+      // TOOL.eventThrottle(function(){
+        let param = {
+        storeId: Number.parseInt(that.receiptData.currDeptId),
+        fromId: that.receiptData.ids,
+        toStoreId: Number.parseInt(that.receiptData.toDeptId),
+        transRange: `${that.copySignDate[0].replace(/\//g,'-')}~${that.copySignDate[1].replace(/\//g,'-')}`,
+        amount: Number.parseFloat(that.receiptData.amount),
+        remark: that.receiptReason,
+        depName: that.receiptData.currDeptName,
+        toDepName: that.receiptData.toDeptName,
       }
-      if (this.uploadData.length > 0) {
-        param.signImg = this.uploadData.map(item => item.contractSign)
+      if (that.uploadData.length > 0) {
+        param.signImg = that.uploadData.map(item => item.contractSign)
       }
-      this.isDisabled = true
-      this.$ajax.postJSON("/api/separate/currency_pay", param)
+      that.isDisabled = true
+      that.$ajax.postJSON("/api/separate/currency_pay", param)
       .then(res => {
         let data = res.data;
         if (res.data.status === 200) {
-          this.dialogReceipt = false
-          this.isDisabled = false
+          that.dialogReceipt = false
+          setTimeout(()=>{
+            that.isDisabled = false
+          },3000)
             // 数据刷新
-          this.queryFn();
-          this.$message({
+          that.queryFn();
+          that.$message({
             message: data.message,
             type: 'success'
           });
         }
       }).catch(error => {
-        this.dialogReceipt = false
-        this.isDisabled = false
-        let str = error
-        if (error === '用户不存在') {
-          str = '该公司未开通POS收款'
-        }
-        this.$message({
-          message: str
-        })
-      });
+          that.dialogReceipt = false
+          setTimeout(()=>{
+            that.isDisabled = false
+          },3000)
+          // that.isDisabled = false
+          let str = error
+          if (error === '用户不存在') {
+            str = '该公司未开通POS收款'
+          }
+          that.$message({
+            message: str
+          })
+        });
+      // })()
     },
     closeReceipt(){
       this.receiptReason='';
