@@ -446,6 +446,7 @@
                 @click="managementFn"
                 round
               >步骤管理</el-button>
+              <el-button class="paper-btn-blue paper-btn" type="primary" size="small" round @click="followLogShow = true">跟进日志</el-button>
             </li>
             <li>
               <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
@@ -956,6 +957,26 @@
         >确定</el-button>
       </span>
     </el-dialog>
+    <!-- 所有跟进日志 -->
+    <el-dialog :visible.sync="followLogShow" title="跟进日志">
+      <el-table style="width: 100%" :data="followLogData" border class="paper-table">
+        <!-- <el-table-column v-for="item in 5" :key="item" :label="'label' + item"></el-table-column> -->
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -1279,7 +1300,25 @@ export default {
         path: "qianhou",
         id: "合同编号"
       },
-      preloadFiles: []
+      preloadFiles: [],
+      followLogShow: false,
+      followLogData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }],
     };
   },
   computed: {
