@@ -446,7 +446,7 @@
                 @click="managementFn"
                 round
               >步骤管理</el-button>
-              <el-button class="paper-btn-blue paper-btn" type="primary" size="small" round @click="followLogShow = true">跟进日志</el-button>
+              <el-button class="paper-btn-blue paper-btn" type="primary" size="small" round @click="handleFollowLog">跟进日志</el-button>
             </li>
             <li>
               <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
@@ -960,20 +960,25 @@
     <!-- 所有跟进日志 -->
     <el-dialog :visible.sync="followLogShow" title="跟进日志">
       <el-table style="width: 100%" :data="followLogData" border class="paper-table">
-        <!-- <el-table-column v-for="item in 5" :key="item" :label="'label' + item"></el-table-column> -->
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
+          prop="transactionStepsType"
+          label="步骤类型">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
+          prop="transactionSteps"
+          label="步骤名称">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="createTime"
+          label="创建时间">
+        </el-table-column>
+        <el-table-column
+          prop="reportingtor"
+          label="跟进人">
+        </el-table-column>
+        <el-table-column
+          prop="reportingRemake"
+          label="日志内容">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -2546,6 +2551,16 @@ export default {
       this.propForm.transferTimeEnd = "";
       this.propForm.dateTime = "";
       this.propForm.dateTime = "";
+    },
+    handleFollowLog() {
+      this.followLogShow = true;
+      this.$ajax.get('/api/postSigning/lookStepReporting', {
+        id: this.layerShowData.id
+      })
+        .then(res => {
+          console.log(res);
+          this.followLogData = res.data.data;
+        });
     }
   },
   components: {
