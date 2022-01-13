@@ -959,28 +959,30 @@
     </el-dialog>
     <!-- 所有跟进日志 -->
     <el-dialog :visible.sync="followLogShow" title="跟进日志">
-      <el-table style="width: 100%" :data="followLogData" border class="paper-table">
-        <el-table-column
-          prop="transactionStepsType"
-          label="步骤类型">
-        </el-table-column>
-        <el-table-column
-          prop="transactionSteps"
-          label="步骤名称">
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间">
-        </el-table-column>
-        <el-table-column
-          prop="reportingtor"
-          label="跟进人">
-        </el-table-column>
-        <el-table-column
-          prop="reportingRemake"
-          label="日志内容">
-        </el-table-column>
-      </el-table>
+      <div class="follow-log">
+        <el-table style="width: 100%" :data="followLogData" border class="paper-table">
+          <el-table-column
+            prop="transactionStepsType"
+            label="步骤类型">
+          </el-table-column>
+          <el-table-column
+            prop="transactionSteps"
+            label="步骤名称">
+          </el-table-column>
+          <el-table-column
+            prop="createTime"
+            label="创建时间">
+          </el-table-column>
+          <el-table-column
+            prop="reportingtor"
+            label="跟进人">
+          </el-table-column>
+          <el-table-column
+            prop="reportingRemake"
+            label="日志内容">
+          </el-table-column>
+        </el-table>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -2689,4 +2691,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "~@/assets/less/lsx.less";
+.follow-log {
+  padding: 20px 10px;
+}
 </style>
