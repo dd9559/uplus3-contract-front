@@ -2,7 +2,7 @@
   <!-- 所有跟进日志 -->
     <el-dialog :visible.sync="visible" title="跟进日志">
       <div class="follow-log">
-        <el-table style="width: 100%" :data="data" border class="paper-table">
+        <el-table style="width: 100%" :data="data" border class="paper-table" v-loading="isLoading">
           <el-table-column
             prop="transactionStepsType"
             label="步骤类型">
@@ -34,6 +34,7 @@ export default {
     return {
       visible: false,
       data: null,
+      isLoading: false,
     }
   },
   props: {
@@ -42,18 +43,29 @@ export default {
       default: 0,
     }
   },
+  watch: {
+    visible(val) {
+      if(!val) {
+        this.data = null;
+      }
+    }
+  },
   methods: {
     open() {
-      this.getFollowLog();
       this.visible = true;
+      this.getFollowLog();
     },
     getFollowLog() {
+      this.isLoading = true;
       this.$ajax.get('/api/postSigning/lookStepReporting', {
         id: this.id
       })
         .then(res => {
           console.log(res);
           this.data = res.data.data;
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     }
   }

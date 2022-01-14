@@ -12,6 +12,11 @@
       <LayerScrollAuto>
         <div class="layer-progress">
           <ul class="ul">
+            <el-button 
+              class="paper-btn-blue paper-btn" 
+              type="primary" size="small" round
+              @click="handleFollowLog"
+            >跟进日志</el-button>
             <li>
               <span class="cl-2 mr-30">{{layerShowData.transFlowName}}</span>
             </li>
@@ -242,6 +247,7 @@
         </div>
       </LayerScrollAuto>
     </el-dialog>
+    <dialog-follow-log ref="followLog" :id="layerShowData.id"></dialog-follow-log>  
   </div>
 </template>
 
@@ -250,6 +256,7 @@ import { FILTER } from "@/assets/js/filter";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import LayerScrollAuto from "@/components/LayerScrollAuto";
+import dialogFollowLog from '@/components/dialogFollowLog'
 
 // 是否超时
 const ISOVERTIME = 1;
@@ -513,10 +520,14 @@ export default {
     // 点击眼睛
     eyeClickFn() {
       console.log(222);
+    },
+    handleFollowLog() {
+      this.$refs.followLog.open();
     }
   },
   components: {
-    LayerScrollAuto
+    LayerScrollAuto,
+    dialogFollowLog
   }
 };
 </script>
@@ -711,5 +722,8 @@ export default {
     color: #666;
     line-height: 36px;
   }
+}
+.paper-btn {
+  margin-right: 20px;
 }
 </style>
