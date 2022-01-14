@@ -14,6 +14,9 @@
           <el-table-column
             prop="createTime"
             label="创建时间">
+            <template slot-scope="{row}">
+              <span>{{ row.createTime | formatTime }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="reportingtor"
