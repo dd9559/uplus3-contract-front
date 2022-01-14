@@ -957,33 +957,7 @@
         >确定</el-button>
       </span>
     </el-dialog>
-    <!-- 所有跟进日志 -->
-    <el-dialog :visible.sync="followLogShow" title="跟进日志">
-      <div class="follow-log">
-        <el-table style="width: 100%" :data="followLogData" border class="paper-table">
-          <el-table-column
-            prop="transactionStepsType"
-            label="步骤类型">
-          </el-table-column>
-          <el-table-column
-            prop="transactionSteps"
-            label="步骤名称">
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="创建时间">
-          </el-table-column>
-          <el-table-column
-            prop="reportingtor"
-            label="跟进人">
-          </el-table-column>
-          <el-table-column
-            prop="reportingRemake"
-            label="日志内容">
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-dialog>
+    <dialog-follow-log :id="layerShowData.id" ref="followLog"></dialog-follow-log>
   </div>
 </template>
 
@@ -993,6 +967,7 @@ import { FILTER } from "@/assets/js/filter";
 import { TOOL } from "@/assets/js/common";
 import { MIXINS } from "@/assets/js/mixins";
 import LayerScrollAuto from "@/components/LayerScrollAuto";
+import dialogFollowLog from '@/components/dialogFollowLog'
 
 // 合同
 const STATE = {
@@ -1308,24 +1283,6 @@ export default {
         id: "合同编号"
       },
       preloadFiles: [],
-      followLogShow: false,
-      followLogData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
     };
   },
   computed: {
@@ -2555,19 +2512,14 @@ export default {
       this.propForm.dateTime = "";
     },
     handleFollowLog() {
-      this.followLogShow = true;
-      this.$ajax.get('/api/postSigning/lookStepReporting', {
-        id: this.layerShowData.id
-      })
-        .then(res => {
-          console.log(res);
-          this.followLogData = res.data.data;
-        });
+      this.$refs.followLog.open();
+      
     }
   },
   components: {
     ScreeningTop,
-    LayerScrollAuto
+    LayerScrollAuto,
+    dialogFollowLog
   },
   watch: {
     dictionary(newData, oldData) {
@@ -2691,7 +2643,5 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "~@/assets/less/lsx.less";
-.follow-log {
-  padding: 20px 10px;
-}
+
 </style>
