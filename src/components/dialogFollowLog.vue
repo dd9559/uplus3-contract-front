@@ -29,6 +29,9 @@
           <el-table-column
             prop="reportingtor"
             label="跟进人">
+            <template slot-scope="{row}">
+              <span>{{ (row.reportingtorDep ? row.reportingtorDep + '-' : '') + row.reportingtor }}</span>
+            </template>
           </el-table-column>
           <el-table-column
             prop="reportingRemake"

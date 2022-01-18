@@ -2573,6 +2573,7 @@ export default {
     userMsg() {
       this.stepReportFrom.reportingtorId = this.userMsg.empId;
       this.stepReportFrom.reportingtor = this.userMsg.name;
+      this.stepReportFrom.reportingtorDep = this.userMsg.depName;
     }
   },
   mounted() {
