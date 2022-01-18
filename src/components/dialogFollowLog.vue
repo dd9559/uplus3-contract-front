@@ -30,7 +30,7 @@
             prop="reportingtor"
             label="跟进人">
             <template slot-scope="{row}">
-              <span>{{ (row.reportingtorDep ? row.reportingtorDep + '-' : '') + row.reportingtor }}</span>
+              <span>{{ (row.reportingtorDep && row.reportingtorDep + '-' ) + row.reportingtor }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -93,6 +93,9 @@ export default {
      .el-table__header th {
         background-color: #EEF2FB;
         color: #6C7986;
+      }
+      .el-table__row:first-child {
+        color: red;
       }
     }
   }
