@@ -21,7 +21,7 @@
           </el-table-column>
           <el-table-column
             prop="reportingDate"
-            label="创建时间">
+            label="跟进时间">
             <template slot-scope="{row}">
               <span>{{ row.reportingDate | formatDate }}</span>
             </template>
