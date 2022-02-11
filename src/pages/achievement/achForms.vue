@@ -296,7 +296,10 @@ export default {
         return
       }
       this.$ajax
-        .get("/api/achievementSheet/getAchievementContractSumList", param)
+        .get("/api/achievementSheet/getAchievementContractSumList", {...param, 
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+      })
         .then((res) => {
           res = res.data;
           if (res.status == 200) {
