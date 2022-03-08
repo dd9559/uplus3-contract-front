@@ -34,7 +34,7 @@
               <el-button
                 type="text"
                 size="medium"
-              ><span @click="reissueNote(scope.row)" v-show="scope.row.show">{{scope.row.signerResult&&scope.row.signerResult.value === 2&&scope.row.ssqSignUrl? '补发签署短信': '-'}}</span>
+              ><span @click="reissueNote(scope.row)" v-show="scope.row.show">{{scope.row.signerResult&&scope.row.signerResult.value === 2&&scope.row.verifyUrl? '补发签署短信': '-'}}</span>
               <span v-show="!scope.row.show">{{scope.row.count&&scope.row.count}}s</span></el-button>
             </template>
           </el-table-column>
@@ -157,11 +157,11 @@ export default {
         });
     },
     reissueNote(val) {
-      if (!val.signerResult || val.signerResult.value !== 2 || !val.ssqSignUrl)return
+      if (!val.signerResult || val.signerResult.value !== 2 || !val.verifyUrl)return
       let params = {
         mobilePhone: val.mobilePhone,
         cityId: val.cityId,
-        ssqSignUrl: val.ssqSignUrl,
+        verifyUrl: val.verifyUrl,
         contType: this.choseQuery.contTypeLabel,
         id: val.id,
       };
