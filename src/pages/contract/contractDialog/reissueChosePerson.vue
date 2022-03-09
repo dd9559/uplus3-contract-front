@@ -161,7 +161,7 @@ export default {
       let params = {
         mobilePhone: val.mobilePhone,
         cityId: val.cityId,
-        verifyUrl: val.verifyUrl,
+        ssqSignUrl: val.verifyUrl,
         contType: this.choseQuery.contTypeLabel,
         id: val.id,
       };
