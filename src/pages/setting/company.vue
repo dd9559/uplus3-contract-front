@@ -371,7 +371,7 @@
           </el-table-column>
           <el-table-column label="操作时间" prop="name">
             <template slot-scope="scope">
-              <span>{{scope.row.createdAt|formatDate(2)}}</span>
+              <span>{{scope.row.createdAt|formatTime(2)}}</span>
             </template>
           </el-table-column>
           <el-table-column label="提现金额" prop="amount">
