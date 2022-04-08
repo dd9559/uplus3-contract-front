@@ -40,8 +40,8 @@
         <p v-if="power['sign-set-gs'].state">
             <span><i class="iconfont icon-tubiao-11 mr-8"></i>数据列表</span>
             <span>
-              <el-button @click="addDep" type="primary">绑定门店</el-button>
-              <el-button @click="addCompany" icon="el-icon-plus" type="primary">公司信息</el-button>
+              <el-button @click="addDep" type="primary" v-if="power['sign-set-gs-bind'].state">绑定门店</el-button>
+              <el-button @click="addCompany" icon="el-icon-plus" type="primary" v-if="power['sign-set-gs-add'].state">公司信息</el-button>
             </span>
         </p>
         <el-table :data="tableData" style="width: 100%" border ref="tableCom" :max-height="tableNumberCom">
@@ -523,6 +523,14 @@
         //权限配置
         power: {
           'sign-set-gs': {
+            state: false,
+            name: '公司信息'
+          },
+          'sign-set-gs-bind': {
+            state: false,
+            name: '绑定门店'
+          },
+          'sign-set-gs-add': {
             state: false,
             name: '添加公司信息'
           },
