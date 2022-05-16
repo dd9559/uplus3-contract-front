@@ -19,7 +19,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'wuhan_mr_wt_5.html'
+        src:'xt_仙桃_买卖.html'
       }
     },
     created(){
