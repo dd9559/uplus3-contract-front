@@ -25,25 +25,11 @@ let sub = {
   },
   'drapdown_val22': {
     stateful: function (index) {
-
-      const map = {
-        '(1)': {
-          'drapdown_val23': {
-            stateful: function (index1) {
-              return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
-            }
-          }
-        },
-        '(2)': {'time_val29':null,'val30':null},
-        '(3)': {val30extra: null, time_val131: null},
-      }
-      
-      return map[index];
-      // return index === '(1)' ? {'drapdown_val23': {
-      //   stateful: function (index1) {
-      //     return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
-      //   }
-      // }} : 
+      return index === '(1)' ? {'drapdown_val23': {
+        stateful: function (index1) {
+          return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
+        }
+      }} : {'time_val29':null,'val30':null,'time_val31':null}
     }
   },
   'drapdown_val32': {
@@ -81,16 +67,12 @@ Dropdown.create({
         'val22': {
           '(1)': {
             'write': ['val23','val24','val25','val26','val27','val28'],
-            'disabled':  ['val29','val30','val31', 'val30extra']
+            'disabled':  ['val29','val30', 'val30extra', 'val31']
           },
           '(2)': {
-            'disabled': ['val23','val24','val25','val26','val27','val28', 'val30extra', 'val31'],
-            'write':  ['val29','val30']
+            'disabled': ['val23','val24','val25','val26','val27','val28'],
+            'write':  ['val29','val30', 'val30extra', 'val31']
           },
-          '(3)': {
-            disabled: ['val23','val24','val25','val26','val27','val28','val29','val30'],
-            write: ['val30extra', 'val31'],
-          }
         },
         'val23':  {
           '①': {
