@@ -29,7 +29,7 @@ let sub = {
         stateful: function (index1) {
           return index1 === '①' ? {'time_val24': null,'val25': null} : {'time_val26': null,'val27': null,'val28': null}
         }
-      }} : {'time_val29':null,'val30':null,'time_val31':null}
+      }} : {'time_val29':null,'val30':null,'time_val31':null, val30extra: null}
     }
   },
   'drapdown_val32': {
