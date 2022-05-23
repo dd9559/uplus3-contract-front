@@ -19,7 +19,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_MM],
     data(){
       return{
-        src:'xt_仙桃_买卖.html'
+        src:'xt_仙桃_买卖-第六次开发20220523.html'
       }
     },
     created(){
