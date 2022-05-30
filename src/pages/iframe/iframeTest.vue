@@ -16,10 +16,10 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
 
   export default {
     name: "iframe-test",
-    mixins: [MIXINS_MM],
+    mixins: [MIXINS_ZL],
     data(){
       return{
-        src:'xt_仙桃_买卖-第六次开发20220523.html'
+        src:'WHJM-210425-租赁合同-照明瑞修改版.html'
       }
     },
     created(){
