@@ -132,6 +132,16 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="结算状态" prop="statusRes">
+          <el-select v-model="propForm.statusRes" class="w100">
+            <el-option
+              v-for="item in rules.statusRes"
+              :key="'statusRes'+item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -350,7 +360,8 @@ export default {
         lateName: 3,
         depAttr: "",
         areaName: "",
-        recordType: ""
+        recordType: "",
+        statusRes:"",//结算状态
       },
       // 筛选选项
       rules: {
@@ -399,6 +410,12 @@ export default {
           {
             key: 4,
             value: "超时已办理"
+          }
+        ],
+        statusRes: [
+          {
+            key: "全部",
+            value: ""
           }
         ],
         depAttr: [],
@@ -586,7 +603,8 @@ export default {
         keyword: this.propForm.search,
         depAttr: this.propForm.depAttr,
         areaName: this.propForm.areaName,
-        recordType: this.propForm.recordType
+        recordType: this.propForm.recordType,
+        statusRes: this.propForm.statusRes,
       };
 
       //点击查询时，缓存筛选条件
@@ -773,6 +791,14 @@ export default {
       ];
       // 合作方式
       this.rules.depAttr = [...newData[53]];
+      // 结算状态
+      this.rules.statusRes = [
+        {
+          value: "全部",
+          key: ""
+        },
+        ...newData[13]
+      ]
     },
     cityId() {
       // 交易流程
