@@ -346,7 +346,8 @@ export default {
       dictionary: {
         "13": "收佣状态",
         "53": "合作方式",
-        "64": "签约方式"
+        "64": "签约方式",
+        "14": "结算状态",
       },
       // 筛选条件
       propForm: {
@@ -797,7 +798,7 @@ export default {
           value: "全部",
           key: ""
         },
-        ...newData[13]
+        ...newData[14]
       ]
     },
     cityId() {

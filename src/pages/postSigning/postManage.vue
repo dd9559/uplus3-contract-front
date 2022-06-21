@@ -1046,6 +1046,7 @@ export default {
         "561": "步骤附属信息类型",
         "570": "是否必填",
         "64": "签约方式",
+        "14": "结算状态",
       },
       // 筛选结果
       propForm: {
@@ -2589,7 +2590,7 @@ export default {
           value: "全部",
           key: ""
         },
-        ...newData[13]
+        ...newData[14]
       ]
     },
     cityId() {
