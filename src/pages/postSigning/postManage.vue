@@ -227,6 +227,16 @@
             ></el-date-picker>
           </el-form-item>
         </div>
+        <el-form-item label="结算状态" prop="statusRes">
+          <el-select v-model="propForm.statusRes" class="w100">
+            <el-option
+              v-for="item in rules.statusRes"
+              :key="'statusRes'+item.key"
+              :label="item.value"
+              :value="item.key"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
     </ScreeningTop>
     <!-- 列表 -->
@@ -1035,7 +1045,7 @@ export default {
         "53": "合作方式",
         "561": "步骤附属信息类型",
         "570": "是否必填",
-        "64": "签约方式"
+        "64": "签约方式",
       },
       // 筛选结果
       propForm: {
@@ -1060,7 +1070,8 @@ export default {
         recordType: "",
         regionTime: 0,
         dateTime: "",
-        finishDate:""
+        finishDate:"",
+        statusRes:"",//结算状态
       },
       // 筛选下拉
       rules: {
@@ -1163,6 +1174,12 @@ export default {
           {
             name: "全部",
             empId: ""
+          }
+        ],
+        statusRes: [
+          {
+            key: "全部",
+            value: ""
           }
         ],
         depAttr: [],
@@ -2299,7 +2316,8 @@ export default {
         keyword: this.propForm.search,
         depAttr: this.propForm.depAttr,
         areaName: this.propForm.areaName,
-        recordType: this.propForm.recordType
+        recordType: this.propForm.recordType,
+        statusRes: this.propForm.statusRes,
         // estTransferTimeStar: addDate ? this.dateFormat(addDate[0]) : "",
         // estTransferTimeEnd: addDate ? this.dateFormat(addDate[1]) : ""
       };
@@ -2565,6 +2583,14 @@ export default {
       ];
       // 合作方式
       this.rules.depAttr = [...newData[53]];
+      // 结算状态
+      this.rules.statusRes = [
+        {
+          value: "全部",
+          key: ""
+        },
+        ...newData[13]
+      ]
     },
     cityId() {
       // 交易流程
