@@ -19,7 +19,7 @@ import {MIXINS_DJ} from "../contract/mixins/DJ.js";
     mixins: [MIXINS_ZL],
     data(){
       return{
-        src:'WHJM-210425-租赁合同-照明瑞修改版.html'
+        src:'JX-租赁.html'
       }
     },
     created(){
